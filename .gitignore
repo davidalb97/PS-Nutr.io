@@ -1,14 +1,28 @@
+# Package Files #
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar*.apk
+*.ap_
+
 # Gradle
 .gradle/
 build/
 gradle-app.setting
-!gradle-wrapper.jar
 .gradletasknamecache
-gradle/wrapper/gradle-wrapper.properties
+!gradle-wrapper.jar
 
 # Idea
 .idea/
 out/
+*.iml
+*.iws
+
+# Android Studio
+local.properties
 
 bin/
 Debug/
@@ -19,16 +33,6 @@ Release/
 bin/
 gen/
 obj/
-
-# Package Files #
-*.jar
-*.war
-*.nar
-*.ear
-*.zip
-*.tar.gz
-*.rar*.apk
-*.ap_
 
 # OS-specific files
 .DS_Store
