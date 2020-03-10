@@ -16,21 +16,21 @@
 
 #### Análise
 
-- Discussão dos probleas a resolver
+- Discussão dos problemas a resolver
 - Discussão das possíveis técnicas e ferramentas
 
 #### Plano
 
 - Plano semanal de trabalho
 
-- ###### Diagrama de gantt - partes importantes do projeto com estimative de tempo
+- ###### Diagrama de gantt - partes importantes do projeto com estimativa de tempo
 
 ## Secções
 
 - #### Conteúdo implícito (obrigatório)
 
   - Introdução à área em que o tema se insere
-  - Investigação actual nesse campo
+  - Investigação atual nesse campo
   - Identificação de lacuna (Ex: Inovação ou melhoramento)
   - Identificação de como o trabalho vai preencher a lacuna
   - Identificação de riscos e soluções
@@ -52,13 +52,13 @@
   * O projeto é realizável?
   * Os estudantes sabem o que têm que fazer?
   * Foram identificados potenciais problemas e os possíveis processos/ferramentas/técnicas?
-  * O plano de acção é realista
+  * O plano de ação é realista
 
 * Pontos de controlo
-  * Pontos de controlo e resultados obtivos (datas para) como milestones e deliverables
+  * Pontos de controlo e resultados obtidos (datas para) como milestones e deliverables
     * Ex: interface com user, subsistema, demo, manuais, relatório, etc
   * Riscos
-    * Desistência de elementos do grupo e planos de contigência
+    * Desistência de elementos do grupo e planos de contingência
 * Avaliação das ambições da proposta em conta com a expectativa dos estudantes envolvidos
 * Importância de, no inicio, serem identificados objetivos mínimos e outros objetivos que poderão não ser atingidos. Permine analisar a evolução do estudante desde o inicio do trabalho.
 
@@ -79,21 +79,21 @@
   * Algoritmos 
   * Teorias
   * Projetos
-  * Especificação de requesitos
-  * Outros documentos interns
+  * Especificação de requisitos
+  * Outros documentos internos
 * Nalguns casos (claramente software) incluir:
-  * Documentação dos requesitos
+  * Documentação dos requisitos
   * Projetos
   * Análises
   * Resultados de testes completamente documentados
-  * Manuas de utilizador e guias
-* Ênfase  de pendente na area...
+  * Manuais de utilizador e guias
+* Ênfase  de pendente na área...
 * ...
 
 ### Avaliação
 
 * Projetos cuja foco principal seja uma qualquer forma de avaliação
-  * Aval de várias abordagens para um problema particula
+  * Aval de várias abordagens para um problema partícula
   * Aval de duas ou mais linguagens (para contextos e problemas diferentes)
   * Aval dum processo de impl num industria particular
   * Aval de diferentes interfaces com o utilizador
@@ -102,7 +102,7 @@
 
 ### Orientado para a indústria
 
-* Projetos que envolvem a resolução de um problema numa organisação ou noutro departamento/area
+* Projetos que envolvem a resolução de um problema numa organização ou noutro departamento/área
 * Necessidade de conciliar interesses académicos e os do cliente
 
 ### Resolução de problema
@@ -112,7 +112,7 @@
 * Pode usar um técnica existente para resolver o problema numa nova área
 * Espera-se uma forma de avaliação
   * A nova aproximação funciona bem ou foram descobertas as razões da desadequação a problemas desta natureza?
-  * Quas as razões da aproximação, ou da teoria, funcionar melhor nalgumas situações do que em outras?
+  * Quais as razões da aproximação, ou da teoria, funcionar melhor nalgumas situações do que em outras?
 
 ## Papel do estudante
 
@@ -128,7 +128,7 @@
 * Coordenação global dos projetos
 * Coordenação dos seminários
 * Acompanhamento do trabalho
-* Participção na avaliação
+* Participação na avaliação
 
 ## Comentários gerais
 
