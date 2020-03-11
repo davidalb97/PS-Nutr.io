@@ -16,14 +16,18 @@ valores calibrados por outros utilizadores.
 
 ## Objectives
 
-Given the previous background and the problems stated from that, here will be given the objectives that must be accomplished by the end of this project. 
+Given the gaps previously stated, Nutr.io aims to develop a system that offers the users carbohydrates values of meals served in restaurants. The information is collected from external APIs and gradually calibrated  by using other sources, which is stored in the system's database.
 
-* Provide a system that offers the diabetic community carbohydrate values of meals served in restaurants;
+This project aims to achieve this by fulfilling the following goals by the end of development:
+
 * Use external APIs to obtain data from meals and restaurants;
-* ~~To design a solution for obtaining meals from any given restaurant which would be needed to obtain the default values.~~ (Design a solution that obtains meals for any given restaurant, which would be needed to obtain the default values. (Even if the restaurant didn't supply the menu, in text format, to the API));
-* ~~Use the community to assert a restaurant meals' carbohydrate values.~~ (Use the app community to assert a restaurant meals' carbohydrate values, even if the values are not present in the external APIs);
-* Meal portions for a given restaurant are obtained and calibrated by users (X other ways);
-* ~~Implement login support for our system to authenticate community contributions.~~ (Implement login support in order to register users, so they can contribute to the community).
+* Maintain a database that contains the baseline nutritional values and their calibration provided by other sources;
+* Obtain baseline nutritional information about meals of any given restaurant. (Even when restaurants don't supply their menus to any API);
+* A contribution system that uses information from various sources to calibrate the system's data such as:    
+  - System's community (mandatory objective)    
+  - Nutritionists (optional)    
+  - Restaurant owners (optional)
+* Implement registration and authentication support, so that authenticated users can contribute to the community.
 
 ## Justification
 
