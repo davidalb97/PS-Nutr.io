@@ -1,0 +1,18 @@
+The idea that every field of study can be digitalized in order to ease monotonous tasks 
+is continuosly growing in the modern world. Nutr.io aims to tackle the field of Type 1 diabetes, 
+given its growing prevalence in Portugal[1] and the world.
+
+One of those monotonous tasks is the count and measurement of carbohydrates in meals used
+to administer the correspondent amount of insulin, along with their blood levels, to maintain a healthy
+lifestyle. A task that heavily relies on having access to food databases[link]  
+and knowledge of how much portions the meal has - usually by using a digital balance or doing estimations.
+
+What happens when said tools are missing? 
+Eating in restaurants is the perfect example that showcases a gap that Nutr.io aims to fill. 
+Many nutrional applications do not provide data for restaurants' meals [3] nor does the user bring his digital
+balance from home - resulting in a faulty carbohydrate count and therefore administering an incorrect insulin value.
+
+The main goal of this project is to design a system that offers the Type 1 diabetic community a way 
+to facilitate difficult carbohydrate measurement situations, like restaurants, by providing a database
+of nutrional information for restaurants; and by calibrating the accuracy of given 
+data based on the community's contribution.
