@@ -30,3 +30,9 @@ This project aims to achieve this by fulfilling the following goals by the end o
 
 ## Justification
 
+
+
+## Analysis and approach
+
+- This project will offer the users a mobile and a web component: the mobile will be coded in Kotlin, while the front end web will be coded in ReactJs. Nutr.io's core will contain a server that provides an API to its border, so the two mentioned components can use its endpoints to access and manipulate information.
+- The API will give the ability to read and write information, so the users can read and add missing information, that does not exist on external APIs, to Nutr.io's internal API
