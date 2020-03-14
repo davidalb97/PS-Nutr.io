@@ -1,103 +1,64 @@
-# Reuniões - Orientador PS
+# Proposta
 
-## Reunião #1
+## Titulo:
 
-### Tópicos a discutir
+## Background
 
-- Discutir a parte do servidor - usar react native ou ktor? Perguntar qual é a mais adequada para o caso de se querer UI diferentes para web e mobile;
-- Falar da adenda da descrição geral do projeto, previamente enviada na sugestão de projeto ao eng. Fernando Sousa;
-- Perguntar o que se deve realçar mais para a proposta de projeto a entregar dia 16 de março (?)
+The idea that every field of study can be digitalized in order to ease monotonous tasks is continuously growing in the modern world. Our project aims to tackle the field of Type 1 diabetes, given its growing prevalence in Portugal [1] and the world.
 
-### Notas da reunião
+One of those monotonous tasks is the count and measurement of carbohydrates in meals used to administer the correspondent amount of insulin, along with their blood levels, to maintain a healthy lifestyle. A task that heavily relies on having access to food databases[link] and knowledge of how much portions the meal has - usually by using a digital balance or doing estimations.
 
-- 
+Eating in restaurants is the perfect example that showcases a gap in this field, that our project, 
+Nutr.io, aims to fill.  Many nutritional applications do not provide data for restaurants' meals [3] nor does the user bring his digital balance from home - resulting in a faulty carbohydrate count and therefore administering an incorrect insulin value.
 
+The main goal of this project is to design a system that offers the Type 1 diabetic community a way to facilitate difficult carbohydrate measurement situations, like restaurants, by providing a database of nutritional information for restaurants; and by calibrating the accuracy of given data based on the community's contribution.
 
+## Goals
 
-## Tecnologias
+Given the gaps previously stated, Nutr.io aims to develop a system that offers to the users the carbohydrates values of meals served in restaurants. The information is collected from external APIs and gradually calibrated by using other sources, such as user's feedback. All data gathered from these sources is stored in an internal systems database.
 
-### Android
+This project aims to achieve this by fulfilling the following goals by the end of development:
 
-* Kotlin
-* API gráfica para o gráfico
-* ~~Base de dados relacional para metadados offline: Room~~
-* Auth para autenticação (google, facebook)
+* Use external APIs to obtain data from meals and restaurants;
+* Maintain a database that contains the baseline nutritional values and their calibration provided by other sources;
+* Obtain baseline nutritional information about meals of any given restaurant. (Even when restaurants don't supply their menus to any API);
+* A contribution system that uses information from various sources to calibrate the system's data such as:    
+  - System's community (mandatory objective)    
+  - Nutritionists (optional)    
+  - Restaurant owners (optional)
+* Implement registration and authentication support, so that authenticated users can contribute to the community.
 
-### Server (Same instance)
+## Analysis and approach
 
-* Deploy: 
-  * Heroku (Postgres/Redis/Kafka) 
-  * ~~Google cloud - Cloud SQL (MySQL, PostgreSQL, and SQL Server) ou Cloud firebase~~
+This project will be deployed using **Heroku** and coded in four system components - an HTTP-based API, a relational-based database, a mobile application and a browser-based application; which can be analyzed in **[image]**.
 
-#### 	Backend (nutr.io-api)
+The HTTP-based API will be implemented in Kotlin using the Spring framework to provide endpoints that allow the users to read and write data. Said data can be the following:
 
-* Kotlin (~~ktor~~, spring) ou ~~javascript (express nodejs)~~
-* Base de dados relacional: Postgres
-* APIS:
-  * Food API (Fornecer o valor genérico de cada prato)
-  * APIs que fornecem o relacionamento entre o restaurante e o prato:
-    * Zomato
+**[REFER WHAT THE API OFFERS]**
 
-#### 	FrontEnd (nutr.io-web-api)
+- Restaurants' cuisines, which are obtained from external APIs (such as **Google Places** , **Zomato** and **Yelp**) and are read by the users;
+- Restaurants' meals, which are obtained from the external APIs mentioned above and the system's database, seeing as the community can write their own meals; 
+- Meals' nutritional values, where their baseline values are obtained from nutritional APIs (such as **Nutritionix**) and additional calibration done by the community is saved to the system's database.
 
-- Single page application (Para pormos enviar react packed so pra web)
+Taking into consideration the complexity of the previously mentioned data and how they relate to each other, a relational-based database approach was chosen over a non-relational one. 
 
-* js (React, ~~angular, vue?~~)
-* API gráfica para o gráfico
-* Auth para autenticação (google, facebook)
+The mobile application will be implemented using Kotlin **(AHHH finish me)**
 
-## Lacunas
+Finally, the browser-based application will be implemented using the React Framework in a **single-page application** approach since we aim to offer a rich user interface with many features and  its fast and responsive properties. [1 & 2]
 
-* Obter informações nutricionais fidedignos de um certo prato servido num estabelecimento de restauração
+https://rubygarage.org/blog/single-page-app-vs-multi-page-app
 
-## Solução
-
-* Uso da comunidade para inferir os valores certos
-
-* Uso de APIs legit para a obtenção de valores default
-
-* Rapidez na obtenção dos resultados utilizando a APIs para a obtenção do prato num dado estabelecimento de restauração
-
-* Recompensa dos contribuidores utilizando
-
-  
-
-  
-
-  ------
-
-  Que informações o utilizador recebe, quem insere, como insere, propor restaurante q nao existe, eiste votações/n existe? etc.
-
-* Input utilizadores tem que estar descrito
-
-------
-
-* O uso de Google Vision API para reconhecimento de pratos não é viavel devido a labels vagas
-
-## Proposta
-
-A Nutr.io consiste numa aplicação móvel e web que irá fornecer dados nutricionais rigorosos sobre
-refeições e pratos servidos nos estabelicimentos de restauração, com o principal objetivo de calibrar
-os dados da aplicação consoante o input dos utilizadores de modo a auxiliá-los nas suas escolhas
-nutricionais.
-
---------------------------------------------
-A Nutr.io consiste numa aplicação móvel e web que irá fornecer dados nutricionais rigorosos sobre 
-refeições servidas nos estabelicimentos de restauração. Dados estes que são obtidos através de API's externas 
-e calibrados ao longo do tempo através do input dos utilizadores, 
-para que o valor nutricional denote uma distribuição normal no prato servido.
-
----
-
-Esta aplicação tem como principal objetivo calibrar os dados presentes na mesma, 
-conciliando APIs externas com os inputs dos utilizadores, 
-de modo a auxiliá-los nas suas escolhas nutricionais e contribuindo para o ecossistema
-informático da app.
+https://docs.microsoft.com/en-us/dotnet/architecture/modern-web-apps-azure/choose-between-traditional-web-and-single-page-apps
 
 
 
+## Risks
+
+The main risk to the project is the heavy dependency on external APIs. If they do not provide sufficient data 
 
 
-We chose a
 
-We chose a single-page application approach over multi-page application as we will access our API endpoints on both our web and mobile implementations. This means that we will only require the **Nutr.io's Web API** for the initial web setup and then use the **Nutr.io's API** for the following json requests.
+The other significant risk is that the project relies on skills that the group has yet to acquire and that are being taught in ISEL's courses (namely **CN** and **DAW**). If said courses suffer a delay in providing their knowledge, then the scope of the implementation will be delayed or restricted.
+
+Lastly, due to the recent outbreak of *COVID-19* and the resultant epidemic situation, the group expresses concerns about any possible setbacks that the virus can cause. These setbacks could include canceled meetings with our tutor, canceled classes (reinforcing the previously mentioned risk) and delays in our project plan due to a member being infected.
+
