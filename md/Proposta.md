@@ -2,6 +2,10 @@
 
 ## Titulo:
 
+
+
+Keywords: Diabetes; Nutrition; Contribution
+
 ## Background
 
 The idea that every field of study can be digitalized in order to ease monotonous tasks is continuously growing in the modern world. Our project aims to tackle the field of Type 1 diabetes, given its growing prevalence in Portugal [1] and the world.
@@ -27,6 +31,36 @@ This project aims to achieve this by fulfilling the following goals by the end o
   - Nutritionists (optional)    
   - Restaurant owners (optional)
 * Implement registration and authentication support, so that authenticated users can contribute to the community.
+
+#### Lower Priority Goals
+
+Due to the diversity of features that must be implemented, ~~there are also some lower priority objectives, which completion might depend on the state of the project, such as:~~ the following objectives were also considered but marked with a lower priority, making their completion depend on the state of the project:
+
+* Allow users to vote whether a new dish submission is accurate;
+
+* Allow users to vote whether a new restaurant submission is valid, if our APIs do not supply it, warning future users about non-valid locations;
+
+* Reward points to users according to submission votes;
+
+* Establish minimum required points for each submission type;
+
+* Custom dishes and meals with CRUD implementation;
+
+* Display restaurant meals in the following order:
+
+  * Voted dishes (ordered by vote count);
+  * Custom dishes that belong the restaurant's cuisine;
+  * Generic dishes that belong restaurant's cuisine.
+
+* Nutritionists authentication for special contributions;
+
+* Sync local user data with our database;
+
+* Access and display of synced user data on both platforms.
+
+* UI Android application configuration.
+
+  
 
 ## Analysis and approach
 
@@ -60,3 +94,4 @@ The other significant risk is that the project relies on skills that the group h
 
 Lastly, due to the recent outbreak of *COVID-19* and the resultant epidemic situation, the group expresses concerns about any possible setbacks that the virus can cause. These setbacks could include canceled meetings with our tutor, canceled classes (reinforcing the previously mentioned risk) and delays in our project plan due to a member being infected.
 
+ 
