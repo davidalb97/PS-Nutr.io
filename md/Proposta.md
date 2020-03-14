@@ -36,9 +36,9 @@ The HTTP-based API will be implemented in Kotlin using the Spring framework to p
 
 **[REFER WHAT THE API OFFERS]**
 
-- Restaurants' cuisines, which are obtained from external APIs (such as **Google Places** , **Zomato** and **Yelp**) and are read by the users;
-- Restaurants' meals, which are obtained from the external APIs mentioned above and the system's database, seeing as the community can write their own meals; 
-- Meals' nutritional values, where their baseline values are obtained from nutritional APIs (such as **Nutritionix**) and additional calibration done by the community is saved to the system's database.
+- Restaurants' cuisines, which are obtained from external APIs (such as **Google Places**[[r+1]](https://cloud.google.com/maps-platform/places), **Zomato**[[r+2]](https://www.zomato.com) and **Yelp**[[r+3]](https://www.yelp.pt)) and are read by the users; 
+- Restaurants' meals, which are obtained from the external APIs mentioned above and the system's database, seeing as the community can write their own meals;  
+- Meals' nutritional values, where their baseline values are obtained from nutritional APIs (such as **Nutritionix**[[r+4]](https://www.nutritionix.com/)) and additional calibration done by the community is saved to the system's database.
 
 Taking into consideration the complexity of the previously mentioned data and how they relate to each other, a relational-based database approach was chosen over a non-relational one. 
 
@@ -54,11 +54,9 @@ https://docs.microsoft.com/en-us/dotnet/architecture/modern-web-apps-azure/choos
 
 ## Risks
 
-The main risk to the project is the heavy dependency on external APIs. If they do not provide sufficient data 
+The main risk to the project is the heavy dependency in obtaining restaurants' meals. If no external API is capable of providing accurate and reliable data *(such as **Zomato**, which despite offering an endpoint for restaurants' daily menus [1], not enough owners utilize this feature [1, 2, 3])*, alternate approaches must be taken - such as assigning an immutable list of meals to cuisines, serving as a default for restaurants that do not provide their meals.
 
-
-
-The other significant risk is that the project relies on skills that the group has yet to acquire and that are being taught in ISEL's courses (namely **CN** and **DAW**). If said courses suffer a delay in providing their knowledge, then the scope of the implementation will be delayed or restricted.
+The other significant risk is that the project relies on skills that the group has yet to acquire and that are being taught in ISEL's courses (namely **DAW**). If said courses suffer a delay in providing their knowledge, then the scope of the implementation will be delayed or restricted.
 
 Lastly, due to the recent outbreak of *COVID-19* and the resultant epidemic situation, the group expresses concerns about any possible setbacks that the virus can cause. These setbacks could include canceled meetings with our tutor, canceled classes (reinforcing the previously mentioned risk) and delays in our project plan due to a member being infected.
 
