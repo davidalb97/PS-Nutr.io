@@ -50,7 +50,7 @@ Due to the diversity of features that must be implemented, the following objecti
 
 * Add support to compose a custom dish out of various ingredients, which can be saved locally or added to a a restaurant's list of dishes;
 
-* Add support for multi-platform synchronization regarding user's local data;
+* Add support for multi-platform synchronization, regarding user's local data;
 
 * Implement additional quality of life features for both mobile and browser-based applications, such as a dark mode.
 
