@@ -34,7 +34,7 @@ This project aims to achieve this by fulfilling the following goals by the end o
 
 #### Lower Priority Goals
 
-Due to the diversity of features that must be implemented, ~~there are also some lower priority objectives, which completion might depend on the state of the project, such as:~~ the following objectives were also considered but marked with a lower priority, making their completion dependent on the state of the project:
+Due to the diversity of features that must be implemented, the following objectives were also considered but marked with a lower priority, making their completion dependent on the state of the project:
 
 - Extend the project's contribution system by adding the following features:
   - Allow authenticated users to also submit custom dishes for a given restaurant and new restaurants, for when the application's API fails to provide it;
@@ -44,7 +44,7 @@ Due to the diversity of features that must be implemented, ~~there are also some
 
 * Establish minimum requirements, such as number of points, for community contributions;
 
-* Allow users to locally save meals and their information, so that they can be read in an offline mode;
+* Allow users to locally save meals and their information, so that it can be read in an offline mode;
 
   -----
 
