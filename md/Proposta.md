@@ -52,11 +52,15 @@ Due to the diversity of features that must be implemented, ~~there are also some
   * Custom dishes that belong the restaurant's cuisine;
   * Generic dishes that belong restaurant's cuisine.
 
+* Meal creation by selecting multiple dishes/ingredients;
+
 * Nutritionists authentication for special contributions;
 
 * Sync local user data with our database;
 
-* Access and display of synced user data on both platforms.
+* Access and display of synced user data on both platforms;
+
+* Export user info to file;
 
 * UI Android application configuration.
 
