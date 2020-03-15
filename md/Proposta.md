@@ -4,7 +4,7 @@
 
 
 
-Keywords: Diabetes; Nutrition; Contribution
+**Keywords:** Diabetes; Nutrition; Contribution
 
 ## Background
 
@@ -26,25 +26,29 @@ This project aims to achieve this by fulfilling the following goals by the end o
 * Use external APIs to obtain data from meals and restaurants;
 * Maintain a database that contains the baseline nutritional values and their calibration provided by other sources;
 * Obtain baseline nutritional information about meals of any given restaurant. (Even when restaurants don't supply their menus to any API);
-* A contribution system that uses information from various sources to calibrate the system's data such as:    
-  - System's community (mandatory objective)    
-  - Nutritionists (optional)    
-  - Restaurant owners (optional)
+* A contribution system that uses information from various sources to calibrate a meal's nutrional information for a given restaurant. Said sources can include:
+  - System's community (mandatory objective);
+  - Nutritionists (optional);
+  - Restaurant owners (optional).
 * Implement registration and authentication support, so that authenticated users can contribute to the community.
 
 #### Lower Priority Goals
 
-Due to the diversity of features that must be implemented, ~~there are also some lower priority objectives, which completion might depend on the state of the project, such as:~~ the following objectives were also considered but marked with a lower priority, making their completion depend on the state of the project:
+Due to the diversity of features that must be implemented, ~~there are also some lower priority objectives, which completion might depend on the state of the project, such as:~~ the following objectives were also considered but marked with a lower priority, making their completion dependent on the state of the project:
 
-* Allow users to vote whether a new dish submission is accurate;
+- Extend the project's contribution system by adding the following features:
+  - Allow authenticated users to also submit custom dishes for a given restaurant and new restaurants, for when the application's API fails to provide it;
+  - A point-based system, similar to StackOverflow, where user's contributions can be downvoted or upvoted by authenticated users.
 
-* Allow users to vote whether a new restaurant submission is valid, if our APIs do not supply it, warning future users about non-valid locations;
+* Reward custom labels to users based on their points and contributions;
 
-* Reward points to users according to submission votes;
+* Establish minimum requirements, such as number of points, for community contributions;
 
-* Establish minimum required points for each submission type;
+* Allow users to locally save meals and their information, so that they can be read in an offline mode;
 
-* Custom dishes and meals with CRUD implementation;
+  -----
+
+  
 
 * Display restaurant meals in the following order:
 
