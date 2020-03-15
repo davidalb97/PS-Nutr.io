@@ -30,14 +30,16 @@ This project aims to achieve this by fulfilling the following goals by the end o
   - System's community (mandatory objective);
   - Nutritionists (optional);
   - Restaurant owners (optional).
-* Implement registration and authentication support, so that authenticated users can contribute to the community.
+* Implement registration and authentication support, so that authenticated users can contribute to the community;
+* Implement an insulin calculator which is based off a user's meal and diabetes preferences - medically known as ISF[1] and carbohydrate ratio[2].
 
 #### Lower Priority Goals
 
 Due to the diversity of features that must be implemented, the following objectives were also considered but marked with a lower priority, making their completion dependent on the state of the project:
 
 - Extend the project's contribution system by adding the following features:
-  - Allow authenticated users to also submit custom dishes for a given restaurant and new restaurants, for when the application's API fails to provide it;
+
+- - Allow authenticated users to also submit custom dishes for a given restaurant and new restaurants, for when the application's API fails to provide it;
   - A point-based system, similar to StackOverflow, where user's contributions can be downvoted or upvoted by authenticated users.
 
 * Reward custom labels to users based on their points and contributions;
@@ -46,27 +48,11 @@ Due to the diversity of features that must be implemented, the following objecti
 
 * Allow users to locally save meals and their information, so that it can be read in an offline mode;
 
-  -----
+* Add support to compose a custom dish out of various ingredients, which can be saved locally or added to a a restaurant's list of dishes;
 
-  
+* Add support for multi-platform synchronization regarding user's local data;
 
-* Display restaurant meals in the following order:
-
-  * Voted dishes (ordered by vote count);
-  * Custom dishes that belong the restaurant's cuisine;
-  * Generic dishes that belong restaurant's cuisine.
-
-* Meal creation by selecting multiple dishes/ingredients;
-
-* Nutritionists authentication for special contributions;
-
-* Sync local user data with our database;
-
-* Access and display of synced user data on both platforms;
-
-* Export user info to file;
-
-* UI Android application configuration.
+* Implement additional quality of life features for both mobile and browser-based applications, such as a dark mode.
 
   
 
