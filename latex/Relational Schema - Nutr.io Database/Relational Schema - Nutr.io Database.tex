@@ -24,56 +24,56 @@
 
 \section{Relational Model}
     \begin{itemize}
-        \item \textbf{User}        
+        \item \textbf{Submitter}        
         \begin{itemize}
-            \item Attributes: \textbf{ID}, \textbf{Role}, Name
-            \item Primary Key(s): \textbf{ID}, \textbf{Role}
+            \item Attributes: \textbf{SubmitterId}, SubmitterName
+            \item Primary Key(s): \textbf{SubmitterId}
             \item Foreigner Key(s): -
         \end{itemize}
 
         \item \textbf{Submission}                
         \begin{itemize}
-            \item Attributes: \underline{ID}, \underline{Role}
-            \item Primary Key(s): 
-            \item Foreigner Key(s): \underline{ID}, \underline{Role}
+            \item Attributes: \textbf{SubmissionId}, \textbf{RestaurantId}, SubmissionName, \underline{SubmitterID}
+            \item Primary Key(s): \textbf{SubmissionId}, \textbf{RestaurantId}
+            \item Foreigner Key(s): \underline{SubmitterID}
         \end{itemize}
 
         \item \textbf{Reports}
         \begin{itemize}
-            \item Attributes: 
-            \item Primary Key(s): 
-            \item Foreigner Key(s): 
+            \item Attributes: \textbf{reportId}, \underline{SubmissionID}, \underline{RestaurantID}, Description
+            \item Primary Key(s): \textbf{reportId}
+            \item Foreigner Key(s): \underline{SubmissionID}, \underline{RestaurantID}
         \end{itemize}
             
-        \item \textbf{Vote Counter}
+        \item \textbf{Votable}
         \begin{itemize}
-            \item Attributes: 
+            \item Attributes: SubmissionId, RestaurantID, Votes 
             \item Primary Key(s): 
             \item Foreigner Key(s):
         \end{itemize}
 
         \item \textbf{Restaurant}
         \begin{itemize}
-            \item Attributes:
+            \item Attributes: \textbf{SubmissionId}, \textbf{RestaurantId}, location
             \item Primary Key(s): 
             \item Foreigner Key(s):
         \end{itemize}
 
         \item \textbf{Cuisine}
         \begin{itemize}
-            \item Attributes:
+            \item Attributes: \textbf{cuisineName}
             \item Primary Key(s): 
             \item Foreigner Key(s):
         \end{itemize}
 
         \item \textbf{Meal}
         \begin{itemize}
-            \item Attributes:
+            \item Attributes: \textbf{mealId}
             \item Primary Key(s): 
             \item Foreigner Key(s):
         \end{itemize}
 
-        \item \textbf{Ingredients}
+        \item \textbf{Ingredient}
         \begin{itemize}
             \item Attributes:
             \item Primary Key(s): 
