@@ -444,10 +444,37 @@ POST restaurant/:restaurantId/meal/:mealId/vote
 
 ---
 
-### Delete a vote from a specific meal in a restaurant
+### Delete a restaurant
 
 ```http
-POST restaurant/:restaurantId/meal/:mealId/vote
+DELETE restaurant/:restaurantId
+```
+
+- **Request:**
+  - **Path parameters:**
+    - :restaurantId - restaurant's id
+  - **Query parameters:** None
+  - **Body parameters:** None
+- **Response:**
+  - **Success:**
+    - Status code: 200
+    - Content-Type:
+    - Body example:
+
+```json
+{
+
+}
+```
+
+
+
+---
+
+### Delete a meal from a restaurant
+
+```http
+DELETE restaurant/:restaurantId/meal/:mealId
 ```
 
 - **Request:**
@@ -467,4 +494,68 @@ POST restaurant/:restaurantId/meal/:mealId/vote
 
 }
 ```
+
+
+
+---
+
+### Delete a vote from a specific meal in a restaurant
+
+```http
+DELETE restaurant/:restaurantId/meal/:mealId/vote
+```
+
+- **Request:**
+  - **Path parameters:**
+    - :restaurantId - restaurant's id
+    - :mealId - meal's id
+  - **Query parameters:** None
+  - **Body parameters:** None
+- **Response:**
+  - **Success:**
+    - Status code: 200
+    - Content-Type:
+    - Body example:
+
+```json
+{
+
+}
+```
+
+
+
+---
+
+### Delete a portion from a specific meal in a restaurant
+
+```http
+DELETE restaurant/:restaurantId/meal/:mealId/portion
+```
+
+- **Request:**
+  - **Path parameters:**
+    - :restaurantId - restaurant's id
+    - :mealId - meal's id
+  - **Query parameters:** None
+  - **Body parameters:** None
+- **Response:**
+  - **Success:**
+    - Status code: 200
+    - Content-Type:
+    - Body example:
+
+```json
+{
+
+}
+```
+
+
+
+---
+
+
+
+
 

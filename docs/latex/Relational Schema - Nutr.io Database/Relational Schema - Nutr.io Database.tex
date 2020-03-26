@@ -31,53 +31,81 @@
             \item Foreigner Key(s): -
         \end{itemize}
 
+        \item \textbf{User}
+        \begin{itemize}
+            \item Attributes: \textbf{\underline{SubmitterId}}, \textbf{email}, sessionSecret, submitterName
+            \item Primary Key(s): \textbf{\underline{SubmitterId}}
+            \item Foreigner Key(s): \textbf{\underline{SubmitterId}}
+        \end{itemize}
+
+        \item \textbf{API}
+        \begin{itemize}
+            \item Attributes: \textbf{\underline{SubmitterId}}, apiToken, submitterName
+            \item Primary Key(s): \textbf{\underline{SubmitterId}}
+            \item Foreigner Key(s): \textbf{\underline{SubmitterId}}
+        \end{itemize}
+
         \item \textbf{Submission}                
         \begin{itemize}
-            \item Attributes: \textbf{SubmissionId}, \textbf{RestaurantId}, SubmissionName, \underline{SubmitterID}
-            \item Primary Key(s): \textbf{SubmissionId}, \textbf{RestaurantId}
-            \item Foreigner Key(s): \underline{SubmitterID}
+            \item Attributes: \textbf{SubmissionId}, \textbf{RestaurantId}, \textbf{\underline{SubmitterId}}
+            \item Primary Key(s): \textbf{SubmissionId}, \textbf{RestaurantId}, \textbf{\underline{SubmitterId}}
+            \item Foreigner Key(s): \underline{SubmitterID}, \textbf{\underline{SubmitterId}}
         \end{itemize}
 
         \item \textbf{Reports}
         \begin{itemize}
-            \item Attributes: \textbf{reportId}, \underline{SubmissionID}, \underline{RestaurantID}, Description
-            \item Primary Key(s): \textbf{reportId}
-            \item Foreigner Key(s): \underline{SubmissionID}, \underline{RestaurantID}
+            \item Attributes: \textbf{reportId}, \textbf{\underline{SubmitterId}}, \textbf{\underline{SubmissionId}}, \textbf{\underline{restaurantId}}, Description
+            \item Primary Key(s): \textbf{reportId}, \textbf{\underline{SubmitterId}}, \textbf{\underline{SubmissionId}}, \textbf{\underline{restaurantId}}
+            \item Foreigner Key(s): \textbf{\underline{SubmitterId}}, \textbf{\underline{SubmissionId}}, \textbf{\underline{restaurantId}}
         \end{itemize}
             
         \item \textbf{Votable}
         \begin{itemize}
-            \item Attributes: SubmissionId, RestaurantID, Votes 
-            \item Primary Key(s): 
-            \item Foreigner Key(s):
+            \item Attributes: \textbf{\underline{SubmitterId}}, \textbf{\underline{SubmissionId}}, \textbf{\underline{restaurantId}}, votes
+            \item Primary Key(s): \textbf{\underline{SubmitterId}}, \textbf{\underline{SubmissionId}}, \textbf{\underline{restaurantId}}
+            \item Foreigner Key(s): \textbf{\underline{SubmitterId}}, \textbf{\underline{SubmissionId}}, \textbf{\underline{restaurantId}}
         \end{itemize}
 
         \item \textbf{Restaurant}
         \begin{itemize}
-            \item Attributes: \textbf{SubmissionId}, \textbf{RestaurantId}, location
-            \item Primary Key(s): 
-            \item Foreigner Key(s):
+            \item Attributes: \textbf{\underline{SubmissionId}}, \textbf{\underline{RestaurantId}}, \textbf{\underline{SubmitterId}}, restaurantName, location
+            \item Primary Key(s): \textbf{\underline{SubmissionId}}, \textbf{\underline{RestaurantId}}, \textbf{\underline{SubmitterId}}
+            \item Foreigner Key(s): \textbf{\underline{SubmissionId}}, \textbf{\underline{RestaurantId}}, \textbf{\underline{SubmitterId}}
         \end{itemize}
 
-        \item \textbf{Cuisine}
+        \item \textbf{SubmittedMeal}
         \begin{itemize}
-            \item Attributes: \textbf{cuisineName}
-            \item Primary Key(s): 
-            \item Foreigner Key(s):
+            \item Attributes: \textbf{\underline{SubmissionId}}, \textbf{\underline{RestaurantId}}, \textbf{\underline{SubmitterId}}, \textbf{\underline{mealId}}
+            \item Primary Key(s): \textbf{\underline{SubmissionId}}, \textbf{\underline{RestaurantId}}, \textbf{\underline{SubmitterId}}, \textbf{\underline{mealId}}
+            \item Foreigner Key(s): \textbf{\underline{SubmissionId}}, \textbf{\underline{RestaurantId}}, \textbf{\underline{SubmitterId}}, \textbf{\underline{mealId}}
+        \end{itemize}
+
+        \item \textbf{Portion}
+        \begin{itemize}
+            \item Attributes: \textbf{\underline{SubmissionId}}, \textbf{\underline{RestaurantId}}, \textbf{\underline{SubmitterId}}, \textbf{\underline{mealId}}, quantity
+            \item Primary Key(s): \textbf{\underline{SubmissionId}}, \textbf{\underline{RestaurantId}}, \textbf{\underline{SubmitterId}}, \textbf{\underline{mealId}}
+            \item Foreigner Key(s): \textbf{\underline{SubmissionId}}, \textbf{\underline{RestaurantId}}, \textbf{\underline{SubmitterId}}, \textbf{\underline{mealId}}
         \end{itemize}
 
         \item \textbf{Meal}
         \begin{itemize}
-            \item Attributes: \textbf{mealId}
-            \item Primary Key(s): 
-            \item Foreigner Key(s):
+            \item Attributes: \textbf{mealId}, \textbf{\underline{SubmissionId}}, \textbf{\underline{RestaurantId}}, \textbf{\underline{SubmitterId}}, \underline{cuisineName}, mealName
+            \item Primary Key(s): \textbf{\underline{SubmissionId}}, \textbf{\underline{RestaurantId}}, \textbf{\underline{SubmitterId}}
+            \item Foreigner Key(s): \textbf{\underline{SubmissionId}}, \textbf{\underline{RestaurantId}}, \textbf{\underline{SubmitterId}}, \underline{cuisineName}
+        \end{itemize}
+
+        \item \textbf{Cuisine}
+        \begin{itemize}
+            \item Attributes: \textbf{cuisineName}, \underline{SubmissionId}, \underline{RestaurantId}, \underline{SubmitterId}
+            \item Primary Key(s): \textbf{cuisineName}
+            \item Foreigner Key(s): \underline{SubmissionId}, \underline{RestaurantId}, \underline{SubmitterId}
         \end{itemize}
 
         \item \textbf{Ingredient}
         \begin{itemize}
-            \item Attributes:
-            \item Primary Key(s): 
-            \item Foreigner Key(s):
+            \item Attributes: \textbf{ingredientId}, \textbf{\underline{mealId}}, \textbf{\underline{SubmissionId}}, \textbf{\underline{RestaurantId}}, \textbf{\underline{SubmitterId}}
+            \item Primary Key(s): \textbf{ingredientId}, \textbf{\underline{mealId}}, \textbf{\underline{SubmissionId}}, \textbf{\underline{RestaurantId}}, \textbf{\underline{SubmitterId}}
+            \item Foreigner Key(s): \textbf{\underline{mealId}}, \textbf{\underline{SubmissionId}}, \textbf{\underline{RestaurantId}}, \textbf{\underline{SubmitterId}}
         \end{itemize}
 
     \end{itemize}    
