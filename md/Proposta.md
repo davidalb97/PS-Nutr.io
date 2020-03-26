@@ -8,7 +8,7 @@
 
 ## Background
 
-The idea that every field of study can be digitalized in order to ease monotonous tasks is continuously growing in the modern world. Our project aims to tackle the field of Type 1 diabetes, given its growing prevalence in Portugal [1] and the world.
+The idea that every field of study can be digitalized in order to ease monotonous tasks is continuously growing in the modern world. Our project aims to tackle the field of Type 1 diabetes, given its growing prevalence in the world[1].
 
 One of those monotonous tasks is the count and measurement of carbohydrates in meals used to administer the correspondent amount of insulin, along with their blood levels, to maintain a healthy lifestyle. A task that heavily relies on having access to food databases[link] and knowledge of how much portions the meal has - usually by using a digital balance or doing estimations.
 
@@ -66,9 +66,9 @@ The HTTP-based API will be implemented in Kotlin using the Spring framework to p
 - Restaurants' meals, which are obtained from the external APIs mentioned above and the system's database, seeing as the community can write their own meals;  
 - Meals' nutritional values, where their baseline values are obtained from nutritional APIs (such as **Nutritionix**[[r+4]](https://www.nutritionix.com/)) and additional calibration done by the community is saved to the system's database.
 
-Taking into consideration the complexity of the previously mentioned data and how they relate to each other, a relational-based database approach was chosen over a non-relational one. 
+Taking into consideration the complexity of the previously mentioned data and how they relate to each other, a relational-based database approach was chosen over a non-relational one.
 
-The mobile application will be implemented using Kotlin **(AHHH finish me)**
+The mobile application will ~~(be targeted for Android and implemented using Kotlin. The usage of multi-platform tools, such as React Native, were discarded since learning )~~ [To discuss the better approach]
 
 Finally, the browser-based application will be implemented using the React Framework in a **single-page application** approach since we aim to offer a rich user interface with many features and  its fast and responsive properties. [1 & 2]
 

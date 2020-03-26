@@ -93,3 +93,11 @@ Esta aplicação tem como principal objetivo calibrar os dados presentes na mesm
 conciliando APIs externas com os inputs dos utilizadores, 
 de modo a auxiliá-los nas suas escolhas nutricionais e contribuindo para o ecossistema
 informático da app.
+
+
+
+
+
+We chose a
+
+We chose a single-page application approach over multi-page application as we will access our API endpoints on both our web and mobile implementations. This means that we will only require the **Nutr.io's Web API** for the initial web setup and then use the **Nutr.io's API** for the following json requests.
