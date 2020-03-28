@@ -7,11 +7,11 @@ import pt.isel.ps.g06.httpserver.db.IDbRepository
 import pt.isel.ps.g06.httpserver.util.ArrayDataClass
 
 @RestController
-@RequestMapping("/cuisines")
-class CuisinesController(val db: IDbRepository) {
+@RequestMapping("/ingredients")
+class IngredientsController(val db: IDbRepository) {
 
     @GetMapping(produces = ["application/json"])
-    fun getCuisinesHandler(skip: Int?, count: Int?)
-            = ArrayDataClass(db.getCuisines(skip?: 0, count?: 30))
-            //= db.getCuisines(skip?: 0, count?: 30)
+    fun getIngredientsHandler(skip: Int?, count: Int?)
+            = ArrayDataClass(db.getIngredients(skip?: 0, count?: 30))
+            //= db.getIngredients(skip?: 0, count?: 30)
 }

@@ -13,6 +13,7 @@ class HttpserverApplication {
 	@Bean
 	fun db() = object: IDbRepository {
 		override fun getCuisines(skip: Int, count: Int): Array<String> = arrayOf("Debug cuisine!")
+		override fun getIngredients(skip: Int, count: Int): Array<String> = arrayOf("Debug ingredient!")
 	}
 }
 
