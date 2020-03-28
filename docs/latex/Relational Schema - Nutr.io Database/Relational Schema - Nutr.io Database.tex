@@ -27,7 +27,7 @@
 \section{Conceptual Model}
 
 \begin{figure}[H]
-    \includegraphics[scale=0.33]{Nutr.io_Database_Diagram.eps}
+    \includegraphics[scale=0.30]{Nutr.io_Database_Diagram.eps}
     \centering 
 \end{figure}
 \newpage
@@ -58,7 +58,7 @@
 
         \item \textbf{Submission}                
         \begin{itemize}
-            \item Attributes: \underline{submissionId}, \underline{restaurantId}, \underline{\textit{submitterId}}, submitterType
+            \item Attributes: \underline{submissionId}, \underline{restaurantId}, \underline{\textit{submitterId}}, submissionType
             \item Primary Key(s): \underline{submissionId}, \underline{restaurantId}, \underline{\textit{submitterId}}
             \item Foreign Key(s): \underline{\textit{submitterId}} from Submitter
             \item Not null: \underline{\textit{submitterId}}
@@ -82,7 +82,7 @@
 
         \item \textbf{Restaurant}
         \begin{itemize}
-            \item Attributes: \underline{\textit{submissionId}}, \underline{\textit{restaurantId}}, \underline{\textit{submitterId}}, restaurantName, location
+            \item Attributes: \underline{\textit{submissionId}}, \underline{\textit{restaurantId}}, \underline{\textit{submitterId}}, restaurantName, latitude, longitude
             \item Primary Key(s): \underline{\textit{submissionId}}, \underline{\textit{restaurantId}}, \underline{\textit{submitterId}}
             \item Foreign Key(s): \underline{\textit{submissionId}}, \underline{\textit{restaurantId}}, \underline{\textit{submitterId}} from Submission
         \end{itemize}
