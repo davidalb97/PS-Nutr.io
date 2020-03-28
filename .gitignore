@@ -63,6 +63,9 @@ Thumbs.db
 *.cb2
 .*.lb
 
+# Dia to eps intermediate svgs
+*.svg
+
 ## Intermediate documents:
 *.dvi
 *.xdv
