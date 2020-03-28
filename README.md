@@ -14,7 +14,7 @@
   - GitHub page: https://github.com/mig07
 - **David Albuquerque**, Number 43566
   - University email: A43566@alunos.isel.pt
-  - GitHub page:https://github.com/davidalb97
+  - GitHub page: https://github.com/davidalb97
 
 ## Course URLs
 
@@ -54,7 +54,7 @@ This section shows and explains how you should setup your work environment, so y
 
 - Cloning:
 
-```http
+```xml
 https://github.com/davidalb97/PS-Nutr.io.git
 ```
 
