@@ -54,8 +54,14 @@ This section shows and explains how you should setup your work environment, so y
 
 - Cloning:
 
-```xml
-https://github.com/davidalb97/PS-Nutr.io.git
+```bash
+git clone https://github.com/davidalb97/PS-Nutr.io.git
+```
+
+- Hard reset local repository:
+
+```bash
+git reset --hard origin
 ```
 
 - (...)
