@@ -69,7 +69,6 @@ Thumbs.db
 *-converted-to.*
 # these rules might exclude image files for figures etc.
 *.ps
-*.eps
 
 ## Bibliography auxiliary files (bibtex/biblatex/biber):
 *.bbl
