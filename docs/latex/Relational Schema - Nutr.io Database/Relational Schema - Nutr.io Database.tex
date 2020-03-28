@@ -46,6 +46,7 @@
             \item Attributes: \underline{email}, \underline{\textit{submitterId}}, sessionSecret, submitterName
             \item Primary Key(s): \underline{email}, \underline{\textit{submitterId}}
             \item Foreign Key(s): \underline{\textit{submitterId}} from Submitter
+            \item Not null: \underline{\textit{submitterId}}
         \end{itemize}
 
         \item \textbf{API}
@@ -60,6 +61,7 @@
             \item Attributes: \underline{submissionId}, \underline{restaurantId}, \underline{\textit{submitterId}}, submitterType
             \item Primary Key(s): \underline{submissionId}, \underline{restaurantId}, \underline{\textit{submitterId}}
             \item Foreign Key(s): \underline{\textit{submitterId}} from Submitter
+            \item Not null: \underline{\textit{submitterId}}
         \end{itemize}
 
         \item \textbf{Report}
@@ -67,6 +69,7 @@
             \item Attributes: \underline{reportId}, \underline{\textit{submitterId}}, \underline{\textit{submissionId}}, \underline{\textit{restaurantId}}, description
             \item Primary Key(s): \underline{reportId}, \underline{\textit{submitterId}}, \underline{\textit{submissionId}}, \underline{\textit{restaurantId}}
             \item Foreign Key(s): \underline{\textit{submitterId}}, \underline{\textit{submissionId}}, \underline{\textit{restaurantId}} from Submission
+            \item Not null: \underline{submissionId}, \underline{restaurantId}, \underline{\textit{submitterId}}
         \end{itemize}
             
         \item \textbf{Votable}
@@ -74,6 +77,7 @@
             \item Attributes: \underline{\textit{submitterId}}, \underline{\textit{submissionId}}, \underline{\textit{restaurantId}}, votes
             \item Primary Key(s): \underline{\textit{submitterId}}, \underline{\textit{submissionId}}, \underline{\textit{restaurantId}}
             \item Foreign Key(s): \underline{\textit{submitterId}}, \underline{\textit{submissionId}}, \underline{\textit{restaurantId}} from Submission
+            \item Not null: \underline{submissionId}, \underline{restaurantId}, \underline{\textit{submitterId}}
         \end{itemize}
 
         \item \textbf{Restaurant}
@@ -88,6 +92,7 @@
             \item Attributes: \underline{\textit{submissionId}}, \underline{\textit{restaurantId}}, \underline{\textit{submitterId}}, \underline{\textit{mealId}}
             \item Primary Key(s): \underline{\textit{submissionId}}, \underline{\textit{restaurantId}}, \underline{\textit{submitterId}}, \underline{\textit{mealId}}
             \item Foreign Key(s): \underline{\textit{submissionId}}, \underline{\textit{restaurantId}}, \underline{\textit{submitterId}} from Submission, \underline{\textit{mealId}} from Meal
+            \item Not null: \underline{\textit{mealId}}
         \end{itemize}
 
         \item \textbf{Portion}
@@ -95,6 +100,7 @@
             \item Attributes: \underline{\textit{submissionId}}, \underline{\textit{restaurantId}}, \underline{\textit{submitterId}}, \underline{\textit{mealId}}, quantity
             \item Primary Key(s): \underline{\textit{submissionId}}, \underline{\textit{restaurantId}}, \underline{\textit{submitterId}}, \underline{\textit{mealId}}
             \item Foreign Key(s): \underline{\textit{submissionId}}, \underline{\textit{restaurantId}}, \underline{\textit{submitterId}}, \underline{\textit{mealId}} from Submission
+            \item Not null: \underline{\textit{mealId}}
         \end{itemize}
 
         \item \textbf{Meal}
@@ -109,6 +115,7 @@
             \item Attributes: \underline{ingredientId}, \underline{\textit{mealId}}, \underline{\textit{submissionId}}, \underline{\textit{restaurantId}}, \underline{\textit{submitterId}}, ingredientName
             \item Primary Key(s): \underline{ingredientId}, \underline{\textit{mealId}}, \underline{\textit{submissionId}}, \underline{\textit{restaurantId}}, \underline{\textit{submitterId}} 
             \item Foreign Key(s): \underline{\textit{mealId}}, \underline{\textit{submissionId}}, \underline{\textit{restaurantId}}, \underline{\textit{submitterId}} from Meal
+            \item Not null: \underline{\textit{mealId}}
         \end{itemize}
 
         \item \textbf{Cuisine}
