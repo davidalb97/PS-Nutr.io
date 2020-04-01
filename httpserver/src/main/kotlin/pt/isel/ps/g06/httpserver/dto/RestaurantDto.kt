@@ -1,12 +1,12 @@
 package pt.isel.ps.g06.httpserver.dto
 
-data class RestaurantContainer(val restaurants: Array<RestaurantDto>) {
+data class RestaurantSearchResultDto(val restaurants: Array<RestaurantContainerDto>) {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as RestaurantContainer
+        other as RestaurantSearchResultDto
 
         if (!restaurants.contentEquals(other.restaurants)) return false
 
@@ -18,8 +18,9 @@ data class RestaurantContainer(val restaurants: Array<RestaurantDto>) {
     }
 }
 
-data class RestaurantDto(val id: Int?, val name: String?, val url: String?, val cuisines: CuisinesDto?) {
+data class RestaurantContainerDto(val restaurant: RestaurantDto)
 
+data class RestaurantDto(val id: Int, val name: String, val url: String, val cuisines: String) {
     override fun toString() = "id=$id, name=$name, cuisines=$cuisines, url=$url"
 }
 

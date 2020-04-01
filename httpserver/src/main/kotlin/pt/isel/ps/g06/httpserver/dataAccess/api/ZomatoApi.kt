@@ -1,11 +1,9 @@
 package pt.isel.ps.g06.httpserver.dataAccess.api
 
 import com.fasterxml.jackson.databind.DeserializationFeature
-import com.fasterxml.jackson.databind.MapperFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.KotlinModule
-import pt.isel.ps.g06.httpserver.dto.RestaurantContainer
-import pt.isel.ps.g06.httpserver.dto.RestaurantDto
+import pt.isel.ps.g06.httpserver.dto.RestaurantSearchResultDto
 import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
@@ -27,8 +25,9 @@ class ZomatoApi(httpClient: HttpClient, jsonMapper: ObjectMapper) : BaseApiReque
                 .build()
 
         val get = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+                //TODO Proper error function
                 .thenApply { if (it.statusCode() == 200) return@thenApply it else throw Exception() }
-                .thenApply { jsonMapper.readValue(it.body(), RestaurantContainer::class.java) }
+                .thenApply { jsonMapper.readValue(it.body(), RestaurantSearchResultDto::class.java) }
                 .get()
 
         get.restaurants.forEach { println(it) }
@@ -37,7 +36,7 @@ class ZomatoApi(httpClient: HttpClient, jsonMapper: ObjectMapper) : BaseApiReque
 
 fun main() {
     val client = HttpClient.newBuilder().build()
-    val objMapper: ObjectMapper = ObjectMapper()
+    val objMapper = ObjectMapper()
 
     //Ignore unknown json fields
     objMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
