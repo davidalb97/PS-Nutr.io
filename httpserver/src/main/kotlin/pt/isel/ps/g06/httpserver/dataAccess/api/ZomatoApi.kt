@@ -8,29 +8,32 @@ import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
 import java.net.http.HttpResponse
+import kotlin.reflect.KClass
 
-//TODO This shouldn't be here, for testing only
-private const val ZOMATO_BASE_URL = "https://developers.zomato.com/api/v2.1/"
-private const val ZOMATO_SEARCH = "search?"
 private const val ZOMATO_API_KEY = "3e128506ffbfc1c23b4e2b6acd3eb84b"
 
 
 class ZomatoApi(httpClient: HttpClient, jsonMapper: ObjectMapper) : BaseApiRequester(httpClient, jsonMapper) {
-    fun searchRestaurants(latitude: Float, longitude: Float) {
+
+    private fun <D: Any> request(uriStr: String, dtoClass: Class<D>): D {
         val request = HttpRequest.newBuilder()
                 .GET()
-                .uri(URI.create(search(latitude, longitude)))
+                .uri(URI.create(uriStr))
                 .header("user-key", ZOMATO_API_KEY)
                 .header("Accept", "application/json")
                 .build()
 
-        val get = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+        return httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
                 //TODO Proper error function
                 .thenApply { if (it.statusCode() == 200) return@thenApply it else throw Exception() }
-                .thenApply { jsonMapper.readValue(it.body(), RestaurantSearchResultDto::class.java) }
+                .thenApply { jsonMapper.readValue(it.body(), dtoClass) }
                 .get()
+    }
 
-        get.restaurants.forEach { println(it) }
+    fun searchRestaurants(latitude: Float, longitude: Float) {
+        val uriStr: String = search(latitude, longitude)
+        request(uriStr, RestaurantSearchResultDto::class.java).restaurants
+                .forEach { println(it) }
     }
 }
 
