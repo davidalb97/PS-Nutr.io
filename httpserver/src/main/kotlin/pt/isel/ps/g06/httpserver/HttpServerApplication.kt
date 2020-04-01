@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Bean
 import pt.isel.ps.g06.httpserver.db.IDbRepository
 
 @SpringBootApplication
-class HttpserverApplication {
+class HttpServerApplication {
 
 	//Used so that we can run controllers
 	//TODO!
@@ -18,5 +18,5 @@ class HttpserverApplication {
 }
 
 fun main(args: Array<String>) {
-	runApplication<HttpserverApplication>(*args)
+	runApplication<HttpServerApplication>(*args)
 }
