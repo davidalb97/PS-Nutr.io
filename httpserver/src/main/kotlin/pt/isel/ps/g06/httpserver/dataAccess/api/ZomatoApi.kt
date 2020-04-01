@@ -30,10 +30,9 @@ class ZomatoApi(httpClient: HttpClient, jsonMapper: ObjectMapper) : BaseApiReque
                 .get()
     }
 
-    fun searchRestaurants(latitude: Float, longitude: Float) {
+    fun searchRestaurants(latitude: Float, longitude: Float): RestaurantSearchResultDto {
         val uriStr: String = search(latitude, longitude)
-        request(uriStr, RestaurantSearchResultDto::class.java).restaurants
-                .forEach { println(it) }
+        return request(uriStr, RestaurantSearchResultDto::class.java)
     }
 }
 
@@ -46,4 +45,5 @@ fun main() {
     objMapper.registerModule(KotlinModule())
 
     ZomatoApi(client, objMapper).searchRestaurants(38.7337F, -9.1448F)
+            .restaurants.forEach { println(it) }
 }
