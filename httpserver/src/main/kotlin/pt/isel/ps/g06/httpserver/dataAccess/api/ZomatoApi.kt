@@ -1,6 +1,9 @@
 package pt.isel.ps.g06.httpserver.dataAccess.api
 
+import com.fasterxml.jackson.databind.DeserializationFeature
+import com.fasterxml.jackson.databind.MapperFeature
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.KotlinModule
 import pt.isel.ps.g06.httpserver.dto.RestaurantContainer
 import pt.isel.ps.g06.httpserver.dto.RestaurantDto
 import java.net.URI
@@ -10,8 +13,7 @@ import java.net.http.HttpResponse
 
 //TODO This shouldn't be here, for testing only
 private const val ZOMATO_BASE_URL = "https://developers.zomato.com/api/v2.1/"
-private const val ZOMATO_SEARCH = "search"
-
+private const val ZOMATO_SEARCH = "search?"
 private const val ZOMATO_API_KEY = "3e128506ffbfc1c23b4e2b6acd3eb84b"
 
 
@@ -19,7 +21,7 @@ class ZomatoApi(httpClient: HttpClient, jsonMapper: ObjectMapper) : BaseApiReque
     fun searchRestaurants(latitude: Float, longitude: Float) {
         val request = HttpRequest.newBuilder()
                 .GET()
-                .uri(URI.create("${ZOMATO_BASE_URL}${ZOMATO_SEARCH}?lat=${latitude}&lon=${longitude}?radius=1000"))
+                .uri(URI.create(search(latitude, longitude)))
                 .header("user-key", ZOMATO_API_KEY)
                 .header("Accept", "application/json")
                 .build()
@@ -29,11 +31,17 @@ class ZomatoApi(httpClient: HttpClient, jsonMapper: ObjectMapper) : BaseApiReque
                 .thenApply { jsonMapper.readValue(it.body(), RestaurantContainer::class.java) }
                 .get()
 
-        get.restaurants.forEach { _ -> println() }
+        get.restaurants.forEach { println(it) }
     }
 }
 
 fun main() {
     val client = HttpClient.newBuilder().build()
-    ZomatoApi(client, ObjectMapper()).searchRestaurants(38.7337F, -9.1448F)
+    val objMapper: ObjectMapper = ObjectMapper()
+
+    //Ignore unknown json fields
+    objMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+    objMapper.registerModule(KotlinModule())
+
+    ZomatoApi(client, objMapper).searchRestaurants(38.7337F, -9.1448F)
 }
