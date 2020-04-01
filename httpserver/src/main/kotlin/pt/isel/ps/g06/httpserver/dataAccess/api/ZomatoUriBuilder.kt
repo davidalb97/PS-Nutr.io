@@ -4,6 +4,7 @@ private const val ZOMATO_BASE_URL = "https://developers.zomato.com/api/v2.1/"
 private const val ZOMATO_GEOCODE_URL = "${ZOMATO_BASE_URL}geocode?"
 private const val ZOMATO_SEARCH_URL = "${ZOMATO_BASE_URL}search?"
 private const val ZOMATO_CITIES_URL = "${ZOMATO_BASE_URL}cities?"
+private const val ZOMATO_DAILY_MEALS_URL = "${ZOMATO_BASE_URL}dailymenu?"
 
 enum class Entity { city, subzone, zone, landmark, metro, group }
 
@@ -49,3 +50,5 @@ fun search(
         (if(establishment_type_id != null) "&establishment_type=$establishment_type_id" else "") +
         (if(collection_id != null) "&collection_id=$collection_id" else "") +
         (if(category_id != null) "&category=$category_id" else "")
+
+fun dailyMeals(restaurantId: Int) = "${ZOMATO_DAILY_MEALS_URL}res_id=$restaurantId"
