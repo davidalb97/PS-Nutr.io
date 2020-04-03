@@ -1,1 +1,1 @@
-rootProject.name = "httpserver"
+rootProject.name = "PS - httpserver"
