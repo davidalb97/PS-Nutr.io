@@ -1,5 +1,5 @@
 CREATE TABLE Submitter(
-	submitter_id integer PRIMARY KEY,
+	submitter_id serial PRIMARY KEY,
 	submitter_name varchar(20) NOT NULL,
 	submitter_type varchar(5) CHECK(submitter_type = 'User' OR submitter_type = 'API')
 	-- TODO: Checks or boolean?
@@ -20,7 +20,7 @@ CREATE TABLE API(
 );
 
 CREATE TABLE SubmissionSubmitter(
-	submission_id integer PRIMARY KEY,
+	submission_id serial PRIMARY KEY,
 	submission_type varchar(5),
 	submitter_id integer UNIQUE NOT NULL,
 	FOREIGN KEY(submitter_id) REFERENCES Submitter(submitter_id)
@@ -45,7 +45,7 @@ CREATE TABLE Votable(
 );
 
 CREATE TABLE Restaurant(
-	restaurant_id integer PRIMARY KEY,
+	restaurant_id serial PRIMARY KEY,
 	restaurant_name varchar(100) NOT NULL,
 	latitude REAL,
 	longitude REAL
@@ -62,7 +62,7 @@ CREATE TABLE Cuisine(
 );
 
 CREATE TABLE Meal(
-	meal_id integer PRIMARY KEY,
+	meal_id serial PRIMARY KEY,
 	meal_name varchar(20),
 	cuisine_name varchar(20),
 	FOREIGN KEY(cuisine_name) REFERENCES Cuisine(cuisine_name)
@@ -86,7 +86,7 @@ CREATE TABLE SubmissionPortion(
 
 -- Corrigir ingredient
 CREATE TABLE Ingredient(
-	ingredient_id integer PRIMARY KEY,
+	ingredient_id serial PRIMARY KEY,
 	ingredient_name varchar(20) NOT NULL
 );
 
