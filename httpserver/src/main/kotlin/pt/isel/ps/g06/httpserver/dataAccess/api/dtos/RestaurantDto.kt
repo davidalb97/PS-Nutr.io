@@ -20,7 +20,24 @@ data class RestaurantSearchResultDto(val restaurants: Array<RestaurantContainerD
 
 data class RestaurantContainerDto(val restaurant: RestaurantDto)
 
-data class RestaurantDto(val id: Int, val name: String, val url: String, val cuisines: String) {
+data class RestaurantDto(
+        val id: Int,
+        val name: String,
+        val url: String,
+        val cuisines:
+        String,
+        val location: Location
+) {
     override fun toString() = "id=$id, name=$name, cuisines=$cuisines, url=$url"
 }
+
+data class Location(
+        val address: String,
+        val locality: String,
+        val city: String,
+        val city_id: Int,
+        val latitude: Float,
+        val longitude: Float
+)
+
 
