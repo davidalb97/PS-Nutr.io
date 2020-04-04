@@ -34,10 +34,17 @@ dependencies {
 //    implementation("org.jdbi", "jdbi3-kotlin-sqlobject")
 //    implementation("org.jdbi", "jdbi3-postgres")
 
-    implementation("org.postgresql", "postgresql", "42.2.5")
-    implementation("org.jdbi", "jdbi3-core", "3.5.1")
-    implementation("org.jdbi", "jdbi3-kotlin", "3.5.1")
-    implementation("org.jdbi", "jdbi3-kotlin-sqlobject", "3.5.1")
+    //JDBI / Postgres
+    val jdbiVersion = "3.12.2"
+    implementation("org.jdbi", "jdbi3-core", jdbiVersion)
+    implementation("org.jdbi", "jdbi3-kotlin", jdbiVersion)
+    implementation("org.jdbi", "jdbi3-postgres", jdbiVersion)
+    implementation("org.jdbi", "jdbi3-sqlobject", jdbiVersion)
+    implementation("org.jdbi", "jdbi3-kotlin-sqlobject", jdbiVersion)
+    implementation("org.jdbi", "jdbi3-spring4", jdbiVersion)
+    implementation("org.postgresql", "postgresql", "42.2.12")
+    //implementation("org.flywaydb:flyway-core")
+
 }
 
 tasks.withType<Test> {

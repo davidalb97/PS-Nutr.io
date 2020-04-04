@@ -9,9 +9,9 @@ import pt.isel.ps.g06.httpserver.dataAccess.database.repos.RestaurantsRepository
 @RequestMapping("/restaurant")
 class RestaurantController(private val restaurantsRepository: RestaurantsRepository) {
 
-    @GetMapping()
+    @GetMapping
     fun restaurantsHandler(latitude: Float, longitude: Float) {
         val result = restaurantsRepository.getRestaurantsByCoordinates(latitude, longitude)
-        println(result.isEmpty())
+        //println(result.isEmpty())
     }
 }
