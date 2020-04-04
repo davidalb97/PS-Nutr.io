@@ -3,11 +3,9 @@ package pt.isel.ps.g06.httpserver.dataAccess.api
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.KotlinModule
-import pt.isel.ps.g06.httpserver.dto.DailyMenuContainerDto
-import pt.isel.ps.g06.httpserver.dto.DailyMenuDto
-import pt.isel.ps.g06.httpserver.dto.RestaurantSearchResultDto
+import pt.isel.ps.g06.httpserver.dataAccess.api.dtos.DailyMenuDto
+import pt.isel.ps.g06.httpserver.dataAccess.api.dtos.RestaurantSearchResultDto
 import pt.isel.ps.g06.httpserver.util.log
-import java.lang.Exception
 import java.lang.RuntimeException
 import java.net.URI
 import java.net.http.HttpClient

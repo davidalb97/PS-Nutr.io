@@ -1,4 +1,4 @@
-package pt.isel.ps.g06.httpserver.dto
+package pt.isel.ps.g06.httpserver.dataAccess.api.dtos
 
 data class DailyMenuDto(
         val daily_menu: Array<DailyMenuContainerDto>?,

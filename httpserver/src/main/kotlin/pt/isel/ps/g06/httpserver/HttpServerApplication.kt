@@ -1,22 +1,26 @@
 package pt.isel.ps.g06.httpserver
 
+import org.jdbi.v3.core.Jdbi
 import org.springframework.boot.autoconfigure.SpringBootApplication
+import org.springframework.boot.jdbc.DataSourceBuilder
 import org.springframework.boot.runApplication
 import org.springframework.context.annotation.Bean
-import pt.isel.ps.g06.httpserver.db.IDbRepository
+import org.springframework.core.env.Environment
 
 @SpringBootApplication
 class HttpServerApplication {
+    @Bean
+    fun createJdbi(): Jdbi {
+        val dataSource = DataSourceBuilder.create()
+                .type()
+                .driverClassName("org.postgresql.Driver")
+                .url("jdbc:postgresql://localhost:5432/Nutrio_db")
+                .build()
 
-	//Used so that we can run controllers
-	//TODO!
-	@Bean
-	fun db() = object: IDbRepository {
-		override fun getCuisines(skip: Int, count: Int): Array<String> = arrayOf("Debug cuisine!")
-		override fun getIngredients(skip: Int, count: Int): Array<String> = arrayOf("Debug ingredient!")
-	}
+        return Jdbi.create(dataSource).installPlugins()
+    }
 }
 
 fun main(args: Array<String>) {
-	runApplication<HttpServerApplication>(*args)
+    runApplication<HttpServerApplication>(*args)
 }

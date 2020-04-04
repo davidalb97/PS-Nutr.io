@@ -1,4 +1,4 @@
-package pt.isel.ps.g06.httpserver.dto
+package pt.isel.ps.g06.httpserver.dataAccess.api.dtos
 
 data class RestaurantSearchResultDto(val restaurants: Array<RestaurantContainerDto>) {
 
