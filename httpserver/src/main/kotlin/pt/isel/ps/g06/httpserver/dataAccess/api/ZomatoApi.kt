@@ -36,8 +36,8 @@ class ZomatoApi(httpClient: HttpClient, jsonMapper: ObjectMapper) : BaseApiReque
                 }.get()
     }
 
-    fun searchRestaurants(latitude: Float, longitude: Float): RestaurantSearchResultDto {
-        val uriStr: String = search(latitude, longitude)
+    fun searchRestaurants(latitude: Float, longitude: Float, radius: Int): RestaurantSearchResultDto {
+        val uriStr: String = search(latitude, longitude, radius)
         return request(uriStr, RestaurantSearchResultDto::class.java)
     }
 
@@ -58,7 +58,7 @@ fun main() {
 
     val api = ZomatoApi(client, objMapper)
 
-    api.searchRestaurants(38.7337F, -9.1448F)
+    api.searchRestaurants(38.7337F, -9.1448F, 1000)
             .restaurants.forEach { println(it) }
 
     val restaurantDailyMeals = api.restaurantDailyMeals(1)

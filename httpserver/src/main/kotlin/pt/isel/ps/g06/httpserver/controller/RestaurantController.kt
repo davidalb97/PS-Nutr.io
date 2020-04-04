@@ -13,11 +13,15 @@ class RestaurantController(
         private val restaurantsRepository: RestaurantsRepository,
         private val zomatoApi: ZomatoApi
 ) {
+    val maxRadius = 1000
 
     @GetMapping
-    fun restaurantsHandler(latitude: Float, longitude: Float): Set<DbRestaurant> {
-        val restaurantsDb = restaurantsRepository.getRestaurantsByCoordinates(latitude, longitude)
-        val restaurantsApi = zomatoApi.searchRestaurants(latitude, longitude)
+    fun restaurantsHandler(latitude: Float, longitude: Float, inRadius: Int? = maxRadius): Set<DbRestaurant> {
+
+        val radius = if(inRadius != null && inRadius <= maxRadius) inRadius else maxRadius
+
+        val restaurantsDb = restaurantsRepository.getRestaurantsByCoordinates(latitude, longitude, radius)
+        val restaurantsApi = zomatoApi.searchRestaurants(latitude, longitude, radius)
                 .restaurants.map {
                     DbRestaurant(
                             it.restaurant.id,
