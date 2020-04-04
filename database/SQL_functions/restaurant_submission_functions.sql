@@ -1,4 +1,4 @@
--- ############################## SubmissionRestaurant insertion function ############################## - Compiles
+-- ############################## SubmissionRestaurant insertion function ##############################
 CREATE FUNCTION restaurantSubmissionInsertion
 (
 	_submission_type varchar(5),

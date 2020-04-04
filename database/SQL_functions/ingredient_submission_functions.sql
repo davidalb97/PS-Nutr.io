@@ -1,4 +1,4 @@
--- ############################## SubmissionIngredient insertion function ############################## - Compiles
+-- ############################## SubmissionIngredient insertion function ##############################
 CREATE FUNCTION ingredientSubmissionInsertion
 (
 	_submission_type varchar(5),

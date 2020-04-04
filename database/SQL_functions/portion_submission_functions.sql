@@ -1,4 +1,4 @@
--- ############################## SubmissionPortion insertion function ############################## - Compiles
+-- ############################## SubmissionPortion insertion function ##############################
 CREATE FUNCTION portionSubmissionInsertion
 (
 	_submission_type varchar(5),

@@ -1,4 +1,4 @@
--- ############################## SubmissionMeal insertion function ############################## - Compiles
+-- ############################## SubmissionMeal insertion function ##############################
 
 CREATE FUNCTION mealSubmissionInsertion
 (
