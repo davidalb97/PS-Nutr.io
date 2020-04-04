@@ -7,7 +7,6 @@ import pt.isel.ps.g06.httpserver.dataAccess.database.model.DbRestaurant
 
 interface RestaurantDao {
 
-    @SqlQuery("SELECT restaurant_name FROM Restaurant WHERE latitude < :latitude AND longitude < :longitude")
-    @RegisterKotlinMapper(DbRestaurant::class)
+    @SqlQuery("SELECT * FROM Restaurant WHERE latitude < :latitude AND longitude < :longitude")
     fun getRestaurantsByCoordinates(@Bind latitude: Float, @Bind longitude: Float): List<DbRestaurant>
 }
