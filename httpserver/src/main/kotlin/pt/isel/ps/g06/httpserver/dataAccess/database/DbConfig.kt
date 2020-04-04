@@ -19,18 +19,13 @@ class DatabaseConfiguration {
         return DriverManagerDataSource()
     }
 
-    @Bean
-    fun dataSourceTransactionManager(dataSource: DataSource?): DataSourceTransactionManager {
-        val dataSourceTransactionManager = DataSourceTransactionManager()
-        dataSourceTransactionManager.setDataSource(dataSource)
-        return dataSourceTransactionManager
-    }
+//    @Bean
+//    fun dataSourceTransactionManager(dataSource: DataSource?): DataSourceTransactionManager {
+//        val dataSourceTransactionManager = DataSourceTransactionManager()
+//        dataSourceTransactionManager.dataSource = dataSource
+//        return dataSourceTransactionManager
+//    }
 
     @Bean
-    fun jdbi(dataSource: DataSource?): Jdbi {
-        return Jdbi.create(dataSource)
-                //.installPlugin(SqlObjectPlugin())
-                //.installPlugin(PostgresPlugin())
-                .installPlugins()
-    }
+    fun jdbi(dataSource: DataSource?): Jdbi = Jdbi.create(dataSource).installPlugins()
 }

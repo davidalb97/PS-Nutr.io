@@ -12,6 +12,6 @@ class RestaurantController(private val restaurantsRepository: RestaurantsReposit
     @GetMapping
     fun restaurantsHandler(latitude: Float, longitude: Float) {
         val result = restaurantsRepository.getRestaurantsByCoordinates(latitude, longitude)
-        //println(result.isEmpty())
+        println()
     }
 }
