@@ -1,5 +1,5 @@
 -- ############################## SubmissionRestaurant insertion function ##############################
-CREATE FUNCTION restaurantSubmissionInsertion
+CREATE OR REPLACE FUNCTION restaurantSubmissionInsertion
 (
 	_submission_type varchar(5),
 	_submitter_id integer,
@@ -23,7 +23,7 @@ CREATE FUNCTION restaurantSubmissionInsertion
 	LANGUAGE PLPGSQL;
 	
 -- ############################## SubmissionRestaurant deletion function ############################## - Not complete
-CREATE FUNCTION restaurantSubmissionDeletion
+CREATE OR REPLACE FUNCTION restaurantSubmissionDeletion
 (	
 	_submitter_id integer,
 	_restaurant_id integer

@@ -1,5 +1,5 @@
 -- ############################## SubmissionPortion insertion function ##############################
-CREATE FUNCTION portionSubmissionInsertion
+CREATE OR REPLACE FUNCTION portionSubmissionInsertion
 (
 	_submission_type varchar(5),
 	_submitter_id integer,

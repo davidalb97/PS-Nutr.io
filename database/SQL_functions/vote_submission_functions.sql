@@ -3,7 +3,7 @@
 -- No need for transaction isolation, because 
 -- this function will be always called inside
 -- isolated transactions
-CREATE FUNCTION verifySubmissionSubmitter(_submission_id integer)
+CREATE OR REPLACE FUNCTION verifySubmissionSubmitter(_submission_id integer)
 RETURNS VOID AS $$	
 	BEGIN
 		IF NOT EXISTS (
@@ -16,7 +16,7 @@ RETURNS VOID AS $$
 
 -- ############################## voteSubmission insertion function ##############################
 
-CREATE FUNCTION voteSubmissionInsertion
+CREATE OR REPLACE FUNCTION voteSubmissionInsertion
 (
 	_submission_id integer,
 	_submitter_id integer,
@@ -31,7 +31,7 @@ CREATE FUNCTION voteSubmissionInsertion
 	LANGUAGE PLPGSQL;
 	
 -- ############################## voteSubmission deletion function ##############################
-CREATE FUNCTION voteSubmissionDeletion
+CREATE OR REPLACE FUNCTION voteSubmissionDeletion
 (
 	_submission_id integer,
 	_submitter_id integer	
@@ -44,7 +44,7 @@ CREATE FUNCTION voteSubmissionDeletion
 	LANGUAGE PLPGSQL;
 	
 -- ############################## voteSubmission update function ##############################
-CREATE FUNCTION voteSubmissionUpdate
+CREATE OR REPLACE FUNCTION voteSubmissionUpdate
 (
 	_submission_id integer,
 	_submitter_id integer,
