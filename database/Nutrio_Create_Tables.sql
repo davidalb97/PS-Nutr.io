@@ -9,6 +9,7 @@ CREATE TABLE _User(
 	submitter_id integer,
 	email varchar(50),
 	session_secret varchar(256) NOT NULL, -- TODO: Check maximum length
+	creation_date timestamp with time zone,
 	PRIMARY KEY(submitter_id, email),
 	FOREIGN KEY(submitter_id) REFERENCES Submitter(submitter_id)
 );
@@ -23,6 +24,7 @@ CREATE TABLE SubmissionSubmitter(
 	submission_id serial PRIMARY KEY,
 	submission_type varchar(5),
 	submitter_id integer UNIQUE NOT NULL,
+	submission_date timestamp with time zone,
 	FOREIGN KEY(submitter_id) REFERENCES Submitter(submitter_id)
 );
 
