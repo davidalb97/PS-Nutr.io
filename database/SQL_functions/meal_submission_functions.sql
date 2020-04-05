@@ -11,34 +11,36 @@ CREATE FUNCTION mealSubmissionInsertion
 	DECLARE 
 		mealId integer = 0;
 	BEGIN
-		SET TRANSACTION ISOLATION LEVEL serializable;	
-		IF EXISTS (
-			SELECT * FROM Meal WHERE meal_name = _meal_name 
-		) THEN			
-			RAISE NOTICE 'The inserted meal already exists in the database.';
-		END IF;
+
+		SET TRANSACTION ISOLATION LEVEL serializable;
 		
 		IF NOT EXISTS (
 			SELECT * FROM Restaurant WHERE restaurant_id = _restaurant_id 
 		) THEN			
 			RAISE NOTICE 'The restaurant where you are associating the meal does not exist.';
+			ROLLBACK TRANSACTION;
 		END IF;
 		
-        INSERT INTO SubmissionSubmitter(submission_type, submitter_id) VALUES
-		(_submission_type, _submitter_id);		
+		IF NOT EXISTS (
+			SELECT * FROM Meal WHERE meal_name = _meal_name 
+		) THEN 
+			INSERT INTO Meal(meal_name, cuisine_name)
+			VALUES(_meal_name, _cuisine_name);
+		END IF;
 		
-		INSERT INTO Meal(meal_name, cuisine_name) VALUES
-		(_meal_name, _cuisine_name);
+        INSERT INTO SubmissionSubmitter(submission_type, submitter_id)
+		VALUES(_submission_type, _submitter_id);
 		
 		SELECT meal_id INTO mealId FROM Meal WHERE meal_name = _meal_name;
-		INSERT INTO SubmissionMeal(meal_id, restaurant_id) VALUES
-		(mealId, _restaurant_id);
+		INSERT INTO SubmissionMeal(meal_id, restaurant_id)
+		VALUES(mealId, _restaurant_id);
 		
 	END; $$
 	LANGUAGE PLPGSQL;
 	
 -- ############################## SubmissionMeal deletion function ##############################
 -- TODO
+
 
 -- ############################## SubmissionMeal update function ##############################
 -- TODO
