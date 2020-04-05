@@ -20,7 +20,7 @@ done
 #-1 transaction execution
 #-q quiet mode
 #-f script file to execute
-psql -1 -q -f compactedfiles.out "dbname='Nutrio_db' user='${PS_POSTGRES_USER}' password='${PS_POSTGRES_PASSWORD}'"
+psql -1 -q -f compactedfiles.out "dbname='${PS_POSTGRES_DB}' user='${PS_POSTGRES_USER}' password='${PS_POSTGRES_PASSWORD}'"
 
 #Deletes compacted file
 rm ./compactedfiles.out -f
