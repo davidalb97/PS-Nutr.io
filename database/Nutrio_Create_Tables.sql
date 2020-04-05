@@ -73,7 +73,8 @@ CREATE TABLE SubmissionMeal(
 	meal_id integer NOT NULL,
 	restaurant_id integer NOT NULL,
 	FOREIGN KEY(submission_id) REFERENCES SubmissionSubmitter(submission_id),
-	FOREIGN KEY(meal_id) REFERENCES Meal
+	FOREIGN KEY(meal_id) REFERENCES Meal(meal_id),
+	FOREIGN KEY(restaurant_id) REFERENCES Restaurant(restaurant_id)
 );
 
 CREATE TABLE SubmissionPortion(
