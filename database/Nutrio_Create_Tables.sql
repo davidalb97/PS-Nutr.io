@@ -79,13 +79,12 @@ CREATE TABLE SubmissionMeal(
 
 CREATE TABLE SubmissionPortion(
 	submission_id integer PRIMARY KEY,
-	meal_id integer NOT NULL,
+	submitted_meal integer NOT NULL,
 	quantity integer,
 	FOREIGN KEY(submission_id) REFERENCES SubmissionSubmitter(submission_id),
-	FOREIGN KEY(meal_id) REFERENCES SubmissionMeal
+	FOREIGN KEY(submitted_meal) REFERENCES SubmissionMeal(submission_id)
 );
 
--- Corrigir ingredient
 CREATE TABLE Ingredient(
 	ingredient_id serial PRIMARY KEY,
 	ingredient_name varchar(20) NOT NULL
@@ -93,11 +92,11 @@ CREATE TABLE Ingredient(
 
 CREATE TABLE SubmissionIngredient(
 	submission_id integer PRIMARY KEY,
-	meal_id integer NOT NULL,
+	submitted_meal integer NOT NULL,
 	ingredient_id integer NOT NULL,	
 	FOREIGN KEY(submission_id) REFERENCES SubmissionSubmitter(submission_id),
 	FOREIGN KEY(ingredient_id) REFERENCES Ingredient(ingredient_id),
-	FOREIGN KEY(meal_id) REFERENCES Meal(meal_id) -- ? Ou submission-meal
+	FOREIGN KEY(submitted_meal) REFERENCES SubmissionMeal(submission_id)
 );
 
 CREATE TABLE RestaurantCuisine(
@@ -108,5 +107,3 @@ CREATE TABLE RestaurantCuisine(
 	FOREIGN KEY(restaurant_id) REFERENCES Restaurant(restaurant_id),
 	FOREIGN KEY(cuisine_name) REFERENCES Cuisine(cuisine_name)
 );
-
--- Importante: ver o caso da submission_id
