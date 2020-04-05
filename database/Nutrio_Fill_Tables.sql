@@ -107,6 +107,3 @@ INSERT INTO Cuisine(cuisine_name) VALUES
 
 INSERT INTO Meal(meal_id, meal_name, cuisine_name) VALUES
 (0, 'mealExample', 'African');
-
-INSERT INTO Ingredient(ingredient_id, ingredient_name) VALUES
-(0, 'ingredientExample');

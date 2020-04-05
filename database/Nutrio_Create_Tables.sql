@@ -1,3 +1,18 @@
+DROP TABLE IF EXISTS RestaurantCuisine;
+DROP TABLE IF EXISTS SubmissionIngredient;
+DROP TABLE IF EXISTS SubmissionPortion;
+DROP TABLE IF EXISTS SubmissionMeal;
+DROP TABLE IF EXISTS Meal;
+DROP TABLE IF EXISTS Cuisine;
+DROP TABLE IF EXISTS SubmissionRestaurant;
+DROP TABLE IF EXISTS Restaurant;
+DROP TABLE IF EXISTS Votable;
+DROP TABLE IF EXISTS Report;
+DROP TABLE IF EXISTS SubmissionSubmitter;
+DROP TABLE IF EXISTS API;
+DROP TABLE IF EXISTS _User;
+DROP TABLE IF EXISTS Submitter;
+
 CREATE TABLE Submitter(
 	submitter_id serial PRIMARY KEY,
 	submitter_name varchar(20) NOT NULL,
@@ -80,25 +95,18 @@ CREATE TABLE SubmissionMeal(
 );
 
 CREATE TABLE SubmissionPortion(
-	submission_id integer PRIMARY KEY,
-	submitted_meal integer NOT NULL,
+	submission_id_portion integer PRIMARY KEY,
+	submission_id_meal integer NOT NULL,
 	quantity integer,
-	FOREIGN KEY(submission_id) REFERENCES SubmissionSubmitter(submission_id),
-	FOREIGN KEY(submitted_meal) REFERENCES SubmissionMeal(submission_id)
-);
-
-CREATE TABLE Ingredient(
-	ingredient_id serial PRIMARY KEY,
-	ingredient_name varchar(20) NOT NULL
+	FOREIGN KEY(submission_id_portion) REFERENCES SubmissionSubmitter(submission_id),
+	FOREIGN KEY(submission_id_meal) REFERENCES SubmissionMeal(submission_id)
 );
 
 CREATE TABLE SubmissionIngredient(
-	submission_id integer PRIMARY KEY,
-	submitted_meal integer NOT NULL,
-	ingredient_id integer NOT NULL,	
-	FOREIGN KEY(submission_id) REFERENCES SubmissionSubmitter(submission_id),
-	FOREIGN KEY(ingredient_id) REFERENCES Ingredient(ingredient_id),
-	FOREIGN KEY(submitted_meal) REFERENCES SubmissionMeal(submission_id)
+	submission_id integer,
+	ingredient_id integer,
+	PRIMARY KEY(submission_id, ingredient_id),
+	FOREIGN KEY(submission_id) REFERENCES SubmissionMeal(submission_id)
 );
 
 CREATE TABLE RestaurantCuisine(
