@@ -1,5 +1,6 @@
 package pt.isel.ps.g06.httpserver.dataAccess
 
+import org.springframework.stereotype.Component
 import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest

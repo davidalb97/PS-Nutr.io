@@ -1,5 +1,7 @@
 package pt.isel.ps.g06.httpserver.dataAccess.api.dtos
 
+import pt.isel.ps.g06.httpserver.model.BaseRestaurant
+
 data class RestaurantSearchResultDto(val restaurants: Array<RestaurantContainerDto>) {
 
     override fun equals(other: Any?): Boolean {
@@ -20,24 +22,13 @@ data class RestaurantSearchResultDto(val restaurants: Array<RestaurantContainerD
 
 data class RestaurantContainerDto(val restaurant: RestaurantDto)
 
-data class RestaurantDto(
-        val id: Int,
-        val name: String,
-        val url: String,
-        val cuisines:
-        String,
-        val location: Location
-) {
-    override fun toString() = "id=$id, name=$name, cuisines=$cuisines, url=$url"
+data class RestaurantDto(val id: Int, val name: String, val url: String, val cuisines: String, val location: Location) : BaseRestaurant() {
+    override fun getRestaurantId(): Int = id
+    override fun getRestaurantName(): String = name
+    override fun getRestaurantLatitude(): Float = location.latitude
+    override fun getRestaurantLongitude(): Float = location.longitude
 }
 
-data class Location(
-        val address: String,
-        val locality: String,
-        val city: String,
-        val city_id: Int,
-        val latitude: Float,
-        val longitude: Float
-)
+data class Location(val address: String, val locality: String, val city: String, val city_id: Int, val latitude: Float, val longitude: Float)
 
 
