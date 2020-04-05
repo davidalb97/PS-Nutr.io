@@ -8,6 +8,7 @@ CREATE FUNCTION restaurantSubmissionInsertion
 	_longitude real
 ) RETURNS VOID AS $$
 	BEGIN
+		SET TRANSACTION ISOLATION LEVEL serializable;	
 		IF EXISTS (
 			SELECT * FROM Restaurant WHERE restaurant_name = _restaurant_name AND
 			latitude = _latitude AND longitude = _longitude
@@ -25,9 +26,10 @@ CREATE FUNCTION restaurantSubmissionInsertion
 CREATE FUNCTION restaurantSubmissionDeletion
 (	
 	_submitter_id integer,
-	_restaurant_id integer,
+	_restaurant_id integer
 ) RETURNS VOID AS $$
 	BEGIN
+		SET TRANSACTION ISOLATION LEVEL serializable;	
 		IF NOT EXISTS (
 			SELECT * FROM Restaurant WHERE restaurant_name = _restaurant_name AND
 			latitude = _latitude AND longitude = _longitude

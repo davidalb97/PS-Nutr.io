@@ -1,5 +1,8 @@
 -- ############################## Auxiliar function (compile just once)##############################
 
+-- No need for transaction isolation, because 
+-- this function will be always called inside
+-- isolated transactions
 CREATE FUNCTION verifySubmissionSubmitter(_submission_id integer)
 RETURNS VOID AS $$
 	BEGIN
@@ -19,7 +22,8 @@ CREATE FUNCTION voteSubmissionInsertion
 	_submitter_id integer,
 	_description varchar(500)
 ) RETURNS VOID AS $$	
-	BEGIN		
+	BEGIN
+		SET TRANSACTION ISOLATION LEVEL serializable;	
 		SELECT verifySubmissionSubmitter(_submission_id);
         INSERT INTO Report(submission_id, submitter_id, description) VALUES
 		(_submission_id, _submitter_id, _description);		

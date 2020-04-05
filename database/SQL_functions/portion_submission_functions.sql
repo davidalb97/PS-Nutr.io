@@ -7,6 +7,7 @@ CREATE FUNCTION portionSubmissionInsertion
 	_meal_id integer
 ) RETURNS VOID AS $$	
 	BEGIN
+		SET TRANSACTION ISOLATION LEVEL serializable;
 		INSERT INTO SubmissionSubmitter(submission_type, submitter_id) VALUES
 		(_submission_type, _submitter_id);
 	

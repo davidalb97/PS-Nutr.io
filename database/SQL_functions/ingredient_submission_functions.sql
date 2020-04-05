@@ -9,6 +9,7 @@ CREATE FUNCTION ingredientSubmissionInsertion
 	DECLARE
 		ingredientID integer;
 	BEGIN
+		SET TRANSACTION ISOLATION LEVEL serializable;
 		INSERT INTO SubmissionSubmitter(submission_type, submitter_id) VALUES
 		(_submission_type, _submitter_id);
 	

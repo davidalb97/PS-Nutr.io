@@ -10,7 +10,8 @@ CREATE FUNCTION mealSubmissionInsertion
 ) RETURNS VOID AS $$
 	DECLARE 
 		mealId integer = 0;
-	BEGIN		
+	BEGIN
+		SET TRANSACTION ISOLATION LEVEL serializable;	
 		IF EXISTS (
 			SELECT * FROM Meal WHERE meal_name = _meal_name 
 		) THEN			
