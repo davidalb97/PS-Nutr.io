@@ -1,4 +1,4 @@
-package pt.isel.ps.g06.httpserver.dataAccess.api.dtos
+package pt.isel.ps.g06.httpserver.dataAccess.restaurants.api.dtos
 
 import pt.isel.ps.g06.httpserver.model.BaseRestaurant
 

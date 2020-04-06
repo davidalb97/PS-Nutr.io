@@ -1,4 +1,4 @@
-package pt.isel.ps.g06.httpserver.dataAccess.database.model
+package pt.isel.ps.g06.httpserver.dataAccess.restaurants.database.model
 
 import pt.isel.ps.g06.httpserver.model.BaseRestaurant
 

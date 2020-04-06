@@ -2,10 +2,9 @@ package pt.isel.ps.g06.httpserver.controller
 
 import org.springframework.web.bind.annotation.*
 import pt.isel.ps.g06.httpserver.data.RestaurantInput
-import pt.isel.ps.g06.httpserver.dataAccess.api.API
-import pt.isel.ps.g06.httpserver.dataAccess.api.ApiRepository
-import pt.isel.ps.g06.httpserver.dataAccess.api.ZomatoApi
-import pt.isel.ps.g06.httpserver.dataAccess.database.repos.RestaurantsRepository
+import pt.isel.ps.g06.httpserver.dataAccess.restaurants.api.RestaurantApiType
+import pt.isel.ps.g06.httpserver.dataAccess.restaurants.api.ApiRepository
+import pt.isel.ps.g06.httpserver.dataAccess.restaurants.database.repos.RestaurantsRepository
 
 const val MAX_RADIUS = 1000
 
@@ -18,7 +17,7 @@ class RestaurantController(
 
     @GetMapping
     fun getNearbyRestaurants(latitude: Float?, longitude: Float?, inRadius: Int? = MAX_RADIUS): String {
-        println(apiRepo.getApi(API.ZOMATO))
+        println(apiRepo.getRestaurantApi(RestaurantApiType.ZOMATO))
         return ""
     }
 

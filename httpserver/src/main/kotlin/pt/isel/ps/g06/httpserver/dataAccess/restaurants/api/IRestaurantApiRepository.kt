@@ -1,10 +1,10 @@
-package pt.isel.ps.g06.httpserver.dataAccess.api
+package pt.isel.ps.g06.httpserver.dataAccess.restaurants.api
 
-import pt.isel.ps.g06.httpserver.dataAccess.api.dtos.DailyMenuDto
-import pt.isel.ps.g06.httpserver.dataAccess.api.dtos.RestaurantSearchResultDto
+import pt.isel.ps.g06.httpserver.dataAccess.restaurants.api.dtos.DailyMenuDto
+import pt.isel.ps.g06.httpserver.dataAccess.restaurants.api.dtos.RestaurantSearchResultDto
 import java.util.concurrent.CompletableFuture
 
-interface IApi {
+interface IRestaurantApiRepository {
 
     fun getRestaurantInfo(id: Int): Any
 

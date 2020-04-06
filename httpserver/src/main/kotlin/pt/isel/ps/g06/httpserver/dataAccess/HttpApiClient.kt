@@ -1,15 +1,12 @@
 package pt.isel.ps.g06.httpserver.dataAccess
 
-import org.springframework.stereotype.Component
 import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
 import java.net.http.HttpResponse
 import java.util.concurrent.CompletableFuture
-import java.util.concurrent.CompletionException
 
-class ApiRequester(private val httpClient: HttpClient) {
-
+class HttpApiClient(private val httpClient: HttpClient) {
     fun <T> request(
             uri: String,
             headers: Map<String, String>? = null,

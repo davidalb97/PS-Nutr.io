@@ -1,4 +1,4 @@
-package pt.isel.ps.g06.httpserver.dataAccess.api
+package pt.isel.ps.g06.httpserver.dataAccess.restaurants.api
 
 private const val ZOMATO_BASE_URL = "https://developers.zomato.com/api/v2.1/"
 private const val ZOMATO_SEARCH_URL = "${ZOMATO_BASE_URL}search?"
