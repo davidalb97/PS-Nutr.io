@@ -1,9 +1,8 @@
 package pt.isel.ps.g06.httpserver.controller
 
 import org.springframework.web.bind.annotation.*
-import pt.isel.ps.g06.httpserver.dataAccess.api.ApiRepository
-import pt.isel.ps.g06.httpserver.dataAccess.api.ZomatoApi
-import pt.isel.ps.g06.httpserver.dataAccess.database.repos.RestaurantsRepository
+import pt.isel.ps.g06.httpserver.dataAccess.restaurants.api.ApiRepository
+import pt.isel.ps.g06.httpserver.dataAccess.restaurants.database.repos.RestaurantsRepository
 
 @RestController
 @RequestMapping("/restaurant/{id}/meal")

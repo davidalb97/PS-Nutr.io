@@ -1,4 +1,4 @@
-package pt.isel.ps.g06.httpserver.dataAccess.database.model
+package pt.isel.ps.g06.httpserver.dataAccess.meal.database.model
 
 
 data class DbMeal(

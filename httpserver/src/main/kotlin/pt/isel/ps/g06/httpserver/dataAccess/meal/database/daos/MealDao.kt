@@ -1,12 +1,9 @@
-package pt.isel.ps.g06.httpserver.dataAccess.database.daos
+package pt.isel.ps.g06.httpserver.dataAccess.meal.database.daos
 
-import org.jdbi.v3.core.transaction.TransactionIsolationLevel
 import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys
 import org.jdbi.v3.sqlobject.statement.SqlQuery
-import org.jdbi.v3.sqlobject.transaction.Transaction
-import pt.isel.ps.g06.httpserver.dataAccess.database.model.DbMeal
-import pt.isel.ps.g06.httpserver.dataAccess.database.model.DbRestaurant
+import pt.isel.ps.g06.httpserver.dataAccess.meal.database.model.DbMeal
 
 interface MealDao {
 

@@ -1,4 +1,4 @@
-package pt.isel.ps.g06.httpserver.dataAccess.api.dtos
+package pt.isel.ps.g06.httpserver.dataAccess.restaurants.api.dtos
 
 data class CuisinesDto(val cuisines: Array<String>) {
 

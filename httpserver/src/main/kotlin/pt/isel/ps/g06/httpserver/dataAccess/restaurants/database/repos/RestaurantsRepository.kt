@@ -1,9 +1,9 @@
-package pt.isel.ps.g06.httpserver.dataAccess.database.repos
+package pt.isel.ps.g06.httpserver.dataAccess.restaurants.database.repos
 
 import org.jdbi.v3.core.Jdbi
 import org.springframework.stereotype.Repository
-import pt.isel.ps.g06.httpserver.dataAccess.database.daos.RestaurantDao
-import pt.isel.ps.g06.httpserver.dataAccess.database.model.DbRestaurant
+import pt.isel.ps.g06.httpserver.dataAccess.restaurants.database.daos.RestaurantDao
+import pt.isel.ps.g06.httpserver.dataAccess.restaurants.database.model.DbRestaurant
 
 @Repository
 class RestaurantsRepository(private val jdbi: Jdbi) {
