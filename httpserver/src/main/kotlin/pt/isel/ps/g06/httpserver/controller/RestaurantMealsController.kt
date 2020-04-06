@@ -1,6 +1,7 @@
 package pt.isel.ps.g06.httpserver.controller
 
 import org.springframework.web.bind.annotation.*
+import pt.isel.ps.g06.httpserver.dataAccess.api.ApiRepository
 import pt.isel.ps.g06.httpserver.dataAccess.api.ZomatoApi
 import pt.isel.ps.g06.httpserver.dataAccess.database.repos.RestaurantsRepository
 
@@ -8,7 +9,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.database.repos.RestaurantsRepository
 @RequestMapping("/restaurant/{id}/meal")
 class RestaurantMealsController(
         private val restaurantsRepository: RestaurantsRepository,
-        private val zomatoApi: ZomatoApi
+        private val apiRepo: ApiRepository
 ) {
 
     @PostMapping(consumes = ["application/json"])
@@ -21,17 +22,17 @@ class RestaurantMealsController(
 
     }
 
-    @PostMapping("/{mealId}/portion", consumes = ["application/json"])
+    @PostMapping("/{mealId}/report", consumes = ["application/json"])
     fun addMealReport(@PathVariable id: String, @PathVariable mealId: String, @RequestBody report: String) {
 
     }
 
-    @PostMapping("/{mealId}/portion", consumes = ["application/json"])
+    @PostMapping("/{mealId}/vote", consumes = ["application/json"])
     fun addMealVote(@PathVariable id: String, @PathVariable mealId: String, @RequestBody vote: String) {
 
     }
 
-    @PutMapping("/{mealId}/portion", consumes = ["application/json"])
+    @PutMapping("/{mealId}/report", consumes = ["application/json"])
     fun updateMealReport(@PathVariable id: String, @PathVariable mealId: String, @RequestBody portion: String) {
 
     }
@@ -46,7 +47,7 @@ class RestaurantMealsController(
 
     }
 
-    @DeleteMapping("/{mealId}/portion", consumes = ["application/json"])
+    @DeleteMapping("/{mealId}/vote", consumes = ["application/json"])
     fun deleteMealVote(@PathVariable id: String, @PathVariable mealId: String, @RequestBody vote: String) {
 
     }
