@@ -26,7 +26,6 @@ class RestaurantController(
 
     @PostMapping(consumes = ["application/json"])
     fun createRestaurant(@RequestBody restaurant: RestaurantInput) {
-
     }
 
     @PostMapping("/{id}/report", consumes = ["application/json"])
