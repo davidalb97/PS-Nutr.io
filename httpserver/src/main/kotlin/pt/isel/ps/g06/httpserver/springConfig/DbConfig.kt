@@ -1,4 +1,4 @@
-package pt.isel.ps.g06.httpserver.dataAccess.restaurants.database
+package pt.isel.ps.g06.httpserver.springConfig
 
 import org.jdbi.v3.core.Jdbi
 import org.springframework.boot.context.properties.ConfigurationProperties

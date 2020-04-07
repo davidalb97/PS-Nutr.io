@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 import org.springframework.context.annotation.Bean
 import pt.isel.ps.g06.httpserver.dataAccess.HttpApiClient
-import pt.isel.ps.g06.httpserver.dataAccess.restaurants.api.ZomatoRestaurantApiRepository
+import pt.isel.ps.g06.httpserver.dataAccess.api.ZomatoRestaurantApiRepository
 import java.net.http.HttpClient
 
 @SpringBootApplication

@@ -1,4 +1,4 @@
-package pt.isel.ps.g06.httpserver.dataAccess.response
+package pt.isel.ps.g06.httpserver.dataAccess.model
 
 data class MealResponse(val mealId: Int, val mealName: String)
 

@@ -1,14 +1,14 @@
 package pt.isel.ps.g06.httpserver.controller
 
 import org.springframework.web.bind.annotation.*
-import pt.isel.ps.g06.httpserver.dataAccess.restaurants.api.ApiRepository
-import pt.isel.ps.g06.httpserver.dataAccess.restaurants.database.repos.RestaurantsRepository
+import pt.isel.ps.g06.httpserver.dataAccess.RestaurantApiRepository
+import pt.isel.ps.g06.httpserver.dataAccess.db.DbRestaurantRepository
 
 @RestController
 @RequestMapping("/restaurant/{id}/meal")
 class RestaurantMealsController(
-        private val restaurantsRepository: RestaurantsRepository,
-        private val apiRepo: ApiRepository
+        private val dbRestaurantRepo: DbRestaurantRepository,
+        private val restaurantApiRepo: RestaurantApiRepository
 ) {
 
     @PostMapping(consumes = ["application/json"])

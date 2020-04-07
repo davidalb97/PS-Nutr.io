@@ -1,10 +1,11 @@
-package pt.isel.ps.g06.httpserver.dataAccess.restaurants.database.daos
+package pt.isel.ps.g06.httpserver.dataAccess.dao
 
 import org.jdbi.v3.core.transaction.TransactionIsolationLevel
 import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import org.jdbi.v3.sqlobject.transaction.Transaction
-import pt.isel.ps.g06.httpserver.dataAccess.restaurants.database.model.DbRestaurant
+import pt.isel.ps.g06.httpserver.dataAccess.dao.concrete.DbRestaurant
+
 
 //const val distance = "earth_distance(ll_to_earth(latitude, longitude), ll_to_earth(:latitude, :longitude))"
 //const val sqlQueryStr = "SELECT *, $distance FROM Restaurant WHERE $distance < :radius"

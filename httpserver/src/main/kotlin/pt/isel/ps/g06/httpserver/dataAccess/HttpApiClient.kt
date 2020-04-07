@@ -20,7 +20,8 @@ class HttpApiClient(private val httpClient: HttpClient) {
                 .also { requestHeaders -> headers?.forEach { requestHeaders.header(it.key, it.value) } }
                 .build()
 
-        return httpClient.sendAsync(httpRequest, HttpResponse.BodyHandlers.ofString())
+        return httpClient
+                .sendAsync(httpRequest, HttpResponse.BodyHandlers.ofString())
                 .thenApply {
                     if (exceptionPredicate.invoke(it)) throw Exception()
                     else return@thenApply bodyMapper.invoke(it)

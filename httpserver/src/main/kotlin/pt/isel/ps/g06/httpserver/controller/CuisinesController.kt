@@ -9,5 +9,6 @@ import org.springframework.web.bind.annotation.RestController
 class CuisinesController() {
 
     @GetMapping(produces = ["application/json"])
-    fun getCuisinesHandler(skip: Int?, count: Int?) = ""
+    fun getCuisinesHandler(skip: Int?, count: Int?) {
+    }
 }

@@ -1,4 +1,4 @@
-package pt.isel.ps.g06.httpserver.dataAccess.meal.database.repos
+package pt.isel.ps.g06.httpserver.dataAccess.db
 
 import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.transaction.TransactionIsolationLevel
@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository
 import java.lang.Exception
 
 @Repository
-class MealRepository(private val jdbi: Jdbi) {
+class DbMealRepository(private val jdbi: Jdbi) {
 
     fun newMeal(
             submitterId: Int,

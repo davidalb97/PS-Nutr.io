@@ -1,7 +1,7 @@
-package pt.isel.ps.g06.httpserver.dataAccess.restaurants.api
+package pt.isel.ps.g06.httpserver.dataAccess.api
 
-import pt.isel.ps.g06.httpserver.dataAccess.restaurants.api.dtos.DailyMenuDto
-import pt.isel.ps.g06.httpserver.dataAccess.restaurants.api.dtos.RestaurantSearchResultDto
+import pt.isel.ps.g06.httpserver.dataAccess.dto.DailyMenuDto
+import pt.isel.ps.g06.httpserver.dataAccess.dto.RestaurantSearchResultDto
 import java.util.concurrent.CompletableFuture
 
 interface IRestaurantApiRepository {
