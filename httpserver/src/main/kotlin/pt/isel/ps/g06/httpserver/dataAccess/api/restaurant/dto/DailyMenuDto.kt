@@ -5,7 +5,8 @@ data class DailyMenuDto(
         val code: Int?,
         val status: String?,
         val message: String?
-) {
+): IDto<List<String>> {
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
@@ -29,6 +30,13 @@ data class DailyMenuDto(
         result = 31 * result + (status?.hashCode() ?: 0)
         result = 31 * result + (message?.hashCode() ?: 0)
         return result
+    }
+
+    override fun unDto(): List<String> {
+        if(code != 200) return emptyList()
+        return daily_menu!!
+                .flatMap { container -> container.dishes!!.asList() }
+                .map { it.name!! }
     }
 }
 

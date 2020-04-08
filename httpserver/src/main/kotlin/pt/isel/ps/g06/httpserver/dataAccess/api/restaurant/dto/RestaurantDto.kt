@@ -1,6 +1,9 @@
 package pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.dto
 
-data class RestaurantSearchResultDto(val restaurants: Array<RestaurantContainerDto>) {
+import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.RestaurantApiType
+import pt.isel.ps.g06.httpserver.dataAccess.model.RestaurantResponse
+
+data class RestaurantSearchResultDto(val restaurants: Array<RestaurantContainerDto>) : IDto<List<RestaurantResponse>> {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -15,6 +18,21 @@ data class RestaurantSearchResultDto(val restaurants: Array<RestaurantContainerD
 
     override fun hashCode(): Int {
         return restaurants.contentHashCode()
+    }
+
+    override fun unDto(): List<RestaurantResponse> {
+        return restaurants.map { container ->
+            container.restaurant.let {
+                RestaurantResponse(
+                        it.id,
+                        RestaurantApiType.Zomato,
+                        it.name,
+                        it.location.latitude,
+                        it.location.longitude,
+                        it.cuisines.split(", ").toTypedArray()
+                )
+            }
+        }
     }
 }
 
