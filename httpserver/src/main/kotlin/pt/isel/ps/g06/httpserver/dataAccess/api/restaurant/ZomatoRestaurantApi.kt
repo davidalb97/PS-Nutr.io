@@ -3,7 +3,7 @@ package pt.isel.ps.g06.httpserver.dataAccess.api.restaurant
 import com.fasterxml.jackson.databind.ObjectMapper
 import pt.isel.ps.g06.httpserver.dataAccess.api.HttpApiClient
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.dto.DailyMenuDto
-import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.dto.IDto
+import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.dto.IUnDto
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.dto.RestaurantSearchResultDto
 import pt.isel.ps.g06.httpserver.dataAccess.model.RestaurantResponse
 import java.util.concurrent.CompletableFuture
@@ -24,7 +24,7 @@ class ZomatoRestaurantApi(private val clientHttp: HttpApiClient, private val jso
             requestDto(dailyMenu(restaurantId), DailyMenuDto::class.java)
                     .thenApply(DailyMenuDto::unDto)
 
-    private fun <R, D : IDto<R>, C : Class<D>> requestDto(urlStr: String, clazz: C): CompletableFuture<D> {
+    private fun <R, D : IUnDto<R>, C : Class<D>> requestDto(urlStr: String, clazz: C): CompletableFuture<D> {
         return clientHttp.request(
                 urlStr,
                 mapOf(Pair("user-key", ZOMATO_API_KEY), Pair("Accept", "application/json")),

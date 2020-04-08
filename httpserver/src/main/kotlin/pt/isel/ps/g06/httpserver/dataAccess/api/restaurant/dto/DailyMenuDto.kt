@@ -5,7 +5,7 @@ data class DailyMenuDto(
         val code: Int?,
         val status: String?,
         val message: String?
-): IDto<List<String>> {
+): IUnDto<List<String>> {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

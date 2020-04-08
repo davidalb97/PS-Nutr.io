@@ -3,7 +3,7 @@ package pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.dto
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.RestaurantApiType
 import pt.isel.ps.g06.httpserver.dataAccess.model.RestaurantResponse
 
-data class RestaurantSearchResultDto(val restaurants: Array<RestaurantContainerDto>) : IDto<List<RestaurantResponse>> {
+data class RestaurantSearchResultDto(val restaurants: Array<RestaurantContainerDto>) : IUnDto<List<RestaurantResponse>> {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
