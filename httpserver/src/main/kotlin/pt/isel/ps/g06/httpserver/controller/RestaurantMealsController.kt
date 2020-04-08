@@ -1,8 +1,8 @@
 package pt.isel.ps.g06.httpserver.controller
 
 import org.springframework.web.bind.annotation.*
-import pt.isel.ps.g06.httpserver.dataAccess.RestaurantApiRepository
-import pt.isel.ps.g06.httpserver.dataAccess.db.DbRestaurantRepository
+import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.RestaurantApiRepository
+import pt.isel.ps.g06.httpserver.dataAccess.db.repo.DbRestaurantRepository
 
 @RestController
 @RequestMapping("/restaurant/{id}/meal")

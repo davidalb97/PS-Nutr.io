@@ -1,4 +1,4 @@
-package pt.isel.ps.g06.httpserver.dataAccess
+package pt.isel.ps.g06.httpserver.dataAccess.api
 
 import java.net.URI
 import java.net.http.HttpClient

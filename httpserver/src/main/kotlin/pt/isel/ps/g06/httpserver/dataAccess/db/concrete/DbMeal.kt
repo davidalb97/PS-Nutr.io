@@ -1,4 +1,4 @@
-package pt.isel.ps.g06.httpserver.dataAccess.dao.concrete
+package pt.isel.ps.g06.httpserver.dataAccess.db.concrete
 
 
 data class DbMeal(

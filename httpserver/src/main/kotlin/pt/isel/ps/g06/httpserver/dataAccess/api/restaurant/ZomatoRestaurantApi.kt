@@ -1,16 +1,14 @@
-package pt.isel.ps.g06.httpserver.dataAccess.api
+package pt.isel.ps.g06.httpserver.dataAccess.api.restaurant
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import pt.isel.ps.g06.httpserver.dataAccess.HttpApiClient
-import pt.isel.ps.g06.httpserver.dataAccess.dailyMenu
-import pt.isel.ps.g06.httpserver.dataAccess.dto.DailyMenuDto
-import pt.isel.ps.g06.httpserver.dataAccess.dto.RestaurantSearchResultDto
-import pt.isel.ps.g06.httpserver.dataAccess.search
+import pt.isel.ps.g06.httpserver.dataAccess.api.HttpApiClient
+import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.dto.DailyMenuDto
+import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.dto.RestaurantSearchResultDto
 import java.util.concurrent.CompletableFuture
 
 private const val ZOMATO_API_KEY = "3e128506ffbfc1c23b4e2b6acd3eb84b"
 
-class ZomatoRestaurantApiRepository(private val clientHttp: HttpApiClient, private val jsonMapper: ObjectMapper): IRestaurantApiRepository {
+class ZomatoRestaurantApi(private val clientHttp: HttpApiClient, private val jsonMapper: ObjectMapper) : IRestaurantApi {
 
     override fun getRestaurantInfo(id: Int): Any {
         TODO("Not yet implemented")
@@ -34,4 +32,6 @@ class ZomatoRestaurantApiRepository(private val clientHttp: HttpApiClient, priva
                 { jsonMapper.readValue(it.body(), DailyMenuDto::class.java) }
         )
     }
+
+    override fun getType() = RestaurantApiType.Zomato
 }

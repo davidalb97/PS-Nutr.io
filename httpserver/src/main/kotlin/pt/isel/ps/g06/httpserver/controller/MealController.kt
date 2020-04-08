@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/meal")
-class MealController() {
+class MealController {
 
     @GetMapping("/{mealId}", produces = ["application/json"])
     fun getMealInformation(@PathVariable mealId: String) = ""
