@@ -6,6 +6,10 @@ import pt.ipl.isel.leic.ps.androidclient.TAG
 
 class AsyncWorker<P, R>(val func: (Array<out P?>) -> R) : AsyncTask<P, Int, R>() {
 
+    constructor(func: (Array<out P?>) -> R, onError: (Exception) -> Unit): this(func) {
+        this.onError = onError
+    }
+
     private var onError: (Exception) -> Unit = { e ->
         Log.e(TAG, e.message, e)
     }
