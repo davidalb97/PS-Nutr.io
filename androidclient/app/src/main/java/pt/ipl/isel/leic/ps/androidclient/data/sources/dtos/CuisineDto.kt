@@ -7,4 +7,4 @@ import com.fasterxml.jackson.annotation.JsonProperty
 class CuisineDto {
 }
 
-class CuisinesDto (@JsonProperty("cuisines") val cuisineDtoList: MutableList<CuisineDto>)
+class CuisinesDto(@JsonProperty("cuisines") val cuisineDtoList: MutableList<CuisineDto>)

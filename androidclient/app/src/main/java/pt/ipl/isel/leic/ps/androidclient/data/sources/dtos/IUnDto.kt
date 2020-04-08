@@ -1,2 +1,6 @@
 package pt.ipl.isel.leic.ps.androidclient.data.sources.dtos
 
+interface IUnDto<M> {
+
+    fun unDto(): M
+}
