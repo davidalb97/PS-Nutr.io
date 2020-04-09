@@ -1,4 +1,4 @@
-package pt.ipl.isel.leic.ps.androidclient.data
+package pt.ipl.isel.leic.ps.androidclient.data.repositories
 
 import com.android.volley.RequestQueue
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp
@@ -6,12 +6,10 @@ import pt.ipl.isel.leic.ps.androidclient.data.sources.ApiRequester
 import pt.ipl.isel.leic.ps.androidclient.data.sources.model.Meal
 import pt.ipl.isel.leic.ps.androidclient.data.sources.model.Restaurant
 
-class Repository(
-    private val app: NutrioApp,
-    private var volleyQueue: RequestQueue
-) {
+class HttpServerRepository {
 
-    val apiRequester = ApiRequester(app)
+    private val apiRequester = ApiRequester(NutrioApp.app)
+    private val volleyQueue: RequestQueue = NutrioApp.requestQueue
 
     // TODO
     fun getRestaraunts(

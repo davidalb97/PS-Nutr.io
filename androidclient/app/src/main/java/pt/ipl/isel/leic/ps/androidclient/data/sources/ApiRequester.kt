@@ -9,6 +9,7 @@ import com.android.volley.toolbox.StringRequest
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.KotlinModule
+import org.json.JSONObject
 import pt.ipl.isel.leic.ps.androidclient.TAG
 import pt.ipl.isel.leic.ps.androidclient.data.sources.dtos.IUnDto
 import pt.ipl.isel.leic.ps.androidclient.data.sources.dtos.MealsDto
@@ -34,6 +35,9 @@ const val CUISINES = "cuisines"
 const val INGREDIENTS = "ingredients"
 const val USER_QUERY = "user"
 
+val RESTAURANTS_DTO = RestaurantsDto::class.java
+val MEALS_DTO = MealsDto::class.java
+
 
 class ApiRequester(val ctx: Context) {
 
@@ -51,12 +55,12 @@ class ApiRequester(val ctx: Context) {
         error: (VolleyError) -> Unit,
         count: Int
     ): StringRequest {
-        return httpServerGetRequest(
+        return httpServerRequest(
             GET,
             "",
             success,
             error,
-            RestaurantsDto::class.java
+            RESTAURANTS_DTO
         )
     }
 
@@ -65,12 +69,12 @@ class ApiRequester(val ctx: Context) {
         error: (VolleyError) -> Unit,
         count: Int
     ): StringRequest {
-        return httpServerGetRequest(
+        return httpServerRequest(
             GET,
             "",
             success,
             error,
-            MealsDto::class.java
+            MEALS_DTO
         )
     }
 
@@ -86,12 +90,14 @@ class ApiRequester(val ctx: Context) {
      * PUTs
      */
 
-    private fun <Model, Dto : IUnDto<Model>> httpServerGetRequest(
+
+    private fun <Model, Dto : IUnDto<Model>> httpServerRequest(
         method: Int,
         urlStr: String,
         onSuccess: (Model) -> Unit,
         onError: (VolleyError) -> Unit,
-        dtoClass: Class<Dto>
+        dtoClass: Class<Dto>,
+        payload: JSONObject? = null // No payload by default
     ): StringRequest {
 
         Log.v(TAG, urlStr)
@@ -108,46 +114,5 @@ class ApiRequester(val ctx: Context) {
             Response.Listener(responseToDtoTask::execute),
             Response.ErrorListener { err -> onError(err) }
         )
-        // Add the request to the RequestQueue.
-        // queue.add(stringRequest) --> adds to the queue only in the repository!
     }
-
-    /*
-    private fun <P, R> httpServerMethodRequest(
-        urlStr: String,
-        onSuccess: (R) -> Unit,
-        onError: (VolleyError) -> Unit,
-        dtoClass: Class<R>,
-        intMethod: Int, //Ex: Request.Method.GET
-        payload: JSONObject?
-    ) : AsyncWorker<String, R> {
-
-        Log.v(TAG, urlStr)
-
-        val responseToDtoTask: AsyncWorker<JSONObject, R> =
-            AsyncWorker<JSONObject, R> {
-                it.toString()
-                dtoMapper.readValue()
-                it[0].
-                .readValue(it[0], dtoClass)
-            }.setOnPostExecute(onSuccess)
-
-        val jsonRequest = JsonObjectRequest(
-            intMethod,
-            urlStr,
-            payload,
-            Response.Listener(responseToDtoTask::execute),
-            Response.ErrorListener { err -> onError(err) }
-        )
-        // Request a string response from the provided URL.
-        val stringRequest = StringRequest(
-            intMethod,
-            urlStr,
-            Response.Listener(responseToDtoTask::execute),
-            Response.ErrorListener { err -> onError(err) }
-        )
-        // Add the request to the RequestQueue.
-        queue.add(stringRequest)
-        return responseToDtoTask
-    }*/
 }

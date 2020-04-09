@@ -1,22 +1,26 @@
 package pt.ipl.isel.leic.ps.androidclient
 
 import android.app.Application
+import android.content.Context
+import com.android.volley.RequestQueue
 import com.android.volley.toolbox.Volley
-import pt.ipl.isel.leic.ps.androidclient.data.Repository
+import pt.ipl.isel.leic.ps.androidclient.data.repositories.HttpServerRepository
 
 const val TAG = "Nutr.io App"
 
 class NutrioApp : Application() {
     // App instances and initializations
-    val app = this
-    lateinit var repo: Repository
+
+    companion object {
+        lateinit var app: Context
+        lateinit var requestQueue: RequestQueue
+        val serverRepo by lazy { HttpServerRepository() }
+    }
 
     override fun onCreate() {
         super.onCreate()
-        repo = Repository(
-            app,
-            Volley.newRequestQueue(app) // Volley queue
-        )
+        app = this
+        requestQueue = Volley.newRequestQueue(app)
     }
 
 }
