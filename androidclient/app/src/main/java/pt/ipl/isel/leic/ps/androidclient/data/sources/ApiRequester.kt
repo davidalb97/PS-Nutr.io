@@ -6,12 +6,13 @@ import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.VolleyError
 import com.android.volley.toolbox.StringRequest
-import com.android.volley.toolbox.Volley
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import pt.ipl.isel.leic.ps.androidclient.TAG
-import pt.ipl.isel.leic.ps.androidclient.data.sources.dtos.*
+import pt.ipl.isel.leic.ps.androidclient.data.sources.dtos.IUnDto
+import pt.ipl.isel.leic.ps.androidclient.data.sources.dtos.MealsDto
+import pt.ipl.isel.leic.ps.androidclient.data.sources.dtos.RestaurantsDto
 import pt.ipl.isel.leic.ps.androidclient.data.sources.model.Meal
 import pt.ipl.isel.leic.ps.androidclient.data.sources.model.Restaurant
 import pt.ipl.isel.leic.ps.androidclient.data.util.AsyncWorker
@@ -41,7 +42,6 @@ class ApiRequester(val ctx: Context) {
         .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
         //Enable primary constructor on DTOs
         .registerModule(KotlinModule())
-    private val queue = Volley.newRequestQueue(ctx)
 
     /**
      * GETs
@@ -50,8 +50,9 @@ class ApiRequester(val ctx: Context) {
         success: (List<Restaurant>) -> Unit,
         error: (VolleyError) -> Unit,
         count: Int
-    ) {
-        httpServerGetRequest(
+    ): StringRequest {
+        return httpServerGetRequest(
+            GET,
             "",
             success,
             error,
@@ -63,8 +64,9 @@ class ApiRequester(val ctx: Context) {
         success: (List<Meal>) -> Unit,
         error: (VolleyError) -> Unit,
         count: Int
-    ) {
-        httpServerGetRequest(
+    ): StringRequest {
+        return httpServerGetRequest(
+            GET,
             "",
             success,
             error,
@@ -84,12 +86,13 @@ class ApiRequester(val ctx: Context) {
      * PUTs
      */
 
-    private fun <Model, Dto: IUnDto<Model>> httpServerGetRequest(
+    private fun <Model, Dto : IUnDto<Model>> httpServerGetRequest(
+        method: Int,
         urlStr: String,
         onSuccess: (Model) -> Unit,
         onError: (VolleyError) -> Unit,
         dtoClass: Class<Dto>
-    ) {
+    ): StringRequest {
 
         Log.v(TAG, urlStr)
 
@@ -99,14 +102,14 @@ class ApiRequester(val ctx: Context) {
             }.setOnPostExecute(onSuccess)
 
         // Request a string response from the provided URL.
-        val stringRequest = StringRequest(
-            GET,
+        return StringRequest(
+            method,
             urlStr,
             Response.Listener(responseToDtoTask::execute),
             Response.ErrorListener { err -> onError(err) }
         )
         // Add the request to the RequestQueue.
-        queue.add(stringRequest)
+        // queue.add(stringRequest) --> adds to the queue only in the repository!
     }
 
     /*
