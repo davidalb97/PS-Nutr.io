@@ -55,8 +55,7 @@ class ApiRequester(val ctx: Context) {
         error: (VolleyError) -> Unit,
         count: Int
     ): StringRequest {
-        return httpServerRequest(
-            GET,
+        return httpGetServerRequest(
             "",
             success,
             error,
@@ -69,8 +68,7 @@ class ApiRequester(val ctx: Context) {
         error: (VolleyError) -> Unit,
         count: Int
     ): StringRequest {
-        return httpServerRequest(
-            GET,
+        return httpGetServerRequest(
             "",
             success,
             error,
@@ -91,8 +89,7 @@ class ApiRequester(val ctx: Context) {
      */
 
 
-    private fun <Model, Dto : IUnDto<Model>> httpServerRequest(
-        method: Int,
+    private fun <Model, Dto : IUnDto<Model>> httpGetServerRequest(
         urlStr: String,
         onSuccess: (Model) -> Unit,
         onError: (VolleyError) -> Unit,
@@ -109,10 +106,49 @@ class ApiRequester(val ctx: Context) {
 
         // Request a string response from the provided URL.
         return StringRequest(
-            method,
+            GET,
             urlStr,
             Response.Listener(responseToDtoTask::execute),
             Response.ErrorListener { err -> onError(err) }
         )
+
+        // Add the request to the RequestQueue.
+        // queue.add(stringRequest) --> adds must be made inside the repositories
     }
+
+    /*
+    private fun <P, R> httpServerMethodRequest(
+        urlStr: String,
+        onSuccess: (R) -> Unit,
+        onError: (VolleyError) -> Unit,
+        dtoClass: Class<R>,
+        intMethod: Int, //Ex: Request.Method.GET
+        payload: JSONObject?
+    ) : AsyncWorker<String, R> {
+        Log.v(TAG, urlStr)
+        val responseToDtoTask: AsyncWorker<JSONObject, R> =
+            AsyncWorker<JSONObject, R> {
+                it.toString()
+                dtoMapper.readValue()
+                it[0].
+                .readValue(it[0], dtoClass)
+            }.setOnPostExecute(onSuccess)
+        val jsonRequest = JsonObjectRequest(
+            intMethod,
+            urlStr,
+            payload,
+            Response.Listener(responseToDtoTask::execute),
+            Response.ErrorListener { err -> onError(err) }
+        )
+        // Request a string response from the provided URL.
+        val stringRequest = StringRequest(
+            intMethod,
+            urlStr,
+            Response.Listener(responseToDtoTask::execute),
+            Response.ErrorListener { err -> onError(err) }
+        )
+        // Add the request to the RequestQueue.
+        queue.add(stringRequest)
+        return responseToDtoTask
+    }*/
 }
