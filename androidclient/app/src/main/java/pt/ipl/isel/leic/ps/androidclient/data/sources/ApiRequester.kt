@@ -110,8 +110,6 @@ class ApiRequester(private val ctx: Context, private val reqQueue: RequestQueue)
                 dtoMapper.readValue(it[0], dtoClass).unDto()
             }.setOnPostExecute(onSuccess)
 
-        responseToDtoTask.execute()
-
         //Request payload serialization async worker
         AsyncWorker<Model, Unit> {
 
@@ -123,13 +121,14 @@ class ApiRequester(private val ctx: Context, private val reqQueue: RequestQueue)
                 method.value,
                 urlStr,
                 payloadStr,
-                Response.Listener(
-                    responseToDtoTask::execute
-                ),
-                Response.ErrorListener { err -> onError(err) }
+                Response.Listener {
+                    responseToDtoTask.execute(it)
+                },
+                Response.ErrorListener {
+                    onError(it)
+                }
             )
             reqQueue.add(jsonRequest)
         }.execute()
     }
-
 }
