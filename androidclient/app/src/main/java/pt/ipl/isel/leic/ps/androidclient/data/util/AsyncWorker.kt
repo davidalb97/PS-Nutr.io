@@ -10,25 +10,20 @@ class AsyncWorker<P, R>(val func: (Array<out P?>) -> R) : AsyncTask<P, Int, R>()
         this.onError = onError
     }
 
-    private var onError: (Exception) -> Unit = { e ->
-        Log.e(TAG, e.message, e)
-    }
-
+    private var onError: (Exception) -> Unit = { Log.e(TAG, it.message, it) }
     private var onPostExecuteFunc: (R) -> Unit = { }
 
     override fun doInBackground(vararg params: P?): R {
         return try {
             func(params)
         } catch (e: Exception) {
-            Log.e(TAG, e.message, e)
-
             onError(e)
             throw e
         }
     }
 
     fun setOnPostExecute(onSuccess: (R) -> Unit): AsyncWorker<P, R> {
-        this.onPostExecuteFunc = onSuccess
+        onPostExecuteFunc = onSuccess
         return this
     }
 
