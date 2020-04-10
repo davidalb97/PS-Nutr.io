@@ -1,45 +1,36 @@
 package pt.ipl.isel.leic.ps.androidclient.data.repositories
 
+import android.content.Context
 import com.android.volley.RequestQueue
-import pt.ipl.isel.leic.ps.androidclient.NutrioApp
 import pt.ipl.isel.leic.ps.androidclient.data.sources.ApiRequester
 import pt.ipl.isel.leic.ps.androidclient.data.sources.model.Meal
 import pt.ipl.isel.leic.ps.androidclient.data.sources.model.Restaurant
 
-class HttpServerRepository {
+class HttpServerRepository(private val ctx: Context, private val volleyQueue: RequestQueue) {
 
-    private val apiRequester = ApiRequester(NutrioApp.app)
-    private val volleyQueue: RequestQueue = NutrioApp.requestQueue
+    val apiRequester = ApiRequester(ctx, volleyQueue)
 
-    // TODO
     fun getRestaraunts(
         success: (List<Restaurant>) -> Unit,
         error: () -> Unit,
         count: Int
     ) {
-        val request = apiRequester
-            .getRestaurants(
-                { },
-                { error() },
-                count
-            )
-
-        volleyQueue.add(request)
+        apiRequester.getRestaurants(
+            { success(it) },
+            { error() },
+            count
+        )
     }
 
-    // TODO
     fun getMeal(
         success: (List<Meal>) -> Unit,
         error: () -> Unit,
         count: Int
     ) {
-        val request = apiRequester
-            .getMeals(
-                { },
-                { error() },
-                count
-            )
-
-        volleyQueue.add(request)
+        apiRequester.getMeals(
+            { success(it) },
+            { error() },
+            count
+        )
     }
 }

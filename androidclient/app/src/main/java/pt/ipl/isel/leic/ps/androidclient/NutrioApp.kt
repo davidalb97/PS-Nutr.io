@@ -11,11 +11,10 @@ const val TAG = "Nutr.io App"
 class NutrioApp : Application() {
     // App instances and initializations
 
-    companion object {
-        lateinit var app: Context
-        lateinit var requestQueue: RequestQueue
-        val serverRepo by lazy { HttpServerRepository() }
-    }
+    lateinit var app: Context
+    lateinit var requestQueue: RequestQueue
+    val httpServerRepository
+            by lazy { HttpServerRepository(app, requestQueue) }
 
     override fun onCreate() {
         super.onCreate()

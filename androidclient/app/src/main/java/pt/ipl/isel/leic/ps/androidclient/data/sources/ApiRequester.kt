@@ -6,11 +6,9 @@ import com.android.volley.Request
 import com.android.volley.RequestQueue
 import com.android.volley.Response
 import com.android.volley.VolleyError
-import com.android.volley.toolbox.StringRequest
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.KotlinModule
-import org.json.JSONObject
 import pt.ipl.isel.leic.ps.androidclient.TAG
 import pt.ipl.isel.leic.ps.androidclient.data.sources.dtos.IUnDto
 import pt.ipl.isel.leic.ps.androidclient.data.sources.dtos.MealsDto
@@ -35,14 +33,14 @@ const val USER_QUERY = "user"
 val RESTAURANTS_DTO = RestaurantsDto::class.java
 val MEALS_DTO = MealsDto::class.java
 
-private enum class Method(val method: Int) {
+enum class Method(val value: Int) {
     GET(Request.Method.GET),
     POST(Request.Method.POST),
     PUT(Request.Method.PUT),
     DELETE(Request.Method.DELETE)
 }
 
-class ApiRequester(val ctx: Context, val reqQueue: RequestQueue) {
+class ApiRequester(private val ctx: Context, private val reqQueue: RequestQueue) {
 
     val dtoMapper = ObjectMapper()
         //Ignore unknown json fields
@@ -95,39 +93,43 @@ class ApiRequester(val ctx: Context, val reqQueue: RequestQueue) {
      * PUTs
      */
 
-    private fun <Model, Dto: IUnDto<Model>, ReqPayload> httpServerRequest(
+    private fun <Model, Dto : IUnDto<Model>, ReqPayload> httpServerRequest(
         method: Method,
         urlStr: String,
         dtoClass: Class<Dto>,
         onSuccess: (Model) -> Unit,
-        onError: (VolleyError) -> Unit = { Log.v(TAG, it.toString())},
+        onError: (VolleyError) -> Unit = { Log.v(TAG, it.toString()) },
         reqPayload: ReqPayload?
     ) {
 
         Log.v(TAG, urlStr)
 
         //Response payload serialization async worker
-        val responseToDtoTask: AsyncWorker<String, Model> =
-            AsyncWorker<String, Model> {
+        val responseToDtoTask: AsyncWorker<String?, Model> =
+            AsyncWorker<String?, Model> {
                 dtoMapper.readValue(it[0], dtoClass).unDto()
             }.setOnPostExecute(onSuccess)
 
+        responseToDtoTask.execute()
+
         //Request payload serialization async worker
-        AsyncWorker<Unit, Unit> {
+        AsyncWorker<Model, Unit> {
 
             //Create a string payload from
             val payloadStr = dtoMapper.writeValueAsString(reqPayload)
 
             //Custom string request that will allow a string payload
             val jsonRequest = BodyStringRequest(
-                method.method,
+                method.value,
                 urlStr,
                 payloadStr,
-                Response.Listener(responseToDtoTask::execute),
+                Response.Listener(
+                    responseToDtoTask::execute
+                ),
                 Response.ErrorListener { err -> onError(err) }
             )
-            //TODO - Should it be added here?
             reqQueue.add(jsonRequest)
         }.execute()
     }
+
 }
