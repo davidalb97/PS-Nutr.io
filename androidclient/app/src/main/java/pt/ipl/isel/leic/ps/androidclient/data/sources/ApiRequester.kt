@@ -3,6 +3,7 @@ package pt.ipl.isel.leic.ps.androidclient.data.sources
 import android.content.Context
 import android.util.Log
 import com.android.volley.Request
+import com.android.volley.RequestQueue
 import com.android.volley.Response
 import com.android.volley.VolleyError
 import com.android.volley.toolbox.StringRequest
@@ -20,10 +21,6 @@ import pt.ipl.isel.leic.ps.androidclient.data.util.AsyncWorker
 
 const val ADDRESS = "TODO"
 const val PORT = "TODO"
-const val GET = Request.Method.GET
-const val POST = Request.Method.POST
-const val DELETE = Request.Method.DELETE
-const val PUT = Request.Method.PUT
 const val AND = "&"
 const val SKIP = "skip="
 const val COUNT = "count="
@@ -38,8 +35,14 @@ const val USER_QUERY = "user"
 val RESTAURANTS_DTO = RestaurantsDto::class.java
 val MEALS_DTO = MealsDto::class.java
 
+private enum class Method(val method: Int) {
+    GET(Request.Method.GET),
+    POST(Request.Method.POST),
+    PUT(Request.Method.PUT),
+    DELETE(Request.Method.DELETE)
+}
 
-class ApiRequester(val ctx: Context) {
+class ApiRequester(val ctx: Context, val reqQueue: RequestQueue) {
 
     val dtoMapper = ObjectMapper()
         //Ignore unknown json fields
@@ -54,12 +57,14 @@ class ApiRequester(val ctx: Context) {
         success: (List<Restaurant>) -> Unit,
         error: (VolleyError) -> Unit,
         count: Int
-    ): StringRequest {
-        return httpGetServerRequest(
+    ) {
+        httpServerRequest(
+            Method.GET,
             "",
+            RESTAURANTS_DTO,
             success,
             error,
-            RESTAURANTS_DTO
+            null
         )
     }
 
@@ -67,12 +72,14 @@ class ApiRequester(val ctx: Context) {
         success: (List<Meal>) -> Unit,
         error: (VolleyError) -> Unit,
         count: Int
-    ): StringRequest {
-        return httpGetServerRequest(
+    ) {
+        httpServerRequest(
+            Method.GET,
             "",
+            MEALS_DTO,
             success,
             error,
-            MEALS_DTO
+            null
         )
     }
 
@@ -88,67 +95,39 @@ class ApiRequester(val ctx: Context) {
      * PUTs
      */
 
-
-    private fun <Model, Dto : IUnDto<Model>> httpGetServerRequest(
+    private fun <Model, Dto: IUnDto<Model>, ReqPayload> httpServerRequest(
+        method: Method,
         urlStr: String,
-        onSuccess: (Model) -> Unit,
-        onError: (VolleyError) -> Unit,
         dtoClass: Class<Dto>,
-        payload: JSONObject? = null // No payload by default
-    ): StringRequest {
+        onSuccess: (Model) -> Unit,
+        onError: (VolleyError) -> Unit = { Log.v(TAG, it.toString())},
+        reqPayload: ReqPayload?
+    ) {
 
         Log.v(TAG, urlStr)
 
+        //Response payload serialization async worker
         val responseToDtoTask: AsyncWorker<String, Model> =
             AsyncWorker<String, Model> {
                 dtoMapper.readValue(it[0], dtoClass).unDto()
             }.setOnPostExecute(onSuccess)
 
-        // Request a string response from the provided URL.
-        return StringRequest(
-            GET,
-            urlStr,
-            Response.Listener(responseToDtoTask::execute),
-            Response.ErrorListener { err -> onError(err) }
-        )
+        //Request payload serialization async worker
+        AsyncWorker<Unit, Unit> {
 
-        // Add the request to the RequestQueue.
-        // queue.add(stringRequest) --> adds must be made inside the repositories
+            //Create a string payload from
+            val payloadStr = dtoMapper.writeValueAsString(reqPayload)
+
+            //Custom string request that will allow a string payload
+            val jsonRequest = BodyStringRequest(
+                method.method,
+                urlStr,
+                payloadStr,
+                Response.Listener(responseToDtoTask::execute),
+                Response.ErrorListener { err -> onError(err) }
+            )
+            //TODO - Should it be added here?
+            reqQueue.add(jsonRequest)
+        }.execute()
     }
-
-    /*
-    private fun <P, R> httpServerMethodRequest(
-        urlStr: String,
-        onSuccess: (R) -> Unit,
-        onError: (VolleyError) -> Unit,
-        dtoClass: Class<R>,
-        intMethod: Int, //Ex: Request.Method.GET
-        payload: JSONObject?
-    ) : AsyncWorker<String, R> {
-        Log.v(TAG, urlStr)
-        val responseToDtoTask: AsyncWorker<JSONObject, R> =
-            AsyncWorker<JSONObject, R> {
-                it.toString()
-                dtoMapper.readValue()
-                it[0].
-                .readValue(it[0], dtoClass)
-            }.setOnPostExecute(onSuccess)
-        val jsonRequest = JsonObjectRequest(
-            intMethod,
-            urlStr,
-            payload,
-            Response.Listener(responseToDtoTask::execute),
-            Response.ErrorListener { err -> onError(err) }
-        )
-        // Request a string response from the provided URL.
-        val stringRequest = StringRequest(
-            intMethod,
-            urlStr,
-            Response.Listener(responseToDtoTask::execute),
-            Response.ErrorListener { err -> onError(err) }
-        )
-        // Add the request to the RequestQueue.
-        queue.add(stringRequest)
-        return responseToDtoTask
-    }*/
 }
