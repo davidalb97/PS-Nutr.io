@@ -6,13 +6,19 @@
     >
 
     <ImageView
+        android:id="@+id/category_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:src="@drawable/ic_restaurant">
+        android:src="@drawable/ic_favorite"
+        android:contentDescription="TODO">
     </ImageView>
 
     <TextView
         android:id="@+id/category_name"
+        android:layout_alignBottom="@id/category_image"
+        android:gravity="center"
+        android:textSize="16sp"
+        android:textStyle="bold"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/category_name">
