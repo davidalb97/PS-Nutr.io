@@ -7,29 +7,28 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import pt.ipl.isel.leic.ps.androidclient.R
+import java.util.*
 
 class HomeGridAdapter(
-    private val context: Context?,
-    private val buttonImages: List<Int>,
-    private val buttonNames: List<String>
+    context: Context,
+    val buttonImages: List<Int>,
+    val buttonNames: List<String>
 ) : BaseAdapter() {
 
-    override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View? {
 
-        var view = View(context)
-        val inflater =
-            context
-                ?.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+    private var inflater: LayoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 
-        if (convertView == null) {
-            view = inflater.inflate(R.layout.category_button, null)
+    override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
+        var holder = ButtonsHolder()
+        var view = inflater.inflate(R.layout.category_button,null)
 
-            val buttonImage = view.findViewById<ImageView>(R.id.category_image)
-            val buttonText = view.findViewById<TextView>(R.id.category_name)
-            buttonImage?.setImageResource(buttonImages[position])
-            buttonText?.text = buttonNames[position]
-        }
+        holder.buttonImage = view.findViewById(R.id.category_image)
+        holder.buttonName = view.findViewById(R.id.category_name)
+
+        holder.buttonImage.setImageResource(buttonImages[position])
+        holder.buttonName.text = buttonNames[position]
 
         return view
     }
@@ -45,4 +44,10 @@ class HomeGridAdapter(
     override fun getCount(): Int {
         return buttonImages.size
     }
+}
+
+class ButtonsHolder {
+    lateinit var button: CardView
+    lateinit var buttonImage: ImageView
+    lateinit var buttonName: TextView
 }
