@@ -1,5 +1,6 @@
 package pt.ipl.isel.leic.ps.androidclient.ui.home
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -13,13 +14,14 @@ import java.util.*
 
 class HomeGridAdapter(
     context: Context,
-    val buttonImages: List<Int>,
-    val buttonNames: List<String>
+    private val buttonImages: List<Int>,
+    private val buttonNames: List<String>
 ) : BaseAdapter() {
 
 
     private var inflater: LayoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 
+    @SuppressLint("ViewHolder", "InflateParams")
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
         var holder = ButtonsHolder()
         var view = inflater.inflate(R.layout.category_button,null)
@@ -34,11 +36,11 @@ class HomeGridAdapter(
     }
 
     override fun getItem(position: Int): Any {
-        return 0
+        return position
     }
 
     override fun getItemId(position: Int): Long {
-        return 0
+        return position.toLong()
     }
 
     override fun getCount(): Int {
