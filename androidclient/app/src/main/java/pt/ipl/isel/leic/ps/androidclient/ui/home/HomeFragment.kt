@@ -37,6 +37,6 @@ class HomeFragment() : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val gridView = view.findViewById<GridView>(R.id.homeGrid)
-        gridView.adapter = HomeGridAdapter(view.context, buttonImages, buttonNames)
+        gridView.adapter = HomeAdapter(view.context, buttonImages, buttonNames)
     }
 }

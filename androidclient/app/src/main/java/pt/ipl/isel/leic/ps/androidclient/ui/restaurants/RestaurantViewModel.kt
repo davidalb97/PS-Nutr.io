@@ -1,4 +1,4 @@
-package pt.ipl.isel.leic.ps.androidclient.ui.restaurant
+package pt.ipl.isel.leic.ps.androidclient.ui.restaurants
 
 import androidx.lifecycle.ViewModel
 
