@@ -12,16 +12,18 @@ private const val ZOMATO_API_KEY = "3e128506ffbfc1c23b4e2b6acd3eb84b"
 
 class ZomatoRestaurantApi(private val clientHttp: HttpApiClient, private val jsonMapper: ObjectMapper) : IRestaurantApi {
 
+    private val uri = ZomatoUriBuilder()
+
     override fun getRestaurantInfo(id: Int): Any {
         TODO("Not yet implemented")
     }
 
     override fun searchRestaurants(latitude: Float, longitude: Float, radiusMeters: Int): CompletableFuture<List<RestaurantResponse>> =
-            requestDto(search(latitude, longitude, radiusMeters), RestaurantSearchResultDto::class.java)
-                .thenApply(RestaurantSearchResultDto::unDto)
+            requestDto(uri.restaurantSearchUri(latitude, longitude, radiusMeters), RestaurantSearchResultDto::class.java)
+                    .thenApply(RestaurantSearchResultDto::unDto)
 
     override fun restaurantDailyMeals(restaurantId: Int): CompletableFuture<List<String>> =
-            requestDto(dailyMenu(restaurantId), DailyMenuDto::class.java)
+            requestDto(uri.restaurantDailyMenuUri(restaurantId), DailyMenuDto::class.java)
                     .thenApply(DailyMenuDto::unDto)
 
     private fun <R, D : IUnDto<R>, C : Class<D>> requestDto(urlStr: String, clazz: C): CompletableFuture<D> {

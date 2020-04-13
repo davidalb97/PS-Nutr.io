@@ -1,7 +1,5 @@
 package pt.isel.ps.g06.httpserver.dataAccess.api.restaurant
 
-import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.dto.DailyMenuDto
-import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.dto.RestaurantSearchResultDto
 import pt.isel.ps.g06.httpserver.dataAccess.model.RestaurantResponse
 import java.util.concurrent.CompletableFuture
 
