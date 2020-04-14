@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration
 @Configuration
 class FoodApiRepository(factory: BeanFactory) {
 
-    private val apis = mapOf(
+    private val foodApis = mapOf(
             Pair(FoodApiType.Spoonacular, factory.getBean(SpoonacularFoodApi::class.java))
     )
 
@@ -20,5 +20,5 @@ class FoodApiRepository(factory: BeanFactory) {
     /**
      * @throws NoSuchElementException when api name is invalid
      */
-    fun getFoodApi(type: FoodApiType): IFoodApi = apis.getValue(type)
+    fun getFoodApi(type: FoodApiType): IFoodApi = foodApis.getValue(type)
 }
