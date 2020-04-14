@@ -19,8 +19,15 @@ class HomeFragment() : Fragment() {
     )
 
     private val buttonImages = listOf(
-        R.drawable.ic_restaurant,
-        R.drawable.ic_menu_book
+        listOf(
+            R.drawable.ic_restaurant,
+            R.drawable.ic_menu_book
+        ),
+
+        listOf(
+            R.drawable.ic_favorite,
+            R.drawable.ic_info
+        )
     )
 
     override fun onCreateView(

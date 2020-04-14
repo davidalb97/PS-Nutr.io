@@ -6,32 +6,35 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
-import android.widget.ImageView
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.navigation.findNavController
 import pt.ipl.isel.leic.ps.androidclient.R
+import java.lang.RuntimeException
 
 class HomeAdapter(
     context: Context,
-    private val buttonImages: List<Int>,
+    private val buttonImages: List<List<Int>>,
     private val buttonNames: List<String>
 ) : BaseAdapter() {
-
 
     private var inflater: LayoutInflater =
         context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 
     @SuppressLint("ViewHolder", "InflateParams", "ResourceType")
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
-        var holder = ButtonsHolder()
+        var i = 0;
+        var holder = ButtonHolder()
         var view = inflater.inflate(R.layout.category_button, null)
 
         holder.button = view.findViewById(R.id.buttonCardView)
-        holder.buttonImage = view.findViewById(R.id.category_image)
+        holder.buttonImage1 = view.findViewById(R.id.category_button1)
+        holder.buttonImage2 = view.findViewById(R.id.category_button2)
         holder.buttonName = view.findViewById(R.id.category_name)
 
-        holder.buttonImage.setImageResource(buttonImages[position])
+        holder.buttonImage1.setImageResource(buttonImages[position][i])
+        holder.buttonImage2.setImageResource(buttonImages[position][i+1])
         holder.buttonName.text = buttonNames[position]
 
         holder.button.setOnClickListener { view ->
@@ -57,13 +60,14 @@ class HomeAdapter(
         return when(buttonName.text) {
             "Restaurants" ->  R.id.nav_restaurant
             "Meals" -> R.id.nav_about // TODO: Change
-            else -> 0
+            else -> throw RuntimeException("Socorro")
         }
     }
 }
 
-class ButtonsHolder {
+class ButtonHolder {
     lateinit var button: CardView
-    lateinit var buttonImage: ImageView
+    lateinit var buttonImage1: ImageButton
+    lateinit var buttonImage2: ImageButton
     lateinit var buttonName: TextView
 }

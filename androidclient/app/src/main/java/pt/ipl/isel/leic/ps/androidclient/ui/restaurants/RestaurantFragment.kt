@@ -33,7 +33,7 @@ class RestaurantFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         restaurantPagerAdapter = RestaurantAdapter(childFragmentManager)
         restaurantPagerAdapter.addFragment(CuisinesFragment(), "Search by Cuisines")
-        restaurantPagerAdapter.addFragment(MapFragment(), "Search by Location")
+        restaurantPagerAdapter.addFragment(CuisinesFragment(), "Search by Location")
         restaurantPagerAdapter.addFragment(CuisinesFragment(), "Search by Meals")
         viewPager = view.findViewById(R.id.viewPager)
         tabs = view.findViewById(R.id.restaurant_tab)

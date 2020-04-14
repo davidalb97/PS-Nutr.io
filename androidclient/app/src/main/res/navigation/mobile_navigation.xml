@@ -12,9 +12,15 @@
         tools:layout="@layout/fragment_home" />
 
     <fragment
-        android:id="@+id/nav_search"
+        android:id="@+id/nav_profile"
         android:name="pt.ipl.isel.leic.ps.androidclient.ui.search.SearchFragment"
-        android:label="@string/menu_search"
+        android:label="@string/menu_profile"
+        tools:layout="@layout/fragment_settings" />
+
+    <fragment
+        android:id="@+id/nav_settings"
+        android:name="pt.ipl.isel.leic.ps.androidclient.ui.search.SearchFragment"
+        android:label="@string/menu_settings"
         tools:layout="@layout/fragment_settings" />
 
     <fragment
@@ -39,5 +45,5 @@
         android:id="@+id/nav_location"
         android:name="pt.ipl.isel.leic.ps.androidclient.ui.MapFragment"
         android:label="@string/menu_restaurant"
-        tools:layout="@layout/fragment_location" />
+        tools:layout="@layout/fragment_map" />
 </navigation>
