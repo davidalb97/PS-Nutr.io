@@ -1,7 +1,6 @@
 package pt.isel.ps.g06.httpserver.dataAccess.db.concrete
 
-
-data class DbMeal(
+data class DbSubmission(
         val submission_id: Int,
-        val meal_name: String
+        val submission_type: String
 )
