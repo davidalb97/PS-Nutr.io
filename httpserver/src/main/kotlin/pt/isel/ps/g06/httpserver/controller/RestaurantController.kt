@@ -1,5 +1,6 @@
 package pt.isel.ps.g06.httpserver.controller
 
+import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
 import pt.isel.ps.g06.httpserver.data.RestaurantInput
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.RestaurantApiRepository
@@ -10,8 +11,8 @@ const val MAX_RADIUS = 1000
 @RestController
 @RequestMapping("/restaurant")
 class RestaurantController(
-        private val restaurantRepository: DbRestaurantRepository,
-        private val restaurantApiRepo: RestaurantApiRepository
+        private val dbRestaurantRepository: DbRestaurantRepository,
+        private val restaurantApiRepository: RestaurantApiRepository
 ) {
 
     @GetMapping
@@ -46,36 +47,36 @@ class RestaurantController(
      * Current search algorithm will first query the Database for any restaurant, and only if none was found,
      * search the preferred Restaurant API (Zomato, etc.)
      */
-    @GetMapping("/{id}")
+    @GetMapping("/{id}", produces = [MediaType.APPLICATION_JSON_VALUE])
     fun getRestaurantInformation(@PathVariable id: Int, api: String?): String {
         return ""
     }
 
-    @PostMapping(consumes = ["application/json"])
+    @PostMapping(consumes = [MediaType.APPLICATION_JSON_VALUE])
     fun createRestaurant(@RequestBody restaurant: RestaurantInput) {
     }
 
-    @PostMapping("/{id}/report", consumes = ["application/json"])
+    @PostMapping("/{id}/report", consumes = [MediaType.APPLICATION_JSON_VALUE])
     fun addRestaurantReport(@PathVariable id: String, @RequestBody report: String) {
 
     }
 
-    @PostMapping("/{id}/vote", consumes = ["application/json"])
+    @PostMapping("/{id}/vote", consumes = [MediaType.APPLICATION_JSON_VALUE])
     fun addRestaurantVote(@PathVariable id: String, @RequestBody vote: String) {
 
     }
 
-    @PutMapping("/{id}/vote", consumes = ["application/json"])
+    @PutMapping("/{id}/vote", consumes = [MediaType.APPLICATION_JSON_VALUE])
     fun updateRestaurantVote(@PathVariable id: String, @RequestBody vote: String) {
 
     }
 
-    @DeleteMapping("/{id}", consumes = ["application/json"])
+    @DeleteMapping("/{id}", consumes = [MediaType.APPLICATION_JSON_VALUE])
     fun deleteRestaurant(@PathVariable id: String) {
 
     }
 
-    @DeleteMapping("/{id}/vote", consumes = ["application/json"])
+    @DeleteMapping("/{id}/vote", consumes = [MediaType.APPLICATION_JSON_VALUE])
     fun deleteRestaurantVote(@PathVariable id: String, vote: String) {
 
     }

@@ -1,5 +1,6 @@
 package pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.dto
 
+import pt.isel.ps.g06.httpserver.dataAccess.api.IUnDto
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.RestaurantApiType
 import pt.isel.ps.g06.httpserver.dataAccess.model.RestaurantResponse
 

@@ -1,6 +1,6 @@
 package pt.isel.ps.g06.httpserver.dataAccess.api.food.dto
 
-import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.dto.IUnDto
+import pt.isel.ps.g06.httpserver.dataAccess.api.IUnDto
 
 data class ProductSearchAutoComplContainerDto(
         val results: Array<ProductSearchAutoComplDto>?

@@ -1,5 +1,7 @@
 package pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.dto
 
+import pt.isel.ps.g06.httpserver.dataAccess.api.IUnDto
+
 data class DailyMenuDto(
         val daily_menu: Array<DailyMenuContainerDto>?,
         val code: Int?,
