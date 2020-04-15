@@ -56,6 +56,11 @@ class RestaurantController(
     fun createRestaurant(@RequestBody restaurant: RestaurantInput) {
     }
 
+    @DeleteMapping("/{id}", consumes = [MediaType.APPLICATION_JSON_VALUE])
+    fun deleteRestaurant(@PathVariable id: String) {
+
+    }
+
     @PostMapping("/{id}/report", consumes = [MediaType.APPLICATION_JSON_VALUE])
     fun addRestaurantReport(@PathVariable id: String, @RequestBody report: String) {
 
@@ -71,15 +76,8 @@ class RestaurantController(
 
     }
 
-    @DeleteMapping("/{id}", consumes = [MediaType.APPLICATION_JSON_VALUE])
-    fun deleteRestaurant(@PathVariable id: String) {
-
-    }
-
     @DeleteMapping("/{id}/vote", consumes = [MediaType.APPLICATION_JSON_VALUE])
     fun deleteRestaurantVote(@PathVariable id: String, vote: String) {
 
     }
-
-
 }
