@@ -4,7 +4,6 @@ import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.RestaurantApiType
 
 data class RestaurantResponse(
         val apiId: Int,
-        val apiType: RestaurantApiType,
         val name: String,
         val latitude: Float,
         val longitude: Float,
@@ -17,7 +16,6 @@ data class RestaurantResponse(
         other as RestaurantResponse
 
         if (apiId != other.apiId) return false
-        if (apiType != other.apiType) return false
         if (name != other.name) return false
         if (latitude != other.latitude) return false
         if (longitude != other.longitude) return false
@@ -28,7 +26,6 @@ data class RestaurantResponse(
 
     override fun hashCode(): Int {
         var result = apiId
-        result = 31 * result + apiType.hashCode()
         result = 31 * result + name.hashCode()
         result = 31 * result + latitude.hashCode()
         result = 31 * result + longitude.hashCode()

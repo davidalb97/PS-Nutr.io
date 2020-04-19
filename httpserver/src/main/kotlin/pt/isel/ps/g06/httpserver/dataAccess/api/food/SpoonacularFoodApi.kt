@@ -46,9 +46,9 @@ class SpoonacularFoodApi(private val clientHttp: HttpApiClient, private val json
             query: String,
             number: Int? = null
     ): CompletableFuture<List<ProductSearchAutoComplDto>> {
-        return requestDto<ProductSearchAutoComplContainerDto>(
+        return requestDto<ProductSearchAutoComplContainerDtoMapper>(
                 uri.productSearchAutocompleteUri(query, number)
-        ).thenApply(ProductSearchAutoComplContainerDto::unDto)
+        ).thenApply(ProductSearchAutoComplContainerDtoMapper::mapDto)
     }
 
     //-------------------------------Recipes------------------------------------
@@ -69,7 +69,7 @@ class SpoonacularFoodApi(private val clientHttp: HttpApiClient, private val json
             instructionsRequired: Boolean? = null
     ): CompletableFuture<List<RecipeDto>> {
 
-        return requestDto<RecipeContainerDto>(
+        return requestDto<RecipeContainerDtoMapper>(
                 uri.recipesSearchUri(
                         recipeName,
                         cuisines,
@@ -81,7 +81,7 @@ class SpoonacularFoodApi(private val clientHttp: HttpApiClient, private val json
                         limitLicense,
                         instructionsRequired
                 )
-        ).thenApply(RecipeContainerDto::unDto)
+        ).thenApply(RecipeContainerDtoMapper::mapDto)
     }
 
     //----------------------------Ingredients----------------------------------
@@ -109,15 +109,17 @@ class SpoonacularFoodApi(private val clientHttp: HttpApiClient, private val json
     }
 
     private fun <D> requestDto(urlStr: String): CompletableFuture<D> {
-        return clientHttp.request(
-                urlStr,
-                mapOf(
-                        Pair("user-key", SPOONACULCAR_API_KEY),
-                        Pair("Accept", "application/json")
-                ),
-                { false },
-                { jsonMapper.readValue(it.body(), object : TypeReference<D>() {}) }
-        )
+        return CompletableFuture.supplyAsync {
+            clientHttp.request(
+                    urlStr,
+                    mapOf(
+                            Pair("user-key", SPOONACULCAR_API_KEY),
+                            Pair("Accept", "application/json")
+                    ),
+                    { false },
+                    { jsonMapper.readValue(it.body(), object : TypeReference<D>() {}) }
+            )
+        }
     }
 
     override fun getType() = FoodApiType.Spoonacular

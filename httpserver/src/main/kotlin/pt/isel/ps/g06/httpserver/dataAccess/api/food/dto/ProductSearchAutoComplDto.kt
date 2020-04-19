@@ -1,16 +1,16 @@
 package pt.isel.ps.g06.httpserver.dataAccess.api.food.dto
 
-import pt.isel.ps.g06.httpserver.dataAccess.api.IUnDto
+import pt.isel.ps.g06.httpserver.dataAccess.DtoMapper
 
-data class ProductSearchAutoComplContainerDto(
+data class ProductSearchAutoComplContainerDtoMapper(
         val results: Array<ProductSearchAutoComplDto>?
-) : IUnDto<List<ProductSearchAutoComplDto>> {
+) : DtoMapper<List<ProductSearchAutoComplDto>> {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as ProductSearchAutoComplContainerDto
+        other as ProductSearchAutoComplContainerDtoMapper
 
         if (results != null) {
             if (other.results == null) return false
@@ -24,7 +24,7 @@ data class ProductSearchAutoComplContainerDto(
         return results?.contentHashCode() ?: 0
     }
 
-    override fun unDto(): List<ProductSearchAutoComplDto> =
+    override fun mapDto(): List<ProductSearchAutoComplDto> =
             results?.toList() ?: emptyList()
 }
 
