@@ -22,5 +22,5 @@ interface SubmissionSubmitterDao {
     fun getBySubmitterId(submitterId: Int): DbSubmissionSubmitter
 
     @SqlQuery("INSERT INTO $table($submissionId, $submitterId) VALUES(:submission_id, :submitter_id)")
-    fun insert(@Bind submission_id: String, @Bind submitter_id: String): Int
+    fun insert(@Bind submission_id: Int, @Bind submitter_id: Int): Int
 }

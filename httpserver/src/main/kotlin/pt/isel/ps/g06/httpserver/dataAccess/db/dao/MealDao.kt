@@ -12,12 +12,12 @@ private const val id = "submission_id"
 interface MealDao {
 
     @SqlQuery("SELECT * FROM $table WHERE $id = :submission_id")
-    fun getById(@Bind submission_id: String): List<DbMeal>
+    fun getById(@Bind submission_id: Int): List<DbMeal>
 
     @SqlQuery("SELECT * FROM $table WHERE $name = :mealName")
     fun getByName(@Bind mealName: String): List<DbMeal>
 
     @SqlQuery("INSERT INTO $table($id, $name) VALUES(:submission_id, :mealName)")
-    fun insert(@Bind submission_id: String, @Bind mealName: String)
+    fun insert(@Bind submission_id: Int, @Bind mealName: String)
 
 }
