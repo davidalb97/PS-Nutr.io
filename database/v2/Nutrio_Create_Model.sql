@@ -117,6 +117,14 @@ CREATE TABLE Ingredient(
 	FOREIGN KEY(submission_id) REFERENCES Submission(submission_id)
 );
 
+CREATE TABLE MealIngredient(
+	meal_submission_id integer,
+	ingredient_submission_id integer,
+	PRIMARY KEY(meal_submission_id, ingredient_submission_id),
+	FOREIGN KEY(meal_submission_id) REFERENCES Meal(submission_id),
+	FOREIGN KEY(ingredient_submission_id) REFERENCES Ingredient(submission_id)
+);
+
 CREATE TABLE RestaurantMealPortion(
 	meal_submission_id integer,
 	portion_submission_id integer,
