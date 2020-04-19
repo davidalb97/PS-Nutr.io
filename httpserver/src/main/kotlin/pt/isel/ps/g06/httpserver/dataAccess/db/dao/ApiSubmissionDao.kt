@@ -21,5 +21,5 @@ interface ApiSubmissionDao {
     fun getAllByApiId(apiId: Int): List<DbAPI_Submission>
 
     @SqlQuery("INSERT INTO $table($submissionId, $apiId, $submissionType) VALUES(:submissionId, :apiId, :submissionType)")
-    fun insert(@Bind submissionId: Int, apiId: Int, submissionType: String)
+    fun insert(@Bind submissionId: Int, apiId: Int, submissionType: String): Int
 }

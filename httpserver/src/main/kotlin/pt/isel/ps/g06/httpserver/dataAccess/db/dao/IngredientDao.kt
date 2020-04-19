@@ -17,5 +17,5 @@ interface IngredientDao {
     fun getByName(@Bind ingredientName: String): DbIngredient
 
     @SqlQuery("INSERT INTO $table($id, $name) VALUES(:submissionId, :ingredientName)")
-    fun insert(@Bind submissionId: Int, ingredientName: String)
+    fun insert(@Bind submissionId: Int, ingredientName: String): Int
 }
