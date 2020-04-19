@@ -4,21 +4,21 @@ import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 
 private const val votableTable = "Votable"
-private const val voteSubmissionId = "submission_id"
-private const val voteSubmitterId = "vote_submitter_id"
+private const val submissionId = "submission_id"
+private const val voterSubmitterId = "vote_submitter_id"
 private const val vote = "vote"
 
 interface VoteDao {
 
-    @SqlQuery("INSERT INTO $votableTable($voteSubmissionId, $voteSubmitterId, $vote) " +
+    @SqlQuery("INSERT INTO $votableTable($submissionId, $voterSubmitterId, $vote) " +
             "VALUES(:voteSubmissionId, :voteSubmitterId, :vote)")
-    fun insertVote(@Bind voteSubmissionId: Int, voteSubmitterId: Int, vote: Boolean): Int
+    fun insert(@Bind voteSubmissionId: Int, voterSubmitterId: Int, vote: Boolean): Int
 
-    @SqlQuery("DELETE FROM $votableTable WHERE $voteSubmissionId =" +
-            " :submissionId, $voteSubmitterId = :voteSubmitterId")
-    fun deleteVote(@Bind submissionId: Int, voteSubmitterId: Int): Int
+    @SqlQuery("DELETE FROM $votableTable WHERE $submissionId =" +
+            " :submissionId, $voterSubmitterId = :voteSubmitterId")
+    fun delete(@Bind submissionId: Int, voteSubmitterId: Int): Int
 
-    @SqlQuery("UPDATE SET $votableTable SET $vote = :vote WHERE $voteSubmissionId =" +
-            " :submissionId, $voteSubmitterId = :voteSubmitterId")
-    fun updateVote(@Bind submissionId: Int, voteSubmitterId: Int, vote: Boolean): Int
+    @SqlQuery("UPDATE SET $votableTable SET $vote = :vote WHERE $submissionId =" +
+            " :submissionId, $voterSubmitterId = :voteSubmitterId")
+    fun update(@Bind submissionId: Int, voteSubmitterId: Int, vote: Boolean): Int
 }
