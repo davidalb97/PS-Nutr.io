@@ -6,14 +6,22 @@ import org.jdbi.v3.sqlobject.statement.SqlQuery
 import org.jdbi.v3.sqlobject.transaction.Transaction
 import pt.isel.ps.g06.httpserver.dataAccess.db.concrete.DbRestaurant
 
-private const val restaurant = "Restaurant"
+private const val table = "Restaurant"
+private const val id = "restaurant_id"
+private const val name = "restaurant_name"
+private const val latitude = "latitude"
+private const val longitude = "longitude"
 
 interface RestaurantDao {
 
-    @SqlQuery("SELECT * FROM $restaurant")
-    fun getRestaurantsByCoordinates(@Bind latitude: Float, @Bind longitude: Float, radius: Int): List<DbRestaurant>
+    //TODO! must call geo-location function!
+    @SqlQuery("SELECT * FROM $table WHERE geoloc($latitude, $longitude) < :radius")
+    fun getByCoordinates(@Bind latitude: Float, @Bind longitude: Float, radius: Int): List<DbRestaurant>
 
-    @SqlQuery("SELECT * FROM $restaurant WHERE restaurant_id = :restaurantId")
+    @SqlQuery("SELECT * FROM $table WHERE $id = :restaurantId")
     @Transaction(TransactionIsolationLevel.SERIALIZABLE)
-    fun getRestaurantById(@Bind restaurantId: Int): DbRestaurant?
+    fun getById(@Bind restaurantId: Int): DbRestaurant?
+
+    @SqlQuery("INSERT INTO $table($id, $name, $latitude, $longitude) VALUES(:submission_id, :restaurant_name, :latitude, :longitude)")
+    fun insert(@Bind submission_id: String, @Bind restaurant_name: String, @Bind latitue: Float, @Bind longitude: Float)
 }

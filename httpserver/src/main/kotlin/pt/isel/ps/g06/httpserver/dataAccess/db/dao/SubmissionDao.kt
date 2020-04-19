@@ -12,12 +12,12 @@ private const val submissionId = "submission_id"
 interface SubmissionDao {
 
     @SqlQuery("SELECT * FROM $submissionTable")
-    fun getSubmissions(): List<DbSubmission>
+    fun getAll(): List<DbSubmission>
 
     @SqlQuery("SELECT * FROM $submissionTable WHERE $submissionId = :submissionId")
-    fun getSubmissionById(submissionId: Int): DbSubmission
+    fun getById(submissionId: Int): DbSubmission
 
     @SqlQuery("INSERT INTO $submissionTable($submissionType) VALUES(:submission_type)")
     @GetGeneratedKeys
-    fun insertSubmission(@Bind submission_type: String): Int
+    fun insert(@Bind submission_type: String): Int
 }
