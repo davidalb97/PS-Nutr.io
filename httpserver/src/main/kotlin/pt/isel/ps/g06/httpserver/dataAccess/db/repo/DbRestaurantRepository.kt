@@ -9,17 +9,16 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.dao.RestaurantDao
 @Repository
 class DbRestaurantRepository(private val jdbi: Jdbi) {
 
-    val handle: Handle = jdbi.open()
     val restaurantDao = RestaurantDao::class.java
 
     fun getRestaurantById(id: Int) {
-        return handle.use {
+        return jdbi.open().use {
             it.attach(restaurantDao).getRestaurantById(id)
         }
     }
 
     fun getRestaurantsByCoordinates(latitude: Float, longitude: Float, radius: Int): List<DbRestaurant> {
-        return handle.use {
+        return jdbi.open().use {
             it.attach(restaurantDao).getRestaurantsByCoordinates(longitude, latitude, radius)
         }
     }
