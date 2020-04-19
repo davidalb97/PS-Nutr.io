@@ -25,7 +25,7 @@ CREATE TABLE _User(
 	submitter_id integer,
 	email varchar(50),
 	session_secret varchar(256) NOT NULL, -- TODO: Check maximum length
-	creation_date timestamp with time zone, -- Add to doc
+	creation_date timestamp with time zone default CURRENT_TIMESTAMP(), -- Add to doc
 	PRIMARY KEY(submitter_id, email),
 	FOREIGN KEY(submitter_id) REFERENCES Submitter(submitter_id)
 );
@@ -62,7 +62,7 @@ CREATE TABLE API_Submission(
 CREATE TABLE SubmissionSubmitter(	
 	submission_id integer,
 	submitter_id integer,
-	submission_date timestamp with time zone, -- Add to doc
+	submission_date timestamp with time zone default CURRENT_TIMESTAMP(), -- Add to doc
 	PRIMARY KEY(submission_id, submitter_id),
 	FOREIGN KEY(submission_id) REFERENCES Submission(submission_id),
 	FOREIGN KEY(submitter_id) REFERENCES Submitter(submitter_id)
