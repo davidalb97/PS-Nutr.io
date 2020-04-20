@@ -11,8 +11,8 @@ private const val quantity = "quantity"
 interface PortionDao {
 
     @SqlQuery("SELECT * FROM $table WHERE $id = :submissionId")
-    fun getById(@Bind submissionId: Int): DbPortion
+    fun getById(@Bind submissionId: Int): List<DbPortion>
 
     @SqlQuery("INSERT INTO $table($id, $quantity) VALUES(:submissionId, :quantity)")
-    fun insert(@Bind submissionId: Int, quantity: Int): Int
+    fun insert(@Bind submissionId: Int, quantity: Int): Boolean
 }

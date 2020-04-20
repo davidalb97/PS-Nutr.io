@@ -12,13 +12,13 @@ interface VoteDao {
 
     @SqlQuery("INSERT INTO $votableTable($submissionId, $voterSubmitterId, $vote) " +
             "VALUES(:voteSubmissionId, :voteSubmitterId, :vote)")
-    fun insert(@Bind voteSubmissionId: Int, voterSubmitterId: Int, vote: Boolean): Int
+    fun insert(@Bind voteSubmissionId: Int, voterSubmitterId: Int, vote: Boolean): Boolean
 
     @SqlQuery("DELETE FROM $votableTable WHERE $submissionId =" +
             " :submissionId, $voterSubmitterId = :voteSubmitterId")
-    fun delete(@Bind submissionId: Int, voteSubmitterId: Int): Int
+    fun delete(@Bind submissionId: Int, voteSubmitterId: Int): Boolean
 
     @SqlQuery("UPDATE SET $votableTable SET $vote = :vote WHERE $submissionId =" +
             " :submissionId, $voterSubmitterId = :voteSubmitterId")
-    fun update(@Bind submissionId: Int, voteSubmitterId: Int, vote: Boolean): Int
+    fun update(@Bind submissionId: Int, voteSubmitterId: Int, vote: Boolean): Boolean
 }

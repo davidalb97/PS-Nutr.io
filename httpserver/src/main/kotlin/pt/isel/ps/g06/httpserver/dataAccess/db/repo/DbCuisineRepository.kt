@@ -12,18 +12,18 @@ class DbCuisineRepository(private val jdbi: Jdbi) {
     val serializable = TransactionIsolationLevel.SERIALIZABLE
     val cuisineDao = CuisineDao::class.java
 
-    fun insertCuisine(name: String): Int {
-        return jdbi.open().use { handle ->
-            return handle.inTransaction<Int, Exception>(serializable) {
-                it.attach(cuisineDao).insert(name)
-            }
-        }
-    }
-
     fun getCuisineById(name: String): List<DbCuisine> {
         return jdbi.open().use { handle ->
             return handle.inTransaction<List<DbCuisine>, Exception>(serializable) {
                 it.attach(cuisineDao).getByName(name)
+            }
+        }
+    }
+
+    fun insertCuisine(name: String): Int {
+        return jdbi.open().use { handle ->
+            return handle.inTransaction<Int, Exception>(serializable) {
+                it.attach(cuisineDao).insert(name)
             }
         }
     }

@@ -23,5 +23,5 @@ interface RestaurantMealPortionDao {
     fun getByRestaurantId(@Bind restaurantId: Int): DbRestaurantMealPortion
 
     @SqlQuery("INSERT INTO $table($mealId, $portionId, $restaurantId) VALUES(:mealId, :portionId, :restaurantId)")
-    fun insert(@Bind mealId: Int, @Bind portionId: Int, restaurantId: Int): Int
+    fun insert(@Bind mealId: Int, @Bind portionId: Int, restaurantId: Int): Boolean
 }

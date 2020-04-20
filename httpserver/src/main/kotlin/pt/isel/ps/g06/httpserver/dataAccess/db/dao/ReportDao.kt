@@ -12,5 +12,5 @@ interface ReportDao {
 
     @SqlQuery("INSERT INTO $table($reporter_id, $submission_id, $description) " +
             "VALUES(:reporterSubmitterId, :submissionId, :description)")
-    fun insert(@Bind reporterSubmitterId: Int, submissionId: Int, description: String): Int
+    fun insert(@Bind reporterSubmitterId: Int, submissionId: Int, description: String): Boolean
 }
