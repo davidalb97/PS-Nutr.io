@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository
 import pt.isel.ps.g06.httpserver.dataAccess.api.food.FoodApiType
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.*
+import pt.isel.ps.g06.httpserver.dataAccess.model.Ingredient
 
 @Repository
 class DbMealRepository(private val jdbi: Jdbi) {
@@ -15,39 +16,85 @@ class DbMealRepository(private val jdbi: Jdbi) {
             mealName: String,
             apiId: Int? = null,
             cuisines: List<String> = emptyList(),
-            ingredientIds: List<Int> = emptyList(),
+            ingredientIds: List<Ingredient> = emptyList(),
             foodApi: FoodApiType? = null
     ): Boolean {
         return jdbi.open().use { handle ->
             return handle.inTransaction<Boolean, Exception>(TransactionIsolationLevel.SERIALIZABLE) {
 
                 val submissionDao = it.attach(SubmissionDao::class.java)
-                val submissionId = submissionDao.insert(SubmissionType.Meal.name)
+                val mealSubmissionId = submissionDao.insert(SubmissionType.Meal.name)
 
                 val submissionSubmitterDao = it.attach(SubmissionSubmitterDao::class.java)
-                submissionSubmitterDao.insert(submissionId, submitterId)
+                submissionSubmitterDao.insert(mealSubmissionId, submitterId)
 
                 val mealDao = it.attach(MealDao::class.java)
-                mealDao.insert(submissionId, mealName)
+                mealDao.insert(mealSubmissionId, mealName)
 
                 val cuisineDao = it.attach(CuisineDao::class.java)
-                cuisines.forEach(cuisineDao::insert)
+                cuisineDao.insertAll(*cuisines.map(::CuisineParam).toTypedArray())
 
-                if(foodApi != null) {
-                    //A meal made out of ingredients does not have apiId as the meal itself does not exist
-                    if(apiId == null) {
-                        val mealIngredientDao = it.attach(MealIngredientDao::class.java)
-                        ingredientIds.forEach{ mealIngredientDao.insert(it, submissionId) }
-                    }
-                    //If the meal originated from an external API
-                    else {
-                        val apiDao = it.attach(ApiDao::class.java)
-                        val apiSubmitterId = apiDao.getIdByName(foodApi.toString())
-                        submissionSubmitterDao.insert(submissionId, apiSubmitterId)
+                if (foodApi != null) {
 
-                        val apiSubmissionDao = it.attach(ApiSubmissionDao::class.java)
-                        apiSubmissionDao.insert(submissionId, apiId, foodApi.toString())
+                    //----------------Api Submission---------------
+
+                    val apiDao = it.attach(ApiDao::class.java)
+                    val apiSubmitterId = apiDao.getIdByName(foodApi.toString())
+                    submissionSubmitterDao.insert(mealSubmissionId, apiSubmitterId)
+
+                    //If this meal comes from an external API
+                    val apiSubmissionDao = it.attach(ApiSubmissionDao::class.java)
+                    if (apiId != null) {
+                        apiSubmissionDao.insert(mealSubmissionId, apiId, foodApi.toString())
                     }
+
+
+                    if (ingredientIds.isEmpty()) {
+                        return@inTransaction true
+                    }
+                    //----------------Ingredients---------------
+
+                    val ingredientDao = it.attach(IngredientDao::class.java)
+
+                    //Get all API ids from
+                    val insertedApiIngredientIds = ingredientDao.getAllApiIdsBySubmitterId(apiSubmitterId)
+
+                    //Get ingredient API ids from missing ingredient insertions
+                    val apiIdsToInsert = ingredientIds
+                            .filter { !insertedApiIngredientIds.contains(it.apiId) }
+
+                    //Insert a new submission for each new ingredient
+                    val ingredientSubmissionIds = submissionDao.insertAll(
+                            *apiIdsToInsert.map { SubmissionParam(SubmissionType.Ingredient.name) }.toTypedArray()
+                    )
+
+                    //Insert all Submission - Submitter associations
+                    submissionSubmitterDao.insertAll(
+                            *ingredientSubmissionIds.map {
+                                SubmissionSubmitterParam(it, apiSubmitterId)
+                            }.toTypedArray()
+                    )
+
+                    //Insert all new ingredients
+                    ingredientDao.insertAll(
+                            //Zip ingredient submission ids with new ingredient list
+                            *ingredientSubmissionIds.zip(apiIdsToInsert) { submissionId, ingredient ->
+                                IngredientParam(submissionId, ingredient.name)
+                            }.toTypedArray()
+                    )
+
+                    //Insert all submission - ingredient associations
+                    val mealIngredientDao = it.attach(MealIngredientDao::class.java)
+                    mealIngredientDao.insertAll(
+                            *ingredientSubmissionIds.map { MealIngredientParam(mealSubmissionId, it) }.toTypedArray()
+                    )
+
+                    //Insert all submission - api submission associations
+                    apiSubmissionDao.insertAll(
+                            *ingredientSubmissionIds.zip(apiIdsToInsert) { submissionId, ingredient ->
+                                ApiSubmissionParam(submissionId, ingredient.apiId, ingredient.name)
+                            }.toTypedArray()
+                    )
                 }
 
                 true
