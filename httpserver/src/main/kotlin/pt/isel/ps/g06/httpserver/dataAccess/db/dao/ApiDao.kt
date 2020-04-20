@@ -3,7 +3,6 @@ package pt.isel.ps.g06.httpserver.dataAccess.db.dao
 import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import pt.isel.ps.g06.httpserver.dataAccess.db.concrete.DbAPI
-import pt.isel.ps.g06.httpserver.dataAccess.db.concrete.DbSubmissionSubmitter
 
 //API table constants
 private const val table = "API"
