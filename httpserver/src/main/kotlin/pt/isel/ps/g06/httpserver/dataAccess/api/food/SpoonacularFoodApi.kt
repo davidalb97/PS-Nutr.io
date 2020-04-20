@@ -57,16 +57,16 @@ class SpoonacularFoodApi(private val clientHttp: HttpApiClient, private val json
         return requestDto(uri.recipeIngredientsUri(recipeId), RecipeIngredientsDto::class.java)
     }
 
-    fun searchRecipes(
+    override fun searchRecipes(
             recipeName: String,
-            cuisines: Array<SpoonacularCuisine>? = null,
-            diet: SpoonacularDiet? = null,
-            excludeIngredients: Array<String>? = null,
-            intolerances: Array<String>? = null,
-            offset: Int? = null,
-            number: Int? = null,
-            limitLicense: Boolean? = null,
-            instructionsRequired: Boolean? = null
+            cuisines: Array<SpoonacularCuisine>?,
+            diet: SpoonacularDiet?,
+            excludeIngredients: Array<String>?,
+            intolerances: Array<String>?,
+            offset: Int?,
+            number: Int?,
+            limitLicense: Boolean?,
+            instructionsRequired: Boolean?
     ): CompletableFuture<List<RecipeDto>> {
 
         return requestDto(
@@ -103,7 +103,7 @@ class SpoonacularFoodApi(private val clientHttp: HttpApiClient, private val json
     override fun ingredientInformation(
             id: Int,
             amount: Int?,
-            unit: String?
+            unit: SpoonacularUnitTypes
     ): CompletableFuture<IngredientInfoDto> {
         val requestDto = requestDto(uri.ingredientInfoUri(id, amount, unit), IngredientInfoDto::class.java).get()
         return CompletableFuture.completedFuture(requestDto)
@@ -114,10 +114,7 @@ class SpoonacularFoodApi(private val clientHttp: HttpApiClient, private val json
                 urlStr,
                 mapOf(Pair("Accept", "application/json")),
                 { false },
-                {
-                    val a = jsonMapper.readValue(it.body(), klass)
-                    return@request a
-                }
+                { jsonMapper.readValue(it.body(), klass) }
         )
     }
 

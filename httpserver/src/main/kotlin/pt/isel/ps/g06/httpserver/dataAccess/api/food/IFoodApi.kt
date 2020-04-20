@@ -28,6 +28,18 @@ interface IFoodApi {
 
     fun recipeIngredients(recipeId: String): CompletableFuture<RecipeIngredientsDto>
 
+    fun searchRecipes(
+            recipeName: String,
+            cuisines: Array<SpoonacularCuisine>? = null,
+            diet: SpoonacularDiet? = null,
+            excludeIngredients: Array<String>? = null,
+            intolerances: Array<String>? = null,
+            offset: Int? = null,
+            number: Int? = null,
+            limitLicense: Boolean? = null,
+            instructionsRequired: Boolean? = null
+    ): CompletableFuture<List<RecipeDto>>
+
     fun ingredientSearchAutocomplete(
             query: String,
             number: Int? = null,
@@ -38,7 +50,7 @@ interface IFoodApi {
     fun ingredientInformation(
             id: Int,
             amount: Int? = null,
-            unit: String? = null
+            unit: SpoonacularUnitTypes
     ): CompletableFuture<IngredientInfoDto>
 
 }

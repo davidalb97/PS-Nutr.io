@@ -109,7 +109,7 @@ class SpoonacularUriBuilder : AUriBuilder() {
     /**
      * https://spoonacular.com/food-api/docs#Get-Ingredient-Information
      */
-    fun ingredientInfoUri(id: Int, amount: Int?, unit: String?): String {
+    fun ingredientInfoUri(id: Int, amount: Int?, unit: SpoonacularUnitTypes): String {
         val hasParams = amount != null || unit != null
         return "$SPOONACULAR_INGREDIENT_INFO_URL$id/information?" +
                 param("apiKey", SPOONACULCAR_API_KEY) +
