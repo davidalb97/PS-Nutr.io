@@ -11,14 +11,12 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.dao.SubmissionSubmitterDao
 
 class DbPortionRepository(private val jdbi: Jdbi) {
 
-    val serializable = TransactionIsolationLevel.SERIALIZABLE
-    val portionClass = PortionDao::class.java
+    private val serializable = TransactionIsolationLevel.SERIALIZABLE
+    private val portionClass = PortionDao::class.java
 
-    fun getPortionsFromMeal(mealSubmissionId: Int): List<DbPortion> {
-        return jdbi.open().use { handle ->
-            return handle.inTransaction<List<DbPortion>, Exception>(serializable) {
-                it.attach(portionClass).getById(mealSubmissionId)
-            }
+    fun getPortionsFromMeal(mealSubmissionId: Int): List<DbPortion>? {
+        return inTransaction<List<DbPortion>>(jdbi, serializable) {
+            it.attach(portionClass).getById(mealSubmissionId)
         }
     }
 
@@ -28,23 +26,20 @@ class DbPortionRepository(private val jdbi: Jdbi) {
             mealId: Int,
             quantity: Int
     ): Boolean {
-        return jdbi.open().use { handle ->
-            return handle.inTransaction<Boolean, Exception>(serializable) {
-                val submissionDao = it.attach(SubmissionDao::class.java)
-                val submissionId = submissionDao.insert(SubmissionType.Portion.name)
+        return inTransaction(jdbi, serializable) {
+            val submissionDao = it.attach(SubmissionDao::class.java)
+            val submissionId = submissionDao.insert(SubmissionType.Portion.name)
 
-                val submissionSubmitterDao = it.attach(SubmissionSubmitterDao::class.java)
-                submissionSubmitterDao.insert(submissionId, submitterId)
+            val submissionSubmitterDao = it.attach(SubmissionSubmitterDao::class.java)
+            submissionSubmitterDao.insert(submissionId, submitterId)
 
-                val portionDao = it.attach(PortionDao::class.java)
-                val hasPortionID = portionDao.insert(submissionId, submitterId)
+            val portionDao = it.attach(PortionDao::class.java)
+            portionDao.insert(submissionId, quantity)
 
-                if (hasPortionID) {
-                    val restaurantMealPortionDao = it.attach(RestaurantMealPortionDao::class.java)
-                    restaurantMealPortionDao.insert(mealId, submissionId, restaurantId)
-                } else
-                    false
-            }
+            val restaurantMealPortionDao = it.attach(RestaurantMealPortionDao::class.java)
+            restaurantMealPortionDao.insert(mealId, submissionId, restaurantId)
+
+            true
         }
     }
 }

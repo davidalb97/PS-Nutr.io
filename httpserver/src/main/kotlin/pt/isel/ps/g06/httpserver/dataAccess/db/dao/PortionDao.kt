@@ -14,5 +14,5 @@ interface PortionDao {
     fun getById(@Bind submissionId: Int): List<DbPortion>
 
     @SqlQuery("INSERT INTO $table($id, $quantity) VALUES(:submissionId, :quantity)")
-    fun insert(@Bind submissionId: Int, quantity: Int): Boolean
+    fun insert(@Bind submissionId: Int, quantity: Int)
 }

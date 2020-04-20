@@ -19,5 +19,5 @@ interface MealCuisineDao {
     fun getByCuisineName(@Bind cuisineName: String): DbMealCuisine
 
     @SqlQuery("INSERT INTO $table($mealId, $cuisineName) VALUES(:restaurantId, :cuisineName)")
-    fun insert(@Bind restaurantId: Int, @Bind cuisineName: String): Int
+    fun insert(@Bind restaurantId: Int, @Bind cuisineName: String)
 }

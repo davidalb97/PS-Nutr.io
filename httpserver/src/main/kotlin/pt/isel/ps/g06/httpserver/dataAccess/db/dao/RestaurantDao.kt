@@ -20,8 +20,8 @@ interface RestaurantDao {
 
     @SqlQuery("SELECT * FROM $table WHERE $id = :restaurantId")
     @Transaction(TransactionIsolationLevel.SERIALIZABLE)
-    fun getById(@Bind restaurantId: Int): DbRestaurant?
+    fun getById(@Bind restaurantId: Int): DbRestaurant
 
     @SqlQuery("INSERT INTO $table($id, $name, $latitude, $longitude) VALUES(:submission_id, :restaurant_name, :latitude, :longitude)")
-    fun insert(@Bind submission_id: Int, @Bind restaurant_name: String, @Bind latitue: Float, @Bind longitude: Float): Int
+    fun insert(@Bind submission_id: Int, @Bind restaurant_name: String, @Bind latitue: Float, @Bind longitude: Float)
 }

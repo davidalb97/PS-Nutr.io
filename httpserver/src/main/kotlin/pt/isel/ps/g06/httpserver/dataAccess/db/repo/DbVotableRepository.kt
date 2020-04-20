@@ -3,22 +3,28 @@ package pt.isel.ps.g06.httpserver.dataAccess.db.repo
 import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.transaction.TransactionIsolationLevel
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.VoteDao
+import pt.isel.ps.g06.httpserver.dataAccess.model.Votes
 
 class DbVotableRepository(private val jdbi: Jdbi) {
 
     val serializable = TransactionIsolationLevel.SERIALIZABLE
     val voteClass = VoteDao::class.java
 
+    fun getVotes(submitterId: Int, submissionId: Int): Votes? {
+        return inTransaction<Votes>(jdbi, serializable) {
+            throw UnsupportedOperationException()
+        }
+    }
+
     fun insertVote(
             submitterId: Int,
             submissionId: Int,
             vote: Boolean
     ): Boolean {
-        return jdbi.open().use { handle ->
-            return handle.inTransaction<Boolean, Exception>(serializable) {
-                val voteDao = it.attach(voteClass)
-                voteDao.insert(submitterId, submissionId, vote)
-            }
+        return inTransaction(jdbi, serializable) {
+            val voteDao = it.attach(voteClass)
+            voteDao.insert(submitterId, submissionId, vote)
+            true
         }
     }
 
@@ -26,11 +32,10 @@ class DbVotableRepository(private val jdbi: Jdbi) {
             submitterId: Int,
             submissionId: Int
     ): Boolean {
-        return jdbi.open().use { handle ->
-            return handle.inTransaction<Boolean, Exception>(serializable) {
-                val voteDao = it.attach(voteClass)
-                voteDao.delete(submitterId, submissionId)
-            }
+        return inTransaction(jdbi, serializable) {
+            val voteDao = it.attach(voteClass)
+            voteDao.delete(submitterId, submissionId)
+            true
         }
     }
 
@@ -39,11 +44,10 @@ class DbVotableRepository(private val jdbi: Jdbi) {
             submissionId: Int,
             vote: Boolean
     ): Boolean {
-        return jdbi.open().use { handle ->
-            return handle.inTransaction<Boolean, Exception>(serializable) {
-                val voteDao = it.attach(voteClass)
-                voteDao.update(submitterId, submissionId, vote)
-            }
+        return inTransaction(jdbi, serializable) {
+            val voteDao = it.attach(voteClass)
+            voteDao.update(submitterId, submissionId, vote)
+            true
         }
     }
 }

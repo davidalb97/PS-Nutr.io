@@ -9,16 +9,16 @@ class DbReportRepository(private val jdbi: Jdbi) {
     val serializable = TransactionIsolationLevel.SERIALIZABLE
     val reportDao = ReportDao::class.java
 
-    fun submitReport(
+    fun insert(
             submitterId: Int,
             submissionId: Int,
             description: String
     ): Boolean {
-        return jdbi.open().use { handle ->
-            return handle.inTransaction<Boolean, Exception>(serializable) {
-                val reportDao = it.attach(ReportDao::class.java)
-                reportDao.insert(submitterId, submissionId, description)
-            }
+        return inTransaction(jdbi, serializable) {
+            val reportDao = it.attach(reportDao)
+            reportDao.insert(submitterId, submissionId, description)
+
+            true
         }
     }
 }

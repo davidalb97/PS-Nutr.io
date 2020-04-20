@@ -17,6 +17,6 @@ interface MealDao {
     fun getByName(@Bind mealName: String): List<DbMeal>
 
     @SqlQuery("INSERT INTO $table($id, $name) VALUES(:submission_id, :mealName)")
-    fun insert(@Bind submission_id: Int, @Bind mealName: String): Int
+    fun insert(@Bind submission_id: Int, @Bind mealName: String)
 
 }
