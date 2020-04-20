@@ -2,12 +2,13 @@ package pt.isel.ps.g06.httpserver.dataAccess.api.food
 
 import pt.isel.ps.g06.httpserver.dataAccess.api.AUriBuilder
 
+private const val SPOONACULCAR_API_KEY = "9d90d89e9ecc4844a88385816df04fec"
 private const val SPOONACULAR_BASE_URL = "https://api.spoonacular.com/"
-private const val SPOONACULAR_SEARCH_URL = "${SPOONACULAR_BASE_URL}/recipes/search?"
+private const val SPOONACULAR_SEARCH_URL = "${SPOONACULAR_BASE_URL}/recipes/search?apiKey=$SPOONACULCAR_API_KEY"
 private const val SPOONACULAR_INGREDIENT_INFO_URL = "${SPOONACULAR_BASE_URL}/food/ingredients/"
-private const val SPOONACULAR_GROCERY_PRODUCTS_URL = "${SPOONACULAR_BASE_URL}/food/products/search?"
-private const val SPOONACULAR_INGREDIENT_SEARCH_AUTO_COMPL_URL = "${SPOONACULAR_BASE_URL}/food/ingredients/autocomplete?"
-private const val SPOONACULAR_PRODUCT_SEARCH_AUTO_COMPL_URL = "${SPOONACULAR_BASE_URL}/food/products/suggest?"
+private const val SPOONACULAR_GROCERY_PRODUCTS_URL = "${SPOONACULAR_BASE_URL}/food/products/search?apiKey=$SPOONACULCAR_API_KEY"
+private const val SPOONACULAR_INGREDIENT_SEARCH_AUTO_COMPL_URL = "${SPOONACULAR_BASE_URL}/food/ingredients/autocomplete?apiKey=$SPOONACULCAR_API_KEY"
+private const val SPOONACULAR_PRODUCT_SEARCH_AUTO_COMPL_URL = "${SPOONACULAR_BASE_URL}/food/products/suggest?apiKey=$SPOONACULCAR_API_KEY"
 private const val SPOONACULAR_RECIPE_INGREDIENTS_URL = "${SPOONACULAR_BASE_URL}/recipes/"
 
 class SpoonacularUriBuilder : AUriBuilder() {
@@ -30,7 +31,8 @@ class SpoonacularUriBuilder : AUriBuilder() {
             offset: Int? = null,
             number: Int? = null
     ): String {
-        return "${SPOONACULAR_GROCERY_PRODUCTS_URL}query=$query" +
+        return SPOONACULAR_GROCERY_PRODUCTS_URL +
+                param("query", query) +
                 param("minCalories", minCalories) +
                 param("maxCalories", maxCalories) +
                 param("minCarbs", minCarbs) +
@@ -47,7 +49,8 @@ class SpoonacularUriBuilder : AUriBuilder() {
      * https://spoonacular.com/food-api/docs#Autocomplete-Product-Search
      */
     fun productSearchAutocompleteUri(query: String, number: Int? = null): String =
-            "${SPOONACULAR_PRODUCT_SEARCH_AUTO_COMPL_URL}query=$query" +
+            SPOONACULAR_PRODUCT_SEARCH_AUTO_COMPL_URL +
+                    param("query", query) +
                     param("number", number)
 
 //-------------------------------Recipes------------------------------------
@@ -56,7 +59,8 @@ class SpoonacularUriBuilder : AUriBuilder() {
      * https://spoonacular.com/food-api/docs#Get-Recipe-Ingredients-by-ID
      */
     fun recipeIngredientsUri(recipeId: String): String =
-            "${SPOONACULAR_RECIPE_INGREDIENTS_URL}$recipeId/ingredientWidget.json"
+            "${SPOONACULAR_RECIPE_INGREDIENTS_URL}$recipeId/ingredientWidget.json?" +
+                    param("apiKey", SPOONACULCAR_API_KEY)
 
     /**
      * https://spoonacular.com/food-api/docs#Search-Recipes
@@ -72,7 +76,8 @@ class SpoonacularUriBuilder : AUriBuilder() {
             limitLicense: Boolean? = null,
             instructionsRequired: Boolean? = null
     ): String {
-        return "${SPOONACULAR_SEARCH_URL}query=$recipeName" +
+        return SPOONACULAR_SEARCH_URL +
+                param("query", recipeName) +
                 param("cuisine", cuisines) +
                 param("diet", diet) +
                 param("offset", offset) +
@@ -94,7 +99,8 @@ class SpoonacularUriBuilder : AUriBuilder() {
             metaInformation: Boolean? = null,
             intolerances: Array<String>? = null
     ): String {
-        return "${SPOONACULAR_INGREDIENT_SEARCH_AUTO_COMPL_URL}query=$query" +
+        return SPOONACULAR_INGREDIENT_SEARCH_AUTO_COMPL_URL +
+                param("query", query) +
                 param("number", number) +
                 param("metaInformation", metaInformation) +
                 param("intolerances", intolerances)
@@ -105,8 +111,8 @@ class SpoonacularUriBuilder : AUriBuilder() {
      */
     fun ingredientInfoUri(id: Int, amount: Int?, unit: String?): String {
         val hasParams = amount != null || unit != null
-        return "$SPOONACULAR_INGREDIENT_INFO_URL/$id/information" +
-                (if (hasParams) "?" else "") +
+        return "$SPOONACULAR_INGREDIENT_INFO_URL/$id/information?" +
+                param("apiKey", SPOONACULCAR_API_KEY) +
                 param("amount", amount) +
                 param("unit", unit)
     }

@@ -10,10 +10,10 @@ class MealController {
     @GetMapping("/{mealId}", produces = [MediaType.APPLICATION_JSON_VALUE])
     fun getMealInformation(@PathVariable mealId: String) = ""
 
-    @PostMapping("/{mealId}", produces = [MediaType.APPLICATION_JSON_VALUE])
+    @PostMapping("/{mealId}", consumes = [MediaType.APPLICATION_JSON_VALUE])
     fun postMeal(@PathVariable mealId: String) = ""
 
-    @DeleteMapping("/{mealId}", produces = [MediaType.APPLICATION_JSON_VALUE])
+    @DeleteMapping("/{mealId}", consumes = [MediaType.APPLICATION_JSON_VALUE])
     fun deleteMeal(@PathVariable mealId: String) = ""
 
     @PostMapping("/{mealId}/vote", consumes = [MediaType.APPLICATION_JSON_VALUE])
