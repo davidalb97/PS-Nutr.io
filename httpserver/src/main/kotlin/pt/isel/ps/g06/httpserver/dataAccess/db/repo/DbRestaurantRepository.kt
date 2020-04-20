@@ -52,7 +52,7 @@ class DbRestaurantRepository(private val jdbi: Jdbi) {
                 restaurantDao.insert(submissionId, submitterId)
 
                 val cuisineDao = it.attach(CuisineDao::class.java)
-                cuisines.forEach(cuisineDao::insert)
+                cuisineDao.insertAll(*cuisines.map(::CuisineParam).toTypedArray())
 
                 if(restaurantApiType != null && apiId != null) {
                     val apiDao = it.attach(ApiDao::class.java)
