@@ -33,7 +33,7 @@ interface IFoodApi {
             number: Int? = null,
             metaInformation: Boolean? = null,
             intolerances: Array<String>? = null
-    ): CompletableFuture<List<IngredientSearchDto>>
+    ): CompletableFuture<IngredientSearchDto>
 
     fun ingredientInformation(
             id: Int,

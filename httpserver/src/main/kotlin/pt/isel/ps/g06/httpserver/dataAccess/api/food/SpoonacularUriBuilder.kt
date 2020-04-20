@@ -4,12 +4,12 @@ import pt.isel.ps.g06.httpserver.dataAccess.api.AUriBuilder
 
 private const val SPOONACULCAR_API_KEY = "9d90d89e9ecc4844a88385816df04fec"
 private const val SPOONACULAR_BASE_URL = "https://api.spoonacular.com/"
-private const val SPOONACULAR_SEARCH_URL = "${SPOONACULAR_BASE_URL}/recipes/search?apiKey=$SPOONACULCAR_API_KEY"
-private const val SPOONACULAR_INGREDIENT_INFO_URL = "${SPOONACULAR_BASE_URL}/food/ingredients/"
-private const val SPOONACULAR_GROCERY_PRODUCTS_URL = "${SPOONACULAR_BASE_URL}/food/products/search?apiKey=$SPOONACULCAR_API_KEY"
-private const val SPOONACULAR_INGREDIENT_SEARCH_AUTO_COMPL_URL = "${SPOONACULAR_BASE_URL}/food/ingredients/autocomplete?apiKey=$SPOONACULCAR_API_KEY"
-private const val SPOONACULAR_PRODUCT_SEARCH_AUTO_COMPL_URL = "${SPOONACULAR_BASE_URL}/food/products/suggest?apiKey=$SPOONACULCAR_API_KEY"
-private const val SPOONACULAR_RECIPE_INGREDIENTS_URL = "${SPOONACULAR_BASE_URL}/recipes/"
+private const val SPOONACULAR_SEARCH_URL = "${SPOONACULAR_BASE_URL}recipes/search?apiKey=$SPOONACULCAR_API_KEY"
+private const val SPOONACULAR_INGREDIENT_INFO_URL = "${SPOONACULAR_BASE_URL}food/ingredients/"
+private const val SPOONACULAR_GROCERY_PRODUCTS_URL = "${SPOONACULAR_BASE_URL}food/products/search?apiKey=$SPOONACULCAR_API_KEY"
+private const val SPOONACULAR_INGREDIENT_SEARCH_AUTO_COMPL_URL = "${SPOONACULAR_BASE_URL}food/ingredients/autocomplete?apiKey=$SPOONACULCAR_API_KEY"
+private const val SPOONACULAR_PRODUCT_SEARCH_AUTO_COMPL_URL = "${SPOONACULAR_BASE_URL}food/products/suggest?apiKey=$SPOONACULCAR_API_KEY"
+private const val SPOONACULAR_RECIPE_INGREDIENTS_URL = "${SPOONACULAR_BASE_URL}recipes/"
 
 class SpoonacularUriBuilder : AUriBuilder() {
 
@@ -111,7 +111,7 @@ class SpoonacularUriBuilder : AUriBuilder() {
      */
     fun ingredientInfoUri(id: Int, amount: Int?, unit: String?): String {
         val hasParams = amount != null || unit != null
-        return "$SPOONACULAR_INGREDIENT_INFO_URL/$id/information?" +
+        return "$SPOONACULAR_INGREDIENT_INFO_URL$id/information?" +
                 param("apiKey", SPOONACULCAR_API_KEY) +
                 param("amount", amount) +
                 param("unit", unit)
