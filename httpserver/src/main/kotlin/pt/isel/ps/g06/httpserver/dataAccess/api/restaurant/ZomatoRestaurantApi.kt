@@ -1,6 +1,5 @@
 package pt.isel.ps.g06.httpserver.dataAccess.api.restaurant
 
-import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
 import pt.isel.ps.g06.httpserver.dataAccess.api.HttpApiClient
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.dto.DailyMenuDto
@@ -23,21 +22,25 @@ class ZomatoRestaurantApi(private val clientHttp: HttpApiClient, private val jso
             longitude: Float,
             radiusMeters: Int
     ): CompletableFuture<List<RestaurantResponse>> {
-        return requestDto<RestaurantSearchResultDto>(uri.restaurantSearchUri(latitude, longitude, radiusMeters))
-                .thenApply(RestaurantSearchResultDto::unDto)
+        return requestDto(
+                uri.restaurantSearchUri(latitude, longitude, radiusMeters),
+                RestaurantSearchResultDto::class.java
+        ).thenApply(RestaurantSearchResultDto::unDto)
     }
 
     override fun restaurantDailyMeals(restaurantId: Int): CompletableFuture<List<String>> {
-        return requestDto<DailyMenuDto>(uri.restaurantDailyMenuUri(restaurantId))
-                .thenApply(DailyMenuDto::unDto)
+        return requestDto(
+                uri.restaurantDailyMenuUri(restaurantId),
+                DailyMenuDto::class.java
+        ).thenApply(DailyMenuDto::unDto)
     }
 
-    private fun <D> requestDto(urlStr: String): CompletableFuture<D> {
+    private fun <D> requestDto(urlStr: String, klass: Class<D>): CompletableFuture<D> {
         return clientHttp.request(
                 urlStr,
                 mapOf(Pair("user-key", ZOMATO_API_KEY), Pair("Accept", "application/json")),
                 { false },
-                { jsonMapper.readValue(it.body(), object : TypeReference<D>() {}) }
+                { jsonMapper.readValue(it.body(), klass) }
         )
     }
 
