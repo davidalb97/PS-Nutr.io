@@ -14,7 +14,7 @@ class FoodController(private final val foodApiRepo: FoodApiRepository) {
 
     val spoonacularFoodApi = foodApiRepo.getFoodApi(FoodApiType.Spoonacular)
 
-    @GetMapping("/productSearch", produces = [MediaType.APPLICATION_JSON_VALUE])
+    @GetMapping("/product", produces = [MediaType.APPLICATION_JSON_VALUE])
     fun productSearch(
             query: String,
             minCalories: Int?,
@@ -51,7 +51,7 @@ class FoodController(private final val foodApiRepo: FoodApiRepository) {
         return spoonacularFoodApi.recipeIngredients(recipeId).get()
     }
 
-    @GetMapping("/searchRecipes", produces = [MediaType.APPLICATION_JSON_VALUE])
+    @GetMapping("/recipes", produces = [MediaType.APPLICATION_JSON_VALUE])
     fun searchRecipes(recipeName: String,
                       cuisines: Array<SpoonacularCuisine>,
                       diet: SpoonacularDiet?,
@@ -93,7 +93,7 @@ class FoodController(private final val foodApiRepo: FoodApiRepository) {
                 )
     }*/
 
-    @GetMapping("/ingredientInfo", produces = [MediaType.APPLICATION_JSON_VALUE])
+    @GetMapping("/ingredient", produces = [MediaType.APPLICATION_JSON_VALUE])
     fun getIngredientInfo(
             id: Int,
             amount: Int,
