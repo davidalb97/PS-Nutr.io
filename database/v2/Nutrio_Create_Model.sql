@@ -9,7 +9,7 @@ DROP TABLE IF EXISTS Restaurant;
 DROP TABLE IF EXISTS Votable;
 DROP TABLE IF EXISTS Report;
 DROP TABLE IF EXISTS SubmissionSubmitter;
-DROP TABLE IF EXISTS API_Submission;
+DROP TABLE IF EXISTS APISubmission;
 DROP TABLE IF EXISTS Submission;
 DROP TABLE IF EXISTS API;
 DROP TABLE IF EXISTS _User;
@@ -46,7 +46,7 @@ CREATE TABLE Submission(
 	)
 );
 
-CREATE TABLE API_Submission(
+CREATE TABLE APISubmission(
 	submission_id integer,
 	apiId integer,
 	submission_type varchar(10) CHECK(

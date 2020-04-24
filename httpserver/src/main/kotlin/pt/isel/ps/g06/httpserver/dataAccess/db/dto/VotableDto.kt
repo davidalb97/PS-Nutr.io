@@ -1,6 +1,6 @@
-package pt.isel.ps.g06.httpserver.dataAccess.db.concrete
+package pt.isel.ps.g06.httpserver.dataAccess.db.dto
 
-data class DbVotable(
+data class VotableDto(
         val submission_id: Int,
         val vote_submitter_id: Int,
         val vote: Boolean

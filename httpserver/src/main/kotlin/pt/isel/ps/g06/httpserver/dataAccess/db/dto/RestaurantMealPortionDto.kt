@@ -1,6 +1,6 @@
-package pt.isel.ps.g06.httpserver.dataAccess.db.concrete
+package pt.isel.ps.g06.httpserver.dataAccess.db.dto
 
-data class DbRestaurantMealPortion(
+data class RestaurantMealPortionDto(
         val meal_submission_id: Int,
         val portion_submission_id: Int,
         val restaurant_submission_id: Int

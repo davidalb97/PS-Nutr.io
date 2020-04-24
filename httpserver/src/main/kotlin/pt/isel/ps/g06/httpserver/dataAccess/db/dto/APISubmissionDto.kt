@@ -1,6 +1,6 @@
-package pt.isel.ps.g06.httpserver.dataAccess.db.concrete
+package pt.isel.ps.g06.httpserver.dataAccess.db.dto
 
-data class DbAPI_Submission(
+data class APISubmissionDto(
         val submission_id: Int,
         val apiId: Int,
         val submission_type: String

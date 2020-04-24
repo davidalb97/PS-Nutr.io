@@ -4,7 +4,7 @@ import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.customizer.BindBeanList
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import org.jdbi.v3.sqlobject.statement.SqlUpdate
-import pt.isel.ps.g06.httpserver.dataAccess.db.concrete.DbIngredient
+import pt.isel.ps.g06.httpserver.dataAccess.db.dto.IngredientDto
 
 private const val table = "Ingredient"
 private const val name = "ingredient_name"
@@ -20,7 +20,7 @@ private const val AS_apiId = "apiId"
 
 interface IngredientDao {
     @SqlQuery("SELECT * FROM $table")
-    fun getAll(): List<DbIngredient>
+    fun getAll(): List<IngredientDto>
 
     @SqlQuery("SELECT $AS_table.$AS_apiId" +
             " FROM $table" +
@@ -33,7 +33,7 @@ interface IngredientDao {
     fun getAllApiIdsBySubmitterId(submitterId: Int): List<Int>
 
     @SqlQuery("SELECT * FROM $table WHERE $name = :ingredientName")
-    fun getByName(@Bind ingredientName: String): DbIngredient
+    fun getByName(@Bind ingredientName: String): IngredientDto
 
     @SqlQuery("INSERT INTO $table($id, $name) VALUES(:submissionId, :ingredientName)")
     fun insert(@Bind submissionId: Int, ingredientName: String)
