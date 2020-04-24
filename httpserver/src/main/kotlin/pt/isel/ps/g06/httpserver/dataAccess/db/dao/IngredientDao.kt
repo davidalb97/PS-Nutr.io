@@ -14,7 +14,7 @@ private const val SS_table = "SubmissionSubmitter"
 private const val SS_submissionId = "submission_id"
 private const val SS_submitterId = "submitter_id"
 
-private const val AS_table = "API_Submission"
+private const val AS_table = "ApiSubmission"
 private const val AS_submissionId = "submission_id"
 private const val AS_apiId = "apiId"
 
