@@ -13,22 +13,20 @@ class HomeFragment() : Fragment() {
 
     private lateinit var homeViewModel: HomeViewModel
 
-    private val buttonNames = listOf(
-        "Restaurants",
-        "Meals"
-    )
+    private val buttonNames =
+        listOf(
+            "Restaurants",
+            "Meals",
+            "Cuisines"
+        )
 
-    private val buttonImages = listOf(
+    private val buttonImages =
         listOf(
             R.drawable.ic_restaurant,
-            R.drawable.ic_menu_book
-        ),
-
-        listOf(
-            R.drawable.ic_favorite,
-            R.drawable.ic_info
+            R.drawable.ic_menu_book,
+            R.drawable.ic_cuisines
         )
-    )
+
 
     override fun onCreateView(
         inflater: LayoutInflater,

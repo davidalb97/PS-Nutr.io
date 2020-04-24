@@ -5,10 +5,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.BaseAdapter
-import android.widget.Button
-import android.widget.ImageButton
-import android.widget.TextView
+import android.widget.*
 import androidx.cardview.widget.CardView
 import androidx.navigation.findNavController
 import pt.ipl.isel.leic.ps.androidclient.R
@@ -16,7 +13,7 @@ import java.lang.RuntimeException
 
 class HomeAdapter(
     context: Context,
-    private val buttonImages: List<List<Int>>,
+    private val buttonImages: List<Int>,
     private val buttonNames: List<String>
 ) : BaseAdapter() {
 
@@ -29,11 +26,14 @@ class HomeAdapter(
         var view = inflater.inflate(R.layout.category_button, null)
 
         holder.button = view.findViewById(R.id.category_button)
+        holder.image = view.findViewById(R.id.category_image)
+        holder.name = view.findViewById(R.id.category_name)
 
-        holder.button.text = buttonNames[position]
+        holder.name.text = buttonNames[position]
+        holder.image.setImageResource(buttonImages[position])
 
         holder.button.setOnClickListener { view ->
-            view.findNavController().navigate(getFragment(holder.button.text.toString()))
+            view.findNavController().navigate(getFragment(holder.name.text.toString()))
         }
 
         return view
@@ -51,7 +51,7 @@ class HomeAdapter(
         return buttonImages.size
     }
 
-    fun getFragment(buttonName: String) : Int {
+    private fun getFragment(buttonName: String) : Int {
         return when(buttonName) {
             "Restaurants" ->  R.id.nav_restaurant
             "Meals" -> R.id.nav_about // TODO: Change
@@ -61,5 +61,7 @@ class HomeAdapter(
 }
 
 class ButtonHolder {
-    lateinit var button: Button
+    lateinit var button: CardView
+    lateinit var image: ImageView
+    lateinit var name: TextView
 }
