@@ -3,7 +3,7 @@ package pt.isel.ps.g06.httpserver.dataAccess.db.repo
 import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.transaction.TransactionIsolationLevel
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType
-import pt.isel.ps.g06.httpserver.dataAccess.db.concrete.DbPortion
+import pt.isel.ps.g06.httpserver.dataAccess.db.dto.PortionDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.PortionDao
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.RestaurantMealPortionDao
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.SubmissionDao
@@ -14,8 +14,8 @@ class DbPortionRepository(private val jdbi: Jdbi) {
     private val serializable = TransactionIsolationLevel.SERIALIZABLE
     private val portionClass = PortionDao::class.java
 
-    fun getPortionsFromMeal(mealSubmissionId: Int): List<DbPortion>? {
-        return inTransaction<List<DbPortion>>(jdbi, serializable) {
+    fun getPortionsFromMeal(mealSubmissionId: Int): List<PortionDto>? {
+        return inTransaction<List<PortionDto>>(jdbi, serializable) {
             it.attach(portionClass).getById(mealSubmissionId)
         }
     }

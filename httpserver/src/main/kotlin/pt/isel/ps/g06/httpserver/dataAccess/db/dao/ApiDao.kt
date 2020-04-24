@@ -2,10 +2,10 @@ package pt.isel.ps.g06.httpserver.dataAccess.db.dao
 
 import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.statement.SqlQuery
-import pt.isel.ps.g06.httpserver.dataAccess.db.concrete.DbAPI
+import pt.isel.ps.g06.httpserver.dataAccess.db.dto.ApiDto
 
 //API table constants
-private const val table = "API"
+private const val table = "Api"
 private const val id = "submitter_id"
 private const val apiToken = "api_token"
 
@@ -16,10 +16,10 @@ private const val submitterId = "submitter_id"
 
 interface ApiDao {
     @SqlQuery("SELECT * FROM $table")
-    fun getAll(): List<DbAPI>
+    fun getAll(): List<ApiDto>
 
     @SqlQuery("SELECT * FROM $table WHERE $id = :submitterId")
-    fun getById(@Bind submitterId: Int): DbAPI
+    fun getById(@Bind submitterId: Int): ApiDto
 
     @SqlQuery("INSERT INTO $table($id, $apiToken) " +
             "VALUES(:submitterId, :apiToken)")

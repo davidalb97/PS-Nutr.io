@@ -5,7 +5,7 @@ import org.jdbi.v3.sqlobject.customizer.BindBeanList
 import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import org.jdbi.v3.sqlobject.statement.SqlUpdate
-import pt.isel.ps.g06.httpserver.dataAccess.db.concrete.DbSubmission
+import pt.isel.ps.g06.httpserver.dataAccess.db.dto.SubmissionDto
 
 private const val table = "Submission"
 private const val type = "submission_type"
@@ -14,10 +14,10 @@ private const val id = "submission_id"
 interface SubmissionDao {
 
     @SqlQuery("SELECT * FROM $table")
-    fun getAll(): List<DbSubmission>
+    fun getAll(): List<SubmissionDto>
 
     @SqlQuery("SELECT * FROM $table WHERE $id = :submissionId")
-    fun getById(submissionId: Int): DbSubmission
+    fun getById(submissionId: Int): SubmissionDto
 
     @SqlQuery("INSERT INTO $table($type) VALUES(:submission_type)")
     @GetGeneratedKeys

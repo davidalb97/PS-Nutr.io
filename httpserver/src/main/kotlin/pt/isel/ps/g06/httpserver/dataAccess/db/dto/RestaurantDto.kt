@@ -1,6 +1,6 @@
-package pt.isel.ps.g06.httpserver.dataAccess.db.concrete
+package pt.isel.ps.g06.httpserver.dataAccess.db.dto
 
-data class DbRestaurant(
+data class RestaurantDto(
         val submission_id: Int,
         val restaurant_name: String,
         val latitude: Float,

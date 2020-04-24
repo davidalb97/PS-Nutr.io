@@ -4,7 +4,7 @@ INSERT INTO Submitter(submitter_id, submitter_name, submitter_type) VALUES
 INSERT INTO _User(submitter_id, email, session_secret) VALUES
 (0, 'admin@gmail.com', '123456789');
 
-INSERT INTO API(submitter_id, api_token) VALUES
+INSERT INTO Api(submitter_id, api_token) VALUES
 (0, '123');
 
 INSERT INTO Cuisine(cuisine_name) VALUES

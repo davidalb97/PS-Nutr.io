@@ -9,9 +9,9 @@ DROP TABLE IF EXISTS Restaurant;
 DROP TABLE IF EXISTS Votable;
 DROP TABLE IF EXISTS Report;
 DROP TABLE IF EXISTS SubmissionSubmitter;
-DROP TABLE IF EXISTS API_Submission;
+DROP TABLE IF EXISTS ApiSubmission;
 DROP TABLE IF EXISTS Submission;
-DROP TABLE IF EXISTS API;
+DROP TABLE IF EXISTS Api;
 DROP TABLE IF EXISTS _User;
 DROP TABLE IF EXISTS Submitter;
 
@@ -30,7 +30,7 @@ CREATE TABLE _User(
 	FOREIGN KEY(submitter_id) REFERENCES Submitter(submitter_id)
 );
 
-CREATE TABLE API(
+CREATE TABLE Api(
 	submitter_id integer PRIMARY KEY,
 	api_token varchar(256) NOT NULL,
 	FOREIGN KEY(submitter_id) REFERENCES Submitter(submitter_id)
@@ -46,7 +46,7 @@ CREATE TABLE Submission(
 	)
 );
 
-CREATE TABLE API_Submission(
+CREATE TABLE ApiSubmission(
 	submission_id integer,
 	apiId integer,
 	submission_type varchar(10) CHECK(

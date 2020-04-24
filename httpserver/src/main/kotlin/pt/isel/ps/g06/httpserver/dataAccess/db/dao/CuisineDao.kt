@@ -4,7 +4,7 @@ import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.customizer.BindBeanList
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import org.jdbi.v3.sqlobject.statement.SqlUpdate
-import pt.isel.ps.g06.httpserver.dataAccess.db.concrete.DbCuisine
+import pt.isel.ps.g06.httpserver.dataAccess.db.dto.CuisineDto
 
 
 private const val table = "Cuisine"
@@ -22,7 +22,7 @@ interface CuisineDao {
     ) vararg newName: CuisineParam)
 
     @SqlQuery("SELECT * FROM $table WHERE $name = :name")
-    fun getByName(@Bind name: String): List<DbCuisine>
+    fun getByName(@Bind name: String): List<CuisineDto>
 }
 
 //Variable names must match sql columns!!!
