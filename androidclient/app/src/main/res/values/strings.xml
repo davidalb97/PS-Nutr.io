@@ -14,7 +14,8 @@
 
     <string name="home_second">Home Second</string>
     <string name="category_name">category_name</string>
-    <string name="menu_restaurant">Restaurant</string>
+    <string name="tab_restaurants">Search for restaurants</string>
+    <string name="tab_cuisines">Search for cuisines</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

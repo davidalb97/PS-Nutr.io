@@ -32,18 +32,18 @@
     <fragment
         android:id="@+id/nav_restaurant"
         android:name="pt.ipl.isel.leic.ps.androidclient.ui.restaurants.RestaurantFragment"
-        android:label="@string/menu_restaurant"
+        android:label="@string/tab_restaurants"
         tools:layout="@layout/fragment_about" />
 
     <fragment
         android:id="@+id/nav_cuisines"
         android:name="pt.ipl.isel.leic.ps.androidclient.ui.cuisines.CuisinesFragment"
-        android:label="@string/menu_restaurant"
+        android:label="@string/tab_cuisines"
         tools:layout="@layout/fragment_cuisines" />
 
     <fragment
         android:id="@+id/nav_location"
         android:name="pt.ipl.isel.leic.ps.androidclient.ui.MapFragment"
-        android:label="@string/menu_restaurant"
+        android:label="@string/tab_restaurants"
         tools:layout="@layout/fragment_map" />
 </navigation>
