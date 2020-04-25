@@ -14,22 +14,29 @@ class HomeFragment() : Fragment() {
 
     private lateinit var homeViewModel: HomeViewModel
 
-    private val sectionsInfo: Map<String, Map<String, Int>> = mapOf(
-        Pair(
-            "By location",
-            mapOf(
-                Pair("Restaurants", R.drawable.ic_restaurant),
-                Pair("Meals", R.drawable.ic_menu_book)
-            )
+    private val sectionNames = listOf("By location", "By name")
+    private val sectionsButtons = listOf(
+        mapOf(
+            Pair("Restaurants", R.drawable.ic_restaurant),
+            Pair("Meals", R.drawable.ic_menu_book)
         ),
-        Pair(
-            "By Name",
-            mapOf(
-                Pair("Cuisines", R.drawable.ic_cuisines),
-                Pair("Test", R.drawable.ic_favorite)
-            )
+        mapOf(
+            Pair("Cuisines", R.drawable.ic_cuisines),
+            Pair("Test", R.drawable.ic_favorite)
         )
     )
+
+    private val buttonsDestinations = listOf(
+        listOf(
+            R.id.nav_restaurant,
+            R.id.nav_about
+        ),
+        listOf(
+            R.id.nav_cuisines,
+            R.id.nav_settings
+        )
+    )
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -46,14 +53,12 @@ class HomeFragment() : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val homeView = view.findViewById<RecyclerView>(R.id.homeLayout)
 
-        val sectionNames = sectionsInfo.keys.toList()
-        val sectionsButtons = sectionsInfo.values.toList()
 
         val homeList =
             this.activity?.findViewById(R.id.homeLayout) as RecyclerView
         homeList.setHasFixedSize(true)
         homeList.layoutManager = LinearLayoutManager(this.requireContext())
 
-        homeView.adapter = HomeAdapter(view.context, sectionNames, sectionsButtons)
+        homeView.adapter = HomeAdapter(sectionNames, sectionsButtons, buttonsDestinations)
     }
 }
