@@ -3,65 +3,58 @@ package pt.ipl.isel.leic.ps.androidclient.ui.home
 import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.cardview.widget.CardView
-import androidx.navigation.findNavController
+import androidx.recyclerview.widget.RecyclerView
 import pt.ipl.isel.leic.ps.androidclient.R
-import java.lang.RuntimeException
 
-class HomeAdapter(
-    context: Context,
-    private val buttonImages: List<Int>,
-    private val buttonNames: List<String>
-) : BaseAdapter() {
+class SectionHolder(view: ViewGroup) : RecyclerView.ViewHolder(view) {
 
-    private var inflater: LayoutInflater =
-        context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+    private val section = view.findViewById<CardView>(R.id.section)
+    private val sectionName = view.findViewById<TextView>(R.id.sectionName)
+    private val category_image1 = view.findViewById<ImageView>(R.id.category_image1)
+    private val category_name1 = view.findViewById<TextView>(R.id.category_name1)
+    private val category_image2 = view.findViewById<ImageView>(R.id.category_image2)
+    private val category_name2 = view.findViewById<TextView>(R.id.category_name2)
 
-    @SuppressLint("ViewHolder", "InflateParams", "ResourceType")
-    override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
-        var holder = ButtonHolder()
-        var view = inflater.inflate(R.layout.category_button, null)
+    fun bindTo(
+        sectionName: String,
+        sectionButtons: Map<String, Int>
+    ) {
 
-        holder.button = view.findViewById(R.id.category_button)
-        holder.image = view.findViewById(R.id.category_image)
-        holder.name = view.findViewById(R.id.category_name)
+        val names = sectionButtons.keys.toList()
 
-        holder.name.text = buttonNames[position]
-        holder.image.setImageResource(buttonImages[position])
-
-        holder.button.setOnClickListener { view ->
-            view.findNavController().navigate(getFragment(holder.name.text.toString()))
-        }
-
-        return view
-    }
-
-    override fun getItem(position: Int): Any {
-        return position
-    }
-
-    override fun getItemId(position: Int): Long {
-        return position.toLong()
-    }
-
-    override fun getCount(): Int {
-        return buttonImages.size
-    }
-
-    private fun getFragment(buttonName: String) : Int {
-        return when(buttonName) {
-            "Restaurants" ->  R.id.nav_restaurant
-            "Meals" -> R.id.nav_about // TODO: Change
-            else -> throw RuntimeException("Socorro")
-        }
+        this.sectionName.text = sectionName
+        sectionButtons[names[0]]?.let { this.category_image1.setImageResource(it) }
+        this.category_name1.text = names[0]
+        sectionButtons[names[1]]?.let { this.category_image2.setImageResource(it) }
+        this.category_name2.text = names[1]
     }
 }
 
-class ButtonHolder {
-    lateinit var button: CardView
-    lateinit var image: ImageView
-    lateinit var name: TextView
+class HomeAdapter(
+    context: Context,
+    private val sectionsNames: List<String>,
+    private val sectionsButtons: List<Map<String, Int>>
+) : RecyclerView.Adapter<SectionHolder>() {
+
+    @SuppressLint("ResourceType")
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SectionHolder =
+        SectionHolder(
+            LayoutInflater
+                .from(parent.context)
+                .inflate(R.layout.grid_section, parent, false) as ViewGroup
+        )
+
+    override fun getItemCount(): Int = sectionsNames.size
+
+    override fun onBindViewHolder(holder: SectionHolder, position: Int) {
+
+        holder.bindTo(
+            sectionsNames[position],
+            sectionsButtons[position]
+        )
+    }
 }
