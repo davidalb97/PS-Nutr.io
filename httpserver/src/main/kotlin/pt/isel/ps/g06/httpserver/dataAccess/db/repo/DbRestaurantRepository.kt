@@ -6,14 +6,11 @@ import org.jdbi.v3.core.transaction.TransactionIsolationLevel
 import org.springframework.stereotype.Repository
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.RestaurantApiType
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType
-import pt.isel.ps.g06.httpserver.dataAccess.db.dto.RestaurantDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.*
+import pt.isel.ps.g06.httpserver.dataAccess.db.dto.RestaurantDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.SubmissionDto
-import pt.isel.ps.g06.httpserver.exception.DatabaseConsistencyException
-import pt.isel.ps.g06.httpserver.exception.InvalidInputDomain
 import pt.isel.ps.g06.httpserver.exception.InvalidInputDomain.SUBMITTER
 import pt.isel.ps.g06.httpserver.exception.InvalidInputException
-import pt.isel.ps.g06.httpserver.exception.InvalidParameterException
 
 @Repository
 class DbRestaurantRepository(private val jdbi: Jdbi) {
@@ -70,7 +67,7 @@ class DbRestaurantRepository(private val jdbi: Jdbi) {
 
                 //Get api submitterId, abort if failed
                 val apiDao = it.attach(ApiDao::class.java)
-                val apiSubmitterId = apiDao.getIdByName(restaurantApiType.toString())
+                val apiSubmitterId = apiDao.getByName(restaurantApiType.toString())!!.submitter_id
                         ?: it.rollback().let { return@inTransaction null }
 
                 //Insert SubmissionSubmitter for the new Api submitter

@@ -28,7 +28,9 @@ class DbPortionRepository(private val jdbi: Jdbi) {
     ): Boolean {
         return inTransaction(jdbi, serializable) {
             val submissionDao = it.attach(SubmissionDao::class.java)
-            val submissionId = submissionDao.insert(SubmissionType.Portion.name)
+            val submissionId = submissionDao
+                    .insert(SubmissionType.Portion.name)
+                    .submission_id
 
             val submissionSubmitterDao = it.attach(SubmissionSubmitterDao::class.java)
             submissionSubmitterDao.insert(submissionId, submitterId)

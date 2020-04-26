@@ -21,13 +21,13 @@ interface ApiDao {
     @SqlQuery("SELECT * FROM $table WHERE $id = :submitterId")
     fun getById(@Bind submitterId: Int): ApiDto?
 
-    @SqlQuery("SELECT $submitterTable.$submitterId" +
+    @SqlQuery("SELECT $submitterTable.$submitterId, $submitterTable.$apiToken" +
             " FROM $submitterTable" +
             " INNER JOIN $table" +
             " ON $submitterTable.$submitterId = $table.$id" +
             " WHERE $submitterName = :submitterName"
     )
-    fun getIdByName(@Bind submitterName: String): Int?
+    fun getByName(@Bind submitterName: String): ApiDto?
 
     @SqlQuery("INSERT INTO $table($id, $apiToken) " +
             "VALUES(:submitterId, :apiToken) RETURNING *")
