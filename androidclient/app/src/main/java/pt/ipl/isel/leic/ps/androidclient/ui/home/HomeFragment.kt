@@ -10,33 +10,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import pt.ipl.isel.leic.ps.androidclient.R
 
-class HomeFragment() : Fragment() {
+class HomeFragment : Fragment() {
 
     private lateinit var homeViewModel: HomeViewModel
-
-    private val sectionNames = listOf("By location", "By name")
-    private val sectionsButtons = listOf(
-        mapOf(
-            Pair("Restaurants", R.drawable.ic_restaurant),
-            Pair("Meals", R.drawable.ic_menu_book)
-        ),
-        mapOf(
-            Pair("Cuisines", R.drawable.ic_cuisines),
-            Pair("Test", R.drawable.ic_favorite)
-        )
-    )
-
-    private val buttonsDestinations = listOf(
-        listOf(
-            R.id.nav_restaurant,
-            R.id.nav_about
-        ),
-        listOf(
-            R.id.nav_cuisines,
-            R.id.nav_settings
-        )
-    )
-
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -47,18 +23,5 @@ class HomeFragment() : Fragment() {
             ViewModelProvider(this).get(HomeViewModel::class.java)
         val root = inflater.inflate(R.layout.fragment_home, container, false)
         return root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        val homeView = view.findViewById<RecyclerView>(R.id.homeLayout)
-
-
-        val homeList =
-            this.activity?.findViewById(R.id.homeLayout) as RecyclerView
-        homeList.setHasFixedSize(true)
-        homeList.layoutManager = LinearLayoutManager(this.requireContext())
-
-        homeView.adapter = HomeAdapter(sectionNames, sectionsButtons, buttonsDestinations)
     }
 }

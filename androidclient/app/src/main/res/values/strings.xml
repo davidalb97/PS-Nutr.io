@@ -20,4 +20,9 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="section_name">Section_name</string>
+    <string name="by_location">By location</string>
+    <string name="restaurants">Restaurants</string>
+    <string name="meals">Meals</string>
+    <string name="by_name">By name</string>
+    <string name="cuisines">Cuisines</string>
 </resources>
