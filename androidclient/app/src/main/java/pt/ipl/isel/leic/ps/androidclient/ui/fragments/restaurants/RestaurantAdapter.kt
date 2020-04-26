@@ -1,4 +1,4 @@
-package pt.ipl.isel.leic.ps.androidclient.ui.restaurants
+package pt.ipl.isel.leic.ps.androidclient.ui.fragments.restaurants
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager

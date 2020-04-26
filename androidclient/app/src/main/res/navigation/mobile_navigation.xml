@@ -7,43 +7,38 @@
 
     <fragment
         android:id="@+id/nav_home"
-        android:name="pt.ipl.isel.leic.ps.androidclient.ui.home.HomeFragment"
+        android:name="pt.ipl.isel.leic.ps.androidclient.ui.fragments.drawer.HomeFragment"
         android:label="@string/menu_home"
         tools:layout="@layout/fragment_home" />
 
     <fragment
         android:id="@+id/nav_profile"
-        android:name="pt.ipl.isel.leic.ps.androidclient.ui.search.SearchFragment"
+        android:name="pt.ipl.isel.leic.ps.androidclient.ui.fragments.drawer.settings.SettingsFragment"
         android:label="@string/menu_profile"
         tools:layout="@layout/fragment_settings" />
 
     <fragment
         android:id="@+id/nav_settings"
-        android:name="pt.ipl.isel.leic.ps.androidclient.ui.search.SearchFragment"
+        android:name="pt.ipl.isel.leic.ps.androidclient.ui.fragments.drawer.settings.SettingsFragment"
         android:label="@string/menu_settings"
         tools:layout="@layout/fragment_settings" />
 
     <fragment
         android:id="@+id/nav_about"
-        android:name="pt.ipl.isel.leic.ps.androidclient.ui.about.AboutFragment"
+        android:name="pt.ipl.isel.leic.ps.androidclient.ui.fragments.drawer.AboutFragment"
         android:label="@string/menu_about"
         tools:layout="@layout/fragment_about" />
 
     <fragment
         android:id="@+id/nav_restaurant"
-        android:name="pt.ipl.isel.leic.ps.androidclient.ui.restaurants.RestaurantFragment"
+        android:name="pt.ipl.isel.leic.ps.androidclient.ui.fragments.restaurants.RestaurantFragment"
         android:label="@string/tab_restaurants"
         tools:layout="@layout/fragment_about" />
 
     <fragment
         android:id="@+id/nav_cuisines"
-        android:name="pt.ipl.isel.leic.ps.androidclient.ui.cuisines.CuisinesFragment"
+        android:name="pt.ipl.isel.leic.ps.androidclient.ui.fragments.cuisines.CuisinesFragment"
         android:label="@string/tab_cuisines"
         tools:layout="@layout/fragment_cuisines" />
 
-    <fragment
-        android:id="@+id/nav_location"
-        android:name="pt.ipl.isel.leic.ps.androidclient.ui.MapFragment"
-        android:label="@string/tab_restaurants"
-        tools:layout="@layout/fragment_map" />
 </navigation>

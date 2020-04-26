@@ -1,4 +1,4 @@
-package pt.ipl.isel.leic.ps.androidclient.ui.util
+package pt.ipl.isel.leic.ps.androidclient.ui.utils
 
 import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel

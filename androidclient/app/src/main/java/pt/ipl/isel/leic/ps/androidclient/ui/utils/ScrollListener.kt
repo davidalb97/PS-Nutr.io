@@ -1,4 +1,4 @@
-package pt.ipl.isel.leic.ps.androidclient.ui.util
+package pt.ipl.isel.leic.ps.androidclient.ui.utils
 
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
