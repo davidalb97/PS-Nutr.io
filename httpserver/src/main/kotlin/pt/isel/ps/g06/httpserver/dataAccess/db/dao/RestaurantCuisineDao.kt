@@ -22,4 +22,8 @@ interface RestaurantCuisineDao {
     @SqlQuery("INSERT INTO $table($restaurantId, $cuisineName)" +
             " VALUES(:restaurantId, :cuisineName) RETURNING *")
     fun insert(@Bind restaurantId: Int, @Bind cuisineName: String): RestaurantCuisineDto
+
+    @SqlQuery("DELETE FROM $table($restaurantId, $cuisineName)" +
+            " VALUES(:restaurantId, :cuisineName) RETURNING *")
+    fun delete(@Bind restaurantId: Int, @Bind cuisineName: String): RestaurantCuisineDto
 }
