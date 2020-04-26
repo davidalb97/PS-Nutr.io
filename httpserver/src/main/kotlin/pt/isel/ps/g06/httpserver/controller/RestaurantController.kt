@@ -3,7 +3,9 @@ package pt.isel.ps.g06.httpserver.controller
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
 import pt.isel.ps.g06.httpserver.data.RestaurantInput
+import pt.isel.ps.g06.httpserver.dataAccess.api.IUnDto
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.RestaurantApiRepository
+import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.RestaurantApiType
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.DbRestaurantRepository
 
 const val MAX_RADIUS = 1000
@@ -47,18 +49,33 @@ class RestaurantController(
      * Current search algorithm will first query the Database for any restaurant, and only if none was found,
      * search the preferred Restaurant API (Zomato, etc.)
      */
+    // TODO
     @GetMapping("/{id}", produces = [MediaType.APPLICATION_JSON_VALUE])
     fun getRestaurantInformation(@PathVariable id: Int, api: String?): String {
-        return ""
+        return (dbRestaurantRepository.getRestaurantById(id)
+                ?: restaurantApiRepository
+                        .getRestaurantApi(api!!)
+                        .getRestaurantInfo(id)).toString()
+                ?: return "The restaurant does not exist."
     }
 
+    // TODO
     @PostMapping(consumes = [MediaType.APPLICATION_JSON_VALUE])
     fun createRestaurant(@RequestBody restaurant: RestaurantInput) {
+        dbRestaurantRepository.insertRestaurant(
+                1, // TODO
+                restaurant.name,
+                null,
+                emptyList(),
+                restaurant.latitude,
+                restaurant.longitude,
+                null
+        )
     }
 
     @DeleteMapping("/{id}", consumes = [MediaType.APPLICATION_JSON_VALUE])
     fun deleteRestaurant(@PathVariable id: String) {
-
+        //dbRestaurantRepository.deleteRestaurant()
     }
 
     @PostMapping("/{id}/report", consumes = [MediaType.APPLICATION_JSON_VALUE])
