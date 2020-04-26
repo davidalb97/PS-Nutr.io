@@ -13,6 +13,7 @@ interface PortionDao {
     @SqlQuery("SELECT * FROM $table WHERE $id = :submissionId")
     fun getById(@Bind submissionId: Int): List<PortionDto>
 
-    @SqlQuery("INSERT INTO $table($id, $quantity) VALUES(:submissionId, :quantity)")
-    fun insert(@Bind submissionId: Int, quantity: Int)
+    @SqlQuery("INSERT INTO $table($id, $quantity)" +
+            " VALUES(:submissionId, :quantity) RETURNING *")
+    fun insert(@Bind submissionId: Int, quantity: Int): PortionDto
 }

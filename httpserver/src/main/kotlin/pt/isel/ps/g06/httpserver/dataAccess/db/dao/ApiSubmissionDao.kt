@@ -3,7 +3,6 @@ package pt.isel.ps.g06.httpserver.dataAccess.db.dao
 import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.customizer.BindBeanList
 import org.jdbi.v3.sqlobject.statement.SqlQuery
-import org.jdbi.v3.sqlobject.statement.SqlUpdate
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.ApiSubmissionDto
 
 private const val table = "ApiSubmission"
@@ -16,19 +15,20 @@ interface ApiSubmissionDao {
     fun getAll(): List<ApiSubmissionDto>
 
     @SqlQuery("SELECT * FROM $table WHERE $submissionId = :submissionId")
-    fun getById(submissionId: Int): ApiSubmissionDto
+    fun getById(submissionId: Int): ApiSubmissionDto?
 
     @SqlQuery("SELECT * FROM $table WHERE $apiId = :apiId")
     fun getAllByApiId(apiId: Int): List<ApiSubmissionDto>
 
-    @SqlQuery("INSERT INTO $table($submissionId, $apiId, $submissionType) VALUES(:submissionId, :apiId, :submissionType)")
-    fun insert(@Bind submissionId: Int, apiId: Int, submissionType: String)
+    @SqlQuery("INSERT INTO $table($submissionId, $apiId, $submissionType)" +
+            " VALUES(:submissionId, :apiId, :submissionType) RETURNING *")
+    fun insert(@Bind submissionId: Int, apiId: Int, submissionType: String): ApiSubmissionDto
 
-    @SqlUpdate("INSERT INTO $table($submissionId, $apiId, $submissionType) values <values>")
+    @SqlQuery("INSERT INTO $table($submissionId, $apiId, $submissionType) values <values> RETURNING *")
     fun insertAll(@BindBeanList(
             value = "values",
             propertyNames = [submissionId, apiId, submissionType]
-    ) vararg values: ApiSubmissionParam)
+    ) values: List<ApiSubmissionParam>): List<ApiSubmissionDto>
 }
 
 data class ApiSubmissionParam(

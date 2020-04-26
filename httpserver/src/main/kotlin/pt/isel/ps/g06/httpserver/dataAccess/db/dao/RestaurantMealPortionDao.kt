@@ -14,14 +14,15 @@ interface RestaurantMealPortionDao {
     fun getAll(): List<RestaurantMealPortionDto>
 
     @SqlQuery("SELECT * FROM $table WHERE $mealId = :mealId")
-    fun getByMealId(@Bind mealId: Int): RestaurantMealPortionDto
+    fun getByMealId(@Bind mealId: Int): RestaurantMealPortionDto?
 
     @SqlQuery("SELECT * FROM $table WHERE $portionId = :portionId")
-    fun getByPortionId(@Bind portionId: Int): RestaurantMealPortionDto
+    fun getByPortionId(@Bind portionId: Int): RestaurantMealPortionDto?
 
     @SqlQuery("SELECT * FROM $table WHERE $restaurantId = :restaurantId")
-    fun getByRestaurantId(@Bind restaurantId: Int): RestaurantMealPortionDto
+    fun getByRestaurantId(@Bind restaurantId: Int): RestaurantMealPortionDto?
 
-    @SqlQuery("INSERT INTO $table($mealId, $portionId, $restaurantId) VALUES(:mealId, :portionId, :restaurantId)")
-    fun insert(@Bind mealId: Int, @Bind portionId: Int, restaurantId: Int)
+    @SqlQuery("INSERT INTO $table($mealId, $portionId, $restaurantId)" +
+            " VALUES(:mealId, :portionId, :restaurantId) RETURNING *")
+    fun insert(@Bind mealId: Int, @Bind portionId: Int, restaurantId: Int): RestaurantMealPortionDto
 }

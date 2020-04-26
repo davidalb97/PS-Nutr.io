@@ -16,7 +16,7 @@ interface MealDao {
     @SqlQuery("SELECT * FROM $table WHERE $name = :mealName")
     fun getByName(@Bind mealName: String): List<MealDto>
 
-    @SqlQuery("INSERT INTO $table($id, $name) VALUES(:submission_id, :mealName)")
-    fun insert(@Bind submission_id: Int, @Bind mealName: String)
+    @SqlQuery("INSERT INTO $table($id, $name) VALUES(:submission_id, :mealName) RETURNING *")
+    fun insert(@Bind submission_id: Int, @Bind mealName: String): MealDto
 
 }

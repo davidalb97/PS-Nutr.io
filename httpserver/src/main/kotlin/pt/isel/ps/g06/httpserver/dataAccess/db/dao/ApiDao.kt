@@ -19,11 +19,7 @@ interface ApiDao {
     fun getAll(): List<ApiDto>
 
     @SqlQuery("SELECT * FROM $table WHERE $id = :submitterId")
-    fun getById(@Bind submitterId: Int): ApiDto
-
-    @SqlQuery("INSERT INTO $table($id, $apiToken) " +
-            "VALUES(:submitterId, :apiToken)")
-    fun insert(@Bind submitterId: Int, @Bind apiToken: String)
+    fun getById(@Bind submitterId: Int): ApiDto?
 
     @SqlQuery("SELECT $submitterTable.$submitterId" +
             " FROM $submitterTable" +
@@ -31,5 +27,9 @@ interface ApiDao {
             " ON $submitterTable.$submitterId = $table.$id" +
             " WHERE $submitterName = :submitterName"
     )
-    fun getIdByName(@Bind submitterName: String): Int
+    fun getIdByName(@Bind submitterName: String): Int?
+
+    @SqlQuery("INSERT INTO $table($id, $apiToken) " +
+            "VALUES(:submitterId, :apiToken) RETURNING *")
+    fun insert(@Bind submitterId: Int, @Bind apiToken: String): ApiDto
 }
