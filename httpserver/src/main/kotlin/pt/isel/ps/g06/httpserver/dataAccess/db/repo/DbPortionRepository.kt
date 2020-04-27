@@ -15,7 +15,7 @@ class DbPortionRepository(private val jdbi: Jdbi) {
     private val portionClass = PortionDao::class.java
 
     fun getPortionsFromMeal(mealSubmissionId: Int): List<PortionDto>? {
-        return inTransaction<List<PortionDto>>(jdbi, serializable) {
+        return inTransaction(jdbi, serializable) {
             it.attach(portionClass).getById(mealSubmissionId)
         }
     }

@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository
 import pt.isel.ps.g06.httpserver.dataAccess.api.food.FoodApiType
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.*
+import pt.isel.ps.g06.httpserver.dataAccess.db.dto.MealDto
 import pt.isel.ps.g06.httpserver.dataAccess.model.Ingredient
 
 @Repository
@@ -13,7 +14,19 @@ class DbMealRepository(private val jdbi: Jdbi) {
 
     val serializable = TransactionIsolationLevel.SERIALIZABLE
 
-    fun newMeal(
+    fun getById(submissionId: Int) {
+        return inTransaction(jdbi, serializable) {
+            it.attach(MealDao::class.java).getById(submissionId)
+        }
+    }
+
+    fun getByName(mealName: String) {
+        return inTransaction(jdbi, serializable) {
+            it.attach(MealDao::class.java).getByName(mealName)
+        }
+    }
+
+    fun insert(
             submitterId: Int,
             mealName: String,
             apiId: Int? = null,
@@ -101,6 +114,49 @@ class DbMealRepository(private val jdbi: Jdbi) {
                 )
             }
             mealSubmissionId
+        }
+    }
+
+    fun delete(
+            submitterId: Int,
+            submissionId: Int
+    ) : Boolean {
+        return inTransaction(jdbi, serializable) {
+            val mealDto = it.attach(MealDao::class.java)
+                    .getById(submissionId)
+
+            if (mealDto != null) {
+                val deletedSubmissionSubmitter = it
+                        .attach(SubmissionSubmitterDao::class.java)
+                        .delete(submissionId)
+
+                val deletedMeal = it.attach(MealDao::class.java)
+                        .delete(submissionId)
+
+                if (deletedSubmissionSubmitter && deletedMeal) {
+                    if (it.attach(SubmissionDao::class.java).delete(submissionId))
+                        return@inTransaction true
+                }
+            }
+            false
+        }
+    }
+
+    // TODO
+    fun update(
+            submitterId: Int,
+            submissionId: Int
+    ) : MealDto? {
+        return inTransaction(jdbi, serializable) {
+            val mealDto = it.attach(MealDao::class.java)
+                    .getById(submissionId)
+
+            if (mealDto != null) {
+                /*val updatedMealDto = it.attach(MealDto::class.java)
+                        .update(submissionId)*/
+            }
+
+            null
         }
     }
 }

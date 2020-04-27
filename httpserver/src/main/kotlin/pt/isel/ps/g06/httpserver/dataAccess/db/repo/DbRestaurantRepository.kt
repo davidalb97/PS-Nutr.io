@@ -98,128 +98,26 @@ class DbRestaurantRepository(private val jdbi: Jdbi) {
                     .getById(submission_id)
 
             if (restaurantDto != null) {
-                val deletedFromSubmission = it.attach(SubmissionDao::class.java)
+                val deletedFromRestaurant = it.attach(RestaurantDao::class.java)
                         .delete(submission_id)
 
-                if (deletedFromSubmission) {
+                val deletedFromSubmissionSubmitter = it.attach(SubmissionSubmitterDao::class.java)
+                        .delete(submission_id)
+
+                if (deletedFromSubmissionSubmitter && deletedFromRestaurant) {
                     // TODO - Only receives cuisineName ?
                     /*val deletedFromRestaurantCuisines = it.attach(RestaurantCuisineDao::class.java)
                             .delete(submission_id, )*/
-                    // Delete submission from Restaurant Table
-                    val deletedFromRestaurant = it.attach(RestaurantDao::class.java)
+
+                    // Delete submission from Submission Table
+                    return@inTransaction it.attach(SubmissionDao::class.java)
                             .delete(submission_id)
 
-                    if (deletedFromRestaurant)
-                        return@inTransaction true
                 }
 
             }
 
-
             false
-        }
-    }
-
-    fun addReport(
-            submitterId: Int,
-            submission_id: Int,
-            report: String
-    ): ReportDto? {
-        return inTransaction(jdbi, serializable) {
-            validateSubmitterId(it, submitterId)
-
-            // TODO - Change to restaurant with inner join
-            // Check if the submission exists
-            val submissionDto = it.attach(SubmissionDao::class.java)
-                    .getById(submission_id)
-
-            if (submissionDto != null) {
-                // Submit a report to that Submission
-                return@inTransaction it.attach(ReportDao::class.java)
-                        .insert(submitterId, submission_id, report)
-            }
-
-            null
-        }
-    }
-
-    fun addVote(
-            submitterId: Int,
-            submission_id: Int,
-            vote: Boolean
-    ): VotableDto? {
-        return inTransaction(jdbi, serializable) {
-            validateSubmitterId(it, submitterId)
-
-            // TODO - Change to restaurant with inner join
-            // Check if the submission exists
-            val submissionDto = it.attach(SubmissionDao::class.java)
-                    .getById(submission_id)
-
-            // Check if this submitter already voted this submission
-            val hasVoted = it.attach(VotableDao::class.java)
-                    .getVoteFromSubmitter(submission_id, submitterId)
-
-            if (submissionDto != null && !hasVoted) {
-                // Submit a report to that Submission
-                return@inTransaction it.attach(VotableDao::class.java)
-                        .insert(submission_id, submitterId, vote)
-            }
-
-            null
-        }
-    }
-
-    fun removeVote(
-            submitterId: Int,
-            submission_id: Int
-    ): VotableDto? {
-        return inTransaction(jdbi, serializable) {
-            validateSubmitterId(it, submitterId)
-
-            // TODO - Change to restaurant with inner join
-            // Check if the submission exists
-            val submissionDto = it.attach(SubmissionDao::class.java)
-                    .getById(submission_id)
-
-            // Check if this submitter already voted this submission
-            val hasVoted = it.attach(VotableDao::class.java)
-                    .getVoteFromSubmitter(submission_id, submitterId)
-
-            if (submissionDto != null && !hasVoted) {
-                // Submit a report to that Submission
-                return@inTransaction it.attach(VotableDao::class.java)
-                        .delete(submission_id, submitterId)
-            }
-
-            null
-        }
-    }
-
-    fun updateVote(
-            submitterId: Int,
-            submission_id: Int,
-            vote: Boolean
-    ): VotableDto? {
-        return inTransaction(jdbi, serializable) {
-            validateSubmitterId(it, submitterId)
-
-            // TODO - Change to restaurant with inner join
-            // Check if the submission exists
-            val submissionDto = it.attach(SubmissionDao::class.java)
-                    .getById(submission_id)
-
-            // Check if this submitter already voted this submission
-            val hasVoted = it.attach(VotableDao::class.java)
-                    .getVoteFromSubmitter(submission_id, submitterId)
-
-            if (submissionDto != null && !hasVoted) {
-                // Submit a report to that Submission
-                return@inTransaction it.attach(VotableDao::class.java)
-                        .update(submission_id, submitterId, vote)
-            }
-
-            null
         }
     }
 
