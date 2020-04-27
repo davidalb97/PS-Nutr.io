@@ -2,11 +2,13 @@ package pt.isel.ps.g06.httpserver.dataAccess.db.repo
 
 import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.transaction.TransactionIsolationLevel
+import org.springframework.stereotype.Repository
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.SubmissionDao
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.VotableDao
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.VotableDto
 import pt.isel.ps.g06.httpserver.dataAccess.model.Votes
 
+@Repository
 class DbVotableRepository(private val jdbi: Jdbi) {
 
     val serializable = TransactionIsolationLevel.SERIALIZABLE

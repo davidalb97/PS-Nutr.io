@@ -2,10 +2,12 @@ package pt.isel.ps.g06.httpserver.dataAccess.db.repo
 
 import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.transaction.TransactionIsolationLevel
+import org.springframework.stereotype.Repository
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.ReportDao
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.SubmissionDao
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.ReportDto
 
+@Repository
 class DbReportRepository(private val jdbi: Jdbi) {
 
     val serializable = TransactionIsolationLevel.SERIALIZABLE

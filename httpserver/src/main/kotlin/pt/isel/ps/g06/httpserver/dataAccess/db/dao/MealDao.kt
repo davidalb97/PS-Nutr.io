@@ -23,6 +23,6 @@ interface MealDao {
     fun delete(@Bind submission_id: Int): Boolean
 
     @SqlQuery("UPDATE $table SET $name = :new_name WHERE $id = :submission_id")
-    fun updateName(@Bind submission_id: Int, new_name: String): Boolean
+    fun updateName(@Bind submission_id: Int, new_name: String): MealDto?
 
 }
