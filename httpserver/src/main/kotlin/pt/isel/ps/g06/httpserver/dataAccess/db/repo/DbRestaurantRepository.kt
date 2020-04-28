@@ -1,6 +1,5 @@
 package pt.isel.ps.g06.httpserver.dataAccess.db.repo
 
-import org.jdbi.v3.core.Handle
 import org.jdbi.v3.core.Jdbi
 import org.springframework.stereotype.Repository
 import pt.isel.ps.g06.httpserver.dataAccess.db.concrete.DbRestaurant
@@ -13,15 +12,13 @@ class DbRestaurantRepository(private val jdbi: Jdbi) {
 
     fun getRestaurantById(id: Int) {
         return jdbi.open().use {
-            it.attach(restaurantDao).getRestaurantById(id)
+            it.attach(restaurantDao).getById(id)
         }
     }
 
     fun getRestaurantsByCoordinates(latitude: Float, longitude: Float, radius: Int): List<DbRestaurant> {
         return jdbi.open().use {
-            it.attach(restaurantDao).getRestaurantsByCoordinates(longitude, latitude, radius)
+            it.attach(restaurantDao).getByCoordinates(longitude, latitude, radius)
         }
     }
-
-
 }

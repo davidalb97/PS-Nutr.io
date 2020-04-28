@@ -25,15 +25,16 @@ class RestaurantController(
 
             val restaurantApi = restaurantApiRepository.getRestaurantApi(apiType)
 
-            val apiRestaurants = CompletableFuture
-                    .supplyAsync { restaurantApi.searchRestaurants(latitude, longitude, chosenRadius) }
-                    .thenApply { it.map(RestaurantDtoMapper::mapDto) }
+//            val apiRestaurants = CompletableFuture
+//                    .supplyAsync { restaurantApi.searchRestaurants(latitude, longitude, chosenRadius) }
+//                    .thenApply { it.map(RestaurantDtoMapper::mapDto) }
 
             val dbRestaurants = dbRestaurantRepository
                     .getRestaurantsByCoordinates(latitude, longitude, chosenRadius)
                     .map(RestaurantDtoMapper::mapDto)
+                    .forEach { println(it.name) }
 
-            filterRedundantApiRestaurants(dbRestaurants, apiRestaurants.get()).forEach { println(it.apiId) }
+//            filterRedundantApiRestaurants(dbRestaurants, apiRestaurants.get()).forEach { println(it.apiId) }
             return ""
         }
     }

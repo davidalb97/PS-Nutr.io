@@ -13,10 +13,13 @@ private const val latitude = "latitude"
 private const val longitude = "longitude"
 
 interface RestaurantDao {
-
-    //TODO! must call geo-location function!
-    @SqlQuery("SELECT * FROM $table WHERE geoloc($latitude, $longitude) < :radius")
-    fun getByCoordinates(@Bind latitude: Float, @Bind longitude: Float, radius: Int): List<DbRestaurant>
+    @SqlQuery("SELECT * FROM Restaurant WHERE " +
+            "ST_Distance(" +
+            "ST_MakePoint(Restaurant.latitude, Restaurant.longitude)::geography," +
+            "ST_MakePoint(:latitude, :longitude)::geography, " +
+            "false" +
+            ") <= :radius")
+    fun getByCoordinates(@Bind latitude: Float, @Bind longitude: Float, @Bind radius: Int): List<DbRestaurant>
 
     @SqlQuery("SELECT * FROM $table WHERE $id = :restaurantId")
     @Transaction(TransactionIsolationLevel.SERIALIZABLE)
