@@ -14,8 +14,18 @@
 
     <string name="home_second">Home Second</string>
     <string name="category_name">category_name</string>
-    <string name="menu_restaurant">Restaurant</string>
+    <string name="tab_restaurants">Search for restaurants</string>
+    <string name="tab_cuisines">Search for cuisines</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="section_name">Section_name</string>
+    <string name="by_location">By location</string>
+    <string name="restaurants">Restaurants</string>
+    <string name="meals">Meals</string>
+    <string name="by_name">By name</string>
+    <string name="cuisines">Cuisines</string>
+    <string name="no_result_found">No results found</string>
+    <string name="error_network">Couldn\'t get results</string>
+    <string name="no_more_results_found">Couldn\'t fetch more items</string>
 </resources>

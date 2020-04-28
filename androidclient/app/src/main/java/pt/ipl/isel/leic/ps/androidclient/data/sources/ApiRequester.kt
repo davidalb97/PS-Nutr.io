@@ -15,7 +15,7 @@ import pt.ipl.isel.leic.ps.androidclient.data.sources.dtos.MealsDto
 import pt.ipl.isel.leic.ps.androidclient.data.sources.dtos.RestaurantsDto
 import pt.ipl.isel.leic.ps.androidclient.data.sources.model.Meal
 import pt.ipl.isel.leic.ps.androidclient.data.sources.model.Restaurant
-import pt.ipl.isel.leic.ps.androidclient.data.util.AsyncWorker
+import pt.ipl.isel.leic.ps.androidclient.data.utils.AsyncWorker
 
 const val ADDRESS = "TODO"
 const val PORT = "TODO"

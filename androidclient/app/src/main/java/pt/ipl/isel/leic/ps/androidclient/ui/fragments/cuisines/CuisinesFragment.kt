@@ -1,4 +1,4 @@
-package pt.ipl.isel.leic.ps.androidclient.ui.cuisines
+package pt.ipl.isel.leic.ps.androidclient.ui.fragments.cuisines
 
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle

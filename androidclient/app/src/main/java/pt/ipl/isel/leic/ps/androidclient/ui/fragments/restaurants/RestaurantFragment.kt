@@ -1,4 +1,4 @@
-package pt.ipl.isel.leic.ps.androidclient.ui.restaurants
+package pt.ipl.isel.leic.ps.androidclient.ui.fragments.restaurants
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,8 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import pt.ipl.isel.leic.ps.androidclient.R
-import pt.ipl.isel.leic.ps.androidclient.ui.MapFragment
-import pt.ipl.isel.leic.ps.androidclient.ui.cuisines.CuisinesFragment
+import pt.ipl.isel.leic.ps.androidclient.ui.fragments.cuisines.CuisinesFragment
 
 class RestaurantFragment : Fragment() {
 

@@ -10,7 +10,7 @@ class HttpServerRepository(private val ctx: Context, private val volleyQueue: Re
 
     val apiRequester = ApiRequester(ctx, volleyQueue)
 
-    fun getRestaraunts(
+    fun getRestaurants(
         success: (List<Restaurant>) -> Unit,
         error: () -> Unit,
         count: Int
