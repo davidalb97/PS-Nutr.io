@@ -4,7 +4,7 @@ import android.app.Application
 import android.content.Context
 import com.android.volley.RequestQueue
 import com.android.volley.toolbox.Volley
-import pt.ipl.isel.leic.ps.androidclient.data.repositories.HttpServerRepository
+import pt.ipl.isel.leic.ps.androidclient.data.repo.HttpServerRepository
 
 const val TAG = "Nutr.io App"
 
