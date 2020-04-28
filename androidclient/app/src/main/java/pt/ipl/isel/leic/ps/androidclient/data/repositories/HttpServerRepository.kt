@@ -6,7 +6,7 @@ import pt.ipl.isel.leic.ps.androidclient.data.sources.ApiRequester
 import pt.ipl.isel.leic.ps.androidclient.data.sources.model.Meal
 import pt.ipl.isel.leic.ps.androidclient.data.sources.model.Restaurant
 
-class HttpServerRepository(private val ctx: Context, private val volleyQueue: RequestQueue) {
+class HttpServerRepository(private val ctx: Context, private val volleyQueue: RequestQueue) : IRepository{
 
     val apiRequester = ApiRequester(ctx, volleyQueue)
 
