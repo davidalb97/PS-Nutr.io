@@ -21,4 +21,6 @@ class FoodApiRepository(factory: BeanFactory) {
      * @throws NoSuchElementException when api name is invalid
      */
     fun getFoodApi(type: FoodApiType): IFoodApi = foodApis.getValue(type)
+
+
 }

@@ -1,8 +1,10 @@
 package pt.isel.ps.g06.httpserver.dataAccess.db.dao
 
 import org.jdbi.v3.sqlobject.customizer.Bind
+import org.jdbi.v3.sqlobject.customizer.BindBeanList
 import org.jdbi.v3.sqlobject.statement.SqlQuery
-import pt.isel.ps.g06.httpserver.dataAccess.db.concrete.DbMealIngredient
+import org.jdbi.v3.sqlobject.statement.SqlUpdate
+import pt.isel.ps.g06.httpserver.dataAccess.db.dto.MealIngredientDto
 
 private const val table = "MealIngredient"
 private const val mealId = "meal_submission_id"
@@ -10,14 +12,23 @@ private const val ingredientId = "ingredient_submission_id"
 
 interface MealIngredientDao {
     @SqlQuery("SELECT * FROM $table")
-    fun getAll(): List<DbMealIngredient>
+    fun getAll(): List<MealIngredientDto>
 
     @SqlQuery("SELECT * FROM $table WHERE $mealId = :mealId")
-    fun getByMealId(@Bind mealId: Int): DbMealIngredient
+    fun getByMealId(@Bind mealId: Int): MealIngredientDto
 
     @SqlQuery("SELECT * FROM $table WHERE $ingredientId = :ingredientId")
-    fun getByIngredientId(@Bind ingredientId: Int): DbMealIngredient
+    fun getByIngredientId(@Bind ingredientId: Int): MealIngredientDto
 
     @SqlQuery("INSERT INTO $table($mealId, $ingredientId) VALUES(:mealId, :ingredientId)")
     fun insert(@Bind mealId: Int, @Bind ingredientId: Int)
+
+    @SqlUpdate("INSERT INTO $table($mealId, $ingredientId) values <values>")
+    fun insertAll(@BindBeanList(
+            value = "values",
+            propertyNames = [mealId, ingredientId]
+    ) vararg values: MealIngredientParam)
 }
+
+//Variable names must match sql columns!!!
+data class MealIngredientParam(val meal_submission_id: Int, val ingredient_submission_id: Int)

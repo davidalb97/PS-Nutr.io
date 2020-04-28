@@ -92,3 +92,12 @@ enum class SpoonacularAisle {
                 .replace("_", " ")
     }
 }
+
+enum class SpoonacularUnitTypes {
+    grams,
+    ounce;
+
+    override fun toString(): String {
+        return super.toString()
+    }
+}
