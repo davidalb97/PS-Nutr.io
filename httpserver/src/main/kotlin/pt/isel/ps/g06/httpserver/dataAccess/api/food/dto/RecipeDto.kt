@@ -1,6 +1,6 @@
 package pt.isel.ps.g06.httpserver.dataAccess.api.food.dto
 
-import pt.isel.ps.g06.httpserver.dataAccess.DtoMapper
+import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.dto.DtoMapper
 
 @SuppressWarnings("")
 data class RecipeContainerDtoMapper(

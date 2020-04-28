@@ -3,44 +3,16 @@ package pt.isel.ps.g06.httpserver.controller
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
 import pt.isel.ps.g06.httpserver.data.RestaurantInput
-import pt.isel.ps.g06.httpserver.dataAccess.RestaurantDtoMapper
-import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.RestaurantApiRepository
-import pt.isel.ps.g06.httpserver.dataAccess.db.repo.DbRestaurantRepository
-import pt.isel.ps.g06.httpserver.dataAccess.model.RestaurantResponse
-import java.util.concurrent.CompletableFuture
-
-const val MAX_RADIUS = 1000
+import pt.isel.ps.g06.httpserver.model.Restaurant
+import pt.isel.ps.g06.httpserver.service.RestaurantService
 
 @RestController
 @RequestMapping("/restaurant")
-class RestaurantController(
-        private val dbRestaurantRepository: DbRestaurantRepository,
-        private val restaurantApiRepository: RestaurantApiRepository
-) {
+class RestaurantController(private val restaurantService: RestaurantService) {
 
     @GetMapping
-    fun getNearbyRestaurants(latitude: Float?, longitude: Float?, radius: Int? = MAX_RADIUS, apiType: String?): String {
-        return if (latitude == null || longitude == null) "emptySet()" else {
-            val chosenRadius = if (radius != null && radius <= MAX_RADIUS) radius else MAX_RADIUS
-
-            val restaurantApi = restaurantApiRepository.getRestaurantApi(apiType)
-
-//            val apiRestaurants = CompletableFuture
-//                    .supplyAsync { restaurantApi.searchRestaurants(latitude, longitude, chosenRadius) }
-//                    .thenApply { it.map(RestaurantDtoMapper::mapDto) }
-
-            val dbRestaurants = dbRestaurantRepository
-                    .getRestaurantsByCoordinates(latitude, longitude, chosenRadius)
-                    .map(RestaurantDtoMapper::mapDto)
-                    .forEach { println(it.name) }
-
-//            filterRedundantApiRestaurants(dbRestaurants, apiRestaurants.get()).forEach { println(it.apiId) }
-            return ""
-        }
-    }
-
-    private fun dbContainsRestaurant(dbRestaurants: List<RestaurantResponse>, restaurant: RestaurantResponse): Boolean {
-        return dbRestaurants.any { dbRestaurant -> restaurant.apiId == dbRestaurant.apiId }
+    fun getNearbyRestaurants(latitude: Float?, longitude: Float?, radius: Int?, apiType: String?): Set<Restaurant> {
+        return restaurantService.getNearbyRestaurants(latitude, longitude, radius, apiType)
     }
 
     /**
@@ -81,16 +53,5 @@ class RestaurantController(
     @DeleteMapping("/{id}/vote", consumes = [MediaType.APPLICATION_JSON_VALUE])
     fun deleteRestaurantVote(@PathVariable id: String, vote: String) {
 
-    }
-
-    private fun filterRedundantApiRestaurants(dbRestaurants: List<RestaurantResponse>, apiRestaurants: List<RestaurantResponse>): List<RestaurantResponse> {
-        val result = dbRestaurants.toMutableList()
-
-        apiRestaurants.forEach {
-            if (!dbContainsRestaurant(result, it)) {
-                result.add(it)
-            }
-        }
-        return result
     }
 }

@@ -2,40 +2,31 @@ package pt.isel.ps.g06.httpserver.dataAccess.api.restaurant
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import pt.isel.ps.g06.httpserver.dataAccess.api.HttpApiClient
-import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.dto.DailyMenuDto
-import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.dto.RestaurantSearchResultDto
-import pt.isel.ps.g06.httpserver.dataAccess.model.RestaurantResponse
-import java.util.concurrent.CompletableFuture
+import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.dto.DailyMenuDtoMapper
+import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.dto.RestaurantSearchResultDtoMapper
+import pt.isel.ps.g06.httpserver.dataAccess.model.RestaurantDto
 
 private const val ZOMATO_API_KEY = "3e128506ffbfc1c23b4e2b6acd3eb84b"
 
 class ZomatoRestaurantApi(private val clientHttp: HttpApiClient, private val jsonMapper: ObjectMapper) : IRestaurantApi {
 
-    private val uri = ZomatoUriBuilder()
+    private val uriBuilder = ZomatoUriBuilder()
 
     override fun getRestaurantInfo(id: Int): Any {
         TODO("Not yet implemented")
     }
 
-    override fun searchRestaurants(
-            latitude: Float,
-            longitude: Float,
-            radiusMeters: Int
-    ): CompletableFuture<List<RestaurantResponse>> {
-        return requestDto(
-                uri.restaurantSearchUri(latitude, longitude, radiusMeters),
-                RestaurantSearchResultDto::class.java
-        ).thenApply(RestaurantSearchResultDto::unDto)
+    override fun searchRestaurants(latitude: Float, longitude: Float, radiusMeters: Int): List<RestaurantDto> {
+        val uri = uriBuilder.restaurantSearchUri(latitude, longitude, radiusMeters)
+
+        return requestDto(uri, RestaurantSearchResultDtoMapper::class.java).restaurants.map { it.restaurant }
     }
 
-    override fun restaurantDailyMeals(restaurantId: Int): CompletableFuture<List<String>> {
-        return requestDto(
-                uri.restaurantDailyMenuUri(restaurantId),
-                DailyMenuDto::class.java
-        ).thenApply(DailyMenuDto::unDto)
+    override fun restaurantDailyMeals(restaurantId: Int): List<String> {
+        return requestDto(uriBuilder.restaurantDailyMenuUri(restaurantId), DailyMenuDtoMapper::class.java).let(DailyMenuDtoMapper::mapDto)
     }
 
-    private fun <D> requestDto(urlStr: String, klass: Class<D>): CompletableFuture<D> {
+    private fun <D> requestDto(urlStr: String, klass: Class<D>): D {
         return clientHttp.request(
                 urlStr,
                 mapOf(Pair("user-key", ZOMATO_API_KEY), Pair("Accept", "application/json")),
@@ -43,6 +34,4 @@ class ZomatoRestaurantApi(private val clientHttp: HttpApiClient, private val jso
                 { jsonMapper.readValue(it.body(), klass) }
         )
     }
-
-    override fun getType() = RestaurantApiType.Zomato
 }

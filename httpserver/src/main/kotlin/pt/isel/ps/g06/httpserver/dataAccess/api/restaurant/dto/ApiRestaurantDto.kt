@@ -1,7 +1,6 @@
 package pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.dto
 
-import pt.isel.ps.g06.httpserver.dataAccess.RestaurantDtoMapper
-import pt.isel.ps.g06.httpserver.dataAccess.model.RestaurantResponse
+import pt.isel.ps.g06.httpserver.dataAccess.model.RestaurantDto
 
 data class RestaurantSearchResultDtoMapper(val restaurants: Array<RestaurantContainerDto>) {
     override fun equals(other: Any?): Boolean {
@@ -20,19 +19,21 @@ data class RestaurantSearchResultDtoMapper(val restaurants: Array<RestaurantCont
     }
 }
 
-data class RestaurantContainerDto(val restaurant: RestaurantDto)
+data class RestaurantContainerDto(val restaurant: ApiRestaurantDto)
 
-data class RestaurantDto(val id: Int, val name: String, val url: String, val cuisines: String, val location: Location) : RestaurantDtoMapper() {
-    override fun mapDto(): RestaurantResponse {
-        return RestaurantResponse(
-                id,
-                name,
-                location.latitude,
-                location.longitude,
-                cuisines.split(", ").toTypedArray()
-        )
-    }
-}
+class ApiRestaurantDto(
+        id: Int,
+        name: String,
+        url: String,
+        cuisines: String,
+        location: Location
+) : RestaurantDto(
+        id,
+        name,
+        location.latitude,
+        location.longitude,
+        cuisines.split(", ").toList()
+)
 
 data class Location(val address: String, val locality: String, val city: String, val city_id: Int, val latitude: Float, val longitude: Float)
 
