@@ -37,10 +37,7 @@ abstract class AViewModel<T>(
             .show()
     }
 
-    fun getMoreItems() {
-        // Get the new query and make the new request with
-        // the skip - Pagination
-    }
+    abstract fun getMoreItems()
 
     private fun moreItemsSuccessFunction(): (List<T>) -> Unit {
         return {
@@ -53,4 +50,6 @@ abstract class AViewModel<T>(
                 ).show()
         }
     }
+
+    abstract fun deleteItem(item: T)
 }
