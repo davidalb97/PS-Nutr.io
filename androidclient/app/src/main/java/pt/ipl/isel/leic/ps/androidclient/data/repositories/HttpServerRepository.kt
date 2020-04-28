@@ -6,11 +6,11 @@ import pt.ipl.isel.leic.ps.androidclient.data.sources.ApiRequester
 import pt.ipl.isel.leic.ps.androidclient.data.sources.model.Meal
 import pt.ipl.isel.leic.ps.androidclient.data.sources.model.Restaurant
 
-class HttpServerRepository(private val ctx: Context, private val volleyQueue: RequestQueue) : IRepository{
+class HttpServerRepository(private val ctx: Context, private val volleyQueue: RequestQueue) {
 
     val apiRequester = ApiRequester(ctx, volleyQueue)
 
-    fun getRestaraunts(
+    fun getRestaurants(
         success: (List<Restaurant>) -> Unit,
         error: () -> Unit,
         count: Int
