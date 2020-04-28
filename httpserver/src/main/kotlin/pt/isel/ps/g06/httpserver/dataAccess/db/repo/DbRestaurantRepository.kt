@@ -7,10 +7,8 @@ import org.springframework.stereotype.Repository
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.RestaurantApiType
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.*
-import pt.isel.ps.g06.httpserver.dataAccess.db.dto.ReportDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.RestaurantDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.SubmissionDto
-import pt.isel.ps.g06.httpserver.dataAccess.db.dto.VotableDto
 import pt.isel.ps.g06.httpserver.exception.InvalidInputDomain.SUBMITTER
 import pt.isel.ps.g06.httpserver.exception.InvalidInputException
 
@@ -93,21 +91,36 @@ class DbRestaurantRepository(private val jdbi: Jdbi) {
             validateSubmitterId(it, submitterId)
 
             // Check if the restaurant with this submission_id exists
-            // TODO - Should have an inner join inside RestaurantDao
             val restaurantDto = it.attach(RestaurantDao::class.java)
                     .getById(submission_id)
 
+            val restaurantMealPortionDao = it.attach(RestaurantMealPortionDao::class.java)
+                    .getByRestaurantId(submission_id)
+
             if (restaurantDto != null) {
+
+                // Delete portions and meals associated to this restaurant
+                if (restaurantMealPortionDao != null) {
+                    it.attach(RestaurantMealPortionDao::class.java)
+                            .deleteFromRestaurant(submission_id)
+                }
+
+                // Delete all cuisines from this restaurant
+                val deletedFromRestaurantCuisine =
+                        it.attach(RestaurantCuisineDao::class.java)
+                        .delete(submission_id)
+
+                // Delete restaurant
                 val deletedFromRestaurant = it.attach(RestaurantDao::class.java)
                         .delete(submission_id)
 
+                // Delete submission-submitter association
                 val deletedFromSubmissionSubmitter = it.attach(SubmissionSubmitterDao::class.java)
                         .delete(submission_id)
 
-                if (deletedFromSubmissionSubmitter && deletedFromRestaurant) {
-                    // TODO - Only receives cuisineName ?
-                    /*val deletedFromRestaurantCuisines = it.attach(RestaurantCuisineDao::class.java)
-                            .delete(submission_id, )*/
+                if (deletedFromSubmissionSubmitter &&
+                        deletedFromRestaurant &&
+                        deletedFromRestaurantCuisine) {
 
                     // Delete submission from Submission Table
                     return@inTransaction it.attach(SubmissionDao::class.java)
