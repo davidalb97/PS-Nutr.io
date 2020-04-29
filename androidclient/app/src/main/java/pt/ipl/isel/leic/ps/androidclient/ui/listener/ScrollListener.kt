@@ -1,12 +1,14 @@
 package pt.ipl.isel.leic.ps.androidclient.ui.listener
 
+import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
 abstract class ScrollListener
     (var layoutManager: LinearLayoutManager) : RecyclerView.OnScrollListener() {
 
-    abstract fun isLoading() : Boolean
+    var isLoading = false
+    lateinit var progressBar: View
 
     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
         super.onScrolled(recyclerView, dx, dy)
@@ -15,7 +17,7 @@ abstract class ScrollListener
         val totalItems = layoutManager.itemCount
         val firstVisibleItem = layoutManager.findFirstVisibleItemPosition()
 
-        if (!isLoading() && shouldGetMore()) {
+        if (!isLoading && shouldGetMore()) {
             if (visibleItems + firstVisibleItem >= totalItems && firstVisibleItem >= 0) {
                 loadMore()
             }
@@ -25,4 +27,14 @@ abstract class ScrollListener
     abstract fun loadMore()
 
     abstract fun shouldGetMore(): Boolean
+
+    fun startLoading() {
+        isLoading = true
+        progressBar.visibility = View.VISIBLE
+    }
+
+    fun stopLoading() {
+        isLoading = false
+        progressBar.visibility = View.INVISIBLE
+    }
 }

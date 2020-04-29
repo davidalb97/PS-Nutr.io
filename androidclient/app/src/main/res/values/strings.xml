@@ -28,4 +28,7 @@
     <string name="no_result_found">No results found</string>
     <string name="error_network">Couldn\'t get results</string>
     <string name="no_more_results_found">Couldn\'t fetch more items</string>
+    <string name="recyclerItemName">Item_Name</string>
+    <string name="recyclerItemDetails">Item_Details</string>
+    <string name="tab_meals">Search for meals</string>
 </resources>

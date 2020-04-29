@@ -9,20 +9,14 @@ import androidx.lifecycle.ViewModelProvider
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.SettingsViewModel
 
-// TODO: Not working - PreferenceFragmentCompat not found
-// and the android documentation doesn't say a damn thing about it! :<
+// TODO: Implement PreferenceFragmentCompat
 class SettingsFragment : Fragment() {
-
-    private lateinit var settingsViewModel: SettingsViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        settingsViewModel =
-            ViewModelProvider(this).get(SettingsViewModel::class.java)
-        val root = inflater.inflate(R.layout.fragment_settings, container, false)
-        return root
+        return inflater.inflate(R.layout.fragment_settings, container, false)
     }
 }

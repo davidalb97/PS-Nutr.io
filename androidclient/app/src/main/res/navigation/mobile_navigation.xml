@@ -30,10 +30,16 @@
         tools:layout="@layout/fragment_about" />
 
     <fragment
-        android:id="@+id/nav_restaurant"
-        android:name="pt.ipl.isel.leic.ps.androidclient.ui.fragment.RestaurantFragment"
+        android:id="@+id/nav_tab_restaurants"
+        android:name="pt.ipl.isel.leic.ps.androidclient.ui.tabfragments.RestaurantTabFragment"
         android:label="@string/tab_restaurants"
-        tools:layout="@layout/fragment_about" />
+        tools:layout="@layout/fragment_tab" />
+
+    <fragment
+        android:id="@+id/nav_tab_meals"
+        android:name="pt.ipl.isel.leic.ps.androidclient.ui.tabfragments.MealTabFragment"
+        android:label="@string/tab_meals"
+        tools:layout="@layout/fragment_tab" />
 
     <fragment
         android:id="@+id/nav_cuisines"

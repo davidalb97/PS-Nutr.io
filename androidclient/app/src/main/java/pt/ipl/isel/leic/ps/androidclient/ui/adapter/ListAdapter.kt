@@ -34,11 +34,12 @@ class ListAdapter<T>(private val viewModel: AViewModel<T>) :
     override fun getItemCount(): Int = viewModel.liveData?.value?.size ?: 0
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ListHolder<T> =
-        // TODO - create a xml cardview item for the lists
         ListHolder(
             LayoutInflater
                 .from(parent.context)
-                .inflate(R.layout.fragment_home, parent, false) as ViewGroup
+                .inflate(
+                    R.layout.item_card_view, parent, false
+                ) as ViewGroup
         )
 
 }

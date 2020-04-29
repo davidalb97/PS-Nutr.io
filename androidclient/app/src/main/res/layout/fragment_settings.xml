@@ -6,17 +6,4 @@
         android:layout_height="match_parent"
         tools:context=".ui.fragment.SettingsFragment">
 
-    <PreferenceScreen>
-
-        <SwitchPreferenceCompat
-            android:key="notifications"
-            app:title="Enable message notifications"/>
-
-        <Preference
-            android:key="feedback"
-            app:title="Send feedback"
-            android:summary="Report technical issues or suggest new features"/>
-
-    </PreferenceScreen>
-
 </ScrollView>

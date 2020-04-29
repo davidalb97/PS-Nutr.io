@@ -8,21 +8,19 @@ abstract class AViewModel<T> : ViewModel() {
 
     var mediatorLiveData: MediatorLiveData<List<T>> = MediatorLiveData()
     var liveData: LiveData<List<T>>? = null
-    //val liveData: MutableLiveData<MutableList<T>> = MutableLiveData()
     //private lateinit var currentQuery: Iterable<Pair<"TODO", String>>
-
 
     /**
      * Adds more items to the Recycler List
      */
-    fun addItems(items: MutableList<T>) {
+    fun getItems(items: MutableList<T>) {
         mediatorLiveData.value = items
     }
 
     /**
      * Adds more items to the existing ones inside the Recycler List
      */
-    fun addMoreExchangingLiveData(items: MutableList<T>) {
+    fun getMoreItemsExchangingLiveData(items: MutableList<T>) {
         if (liveData != null)
             mediatorLiveData.removeSource(liveData!!)
         liveData = fetchLiveData()
@@ -30,8 +28,6 @@ abstract class AViewModel<T> : ViewModel() {
             mediatorLiveData.value = it
         }
     }
-
-    abstract fun fetchLiveData(): LiveData<List<T>>?
 
     /**
      * Observes the LiveData, given a LifeCycleOwner and a MutableList
@@ -42,9 +38,7 @@ abstract class AViewModel<T> : ViewModel() {
         })
     }
 
-    abstract fun getItems()
+    abstract fun fetchLiveData(): LiveData<List<T>>?
 
-    abstract fun getMoreItems()
-
-    abstract fun deleteItem(item: T)
+    //abstract fun deleteItem(item: T)
 }
