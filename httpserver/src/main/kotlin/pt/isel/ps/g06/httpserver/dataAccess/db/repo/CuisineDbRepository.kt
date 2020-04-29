@@ -5,7 +5,7 @@ import org.jdbi.v3.core.transaction.TransactionIsolationLevel
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.CuisineDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.CuisineDao
 
-class DbCuisineRepository(private val jdbi: Jdbi) {
+class CuisineDbRepository(private val jdbi: Jdbi) {
 
     private val serializable = TransactionIsolationLevel.SERIALIZABLE
     private val cuisineDao = CuisineDao::class.java

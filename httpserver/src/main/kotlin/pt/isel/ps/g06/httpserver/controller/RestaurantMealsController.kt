@@ -3,12 +3,12 @@ package pt.isel.ps.g06.httpserver.controller
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.RestaurantApiRepository
-import pt.isel.ps.g06.httpserver.dataAccess.db.repo.DbRestaurantRepository
+import pt.isel.ps.g06.httpserver.dataAccess.db.repo.RestaurantDbRepository
 
 @RestController
 @RequestMapping("/restaurant/{id}/meal")
 class RestaurantMealsController(
-        private val dbRestaurantRepo: DbRestaurantRepository,
+        private val dbRestaurantRepo: RestaurantDbRepository,
         private val restaurantApiRepo: RestaurantApiRepository
 ) {
 

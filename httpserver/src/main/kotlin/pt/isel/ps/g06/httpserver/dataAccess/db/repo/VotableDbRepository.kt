@@ -11,7 +11,7 @@ import pt.isel.ps.g06.httpserver.exception.InvalidInputDomain.VOTE
 import pt.isel.ps.g06.httpserver.exception.InvalidInputException
 
 @Repository
-class DbVotableRepository(private val jdbi: Jdbi) {
+class VotableDbRepository(private val jdbi: Jdbi) {
 
     private val serializable = TransactionIsolationLevel.SERIALIZABLE
     private val voteClass = VotableDao::class.java

@@ -7,7 +7,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.dao.ReportDao
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.ReportDto
 
 @Repository
-class DbReportRepository(private val jdbi: Jdbi) {
+class ReportDbRepository(private val jdbi: Jdbi) {
 
     private val serializable = TransactionIsolationLevel.SERIALIZABLE
 

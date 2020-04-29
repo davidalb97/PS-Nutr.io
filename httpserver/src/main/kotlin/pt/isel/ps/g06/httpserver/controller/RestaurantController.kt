@@ -6,18 +6,18 @@ import pt.isel.ps.g06.httpserver.data.ReportInput
 import pt.isel.ps.g06.httpserver.data.RestaurantInput
 import pt.isel.ps.g06.httpserver.data.VoteInput
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.RestaurantApiRepository
-import pt.isel.ps.g06.httpserver.dataAccess.db.repo.DbReportRepository
-import pt.isel.ps.g06.httpserver.dataAccess.db.repo.DbRestaurantRepository
-import pt.isel.ps.g06.httpserver.dataAccess.db.repo.DbVotableRepository
+import pt.isel.ps.g06.httpserver.dataAccess.db.repo.ReportDbRepository
+import pt.isel.ps.g06.httpserver.dataAccess.db.repo.RestaurantDbRepository
+import pt.isel.ps.g06.httpserver.dataAccess.db.repo.VotableDbRepository
 
 const val MAX_RADIUS = 1000
 
 @RestController
 @RequestMapping("/restaurant")
 class RestaurantController(
-        private val dbRestaurantRepository: DbRestaurantRepository,
-        private val dbReportRepository: DbReportRepository,
-        private val dbVotableRepository: DbVotableRepository,
+        private val dbRestaurantRepository: RestaurantDbRepository,
+        private val dbReportRepository: ReportDbRepository,
+        private val dbVotableRepository: VotableDbRepository,
         private val restaurantApiRepository: RestaurantApiRepository
 ) {
 

@@ -10,7 +10,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.dao.SubmissionDao
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.SubmissionSubmitterDao
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.RestaurantMealPortionDto
 
-class DbPortionRepository(private val jdbi: Jdbi) {
+class PortionDbRepository(private val jdbi: Jdbi) {
 
     private val serializable = TransactionIsolationLevel.SERIALIZABLE
     private val portionClass = PortionDao::class.java

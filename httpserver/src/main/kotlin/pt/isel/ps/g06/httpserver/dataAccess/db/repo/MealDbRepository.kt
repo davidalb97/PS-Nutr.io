@@ -10,7 +10,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.dto.MealDto
 import pt.isel.ps.g06.httpserver.dataAccess.model.Ingredient
 
 @Repository
-class DbMealRepository(private val jdbi: Jdbi) {
+class MealDbRepository(private val jdbi: Jdbi) {
 
     private val serializable = TransactionIsolationLevel.SERIALIZABLE
 
