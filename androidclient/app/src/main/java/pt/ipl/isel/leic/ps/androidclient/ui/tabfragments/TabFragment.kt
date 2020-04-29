@@ -7,13 +7,11 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
+import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.ui.adapter.TabAdapter
 
 abstract class TabFragment(
-    private val toInflate: Int,
-    private val tabFragments: Map<Fragment, String>,
-    private val fragmentViewPager: Int,
-    private val firstTab: Int
+    private val tabFragments: Map<Fragment, String>
 ) : Fragment() {
 
     lateinit var tabPagerAdapter: TabAdapter
@@ -25,7 +23,7 @@ abstract class TabFragment(
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(toInflate, container, false)
+        return inflater.inflate(R.layout.fragment_tab, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -34,8 +32,8 @@ abstract class TabFragment(
         tabFragments.forEach { tabFragment ->
             tabPagerAdapter.addFragment(tabFragment.key, tabFragment.value)
         }
-        viewPager = this.requireView().findViewById(fragmentViewPager)
-        tabs = this.requireView().findViewById(firstTab)
+        viewPager = this.requireView().findViewById(R.id.viewPager)
+        tabs = this.requireView().findViewById(R.id.tab)
         viewPager.adapter = tabPagerAdapter
         tabs.setupWithViewPager(viewPager)
 

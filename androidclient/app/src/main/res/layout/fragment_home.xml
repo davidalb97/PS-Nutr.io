@@ -23,7 +23,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="@string/by_location"
+                android:text="@string/restaurants"
                 android:textColor="@android:color/background_dark"
                 android:textSize="20sp"
                 android:textStyle="bold">
@@ -55,7 +55,7 @@
                         android:layout_below="@+id/firstSection_image1"
                         android:layout_alignParentBottom="true"
                         android:layout_centerHorizontal="true"
-                        android:text="@string/restaurants"
+                        android:text="@string/by_name"
                         android:textColor="@android:color/background_dark"
                         android:textSize="18sp"
                         android:textStyle="bold">
@@ -72,7 +72,7 @@
                         android:id="@+id/firstSection_image2"
                         android:layout_width="130dp"
                         android:layout_height="130dp"
-                        android:src="@drawable/ic_menu_book">
+                        android:src="@drawable/ic_restaurant_location">
                     </ImageView>
 
                     <TextView
@@ -82,7 +82,7 @@
                         android:layout_below="@+id/firstSection_image2"
                         android:layout_alignParentBottom="true"
                         android:layout_centerHorizontal="true"
-                        android:text="@string/meals"
+                        android:text="@string/by_location"
                         android:textColor="@android:color/background_dark"
                         android:textSize="18sp"
                         android:textStyle="bold">
@@ -104,11 +104,10 @@
             card_view:cardMaxElevation="6dp">
 
             <TextView
-                android:id="@+id/sectionName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="@string/by_name"
+                android:text="@string/meals"
                 android:textColor="@android:color/background_dark"
                 android:textSize="20sp"
                 android:textStyle="bold">
@@ -130,17 +129,16 @@
                         android:id="@+id/secondSection_image1"
                         android:layout_width="130dp"
                         android:layout_height="130dp"
-                        android:src="@drawable/ic_cuisines">
+                        android:src="@drawable/ic_meals">
                     </ImageView>
 
                     <TextView
-                        android:id="@+id/secondSection_name1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/secondSection_image1"
                         android:layout_alignParentBottom="true"
                         android:layout_centerHorizontal="true"
-                        android:text="@string/cuisines"
+                        android:text="@string/by_name"
                         android:textColor="@android:color/background_dark"
                         android:textSize="18sp"
                         android:textStyle="bold">
@@ -157,17 +155,98 @@
                         android:id="@+id/secondSection_image2"
                         android:layout_width="130dp"
                         android:layout_height="130dp"
-                        android:src="@drawable/ic_settings">
+                        android:src="@drawable/ic_meals_saved">
                     </ImageView>
 
                     <TextView
-                        android:id="@+id/secondSection_name2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/secondSection_image2"
                         android:layout_alignParentBottom="true"
                         android:layout_centerHorizontal="true"
-                        android:text="test"
+                        android:text="@string/saved"
+                        android:textColor="@android:color/background_dark"
+                        android:textSize="18sp"
+                        android:textStyle="bold">
+                    </TextView>
+
+                </RelativeLayout>
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/thirdSection"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginTop="20dp"
+            card_view:cardCornerRadius="25dp"
+            card_view:cardElevation="4dp"
+            card_view:cardMaxElevation="6dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/insulin_values"
+                android:textColor="@android:color/background_dark"
+                android:textSize="20sp"
+                android:textStyle="bold">
+            </TextView>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="30dp">
+
+                <RelativeLayout
+                    android:id="@+id/thirdSection_button1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="50dp">
+
+                    <ImageView
+                        android:id="@+id/thirdSection_image1"
+                        android:layout_width="130dp"
+                        android:layout_height="130dp"
+                        android:src="@drawable/ic_calculator">
+                    </ImageView>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/thirdSection_image1"
+                        android:layout_alignParentBottom="true"
+                        android:layout_centerHorizontal="true"
+                        android:text="@string/calculator"
+                        android:textColor="@android:color/background_dark"
+                        android:textSize="18sp"
+                        android:textStyle="bold">
+                    </TextView>
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/thirdSection_button2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:id="@+id/thirdSection_image2"
+                        android:layout_width="130dp"
+                        android:layout_height="130dp"
+                        android:src="@drawable/ic_history">
+                    </ImageView>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/thirdSection_image2"
+                        android:layout_alignParentBottom="true"
+                        android:layout_centerHorizontal="true"
+                        android:text="@string/history"
                         android:textColor="@android:color/background_dark"
                         android:textSize="18sp"
                         android:textStyle="bold">

@@ -20,10 +20,10 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="section_name">Section_name</string>
-    <string name="by_location">By location</string>
     <string name="restaurants">Restaurants</string>
-    <string name="meals">Meals</string>
+    <string name="by_location">By location</string>
     <string name="by_name">By name</string>
+    <string name="meals">Meals</string>
     <string name="cuisines">Cuisines</string>
     <string name="no_result_found">No results found</string>
     <string name="error_network">Couldn\'t get results</string>
@@ -31,4 +31,8 @@
     <string name="recyclerItemName">Item_Name</string>
     <string name="recyclerItemDetails">Item_Details</string>
     <string name="tab_meals">Search for meals</string>
+    <string name="saved">Saved</string>
+    <string name="insulin_values">Insulin</string>
+    <string name="calculator">Calculator</string>
+    <string name="history">History</string>
 </resources>
