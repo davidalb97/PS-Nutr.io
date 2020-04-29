@@ -8,24 +8,25 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.dao.PortionDao
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.RestaurantMealPortionDao
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.SubmissionDao
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.SubmissionSubmitterDao
+import pt.isel.ps.g06.httpserver.dataAccess.db.dto.RestaurantMealPortionDto
 
 class DbPortionRepository(private val jdbi: Jdbi) {
 
     private val serializable = TransactionIsolationLevel.SERIALIZABLE
     private val portionClass = PortionDao::class.java
 
-    fun getPortionsFromMeal(mealSubmissionId: Int): List<PortionDto>? {
+    fun getPortionsFromMealId(mealSubmissionId: Int): List<PortionDto>? {
         return inTransaction(jdbi, serializable) {
             it.attach(portionClass).getById(mealSubmissionId)
         }
     }
 
-    fun submitPortionToMeal(
+    fun insert(
             submitterId: Int,
             restaurantId: Int,
             mealId: Int,
             quantity: Int
-    ): Boolean {
+    ): RestaurantMealPortionDto {
         return inTransaction(jdbi, serializable) {
             val submissionDao = it.attach(SubmissionDao::class.java)
             val submissionId = submissionDao
@@ -39,9 +40,8 @@ class DbPortionRepository(private val jdbi: Jdbi) {
             portionDao.insert(submissionId, quantity)
 
             val restaurantMealPortionDao = it.attach(RestaurantMealPortionDao::class.java)
-            restaurantMealPortionDao.insert(mealId, submissionId, restaurantId)
-
-            true
+            return@inTransaction restaurantMealPortionDao
+                    .insert(mealId, submissionId, restaurantId)
         }
     }
 }

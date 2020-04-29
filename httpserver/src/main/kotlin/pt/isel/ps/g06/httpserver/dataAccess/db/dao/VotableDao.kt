@@ -25,7 +25,7 @@ interface VotableDao {
     fun insert(@Bind voteSubmissionId: Int, voterSubmitterId: Int, vote: Boolean): VotableDto
 
     @SqlUpdate("UPDATE SET $votableTable SET $vote = :vote WHERE $submissionId =" +
-            " :submissionId, $voterSubmitterId = :voteSubmitterId")
+            " :submissionId, $voterSubmitterId = :voteSubmitterId RETURNING *")
     fun update(@Bind submissionId: Int, voteSubmitterId: Int, vote: Boolean): VotableDto
 
     @SqlUpdate("DELETE FROM $votableTable WHERE $submissionId =" +

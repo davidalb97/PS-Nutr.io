@@ -1,5 +1,6 @@
 package pt.isel.ps.g06.httpserver.dataAccess.db.repo
 
+import org.hibernate.validator.internal.engine.ValidatorImpl
 import org.jdbi.v3.core.Handle
 import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.transaction.TransactionIsolationLevel
@@ -15,8 +16,8 @@ import pt.isel.ps.g06.httpserver.exception.InvalidInputException
 @Repository
 class DbRestaurantRepository(private val jdbi: Jdbi) {
 
-    val serializable = TransactionIsolationLevel.SERIALIZABLE
-    val restaurantDao = RestaurantDao::class.java
+    private val serializable = TransactionIsolationLevel.SERIALIZABLE
+    private val restaurantDao = RestaurantDao::class.java
 
     fun getRestaurantById(id: Int): RestaurantDto? {
         return inTransaction(jdbi, serializable) {
@@ -42,7 +43,7 @@ class DbRestaurantRepository(private val jdbi: Jdbi) {
             latitude: Float,
             longitude: Float,
             restaurantApiType: RestaurantApiType? = null
-    ): SubmissionDto? {
+    ): SubmissionDto {
         return inTransaction(jdbi, serializable) {
 
             validateSubmitterId(it, submitterId)
@@ -68,7 +69,6 @@ class DbRestaurantRepository(private val jdbi: Jdbi) {
                 //Get api submitterId, abort if failed
                 val apiDao = it.attach(ApiDao::class.java)
                 val apiSubmitterId = apiDao.getByName(restaurantApiType.toString())!!.submitter_id
-                        ?: it.rollback().let { return@inTransaction null }
 
                 //Insert SubmissionSubmitter for the new Api submitter
                 submissionSubmitterDao.insert(submissionDto.submission_id, apiSubmitterId)
@@ -78,7 +78,7 @@ class DbRestaurantRepository(private val jdbi: Jdbi) {
                 apiSubmissionDao.insert(submissionDto.submission_id, apiId, restaurantApiType.toString())
             }
 
-            submissionDto
+            return@inTransaction submissionDto
         }
     }
 
@@ -86,60 +86,34 @@ class DbRestaurantRepository(private val jdbi: Jdbi) {
     fun deleteRestaurant(
             submitterId: Int,
             submission_id: Int
-    ): Boolean {
+    ) {
         return inTransaction(jdbi, serializable) {
             validateSubmitterId(it, submitterId)
 
             // Check if the restaurant with this submission_id exists
-            val restaurantDto = it.attach(RestaurantDao::class.java)
+            it.attach(RestaurantDao::class.java)
                     .getById(submission_id)
+                    ?: return@inTransaction
 
-            val restaurantMealPortionDao = it.attach(RestaurantMealPortionDao::class.java)
-                    .getByRestaurantId(submission_id)
+            val restaurantMealPortions = it.attach(RestaurantMealPortionDao::class.java)
+                    .getAllByRestaurantId(submission_id)
 
-            if (restaurantDto != null) {
-
-                // Delete portions and meals associated to this restaurant
-                if (restaurantMealPortionDao != null) {
-                    it.attach(RestaurantMealPortionDao::class.java)
-                            .deleteFromRestaurant(submission_id)
-                }
-
-                // Delete all cuisines from this restaurant
-                val deletedFromRestaurantCuisine =
-                        it.attach(RestaurantCuisineDao::class.java)
-                        .delete(submission_id)
-
-                // Delete restaurant
-                val deletedFromRestaurant = it.attach(RestaurantDao::class.java)
-                        .delete(submission_id)
-
-                // Delete submission-submitter association
-                val deletedFromSubmissionSubmitter = it.attach(SubmissionSubmitterDao::class.java)
-                        .delete(submission_id)
-
-                if (deletedFromSubmissionSubmitter &&
-                        deletedFromRestaurant &&
-                        deletedFromRestaurantCuisine) {
-
-                    // Delete submission from Submission Table
-                    return@inTransaction it.attach(SubmissionDao::class.java)
-                            .delete(submission_id)
-
-                }
-
+            // Delete portions and meals associated to this restaurant
+            if (restaurantMealPortions.isNotEmpty()) {
+                it.attach(RestaurantMealPortionDao::class.java).deleteFromRestaurant(submission_id)
             }
 
-            false
-        }
-    }
+            // Delete all cuisines from this restaurant
+            it.attach(RestaurantCuisineDao::class.java).deleteAllByRestaurantId(submission_id)
 
-    /**
-     * @throws InvalidInputException If submitterId is invalid.
-     */
-    private fun validateSubmitterId(handle: Handle, submitterId: Int) {
-        //Validate submitter id
-        handle.attach(SubmissionSubmitterDao::class.java).getBySubmitterId(submitterId)
-                ?: throw InvalidInputException(SUBMITTER, TODO())
+            // Delete restaurant
+            it.attach(RestaurantDao::class.java).delete(submission_id)
+
+            // Delete submission-submitter association
+            it.attach(SubmissionSubmitterDao::class.java).delete(submission_id)
+
+            // Delete submission from Submission Table
+            it.attach(SubmissionDao::class.java).delete(submission_id)
+        }
     }
 }

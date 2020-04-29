@@ -14,21 +14,21 @@ interface RestaurantMealPortionDao {
     fun getAll(): List<RestaurantMealPortionDto>
 
     @SqlQuery("SELECT * FROM $table WHERE $mealId = :mealId")
-    fun getByMealId(@Bind mealId: Int): RestaurantMealPortionDto?
+    fun getAllByMealId(@Bind mealId: Int): List<RestaurantMealPortionDto>
 
     @SqlQuery("SELECT * FROM $table WHERE $portionId = :portionId")
     fun getByPortionId(@Bind portionId: Int): RestaurantMealPortionDto?
 
     @SqlQuery("SELECT * FROM $table WHERE $restaurantId = :restaurantId")
-    fun getByRestaurantId(@Bind restaurantId: Int): RestaurantMealPortionDto?
+    fun getAllByRestaurantId(@Bind restaurantId: Int): List<RestaurantMealPortionDto>
 
     @SqlQuery("INSERT INTO $table($mealId, $portionId, $restaurantId)" +
             " VALUES(:mealId, :portionId, :restaurantId) RETURNING *")
     fun insert(@Bind mealId: Int, @Bind portionId: Int, restaurantId: Int): RestaurantMealPortionDto
 
-    @SqlQuery("DELETE FROM $table WHERE $restaurantId = :restaurantId")
-    fun deleteFromRestaurant(@Bind restaurantId: Int)
+    @SqlQuery("DELETE FROM $table WHERE $restaurantId = :restaurantId RETURNING *")
+    fun deleteFromRestaurant(@Bind restaurantId: Int): RestaurantMealPortionDto
 
-    @SqlQuery("DELETE FROM $table WHERE $mealId = :mealId")
-    fun deleteFromMeal(@Bind mealId: Int)
+    @SqlQuery("DELETE FROM $table WHERE $mealId = :mealId RETURNING *")
+    fun deleteFromMeal(@Bind mealId: Int): RestaurantMealPortionDto
 }

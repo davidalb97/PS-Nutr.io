@@ -17,12 +17,12 @@ interface MealDao {
     fun getByName(@Bind mealName: String): List<MealDto?>
 
     @SqlQuery("INSERT INTO $table($id, $name) VALUES(:submission_id, :mealName) RETURNING *")
-    fun insert(@Bind submission_id: Int, @Bind mealName: String): MealDto?
+    fun insert(@Bind submission_id: Int, @Bind mealName: String): MealDto
 
     @SqlQuery("DELETE FROM $table WHERE $id = :submission_id RETURNING *")
-    fun delete(@Bind submission_id: Int): Boolean
+    fun delete(@Bind submission_id: Int): MealDto
 
-    @SqlQuery("UPDATE $table SET $name = :new_name WHERE $id = :submission_id")
-    fun updateName(@Bind submission_id: Int, new_name: String): MealDto?
+    @SqlQuery("UPDATE $table SET $name = :new_name WHERE $id = :submission_id RETURNING *")
+    fun updateName(@Bind submission_id: Int, new_name: String): MealDto
 
 }

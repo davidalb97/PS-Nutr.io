@@ -12,7 +12,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.model.Ingredient
 @Repository
 class DbMealRepository(private val jdbi: Jdbi) {
 
-    val serializable = TransactionIsolationLevel.SERIALIZABLE
+    private val serializable = TransactionIsolationLevel.SERIALIZABLE
 
     fun getById(submissionId: Int) {
         return inTransaction(jdbi, serializable) {
@@ -126,17 +126,14 @@ class DbMealRepository(private val jdbi: Jdbi) {
                     .getById(submissionId)
 
             if (mealDto != null) {
-                val deletedSubmissionSubmitter = it
-                        .attach(SubmissionSubmitterDao::class.java)
+                it.attach(SubmissionSubmitterDao::class.java)
                         .delete(submissionId)
 
-                val deletedMeal = it.attach(MealDao::class.java)
+                it.attach(MealDao::class.java)
                         .delete(submissionId)
 
-                if (deletedSubmissionSubmitter && deletedMeal) {
-                    if (it.attach(SubmissionDao::class.java).delete(submissionId))
-                        return@inTransaction true
-                }
+                it.attach(SubmissionDao::class.java).delete(submissionId)
+                return@inTransaction true
             }
             false
         }

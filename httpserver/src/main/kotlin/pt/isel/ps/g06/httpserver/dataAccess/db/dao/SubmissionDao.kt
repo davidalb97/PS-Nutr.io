@@ -27,7 +27,7 @@ interface SubmissionDao {
     ) values: List<SubmissionParam>): List<SubmissionDto>
 
     @SqlQuery("DELETE FROM $table($type) WHERE $id = :submissionId RETURNING *")
-    fun delete(@Bind submission_id: Int): Boolean
+    fun delete(@Bind submission_id: Int): SubmissionDto
 }
 
 //Variable names must match sql columns!!!

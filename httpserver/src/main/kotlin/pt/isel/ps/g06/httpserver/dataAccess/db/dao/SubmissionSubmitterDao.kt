@@ -29,8 +29,8 @@ interface SubmissionSubmitterDao {
             propertyNames = [submissionId, submitterId]
     ) values: List<SubmissionSubmitterParam>): List<SubmissionSubmitterDto>
 
-    @SqlQuery("DELETE FROM $table WHERE $submissionId = :submission_id")
-    fun delete(submission_id: Int): Boolean
+    @SqlQuery("DELETE FROM $table WHERE $submissionId = :submission_id RETURNING *")
+    fun delete(submission_id: Int): SubmissionSubmitterDto
 }
 
 data class SubmissionSubmitterParam(

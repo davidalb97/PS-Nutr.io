@@ -24,7 +24,8 @@ interface ApiSubmissionDao {
             " VALUES(:submissionId, :apiId, :submissionType) RETURNING *")
     fun insert(@Bind submissionId: Int, apiId: Int, submissionType: String): ApiSubmissionDto
 
-    @SqlQuery("INSERT INTO $table($submissionId, $apiId, $submissionType) values <values> RETURNING *")
+    @SqlQuery("INSERT INTO $table($submissionId, $apiId, $submissionType)" +
+            " values <values> RETURNING *")
     fun insertAll(@BindBeanList(
             value = "values",
             propertyNames = [submissionId, apiId, submissionType]

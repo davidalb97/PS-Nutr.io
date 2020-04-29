@@ -4,33 +4,24 @@ import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.transaction.TransactionIsolationLevel
 import org.springframework.stereotype.Repository
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.ReportDao
-import pt.isel.ps.g06.httpserver.dataAccess.db.dao.SubmissionDao
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.ReportDto
 
 @Repository
 class DbReportRepository(private val jdbi: Jdbi) {
 
-    val serializable = TransactionIsolationLevel.SERIALIZABLE
+    private val serializable = TransactionIsolationLevel.SERIALIZABLE
 
     fun addReport(
             submitterId: Int,
             submission_id: Int,
             report: String
-    ): ReportDto? {
+    ): ReportDto {
         return inTransaction(jdbi, serializable) {
-            //validateSubmitterId(it, submitterId)
 
-            // Check if the submission exists
-            val submissionDto = it.attach(SubmissionDao::class.java)
-                    .getById(submission_id)
+            validateSubmissionId(it, submitterId)
 
-            if (submissionDto != null) {
-                // Submit a report to that Submission
-                return@inTransaction it.attach(ReportDao::class.java)
-                        .insert(submitterId, submission_id, report)
-            }
-
-            null
+            it.attach(ReportDao::class.java)
+                    .insert(submitterId, submission_id, report)
         }
     }
 }

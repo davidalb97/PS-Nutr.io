@@ -7,8 +7,8 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.dao.CuisineDao
 
 class DbCuisineRepository(private val jdbi: Jdbi) {
 
-    val serializable = TransactionIsolationLevel.SERIALIZABLE
-    val cuisineDao = CuisineDao::class.java
+    private val serializable = TransactionIsolationLevel.SERIALIZABLE
+    private val cuisineDao = CuisineDao::class.java
 
     fun getByName(name: String): List<CuisineDto>? {
         return inTransaction(jdbi, serializable) {
@@ -16,10 +16,9 @@ class DbCuisineRepository(private val jdbi: Jdbi) {
         }
     }
 
-    fun insertCuisine(name: String): Boolean {
+    fun insert(name: String): CuisineDto {
         return inTransaction(jdbi, serializable) {
             it.attach(cuisineDao).insert(name)
-            true
         }
     }
 

@@ -7,67 +7,70 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.dao.SubmissionDao
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.VotableDao
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.VotableDto
 import pt.isel.ps.g06.httpserver.dataAccess.model.Votes
+import pt.isel.ps.g06.httpserver.exception.InvalidInputDomain.VOTE
+import pt.isel.ps.g06.httpserver.exception.InvalidInputException
 
 @Repository
 class DbVotableRepository(private val jdbi: Jdbi) {
 
-    val serializable = TransactionIsolationLevel.SERIALIZABLE
-    val voteClass = VotableDao::class.java
+    private val serializable = TransactionIsolationLevel.SERIALIZABLE
+    private val voteClass = VotableDao::class.java
 
-    fun getVotes(submitterId: Int, submissionId: Int): Votes? {
+    fun getById(submitterId: Int, submissionId: Int): Votes? {
         return inTransaction<Votes>(jdbi, serializable) {
             throw UnsupportedOperationException()
         }
     }
 
-    fun addVote(
+    fun insert(
             submitterId: Int,
             submission_id: Int,
             vote: Boolean
-    ): VotableDto? {
+    ): VotableDto {
         return inTransaction(jdbi, serializable) {
-            //validateSubmitterId(it, submitterId)
 
             // Check if the submission exists
-            val submissionDto = it.attach(SubmissionDao::class.java)
-                    .getById(submission_id)
+            validateSubmissionId(it, submission_id)
 
             // Check if this submitter already voted this submission
             val hasVoted = it.attach(VotableDao::class.java)
                     .getVoteFromSubmitter(submission_id, submitterId)
 
-            if (submissionDto != null && !hasVoted) {
-                // Submit a report to that Submission
-                return@inTransaction it.attach(VotableDao::class.java)
-                        .insert(submission_id, submitterId, vote)
+            if (hasVoted) {
+                throw InvalidInputException(VOTE,
+                        "The submitter id \"$submitterId\" cannot set vote on submission id " +
+                                "\"$submission_id\" more than once."
+                )
             }
 
-            null
+            it.attach(VotableDao::class.java)
+                    .insert(submission_id, submitterId, vote)
         }
     }
 
     fun removeVote(
             submitterId: Int,
             submission_id: Int
-    ): VotableDto? {
+    ): VotableDto {
         return inTransaction(jdbi, serializable) {
-            //validateSubmitterId(it, submitterId)
 
             // Check if the submission exists
-            val submissionDto = it.attach(SubmissionDao::class.java)
-                    .getById(submission_id)
+            validateSubmissionId(it, submission_id)
 
             // Check if this submitter already voted this submission
             val hasVoted = it.attach(VotableDao::class.java)
                     .getVoteFromSubmitter(submission_id, submitterId)
 
-            if (submissionDto != null && !hasVoted) {
-                // Submit a report to that Submission
-                return@inTransaction it.attach(VotableDao::class.java)
-                        .delete(submission_id, submitterId)
+            if (!hasVoted) {
+                throw InvalidInputException(VOTE,
+                        "The submitter id \"$submitterId\" cannot delete vote submission id " +
+                                "\"$submission_id\" without voting first."
+                )
             }
 
-            null
+            // Submit a report to that Submission
+            it.attach(VotableDao::class.java)
+                    .delete(submission_id, submitterId)
         }
     }
 
@@ -75,25 +78,26 @@ class DbVotableRepository(private val jdbi: Jdbi) {
             submitterId: Int,
             submission_id: Int,
             vote: Boolean
-    ): VotableDto? {
+    ): VotableDto {
         return inTransaction(jdbi, serializable) {
-            //validateSubmitterId(it, submitterId)
 
             // Check if the submission exists
-            val submissionDto = it.attach(SubmissionDao::class.java)
-                    .getById(submission_id)
+            validateSubmissionId(it, submission_id)
 
             // Check if this submitter already voted this submission
             val hasVoted = it.attach(VotableDao::class.java)
                     .getVoteFromSubmitter(submission_id, submitterId)
 
-            if (submissionDto != null && !hasVoted) {
+            if (!hasVoted) {
                 // Submit a report to that Submission
-                return@inTransaction it.attach(VotableDao::class.java)
-                        .update(submission_id, submitterId, vote)
+                throw InvalidInputException(VOTE,
+                        "The submitter id \"$submitterId\" cannot change vote on submission id " +
+                                "\"$submission_id\" without voting first."
+                )
             }
 
-            null
+            it.attach(VotableDao::class.java)
+                    .update(submission_id, submitterId, vote)
         }
     }
 }

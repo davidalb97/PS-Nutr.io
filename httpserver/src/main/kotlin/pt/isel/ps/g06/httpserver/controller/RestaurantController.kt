@@ -94,7 +94,7 @@ class RestaurantController(
     // TODO
     @PostMapping("/{submission_id}/vote", consumes = [MediaType.APPLICATION_JSON_VALUE])
     fun addRestaurantVote(@PathVariable submission_id: Int, @RequestBody vote: VoteInput) =
-            dbVotableRepository.addVote(vote.submitterId, submission_id, vote.value)
+            dbVotableRepository.insert(vote.submitterId, submission_id, vote.value)
 
     // TODO
     @PutMapping("/{submission_id}/vote", consumes = [MediaType.APPLICATION_JSON_VALUE])

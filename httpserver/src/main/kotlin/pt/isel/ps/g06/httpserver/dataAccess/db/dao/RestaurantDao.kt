@@ -31,5 +31,5 @@ interface RestaurantDao {
     ): RestaurantDto
 
     @SqlQuery("DELETE FROM $table WHERE $id = :submissionId RETURNING *")
-    fun delete(@Bind submission_id: Int): Boolean
+    fun delete(@Bind submission_id: Int): RestaurantDto
 }

@@ -12,5 +12,6 @@ enum class InvalidInputDomain(val domain: String) {
     AUTHENTICATION("authentication"),
     SUBMITTER("submitter"),
     SUBMISSION("submission"),
-    API("api")
+    API("api"),
+    VOTE("vote")
 }
