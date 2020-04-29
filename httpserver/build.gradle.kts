@@ -20,19 +20,24 @@ repositories {
 }
 
 dependencies {
-    implementation("org.springframework.boot:spring-boot-starter")
-    implementation("org.springframework.boot:spring-boot-starter-web")
+    //Kotlin
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+
+    //Spring
+    implementation("org.springframework.boot:spring-boot-starter")
+    implementation("org.springframework.boot:spring-boot-starter-web")
+
+    //Spring - Test
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
     }
 
-//    implementation("org.jdbi", "jdbi3-core")
-//    implementation("org.jdbi", "jdbi3-kotlin")
-//    implementation("org.jdbi", "jdbi3-kotlin-sqlobject")
-//    implementation("org.jdbi", "jdbi3-postgres")
+    //Mockito - Test
+    testImplementation("org.mockito:mockito-all")
+
+    //Jackson
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 
     //JDBI / Postgres
     val jdbiVersion = "3.12.2"
@@ -43,7 +48,6 @@ dependencies {
     implementation("org.jdbi", "jdbi3-kotlin-sqlobject", jdbiVersion)
     implementation("org.jdbi", "jdbi3-spring4", jdbiVersion)
     implementation("org.postgresql", "postgresql", "42.2.12")
-    //implementation("org.flywaydb:flyway-core")
 
 }
 
