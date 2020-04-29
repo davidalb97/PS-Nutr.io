@@ -2,11 +2,13 @@ package pt.isel.ps.g06.httpserver.controller
 
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
+import pt.isel.ps.g06.httpserver.data.ReportInput
 import pt.isel.ps.g06.httpserver.data.RestaurantInput
-import pt.isel.ps.g06.httpserver.dataAccess.api.IUnDto
+import pt.isel.ps.g06.httpserver.data.VoteInput
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.RestaurantApiRepository
-import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.RestaurantApiType
+import pt.isel.ps.g06.httpserver.dataAccess.db.repo.DbReportRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.DbRestaurantRepository
+import pt.isel.ps.g06.httpserver.dataAccess.db.repo.DbVotableRepository
 
 const val MAX_RADIUS = 1000
 
@@ -14,6 +16,8 @@ const val MAX_RADIUS = 1000
 @RequestMapping("/restaurant")
 class RestaurantController(
         private val dbRestaurantRepository: DbRestaurantRepository,
+        private val dbReportRepository: DbReportRepository,
+        private val dbVotableRepository: DbVotableRepository,
         private val restaurantApiRepository: RestaurantApiRepository
 ) {
 
@@ -63,7 +67,7 @@ class RestaurantController(
     @PostMapping(consumes = [MediaType.APPLICATION_JSON_VALUE])
     fun createRestaurant(@RequestBody restaurant: RestaurantInput) {
         dbRestaurantRepository.insertRestaurant(
-                1, // TODO
+                restaurant.submitterId,
                 restaurant.name,
                 null,
                 emptyList(),
@@ -73,28 +77,32 @@ class RestaurantController(
         )
     }
 
+    // TODO
     @DeleteMapping("/{id}", consumes = [MediaType.APPLICATION_JSON_VALUE])
-    fun deleteRestaurant(@PathVariable id: String) {
-        //dbRestaurantRepository.deleteRestaurant()
-    }
+    fun deleteRestaurant(@PathVariable id: Int) =
+            dbRestaurantRepository.deleteRestaurant(1, id)
 
+    // TODO
     @PostMapping("/{id}/report", consumes = [MediaType.APPLICATION_JSON_VALUE])
-    fun addRestaurantReport(@PathVariable id: String, @RequestBody report: String) {
+    fun addRestaurantReport(@PathVariable id: Int, @RequestBody report: ReportInput) =
+            dbReportRepository.addReport(
+                    report.submitterId,
+                    id,
+                    report.description
+            )
 
-    }
+    // TODO
+    @PostMapping("/{submission_id}/vote", consumes = [MediaType.APPLICATION_JSON_VALUE])
+    fun addRestaurantVote(@PathVariable submission_id: Int, @RequestBody vote: VoteInput) =
+            dbVotableRepository.addVote(vote.submitterId, submission_id, vote.value)
 
-    @PostMapping("/{id}/vote", consumes = [MediaType.APPLICATION_JSON_VALUE])
-    fun addRestaurantVote(@PathVariable id: String, @RequestBody vote: String) {
+    // TODO
+    @PutMapping("/{submission_id}/vote", consumes = [MediaType.APPLICATION_JSON_VALUE])
+    fun updateRestaurantVote(@PathVariable submission_id: Int, @RequestBody vote: VoteInput) =
+            dbVotableRepository.updateVote(vote.submitterId, submission_id, vote.value)
 
-    }
-
-    @PutMapping("/{id}/vote", consumes = [MediaType.APPLICATION_JSON_VALUE])
-    fun updateRestaurantVote(@PathVariable id: String, @RequestBody vote: String) {
-
-    }
-
-    @DeleteMapping("/{id}/vote", consumes = [MediaType.APPLICATION_JSON_VALUE])
-    fun deleteRestaurantVote(@PathVariable id: String, vote: String) {
-
-    }
+    // TODO
+    @DeleteMapping("/{submission_id}/vote", consumes = [MediaType.APPLICATION_JSON_VALUE])
+    fun deleteRestaurantVote(@PathVariable submission_id: Int, vote: VoteInput) =
+            dbVotableRepository.removeVote(submission_id, vote.submitterId)
 }

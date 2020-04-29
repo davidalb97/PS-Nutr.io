@@ -25,4 +25,10 @@ interface RestaurantMealPortionDao {
     @SqlQuery("INSERT INTO $table($mealId, $portionId, $restaurantId)" +
             " VALUES(:mealId, :portionId, :restaurantId) RETURNING *")
     fun insert(@Bind mealId: Int, @Bind portionId: Int, restaurantId: Int): RestaurantMealPortionDto
+
+    @SqlQuery("DELETE FROM $table WHERE $restaurantId = :restaurantId")
+    fun deleteFromRestaurant(@Bind restaurantId: Int)
+
+    @SqlQuery("DELETE FROM $table WHERE $mealId = :mealId")
+    fun deleteFromMeal(@Bind mealId: Int)
 }

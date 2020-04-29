@@ -29,4 +29,7 @@ interface RestaurantDao {
                @Bind latitue: Float,
                @Bind longitude: Float
     ): RestaurantDto
+
+    @SqlQuery("DELETE FROM $table WHERE $id = :submissionId RETURNING *")
+    fun delete(@Bind submission_id: Int): Boolean
 }
