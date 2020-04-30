@@ -1,19 +1,20 @@
-DROP TABLE IF EXISTS MealCuisine;
-DROP TABLE IF EXISTS RestaurantCuisine;
-DROP TABLE IF EXISTS RestaurantMealPortion;
-DROP TABLE IF EXISTS Ingredient;
-DROP TABLE IF EXISTS Portion;
-DROP TABLE IF EXISTS Meal;
-DROP TABLE IF EXISTS Cuisine;
-DROP TABLE IF EXISTS Restaurant;
-DROP TABLE IF EXISTS Votable;
-DROP TABLE IF EXISTS Report;
-DROP TABLE IF EXISTS SubmissionSubmitter;
-DROP TABLE IF EXISTS ApiSubmission;
-DROP TABLE IF EXISTS Submission;
-DROP TABLE IF EXISTS Api;
-DROP TABLE IF EXISTS _User;
-DROP TABLE IF EXISTS Submitter;
+SET client_min_messages = error;
+DROP TABLE IF EXISTS MealCuisine CASCADE;
+DROP TABLE IF EXISTS RestaurantCuisine CASCADE;
+DROP TABLE IF EXISTS RestaurantMealPortion CASCADE;
+DROP TABLE IF EXISTS Ingredient CASCADE;
+DROP TABLE IF EXISTS Portion CASCADE;
+DROP TABLE IF EXISTS Meal CASCADE;
+DROP TABLE IF EXISTS Cuisine CASCADE;
+DROP TABLE IF EXISTS Restaurant CASCADE;
+DROP TABLE IF EXISTS Votable CASCADE;
+DROP TABLE IF EXISTS Report CASCADE;
+DROP TABLE IF EXISTS SubmissionSubmitter CASCADE;
+DROP TABLE IF EXISTS ApiSubmission CASCADE;
+DROP TABLE IF EXISTS Submission CASCADE;
+DROP TABLE IF EXISTS Api CASCADE;
+DROP TABLE IF EXISTS _User CASCADE;
+DROP TABLE IF EXISTS Submitter CASCADE;
 
 CREATE TABLE Submitter(
 	submitter_id serial PRIMARY KEY,
@@ -25,7 +26,7 @@ CREATE TABLE _User(
 	submitter_id integer,
 	email varchar(50),
 	session_secret varchar(256) NOT NULL, -- TODO: Check maximum length
-	creation_date timestamp with time zone default CURRENT_TIMESTAMP(), -- Add to doc
+	creation_date timestamp with time zone default CURRENT_TIMESTAMP, -- Add to doc
 	PRIMARY KEY(submitter_id, email),
 	FOREIGN KEY(submitter_id) REFERENCES Submitter(submitter_id)
 );
@@ -62,7 +63,7 @@ CREATE TABLE ApiSubmission(
 CREATE TABLE SubmissionSubmitter(	
 	submission_id integer,
 	submitter_id integer,
-	submission_date timestamp with time zone default CURRENT_TIMESTAMP(), -- Add to doc
+	submission_date timestamp with time zone default CURRENT_TIMESTAMP, -- Add to doc
 	PRIMARY KEY(submission_id, submitter_id),
 	FOREIGN KEY(submission_id) REFERENCES Submission(submission_id),
 	FOREIGN KEY(submitter_id) REFERENCES Submitter(submitter_id)
