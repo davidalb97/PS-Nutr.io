@@ -8,6 +8,7 @@ abstract class AViewModel<T> : ViewModel() {
 
     var mediatorLiveData: MediatorLiveData<List<T>> = MediatorLiveData()
     var liveData: LiveData<List<T>>? = null
+    val items: List<T> get() = mediatorLiveData.value ?: emptyList()
     //private lateinit var currentQuery: Iterable<Pair<"TODO", String>>
 
     /**

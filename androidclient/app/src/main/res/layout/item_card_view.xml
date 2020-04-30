@@ -10,34 +10,34 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="131dp"
+        android:layout_height="130dp"
         android:layout_margin="4dp">
 
         <ImageView
-            android:id="@+id/recyclerItemImage"
+            android:id="@+id/ItemImage"
             android:layout_width="128dp"
             android:layout_height="match_parent"
             android:padding="2dp" />
 
         <TextView
-            android:id="@+id/recyclerItemName"
+            android:id="@+id/ItemName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_marginTop="1dp"
-            android:layout_toEndOf="@+id/recyclerItemImage"
-            android:text="@string/recyclerItemName"
+            android:layout_toEndOf="@+id/ItemImage"
+            android:text="@string/item_name"
             android:textColor="@android:color/black"
             android:textSize="20sp"
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/ItemDetails"
+            android:id="@+id/ItemCuisines"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/recyclerItemName"
-            android:layout_toEndOf="@+id/recyclerItemImage"
-            android:text="@string/recyclerItemDetails"
+            android:layout_below="@+id/ItemName"
+            android:layout_toEndOf="@+id/ItemImage"
+            android:text="@string/item_cuisines"
             android:textSize="15sp" />
 
     </RelativeLayout>

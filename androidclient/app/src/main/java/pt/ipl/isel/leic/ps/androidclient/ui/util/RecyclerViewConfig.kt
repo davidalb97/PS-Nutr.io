@@ -1,14 +1,12 @@
 package pt.ipl.isel.leic.ps.androidclient.ui.util
 
-import android.view.View
-import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import pt.ipl.isel.leic.ps.androidclient.R
-import pt.ipl.isel.leic.ps.androidclient.ui.adapter.ListAdapter
+import pt.ipl.isel.leic.ps.androidclient.ui.adapter.AAdapter
 import pt.ipl.isel.leic.ps.androidclient.ui.listener.ScrollListener
+import pt.ipl.isel.leic.ps.androidclient.ui.viewholder.AViewHolder
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.AViewModel
 
 /**
@@ -18,7 +16,7 @@ import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.AViewModel
 fun <T> configureRecyclerList(
     owner: Fragment,
     viewModel: AViewModel<T>,
-    adapter: ListAdapter<T>,
+    //adapter: AAdapter<T, AViewModel<T>, AViewHolder<T>>,
     listId: Int
 ) {
 
@@ -30,12 +28,12 @@ fun <T> configureRecyclerList(
     list.layoutManager = LinearLayoutManager(owner.requireContext())
 
     // Define adapter
-    list.adapter = adapter
+    //list.adapter = adapter
 
     viewModel.liveData?.observe(owner, Observer {
         /*viewModel.adapter = ListAdapter(viewModel)
         list.adapter = viewModel.adapter*/
-        adapter.notifyDataSetChanged()
+        //adapter.notifyDataSetChanged()
 
 
     })

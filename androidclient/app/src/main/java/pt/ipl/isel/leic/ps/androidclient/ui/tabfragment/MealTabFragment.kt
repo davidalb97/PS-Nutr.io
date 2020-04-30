@@ -1,4 +1,4 @@
-package pt.ipl.isel.leic.ps.androidclient.ui.tabfragments
+package pt.ipl.isel.leic.ps.androidclient.ui.tabfragment
 
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.CuisinesFragment
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.LocationFragment

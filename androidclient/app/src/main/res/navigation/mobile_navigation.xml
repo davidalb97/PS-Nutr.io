@@ -31,13 +31,13 @@
 
     <fragment
         android:id="@+id/nav_tab_restaurants"
-        android:name="pt.ipl.isel.leic.ps.androidclient.ui.tabfragments.RestaurantTabFragment"
+        android:name="pt.ipl.isel.leic.ps.androidclient.ui.tabfragment.RestaurantTabFragment"
         android:label="@string/tab_restaurants"
         tools:layout="@layout/fragment_tab" />
 
     <fragment
         android:id="@+id/nav_tab_meals"
-        android:name="pt.ipl.isel.leic.ps.androidclient.ui.tabfragments.MealTabFragment"
+        android:name="pt.ipl.isel.leic.ps.androidclient.ui.tabfragment.MealTabFragment"
         android:label="@string/tab_meals"
         tools:layout="@layout/fragment_tab" />
 
