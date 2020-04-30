@@ -16,7 +16,6 @@ class RestaurantService(
         private val restaurantApiRepository: RestaurantApiRepository
 ) {
 
-    //TODO
     fun getNearbyRestaurants(latitude: Float?, longitude: Float?, radius: Int? = MAX_RADIUS, apiType: String?): Set<Restaurant> {
         return if (latitude == null || longitude == null) emptySet() else {
             val chosenRadius = if (radius != null && radius <= MAX_RADIUS) radius else MAX_RADIUS

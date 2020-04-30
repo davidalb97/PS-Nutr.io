@@ -12,5 +12,5 @@ class DbRestaurantDto(
         restaurant_name,
         latitude,
         longitude,
-        emptyList()
+        emptyList() //TODO This should be obtained by database right away because it's crucial to every restaurant - discuss.
 )
