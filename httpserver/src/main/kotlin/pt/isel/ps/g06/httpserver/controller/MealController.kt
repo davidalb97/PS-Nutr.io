@@ -2,10 +2,11 @@ package pt.isel.ps.g06.httpserver.controller
 
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
+import pt.isel.ps.g06.httpserver.dataAccess.common.TransactionHolder
 
 @RestController
 @RequestMapping("/meal")
-class MealController {
+class MealController(private val transactionHolder: TransactionHolder) {
 
     @GetMapping("/{mealId}", produces = [MediaType.APPLICATION_JSON_VALUE])
     fun getMealInformation(@PathVariable mealId: String) = ""

@@ -14,7 +14,7 @@ interface MealDao {
     fun getById(@Bind submission_id: Int): MealDto?
 
     @SqlQuery("SELECT * FROM $table WHERE $name = :mealName")
-    fun getByName(@Bind mealName: String): List<MealDto?>
+    fun getByName(@Bind mealName: String): List<MealDto>
 
     @SqlQuery("INSERT INTO $table($id, $name) VALUES(:submission_id, :mealName) RETURNING *")
     fun insert(@Bind submission_id: Int, @Bind mealName: String): MealDto
@@ -23,6 +23,5 @@ interface MealDao {
     fun delete(@Bind submission_id: Int): MealDto
 
     @SqlQuery("UPDATE $table SET $name = :new_name WHERE $id = :submission_id RETURNING *")
-    fun updateName(@Bind submission_id: Int, new_name: String): MealDto
-
+    fun update(@Bind submission_id: Int, new_name: String): MealDto
 }

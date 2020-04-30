@@ -2,24 +2,23 @@ package pt.isel.ps.g06.httpserver.dataAccess.db.repo
 
 import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.transaction.TransactionIsolationLevel
-import pt.isel.ps.g06.httpserver.dataAccess.db.dto.CuisineDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.CuisineDao
+import pt.isel.ps.g06.httpserver.dataAccess.db.dto.CuisineDto
 
-class CuisineDbRepository(private val jdbi: Jdbi) {
+private val isolationLevel = TransactionIsolationLevel.SERIALIZABLE
+private val cuisineDaoClass = CuisineDao::class.java
 
-    private val serializable = TransactionIsolationLevel.SERIALIZABLE
-    private val cuisineDao = CuisineDao::class.java
+class CuisineDbRepository(jdbi: Jdbi) : BaseDbRepo(jdbi, isolationLevel) {
 
-    fun getByName(name: String): List<CuisineDto>? {
-        return inTransaction(jdbi, serializable) {
-            it.attach(cuisineDao).getByName(name)
+    fun getByName(name: String): List<CuisineDto> {
+        return jdbi.inTransaction<List<CuisineDto>, Exception>(isolationLevel) {
+            return@inTransaction it.attach(cuisineDaoClass).getByName(name)
         }
     }
 
     fun insert(name: String): CuisineDto {
-        return inTransaction(jdbi, serializable) {
-            it.attach(cuisineDao).insert(name)
+        return jdbi.inTransaction<CuisineDto, Exception>(isolationLevel) {
+            return@inTransaction it.attach(cuisineDaoClass).insert(name)
         }
     }
-
 }

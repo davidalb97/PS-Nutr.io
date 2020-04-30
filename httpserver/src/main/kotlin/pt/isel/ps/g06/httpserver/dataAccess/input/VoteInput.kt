@@ -1,4 +1,4 @@
-package pt.isel.ps.g06.httpserver.data
+package pt.isel.ps.g06.httpserver.dataAccess.input
 
 data class VoteInput(
         val value: Boolean,

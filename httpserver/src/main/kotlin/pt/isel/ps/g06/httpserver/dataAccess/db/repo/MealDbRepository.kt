@@ -4,25 +4,27 @@ import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.transaction.TransactionIsolationLevel
 import org.springframework.stereotype.Repository
 import pt.isel.ps.g06.httpserver.dataAccess.api.food.FoodApiType
-import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType
+import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType.INGREDIENT
+import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType.MEAL
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.*
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.MealDto
 import pt.isel.ps.g06.httpserver.dataAccess.model.Ingredient
 
+private val isolationLevel = TransactionIsolationLevel.SERIALIZABLE
+private val mealDaoClass = MealDao::class.java
+
 @Repository
-class MealDbRepository(private val jdbi: Jdbi) {
+class MealDbRepository(jdbi: Jdbi) : BaseDbRepo(jdbi, isolationLevel) {
 
-    private val serializable = TransactionIsolationLevel.SERIALIZABLE
-
-    fun getById(submissionId: Int) {
-        return inTransaction(jdbi, serializable) {
-            it.attach(MealDao::class.java).getById(submissionId)
+    fun getById(submissionId: Int): MealDto? {
+        return jdbi.inTransaction<MealDto, Exception>(isolationLevel) {
+            return@inTransaction it.attach(mealDaoClass).getById(submissionId)
         }
     }
 
-    fun getByName(mealName: String) {
-        return inTransaction(jdbi, serializable) {
-            it.attach(MealDao::class.java).getByName(mealName)
+    fun getByName(mealName: String): List<MealDto> {
+        return jdbi.inTransaction<List<MealDto>, Exception>(isolationLevel) {
+            return@inTransaction it.attach(mealDaoClass).getByName(mealName)
         }
     }
 
@@ -33,29 +35,28 @@ class MealDbRepository(private val jdbi: Jdbi) {
             cuisines: List<String> = emptyList(),
             ingredientIds: List<Ingredient> = emptyList(),
             foodApi: FoodApiType? = null
-    ): Int? {
-        return inTransaction<Int>(jdbi, serializable) {
+    ): MealDto {
+        return jdbi.inTransaction<MealDto, Exception>(isolationLevel) {
 
             val submissionDao = it.attach(SubmissionDao::class.java)
             val mealSubmissionId = submissionDao
-                    .insert(SubmissionType.Meal.name)
+                    .insert(MEAL.name)
                     .submission_id
 
             val submissionSubmitterDao = it.attach(SubmissionSubmitterDao::class.java)
             submissionSubmitterDao.insert(mealSubmissionId, submitterId)
 
-            val mealDao = it.attach(MealDao::class.java)
-            mealDao.insert(mealSubmissionId, mealName)
+            val mealDto = it.attach(mealDaoClass)
+                    .insert(mealSubmissionId, mealName)
 
-            val cuisineDao = it.attach(CuisineDao::class.java)
-            cuisineDao.insertAll(cuisines.map(::CuisineParam))
+            it.attach(CuisineDao::class.java).insertAll(cuisines.map(::CuisineParam))
 
             if (foodApi != null) {
 
                 //----------------Api Submission---------------
 
-                val apiDao = it.attach(ApiDao::class.java)
-                val apiSubmitterId = apiDao.getByName(foodApi.toString())!!.submitter_id
+                val apiSubmitterId = it.attach(ApiDao::class.java)
+                        .getByName(foodApi.toString())!!.submitter_id
                 submissionSubmitterDao.insert(mealSubmissionId, apiSubmitterId)
 
                 //If this meal comes from an external API
@@ -64,9 +65,8 @@ class MealDbRepository(private val jdbi: Jdbi) {
                     apiSubmissionDao.insert(mealSubmissionId, apiId, foodApi.toString())
                 }
 
-
                 if (ingredientIds.isEmpty()) {
-                    return@inTransaction mealSubmissionId
+                    return@inTransaction mealDto
                 }
 
                 //----------------Ingredients---------------
@@ -82,7 +82,7 @@ class MealDbRepository(private val jdbi: Jdbi) {
 
                 //Insert a new submission for each new ingredient
                 val ingredientSubmissionIds = submissionDao.insertAll(
-                        apiIdsToInsert.map { SubmissionParam(SubmissionType.Ingredient.name) }
+                        apiIdsToInsert.map { SubmissionParam(INGREDIENT.name) }
                 )
 
                 //Insert all Submission - Submitter associations
@@ -113,47 +113,45 @@ class MealDbRepository(private val jdbi: Jdbi) {
                         }
                 )
             }
-            mealSubmissionId
+            return@inTransaction mealDto
         }
     }
 
     fun delete(
             submitterId: Int,
             submissionId: Int
-    ) : Boolean {
-        return inTransaction(jdbi, serializable) {
-            val mealDto = it.attach(MealDao::class.java)
-                    .getById(submissionId)
+    ) {
+        return jdbi.inTransaction<Unit, Exception>(isolationLevel) {
 
-            if (mealDto != null) {
-                it.attach(SubmissionSubmitterDao::class.java)
-                        .delete(submissionId)
+            // Check if the submitter is the creator of this meal
+            requireSubmissionSubmitter(submitterId, submissionId)
 
-                it.attach(MealDao::class.java)
-                        .delete(submissionId)
+            // Check if the submission is a Restaurant
+            requireSubmission(submissionId, MEAL)
 
-                it.attach(SubmissionDao::class.java).delete(submissionId)
-                return@inTransaction true
-            }
-            false
+            it.attach(MealDao::class.java).delete(submissionId)
+
+            it.attach(SubmissionSubmitterDao::class.java).delete(submissionId)
+
+            it.attach(SubmissionDao::class.java).delete(submissionId)
         }
     }
 
-    // TODO
+
     fun update(
             submitterId: Int,
-            submissionId: Int
-    ) : MealDto? {
-        return inTransaction(jdbi, serializable) {
-            val mealDto = it.attach(MealDao::class.java)
-                    .getById(submissionId)
+            submissionId: Int,
+            name: String
+    ) {
+        jdbi.inTransaction<Unit, Exception>(isolationLevel) {
 
-            if (mealDto != null) {
-                /*val updatedMealDto = it.attach(MealDto::class.java)
-                        .update(submissionId)*/
-            }
+            // Check if the submitter is the creator of this meal
+            requireSubmissionSubmitter(submitterId, submissionId)
 
-            null
+            // Check if the submission is a Restaurant
+            requireSubmission(submissionId, MEAL)
+
+            it.attach(MealDao::class.java).update(submissionId, name)
         }
     }
 }
