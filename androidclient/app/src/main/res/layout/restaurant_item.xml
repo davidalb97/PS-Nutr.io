@@ -14,37 +14,37 @@
         android:layout_margin="4dp">
 
         <ImageView
-            android:id="@+id/image"
+            android:id="@+id/restaurantImage"
             android:layout_width="130dp"
             android:layout_height="130dp"
             android:padding="2dp" />
 
         <TextView
-            android:id="@+id/name"
+            android:id="@+id/restaurantName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_marginTop="1dp"
-            android:layout_toEndOf="@+id/image"
+            android:layout_toEndOf="@+id/restaurantImage"
             android:text="@string/item_name"
             android:textColor="@android:color/black"
             android:textSize="20sp"
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/cuisines"
+            android:id="@+id/restaurantCuisines"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/name"
-            android:layout_toEndOf="@+id/image"
+            android:layout_below="@+id/restaurantName"
+            android:layout_toEndOf="@+id/restaurantImage"
             android:text="@string/item_cuisines"
             android:textSize="15sp" />
 
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@+id/image"
-            android:layout_below="@+id/cuisines">
+            android:layout_toEndOf="@+id/restaurantImage"
+            android:layout_below="@+id/restaurantCuisines">
             <ProgressBar
                 android:id="@+id/votesBar"
                 style="?android:attr/progressBarStyleHorizontal"
@@ -96,6 +96,7 @@
             </ImageButton>
 
             <ImageButton
+                android:id="@+id/downvote"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
                 android:layout_marginEnd="10dp"
@@ -105,6 +106,7 @@
             </ImageButton>
 
             <ImageButton
+                android:id="@+id/favorite"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
                 android:layout_marginEnd="10dp"
@@ -114,6 +116,7 @@
             </ImageButton>
 
             <ImageButton
+                android:id="@+id/options"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
                 android:layout_marginEnd="5dp"

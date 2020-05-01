@@ -4,6 +4,7 @@ data class Restaurant(
         val apiId: Int,
         val apiType: String,
         val name: String,
+        val votes: List<Boolean>,
         val latitude: Float,
         val longitude: Float,
         val cuisines: Array<String>
