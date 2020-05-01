@@ -14,4 +14,7 @@ interface ReportDao {
     @SqlQuery("INSERT INTO $table($reporterId, $submissionId, $description) " +
             "VALUES(:reporterSubmitterId, :submissionId, :description) RETURNING *")
     fun insert(@Bind reporterSubmitterId: Int, submissionId: Int, description: String): ReportDto
+
+    @SqlQuery("DELETE FROM $table WHERE $submissionId = :submissionId RETURNING *")
+    fun deleteAllBySubmissionId(submissionId: Int): List<ReportDto>
 }

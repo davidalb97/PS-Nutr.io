@@ -30,7 +30,7 @@ interface SubmissionSubmitterDao {
     ) values: List<SubmissionSubmitterParam>): List<SubmissionSubmitterDto>
 
     @SqlQuery("DELETE FROM $table WHERE $submissionId = :submission_id RETURNING *")
-    fun delete(submission_id: Int): SubmissionSubmitterDto
+    fun deleteAllBySubmissionId(submission_id: Int): List<SubmissionSubmitterDto>
 }
 
 data class SubmissionSubmitterParam(

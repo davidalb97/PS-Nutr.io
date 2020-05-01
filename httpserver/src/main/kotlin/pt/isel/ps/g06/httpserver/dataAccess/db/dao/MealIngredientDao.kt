@@ -28,7 +28,10 @@ interface MealIngredientDao {
             value = "values",
             propertyNames = [mealId, ingredientId]
     ) values: List<MealIngredientParam>): List<MealIngredientDto>
+
+    @SqlQuery("DELETE FROM $table WHERE $mealId = :submissionId RETURNING *")
+    fun deleteAllByMealId(submissionId: Int): List<MealIngredientDto>
 }
 
-//Variable names must match sql columns!!!
+//Variable names must match sql columns
 data class MealIngredientParam(val meal_submission_id: Int, val ingredient_submission_id: Int)

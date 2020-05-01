@@ -22,7 +22,7 @@ interface ApiSubmissionDao {
 
     @SqlQuery("INSERT INTO $table($submissionId, $apiId, $submissionType)" +
             " VALUES(:submissionId, :apiId, :submissionType) RETURNING *")
-    fun insert(@Bind submissionId: Int, apiId: Int, submissionType: String): ApiSubmissionDto
+    fun insert(@Bind submissionId: Int, apiId: Int): ApiSubmissionDto
 
     @SqlQuery("INSERT INTO $table($submissionId, $apiId, $submissionType)" +
             " values <values> RETURNING *")
@@ -30,10 +30,12 @@ interface ApiSubmissionDao {
             value = "values",
             propertyNames = [submissionId, apiId, submissionType]
     ) values: List<ApiSubmissionParam>): List<ApiSubmissionDto>
+
+    @SqlQuery("DELETE FROM $table WHERE $submissionId = :submissionId RETURNING *")
+    fun deleteById(submissionId: Int): ApiSubmissionDto
 }
 
 data class ApiSubmissionParam(
         val submission_id: Int,
-        val apiId: Int,
-        val submission_type: String
+        val apiId: Int
 )

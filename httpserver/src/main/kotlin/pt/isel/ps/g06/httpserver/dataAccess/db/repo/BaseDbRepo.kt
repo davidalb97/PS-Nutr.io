@@ -5,10 +5,8 @@ import org.jdbi.v3.core.transaction.TransactionIsolationLevel
 import org.springframework.stereotype.Repository
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionContractType
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType
-import pt.isel.ps.g06.httpserver.dataAccess.db.dao.SubmissionContractDao
-import pt.isel.ps.g06.httpserver.dataAccess.db.dao.SubmissionDao
-import pt.isel.ps.g06.httpserver.dataAccess.db.dao.SubmissionSubmitterDao
-import pt.isel.ps.g06.httpserver.dataAccess.db.dao.VoteDao
+import pt.isel.ps.g06.httpserver.dataAccess.db.dao.*
+import pt.isel.ps.g06.httpserver.exception.DatabaseConsistencyException
 import pt.isel.ps.g06.httpserver.exception.InvalidInputDomain
 import pt.isel.ps.g06.httpserver.exception.InvalidInputException
 
@@ -99,6 +97,20 @@ class BaseDbRepo(
                     ?: throw InvalidInputException(InvalidInputDomain.CONTRACT,
                             "The submission id \"$submissionId\" is not a \"$contract\"."
                     )
+        }
+    }
+
+    internal fun isFromApi(submissionId: Int): Boolean {
+        return jdbi.inTransaction<Boolean, Exception>(defaultIsolation) {
+            return@inTransaction it.attach(ApiSubmissionDao::class.java)
+                    .getById(submissionId) != null
+        }
+    }
+
+    internal fun isApi(submitterId: Int): Boolean {
+        return jdbi.inTransaction<Boolean, Exception>(defaultIsolation) {
+            return@inTransaction it.attach(ApiDao::class.java)
+                    .getById(submitterId) != null
         }
     }
 }

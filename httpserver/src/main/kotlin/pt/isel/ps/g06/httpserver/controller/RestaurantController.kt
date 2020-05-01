@@ -9,6 +9,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.repo.VoteDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.input.ReportInput
 import pt.isel.ps.g06.httpserver.dataAccess.input.RestaurantInput
 import pt.isel.ps.g06.httpserver.dataAccess.input.VoteInput
+import pt.isel.ps.g06.httpserver.dataAccess.model.RestaurantApiId
 
 const val MAX_RADIUS = 1000
 
@@ -68,11 +69,10 @@ class RestaurantController(
         dbRestaurantRepository.insert(
                 restaurant.submitterId,
                 restaurant.name,
-                null,
+                TODO(),
                 emptyList(),
                 restaurant.latitude,
-                restaurant.longitude,
-                null
+                restaurant.longitude
         )
     }
 

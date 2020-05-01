@@ -71,7 +71,8 @@ CREATE TABLE SubmissionContract(
 		submission_contract = 'Votable' OR
 		submission_contract = 'Reportable' OR
 		submission_contract = 'API'
-	)
+	),
+	PRIMARY KEY(submission_id, submission_contract)
 );
 
 CREATE TABLE Report(
