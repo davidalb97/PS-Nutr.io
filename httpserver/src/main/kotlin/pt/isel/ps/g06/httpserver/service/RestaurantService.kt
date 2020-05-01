@@ -40,9 +40,9 @@ class RestaurantService(
     fun getRestaurant(id: Int, apiType: String?): Restaurant? {
         val type = RestaurantApiType.getOrDefault(apiType)
         val restaurantApi = restaurantApiMapper.getRestaurantApi(type)
-        val result = dbRestaurantRepository.getRestaurantById(id) ?: restaurantApi.getRestaurantInfo(id)
+        val restaurant = dbRestaurantRepository.getRestaurantById(id) ?: restaurantApi.getRestaurantInfo(id)
 
-        return result?.let(this::mapToRestaurant)
+        return restaurant?.let(this::mapToRestaurant)
     }
 
     private fun filterRedundantApiRestaurants(dbRestaurants: Collection<Restaurant>, apiRestaurants: Collection<Restaurant>): Set<Restaurant> {

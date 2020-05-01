@@ -2,6 +2,7 @@ package pt.isel.ps.g06.httpserver.dataAccess.api.restaurant
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import pt.isel.ps.g06.httpserver.dataAccess.api.HttpApiClient
+import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.dto.ApiRestaurantDto
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.dto.DailyMenuDtoMapper
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.dto.RestaurantSearchResultDtoMapper
 import pt.isel.ps.g06.httpserver.dataAccess.model.RestaurantDto
@@ -13,7 +14,8 @@ class ZomatoRestaurantApi(private val clientHttp: HttpApiClient, private val jso
     private val uriBuilder = ZomatoUriBuilder()
 
     override fun getRestaurantInfo(id: Int): RestaurantDto? {
-        TODO("Not yet implemented")
+        val uri = uriBuilder.searchRestaurantById(id)
+        return requestDto(uri, ApiRestaurantDto::class.java)
     }
 
     override fun searchRestaurants(latitude: Float, longitude: Float, radiusMeters: Int): List<RestaurantDto> {
