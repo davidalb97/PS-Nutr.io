@@ -3,11 +3,55 @@
 %
 \chapter{Development}
     
-	\section{Project's Roadmap}
+	\section{Project's roadmap}
 
-    According to the proposed plan, the group managed to fullfill almost all the objectives
+    According to the proposed plan, the group managed to fulfill almost all the objectives
     that were planned to be accomplished by this time - a relational database, a working HTTP server
     and a prototype Android aplication that can make requests to the previously stated server and 
     use its information to display lists and detailed views.
 
     \section{Issues encountered and project's updates}
+
+    During this time the group found some issues while developing the first modules of the project:
+    
+    \subsection{Relational database conception}
+
+    The group had to redesign the database's conceptual model and relational model multiple times.
+    One of the main issues that supported the main redesign was that the database 
+    only supported submissions from the users, while it had to support submissions both from users and APIs.\\
+
+    The other redesigns were related to the database normalization: it was normalized until the third normal form 
+    and had to be renormalized one more time because of the mentioned main redesign.\\ 
+
+    Because of this, the group invested a considerable amount of time on the database's conception, which was not considered
+    in the initial plan. This invested time ended up colliding partially with other time periods that were
+    reserved for other modules.
+
+    \subsection{HTTP server}
+
+    As mentioned in the project's proposal risks, the HTTP server is very similar to the DAW's project, which is an optional
+    course inside the LEIC programme. Thus some improvements were made and errors were fixed because of the lectioned classes 
+    and the first project's delivery in DAW, which helped the group complete the tasks that the server's development implied.\\
+
+    However the server is lacking some functionalities as a result of the time invested in database conception,
+    where the HTTP server depends strongly, causing some drawback to its development.
+
+    \subsection{Android application}
+
+    As a result of the time invested developing the database and the strong bond between the mobile application and the HTTP server 
+    and its completion, the Android app suffered a slight drawback, where only the essential fragments and requests work.\\
+
+    Althrough it was initially planned that the mobile application was just a prototype by this date, as it is now, the group
+    could not implement more planned features because of the time invested in the other modules.
+
+    \section{Group decisions}
+
+    Given the previous issues, the group has the conditions to comply with the project's initial plan, with some minor changes.\\
+    
+    As stated in the last period of the Android application's subsection, the group strongly agrees that the HTTP server has to be finished
+    as soon as possible, to provide stability to the onward modules and their implementations, being considered a core module in this project.\\
+
+    Subsequently the group will have to invest a few more days in the server's development in order to fulfill the project's requirements.\\
+
+    Alongside with these fulfillments, the group will proceed to add more features to the mobile application, while starting the web application's development,
+    which is compatible with the project's initial plan.
