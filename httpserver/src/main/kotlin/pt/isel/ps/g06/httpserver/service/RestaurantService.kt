@@ -37,6 +37,15 @@ class RestaurantService(
         }
     }
 
+    /**
+     * Obtain more information for a Restaurant with given id.
+     *
+     * Current search algorithm will first query the Database for any restaurant and if none was found,
+     * search the preferred Restaurant API (Zomato, etc.)
+     *
+     * @param apiType - describes which api to search the Restaurant. See [RestaurantApiType] for possible types.
+     * Defaults to [RestaurantApiType.Zomato]
+     */
     fun getRestaurant(id: Int, apiType: String?): Restaurant? {
         val type = RestaurantApiType.getOrDefault(apiType)
         val restaurantApi = restaurantApiMapper.getRestaurantApi(type)
