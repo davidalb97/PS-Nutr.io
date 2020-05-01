@@ -28,7 +28,7 @@ class RestaurantController(private val restaurantService: RestaurantService) {
 
     @GetMapping("/{id}", produces = [MediaType.APPLICATION_JSON_VALUE])
     fun getRestaurantInformation(@PathVariable id: Int, api: String?): Restaurant {
-        return restaurantService.getRestaurant(id, api) ?: throw RestaurantNotFoundException(id)
+        return restaurantService.getRestaurant(id, api) ?: throw RestaurantNotFoundException()
     }
 
     @PostMapping(consumes = [MediaType.APPLICATION_JSON_VALUE])

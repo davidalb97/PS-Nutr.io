@@ -1,10 +1,8 @@
 package pt.isel.ps.g06.httpserver.dataAccess.api.restaurant
 
-import org.springframework.context.annotation.Configuration
+import org.springframework.stereotype.Component
 
-private val DEFAULT_API = RestaurantApiType.Zomato
-
-@Configuration
+@Component
 class RestaurantApiMapper(
         private val zomatoApi: ZomatoRestaurantApi
 ) {

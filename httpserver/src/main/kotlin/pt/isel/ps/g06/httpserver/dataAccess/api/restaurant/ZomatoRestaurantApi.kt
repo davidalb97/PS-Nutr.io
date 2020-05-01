@@ -1,15 +1,17 @@
 package pt.isel.ps.g06.httpserver.dataAccess.api.restaurant
 
-import com.fasterxml.jackson.databind.ObjectMapper
+import org.springframework.stereotype.Component
 import pt.isel.ps.g06.httpserver.dataAccess.api.HttpApiClient
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.dto.ApiRestaurantDto
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.dto.DailyMenuDtoMapper
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.dto.RestaurantSearchResultDtoMapper
+import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.mapper.ZomatoResponseMapper
 import pt.isel.ps.g06.httpserver.dataAccess.model.RestaurantDto
 
 private const val ZOMATO_API_KEY = "3e128506ffbfc1c23b4e2b6acd3eb84b"
 
-class ZomatoRestaurantApi(private val clientHttp: HttpApiClient, private val jsonMapper: ObjectMapper) : IRestaurantApi {
+@Component
+class ZomatoRestaurantApi(private val clientHttp: HttpApiClient, private val restaurantMapper: ZomatoResponseMapper) : IRestaurantApi {
 
     private val uriBuilder = ZomatoUriBuilder()
 
@@ -33,7 +35,7 @@ class ZomatoRestaurantApi(private val clientHttp: HttpApiClient, private val jso
                 urlStr,
                 mapOf(Pair("user-key", ZOMATO_API_KEY), Pair("Accept", "application/json")),
                 { false },
-                { jsonMapper.readValue(it.body(), klass) }
+                { restaurantMapper.mapTo(it, klass) }
         )
     }
 }
