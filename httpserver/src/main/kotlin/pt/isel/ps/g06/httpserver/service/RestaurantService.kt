@@ -1,7 +1,8 @@
 package pt.isel.ps.g06.httpserver.service
 
 import org.springframework.stereotype.Service
-import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.RestaurantApiRepository
+import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.RestaurantApiMapper
+import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.RestaurantApiType
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.DbRestaurantRepository
 import pt.isel.ps.g06.httpserver.dataAccess.model.RestaurantDto
 import pt.isel.ps.g06.httpserver.model.Restaurant
@@ -13,14 +14,15 @@ private const val MAX_RADIUS = 1000
 @Service
 class RestaurantService(
         private val dbRestaurantRepository: DbRestaurantRepository,
-        private val restaurantApiRepository: RestaurantApiRepository
+        private val restaurantApiMapper: RestaurantApiMapper
 ) {
 
     fun getNearbyRestaurants(latitude: Float?, longitude: Float?, radius: Int? = MAX_RADIUS, apiType: String?): Set<Restaurant> {
         return if (latitude == null || longitude == null) emptySet() else {
             val chosenRadius = if (radius != null && radius <= MAX_RADIUS) radius else MAX_RADIUS
+            val type = RestaurantApiType.getOrDefault(apiType)
 
-            val restaurantApi = restaurantApiRepository.getRestaurantApi(apiType)
+            val restaurantApi = restaurantApiMapper.getRestaurantApi(type)
 
             val apiRestaurants = CompletableFuture
                     .supplyAsync { restaurantApi.searchRestaurants(latitude, longitude, chosenRadius) }
@@ -33,6 +35,14 @@ class RestaurantService(
             //TODO Handle CompletableFuture exception
             return filterRedundantApiRestaurants(dbRestaurants, apiRestaurants.get())
         }
+    }
+
+    fun getRestaurant(id: Int, apiType: String?): Restaurant? {
+        val type = RestaurantApiType.getOrDefault(apiType)
+        val restaurantApi = restaurantApiMapper.getRestaurantApi(type)
+        val result = dbRestaurantRepository.getRestaurantById(id) ?: restaurantApi.getRestaurantInfo(id)
+
+        return result?.let(this::mapToRestaurant)
     }
 
     private fun filterRedundantApiRestaurants(dbRestaurants: Collection<Restaurant>, apiRestaurants: Collection<Restaurant>): Set<Restaurant> {
@@ -50,6 +60,11 @@ class RestaurantService(
         return dbRestaurants.any { dbRestaurant -> restaurant.apiId == dbRestaurant.apiId }
     }
 
-
-    fun mapToRestaurant(dto: RestaurantDto): Restaurant = Restaurant(dto.id, dto.name, dto.latitude, dto.longitude, dto.cuisines)
+    private fun mapToRestaurant(dto: RestaurantDto): Restaurant = Restaurant(
+            dto.id,
+            dto.name,
+            dto.latitude,
+            dto.longitude,
+            dto.cuisines
+    )
 }

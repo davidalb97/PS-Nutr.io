@@ -2,14 +2,14 @@ package pt.isel.ps.g06.httpserver.controller
 
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
-import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.RestaurantApiRepository
+import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.RestaurantApiMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.DbRestaurantRepository
 
 @RestController
 @RequestMapping("/restaurant/{id}/meal")
 class RestaurantMealsController(
         private val dbRestaurantRepo: DbRestaurantRepository,
-        private val restaurantApiRepo: RestaurantApiRepository
+        private val restaurantApiRepo: RestaurantApiMapper
 ) {
 
     @PostMapping(consumes = [MediaType.APPLICATION_JSON_VALUE])

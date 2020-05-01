@@ -4,11 +4,13 @@ enum class RestaurantApiType {
     Zomato;
 
     companion object {
-        fun getType(type: String): RestaurantApiType? {
+        fun getOrDefault(type: String?, default: RestaurantApiType = Zomato): RestaurantApiType {
             return try {
-                valueOf(type)
+                return if (type == null) default
+                else valueOf(type)
             } catch (e: IllegalArgumentException) {
-                null
+                default
             }
         }
-    } }
+    }
+}

@@ -1,10 +1,12 @@
 package pt.isel.ps.g06.httpserver.service
 
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
-import org.mockito.Mockito.mock
+import org.mockito.Mockito.*
 import org.springframework.util.Assert
-import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.RestaurantApiRepository
+import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.RestaurantApiMapper
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.RestaurantApiType
+import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.ZomatoRestaurantApi
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.DbRestaurantRepository
 
 class RestaurantServiceTests {
@@ -14,7 +16,7 @@ class RestaurantServiceTests {
 
         val service = RestaurantService(
                 mock(DbRestaurantRepository::class.java),
-                mock(RestaurantApiRepository::class.java)
+                mock(RestaurantApiMapper::class.java)
         )
 
         val nullLatitude = service.getNearbyRestaurants(
@@ -72,4 +74,23 @@ class RestaurantServiceTests {
 //        assertNotEquals(result.size, apiValues.size + dbValues.size)
 //        assertEquals(result.first().name, dbName)
 //    }
+
+    @Test
+    fun searchRestaurantByIdShouldReturnNullWhenNoneIsFound() {
+        val dbRepository = mock(DbRestaurantRepository::class.java)
+        `when`(dbRepository.getRestaurantById(anyInt())).thenReturn(null)
+
+        val api = mock(ZomatoRestaurantApi::class.java)
+        `when`(api.getRestaurantInfo(anyInt())).thenReturn(null)
+
+        val apiRepository = mock(RestaurantApiMapper::class.java)
+        `when`(apiRepository.getRestaurantApi(RestaurantApiType.Zomato)).thenReturn(api)
+
+        val result = RestaurantService(
+                dbRepository,
+                apiRepository
+        ).getRestaurant(1, null)
+
+        Assertions.assertNull(result)
+    }
 }

@@ -12,7 +12,7 @@ class ZomatoRestaurantApi(private val clientHttp: HttpApiClient, private val jso
 
     private val uriBuilder = ZomatoUriBuilder()
 
-    override fun getRestaurantInfo(id: Int): Any {
+    override fun getRestaurantInfo(id: Int): RestaurantDto? {
         TODO("Not yet implemented")
     }
 
