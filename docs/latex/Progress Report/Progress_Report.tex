@@ -1,6 +1,7 @@
-\documentclass{article}
+\documentclass[a4paper,openright,twoside,11pt]{report}
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
+\usepackage{lipsum}
 \usepackage{indentfirst}
 \usepackage{float}
 \usepackage{natbib}
@@ -11,92 +12,112 @@
 \usepackage{hyperref}
 \usepackage[scaled]{helvet}
 \renewcommand\familydefault{\sfdefault} 
-\usepackage[T1]{fontenc}
-\usepackage[a4paper, total={16cm, 25cm}]{geometry}
 
+% --- Page dimensions ---
+\setlength{\textheight}{24.00cm}
+\setlength{\textwidth}{15.50cm}
+\setlength{\topmargin}{0.35cm}
+\setlength{\headheight}{0cm}
+\setlength{\headsep}{0cm}
+\setlength{\oddsidemargin}{0.25cm}
+\setlength{\evensidemargin}{0.25cm}
+
+% --- Title start ---
 \title{
-\vspace{-10mm}
-\hrule
-\vspace{5mm}
-\Huge Nutr.io - Multi-platform application for diabetics' nutritional choices\\
-\vspace{2mm}
-\huge Progress Report\\
-\vspace{2mm}
-\Large Instituto Superior de Engenharia de Lisboa\\
-\Large Licenciatura em Engenharia Informática e de Computadores
-\vspace{5mm}
-\hrule
-\vspace{-10mm}
+    \vspace{-30mm}
+    \LARGE Instituto Superior de Engenharia de Lisboa\\
+    \Large Licenciatura em Engenharia Informática e de Computadores
+    \begin{figure}[H]
+        \includegraphics[scale=0.5]{_figures/logoISEL.png}
+        \centering 
+    \end{figure}    
+    \hrule
+    \vspace{5mm}
+    \Huge Nutr.io - Multi-platform application for diabetics' nutritional choices\\    
+    \vspace{5mm}
+    \huge \textbf{Progress Report}
+    \vspace{5mm}
+    \hrule
+    \vspace{15mm} 
+    \begin{center}
+        \Large Authors:               
+        \begin{tabular}{c c c}\\
+            \textbf{Pedro Pires} & \textbf{Miguel Luís} & \textbf{David Albuquerque}\\
+            42206 & 43504 & 43566\\
+            A42206@alunos.isel.pt & A43504@alunos.isel.pt & A43566@alunos.isel.pt\\            
+        \end{tabular}\\
+        \vspace{10mm} 
+        \Large Tutor:\\
+        \textbf{Fernando Miguel Gamboa de Carvalho}\\ 
+        mcarvalho@cc.isel.pt
+    \end{center}
 }
+% --- Title end ---
+
 \date{May 4, 2020}
-\vspace{-5mm}
 
 \begin{document}
 
-\maketitle
+    \pagenumbering{roman}
+    \thispagestyle{empty}
+    \maketitle
 
-\section{Project Group and Tutor}
-    \begin{itemize}
-        \item Group:
-            \begin{itemize}
-            \item Pedro Miguel Sequeira Pires
-            \begin{itemize}
-                \item Number: 42206
-                \item Phone: +351 965 621 741
-                \item Email: A42206@alunos.isel.pt
-            \end{itemize}
-        \end{itemize}
-        \begin{itemize}
-            \item Miguel Filipe Paiva Luís
-            \begin{itemize}
-                \item Number: 43504
-                \item Phone: +351 969 567 540
-                \item Email: A43504@alunos.isel.pt
-            \end{itemize}
-        \end{itemize}
-        \begin{itemize}
-            \item David Alexandre Sousa Gomes Albuquerque
-            \begin{itemize}
-                \item Number: 43566
-                \item Phone: +351 968 702 017
-                \item Email: A43566@alunos.isel.pt
-            \end{itemize}
-        \end{itemize}
-    \end{itemize}
-    \begin{itemize}
-            \item Tutor:
-            \begin{itemize}
-                \item Fernando Miguel Gamboa de Carvalho
-                \begin{itemize}
-                    \item Email: mcarvalho@cc.isel.pt
-                \end{itemize}
-            \end{itemize}
-        \end{itemize}
+    \newpage
+    \thispagestyle{empty}
 
-\section{Introduction}
+    \cleardoublepage
+    \setcounter{page}{1}
+    % --- Signature page start ---
+    \begin{center}
+        \LARGE Instituto Superior de Engenharia de Lisboa
+        \vspace{30mm}
+        \hrule
+        \vspace{5mm}
+        \Huge Nutr.io - Multi-platform application for diabetics' nutritional choices\\
+        \vspace{5mm}
+        \hrule
+        \vspace{20mm}
+        \large
+        42206 - Pedro Miguel Sequeira Pires\\
+        \vspace{10mm}
+        Signature:\hspace{5mm} \makebox[70mm]{\hrulefill}\\
+        \vspace{15mm}
+        43504 - Miguel Filipe Paiva Luís\\
+        \vspace{10mm}
+        Signature:\hspace{5mm} \makebox[70mm]{\hrulefill}\\
+        \vspace{15mm}
+        43566 - David Alexandre Sousa Gomes Albuquerque\\
+        \vspace{10mm}
+        Signature:\hspace{5mm} \makebox[70mm]{\hrulefill}\\
+        \vspace{25mm}
 
-This document is intended to give an update of this project's progress, until this date. 
-Its main goal is to report that the project is progressing according to the
-initial plan, previously stated in the project's proposal.\\
+        Tutor: Fernando Miguel Gamboa de Carvalho\\
+        \vspace{10mm}
+        Signature:\hspace{5mm} \makebox[70mm]{\hrulefill}\\
+        \vspace{15mm}
+    \end{center}
+    % --- Signature page end ---
 
-The report will also state the issues encountered during this time period, mentioning the 
-decisions the group chose to solve them. This will also include changes in the accorded
-initial plan, that the group found relevant for the project's progress efficiency.\\
+    % Abstract
+    \cleardoublepage
+    \input{abstract/abstract_chapter.tex}
 
-The diagrams and schemas developed for this project are disposed in the report's appendix,
-having references pointing to them when approaching a related topic.
+    \cleardoublepage
+    \tableofcontents\cleardoublepage
 
-\section{Project's Roadmap}
+    \setcounter{page}{1}
+    \pagenumbering{arabic}
 
-According to the proposed plan, the group managed to fullfill almost all the objectives
-that were planned to be accomplished by this time - a relational database, a working HTTP server
-and a prototype Android aplication that can make requests to the previously stated server and 
-use its information to display lists and detailed views.
+    % Introduction
+    \input{introduction/introduction_chapter.tex}
+    
+    % Development
+    \input{development/development_chapter.tex}
 
-\section{Issues encountered and project's updates}
+    % Results and Conclusion
+    \input{results/results_chapter.tex}
 
-\section{Results}
-
-\section{Appendix}
+    % Appendix
+    \input{appendix/appendix_chapter.tex}
 
 \end{document}
