@@ -2,26 +2,33 @@ package pt.isel.ps.g06.httpserver.controller
 
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
+import pt.isel.ps.g06.httpserver.common.MEAL
+import pt.isel.ps.g06.httpserver.common.MEAL_ID_VALUE
+import pt.isel.ps.g06.httpserver.common.MEAL_VOTE
 
+@Suppress("MVCPathVariableInspection")
 @RestController
-@RequestMapping("/meal")
+@RequestMapping(
+        produces = [MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_PROBLEM_JSON_VALUE],
+        consumes = [MediaType.APPLICATION_JSON_VALUE]
+)
 class MealController {
 
-    @GetMapping("/{mealId}", produces = [MediaType.APPLICATION_JSON_VALUE])
-    fun getMealInformation(@PathVariable mealId: String) = ""
+    @GetMapping(MEAL)
+    fun getMealInformation(@PathVariable(MEAL_ID_VALUE) mealId: String) = ""
 
-    @PostMapping("/{mealId}", consumes = [MediaType.APPLICATION_JSON_VALUE])
-    fun postMeal(@PathVariable mealId: String) = ""
+    @PostMapping(MEAL)
+    fun postMeal(@PathVariable(MEAL_ID_VALUE) mealId: String) = ""
 
-    @DeleteMapping("/{mealId}", consumes = [MediaType.APPLICATION_JSON_VALUE])
-    fun deleteMeal(@PathVariable mealId: String) = ""
+    @DeleteMapping(MEAL)
+    fun deleteMeal(@PathVariable(MEAL_ID_VALUE) mealId: String) = ""
 
-    @PostMapping("/{mealId}/vote", consumes = [MediaType.APPLICATION_JSON_VALUE])
-    fun addMealVote(@PathVariable mealId: String, @RequestBody vote: String) = ""
+    @PostMapping(MEAL_VOTE)
+    fun addMealVote(@PathVariable(MEAL_ID_VALUE) mealId: String, @RequestBody vote: String) = ""
 
-    @PutMapping("/{mealId}/vote", consumes = [MediaType.APPLICATION_JSON_VALUE])
-    fun updateMealVote(@PathVariable mealId: String, @RequestBody vote: String) = ""
+    @PutMapping(MEAL_VOTE)
+    fun updateMealVote(@PathVariable(MEAL_ID_VALUE) mealId: String, @RequestBody vote: String) = ""
 
-    @DeleteMapping("/{mealId}/vote", consumes = [MediaType.APPLICATION_JSON_VALUE])
-    fun deleteMealVote(@PathVariable mealId: String, vote: String) = ""
+    @DeleteMapping(MEAL_VOTE)
+    fun deleteMealVote(@PathVariable(MEAL_ID_VALUE) mealId: String, vote: String) = ""
 }
