@@ -21,7 +21,7 @@ interface ApiDao {
     @SqlQuery("SELECT * FROM $table WHERE $id = :submitterId")
     fun getById(@Bind submitterId: Int): ApiDto?
 
-    @SqlQuery("SELECT $submitterTable.$submitterId, $submitterTable.$apiToken" +
+    @SqlQuery("SELECT $submitterTable.$submitterId, $table.$apiToken" +
             " FROM $submitterTable" +
             " INNER JOIN $table" +
             " ON $submitterTable.$submitterId = $table.$id" +
