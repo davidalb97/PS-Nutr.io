@@ -75,8 +75,8 @@
 
         \item \textbf{SubmissionSubmitter}
         \begin{itemize}
-            \item Attributes: \underline{\textit{submissionId}}, \textit{submitterId}
-            \item Primary Key(s): \underline{\textit{submissionId}}
+            \item Attributes: \underline{\textit{submissionId}}, \underline{\textit{submitterId}}, submissionDate
+            \item Primary Key(s): \underline{\textit{submissionId}}, \underline{\textit{submitterId}}
             \item Foreign Key(s): 
             \begin{itemize}
                 \item \underline{\textit{submissionId}} references Submission(submissionId)
@@ -85,19 +85,34 @@
             \item Not null: \textit{submitterId}
         \end{itemize}
 
+        \item \textbf{SubmissionContract}
+        \begin{itemize}
+            \item Attributes: \underline{submissionId}, \underline{submissionContract}
+            \item Primary Key(s): \underline{submissionId}, \underline{submissionContract}
+        \end{itemize}
+
         \item \textbf{Report}
         \begin{itemize}
-            \item Attributes: \underline{reportSubmissionId}, \underline{\textit{submissionId}}, description
-            \item Primary Key(s): \underline{reportId}, \underline{\textit{submissionId}}
-            \item Foreign Key(s): \underline{\textit{submissionId}} references Submission(submissionId)
+            \item Attributes: \underline{\textit{submitterId}}, \underline{\textit{submissionId}}, description
+            \item Primary Key(s): \underline{\textit{submitterId}}, \underline{\textit{submissionId}}
+            \item Foreign Key(s): 
+            \begin{itemize}
+                \item \underline{\textit{submissionId}} references Submission(submissionId)
+                \item \underline{\textit{submitterId}} references Submitter(submitterId)
+            \end{itemize}
             \item Not null: description
         \end{itemize}
 
-        \item \textbf{Votable}
+        \item \textbf{Vote}
         \begin{itemize}
-            \item Attributes: \underline{voteSubmitterId}, \underline{\textit{submissionId}}, vote
-            \item Primary Key(s): \underline{voteSubmitterId}, \underline{\textit{submissionId}}
-            \item Foreign Key(s): \underline{\textit{submissionId}} references Submission(submissionId)          
+            \item Attributes: \underline{\textit{submissionId}}, \underline{\textit{voteSubmitterId}}, vote
+            \item Primary Key(s): \underline{\textit{voteSubmitterId}}, \underline{\textit{submissionId}}
+            \item Foreign Key(s): 
+                \begin{itemize}
+                    \item \underline{\textit{submissionId}} references Submission(submissionId)
+                    \item \underline{\textit{voteSubmitterId}} references Submitter(submitterId)
+                \end{itemize}
+            \item Not null: vote
         \end{itemize}
 
         \item \textbf{Restaurant}
@@ -105,7 +120,7 @@
             \item Attributes: \underline{\textit{submissionId}}, restaurantName, latitude, longitude
             \item Primary Key(s): \underline{\textit{submissionId}}
             \item Foreign Key(s): \underline{\textit{submissionId}} references Submission(submissionId)
-            \item Not null: restaurantName, latitude, longitude
+            \item Not null: restaurantName
         \end{itemize}
     
         \item \textbf{Cuisine}
@@ -138,6 +153,17 @@
             \item Not null: ingredientName
         \end{itemize}
 
+        \item \textbf{MealIngredient}
+        \begin{itemize}
+            \item Attributes: \underline{\textit{mealSubmissionId}}, \underline{\textit{ingredientSubmissionId}}
+            \item Primary Key(s): \underline{\textit{mealSubmissionId}}, \underline{\textit{ingredientSubmissionId}}
+            \item Foreign Key(s): 
+                \begin{itemize}
+                    \item \underline{\textit{mealSubmissionId}} references Meal(submissionId)
+                    \item \underline{\textit{ingredientSubmissionId}} references Ingredient(submissionId)
+                \end{itemize}   
+        \end{itemize}
+
         \item \textbf{RestaurantMealPortion}
         \begin{itemize}
             \item Attributes: \underline{\textit{mealSubmissionId}}, \underline{\textit{portionSubmissionId}}, \textit{restaurantSubmissionId}
@@ -150,6 +176,26 @@
             \end{itemize}            
         \end{itemize}
 
+        \item \textbf{RestaurantCuisine}
+        \begin{itemize}
+            \item Attributes: \underline{\textit{restaurantSubmissionId}}, \underline{\textit{cuisineName}}
+            \item Primary Key(s): \underline{\textit{restaurantSubmissionId}}, \underline{\textit{cuisineName}}
+            \item Foreign Key(s): 
+                \begin{itemize}
+                    \item \underline{\textit{restaurantSubmissionId}} references Restaurant(submissionId)
+                    \item \underline{\textit{cuisineName}} references Cuisine(cuisineName)
+                \end{itemize}   
+        \end{itemize}
+
+        \item \textbf{MealCuisine}
+        \begin{itemize}
+            \item Attributes: \underline{\textit{mealSubmissionId}}, \underline{\textit{cuisineName}}
+            \item Primary Key(s): \underline{\textit{mealSubmissionId}}, \underline{\textit{cuisineName}}
+            \item Foreign Key(s): 
+                \begin{itemize}
+                    \item \underline{\textit{mealSubmissionId}} references Meal(submissionId)
+                    \item \underline{\textit{cuisineName}} references Cuisine(cuisineName)
+                \end{itemize}   
+        \end{itemize}
     \end{itemize}
-    
 \end{document}
