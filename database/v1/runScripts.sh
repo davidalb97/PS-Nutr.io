@@ -16,7 +16,7 @@ for FILE in `ls -1 -d *.sql **/*.sql`
 do
   cat $FILE >> ./compactedfiles.out
 done
-read -n1 -r -p 'Press any key to exit...' key
+
 #-1 transaction execution
 #-q quiet mode
 #-f script file to execute
