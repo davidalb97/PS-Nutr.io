@@ -4,6 +4,7 @@ import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.customizer.BindBeanList
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.IngredientDto
+import pt.isel.ps.g06.httpserver.dataAccess.model.Ingredient
 
 private const val table = "Ingredient"
 private const val name = "ingredient_name"
@@ -21,7 +22,7 @@ interface IngredientDao {
     @SqlQuery("SELECT * FROM $table")
     fun getAll(): List<IngredientDto>
 
-    @SqlQuery("SELECT $AS_table.$AS_apiId" +
+    @SqlQuery("SELECT $AS_table.$AS_submissionId" +
             " FROM $table" +
             " INNER JOIN $SS_table" +
             " ON $SS_table.$SS_submissionId = $table.$id" +
@@ -29,7 +30,7 @@ interface IngredientDao {
             " ON $AS_table.$AS_submissionId = $table.$id" +
             " WHERE $SS_table.$SS_submitterId = :submitterId"
     )
-    fun getAllApiIdsBySubmitterId(submitterId: Int): List<Int>
+    fun getAllSubmissionIdsBySubmitterId(submitterId: Int): List<Ingredient>
 
     @SqlQuery("SELECT * FROM $table WHERE $name = :ingredientName")
     fun getByName(@Bind ingredientName: String): IngredientDto?

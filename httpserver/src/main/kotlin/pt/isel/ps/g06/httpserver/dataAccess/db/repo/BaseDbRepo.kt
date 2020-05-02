@@ -122,7 +122,7 @@ class BaseDbRepo constructor(
     internal fun isFromApi(submissionId: Int, defaultIsolation: TransactionIsolationLevel = SERIALIZABLE): Boolean {
         return jdbi.inTransaction<Boolean, Exception>(defaultIsolation) {
             return@inTransaction it.attach(ApiSubmissionDao::class.java)
-                    .getById(submissionId) != null
+                    .getBySubmissionId(submissionId) != null
         }
     }
 

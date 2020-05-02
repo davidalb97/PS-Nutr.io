@@ -5,7 +5,9 @@ import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.transaction.TransactionIsolationLevel
 import org.springframework.stereotype.Repository
 import pt.isel.ps.g06.httpserver.dataAccess.api.food.FoodApiType
+import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionContractType
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionContractType.*
+import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType.INGREDIENT
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType.MEAL
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.*
@@ -155,21 +157,27 @@ class MealDbRepository(jdbi: Jdbi) : BaseDbRepo(jdbi) {
     }
 
     private fun insertMealIngredients(handle: Handle, mealSubmissionId: Int, apiSubmitterId: Int, ingredients: List<Ingredient>) {
-        //Get all API ids from
-        val insertedApiIngredientIds = handle.attach(IngredientDao::class.java)
-                .getAllApiIdsBySubmitterId(apiSubmitterId)
-                .toMutableList()
+
+        //Get already inserted ingredient dtos
+        val ingredientApiIds = ingredients.map { it.apiId }
+        val insertedApiIngredientDtos = handle.attach(ApiSubmissionDao::class.java)
+                // Api ingredient api dtos already present on this meal
+                .getAllBySubmitterIdTypeAndApiIds(apiSubmitterId, INGREDIENT.toString(),ingredientApiIds)
 
         //Get ingredient API ids from missing ingredient insertions
+        val insertedIngredientApiIds = insertedApiIngredientDtos
+                .map { it.apiId }
         val missingIngredients = ingredients
-                .filter { !insertedApiIngredientIds.contains(it.apiId) }
+                .filter { !insertedIngredientApiIds.contains(it.apiId) }
 
+        val insertedIngredientIds = insertedApiIngredientDtos.map { it.submission_id }
+                .toMutableList()
         if(missingIngredients.isNotEmpty()) {
             //Insert all new submissions
             val insertedIngredientSubmissionIds = insertAllIngredientSubmissionsAndGet(handle, missingIngredients.size)
 
             //Update inserted ingredient submission ids
-            insertedApiIngredientIds.addAll(insertedIngredientSubmissionIds)
+            insertedIngredientIds.addAll(insertedIngredientSubmissionIds)
 
             //Insert all Submission - Submitter associations
             insertAllIngredientSubmissionSubmitter(handle, insertedIngredientSubmissionIds, apiSubmitterId)
@@ -185,7 +193,7 @@ class MealDbRepository(jdbi: Jdbi) : BaseDbRepo(jdbi) {
         }
 
         //Insert all new ingredient - meal associations
-        insertAllMealIngredient(handle, mealSubmissionId, insertedApiIngredientIds)
+        insertAllMealIngredient(handle, mealSubmissionId, insertedIngredientIds)
     }
 
     private fun insertAllIngredientSubmissionsAndGet(handle: Handle, count: Int): List<Int> {
