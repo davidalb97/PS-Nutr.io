@@ -11,6 +11,9 @@ private const val name = "cuisine_name"
 
 interface CuisineDao {
 
+    @SqlQuery("SELECT * FROM $table")
+    fun getAll(): List<CuisineDto>
+
     @SqlQuery("SELECT * FROM $table WHERE $name = :name")
     fun getByName(@Bind name: String): List<CuisineDto>
 
