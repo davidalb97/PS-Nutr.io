@@ -155,33 +155,37 @@ class MealDbRepository(jdbi: Jdbi) : BaseDbRepo(jdbi) {
     }
 
     private fun insertMealIngredients(handle: Handle, mealSubmissionId: Int, apiSubmitterId: Int, ingredients: List<Ingredient>) {
-        val missingIngredients = getMissingIngredients(handle, apiSubmitterId, ingredients)
-
-        val ingredientSubmissionIds = insertAllIngredientSubmissionsAndGet(handle, missingIngredients.size)
-
-        //Insert all Submission - Submitter associations
-        insertAllIngredientSubmissionSubmitter(handle, ingredientSubmissionIds, apiSubmitterId)
-
-        //Insert all SubmissionContracts (API)
-        insertAllIngredientContracts(handle, ingredientSubmissionIds)
-
-        //Insert new ingredients
-        insertAllIngredients(handle, ingredientSubmissionIds, missingIngredients.map { it.name })
-
-        //Insert all new Submission - ApiSubmission associations
-        insertAllIngredientApiSubmission(handle, ingredientSubmissionIds, missingIngredients.map { it.apiId })
-
-        //Insert all new ingredient - meal associations
-        insertAllMealIngredient(handle, mealSubmissionId, ingredientSubmissionIds)
-    }
-
-    private fun getMissingIngredients(handle: Handle, apiSubmitterId: Int, ingredients: List<Ingredient>): List<Ingredient> {
         //Get all API ids from
         val insertedApiIngredientIds = handle.attach(IngredientDao::class.java)
                 .getAllApiIdsBySubmitterId(apiSubmitterId)
+                .toMutableList()
 
         //Get ingredient API ids from missing ingredient insertions
-        return ingredients.filter { !insertedApiIngredientIds.contains(it.apiId) }
+        val missingIngredients = ingredients
+                .filter { !insertedApiIngredientIds.contains(it.apiId) }
+
+        if(missingIngredients.isNotEmpty()) {
+            //Insert all new submissions
+            val insertedIngredientSubmissionIds = insertAllIngredientSubmissionsAndGet(handle, missingIngredients.size)
+
+            //Update inserted ingredient submission ids
+            insertedApiIngredientIds.addAll(insertedIngredientSubmissionIds)
+
+            //Insert all Submission - Submitter associations
+            insertAllIngredientSubmissionSubmitter(handle, insertedIngredientSubmissionIds, apiSubmitterId)
+
+            //Insert all SubmissionContracts (API)
+            insertAllIngredientContracts(handle, insertedIngredientSubmissionIds)
+
+            //Insert new ingredients
+            insertAllIngredients(handle, insertedIngredientSubmissionIds, missingIngredients.map { it.name })
+
+            //Insert all new Submission - ApiSubmission associations
+            insertAllIngredientApiSubmission(handle, insertedIngredientSubmissionIds, missingIngredients.map { it.apiId })
+        }
+
+        //Insert all new ingredient - meal associations
+        insertAllMealIngredient(handle, mealSubmissionId, insertedApiIngredientIds)
     }
 
     private fun insertAllIngredientSubmissionsAndGet(handle: Handle, count: Int): List<Int> {
