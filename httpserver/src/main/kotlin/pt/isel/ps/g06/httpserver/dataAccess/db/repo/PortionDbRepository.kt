@@ -13,7 +13,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.dto.RestaurantMealPortionDto
 private val isolationLevel = TransactionIsolationLevel.SERIALIZABLE
 private val portionDaoClass = PortionDao::class.java
 
-class PortionDbRepository(jdbi: Jdbi) : BaseDbRepo(jdbi, isolationLevel) {
+class PortionDbRepository(jdbi: Jdbi) : BaseDbRepo(jdbi) {
 
     fun getPortionsFromMealId(mealSubmissionId: Int): List<PortionDto> {
         return jdbi.inTransaction<List<PortionDto>, Exception>(isolationLevel) {
@@ -30,10 +30,10 @@ class PortionDbRepository(jdbi: Jdbi) : BaseDbRepo(jdbi, isolationLevel) {
         return jdbi.inTransaction<RestaurantMealPortionDto, Exception>(isolationLevel) {
 
             // Check if the mealId is from a Meal
-            requireSubmission(mealId, MEAL)
+            requireSubmission(mealId, MEAL, isolationLevel)
 
             // Check if the restaurantId is from a Restaurant
-            requireSubmission(restaurantId, RESTAURANT)
+            requireSubmission(restaurantId, RESTAURANT, isolationLevel)
 
             val submissionId = it.attach(SubmissionDao::class.java)
                     .insert(PORTION.name)
@@ -56,10 +56,10 @@ class PortionDbRepository(jdbi: Jdbi) : BaseDbRepo(jdbi, isolationLevel) {
         return jdbi.inTransaction<Unit, Exception>(isolationLevel) {
 
             // Check if the mealId is from a Meal
-            requireSubmission(submissionId, PORTION)
+            requireSubmission(submissionId, PORTION, isolationLevel)
 
             // Check if the submitter is the submission owner
-            requireSubmissionSubmitter(submissionId, submitterId)
+            requireSubmissionSubmitter(submissionId, submitterId, isolationLevel)
 
             it.attach(portionDaoClass).update(submissionId, quantity)
         }
@@ -73,10 +73,10 @@ class PortionDbRepository(jdbi: Jdbi) : BaseDbRepo(jdbi, isolationLevel) {
         return jdbi.inTransaction<Unit, Exception>(isolationLevel) {
 
             // Check if the mealId is from a Meal
-            requireSubmission(submissionId, PORTION)
+            requireSubmission(submissionId, PORTION, isolationLevel)
 
             // Check if the submitter is the submission owner
-            requireSubmissionSubmitter(submissionId, submitterId)
+            requireSubmissionSubmitter(submissionId, submitterId, isolationLevel)
 
             it.attach(portionDaoClass).update(submissionId, quantity)
         }

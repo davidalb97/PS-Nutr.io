@@ -8,7 +8,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.dto.CuisineDto
 private val isolationLevel = TransactionIsolationLevel.SERIALIZABLE
 private val cuisineDaoClass = CuisineDao::class.java
 
-class CuisineDbRepository(jdbi: Jdbi) : BaseDbRepo(jdbi, isolationLevel) {
+class CuisineDbRepository(jdbi: Jdbi) : BaseDbRepo(jdbi) {
 
     fun getByName(name: String): List<CuisineDto> {
         return jdbi.inTransaction<List<CuisineDto>, Exception>(isolationLevel) {

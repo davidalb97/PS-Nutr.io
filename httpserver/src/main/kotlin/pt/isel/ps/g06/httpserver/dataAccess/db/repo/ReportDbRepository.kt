@@ -11,7 +11,7 @@ private val isolationLevel = TransactionIsolationLevel.SERIALIZABLE
 private val reportDaoClass = ReportDao::class.java
 
 @Repository
-class ReportDbRepository(jdbi: Jdbi) : BaseDbRepo(jdbi, isolationLevel) {
+class ReportDbRepository(jdbi: Jdbi) : BaseDbRepo(jdbi) {
 
     fun insert(
             submitterId: Int,
@@ -21,7 +21,7 @@ class ReportDbRepository(jdbi: Jdbi) : BaseDbRepo(jdbi, isolationLevel) {
         return jdbi.inTransaction<ReportDto, Exception>(isolationLevel) {
 
             // Check if the submission exists and it is votable
-            requireContract(submitterId, REPORTABLE)
+            requireContract(submitterId, REPORTABLE, isolationLevel)
 
             return@inTransaction it.attach(reportDaoClass)
                     .insert(submitterId, submission_id, report)

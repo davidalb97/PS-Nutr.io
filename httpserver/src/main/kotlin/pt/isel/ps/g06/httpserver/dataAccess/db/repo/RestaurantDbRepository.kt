@@ -16,7 +16,7 @@ private val isolationLevel = TransactionIsolationLevel.SERIALIZABLE
 private val restaurantDaoClass = RestaurantDao::class.java
 
 @Repository
-class RestaurantDbRepository(jdbi: Jdbi) : BaseDbRepo(jdbi, isolationLevel) {
+class RestaurantDbRepository(jdbi: Jdbi) : BaseDbRepo(jdbi) {
 
     fun getById(id: Int): RestaurantDto? {
         return jdbi.inTransaction<RestaurantDto, Exception>(isolationLevel) {
@@ -76,10 +76,10 @@ class RestaurantDbRepository(jdbi: Jdbi) : BaseDbRepo(jdbi, isolationLevel) {
         return jdbi.inTransaction<Unit, Exception>(isolationLevel) {
 
             // Check if the submitter is the creator of this restaurant
-            requireSubmissionSubmitter(submitterId, submissionId)
+            requireSubmissionSubmitter(submitterId, submissionId, isolationLevel)
 
             // Check if the submission is a Restaurant
-            requireSubmission(submissionId, RESTAURANT)
+            requireSubmission(submissionId, RESTAURANT, isolationLevel)
 
             // Delete portions and meals associated to this restaurant
             it.attach(RestaurantMealPortionDao::class.java).deleteAllByRestaurantId(submissionId)
@@ -121,10 +121,10 @@ class RestaurantDbRepository(jdbi: Jdbi) : BaseDbRepo(jdbi, isolationLevel) {
         return jdbi.inTransaction<Unit, Exception>(isolationLevel) {
 
             // Check if the submitter is the creator of this restaurant
-            requireSubmissionSubmitter(submitterId, submissionId)
+            requireSubmissionSubmitter(submitterId, submissionId, isolationLevel)
 
             // Check if the submission is a Restaurant
-            requireSubmission(submissionId, SubmissionType.MEAL)
+            requireSubmission(submissionId, SubmissionType.MEAL, isolationLevel)
 
             // Update restaurant name
             it.attach(restaurantDaoClass).update(submissionId, name)
