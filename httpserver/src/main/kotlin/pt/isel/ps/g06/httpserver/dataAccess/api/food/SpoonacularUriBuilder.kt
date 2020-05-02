@@ -1,18 +1,42 @@
 package pt.isel.ps.g06.httpserver.dataAccess.api.food
 
-import pt.isel.ps.g06.httpserver.dataAccess.api.AUriBuilder
+import org.springframework.web.util.UriComponentsBuilder
+import java.net.URI
 
-private const val SPOONACULCAR_API_KEY = "9d90d89e9ecc4844a88385816df04fec"
 private const val SPOONACULAR_BASE_URL = "https://api.spoonacular.com/"
-private const val SPOONACULAR_SEARCH_URL = "${SPOONACULAR_BASE_URL}recipes/search?apiKey=$SPOONACULCAR_API_KEY"
+private const val SPOONACULAR_SEARCH_URL = "${SPOONACULAR_BASE_URL}recipes/search"
 private const val SPOONACULAR_INGREDIENT_INFO_URL = "${SPOONACULAR_BASE_URL}food/ingredients/"
-private const val SPOONACULAR_GROCERY_PRODUCTS_URL = "${SPOONACULAR_BASE_URL}food/products/search?apiKey=$SPOONACULCAR_API_KEY"
-private const val SPOONACULAR_INGREDIENT_SEARCH_AUTO_COMPL_URL = "${SPOONACULAR_BASE_URL}food/ingredients/autocomplete?apiKey=$SPOONACULCAR_API_KEY"
-private const val SPOONACULAR_PRODUCT_SEARCH_AUTO_COMPL_URL = "${SPOONACULAR_BASE_URL}food/products/suggest?apiKey=$SPOONACULCAR_API_KEY"
+private const val SPOONACULAR_GROCERY_PRODUCTS_URL = "${SPOONACULAR_BASE_URL}food/products/search"
+private const val SPOONACULAR_INGREDIENT_SEARCH_AUTO_COMPL_URL = "${SPOONACULAR_BASE_URL}food/ingredients/autocomplete"
+private const val SPOONACULAR_PRODUCT_SEARCH_AUTO_COMPL_URL = "${SPOONACULAR_BASE_URL}food/products/suggest"
 private const val SPOONACULAR_RECIPE_INGREDIENTS_URL = "${SPOONACULAR_BASE_URL}recipes/"
 
-class SpoonacularUriBuilder : AUriBuilder() {
+private const val SPOONACULAR_API_KEY = "9d90d89e9ecc4844a88385816df04fec"
 
+//Set of query params
+private const val API_KEY = "apiKey"
+private const val QUERY = "query"
+private const val MIN_CAL = "minCalories"
+private const val MAX_CAL = "maxCalories"
+private const val MIN_CARB = "minCarbs"
+private const val MAX_CARB = "maxCarbs"
+private const val MIN_PROTEIN = "minProtein"
+private const val MAX_PROTEIN = "maxProtein"
+private const val MIN_FAT = "minFat"
+private const val MAX_FAT = "maxFat"
+private const val OFFSET = "offset"
+private const val NUMBER = "number"
+private const val CUISINE = "cuisine"
+private const val DIET = "diet"
+private const val LIMIT_LICENSE = "limitLicense"
+private const val INSTRUCTIONS_REQUIRED = "instructionsRequired"
+private const val EXCLUDE_INGREDIENTS = "excludeIngredients"
+private const val INTOLERANCES = "intolerances"
+private const val META_INFO = "metaInformation"
+private const val AMOUNT = "amount"
+private const val UNIT = "unit"
+
+class SpoonacularUriBuilder {
     //-------------------------------Products------------------------------------
 
     /**
@@ -30,40 +54,48 @@ class SpoonacularUriBuilder : AUriBuilder() {
             maxFat: Int? = null,
             offset: Int? = null,
             number: Int? = null
-    ): String {
-        return SPOONACULAR_GROCERY_PRODUCTS_URL +
-                param("query", query) +
-                param("minCalories", minCalories) +
-                param("maxCalories", maxCalories) +
-                param("minCarbs", minCarbs) +
-                param("maxCarbs", maxCarbs) +
-                param("minProtein", minProtein) +
-                param("maxProtein", maxProtein) +
-                param("minFat", minFat) +
-                param("maxFat", maxFat) +
-                param("offset", offset) +
-                param("number", number)
+    ): URI {
+        return UriComponentsBuilder
+                .fromPath(SPOONACULAR_GROCERY_PRODUCTS_URL)
+                .queryParam(QUERY, query)
+                .queryParam(MIN_CAL, minCalories)
+                .queryParam(MAX_CAL, maxCalories)
+                .queryParam(MIN_CARB, minCarbs)
+                .queryParam(MAX_CARB, maxCarbs)
+                .queryParam(MIN_PROTEIN, minProtein)
+                .queryParam(MAX_PROTEIN, maxProtein)
+                .queryParam(MIN_FAT, minFat)
+                .queryParam(MAX_FAT, maxFat)
+                .queryParam(OFFSET, offset)
+                .queryParam(NUMBER, number)
+                .build()
+                .toUri()
     }
 
     /**
-     * https://spoonacular.com/food-api/docs#Autocomplete-Product-Search
+     * From Spoonacular [documentation.](https://spoonacular.com/food-api/docs#Autocomplete-Product-Search)
      */
-    fun productSearchAutocompleteUri(query: String, number: Int? = null): String =
-            SPOONACULAR_PRODUCT_SEARCH_AUTO_COMPL_URL +
-                    param("query", query) +
-                    param("number", number)
+    fun productSearchAutocompleteUri(query: String, number: Int? = null): URI {
+        return baseUri(SPOONACULAR_PRODUCT_SEARCH_AUTO_COMPL_URL)
+                .queryParam(QUERY, query)
+                .queryParam(NUMBER, number)
+                .build()
+                .toUri()
+    }
 
 //-------------------------------Recipes------------------------------------
 
     /**
-     * https://spoonacular.com/food-api/docs#Get-Recipe-Ingredients-by-ID
+     * From Spoonacular [documentation.](https://spoonacular.com/food-api/docs#Get-Recipe-Ingredients-by-ID)
      */
-    fun recipeIngredientsUri(recipeId: String): String =
-            "${SPOONACULAR_RECIPE_INGREDIENTS_URL}$recipeId/ingredientWidget.json?" +
-                    param("apiKey", SPOONACULCAR_API_KEY)
+    fun recipeIngredientsUri(recipeId: String): URI {
+        return baseUri("${SPOONACULAR_RECIPE_INGREDIENTS_URL}$recipeId/ingredientWidget.json")
+                .build()
+                .toUri()
+    }
 
     /**
-     * https://spoonacular.com/food-api/docs#Search-Recipes
+     * From Spoonacular [documentation.](https://spoonacular.com/food-api/docs#Search-Recipes)
      */
     fun recipesSearchUri(
             recipeName: String,
@@ -75,46 +107,58 @@ class SpoonacularUriBuilder : AUriBuilder() {
             number: Int? = null,
             limitLicense: Boolean? = null,
             instructionsRequired: Boolean? = null
-    ): String {
-        return SPOONACULAR_SEARCH_URL +
-                param("query", recipeName) +
-                param("cuisine", cuisines) +
-                param("diet", diet) +
-                param("offset", offset) +
-                param("number", number) +
-                param("limitLicense", limitLicense) +
-                param("instructionsRequired", instructionsRequired) +
-                param("excludeIngredients", excludeIngredients) +
-                param("intolerances", intolerances)
+    ): URI {
+        return baseUri(SPOONACULAR_SEARCH_URL)
+                .queryParam(QUERY, recipeName)
+                .queryParam(CUISINE, cuisines)
+                .queryParam(DIET, diet)
+                .queryParam(OFFSET, offset)
+                .queryParam(NUMBER, number)
+                .queryParam(LIMIT_LICENSE, limitLicense)
+                .queryParam(INSTRUCTIONS_REQUIRED, instructionsRequired)
+                .queryParam(EXCLUDE_INGREDIENTS, excludeIngredients)
+                .queryParam(INTOLERANCES, intolerances)
+                .build()
+                .toUri()
     }
 
 //----------------------------Ingredients----------------------------------
 
     /**
-     * https://spoonacular.com/food-api/docs#Autocomplete-Ingredient-Search
+     * From Spoonacular [documentation.](https://spoonacular.com/food-api/docs#Autocomplete-Ingredient-Search)
      */
     fun ingredientSearchAutocompleteUri(
             query: String,
             number: Int? = null,
             metaInformation: Boolean? = null,
             intolerances: Array<String>? = null
-    ): String {
-        return SPOONACULAR_INGREDIENT_SEARCH_AUTO_COMPL_URL +
-                param("query", query) +
-                param("number", number) +
-                param("metaInformation", metaInformation) +
-                param("intolerances", intolerances)
+    ): URI {
+        return baseUri(SPOONACULAR_INGREDIENT_SEARCH_AUTO_COMPL_URL)
+                .queryParam(QUERY, query)
+                .queryParam(NUMBER, number)
+                .queryParam(META_INFO, metaInformation)
+                .queryParam(INTOLERANCES, intolerances)
+                .build()
+                .toUri()
     }
 
     /**
-     * https://spoonacular.com/food-api/docs#Get-Ingredient-Information
+     * From Spoonacular [documentation.]( https://spoonacular.com/food-api/docs#Get-Ingredient-Information)
      */
-    fun ingredientInfoUri(id: Int, amount: Int?, unit: SpoonacularUnitTypes): String {
-        val hasParams = amount != null || unit != null
-        return "$SPOONACULAR_INGREDIENT_INFO_URL$id/information?" +
-                param("apiKey", SPOONACULCAR_API_KEY) +
-                param("amount", amount) +
-                param("unit", unit)
+    fun ingredientInfoUri(id: Int, amount: Int?, unit: SpoonacularUnitTypes): URI {
+        return baseUri("$SPOONACULAR_INGREDIENT_INFO_URL$id/information")
+                .queryParam(AMOUNT, amount)
+                .queryParam(UNIT, unit)
+                .build()
+                .toUri()
+    }
+
+    /**
+     * Convinience function that builds a basic [UriComponentsBuilder] with [SPOONACULAR_API_KEY] already inserted as
+     * a query parameter, since all requests require it.
+     */
+    private fun baseUri(path: String): UriComponentsBuilder {
+        return UriComponentsBuilder.fromPath(path).queryParam(API_KEY, SPOONACULAR_API_KEY)
     }
 }
 
