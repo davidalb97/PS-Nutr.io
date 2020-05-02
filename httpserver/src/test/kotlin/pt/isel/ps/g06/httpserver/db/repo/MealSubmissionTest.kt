@@ -6,8 +6,11 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import pt.isel.ps.g06.httpserver.dataAccess.api.food.FoodApiType
+import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionContractType.REPORTABLE
+import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionContractType.VOTABLE
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.ApiSubmissionDao
+import pt.isel.ps.g06.httpserver.dataAccess.db.dao.SubmissionContractDao
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.SubmissionDao
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.SubmissionSubmitterDao
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.MealDbRepository
@@ -56,8 +59,7 @@ class MealSubmissionTest {
 
             //Assert number of Submission insertions
             val oldSubssionCount = const.insertedSubmissions.count()
-            val submissionsCount = it.attach(SubmissionDao::class.java)
-                    .getAll().count()
+            val submissionsCount = it.attach(SubmissionDao::class.java).getAll().count()
             Assertions.assertEquals(oldSubssionCount + 1, submissionsCount)
 
             //Assert SubmissionSubmitter
@@ -73,6 +75,10 @@ class MealSubmissionTest {
             )
 
 
+            Assertions.assertEquals(listOf(VOTABLE, REPORTABLE),
+                    it.attach(SubmissionContractDao::class.java)
+                            .getAllById(submissionDto.submission_id)
+            )
         }
     }
 

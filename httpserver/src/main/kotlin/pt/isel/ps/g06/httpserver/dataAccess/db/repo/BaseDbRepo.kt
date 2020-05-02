@@ -111,8 +111,8 @@ class BaseDbRepo constructor(
 
             // Check if submission is implementing the IS-A contract
             it.attach(SubmissionContractDao::class.java)
-                    .getById(submissionId)
-                    ?.let { if (it.submission_contract != contract.toString()) null else it }
+                    .getAllById(submissionId)
+                    .let { if (it.none {it.submission_contract == contract.toString()}) null else it }
                     ?: throw InvalidInputException(InvalidInputDomain.CONTRACT,
                             "The submission id \"$submissionId\" is not a \"$contract\"."
                     )

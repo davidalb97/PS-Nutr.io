@@ -16,7 +16,7 @@ interface SubmissionContractDao {
     fun getAll(): List<SubmissionContractDto>
 
     @SqlQuery("SELECT * FROM $table WHERE $id = :submissionId")
-    fun getById(submissionId: Int): SubmissionContractDto?
+    fun getAllById(submissionId: Int): List<SubmissionContractDto>
 
     @SqlQuery("INSERT INTO $table($id, $contract) " +
             "VALUES(:submissionId, :contract) RETURNING *")
