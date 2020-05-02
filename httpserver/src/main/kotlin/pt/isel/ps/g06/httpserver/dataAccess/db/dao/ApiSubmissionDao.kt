@@ -34,7 +34,7 @@ interface ApiSubmissionDao {
             " ON $table.$submissionId = $S_table.$S_submissionId" +
             " WHERE $SS_table.$SS_submitterId = :submitterId" +
             " AND $S_table.$S_type = :submissionType" +
-            " AND $table.$apiId in <values>"
+            " AND $table.$apiId in (<values>)"
     )
     fun getAllBySubmitterIdTypeAndApiIds(
             @Bind submitterId: Int,
