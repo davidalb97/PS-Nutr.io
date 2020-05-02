@@ -4,14 +4,19 @@ import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import pt.isel.ps.g06.httpserver.dataAccess.api.food.*
-import pt.isel.ps.g06.httpserver.dataAccess.api.food.dto.*
-import java.util.concurrent.CompletableFuture
+import pt.isel.ps.g06.httpserver.dataAccess.api.food.SpoonacularCuisine
+import pt.isel.ps.g06.httpserver.dataAccess.api.food.SpoonacularDiet
+import pt.isel.ps.g06.httpserver.dataAccess.api.food.SpoonacularUnitTypes
+import pt.isel.ps.g06.httpserver.dataAccess.api.food.dto.IngredientInfoDto
+import pt.isel.ps.g06.httpserver.dataAccess.api.food.dto.ProductSearchContainerDto
+import pt.isel.ps.g06.httpserver.dataAccess.api.food.dto.RecipeDto
+import pt.isel.ps.g06.httpserver.dataAccess.api.food.dto.RecipeIngredientsDto
+import pt.isel.ps.g06.httpserver.dataAccess.api.food.mapper.FoodApiMapper
+import pt.isel.ps.g06.httpserver.dataAccess.api.food.model.FoodApiType
 
 @RestController
 @RequestMapping("/spoonacular")
-class FoodController(private final val foodApiRepo: FoodApiRepository) {
-
+class FoodController(foodApiRepo: FoodApiMapper) {
     val spoonacularFoodApi = foodApiRepo.getFoodApi(FoodApiType.Spoonacular)
 
     @GetMapping("/product", produces = [MediaType.APPLICATION_JSON_VALUE])
@@ -30,25 +35,24 @@ class FoodController(private final val foodApiRepo: FoodApiRepository) {
             skip: Int?,
             count: Int?
     ): ProductSearchContainerDto? {
-        return spoonacularFoodApi
-                .productsSearch(
-                        query,
-                        minCalories,
-                        maxCalories,
-                        minCarbs,
-                        maxCarbs,
-                        minProtein,
-                        maxProtein,
-                        minFat,
-                        maxFat,
-                        offset,
-                        number
-                ).get()
+        return spoonacularFoodApi.productsSearch(
+                query,
+                minCalories,
+                maxCalories,
+                minCarbs,
+                maxCarbs,
+                minProtein,
+                maxProtein,
+                minFat,
+                maxFat,
+                offset,
+                number
+        )
     }
 
     @GetMapping("/recipeIngredient", produces = [MediaType.APPLICATION_JSON_VALUE])
     fun recipeIngredient(recipeId: String): RecipeIngredientsDto {
-        return spoonacularFoodApi.recipeIngredients(recipeId).get()
+        return spoonacularFoodApi.recipeIngredients(recipeId)
     }
 
     @GetMapping("/recipes", produces = [MediaType.APPLICATION_JSON_VALUE])
@@ -64,18 +68,17 @@ class FoodController(private final val foodApiRepo: FoodApiRepository) {
                       skip: Int?,
                       count: Int?
     ): List<RecipeDto> {
-        return spoonacularFoodApi
-                .searchRecipes(
-                        recipeName,
-                        cuisines,
-                        diet,
-                        excludeIngredients,
-                        intolerances,
-                        offset,
-                        number,
-                        limitLicense,
-                        instructionsRequired
-                ).get()
+        return spoonacularFoodApi.searchRecipes(
+                recipeName,
+                cuisines,
+                diet,
+                excludeIngredients,
+                intolerances,
+                offset,
+                number,
+                limitLicense,
+                instructionsRequired
+        )
     }
 
     /*fun ingredientSearchAutocomplete(
@@ -101,8 +104,6 @@ class FoodController(private final val foodApiRepo: FoodApiRepository) {
             skip: Int?,
             count: Int?
     ): IngredientInfoDto? {
-        return spoonacularFoodApi
-                .ingredientInformation(id, amount, unit)
-                .get()
+        return spoonacularFoodApi.ingredientInformation(id, amount, unit)
     }
 }

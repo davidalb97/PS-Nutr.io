@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
 import org.springframework.web.server.ResponseStatusException
 import pt.isel.ps.g06.httpserver.common.exception.RestaurantNotFoundException
-import pt.isel.ps.g06.httpserver.dataAccess.api.ApiResponseMapper
+import pt.isel.ps.g06.httpserver.dataAccess.api.common.ApiResponseMapper
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.dto.ZomatoErrorDto
 
 @Component

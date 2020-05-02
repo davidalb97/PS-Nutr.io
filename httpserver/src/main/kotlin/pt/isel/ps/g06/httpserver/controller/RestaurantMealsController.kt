@@ -3,7 +3,7 @@ package pt.isel.ps.g06.httpserver.controller
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
 import pt.isel.ps.g06.httpserver.common.*
-import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.RestaurantApiMapper
+import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.mapper.RestaurantApiMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.DbRestaurantRepository
 
 @Suppress("MVCPathVariableInspection")

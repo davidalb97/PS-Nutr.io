@@ -1,8 +1,8 @@
 package pt.isel.ps.g06.httpserver.service
 
 import org.springframework.stereotype.Service
-import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.RestaurantApiMapper
-import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.RestaurantApiType
+import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.mapper.RestaurantApiMapper
+import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.model.RestaurantApiType
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.DbRestaurantRepository
 import pt.isel.ps.g06.httpserver.dataAccess.model.RestaurantDto
 import pt.isel.ps.g06.httpserver.model.Restaurant

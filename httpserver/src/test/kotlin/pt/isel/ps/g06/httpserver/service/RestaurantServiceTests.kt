@@ -4,9 +4,9 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.*
 import org.springframework.util.Assert
-import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.RestaurantApiMapper
-import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.RestaurantApiType
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.ZomatoRestaurantApi
+import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.mapper.RestaurantApiMapper
+import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.model.RestaurantApiType
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.DbRestaurantRepository
 
 class RestaurantServiceTests {

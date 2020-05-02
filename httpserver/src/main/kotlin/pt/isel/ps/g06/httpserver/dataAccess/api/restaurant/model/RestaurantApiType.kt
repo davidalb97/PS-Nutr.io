@@ -1,4 +1,4 @@
-package pt.isel.ps.g06.httpserver.dataAccess.api.restaurant
+package pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.model
 
 enum class RestaurantApiType {
     Zomato;

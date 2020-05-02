@@ -1,6 +1,10 @@
-package pt.isel.ps.g06.httpserver.dataAccess.api.food
+package pt.isel.ps.g06.httpserver.dataAccess.api.food.uri
 
+import org.springframework.stereotype.Component
 import org.springframework.web.util.UriComponentsBuilder
+import pt.isel.ps.g06.httpserver.dataAccess.api.food.SpoonacularCuisine
+import pt.isel.ps.g06.httpserver.dataAccess.api.food.SpoonacularDiet
+import pt.isel.ps.g06.httpserver.dataAccess.api.food.SpoonacularUnitTypes
 import java.net.URI
 
 private const val SPOONACULAR_BASE_URL = "https://api.spoonacular.com/"
@@ -36,13 +40,14 @@ private const val META_INFO = "metaInformation"
 private const val AMOUNT = "amount"
 private const val UNIT = "unit"
 
+@Component
 class SpoonacularUriBuilder {
     //-------------------------------Products------------------------------------
 
     /**
      * https://spoonacular.com/food-api/docs#Search-Grocery-Products
      */
-    fun productsSearchUri(
+    fun productsSearch(
             query: String,
             minCalories: Int? = null,
             maxCalories: Int? = null,
@@ -75,7 +80,7 @@ class SpoonacularUriBuilder {
     /**
      * From Spoonacular [documentation.](https://spoonacular.com/food-api/docs#Autocomplete-Product-Search)
      */
-    fun productSearchAutocompleteUri(query: String, number: Int? = null): URI {
+    fun productSearchAutocomplete(query: String, number: Int? = null): URI {
         return baseUri(SPOONACULAR_PRODUCT_SEARCH_AUTO_COMPL_URL)
                 .queryParam(QUERY, query)
                 .queryParam(NUMBER, number)
@@ -88,8 +93,8 @@ class SpoonacularUriBuilder {
     /**
      * From Spoonacular [documentation.](https://spoonacular.com/food-api/docs#Get-Recipe-Ingredients-by-ID)
      */
-    fun recipeIngredientsUri(recipeId: String): URI {
-        return baseUri("${SPOONACULAR_RECIPE_INGREDIENTS_URL}$recipeId/ingredientWidget.json")
+    fun recipeIngredients(recipeId: String): URI {
+        return baseUri("$SPOONACULAR_RECIPE_INGREDIENTS_URL$recipeId/ingredientWidget.json")
                 .build()
                 .toUri()
     }
@@ -97,7 +102,7 @@ class SpoonacularUriBuilder {
     /**
      * From Spoonacular [documentation.](https://spoonacular.com/food-api/docs#Search-Recipes)
      */
-    fun recipesSearchUri(
+    fun recipesSearch(
             recipeName: String,
             cuisines: Array<SpoonacularCuisine>? = null,
             diet: SpoonacularDiet? = null,
@@ -127,7 +132,7 @@ class SpoonacularUriBuilder {
     /**
      * From Spoonacular [documentation.](https://spoonacular.com/food-api/docs#Autocomplete-Ingredient-Search)
      */
-    fun ingredientSearchAutocompleteUri(
+    fun ingredientSearchAutocomplete(
             query: String,
             number: Int? = null,
             metaInformation: Boolean? = null,
@@ -145,7 +150,7 @@ class SpoonacularUriBuilder {
     /**
      * From Spoonacular [documentation.]( https://spoonacular.com/food-api/docs#Get-Ingredient-Information)
      */
-    fun ingredientInfoUri(id: Int, amount: Int?, unit: SpoonacularUnitTypes): URI {
+    fun ingredientInfo(id: Int, amount: Int?, unit: SpoonacularUnitTypes): URI {
         return baseUri("$SPOONACULAR_INGREDIENT_INFO_URL$id/information")
                 .queryParam(AMOUNT, amount)
                 .queryParam(UNIT, unit)

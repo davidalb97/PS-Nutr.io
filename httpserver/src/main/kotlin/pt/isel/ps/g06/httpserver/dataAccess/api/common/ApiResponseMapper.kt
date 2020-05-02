@@ -1,4 +1,4 @@
-package pt.isel.ps.g06.httpserver.dataAccess.api
+package pt.isel.ps.g06.httpserver.dataAccess.api.common
 
 import com.fasterxml.jackson.databind.JsonMappingException
 import com.fasterxml.jackson.databind.ObjectMapper
