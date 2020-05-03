@@ -21,5 +21,5 @@ interface UserDao {
 
     @SqlQuery("INSERT INTO $table($id, $email, $sessionSecret) " +
             "VALUES(:submitter_id, :email, :session_secret) RETURNING *")
-    fun insert(@Bind submitter_id: Int, @Bind email: String): UserDto
+    fun insert(@Bind submitter_id: Int, @Bind email: String, @Bind sessionSecret: String): UserDto
 }
