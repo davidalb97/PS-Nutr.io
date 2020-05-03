@@ -14,10 +14,10 @@ interface MealIngredientDao {
     fun getAll(): List<MealIngredientDto>
 
     @SqlQuery("SELECT * FROM $table WHERE $mealId = :mealId")
-    fun getByMealId(@Bind mealId: Int): MealIngredientDto?
+    fun getByMealId(@Bind mealId: Int): List<MealIngredientDto>
 
     @SqlQuery("SELECT * FROM $table WHERE $ingredientId = :ingredientId")
-    fun getByIngredientId(@Bind ingredientId: Int): MealIngredientDto?
+    fun getByIngredientId(@Bind ingredientId: Int): List<MealIngredientDto>
 
     @SqlQuery("INSERT INTO $table($mealId, $ingredientId)" +
             " VALUES(:mealId, :ingredientId) RETURNING *")
