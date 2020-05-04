@@ -20,7 +20,7 @@ As a result of multiples redesigns, here is the database's final conceptual mode
 \end{figure}
 
 \newpage
-The database's relational model is present inside this report's appendix.\\
+The database's relational model is present inside this report's appendix [\nameref{app:relational_model}].\\
 
 In the relational model there are tables which are not specified in the conceptual model,
 those tables are a product from associations between entities, which will, not only facilitate the access queries' construction,
@@ -41,7 +41,7 @@ This process, which resembles how memory pointers work, provides a high scalabil
 As previously written in this report, the HTTP server was developed in Kotlin and Spring MVC.\\
 
 Before starting the server's development, the group had to first define its endpoints and discuss what the client was allowed to request or receive from each one of them.
-The endpoint table that defines the endpoints and their tasks can be found in the appendix.\\
+The endpoint table that defines them and their respective tasks can be found in the appendix [\nameref{app:endpoints_table}].\\
 
 After defining the endpoints...
 
@@ -72,4 +72,4 @@ So each list that uses a diferent model class, creates its own adapter and viewh
 
 The volley framework was implemented to allow the application to make asynchronous server requests.
 
-As most of the server endpoints send responses in JSON format, the application is using the Jackson library to deserialize and serialize JSON.
+As most of the server endpoints send responses in JSON format, the application is using the Jackson library to deserialize and serialize in this format.
