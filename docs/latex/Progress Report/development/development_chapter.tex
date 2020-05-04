@@ -6,7 +6,7 @@
 	\section{Roadmap}
 
     According to the proposed plan, the group managed to fulfill almost all the objectives
-    that were planned to be accomplished by this time - a relational database, a working HTTP server
+    that were planned to be accomplished until now - a relational database, a working HTTP server
     and a prototype Android aplication that can make requests to the server and 
     use its information to display lists and detailed views.\\
 
@@ -14,54 +14,39 @@
     drawbacks, such as the relational database conception, which had to be redesigned multiple
     times due to the project's requirements.\\
 
-    In this report's appendix there are disposed two project schedules: the initial one [\nameref{app:initial_plan}], also present in the
-    project's proposal, and the actual one [\nameref{app:actual_plan}], which has the actual progress made to this date with the corrects starting
-    and ending dates of each concluded milestone.
+    This report's appendix displays two project schedules: the initial one [\nameref{app:initial_plan}], also present in the
+    project's proposal, and the actual one [\nameref{app:actual_plan}], which was updated to match the 
+    actual progress made until now.
 
 
     \section{Issues encountered and updates}
 
     This section describes the issues found and the decisions made
-    to overcome them, during the first project modules' development.
+    to overcome them during development.
     
     \subsection{Relational database}
 
-    The group had to redesign the database's conceptual model and relational model multiple times.
-    One of the main issues that supported the main redesign was that the database 
-    only supported submissions from the users, while it had to support submissions both from users and APIs.\\
+    The group had to redesign the database's models multiple times.
+    One of the main issues that drove the redesign was the fact that the previous implementation 
+    only supported submissions from users, while it had to support submissions from both users and APIs.\\
 
-    The other redesigns were related to the database normalization: it was normalized until the third normal form 
-    and had to be renormalized one more time because of the mentioned main redesign.\\ 
+    Another issue is that our model offered no support to distinguish between API types and their submission, meaning that,
+    for example, different restaurants from two different APIs (e.g.: Zomato and Yelp) with equal identifiers would generate data collisions.\\
 
-    Because of this, the group invested a considerable amount of time on the database's conception, which was not considered
-    in the initial plan. This invested time ended up colliding partially with other time periods that were
+    It is worth mentioning that with every major addition, the database had to be renormalized, taking a considerable amount of time,
+    which was not taken into account in the initial plan.\\
+
+    As such, this invested time ended up partially colliding with other schedules that were
     reserved for other modules.
 
     \subsection{HTTP server}
 
-    As mentioned in the project's proposal risks, the HTTP server is very similar to the DAW's project, which is an optional
-    course inside the LEIC programme. Thus some improvements were made and errors were fixed because of the lectioned classes 
-    and the first project's delivery in DAW, which helped the group complete the tasks implied by the server's development.\\
+    The group initially struggled to implement the HttpServer as we were utilizing and learning a new framework - Spring MVC, meaning that implementing
+    known patterns in server programing took more time than expected in the according to the initial project plan.\\
 
-    However the server is lacking some functionalities as a result of the time invested in database conception,
-    where the HTTP server depends strongly, causing some drawback to its development.
+    The group also recognizes that some functionalities are lacking as a result of the time invested in the database, namely endpoints that allow for resource creation.
 
-    \subsection{Android application}
+    \section{Roadmap updates}
 
-    As a result of the time invested developing the database and the strong bond between the mobile application and the HTTP server 
-    and its completion, the Android app suffered a slight drawback, where only the essential fragments and requests work.\\
-
-    Althrough it was initially planned that the mobile application was just a prototype by this date, as it is now, the group
-    could not implement more planned features because of the time invested in the other modules.
-
-    \section{Group decisions}
-
-    Given the previous issues, the group has the conditions to comply with the project's initial plan, with some minor changes.\\
-    
-    As stated in the last period of the Android application's subsection, the group strongly agrees that the HTTP server has to be finished
-    as soon as possible, to provide stability to the onward modules and their implementations, being considered a core module in this project.\\
-
-    Subsequently the group will have to invest a few more days in the server's development in order to fulfill the project's requirements.\\
-
-    Alongside with these fulfillments, the group will proceed to add more features to the mobile application, while starting the web application's development,
-    which is compatible with the project's initial plan.
+    Given that the previously mentioned issues are only minor setbacks, the group agrees that every mandatory requirement made in the initial draft can still be implemented,
+    however, the group expresses concerns that optional requirements will have to be reevaluated after the Beta release, if needed.
