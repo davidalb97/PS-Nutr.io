@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 /**
  * A generic View Holder for Recycler Lists
  */
-abstract class AViewHolder<T : Any>(
+abstract class ARecyclerViewHolder<T : Any>(
     val view: ViewGroup
 ) : RecyclerView.ViewHolder(view) {
 

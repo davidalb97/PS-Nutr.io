@@ -9,8 +9,8 @@ import androidx.lifecycle.ViewModel
 /**
  * A generic Adapter for Grid Views
  */
-abstract class AGridAdapter<ViewM : ViewModel>(
-    val viewModel: ViewM,
+abstract class AGridAdapter<ViewModelType : ViewModel>(
+    val viewModel: ViewModelType,
     val ctx: Context
 ) : BaseAdapter() {
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
@@ -28,5 +28,6 @@ abstract class AGridAdapter<ViewM : ViewModel>(
     override fun getCount(): Int {
         TODO("Not yet implemented")
     }
+
 
 }

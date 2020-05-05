@@ -4,6 +4,9 @@ import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
+/**
+ * A listener for Recycler Views' scroll control.
+ */
 abstract class ScrollListener
     (var layoutManager: LinearLayoutManager) : RecyclerView.OnScrollListener() {
 

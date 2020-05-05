@@ -4,7 +4,7 @@ import android.content.Context
 import android.view.ViewGroup
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.source.model.Meal
-import pt.ipl.isel.leic.ps.androidclient.ui.viewholder.MealViewHolder
+import pt.ipl.isel.leic.ps.androidclient.ui.viewholder.MealRecyclerViewHolder
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.MealRecyclerViewModel
 
 
@@ -12,10 +12,10 @@ import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.MealRecyclerViewModel
 class MealRecyclerAdapter(
     model: MealRecyclerViewModel,
     ctx: Context
-) : ARecyclerAdapter<Meal, MealRecyclerViewModel, MealViewHolder>(model, ctx) {
+) : ARecyclerAdapter<Meal, MealRecyclerViewModel, MealRecyclerViewHolder>(model, ctx) {
 
     override fun getItemViewId(): Int = R.layout.restaurant_card
 
-    override fun newViewHolder(layout: ViewGroup): MealViewHolder =
-        MealViewHolder(layout, ctx)
+    override fun newViewHolder(layout: ViewGroup): MealRecyclerViewHolder =
+        MealRecyclerViewHolder(layout, ctx)
 }

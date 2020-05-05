@@ -11,8 +11,8 @@ import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.ARecyclerViewModel
  * Setups a generic RecyclerList
  * (must be called inside the activity / fragment).
  *
- * Its propose is just to avoid big code blocks
- * inside each fragment that use a recycler list.
+ * Its propose is to avoid big code blocks
+ * inside each fragment that uses a recycler list.
  */
 fun <T> configureRecyclerList(
     owner: Fragment,

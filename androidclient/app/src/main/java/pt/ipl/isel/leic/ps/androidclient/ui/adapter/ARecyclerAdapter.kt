@@ -5,19 +5,17 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
-import pt.ipl.isel.leic.ps.androidclient.ui.viewholder.AViewHolder
+import pt.ipl.isel.leic.ps.androidclient.ui.viewholder.ARecyclerViewHolder
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.ARecyclerViewModel
 
 /**
  *  A generic Adapter for Recycler Views.
  */
-abstract class ARecyclerAdapter<T : Any, ViewM : ARecyclerViewModel<T>, ViewH : AViewHolder<T>>(
-    val viewModel: ViewM,
+abstract class ARecyclerAdapter<T : Any, ViewModelType : ARecyclerViewModel<T>, ViewHolderType : ARecyclerViewHolder<T>>(
+    val viewModel: ViewModelType,
     val ctx: Context
-) : RecyclerView.Adapter<ViewH>() {
-
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewH {
+) : RecyclerView.Adapter<ViewHolderType>() {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolderType {
         val view = LayoutInflater.from(parent.context)
             .inflate(getItemViewId(), parent, false) as ViewGroup
         return newViewHolder(view)
@@ -25,11 +23,11 @@ abstract class ARecyclerAdapter<T : Any, ViewM : ARecyclerViewModel<T>, ViewH : 
 
     override fun getItemCount(): Int = viewModel.items.size
 
-    override fun onBindViewHolder(holder: ViewH, position: Int) =
+    override fun onBindViewHolder(holder: ViewHolderType, position: Int) =
         holder.bindTo(viewModel.items[position])
 
     @LayoutRes
     abstract fun getItemViewId(): Int
 
-    abstract fun newViewHolder(layout: ViewGroup): ViewH
+    abstract fun newViewHolder(layout: ViewGroup): ViewHolderType
 }
