@@ -5,18 +5,19 @@ import org.junit.jupiter.api.Assertions
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionContractType
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.*
-import pt.isel.ps.g06.httpserver.dataAccess.db.dto.SubmitterDto
-import pt.isel.ps.g06.httpserver.dataAccess.model.Ingredient
+import pt.isel.ps.g06.httpserver.exceptions.TestParameterException
 
 class RepoAsserts(val const: InsertConstants) {
 
-    fun assertSubmissionContract(handle: Handle, resultSubmissionId: Int, expectedContracts: List<SubmissionContractType>) {
+    fun assertSubmissionContract(handle: Handle, submissionIds: List<Int>, expectedContracts: List<SubmissionContractType>) {
         val expectedContractNames = expectedContracts.map { it.toString() }.sorted()
-        val resultConstantNames = handle.attach(SubmissionContractDao::class.java)
-                .getAllById(resultSubmissionId)
-                .map { it.submission_contract }
-                .sorted()
-        Assertions.assertEquals(expectedContractNames, resultConstantNames)
+        submissionIds.forEach {  submissionId ->
+            val resultConstantNames = handle.attach(SubmissionContractDao::class.java)
+                    .getAllById(submissionId)
+                    .map { it.submission_contract }
+                    .sorted()
+            Assertions.assertEquals(expectedContractNames, resultConstantNames)
+        }
     }
 
     fun assertSubmissionContractInsertCount(handle: Handle, insertCount: Int) {
@@ -27,15 +28,15 @@ class RepoAsserts(val const: InsertConstants) {
 
     fun assertSubmissionSubmitter(
             handle: Handle,
-            expectedSubmissionId: Int,
-            expectedSubmitterId: Int,
-            resultSubmissionId: Int
+            expectedSubmissionIds: List<Int>,
+            expectedSubmitterId: Int
     ) {
-        val submissionSubmitterDto = handle.attach(SubmissionSubmitterDao::class.java)
-                .getBySubmissionId(resultSubmissionId)
-        Assertions.assertNotNull(submissionSubmitterDto)
-        Assertions.assertEquals(submissionSubmitterDto!!.submission_id, expectedSubmissionId)
-        Assertions.assertEquals(submissionSubmitterDto.submitter_id, expectedSubmitterId)
+        expectedSubmissionIds.forEach { expectedSubmissionId ->
+            val submissionSubmitterDto = handle.attach(SubmissionSubmitterDao::class.java)
+                    .getBySubmissionId(expectedSubmissionId)
+            Assertions.assertNotNull(submissionSubmitterDto)
+            Assertions.assertEquals(submissionSubmitterDto!!.submitter_id, expectedSubmitterId)
+        }
     }
 
     fun assertSubmissionSubmitterCount(handle: Handle, insertCount: Int) {
@@ -45,21 +46,38 @@ class RepoAsserts(val const: InsertConstants) {
     }
 
     fun assertSubmission(handle: Handle,
-                         expectedSubmissionId: Int,
-                         expectedSubmissionType: SubmissionType,
-                         resultSubmissionId: Int
+                         expectedSubmissionIds: List<Int>,
+                         expectedSubmissionType: SubmissionType
     ) {
-        val submissionDto = handle.attach(SubmissionDao::class.java)
-                .getById(resultSubmissionId)
-        Assertions.assertNotNull(submissionDto)
-        Assertions.assertEquals(expectedSubmissionId, submissionDto!!.submission_id)
-        Assertions.assertEquals(expectedSubmissionType.toString(), submissionDto.submission_type)
+        expectedSubmissionIds.forEach { resultSubmissionId ->
+            val submissionDto = handle.attach(SubmissionDao::class.java)
+                    .getById(resultSubmissionId)
+            //Assert existence
+            Assertions.assertNotNull(submissionDto)
+            Assertions.assertEquals(expectedSubmissionType.toString(), submissionDto!!.submission_type)
+        }
     }
 
     fun assertSubmissionInsertCount(handle: Handle, insertCount: Int) {
         val oldCount = const.submissionDtos.count()
         val newCount = handle.attach(SubmissionDao::class.java).getAll().count()
         Assertions.assertEquals(oldCount + insertCount, newCount)
+    }
+
+    fun assertApiSubmission(handle: Handle,
+                            expectedApiSubmissionIds: List<Int>,
+                            apiSubmitterId: Int,
+                            submissionType: SubmissionType,
+                            apiIds: List<Int>
+    ) {
+        val resultApiSubmissionIds = handle.attach(ApiSubmissionDao::class.java)
+                .getAllBySubmitterIdTypeAndApiIds(
+                        apiSubmitterId,
+                        submissionType.toString(),
+                        apiIds
+                ).map { it.submission_id }
+        Assertions.assertNotNull(resultApiSubmissionIds)
+        Assertions.assertTrue(expectedApiSubmissionIds.containsAll(resultApiSubmissionIds))
     }
 
     fun assertApiSubmissionInsertCount(handle: Handle, insertCount: Int) {
@@ -96,6 +114,25 @@ class RepoAsserts(val const: InsertConstants) {
         Assertions.assertEquals(oldCount + insertCount, newCount)
     }
 
+    fun assertIngredient(handle: Handle,
+                         expectedIngredientSubmissionIds: List<Int>,
+                         expectedIngredientNames: List<String>
+    ) {
+        if(expectedIngredientSubmissionIds.size != expectedIngredientNames.size) {
+            throw TestParameterException("expectedIngredientSubmissionIds size \""
+                    + expectedIngredientSubmissionIds.size +
+                    "\" is different from expectedIngredientNames \"" +
+                    + expectedIngredientNames.size +
+                    "\" !")
+        }
+        val existingIngredientDtos = handle.attach(IngredientDao::class.java)
+                .getAll()
+        val filtered = existingIngredientDtos
+                .filter { expectedIngredientSubmissionIds.contains(it.submission_id) }
+                //.filter { expectedIngredientNames.contains(it.ingredient_name) }
+        Assertions.assertEquals(expectedIngredientNames.size, filtered.size)
+    }
+
     fun assertIngredientInsertCount(handle: Handle, insertCount: Int) {
         val oldCount = const.ingredientDtos.count()
         val newCount = handle.attach(IngredientDao::class.java).getAll().count()
@@ -103,43 +140,20 @@ class RepoAsserts(val const: InsertConstants) {
     }
 
     fun assertMealIngredient(handle: Handle,
-                             expectedApiSubmitterDto: SubmitterDto,
-                             existingIngredient: List<Ingredient>,
-                             expectedIngredients: List<Ingredient>,
-                             expectedIngredientInsertCount: Int,
-                             resultSubmissionId: Int
+                             expectedMealSubmissionId: Int,
+                             expectedIngredientSubmissionIds: List<Int>
     ) {
-        val existingIngredients = zipToTestIngredient(
-                const.apiSubmissionDtos,
-                const.submissionSubmitterDtos,
-                expectedApiSubmitterDto,
-                existingIngredient
-        )
-        val currentIngredients = zipToTestIngredient(
-                handle.attach(ApiSubmissionDao::class.java).getAll(),
-                handle.attach(SubmissionSubmitterDao::class.java).getAll(),
-                expectedApiSubmitterDto,
-                expectedIngredients
-        )
-        //Assert insert count
-        val oldCount = existingIngredients.count()
-        val newCount = currentIngredients.count()
-        Assertions.assertEquals(oldCount + expectedIngredientInsertCount, newCount)
-
-        val currentIngredientSubmissionIds = handle.attach(MealIngredientDao::class.java)
-                .getAllByMealId(resultSubmissionId)
+        val existingIngredientSubmissionIds = handle.attach(MealIngredientDao::class.java)
+                .getAllByMealId(expectedMealSubmissionId)
                 .map { it.ingredient_submission_id }
 
         //Assert that old ingredients were used on this meal
-        Assertions.assertTrue(currentIngredientSubmissionIds.containsAll(existingIngredients.map { it.submissionId }))
-        //Assert that old/new ingredients were used on this meal
-        Assertions.assertTrue(currentIngredientSubmissionIds.containsAll(currentIngredients.map { it.submissionId }))
-        //Assert that current ingredients contain
-        Assertions.assertTrue(expectedIngredients.all { expectedIngredient ->
-            currentIngredients.any {
-                it.apiId == expectedIngredient.apiId
-                        && it.apiName == expectedIngredient.apiType.toString()
-            }
-        })
+        Assertions.assertTrue(existingIngredientSubmissionIds.containsAll(expectedIngredientSubmissionIds))
+    }
+
+    fun assertMealIngredientInsertCount(handle: Handle, insertCount: Int) {
+        val oldCount = const.ingredientDtos.count()
+        val newCount = handle.attach(MealIngredientDao::class.java).getAll().count()
+        Assertions.assertEquals(oldCount + insertCount, newCount)
     }
 }

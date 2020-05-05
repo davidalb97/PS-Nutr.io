@@ -3,10 +3,13 @@ package pt.isel.ps.g06.httpserver.db
 import org.jdbi.v3.core.Handle
 import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.transaction.TransactionIsolationLevel
+import pt.isel.ps.g06.httpserver.dataAccess.db.dao.IngredientDao
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.ApiSubmissionDto
+import pt.isel.ps.g06.httpserver.dataAccess.db.dto.IngredientDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.SubmissionSubmitterDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.SubmitterDto
 import pt.isel.ps.g06.httpserver.dataAccess.model.Ingredient
+import pt.isel.ps.g06.httpserver.exceptions.TestParameterException
 import pt.isel.ps.g06.httpserver.model.TestIngredient
 
 /**
@@ -60,4 +63,23 @@ fun zipToTestIngredient(
                 dto.apiId
         )
     }
+}
+
+fun getDtosFromIngredientNames(
+        handle: Handle,
+        apiSubmitter: Int,
+        ingredientNames: List<String>
+): List<IngredientDto> {
+
+    val ingredientDtos = handle.attach(IngredientDao::class.java)
+            .getAllBySubmitterId(apiSubmitter)
+            .filter { ingredientNames.contains(it.ingredient_name) }
+    if(ingredientDtos.size != ingredientNames.size) {
+        throw TestParameterException("ingredientNames size \""
+                + ingredientNames.size +
+                "\" is different from result ingredientDtos \"" +
+                + ingredientDtos.size +
+                "\" !")
+    }
+    return ingredientDtos
 }
