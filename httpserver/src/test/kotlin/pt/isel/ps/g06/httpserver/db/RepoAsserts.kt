@@ -33,9 +33,10 @@ class RepoAsserts(val const: InsertConstants) {
     ) {
         expectedSubmissionIds.forEach { expectedSubmissionId ->
             val submissionSubmitterDto = handle.attach(SubmissionSubmitterDao::class.java)
-                    .getBySubmissionId(expectedSubmissionId)
-            Assertions.assertNotNull(submissionSubmitterDto)
-            Assertions.assertEquals(submissionSubmitterDto!!.submitter_id, expectedSubmitterId)
+                    .getAllBySubmissionId(expectedSubmissionId)
+            Assertions.assertTrue(submissionSubmitterDto.any {
+                it.submitter_id == expectedSubmitterId
+            })
         }
     }
 

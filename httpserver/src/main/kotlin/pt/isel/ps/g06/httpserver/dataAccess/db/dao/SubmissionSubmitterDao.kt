@@ -14,7 +14,7 @@ interface SubmissionSubmitterDao {
     fun getAll(): List<SubmissionSubmitterDto>
 
     @SqlQuery("SELECT * FROM $table WHERE $submissionId = :submissionId")
-    fun getBySubmissionId(submissionId: Int): SubmissionSubmitterDto?
+    fun getAllBySubmissionId(submissionId: Int): List<SubmissionSubmitterDto>
 
     @SqlQuery("SELECT * FROM $table WHERE $submitterId = :submitter_id")
     fun getAllBySubmitterId(submitterId: Int): List<SubmissionSubmitterDto>

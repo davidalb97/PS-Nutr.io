@@ -46,13 +46,15 @@ class BaseDbRepo constructor(
         jdbi.inTransaction<Unit, InvalidInputException>(defaultIsolation) {
 
             // Check if the submitter owns the submission
-            it.attach(SubmissionSubmitterDao::class.java)
-                    .getBySubmissionId(submissionId)
-                    ?.let { if (it.submitter_id != submitterId) null else it }
-                    ?: throw InvalidInputException(InvalidInputDomain.SUBMISSION_SUBMITTER,
-                            "The specified submitter with id \"$submitterId\" " +
-                                    "does not own submission with id \"$submissionId\"."
-                    )
+            val submitterIds = it.attach(SubmissionSubmitterDao::class.java)
+                    .getAllBySubmissionId(submissionId)
+                    .map { it.submitter_id }
+            if (!submitterIds.contains(submitterId)) {
+                throw InvalidInputException(InvalidInputDomain.SUBMISSION_SUBMITTER,
+                        "The specified submitter with id \"$submitterId\" " +
+                                "does not own submission with id \"$submissionId\"."
+                )
+            }
         }
     }
 
@@ -112,7 +114,7 @@ class BaseDbRepo constructor(
             // Check if submission is implementing the IS-A contract
             it.attach(SubmissionContractDao::class.java)
                     .getAllById(submissionId)
-                    .let { if (it.none {it.submission_contract == contract.toString()}) null else it }
+                    .let { if (it.none { it.submission_contract == contract.toString() }) null else it }
                     ?: throw InvalidInputException(InvalidInputDomain.CONTRACT,
                             "The submission id \"$submissionId\" is not a \"$contract\"."
                     )
