@@ -2,13 +2,17 @@ package pt.isel.ps.g06.httpserver.dataAccess.db.repo
 
 import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.transaction.TransactionIsolationLevel
-import pt.isel.ps.g06.httpserver.dataAccess.db.dao.VoteDao
+import org.springframework.stereotype.Repository
+import pt.isel.ps.g06.httpserver.dataAccess.db.dao.SubmissionDao
+import pt.isel.ps.g06.httpserver.dataAccess.db.dao.VotableDao
+import pt.isel.ps.g06.httpserver.dataAccess.db.dto.VotableDto
 import pt.isel.ps.g06.httpserver.dataAccess.model.Votes
 
+@Repository
 class DbVotableRepository(private val jdbi: Jdbi) {
 
     val serializable = TransactionIsolationLevel.SERIALIZABLE
-    val voteClass = VoteDao::class.java
+    val voteClass = VotableDao::class.java
 
     fun getVotes(submitterId: Int, submissionId: Int): Votes? {
         return inTransaction<Votes>(jdbi, serializable) {
@@ -16,38 +20,80 @@ class DbVotableRepository(private val jdbi: Jdbi) {
         }
     }
 
-    fun insertVote(
+    fun addVote(
             submitterId: Int,
-            submissionId: Int,
+            submission_id: Int,
             vote: Boolean
-    ): Boolean {
+    ): VotableDto? {
         return inTransaction(jdbi, serializable) {
-            val voteDao = it.attach(voteClass)
-            voteDao.insert(submitterId, submissionId, vote)
-            true
+            //validateSubmitterId(it, submitterId)
+
+            // Check if the submission exists
+            val submissionDto = it.attach(SubmissionDao::class.java)
+                    .getById(submission_id)
+
+            // Check if this submitter already voted this submission
+            val hasVoted = it.attach(VotableDao::class.java)
+                    .getVoteFromSubmitter(submission_id, submitterId)
+
+            if (submissionDto != null && !hasVoted) {
+                // Submit a report to that Submission
+                return@inTransaction it.attach(VotableDao::class.java)
+                        .insert(submission_id, submitterId, vote)
+            }
+
+            null
         }
     }
 
-    fun deleteVote(
+    fun removeVote(
             submitterId: Int,
-            submissionId: Int
-    ): Boolean {
+            submission_id: Int
+    ): VotableDto? {
         return inTransaction(jdbi, serializable) {
-            val voteDao = it.attach(voteClass)
-            voteDao.delete(submitterId, submissionId)
-            true
+            //validateSubmitterId(it, submitterId)
+
+            // Check if the submission exists
+            val submissionDto = it.attach(SubmissionDao::class.java)
+                    .getById(submission_id)
+
+            // Check if this submitter already voted this submission
+            val hasVoted = it.attach(VotableDao::class.java)
+                    .getVoteFromSubmitter(submission_id, submitterId)
+
+            if (submissionDto != null && !hasVoted) {
+                // Submit a report to that Submission
+                return@inTransaction it.attach(VotableDao::class.java)
+                        .delete(submission_id, submitterId)
+            }
+
+            null
         }
     }
 
     fun updateVote(
             submitterId: Int,
-            submissionId: Int,
+            submission_id: Int,
             vote: Boolean
-    ): Boolean {
+    ): VotableDto? {
         return inTransaction(jdbi, serializable) {
-            val voteDao = it.attach(voteClass)
-            voteDao.update(submitterId, submissionId, vote)
-            true
+            //validateSubmitterId(it, submitterId)
+
+            // Check if the submission exists
+            val submissionDto = it.attach(SubmissionDao::class.java)
+                    .getById(submission_id)
+
+            // Check if this submitter already voted this submission
+            val hasVoted = it.attach(VotableDao::class.java)
+                    .getVoteFromSubmitter(submission_id, submitterId)
+
+            if (submissionDto != null && !hasVoted) {
+                // Submit a report to that Submission
+                return@inTransaction it.attach(VotableDao::class.java)
+                        .update(submission_id, submitterId, vote)
+            }
+
+            null
         }
     }
 }

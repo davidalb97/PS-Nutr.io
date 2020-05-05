@@ -14,12 +14,12 @@ interface UserDao {
     fun getAll(): List<UserDto>
 
     @SqlQuery("SELECT * FROM $table WHERE $id = :submitterId")
-    fun getById(@Bind submitterId: Int): UserDto
+    fun getById(@Bind submitterId: Int): UserDto?
 
     @SqlQuery("SELECT * FROM $table WHERE $email = :email")
-    fun getByEmail(@Bind email: String): UserDto
+    fun getByEmail(@Bind email: String): UserDto?
 
     @SqlQuery("INSERT INTO $table($id, $email, $sessionSecret) " +
-            "VALUES(:submitter_id, :email, :session_secret)")
-    fun insert(@Bind submitter_id: Int, @Bind email: String)
+            "VALUES(:submitter_id, :email, :session_secret) RETURNING *")
+    fun insert(@Bind submitter_id: Int, @Bind email: String): UserDto
 }

@@ -10,8 +10,8 @@ class DbCuisineRepository(private val jdbi: Jdbi) {
     val serializable = TransactionIsolationLevel.SERIALIZABLE
     val cuisineDao = CuisineDao::class.java
 
-    fun getById(name: String): List<CuisineDto>? {
-        return inTransaction<List<CuisineDto>>(jdbi, serializable) {
+    fun getByName(name: String): List<CuisineDto>? {
+        return inTransaction(jdbi, serializable) {
             it.attach(cuisineDao).getByName(name)
         }
     }
