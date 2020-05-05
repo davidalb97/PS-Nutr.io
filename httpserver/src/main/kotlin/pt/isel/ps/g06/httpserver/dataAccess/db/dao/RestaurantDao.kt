@@ -31,7 +31,7 @@ interface RestaurantDao {
             " VALUES(:submission_id, :restaurant_name, :latitude, :longitude) RETURNING *")
     fun insert(@Bind submission_id: Int,
                @Bind restaurant_name: String,
-               @Bind latitue: Float,
+               @Bind latitude: Float,
                @Bind longitude: Float
     ): DbRestaurantDto
 
