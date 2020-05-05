@@ -24,7 +24,7 @@ class DbRestaurantRepository(private val jdbi: Jdbi) {
         }
     }
 
-    fun getRestaurantsByCoordinates(latitude: Float, longitude: Float, radius: Int): List<DbRestaurantDto>? {
+    fun getRestaurantsByCoordinates(latitude: Float, longitude: Float, radius: Int): List<DbRestaurantDto> {
         return inTransaction(jdbi, serializable) {
             it.attach(restaurantDao).getByCoordinates(latitude, longitude, radius)
         }

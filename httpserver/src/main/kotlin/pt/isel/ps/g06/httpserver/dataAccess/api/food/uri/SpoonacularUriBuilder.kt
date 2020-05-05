@@ -2,6 +2,7 @@ package pt.isel.ps.g06.httpserver.dataAccess.api.food.uri
 
 import org.springframework.stereotype.Component
 import org.springframework.web.util.UriComponentsBuilder
+import pt.isel.ps.g06.httpserver.dataAccess.api.common.nonNullQueryParam
 import pt.isel.ps.g06.httpserver.dataAccess.api.food.SpoonacularCuisine
 import pt.isel.ps.g06.httpserver.dataAccess.api.food.SpoonacularDiet
 import pt.isel.ps.g06.httpserver.dataAccess.api.food.SpoonacularUnitTypes
@@ -45,7 +46,7 @@ class SpoonacularUriBuilder {
     //-------------------------------Products------------------------------------
 
     /**
-     * https://spoonacular.com/food-api/docs#Search-Grocery-Products
+     * From Spoonacular [documentation.](https://spoonacular.com/food-api/docs#Search-Grocery-Products)
      */
     fun productsSearch(
             query: String,
@@ -60,19 +61,18 @@ class SpoonacularUriBuilder {
             offset: Int? = null,
             number: Int? = null
     ): URI {
-        return UriComponentsBuilder
-                .fromPath(SPOONACULAR_GROCERY_PRODUCTS_URL)
+        return baseUri(SPOONACULAR_GROCERY_PRODUCTS_URL)
                 .queryParam(QUERY, query)
-                .queryParam(MIN_CAL, minCalories)
-                .queryParam(MAX_CAL, maxCalories)
-                .queryParam(MIN_CARB, minCarbs)
-                .queryParam(MAX_CARB, maxCarbs)
-                .queryParam(MIN_PROTEIN, minProtein)
-                .queryParam(MAX_PROTEIN, maxProtein)
-                .queryParam(MIN_FAT, minFat)
-                .queryParam(MAX_FAT, maxFat)
-                .queryParam(OFFSET, offset)
-                .queryParam(NUMBER, number)
+                .nonNullQueryParam(MIN_CAL, minCalories)
+                .nonNullQueryParam(MAX_CAL, maxCalories)
+                .nonNullQueryParam(MIN_CARB, minCarbs)
+                .nonNullQueryParam(MAX_CARB, maxCarbs)
+                .nonNullQueryParam(MIN_PROTEIN, minProtein)
+                .nonNullQueryParam(MAX_PROTEIN, maxProtein)
+                .nonNullQueryParam(MIN_FAT, minFat)
+                .nonNullQueryParam(MAX_FAT, maxFat)
+                .nonNullQueryParam(OFFSET, offset)
+                .nonNullQueryParam(NUMBER, number)
                 .build()
                 .toUri()
     }
@@ -83,7 +83,7 @@ class SpoonacularUriBuilder {
     fun productSearchAutocomplete(query: String, number: Int? = null): URI {
         return baseUri(SPOONACULAR_PRODUCT_SEARCH_AUTO_COMPL_URL)
                 .queryParam(QUERY, query)
-                .queryParam(NUMBER, number)
+                .nonNullQueryParam(NUMBER, number)
                 .build()
                 .toUri()
     }
@@ -114,15 +114,15 @@ class SpoonacularUriBuilder {
             instructionsRequired: Boolean? = null
     ): URI {
         return baseUri(SPOONACULAR_SEARCH_URL)
-                .queryParam(QUERY, recipeName)
-                .queryParam(CUISINE, cuisines)
-                .queryParam(DIET, diet)
-                .queryParam(OFFSET, offset)
-                .queryParam(NUMBER, number)
-                .queryParam(LIMIT_LICENSE, limitLicense)
-                .queryParam(INSTRUCTIONS_REQUIRED, instructionsRequired)
-                .queryParam(EXCLUDE_INGREDIENTS, excludeIngredients)
-                .queryParam(INTOLERANCES, intolerances)
+                .nonNullQueryParam(QUERY, recipeName)
+                .nonNullQueryParam(CUISINE, cuisines)
+                .nonNullQueryParam(DIET, diet)
+                .nonNullQueryParam(OFFSET, offset)
+                .nonNullQueryParam(NUMBER, number)
+                .nonNullQueryParam(LIMIT_LICENSE, limitLicense)
+                .nonNullQueryParam(INSTRUCTIONS_REQUIRED, instructionsRequired)
+                .nonNullQueryParam(EXCLUDE_INGREDIENTS, excludeIngredients)
+                .nonNullQueryParam(INTOLERANCES, intolerances)
                 .build()
                 .toUri()
     }
@@ -140,9 +140,9 @@ class SpoonacularUriBuilder {
     ): URI {
         return baseUri(SPOONACULAR_INGREDIENT_SEARCH_AUTO_COMPL_URL)
                 .queryParam(QUERY, query)
-                .queryParam(NUMBER, number)
-                .queryParam(META_INFO, metaInformation)
-                .queryParam(INTOLERANCES, intolerances)
+                .nonNullQueryParam(NUMBER, number)
+                .nonNullQueryParam(META_INFO, metaInformation)
+                .nonNullQueryParam(INTOLERANCES, intolerances)
                 .build()
                 .toUri()
     }
@@ -152,8 +152,8 @@ class SpoonacularUriBuilder {
      */
     fun ingredientInfo(id: Int, amount: Int?, unit: SpoonacularUnitTypes): URI {
         return baseUri("$SPOONACULAR_INGREDIENT_INFO_URL$id/information")
-                .queryParam(AMOUNT, amount)
-                .queryParam(UNIT, unit)
+                .nonNullQueryParam(AMOUNT, amount)
+                .nonNullQueryParam(UNIT, unit)
                 .build()
                 .toUri()
     }
