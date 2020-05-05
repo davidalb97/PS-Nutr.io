@@ -2,11 +2,12 @@ package pt.isel.ps.g06.httpserver.dataAccess.db.repo
 
 import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.transaction.TransactionIsolationLevel
+import org.jdbi.v3.sqlobject.kotlin.attach
 import org.springframework.stereotype.Repository
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.RestaurantApiType
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType
-import pt.isel.ps.g06.httpserver.dataAccess.db.dto.RestaurantDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.*
+import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbRestaurantDto
 
 @Repository
 class DbRestaurantRepository(private val jdbi: Jdbi) {
@@ -14,16 +15,21 @@ class DbRestaurantRepository(private val jdbi: Jdbi) {
     val serializable = TransactionIsolationLevel.SERIALIZABLE
     val restaurantDao = RestaurantDao::class.java
 
-    fun getRestaurantById(id: Int): RestaurantDto? {
-        return inTransaction<RestaurantDto>(jdbi, serializable) {
+    fun getRestaurantById(id: Int): DbRestaurantDto? {
+        return inTransaction<DbRestaurantDto>(jdbi, serializable) {
             return@inTransaction it.attach(restaurantDao).getById(id)
         }
     }
 
-    fun getRestaurantsByCoordinates(latitude: Float, longitude: Float, radius: Int): List<RestaurantDto>? {
-        return inTransaction<List<RestaurantDto>>(jdbi, serializable) {
+    fun getRestaurantsByCoordinates(latitude: Float, longitude: Float, radius: Int): List<DbRestaurantDto> {
+        //TODO This should have the '!!'
+        return jdbi.inTransaction<List<DbRestaurantDto>, Exception> {
             it.attach(restaurantDao).getByCoordinates(latitude, longitude, radius)
         }
+
+//        return inTransaction<List<DbRestaurantDto>>(jdbi, serializable) {
+//            it.attach(restaurantDao).getByCoordinates(latitude, longitude, radius)
+//        }!!
     }
 
     fun insertRestaurant(

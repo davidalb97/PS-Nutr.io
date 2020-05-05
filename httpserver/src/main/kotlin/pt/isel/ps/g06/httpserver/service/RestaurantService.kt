@@ -1,0 +1,55 @@
+package pt.isel.ps.g06.httpserver.service
+
+import org.springframework.stereotype.Service
+import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.RestaurantApiRepository
+import pt.isel.ps.g06.httpserver.dataAccess.db.repo.DbRestaurantRepository
+import pt.isel.ps.g06.httpserver.dataAccess.model.RestaurantDto
+import pt.isel.ps.g06.httpserver.model.Restaurant
+import java.util.concurrent.CompletableFuture
+
+private const val MAX_RADIUS = 1000
+
+
+@Service
+class RestaurantService(
+        private val dbRestaurantRepository: DbRestaurantRepository,
+        private val restaurantApiRepository: RestaurantApiRepository
+) {
+
+    fun getNearbyRestaurants(latitude: Float?, longitude: Float?, radius: Int? = MAX_RADIUS, apiType: String?): Set<Restaurant> {
+        return if (latitude == null || longitude == null) emptySet() else {
+            val chosenRadius = if (radius != null && radius <= MAX_RADIUS) radius else MAX_RADIUS
+
+            val restaurantApi = restaurantApiRepository.getRestaurantApi(apiType)
+
+            val apiRestaurants = CompletableFuture
+                    .supplyAsync { restaurantApi.searchRestaurants(latitude, longitude, chosenRadius) }
+                    .thenApply { it.map(this::mapToRestaurant) }
+
+            val dbRestaurants = dbRestaurantRepository
+                    .getRestaurantsByCoordinates(latitude, longitude, chosenRadius)
+                    .map(this::mapToRestaurant)
+
+            //TODO Handle CompletableFuture exception
+            return filterRedundantApiRestaurants(dbRestaurants, apiRestaurants.get())
+        }
+    }
+
+    private fun filterRedundantApiRestaurants(dbRestaurants: Collection<Restaurant>, apiRestaurants: Collection<Restaurant>): Set<Restaurant> {
+        val result = dbRestaurants.toMutableSet()
+
+        apiRestaurants.forEach {
+            if (!dbContainsRestaurant(result, it)) {
+                result.add(it)
+            }
+        }
+        return result
+    }
+
+    private fun dbContainsRestaurant(dbRestaurants: Collection<Restaurant>, restaurant: Restaurant): Boolean {
+        return dbRestaurants.any { dbRestaurant -> restaurant.apiId == dbRestaurant.apiId }
+    }
+
+
+    fun mapToRestaurant(dto: RestaurantDto): Restaurant = Restaurant(dto.id, dto.name, dto.latitude, dto.longitude, dto.cuisines)
+}
