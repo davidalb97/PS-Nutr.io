@@ -5,15 +5,10 @@ import org.springframework.web.bind.annotation.*
 import pt.isel.ps.g06.httpserver.RestaurantFilter
 import pt.isel.ps.g06.httpserver.common.*
 import pt.isel.ps.g06.httpserver.common.exception.RestaurantNotFoundException
-import pt.isel.ps.g06.httpserver.data.ReportInput
 import pt.isel.ps.g06.httpserver.data.RestaurantInput
+import pt.isel.ps.g06.httpserver.data.VoteInput
 import pt.isel.ps.g06.httpserver.model.Restaurant
 import pt.isel.ps.g06.httpserver.service.RestaurantService
-import pt.isel.ps.g06.httpserver.data.VoteInput
-import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.RestaurantApiRepository
-import pt.isel.ps.g06.httpserver.dataAccess.db.repo.DbReportRepository
-import pt.isel.ps.g06.httpserver.dataAccess.db.repo.DbRestaurantRepository
-import pt.isel.ps.g06.httpserver.dataAccess.db.repo.DbVotableRepository
 
 @Suppress("MVCPathVariableInspection") //False positive for IntelliJ
 @RestController
@@ -42,25 +37,13 @@ class RestaurantController(private val restaurantService: RestaurantService) {
         return restaurantService.getRestaurant(id, api) ?: throw RestaurantNotFoundException()
     }
 
-    // TODO
     @PostMapping()
     fun createRestaurant(@RequestBody restaurant: RestaurantInput) {
-        dbRestaurantRepository.insertRestaurant(
-                restaurant.submitterId,
-                restaurant.name,
-                null,
-                emptyList(),
-                restaurant.latitude,
-                restaurant.longitude,
-                null
-        )
+
     }
 
-    // TODO
     @DeleteMapping(RESTAURANT)
-    fun deleteRestaurant(@PathVariable(RESTAURANT_ID_VALUE) id: Int) =
-            dbRestaurantRepository.deleteRestaurant(1, id)
-
+    fun deleteRestaurant(@PathVariable(RESTAURANT_ID_VALUE) id: Int) {
     }
 
     @PostMapping(RESTAURANT_REPORT)
@@ -76,13 +59,14 @@ class RestaurantController(private val restaurantService: RestaurantService) {
     @PutMapping(RESTAURANT_VOTE)
     fun updateRestaurantVote(@PathVariable(RESTAURANT_ID_VALUE) id: String, @RequestBody vote: String) {
 
+    }
+
     // TODO
     @PutMapping("/{submission_id}/vote", consumes = [MediaType.APPLICATION_JSON_VALUE])
-    fun updateRestaurantVote(@PathVariable submission_id: Int, @RequestBody vote: VoteInput) =
-            dbVotableRepository.updateVote(vote.submitterId, submission_id, vote.value)
+    fun updateRestaurantVote(@PathVariable submission_id: Int, @RequestBody vote: VoteInput) {
+    }
 
     @DeleteMapping(RESTAURANT_VOTE)
     fun deleteRestaurantVote(@PathVariable(RESTAURANT_ID_VALUE) id: String, vote: String) {
-
     }
 }

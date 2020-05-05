@@ -4,13 +4,11 @@ import org.jdbi.v3.core.Handle
 import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.transaction.TransactionIsolationLevel
 import org.springframework.stereotype.Repository
-import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.RestaurantApiType
+import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.model.RestaurantApiType
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.*
-import pt.isel.ps.g06.httpserver.dataAccess.db.dto.ReportDto
-import pt.isel.ps.g06.httpserver.dataAccess.db.dto.RestaurantDto
+import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbRestaurantDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.SubmissionDto
-import pt.isel.ps.g06.httpserver.dataAccess.db.dto.VotableDto
 import pt.isel.ps.g06.httpserver.exception.InvalidInputDomain.SUBMITTER
 import pt.isel.ps.g06.httpserver.exception.InvalidInputException
 
@@ -20,13 +18,13 @@ class DbRestaurantRepository(private val jdbi: Jdbi) {
     val serializable = TransactionIsolationLevel.SERIALIZABLE
     val restaurantDao = RestaurantDao::class.java
 
-    fun getRestaurantById(id: Int): RestaurantDto? {
+    fun getRestaurantById(id: Int): DbRestaurantDto? {
         return inTransaction(jdbi, serializable) {
             return@inTransaction it.attach(restaurantDao).getById(id)
         }
     }
 
-    fun getRestaurantsByCoordinates(latitude: Float, longitude: Float, radius: Int): List<RestaurantDto>? {
+    fun getRestaurantsByCoordinates(latitude: Float, longitude: Float, radius: Int): List<DbRestaurantDto>? {
         return inTransaction(jdbi, serializable) {
             it.attach(restaurantDao).getByCoordinates(latitude, longitude, radius)
         }
@@ -70,7 +68,6 @@ class DbRestaurantRepository(private val jdbi: Jdbi) {
                 //Get api submitterId, abort if failed
                 val apiDao = it.attach(ApiDao::class.java)
                 val apiSubmitterId = apiDao.getByName(restaurantApiType.toString())!!.submitter_id
-                        ?: it.rollback().let { return@inTransaction null }
 
                 //Insert SubmissionSubmitter for the new Api submitter
                 submissionSubmitterDao.insert(submissionDto.submission_id, apiSubmitterId)
