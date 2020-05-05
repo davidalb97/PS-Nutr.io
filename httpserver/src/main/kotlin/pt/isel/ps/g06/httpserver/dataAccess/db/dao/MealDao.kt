@@ -11,12 +11,18 @@ private const val id = "submission_id"
 interface MealDao {
 
     @SqlQuery("SELECT * FROM $table WHERE $id = :submission_id")
-    fun getById(@Bind submission_id: Int): List<MealDto>
+    fun getById(@Bind submission_id: Int): MealDto?
 
     @SqlQuery("SELECT * FROM $table WHERE $name = :mealName")
-    fun getByName(@Bind mealName: String): List<MealDto>
+    fun getByName(@Bind mealName: String): List<MealDto?>
 
-    @SqlQuery("INSERT INTO $table($id, $name) VALUES(:submission_id, :mealName)")
-    fun insert(@Bind submission_id: Int, @Bind mealName: String)
+    @SqlQuery("INSERT INTO $table($id, $name) VALUES(:submission_id, :mealName) RETURNING *")
+    fun insert(@Bind submission_id: Int, @Bind mealName: String): MealDto?
+
+    @SqlQuery("DELETE FROM $table WHERE $id = :submission_id RETURNING *")
+    fun delete(@Bind submission_id: Int): Boolean
+
+    @SqlQuery("UPDATE $table SET $name = :new_name WHERE $id = :submission_id")
+    fun updateName(@Bind submission_id: Int, new_name: String): MealDto?
 
 }
