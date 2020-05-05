@@ -1,10 +1,7 @@
 package pt.isel.ps.g06.httpserver.db.repo
 
 import org.jdbi.v3.core.Jdbi
-import org.junit.jupiter.api.MethodOrderer
-import org.junit.jupiter.api.Order
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.TestMethodOrder
+import org.junit.jupiter.api.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import pt.isel.ps.g06.httpserver.dataAccess.api.food.FoodApiType
@@ -18,23 +15,23 @@ import pt.isel.ps.g06.httpserver.db.getDtosFromIngredientNames
 import pt.isel.ps.g06.httpserver.db.inRollbackTransaction
 
 @SpringBootTest
-@TestMethodOrder(MethodOrderer.OrderAnnotation::class)
+@TestMethodOrder(MethodOrderer.Random::class)
 class MealSubmissionTest {
 
     @Autowired
     lateinit var jdbi: Jdbi
-
-    @Autowired
+    lateinit var const: InsertConstants
+    lateinit var asserts: RepoAsserts
     lateinit var mealRepo: MealDbRepository
 
-    @Autowired
-    lateinit var const: InsertConstants
-    val asserts by lazy {
-        RepoAsserts(const)
+    @BeforeEach
+    fun setup() {
+        mealRepo = MealDbRepository(jdbi)
+        const = InsertConstants(jdbi)
+        asserts = RepoAsserts(const)
     }
 
     @Test
-    @Order(1)
     fun shouldInsertUserMealWithoutIngredients() {
         jdbi.inRollbackTransaction {
             val expectedSubmitterId = const.userDtos.first().submitter_id
@@ -116,7 +113,6 @@ class MealSubmissionTest {
     }
 
     @Test
-    @Order(2)
     fun shouldInsertUserMealWithExistingSpoonacularIngredients() {
         jdbi.inRollbackTransaction {
             val expectedSubmitterId = const.userDtos.first().submitter_id
@@ -206,7 +202,6 @@ class MealSubmissionTest {
     }
 
     @Test
-    @Order(3)
     fun shouldInsertUserMealWithoutExistingSpoonacularIngredients() {
         jdbi.inRollbackTransaction {
             val expectedSubmitterId = const.userDtos.first().submitter_id
