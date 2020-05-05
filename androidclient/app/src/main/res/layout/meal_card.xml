@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/itemCardView"
+    android:id="@+id/restaurantCardView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="4dp"
@@ -14,29 +14,29 @@
         android:layout_margin="4dp">
 
         <ImageView
-            android:id="@+id/ItemImage"
-            android:layout_width="128dp"
-            android:layout_height="match_parent"
+            android:id="@+id/restaurantImage"
+            android:layout_width="130dp"
+            android:layout_height="130dp"
             android:padding="2dp" />
 
         <TextView
-            android:id="@+id/ItemName"
+            android:id="@+id/restaurantName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_marginTop="1dp"
-            android:layout_toEndOf="@+id/ItemImage"
+            android:layout_toEndOf="@+id/restaurantImage"
             android:text="@string/item_name"
             android:textColor="@android:color/black"
             android:textSize="20sp"
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/ItemCuisines"
+            android:id="@+id/restaurantCuisines"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/ItemName"
-            android:layout_toEndOf="@+id/ItemImage"
+            android:layout_below="@+id/restaurantName"
+            android:layout_toEndOf="@+id/restaurantImage"
             android:text="@string/item_cuisines"
             android:textSize="15sp" />
 

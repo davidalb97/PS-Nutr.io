@@ -35,4 +35,14 @@
     <string name="insulin_values">Insulin</string>
     <string name="calculator">Calculator</string>
     <string name="history">History</string>
+    <string name="meal_example">Hamburguer</string>
+    <string name="meal_detail_info">info</string>
+    <string name="add_meal_to_calc">Add to insulin calculator</string>
+    <string name="quantity_to_submit">Quantity:</string>
+    <string name="vote_this_restaurant">Vote this restaurant</string>
+    <string name="vote_this_meal">Vote this meal</string>
+    <string name="submit_a_meal_to_this_menu">Submit a meal to this menu</string>
+    <string name="menu">Menu</string>
+    <string name="downvote">Downvote</string>
+    <string name="upvote">Upvote</string>
 </resources>

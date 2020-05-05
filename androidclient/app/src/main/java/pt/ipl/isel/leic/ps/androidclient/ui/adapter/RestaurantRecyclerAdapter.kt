@@ -12,7 +12,7 @@ class RestaurantAdapter(
     ctx: Context
 ) : AAdapter<Restaurant, RestaurantViewModel, RestaurantViewHolder>(model, ctx) {
 
-    override fun getItemViewId(): Int = R.layout.restaurant_item
+    override fun getItemViewId(): Int = R.layout.restaurant_card
 
     override fun newViewHolder(layout: ViewGroup): RestaurantViewHolder =
         RestaurantViewHolder(layout, ctx)

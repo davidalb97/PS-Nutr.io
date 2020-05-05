@@ -86,26 +86,6 @@
             android:layout_alignParentEnd="true">
 
             <ImageButton
-                android:id="@+id/upvote"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:layout_marginEnd="10dp"
-                android:src="@drawable/ic_upvote"
-                android:scaleType="fitCenter"
-                android:background="@android:color/transparent">
-            </ImageButton>
-
-            <ImageButton
-                android:id="@+id/downvote"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:layout_marginEnd="10dp"
-                android:src="@drawable/ic_downvote"
-                android:scaleType="centerCrop"
-                android:background="@android:color/transparent">
-            </ImageButton>
-
-            <ImageButton
                 android:id="@+id/favorite"
                 android:layout_width="25dp"
                 android:layout_height="25dp"

@@ -2,7 +2,6 @@ package pt.ipl.isel.leic.ps.androidclient.ui.adapter
 
 import android.content.Context
 import android.view.ViewGroup
-import kotlinx.android.synthetic.main.item_card_view.view.*
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.source.model.Meal
 import pt.ipl.isel.leic.ps.androidclient.ui.viewholder.MealViewHolder
@@ -15,7 +14,7 @@ class MealAdapter(
     ctx: Context
 ) : AAdapter<Meal, MealViewModel, MealViewHolder>(model, ctx) {
 
-    override fun getItemViewId(): Int = R.layout.restaurant_item
+    override fun getItemViewId(): Int = R.layout.restaurant_card
 
     override fun newViewHolder(layout: ViewGroup): MealViewHolder =
         MealViewHolder(layout, ctx)

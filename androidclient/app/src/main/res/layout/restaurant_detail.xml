@@ -6,33 +6,110 @@
 
     <TableLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
-        <ImageView
-            android:id="@+id/mealImage"
+        <RelativeLayout
+            android:id="@+id/restaurant_general_details"
             android:layout_width="match_parent"
-            android:layout_height="175dp">
-        </ImageView>
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/restaurant_detail_image"
+                android:layout_width="175dp"
+                android:layout_height="175dp"
+                android:layout_margin="20dp">
+            </ImageView>
+
+            <TextView
+                android:id="@+id/meal_detail_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/restaurant_detail_image"
+                android:layout_marginTop="20dp"
+                android:text="Hamburgaria do Bairro"
+                android:textStyle="bold"
+                android:textColor="@android:color/background_dark"
+                android:textSize="26sp">
+            </TextView>
+
+            <TextView
+                android:id="@+id/meal_detail_info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/restaurant_detail_image"
+                android:layout_below="@+id/meal_detail_title"
+                android:layout_marginTop="20dp"
+                android:text="@string/meal_detail_info"
+                android:textStyle="bold"
+                android:textColor="@android:color/background_dark"
+                android:textSize="20sp">
+            </TextView>
+
+        </RelativeLayout>
+
+        <RelativeLayout>
+            <TextView
+                android:id="@+id/vote_this_restaurant"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:text="@string/vote_this_restaurant"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/background_dark">
+            </TextView>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:gravity="center"
+            android:layout_marginTop="10dp">
+
+            <Button
+                android:id="@+id/upvote"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="25dp"
+                android:text="@string/upvote"
+                android:textColor="@color/cardview_light_background"
+                android:background="@drawable/rect_material_button_shape">
+            </Button>
+
+            <Button
+                android:id="@+id/downvote"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@+id/upvote"
+                android:text="@string/downvote"
+                android:textColor="@color/cardview_light_background"
+                android:background="@drawable/rect_material_button_shape">
+            </Button>
+        </RelativeLayout>
 
         <TextView
-            android:id="@+id/mealName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/item_name"
-            android:textSize="32sp"
+            android:text="@string/menu"
+            android:textColor="@android:color/background_dark"
+            android:textSize="20sp"
             android:textStyle="bold"
-            android:textColor="@android:color/background_dark"
-            android:gravity="center">
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="10dp">
+
         </TextView>
 
+        <GridView
+            android:numColumns="3">
+        </GridView>
 
-        <TextView
-            android:id="@+id/mealCuisines"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@android:color/background_dark"
+        <RelativeLayout
             android:gravity="center">
-        </TextView>
+            <Button
+                android:id="@+id/add_meal_button"
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/rect_material_button_shape"
+                android:text="@string/submit_a_meal_to_this_menu"
+                android:textColor="@color/cardview_light_background">
+            </Button>
+        </RelativeLayout>
 
     </TableLayout>
 
