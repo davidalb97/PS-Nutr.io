@@ -48,7 +48,8 @@ CREATE TABLE Submission(
 		submission_type = 'Portion' OR
 		submission_type = 'Meal' OR
 		submission_type = 'Ingredient'
-	)
+	),
+	submission_date timestamp with time zone default CURRENT_TIMESTAMP
 );
 
 CREATE TABLE ApiSubmission(
@@ -61,7 +62,6 @@ CREATE TABLE ApiSubmission(
 CREATE TABLE SubmissionSubmitter(	
 	submission_id integer,
 	submitter_id integer,
-	submission_date timestamp with time zone default CURRENT_TIMESTAMP, -- Add to doc
 	PRIMARY KEY(submission_id, submitter_id),
 	FOREIGN KEY(submission_id) REFERENCES Submission(submission_id),
 	FOREIGN KEY(submitter_id) REFERENCES Submitter(submitter_id)
