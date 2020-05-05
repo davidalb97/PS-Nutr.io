@@ -4,7 +4,10 @@ import androidx.lifecycle.*
 
 //data class LiveInfo<T>(var list: MutableList<T>, var requestPending: Boolean = false)
 
-abstract class AViewModel<T> : ViewModel() {
+/**
+ * A generic View Model for Recycler Lists
+ */
+abstract class ARecyclerViewModel<T> : ViewModel() {
 
     var mediatorLiveData: MediatorLiveData<List<T>> = MediatorLiveData()
     var liveData: LiveData<List<T>>? = null

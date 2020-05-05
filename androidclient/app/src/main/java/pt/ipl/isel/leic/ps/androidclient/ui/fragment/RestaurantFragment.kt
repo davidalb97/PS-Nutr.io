@@ -13,6 +13,6 @@ class RestaurantFragment : Fragment(){
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.recycler_with_search, container, false)
+        return inflater.inflate(R.layout.restaurant_list, container, false)
     }
 }

@@ -3,6 +3,9 @@ package pt.ipl.isel.leic.ps.androidclient.ui.viewholder
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 
+/**
+ * A generic View Holder for Recycler Lists
+ */
 abstract class AViewHolder<T : Any>(
     val view: ViewGroup
 ) : RecyclerView.ViewHolder(view) {

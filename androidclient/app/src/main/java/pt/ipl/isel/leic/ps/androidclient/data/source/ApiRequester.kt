@@ -51,6 +51,7 @@ class ApiRequester(private val ctx: Context, private val reqQueue: RequestQueue)
     /**
      * GETs
      */
+    // ----------------------------- GETs -----------------------------
     fun getRestaurants(
         success: (List<Restaurant>) -> Unit,
         error: (VolleyError) -> Unit,
@@ -81,18 +82,15 @@ class ApiRequester(private val ctx: Context, private val reqQueue: RequestQueue)
         )
     }
 
-    /**
-     * POSTs
-     */
+    // ----------------------------- POSTs -----------------------------
+
+    // ----------------------------- DELETEs ---------------------------
+
+    // ----------------------------- PUTs ------------------------------
 
     /**
-     * DELETEs
+     * A generic Volley's requester
      */
-
-    /**
-     * PUTs
-     */
-
     private fun <Model, Dto : IUnDto<Model>, ReqPayload> httpServerRequest(
         method: Method,
         urlStr: String,

@@ -8,6 +8,11 @@ import pt.ipl.isel.leic.ps.androidclient.data.repo.HttpServerRepository
 
 const val TAG = "Nutr.io App"
 
+/**
+ * The application context.
+ * Starts the Volley request queue and the
+ * application's repositories.
+ */
 class NutrioApp : Application() {
     // App instances and initializations
 

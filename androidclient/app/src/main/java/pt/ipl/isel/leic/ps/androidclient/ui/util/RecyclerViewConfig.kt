@@ -4,18 +4,19 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import pt.ipl.isel.leic.ps.androidclient.ui.adapter.AAdapter
 import pt.ipl.isel.leic.ps.androidclient.ui.listener.ScrollListener
-import pt.ipl.isel.leic.ps.androidclient.ui.viewholder.AViewHolder
-import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.AViewModel
+import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.ARecyclerViewModel
 
 /**
  * Setups a generic RecyclerList
- * (must be called inside the activity / fragment)
+ * (must be called inside the activity / fragment).
+ *
+ * Its propose is just to avoid big code blocks
+ * inside each fragment that use a recycler list.
  */
 fun <T> configureRecyclerList(
     owner: Fragment,
-    viewModel: AViewModel<T>,
+    recyclerViewModel: ARecyclerViewModel<T>,
     //adapter: AAdapter<T, AViewModel<T>, AViewHolder<T>>,
     listId: Int
 ) {
@@ -30,7 +31,7 @@ fun <T> configureRecyclerList(
     // Define adapter
     //list.adapter = adapter
 
-    viewModel.liveData?.observe(owner, Observer {
+    recyclerViewModel.liveData?.observe(owner, Observer {
         /*viewModel.adapter = ListAdapter(viewModel)
         list.adapter = viewModel.adapter*/
         //adapter.notifyDataSetChanged()
@@ -47,14 +48,14 @@ fun <T> configureRecyclerList(
         }
 
         override fun loadMore() {
-            minimumListSize = viewModel.liveData?.value!!.size + 1
+            minimumListSize = recyclerViewModel.liveData?.value!!.size + 1
             startLoading()
             //viewModel.getItems()
             stopLoading()
         }
 
         override fun shouldGetMore(): Boolean =
-            !isLoading && minimumListSize < viewModel.liveData?.value!!.size
+            !isLoading && minimumListSize < recyclerViewModel.liveData?.value!!.size
     })
 }
 

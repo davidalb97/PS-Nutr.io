@@ -6,9 +6,12 @@ import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
 import pt.ipl.isel.leic.ps.androidclient.ui.viewholder.AViewHolder
-import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.AViewModel
+import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.ARecyclerViewModel
 
-abstract class AAdapter<T : Any, ViewM : AViewModel<T>, ViewH : AViewHolder<T>>(
+/**
+ *  A generic Adapter for Recycler Views.
+ */
+abstract class ARecyclerAdapter<T : Any, ViewM : ARecyclerViewModel<T>, ViewH : AViewHolder<T>>(
     val viewModel: ViewM,
     val ctx: Context
 ) : RecyclerView.Adapter<ViewH>() {

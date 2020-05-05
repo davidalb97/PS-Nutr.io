@@ -12,6 +12,6 @@ class MealsFragment: Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.recycler_with_search, container, false)
+        return inflater.inflate(R.layout.meal_list, container, false)
     }
 }

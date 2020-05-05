@@ -5,12 +5,12 @@ import android.view.ViewGroup
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.source.model.Restaurant
 import pt.ipl.isel.leic.ps.androidclient.ui.viewholder.RestaurantViewHolder
-import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.RestaurantViewModel
+import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.RestaurantRecyclerViewModel
 
-class RestaurantAdapter(
-    model: RestaurantViewModel,
+class RestaurantRecyclerAdapter(
+    model: RestaurantRecyclerViewModel,
     ctx: Context
-) : AAdapter<Restaurant, RestaurantViewModel, RestaurantViewHolder>(model, ctx) {
+) : ARecyclerAdapter<Restaurant, RestaurantRecyclerViewModel, RestaurantViewHolder>(model, ctx) {
 
     override fun getItemViewId(): Int = R.layout.restaurant_card
 
