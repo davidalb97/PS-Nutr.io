@@ -33,7 +33,7 @@ interface IngredientDao {
     fun getAllSubmissionIdsBySubmitterId(submitterId: Int): List<Ingredient>
 
     @SqlQuery("SELECT * FROM $table WHERE $name = :ingredientName")
-    fun getByName(@Bind ingredientName: String): IngredientDto?
+    fun getAllByName(@Bind ingredientName: String): List<IngredientDto>
 
     @SqlQuery("INSERT INTO $table($id, $name) VALUES(:submissionId, :ingredientName) RETURNING *")
     fun insert(@Bind submissionId: Int, ingredientName: String): IngredientDto
