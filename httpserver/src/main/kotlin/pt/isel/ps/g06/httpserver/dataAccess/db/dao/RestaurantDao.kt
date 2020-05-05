@@ -5,10 +5,9 @@ import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import org.jdbi.v3.sqlobject.transaction.Transaction
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbRestaurantDto
-import pt.isel.ps.g06.httpserver.dataAccess.db.dto.SubmissionDto
 
 private const val table = "Restaurant"
-private const val id = "restaurant_id"
+private const val id = "submission_id"
 private const val name = "restaurant_name"
 private const val latitude = "latitude"
 private const val longitude = "longitude"
@@ -24,9 +23,9 @@ interface RestaurantDao {
     )
     fun getByCoordinates(@Bind latitude: Float, @Bind longitude: Float, @Bind radius: Int): List<DbRestaurantDto>
 
-    @SqlQuery("SELECT * FROM $table WHERE $id = :restaurantId")
+    @SqlQuery("SELECT * FROM $table WHERE $id = :submission_id")
     @Transaction(TransactionIsolationLevel.SERIALIZABLE)
-    fun getById(@Bind restaurantId: Int): DbRestaurantDto
+    fun getById(@Bind submission_id: Int): DbRestaurantDto
 
     @SqlQuery("INSERT INTO $table($id, $name, $latitude, $longitude) VALUES(:submission_id, :restaurant_name, :latitude, :longitude)")
     fun insert(@Bind submission_id: Int, @Bind restaurant_name: String, @Bind latitude: Float, @Bind longitude: Float) : DbRestaurantDto
