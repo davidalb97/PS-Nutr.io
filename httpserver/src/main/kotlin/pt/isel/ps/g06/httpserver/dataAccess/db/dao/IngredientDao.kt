@@ -22,7 +22,7 @@ interface IngredientDao {
     @SqlQuery("SELECT * FROM $table")
     fun getAll(): List<IngredientDto>
 
-    @SqlQuery("SELECT $AS_table.$AS_submissionId" +
+    @SqlQuery("SELECT $table.$id, $table.$name" +
             " FROM $table" +
             " INNER JOIN $SS_table" +
             " ON $SS_table.$SS_submissionId = $table.$id" +
@@ -30,7 +30,7 @@ interface IngredientDao {
             " ON $AS_table.$AS_submissionId = $table.$id" +
             " WHERE $SS_table.$SS_submitterId = :submitterId"
     )
-    fun getAllSubmissionIdsBySubmitterId(submitterId: Int): List<Ingredient>
+    fun getAllBySubmitterId(submitterId: Int): List<IngredientDto>
 
     @SqlQuery("SELECT * FROM $table WHERE $name = :ingredientName")
     fun getAllByName(@Bind ingredientName: String): List<IngredientDto>
