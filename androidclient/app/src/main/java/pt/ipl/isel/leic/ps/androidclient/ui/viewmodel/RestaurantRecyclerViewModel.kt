@@ -13,12 +13,15 @@ class RestaurantRecyclerViewModel(
     private val app: NutrioApp
 ) : ARecyclerViewModel<Restaurant>() {
 
+    private val COUNT = 10
+    private var skip = 0
+
     fun getRestaurants() {
         app.httpServerRepository.getRestaurants(
             successFunction(),
             errorFunction(),
-            10,
-            10
+            COUNT,
+            skip
         )
     }
 
@@ -26,8 +29,13 @@ class RestaurantRecyclerViewModel(
         TODO("Not yet implemented")
     }
 
-    private fun successFunction(): (List<Restaurant>) -> Unit = {
-        val onSuccess: (ArrayList<Restaurant>) -> Unit = ::getItems
+    /**
+     * The success function.
+     * A Toast will pop up telling no results were found, if a request
+     * returns an empty list.
+     */
+    override fun successFunction(): (List<Restaurant>) -> Unit = {
+        val onSuccess: (List<Restaurant>) -> Unit = ::setItems
         if (it.isEmpty())
             Toast.makeText(
                 app, R.string.no_result_found,
@@ -36,7 +44,12 @@ class RestaurantRecyclerViewModel(
         Log.v(TAG, "running on the thread : ${Thread.currentThread().name}")
     }
 
-    private fun errorFunction(): () -> Unit = {
+    /**
+     * The error function.
+     * Pops up a Toast if there's no internet connection
+     * or if it couldn't get results.
+     */
+    override fun errorFunction(): () -> Unit = {
         if (!hasInternetConnection(app)) {
             Toast.makeText(
                 app, R.string.no_internet_connection,

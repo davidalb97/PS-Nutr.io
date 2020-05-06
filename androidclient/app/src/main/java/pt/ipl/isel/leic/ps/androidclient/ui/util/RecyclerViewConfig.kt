@@ -3,6 +3,7 @@ package pt.ipl.isel.leic.ps.androidclient.ui.util
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import pt.ipl.isel.leic.ps.androidclient.ui.listener.ScrollListener
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.ARecyclerViewModel
@@ -31,13 +32,13 @@ fun <T> configureRecyclerList(
     // Define adapter
     //list.adapter = adapter
 
-    recyclerViewModel.liveData?.observe(owner, Observer {
-        /*viewModel.adapter = ListAdapter(viewModel)
-        list.adapter = viewModel.adapter*/
-        //adapter.notifyDataSetChanged()
+    /*recyclerViewModel.observe(owner, Observer {
+        recyclerViewModel.adapter = ListAdapter(recyclerViewModel)
+        list.adapter = viewModel.adapter
+        list.adapter.notifyDataSetChanged()
 
 
-    })
+    })*/
 
     list.addOnScrollListener(object :
         ScrollListener(list.layoutManager as LinearLayoutManager) {

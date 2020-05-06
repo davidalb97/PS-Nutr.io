@@ -19,7 +19,7 @@ import pt.ipl.isel.leic.ps.androidclient.data.util.AsyncWorker
 
 const val ADDRESS = "localhost"
 const val PORT = "8080"
-const val PREFIX = "$ADDRESS:$PORT"
+const val URI_BASE = "$ADDRESS:$PORT"
 const val AND = "&"
 const val SKIP = "skip="
 const val COUNT = "count="
@@ -68,7 +68,7 @@ class DataSource(ctx: Context) {
     ) {
         httpServerRequest(
             Method.GET,
-            "$PREFIX",
+            "$URI_BASE",
             RESTAURANTS_DTO,
             success,
             error,

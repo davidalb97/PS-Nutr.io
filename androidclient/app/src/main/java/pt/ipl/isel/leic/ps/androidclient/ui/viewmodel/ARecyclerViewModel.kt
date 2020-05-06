@@ -15,16 +15,16 @@ abstract class ARecyclerViewModel<T> : ViewModel() {
     //private lateinit var currentQuery: Iterable<Pair<"TODO", String>>
 
     /**
-     * Adds more items to the Recycler List
+     * Sets a item list to a Recycler List
      */
-    fun getItems(items: MutableList<T>) {
+    fun setItems(items: List<T>) {
         mediatorLiveData.value = items
     }
 
     /**
      * Adds more items to the existing ones inside the Recycler List
      */
-    fun getMoreItemsExchangingLiveData(items: MutableList<T>) {
+    fun getMoreItemsExchangingLiveData() {
         if (liveData != null)
             mediatorLiveData.removeSource(liveData!!)
         liveData = fetchLiveData()
@@ -44,5 +44,7 @@ abstract class ARecyclerViewModel<T> : ViewModel() {
 
     abstract fun fetchLiveData(): LiveData<List<T>>?
 
-    //abstract fun deleteItem(item: T)
+    abstract fun successFunction(): (List<T>) -> Unit
+
+    abstract fun errorFunction(): () -> Unit
 }
