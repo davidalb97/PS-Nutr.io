@@ -13,11 +13,12 @@ interface MealCuisineDao {
     fun getAll(): List<MealCuisineDto>
 
     @SqlQuery("SELECT * FROM $table WHERE $mealId = :mealId")
-    fun getByMealId(@Bind mealId: Int): MealCuisineDto
+    fun getByMealId(@Bind mealId: Int): MealCuisineDto?
 
     @SqlQuery("SELECT * FROM $table WHERE $cuisineName = :cuisineName")
-    fun getByCuisineName(@Bind cuisineName: String): MealCuisineDto
+    fun getByCuisineName(@Bind cuisineName: String): MealCuisineDto?
 
-    @SqlQuery("INSERT INTO $table($mealId, $cuisineName) VALUES(:restaurantId, :cuisineName)")
-    fun insert(@Bind restaurantId: Int, @Bind cuisineName: String)
+    @SqlQuery("INSERT INTO $table($mealId, $cuisineName)" +
+            " VALUES(:restaurantId, :cuisineName) RETURNING *")
+    fun insert(@Bind restaurantId: Int, @Bind cuisineName: String): MealCuisineDto
 }

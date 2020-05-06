@@ -1,15 +1,12 @@
 package pt.isel.ps.g06.httpserver.dataAccess.api.restaurant
 
-import pt.isel.ps.g06.httpserver.dataAccess.model.RestaurantResponse
-import java.util.concurrent.CompletableFuture
+import pt.isel.ps.g06.httpserver.dataAccess.model.RestaurantDto
 
 interface IRestaurantApi {
 
-    fun getRestaurantInfo(id: Int): Any
+    fun getRestaurantInfo(id: Int): RestaurantDto?
 
-    fun searchRestaurants(latitude: Float, longitude: Float, radiusMeters: Int): CompletableFuture<List<RestaurantResponse>>
+    fun searchRestaurants(latitude: Float, longitude: Float, radiusMeters: Int): List<RestaurantDto>
 
-    fun restaurantDailyMeals(restaurantId: Int): CompletableFuture<List<String>>
-
-    fun getType(): RestaurantApiType
+    fun restaurantDailyMeals(restaurantId: Int): List<String>
 }

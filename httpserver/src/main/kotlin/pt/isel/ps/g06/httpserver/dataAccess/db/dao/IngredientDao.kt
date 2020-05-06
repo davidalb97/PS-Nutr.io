@@ -3,7 +3,6 @@ package pt.isel.ps.g06.httpserver.dataAccess.db.dao
 import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.customizer.BindBeanList
 import org.jdbi.v3.sqlobject.statement.SqlQuery
-import org.jdbi.v3.sqlobject.statement.SqlUpdate
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.IngredientDto
 
 private const val table = "Ingredient"
@@ -33,16 +32,16 @@ interface IngredientDao {
     fun getAllApiIdsBySubmitterId(submitterId: Int): List<Int>
 
     @SqlQuery("SELECT * FROM $table WHERE $name = :ingredientName")
-    fun getByName(@Bind ingredientName: String): IngredientDto
+    fun getByName(@Bind ingredientName: String): IngredientDto?
 
-    @SqlQuery("INSERT INTO $table($id, $name) VALUES(:submissionId, :ingredientName)")
-    fun insert(@Bind submissionId: Int, ingredientName: String)
+    @SqlQuery("INSERT INTO $table($id, $name) VALUES(:submissionId, :ingredientName) RETURNING *")
+    fun insert(@Bind submissionId: Int, ingredientName: String): IngredientDto
 
-    @SqlUpdate("INSERT INTO $table($id, $name) values <values>")
+    @SqlQuery("INSERT INTO $table($id, $name) values <values> RETURNING *")
     fun insertAll(@BindBeanList(
             value = "values",
             propertyNames = [id, name]
-    ) vararg values: IngredientParam)
+    ) values: List<IngredientParam>): List<IngredientDto>
 }
 
 //Variable names must match sql columns!!!

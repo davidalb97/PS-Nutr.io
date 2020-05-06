@@ -1,6 +1,12 @@
 package pt.isel.ps.g06.httpserver.data
 
-data class RestaurantInput(val name: String, val latitude: Float, val longitude: Float, val cuisines: Array<String>) {
+data class RestaurantInput(
+        val name: String,
+        val latitude: Float,
+        val longitude: Float,
+        val cuisines: Array<String>,
+        val submitterId: Int
+) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false

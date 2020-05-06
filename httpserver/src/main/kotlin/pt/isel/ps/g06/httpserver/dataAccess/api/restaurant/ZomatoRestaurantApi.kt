@@ -1,48 +1,37 @@
 package pt.isel.ps.g06.httpserver.dataAccess.api.restaurant
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import pt.isel.ps.g06.httpserver.dataAccess.api.HttpApiClient
-import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.dto.DailyMenuDto
-import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.dto.RestaurantSearchResultDto
-import pt.isel.ps.g06.httpserver.dataAccess.model.RestaurantResponse
-import java.util.concurrent.CompletableFuture
+import org.springframework.stereotype.Repository
+import pt.isel.ps.g06.httpserver.dataAccess.api.common.BaseApi
+import pt.isel.ps.g06.httpserver.dataAccess.api.common.HttpApiClient
+import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.dto.ApiRestaurantDto
+import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.dto.DailyMenuDtoMapper
+import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.dto.RestaurantSearchResultDtoMapper
+import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.mapper.ZomatoResponseMapper
+import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.uri.ZomatoUriBuilder
+import pt.isel.ps.g06.httpserver.dataAccess.model.RestaurantDto
 
 private const val ZOMATO_API_KEY = "3e128506ffbfc1c23b4e2b6acd3eb84b"
 
-class ZomatoRestaurantApi(private val clientHttp: HttpApiClient, private val jsonMapper: ObjectMapper) : IRestaurantApi {
+@Repository
+class ZomatoRestaurantApi(
+        httpClient: HttpApiClient,
+        private val uriBuilder: ZomatoUriBuilder,
+        restaurantMapper: ZomatoResponseMapper
+) : IRestaurantApi, BaseApi(httpClient, restaurantMapper) {
+    private val headers = mapOf(Pair("user-key", ZOMATO_API_KEY), Pair("Accept", "application/json"))
 
-    private val uri = ZomatoUriBuilder()
-
-    override fun getRestaurantInfo(id: Int): Any {
-        TODO("Not yet implemented")
+    override fun getRestaurantInfo(id: Int): RestaurantDto? {
+        val uri = uriBuilder.searchRestaurantById(id)
+        return requestDto(uri, ApiRestaurantDto::class.java, headers)
     }
 
-    override fun searchRestaurants(
-            latitude: Float,
-            longitude: Float,
-            radiusMeters: Int
-    ): CompletableFuture<List<RestaurantResponse>> {
-        return requestDto(
-                uri.restaurantSearchUri(latitude, longitude, radiusMeters),
-                RestaurantSearchResultDto::class.java
-        ).thenApply(RestaurantSearchResultDto::unDto)
+    override fun searchRestaurants(latitude: Float, longitude: Float, radiusMeters: Int): List<RestaurantDto> {
+        val uri = uriBuilder.restaurantSearchUri(latitude, longitude, radiusMeters)
+        return requestDto(uri, RestaurantSearchResultDtoMapper::class.java).restaurants.map { it.restaurant }
     }
 
-    override fun restaurantDailyMeals(restaurantId: Int): CompletableFuture<List<String>> {
-        return requestDto(
-                uri.restaurantDailyMenuUri(restaurantId),
-                DailyMenuDto::class.java
-        ).thenApply(DailyMenuDto::unDto)
+    override fun restaurantDailyMeals(restaurantId: Int): List<String> {
+        val uri = uriBuilder.restaurantDailyMenuUri(restaurantId)
+        return requestDto(uri, DailyMenuDtoMapper::class.java, headers).let(DailyMenuDtoMapper::mapDto)
     }
-
-    private fun <D> requestDto(urlStr: String, klass: Class<D>): CompletableFuture<D> {
-        return clientHttp.request(
-                urlStr,
-                mapOf(Pair("user-key", ZOMATO_API_KEY), Pair("Accept", "application/json")),
-                { false },
-                { jsonMapper.readValue(it.body(), klass) }
-        )
-    }
-
-    override fun getType() = RestaurantApiType.Zomato
 }

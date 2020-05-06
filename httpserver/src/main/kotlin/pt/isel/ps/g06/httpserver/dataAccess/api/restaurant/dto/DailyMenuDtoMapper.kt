@@ -1,19 +1,17 @@
 package pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.dto
 
-import pt.isel.ps.g06.httpserver.dataAccess.api.IUnDto
-
-data class DailyMenuDto(
+data class DailyMenuDtoMapper(
         val daily_menu: Array<DailyMenuContainerDto>?,
         val code: Int?,
         val status: String?,
         val message: String?
-) : IUnDto<List<String>> {
+) : DtoMapper<List<String>> {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as DailyMenuDto
+        other as DailyMenuDtoMapper
 
         if (daily_menu != null) {
             if (other.daily_menu == null) return false
@@ -34,7 +32,7 @@ data class DailyMenuDto(
         return result
     }
 
-    override fun unDto(): List<String> {
+    override fun mapDto(): List<String> {
         if (code != 200) return emptyList()
         return daily_menu!!
                 .flatMap { container -> container.dishes!!.asList() }

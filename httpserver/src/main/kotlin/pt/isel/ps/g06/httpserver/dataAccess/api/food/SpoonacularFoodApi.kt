@@ -1,14 +1,18 @@
 package pt.isel.ps.g06.httpserver.dataAccess.api.food
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import pt.isel.ps.g06.httpserver.dataAccess.api.HttpApiClient
+import org.springframework.stereotype.Repository
+import pt.isel.ps.g06.httpserver.dataAccess.api.common.BaseApi
+import pt.isel.ps.g06.httpserver.dataAccess.api.common.HttpApiClient
 import pt.isel.ps.g06.httpserver.dataAccess.api.food.dto.*
-import java.util.concurrent.CompletableFuture
+import pt.isel.ps.g06.httpserver.dataAccess.api.food.mapper.SpoonacularResponseMapper
+import pt.isel.ps.g06.httpserver.dataAccess.api.food.uri.SpoonacularUriBuilder
 
-
-class SpoonacularFoodApi(private val clientHttp: HttpApiClient, private val jsonMapper: ObjectMapper) : IFoodApi {
-
-    private val uri = SpoonacularUriBuilder()
+@Repository
+class SpoonacularFoodApi(
+        httpClient: HttpApiClient,
+        private val uriBuilder: SpoonacularUriBuilder,
+        responseMapper: SpoonacularResponseMapper
+) : IFoodApi, BaseApi(httpClient, responseMapper) {
 
     override fun productsSearch(
             query: String,
@@ -22,39 +26,38 @@ class SpoonacularFoodApi(private val clientHttp: HttpApiClient, private val json
             maxFat: Int?,
             offset: Int?,
             number: Int?
-    ): CompletableFuture<ProductSearchContainerDto> {
-        return requestDto(
-                uri.productsSearchUri(
-                        query,
-                        minCalories,
-                        maxCalories,
-                        minCarbs,
-                        maxCarbs,
-                        minProtein,
-                        maxProtein,
-                        minFat,
-                        maxFat,
-                        offset,
-                        number
-                ),
-                ProductSearchContainerDto::class.java
+    ): ProductSearchContainerDto {
+        val uri = uriBuilder.productsSearch(
+                query,
+                minCalories,
+                maxCalories,
+                minCarbs,
+                maxCarbs,
+                minProtein,
+                maxProtein,
+                minFat,
+                maxFat,
+                offset,
+                number
         )
+
+        return requestDto(uri, ProductSearchContainerDto::class.java)
     }
 
-    override fun productSearchAutocompleteUri(
-            query: String,
-            number: Int?
-    ): CompletableFuture<List<ProductSearchAutoComplDto>> {
-        return requestDto(
-                uri.productSearchAutocompleteUri(query, number),
-                ProductSearchAutoComplContainerDto::class.java
-        ).thenApply(ProductSearchAutoComplContainerDto::unDto)
+    override fun productSearchAutocompleteUri(query: String, number: Int?): List<ProductSearchAutoComplDto> {
+        val uri = uriBuilder.productSearchAutocomplete(query, number)
+        return emptyList()
+//        return  requestDto(uri, ProductSearchAutoComplContainerDtoMapper::class.java).
+//        return requestDto(
+//                uriBuilder.productSearchAutocompleteUri(query, number),
+//                ProductSearchAutoComplContainerDto::class.java
+//        ).thenApply(ProductSearchAutoComplContainerDto::unDto)
     }
 
     //-------------------------------Recipes------------------------------------
 
-    override fun recipeIngredients(recipeId: String): CompletableFuture<RecipeIngredientsDto> {
-        return requestDto(uri.recipeIngredientsUri(recipeId), RecipeIngredientsDto::class.java)
+    override fun recipeIngredients(recipeId: String): RecipeIngredientsDto {
+        return requestDto(uriBuilder.recipeIngredients(recipeId), RecipeIngredientsDto::class.java)
     }
 
     override fun searchRecipes(
@@ -67,21 +70,21 @@ class SpoonacularFoodApi(private val clientHttp: HttpApiClient, private val json
             number: Int?,
             limitLicense: Boolean?,
             instructionsRequired: Boolean?
-    ): CompletableFuture<List<RecipeDto>> {
-
-        return requestDto(
-                uri.recipesSearchUri(
-                        recipeName,
-                        cuisines,
-                        diet,
-                        excludeIngredients,
-                        intolerances,
-                        offset,
-                        number,
-                        limitLicense,
-                        instructionsRequired
-                ), RecipeContainerDto::class.java
-        ).thenApply(RecipeContainerDto::unDto)
+    ): List<RecipeDto> {
+        return emptyList()
+//        return requestDto(
+//                uriBuilder.recipesSearchUri(
+//                        recipeName,
+//                        cuisines,
+//                        diet,
+//                        excludeIngredients,
+//                        intolerances,
+//                        offset,
+//                        number,
+//                        limitLicense,
+//                        instructionsRequired
+//                ), RecipeContainerDto::class.java
+//        ).thenApply(RecipeContainerDto::unDto)
     }
 
     //----------------------------Ingredients----------------------------------
@@ -91,32 +94,18 @@ class SpoonacularFoodApi(private val clientHttp: HttpApiClient, private val json
             number: Int?,
             metaInformation: Boolean?,
             intolerances: Array<String>?
-    ): CompletableFuture<IngredientSearchDto> {
-        return requestDto(uri.ingredientSearchAutocompleteUri(
+    ): IngredientSearchDto {
+        val uri = uriBuilder.ingredientSearchAutocomplete(
                 query,
                 number,
                 metaInformation,
                 intolerances
-        ), IngredientSearchDto::class.java)
-    }
-
-    override fun ingredientInformation(
-            id: Int,
-            amount: Int?,
-            unit: SpoonacularUnitTypes
-    ): CompletableFuture<IngredientInfoDto> {
-        val requestDto = requestDto(uri.ingredientInfoUri(id, amount, unit), IngredientInfoDto::class.java).get()
-        return CompletableFuture.completedFuture(requestDto)
-    }
-
-    private fun <D> requestDto(urlStr: String, klass: Class<D>): CompletableFuture<D> {
-        return clientHttp.request(
-                urlStr,
-                mapOf(Pair("Accept", "application/json")),
-                { false },
-                { jsonMapper.readValue(it.body(), klass) }
         )
+        return requestDto(uri, IngredientSearchDto::class.java)
     }
 
-    override fun getType() = FoodApiType.Spoonacular
+    override fun ingredientInformation(id: Int, amount: Int?, unit: SpoonacularUnitTypes): IngredientInfoDto {
+        val uri = uriBuilder.ingredientInfo(id, amount, unit)
+        return requestDto(uri, IngredientInfoDto::class.java)
+    }
 }

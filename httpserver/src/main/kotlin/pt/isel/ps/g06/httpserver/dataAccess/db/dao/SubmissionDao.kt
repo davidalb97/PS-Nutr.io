@@ -2,9 +2,7 @@ package pt.isel.ps.g06.httpserver.dataAccess.db.dao
 
 import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.customizer.BindBeanList
-import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys
 import org.jdbi.v3.sqlobject.statement.SqlQuery
-import org.jdbi.v3.sqlobject.statement.SqlUpdate
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.SubmissionDto
 
 private const val table = "Submission"
@@ -17,18 +15,19 @@ interface SubmissionDao {
     fun getAll(): List<SubmissionDto>
 
     @SqlQuery("SELECT * FROM $table WHERE $id = :submissionId")
-    fun getById(submissionId: Int): SubmissionDto
+    fun getById(submissionId: Int): SubmissionDto?
 
-    @SqlQuery("INSERT INTO $table($type) VALUES(:submission_type)")
-    @GetGeneratedKeys
-    fun insert(@Bind submission_type: String): Int
+    @SqlQuery("INSERT INTO $table($type) VALUES(:submission_type) RETURNING *")
+    fun insert(@Bind submission_type: String): SubmissionDto
 
-    @SqlUpdate("INSERT INTO $table($type) values <values>")
-    @GetGeneratedKeys
+    @SqlQuery("INSERT INTO $table($type) values <values> RETURNING *")
     fun insertAll(@BindBeanList(
             value = "values",
             propertyNames = [type]
-    ) vararg values: SubmissionParam): List<Int>
+    ) values: List<SubmissionParam>): List<SubmissionDto>
+
+    @SqlQuery("DELETE FROM $table($type) WHERE $id = :submissionId RETURNING *")
+    fun delete(@Bind submission_id: Int): Boolean
 }
 
 //Variable names must match sql columns!!!
