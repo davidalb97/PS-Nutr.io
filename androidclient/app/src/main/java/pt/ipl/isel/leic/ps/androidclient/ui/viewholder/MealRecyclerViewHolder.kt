@@ -21,4 +21,10 @@ class MealRecyclerViewHolder(view: ViewGroup, ctx: Context) : ARecyclerViewHolde
     val dowvoteButton = view.findViewById<ImageButton>(R.id.downvote)
     val favoriteButton = view.findViewById<ImageButton>(R.id.favorite)
     val optionsButton = view.findViewById<ImageButton>(R.id.options)
+
+    override fun bindTo(meal: Meal) {
+        super.bindTo(meal)
+
+        mealName.text = meal.name
+    }
 }

@@ -5,17 +5,17 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
-import android.os.Build
-import com.android.volley.RequestQueue
-import com.android.volley.toolbox.Volley
-import pt.ipl.isel.leic.ps.androidclient.data.repo.HttpServerRepository
+import pt.ipl.isel.leic.ps.androidclient.data.repo.CuisineRepository
+import pt.ipl.isel.leic.ps.androidclient.data.repo.MealRepository
+import pt.ipl.isel.leic.ps.androidclient.data.repo.RestaurantRepository
+import pt.ipl.isel.leic.ps.androidclient.data.source.DataSource
 
 const val TAG = "Nutr.io App"
 
 /**
  * The application context.
  * ---------------------------------------
- * Starts the the application's repositories.
+ * Starts the the application's data source & repositories.
  */
 class NutrioApp : Application() {
 
@@ -25,10 +25,24 @@ class NutrioApp : Application() {
     lateinit var app: Context
 
     /**
+     * DataSource initialization
+     */
+    private val dataSource
+            by lazy { DataSource(app) }
+
+    /**
+     * Local databases initialization
+     */
+
+    /**
      *  Repositories initialization
      */
-    val httpServerRepository
-            by lazy { HttpServerRepository(app) }
+    val restaurantRepository
+            by lazy { RestaurantRepository(dataSource) }
+    val mealRepository
+            by lazy { MealRepository(dataSource) }
+    val cuisineRepository
+            by lazy { CuisineRepository(dataSource) }
 
     override fun onCreate() {
         super.onCreate()

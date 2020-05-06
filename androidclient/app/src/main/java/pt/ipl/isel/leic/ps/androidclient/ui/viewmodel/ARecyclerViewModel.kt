@@ -43,8 +43,4 @@ abstract class ARecyclerViewModel<T> : ViewModel() {
     }
 
     abstract fun fetchLiveData(): LiveData<List<T>>?
-
-    abstract fun successFunction(): (List<T>) -> Unit
-
-    abstract fun errorFunction(): () -> Unit
 }

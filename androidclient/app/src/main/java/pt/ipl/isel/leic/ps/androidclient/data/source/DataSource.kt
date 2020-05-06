@@ -10,21 +10,21 @@ import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import pt.ipl.isel.leic.ps.androidclient.TAG
+import pt.ipl.isel.leic.ps.androidclient.data.source.dtos.CuisinesDto
 import pt.ipl.isel.leic.ps.androidclient.data.source.dtos.IUnDto
 import pt.ipl.isel.leic.ps.androidclient.data.source.dtos.MealsDto
 import pt.ipl.isel.leic.ps.androidclient.data.source.dtos.RestaurantsDto
+import pt.ipl.isel.leic.ps.androidclient.data.source.model.Cuisine
 import pt.ipl.isel.leic.ps.androidclient.data.source.model.Meal
 import pt.ipl.isel.leic.ps.androidclient.data.source.model.Restaurant
 import pt.ipl.isel.leic.ps.androidclient.data.util.AsyncWorker
 
 const val ADDRESS = "localhost"
 const val PORT = "8080"
-const val URI_BASE = "$ADDRESS:$PORT"
+const val URI_BASE = "http://$ADDRESS:$PORT"
 const val AND = "&"
 const val SKIP = "skip="
 const val COUNT = "count="
-const val SLASH = "/"
-const val QUERY = "?"
 const val RESTAURANT = "restaurant"
 const val MEAL = "meal"
 const val CUISINES = "cuisines"
@@ -33,6 +33,7 @@ const val USER_QUERY = "user"
 
 val RESTAURANTS_DTO = RestaurantsDto::class.java
 val MEALS_DTO = MealsDto::class.java
+val CUISINES_DTO = CuisinesDto::class.java
 
 /**
  * HTTP methods enum
@@ -68,7 +69,7 @@ class DataSource(ctx: Context) {
     ) {
         httpServerRequest(
             Method.GET,
-            "$URI_BASE",
+            "$URI_BASE/$RESTAURANT",
             RESTAURANTS_DTO,
             success,
             error,
@@ -84,8 +85,24 @@ class DataSource(ctx: Context) {
     ) {
         httpServerRequest(
             Method.GET,
-            "",
+            "$URI_BASE/$MEAL",
             MEALS_DTO,
+            success,
+            error,
+            null
+        )
+    }
+
+    fun getCuisines(
+        success: (List<Cuisine>) -> Unit,
+        error: (VolleyError) -> Unit,
+        count: Int,
+        skip: Int
+    ) {
+        httpServerRequest(
+            Method.GET,
+            "$URI_BASE/$CUISINES",
+            CUISINES_DTO,
             success,
             error,
             null
