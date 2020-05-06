@@ -22,7 +22,7 @@ class RestaurantMealsController(
 
     }
 
-    @PostMapping(RESTAURANT_MEALS)
+    @PostMapping(RESTAURANT_MEAL_PORTION)
     fun addMealPortion(@PathVariable(RESTAURANT_ID_VALUE) id: String, @PathVariable(MEAL_ID_VALUE) mealId: String, @RequestBody portion: String) {
 
     }
