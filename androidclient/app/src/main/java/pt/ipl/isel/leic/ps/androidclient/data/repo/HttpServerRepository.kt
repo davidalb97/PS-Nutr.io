@@ -1,8 +1,7 @@
 package pt.ipl.isel.leic.ps.androidclient.data.repo
 
 import android.content.Context
-import com.android.volley.RequestQueue
-import pt.ipl.isel.leic.ps.androidclient.data.source.ApiRequester
+import pt.ipl.isel.leic.ps.androidclient.data.source.DataSource
 import pt.ipl.isel.leic.ps.androidclient.data.source.model.Meal
 import pt.ipl.isel.leic.ps.androidclient.data.source.model.Restaurant
 
@@ -10,31 +9,35 @@ import pt.ipl.isel.leic.ps.androidclient.data.source.model.Restaurant
  * The repository that displays to the view models all the available methods
  * to request the HTTP server.
  */
-class HttpServerRepository(private val ctx: Context, private val volleyQueue: RequestQueue) {
+class HttpServerRepository(ctx: Context) {
 
-    val apiRequester = ApiRequester(ctx, volleyQueue)
+    private val dataSource = DataSource(ctx)
 
     fun getRestaurants(
         success: (List<Restaurant>) -> Unit,
         error: () -> Unit,
-        count: Int
+        count: Int,
+        skip: Int
     ) {
-        apiRequester.getRestaurants(
+        dataSource.getRestaurants(
             { success(it) },
             { error() },
-            count
+            count,
+            skip
         )
     }
 
     fun getMeal(
         success: (List<Meal>) -> Unit,
         error: () -> Unit,
-        count: Int
+        count: Int,
+        skip: Int
     ) {
-        apiRequester.getMeals(
+        dataSource.getMeals(
             { success(it) },
             { error() },
-            count
+            count,
+            skip
         )
     }
 }

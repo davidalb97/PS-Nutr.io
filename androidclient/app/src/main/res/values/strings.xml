@@ -45,4 +45,5 @@
     <string name="menu">Menu</string>
     <string name="downvote">Downvote</string>
     <string name="upvote">Upvote</string>
+    <string name="no_internet_connection">Please connect your device to the internet</string>
 </resources>

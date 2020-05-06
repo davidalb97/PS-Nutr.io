@@ -3,9 +3,9 @@ package pt.ipl.isel.leic.ps.androidclient.data.source
 import android.content.Context
 import android.util.Log
 import com.android.volley.Request
-import com.android.volley.RequestQueue
 import com.android.volley.Response
 import com.android.volley.VolleyError
+import com.android.volley.toolbox.Volley
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.KotlinModule
@@ -17,8 +17,9 @@ import pt.ipl.isel.leic.ps.androidclient.data.source.model.Meal
 import pt.ipl.isel.leic.ps.androidclient.data.source.model.Restaurant
 import pt.ipl.isel.leic.ps.androidclient.data.util.AsyncWorker
 
-const val ADDRESS = "TODO"
-const val PORT = "TODO"
+const val ADDRESS = "localhost"
+const val PORT = "8080"
+const val PREFIX = "$ADDRESS:$PORT"
 const val AND = "&"
 const val SKIP = "skip="
 const val COUNT = "count="
@@ -33,6 +34,9 @@ const val USER_QUERY = "user"
 val RESTAURANTS_DTO = RestaurantsDto::class.java
 val MEALS_DTO = MealsDto::class.java
 
+/**
+ * HTTP methods enum
+ */
 enum class Method(val value: Int) {
     GET(Request.Method.GET),
     POST(Request.Method.POST),
@@ -40,7 +44,10 @@ enum class Method(val value: Int) {
     DELETE(Request.Method.DELETE)
 }
 
-class ApiRequester(private val ctx: Context, private val reqQueue: RequestQueue) {
+/**
+ * This class contains the endpoints available for this app
+ */
+class DataSource(ctx: Context) {
 
     val dtoMapper = ObjectMapper()
         //Ignore unknown json fields
@@ -48,18 +55,20 @@ class ApiRequester(private val ctx: Context, private val reqQueue: RequestQueue)
         //Enable primary constructor on DTOs
         .registerModule(KotlinModule())
 
+    val queue = Volley.newRequestQueue(ctx)
+
     /**
-     * GETs
+     * ----------------------------- GETs -----------------------------
      */
-    // ----------------------------- GETs -----------------------------
     fun getRestaurants(
         success: (List<Restaurant>) -> Unit,
         error: (VolleyError) -> Unit,
-        count: Int
+        count: Int,
+        skip: Int
     ) {
         httpServerRequest(
             Method.GET,
-            "",
+            "$PREFIX",
             RESTAURANTS_DTO,
             success,
             error,
@@ -70,7 +79,8 @@ class ApiRequester(private val ctx: Context, private val reqQueue: RequestQueue)
     fun getMeals(
         success: (List<Meal>) -> Unit,
         error: (VolleyError) -> Unit,
-        count: Int
+        count: Int,
+        skip: Int
     ) {
         httpServerRequest(
             Method.GET,
@@ -82,11 +92,17 @@ class ApiRequester(private val ctx: Context, private val reqQueue: RequestQueue)
         )
     }
 
-    // ----------------------------- POSTs -----------------------------
+    /**
+     * ----------------------------- POSTs -----------------------------
+     */
 
-    // ----------------------------- DELETEs ---------------------------
+    /**
+     * ----------------------------- DELETEs ---------------------------
+     */
 
-    // ----------------------------- PUTs ------------------------------
+    /**
+     * ----------------------------- PUTs ------------------------------
+     */
 
     /**
      * A generic Volley's requester
@@ -126,7 +142,7 @@ class ApiRequester(private val ctx: Context, private val reqQueue: RequestQueue)
                     onError(it)
                 }
             )
-            reqQueue.add(jsonRequest)
+            queue.add(jsonRequest)
         }.execute()
     }
 }
