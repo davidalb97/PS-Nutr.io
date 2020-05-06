@@ -6,12 +6,13 @@ import org.springframework.stereotype.Repository
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionContractType.REPORTABLE
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.ReportDao
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.ReportDto
+import pt.isel.ps.g06.httpserver.springConfig.DbConfig
 
 private val isolationLevel = TransactionIsolationLevel.SERIALIZABLE
 private val reportDaoClass = ReportDao::class.java
 
 @Repository
-class ReportDbRepository(jdbi: Jdbi) : BaseDbRepo(jdbi) {
+class ReportDbRepository(jdbi: Jdbi, config: DbConfig) : BaseDbRepo(jdbi, config) {
 
     fun insert(
             submitterId: Int,

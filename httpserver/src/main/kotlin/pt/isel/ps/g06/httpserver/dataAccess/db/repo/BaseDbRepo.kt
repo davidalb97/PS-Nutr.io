@@ -9,11 +9,15 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.*
 import pt.isel.ps.g06.httpserver.exception.InvalidInputDomain
 import pt.isel.ps.g06.httpserver.exception.InvalidInputException
+import pt.isel.ps.g06.httpserver.springConfig.DbConfig
+import java.time.Duration
+import java.time.OffsetDateTime
 
 @Repository
 
 class BaseDbRepo constructor(
-        internal val jdbi: Jdbi
+        internal val jdbi: Jdbi,
+        internal val config: DbConfig
 ) {
 
     /**
@@ -132,6 +136,24 @@ class BaseDbRepo constructor(
         return jdbi.inTransaction<Boolean, Exception>(defaultIsolation) {
             return@inTransaction it.attach(ApiDao::class.java)
                     .getById(submitterId) != null
+        }
+    }
+
+    /**
+     * @throws InvalidInputException If submission change timed out.
+     */
+    fun requireEditable(submissionId: Int, defaultIsolation: TransactionIsolationLevel = SERIALIZABLE) {
+        return jdbi.inTransaction<Unit, Exception>(defaultIsolation) {
+            val creationDate = it.attach(SubmissionDao::class.java)
+                    .getById(submissionId)!!.submission_date
+
+            val seconds = Duration.between(creationDate, OffsetDateTime.now()).seconds
+
+            if(config.`edit-timeout-minutes`!!.seconds > seconds) {
+                throw InvalidInputException(InvalidInputDomain.TIMEOUT,
+                        "Submission change timed out!"
+                )
+            }
         }
     }
 }

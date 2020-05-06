@@ -13,6 +13,7 @@ import pt.isel.ps.g06.httpserver.db.InsertConstants
 import pt.isel.ps.g06.httpserver.db.RepoAsserts
 import pt.isel.ps.g06.httpserver.db.getDtosFromIngredientNames
 import pt.isel.ps.g06.httpserver.db.inRollbackTransaction
+import pt.isel.ps.g06.httpserver.springConfig.DbConfig
 
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.Random::class)
@@ -20,13 +21,15 @@ class MealSubmissionTest {
 
     @Autowired
     lateinit var jdbi: Jdbi
+    @Autowired
+    lateinit var dbConfig: DbConfig
     lateinit var const: InsertConstants
     lateinit var asserts: RepoAsserts
     lateinit var mealRepo: MealDbRepository
 
     @BeforeEach
     fun setup() {
-        mealRepo = MealDbRepository(jdbi)
+        mealRepo = MealDbRepository(jdbi, dbConfig)
         const = InsertConstants(jdbi)
         asserts = RepoAsserts(const)
     }

@@ -20,8 +20,8 @@ interface SubmissionSubmitterDao {
     fun getAllBySubmitterId(submitterId: Int): List<SubmissionSubmitterDto>
 
     @SqlQuery("INSERT INTO $table($submissionId, $submitterId)" +
-            " VALUES(:submission_id, :submitter_id) RETURNING *")
-    fun insert(@Bind submission_id: Int, @Bind submitter_id: Int): SubmissionSubmitterDto
+            " VALUES(:submissionId, :submitterId) RETURNING *")
+    fun insert(@Bind submissionId: Int, @Bind submitterId: Int): SubmissionSubmitterDto
 
     @SqlQuery("INSERT INTO $table($submissionId, $submitterId) values <values> RETURNING *")
     fun insertAll(@BindBeanList(
@@ -29,8 +29,8 @@ interface SubmissionSubmitterDao {
             propertyNames = [submissionId, submitterId]
     ) values: List<SubmissionSubmitterParam>): List<SubmissionSubmitterDto>
 
-    @SqlQuery("DELETE FROM $table WHERE $submissionId = :submission_id RETURNING *")
-    fun deleteAllBySubmissionId(submission_id: Int): List<SubmissionSubmitterDto>
+    @SqlQuery("DELETE FROM $table WHERE $submissionId = :submissionId RETURNING *")
+    fun deleteAllBySubmissionId(submissionId: Int): List<SubmissionSubmitterDto>
 }
 
 data class SubmissionSubmitterParam(

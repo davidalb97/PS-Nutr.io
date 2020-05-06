@@ -2,7 +2,9 @@ package pt.isel.ps.g06.httpserver.dataAccess.db.dao
 
 import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.customizer.BindBeanList
+import org.jdbi.v3.sqlobject.customizer.BindList
 import org.jdbi.v3.sqlobject.statement.SqlQuery
+import pt.isel.ps.g06.httpserver.dataAccess.db.dto.MealCuisineDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.MealIngredientDto
 
 private const val table = "MealIngredient"
@@ -31,6 +33,14 @@ interface MealIngredientDao {
 
     @SqlQuery("DELETE FROM $table WHERE $mealId = :submissionId RETURNING *")
     fun deleteAllByMealId(submissionId: Int): List<MealIngredientDto>
+
+    @SqlQuery("DELETE FROM $table" +
+            " WHERE $mealId = :submissionId" +
+            " AND $ingredientId in <values> RETURNING *")
+    fun deleteAllByMealIdAndIngredientIds(
+            @Bind submissionId: Int,
+            @BindList("values") deleteIngredientIds: List<Int>
+    ): List<MealIngredientDto>
 }
 
 //Variable names must match sql columns

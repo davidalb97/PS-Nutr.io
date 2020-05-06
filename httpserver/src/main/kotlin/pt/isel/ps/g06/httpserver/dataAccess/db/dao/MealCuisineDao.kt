@@ -30,14 +30,14 @@ interface MealCuisineDao {
             propertyNames = [mealId, cuisineName]
     ) newName: List<MealCuisineParam>): List<MealCuisineDto>
 
-    @SqlQuery("DELETE FROM $table WHERE $mealId = :submission_id RETURNING *")
-    fun deleteAllByMealId(@Bind submission_id: Int): List<MealCuisineDto>
+    @SqlQuery("DELETE FROM $table WHERE $mealId = :submissionId RETURNING *")
+    fun deleteAllByMealId(@Bind submissionId: Int): List<MealCuisineDto>
 
     @SqlQuery("DELETE FROM $table" +
-            " WHERE $mealId = :submission_id" +
+            " WHERE $mealId = :submissionId" +
             " AND $cuisineName in <values> RETURNING *")
     fun deleteAllByMealIdAndCuisine(
-            @Bind submission_id: Int,
+            @Bind submissionId: Int,
             @BindList("values") newName: List<String>
     ): List<MealCuisineDto>
 }

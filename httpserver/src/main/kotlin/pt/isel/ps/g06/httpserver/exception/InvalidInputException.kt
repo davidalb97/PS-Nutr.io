@@ -16,5 +16,6 @@ enum class InvalidInputDomain(val domain: String) {
     API("api"),
     VOTE("vote"),
     MEAL("meal"),
-    CONTRACT("contract")
+    CONTRACT("contract"),
+    TIMEOUT("timeout")
 }
