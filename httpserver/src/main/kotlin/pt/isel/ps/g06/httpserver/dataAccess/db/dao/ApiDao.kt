@@ -29,7 +29,7 @@ interface ApiDao {
     @SqlQuery("SELECT $table.$id, $table.$apiToken" +
             " FROM $table" +
             " INNER JOIN $SS_table" +
-            " ON $SS_table.$submitterId = $table.$id" +
+            " ON $SS_table.$SS_submitterId = $table.$id" +
             " WHERE $SS_table.$SS_submissionId = :submissionId"
     )
     fun getSubmitterBySubmissionId(submissionId: Int): ApiDto?
