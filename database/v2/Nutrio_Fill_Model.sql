@@ -1,7 +1,6 @@
 INSERT INTO Submitter(submitter_name, submitter_type) VALUES
 ('Admin', 'User'),
 ('Spoonacular', 'API');
-select * from Submitter;
 
 INSERT INTO _User(submitter_id, email, session_secret) VALUES
 (1, 'admin@gmail.com', '123456789');
