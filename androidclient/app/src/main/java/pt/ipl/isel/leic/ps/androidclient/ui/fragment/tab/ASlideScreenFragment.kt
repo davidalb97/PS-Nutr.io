@@ -1,4 +1,4 @@
-package pt.ipl.isel.leic.ps.androidclient.ui.fragment.slide
+package pt.ipl.isel.leic.ps.androidclient.ui.fragment.tab
 
 import android.os.Bundle
 import android.view.LayoutInflater
