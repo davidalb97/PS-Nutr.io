@@ -4,12 +4,11 @@ import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.transaction.TransactionIsolationLevel
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.CuisineDao
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.CuisineDto
-import pt.isel.ps.g06.httpserver.springConfig.DbConfig
 
 private val isolationLevel = TransactionIsolationLevel.SERIALIZABLE
 private val cuisineDaoClass = CuisineDao::class.java
 
-class CuisineDbRepository(jdbi: Jdbi, config: DbConfig) : BaseDbRepo(jdbi, config) {
+class CuisineDbRepository(jdbi: Jdbi) : BaseDbRepo(jdbi) {
 
     fun getByName(name: String): List<CuisineDto> {
         return jdbi.inTransaction<List<CuisineDto>, Exception>(isolationLevel) {

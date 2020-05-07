@@ -5,7 +5,6 @@ import org.jdbi.v3.sqlobject.customizer.BindBeanList
 import org.jdbi.v3.sqlobject.customizer.BindList
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.ApiSubmissionDto
-import pt.isel.ps.g06.httpserver.dataAccess.db.dto.RestaurantCuisineDto
 
 private const val table = "ApiSubmission"
 private const val submissionId = "submission_id"
@@ -40,6 +39,25 @@ interface ApiSubmissionDao {
             @Bind submitterId: Int,
             @Bind submissionType: String,
             @BindList("values") apiIds: List<Int>
+    ): List<ApiSubmissionDto>
+
+    @SqlQuery("SELECT $table.$submissionId, $table.$apiId" +
+            " FROM $table" +
+            " INNER JOIN $SS_table" +
+            " ON $table.$submissionId = $SS_table.$SS_submissionId" +
+            " INNER JOIN $S_table" +
+            " ON $table.$submissionId = $S_table.$S_submissionId" +
+            " WHERE $SS_table.$SS_submitterId = :submitterId" +
+            " AND $S_table.$S_type = :submissionType"
+    )
+    fun getAllBySubmitterIdAndType(
+            @Bind submitterId: Int,
+            @Bind submissionType: String
+    ): List<ApiSubmissionDto>
+
+    @SqlQuery("SELECT * FROM $table WHERE $submissionId in (<values>)")
+    fun getAllBySubmissionIds(
+            @BindList("values") submissionIds: List<Int>
     ): List<ApiSubmissionDto>
 
     @SqlQuery("SELECT * FROM $table WHERE $apiId = :apiId")

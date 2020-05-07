@@ -11,13 +11,13 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.dao.*
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.RestaurantDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.SubmissionDto
 import pt.isel.ps.g06.httpserver.dataAccess.model.RestaurantApiId
-import pt.isel.ps.g06.httpserver.springConfig.DbConfig
+import pt.isel.ps.g06.httpserver.springConfig.dto.DbEditableDto
 
 private val isolationLevel = TransactionIsolationLevel.SERIALIZABLE
 private val restaurantDaoClass = RestaurantDao::class.java
 
 @Repository
-class RestaurantDbRepository(jdbi: Jdbi, config: DbConfig) : BaseDbRepo(jdbi, config) {
+class RestaurantDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo(jdbi) {
 
     fun getById(id: Int): RestaurantDto? {
         return jdbi.inTransaction<RestaurantDto, Exception>(isolationLevel) {
@@ -83,7 +83,7 @@ class RestaurantDbRepository(jdbi: Jdbi, config: DbConfig) : BaseDbRepo(jdbi, co
             requireSubmission(submissionId, RESTAURANT, isolationLevel)
 
             // Check if the submission is modifiable
-            requireEditable(submissionId, isolationLevel)
+            requireEditable(submissionId, config.`edit-timeout-minutes`!!, isolationLevel)
 
             // Delete portions and meals associated to this restaurant
             it.attach(RestaurantMealPortionDao::class.java).deleteAllByRestaurantId(submissionId)
@@ -131,7 +131,7 @@ class RestaurantDbRepository(jdbi: Jdbi, config: DbConfig) : BaseDbRepo(jdbi, co
             requireSubmission(submissionId, SubmissionType.MEAL, isolationLevel)
 
             // Check if the submission is modifiable
-            requireEditable(submissionId, isolationLevel)
+            requireEditable(submissionId, config.`edit-timeout-minutes`!!, isolationLevel)
 
             // Update restaurant name
             it.attach(restaurantDaoClass).update(submissionId, name)

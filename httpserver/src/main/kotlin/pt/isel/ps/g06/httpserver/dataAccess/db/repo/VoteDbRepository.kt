@@ -7,13 +7,12 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionContractType.VOTABLE
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.VoteDao
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.VoteDto
 import pt.isel.ps.g06.httpserver.dataAccess.model.Votes
-import pt.isel.ps.g06.httpserver.springConfig.DbConfig
 
 private val isolationLevel = TransactionIsolationLevel.SERIALIZABLE
 private val voteDaoClass = VoteDao::class.java
 
 @Repository
-class VoteDbRepository(jdbi: Jdbi, config: DbConfig) : BaseDbRepo(jdbi, config) {
+class VoteDbRepository(jdbi: Jdbi) : BaseDbRepo(jdbi) {
 
     fun getById(submissionId: Int): Votes? {
         return jdbi.inTransaction<Votes, Exception>(isolationLevel) {

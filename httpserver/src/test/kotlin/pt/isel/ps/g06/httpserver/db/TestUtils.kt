@@ -3,14 +3,17 @@ package pt.isel.ps.g06.httpserver.db
 import org.jdbi.v3.core.Handle
 import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.transaction.TransactionIsolationLevel
-import pt.isel.ps.g06.httpserver.dataAccess.db.dao.IngredientDao
-import pt.isel.ps.g06.httpserver.dataAccess.db.dto.ApiSubmissionDto
+import pt.isel.ps.g06.httpserver.dataAccess.api.food.FoodApiType
+import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType
+import pt.isel.ps.g06.httpserver.dataAccess.db.dao.*
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.IngredientDto
-import pt.isel.ps.g06.httpserver.dataAccess.db.dto.SubmissionSubmitterDto
+import pt.isel.ps.g06.httpserver.dataAccess.db.dto.MealDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.SubmitterDto
 import pt.isel.ps.g06.httpserver.dataAccess.model.Ingredient
 import pt.isel.ps.g06.httpserver.exceptions.TestParameterException
+import pt.isel.ps.g06.httpserver.model.TestFoodApi
 import pt.isel.ps.g06.httpserver.model.TestIngredient
+import pt.isel.ps.g06.httpserver.model.TestMeal
 
 /**
  * Runs func with a jdbi transaction handle and rolls back after completion.
@@ -33,36 +36,30 @@ fun nextSerialValue(jdbi: Jdbi, tableName: String, columnName: String): Int {
     }
 }
 
-fun zipToTestIngredient(
-        apiSubmissionDtos: List<ApiSubmissionDto>,
-        submissionSubmitterDtos: List<SubmissionSubmitterDto>,
+fun List<Ingredient>.mapToTestIngredients(
+        handle: Handle,
         api: SubmitterDto,
         ingredients: List<Ingredient>
 ): List<TestIngredient> {
-    //Only ApiSubmissions from selected food api
-    return apiSubmissionDtos.filter { apiSub ->
-        submissionSubmitterDtos.any { submissionSubmitter ->
-            //If SubmissionSubmitter has relation to this ApiSubmission
-            submissionSubmitter.submission_id == apiSub.submission_id
-                    //If SubmissionSubmitter is from target api
-                    && submissionSubmitter.submitter_id == api.submitter_id
-        }
-        //Only ApiSubmissions from selected food api ingredients
-    }.filter { apiSub ->
-        //Only ApiSubmissionDtos that
-        ingredients.any { ingredient ->
-            ingredient.apiId == apiSub.apiId
-        }
-    }.map { dto ->
-        val ingredient = ingredients.first { it.apiId == dto.apiId }
-        TestIngredient(
-                ingredient.name,
-                dto.submission_id,
-                api.submitter_id,
-                api.submitter_name,
-                dto.apiId
-        )
-    }
+    val testFoodApi = TestFoodApi(
+            FoodApiType.valueOf(api.submitter_name),
+            api.submitter_id
+    )
+    return handle.attach(ApiSubmissionDao::class.java)
+            .getAllBySubmitterIdTypeAndApiIds(
+                    api.submitter_id,
+                    SubmissionType.INGREDIENT.toString(),
+                    ingredients.map { it.apiId }
+            )
+            .map { dto ->
+                val ingredient = ingredients.first { it.apiId == dto.apiId }
+                TestIngredient(
+                        ingredient.name,
+                        dto.submission_id,
+                        dto.apiId,
+                        testFoodApi
+                )
+            }
 }
 
 fun getDtosFromIngredientNames(
@@ -74,12 +71,63 @@ fun getDtosFromIngredientNames(
     val ingredientDtos = handle.attach(IngredientDao::class.java)
             .getAllBySubmitterId(apiSubmitter)
             .filter { ingredientNames.contains(it.ingredient_name) }
-    if(ingredientDtos.size != ingredientNames.size) {
+    if (ingredientDtos.size != ingredientNames.size) {
         throw TestParameterException("ingredientNames size \""
                 + ingredientNames.size +
                 "\" is different from result ingredientDtos \"" +
-                + ingredientDtos.size +
+                +ingredientDtos.size +
                 "\" !")
     }
     return ingredientDtos
+}
+/*
+fun findFirstMealWithIngredients(handle: Handle): TestMeal {
+    val mealIngredientDtos = handle.attach(MealIngredientDao::class.java)
+            .getAll()
+    var mealIngredientIds: List<Int>
+    val mealSubmissionId = handle.attach(SubmissionDao::class.java).getAll()
+            //Only meal submissions
+            .filter { it.submission_type == SubmissionType.MEAL.toString() }
+            .map { it.submission_id }
+            //Meal with ingredients
+            .first { mealId -> mealIngredientDtos.any { it.meal_submission_id == mealId } }
+    val mealDto = handle.attach(MealDao::class.java).getById(mealSubmissionId)!!
+    val mealIngredients = mealIngredientDtos
+            .filter { it.meal_submission_id == mealSubmissionId }
+    val api = handle.attach(SubmitterDao::class.java).getBySubmissionId(
+            mealIngredients.first().ingredient_submission_id
+    )
+
+}
+*/
+fun MealDto.mapToTest(handle: Handle, mealDto: MealDto, apiSubmitter: TestFoodApi): TestMeal {
+
+    val mealIngredientIds = handle.attach(MealIngredientDao::class.java)
+            .getAllByMealId(mealDto.submission_id)
+            .map { it.ingredient_submission_id }
+    val mealIngredients = handle.attach(IngredientDao::class.java)
+            .getAllBySubmitterId(apiSubmitter.submitterId)
+    val testIngredients = handle.attach(ApiSubmissionDao::class.java)
+            .getAllBySubmissionIds(mealIngredientIds)
+            .map { dto ->
+                val ingredient = mealIngredients
+                        .first { it.submission_id == dto.submission_id }
+                TestIngredient(
+                        ingredient.ingredient_name,
+                        dto.submission_id,
+                        dto.apiId,
+                        apiSubmitter
+                )
+            }
+    val apiSubmission = handle.attach(ApiSubmissionDao::class.java)
+            .getBySubmissionId(submission_id)
+
+    return TestMeal(
+            mealDto.meal_name,
+            apiSubmitter.submitterId,
+            mealDto.submission_id,
+            apiSubmission?.submission_id,
+            apiSubmitter,
+            testIngredients
+    )
 }

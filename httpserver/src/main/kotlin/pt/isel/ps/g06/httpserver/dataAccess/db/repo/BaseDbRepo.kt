@@ -9,16 +9,12 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.*
 import pt.isel.ps.g06.httpserver.exception.InvalidInputDomain
 import pt.isel.ps.g06.httpserver.exception.InvalidInputException
-import pt.isel.ps.g06.httpserver.springConfig.DbConfig
 import java.time.Duration
 import java.time.OffsetDateTime
 
 @Repository
 
-class BaseDbRepo constructor(
-        internal val jdbi: Jdbi,
-        internal val config: DbConfig
-) {
+class BaseDbRepo constructor(internal val jdbi: Jdbi) {
 
     /**
      * @throws InvalidInputException If submissionId is invalid or contract is unexpected.
@@ -142,18 +138,26 @@ class BaseDbRepo constructor(
     /**
      * @throws InvalidInputException If submission change timed out.
      */
-    fun requireEditable(submissionId: Int, defaultIsolation: TransactionIsolationLevel = SERIALIZABLE) {
+    fun requireEditable(submissionId: Int, timeout: Duration, defaultIsolation: TransactionIsolationLevel = SERIALIZABLE) {
         return jdbi.inTransaction<Unit, Exception>(defaultIsolation) {
             val creationDate = it.attach(SubmissionDao::class.java)
                     .getById(submissionId)!!.submission_date
 
             val seconds = Duration.between(creationDate, OffsetDateTime.now()).seconds
 
-            if(config.`edit-timeout-minutes`!!.seconds > seconds) {
+            if(timeout.seconds > seconds) {
                 throw InvalidInputException(InvalidInputDomain.TIMEOUT,
                         "Submission change timed out!"
                 )
             }
+        }
+    }
+
+    fun requireFromUser(submissionId: Int, isolationLevel: TransactionIsolationLevel) {
+        if(isFromApi(submissionId, isolationLevel)) {
+            throw InvalidInputException(InvalidInputDomain.API,
+                    "The submission id \"$submissionId\" is not an API submission."
+            )
         }
     }
 }

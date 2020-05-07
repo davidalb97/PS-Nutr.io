@@ -9,12 +9,11 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.dao.SubmissionDao
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.SubmissionSubmitterDao
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.PortionDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.RestaurantMealPortionDto
-import pt.isel.ps.g06.httpserver.springConfig.DbConfig
 
 private val isolationLevel = TransactionIsolationLevel.SERIALIZABLE
 private val portionDaoClass = PortionDao::class.java
 
-class PortionDbRepository(jdbi: Jdbi, config: DbConfig) : BaseDbRepo(jdbi, config) {
+class PortionDbRepository(jdbi: Jdbi) : BaseDbRepo(jdbi) {
 
     fun getPortionsFromMealId(mealSubmissionId: Int): List<PortionDto> {
         return jdbi.inTransaction<List<PortionDto>, Exception>(isolationLevel) {

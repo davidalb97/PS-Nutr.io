@@ -13,13 +13,13 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.dto.ApiSubmissionDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.IngredientDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.MealDto
 import pt.isel.ps.g06.httpserver.dataAccess.model.Ingredient
-import pt.isel.ps.g06.httpserver.springConfig.DbConfig
+import pt.isel.ps.g06.httpserver.springConfig.dto.DbEditableDto
 
 private val isolationLevel = TransactionIsolationLevel.SERIALIZABLE
 private val mealDaoClass = MealDao::class.java
 
 @Repository
-class MealDbRepository(jdbi: Jdbi, config: DbConfig) : BaseDbRepo(jdbi, config) {
+class MealDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo(jdbi) {
 
     fun getById(submissionId: Int): MealDto? {
         return jdbi.inTransaction<MealDto, Exception>(isolationLevel) {
@@ -95,7 +95,7 @@ class MealDbRepository(jdbi: Jdbi, config: DbConfig) : BaseDbRepo(jdbi, config) 
             requireSubmission(submissionId, MEAL, isolationLevel)
 
             // Check if the submission is modifiable
-            requireEditable(submissionId, isolationLevel)
+            requireEditable(submissionId, config.`edit-timeout-minutes`!!, isolationLevel)
 
             // Delete all MealCuisine associations
             it.attach(MealCuisineDao::class.java).deleteAllByMealId(submissionId)
@@ -146,7 +146,10 @@ class MealDbRepository(jdbi: Jdbi, config: DbConfig) : BaseDbRepo(jdbi, config) 
             requireSubmission(submissionId, MEAL, isolationLevel)
 
             // Check if the submission is modifiable
-            requireEditable(submissionId, isolationLevel)
+            requireEditable(submissionId, config.`edit-timeout-minutes`!!, isolationLevel)
+
+            // Check if submission was from user (only meals made out of ingredients - without apiId can be updated)
+            requireFromUser(submissionId, isolationLevel)
 
             // Update meal name
             it.attach(MealDao::class.java).update(submissionId, name)
@@ -156,7 +159,8 @@ class MealDbRepository(jdbi: Jdbi, config: DbConfig) : BaseDbRepo(jdbi, config) 
                 updateCuisines(it, submissionId, cuisines)
             }
 
-            if (ingredients.isNotEmpty() && isFromApi(submissionId, isolationLevel)) {
+            // Update ingredients
+            if (ingredients.isNotEmpty()) {
                 updateIngredients(it, submissionId, ingredients)
             }
         }

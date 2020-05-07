@@ -3,6 +3,7 @@ package pt.isel.ps.g06.httpserver.db
 import org.jdbi.v3.core.Jdbi
 import pt.isel.ps.g06.httpserver.dataAccess.api.food.FoodApiType
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.RestaurantApiType
+import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmitterType
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.*
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.SubmitterDto
@@ -12,11 +13,8 @@ class InsertConstants(val jdbi: Jdbi) {
 
     val nextSubmissionId = nextSerialValue(jdbi, "Submission", "submission_id")
     val nextSubmitterId = nextSerialValue(jdbi, "Submitter", "submitter_id")
-
     val userDtos = jdbi.open().attach(UserDao::class.java)
             .getAll()
-
-    val firstUserDto = userDtos.first()
 
     val apiDtos = jdbi.open().attach(ApiDao::class.java)
             .getAll()
@@ -24,8 +22,14 @@ class InsertConstants(val jdbi: Jdbi) {
     val submitterDtos = jdbi.open().attach(SubmitterDao::class.java)
             .getAll()
 
+    val mealIngredienteDtos = jdbi.open().attach(MealIngredientDao::class.java)
+            .getAll()
+
     val submissionDtos = jdbi.open().attach(SubmissionDao::class.java)
             .getAll()
+
+    val apiSubmitterDtos = jdbi.open().attach(SubmitterDao::class.java)
+            .getAllByType(SubmitterType.API.toString())
 
     val cuisineDtos = jdbi.open().attach(CuisineDao::class.java)
             .getAll()
@@ -50,8 +54,6 @@ class InsertConstants(val jdbi: Jdbi) {
                 FoodApiType.valueOf(rs.getString("submitter_name"))
         )
     }.list()
-
-    val ingredientIds = ingredientDtos.map { it.submission_id }
 
     val apiSubmissionDtos = jdbi.open().attach(ApiSubmissionDao::class.java)
             .getAll()
