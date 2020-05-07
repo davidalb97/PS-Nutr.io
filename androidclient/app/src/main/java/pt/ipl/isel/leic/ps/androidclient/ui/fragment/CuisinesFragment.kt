@@ -9,10 +9,17 @@ import androidx.lifecycle.ViewModelProvider
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.source.model.Cuisine
+import pt.ipl.isel.leic.ps.androidclient.ui.adapter.ARecyclerAdapter
 import pt.ipl.isel.leic.ps.androidclient.ui.adapter.CuisineRecyclerAdapter
+import pt.ipl.isel.leic.ps.androidclient.ui.viewholder.ARecyclerViewHolder
+import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.ARecyclerViewModel
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.CuisineRecyclerViewModel
 
 class CuisinesFragment : RecyclerListFragment<Cuisine>() {
+
+    private val adapter: CuisineRecyclerAdapter by lazy {
+        CuisineRecyclerAdapter(viewModel as CuisineRecyclerViewModel, this.requireContext())
+    }
 
     /**
      * ViewModel factory
@@ -39,11 +46,7 @@ class CuisinesFragment : RecyclerListFragment<Cuisine>() {
         super.onViewCreated(view, savedInstanceState)
 
         initRecyclerList(view)
-        val fragmentViewModel = (viewModel as CuisineRecyclerViewModel)
-        list.adapter = CuisineRecyclerAdapter(
-            fragmentViewModel,
-            this.requireContext()
-        )
+        list.adapter = adapter
         startObserver()
         startScrollListener()
     }

@@ -24,6 +24,6 @@ class RestaurantRecyclerViewModel(
     }
 
     override fun fetchLiveData(): LiveData<List<Restaurant>>? {
-        TODO("Not yet implemented")
+        TODO()
     }
 }

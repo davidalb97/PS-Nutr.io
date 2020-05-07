@@ -12,9 +12,7 @@ import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.TAG
 import pt.ipl.isel.leic.ps.androidclient.data.source.model.Cuisine
 import pt.ipl.isel.leic.ps.androidclient.hasInternetConnection
-import pt.ipl.isel.leic.ps.androidclient.ui.adapter.ARecyclerAdapter
 import pt.ipl.isel.leic.ps.androidclient.ui.listener.ScrollListener
-import pt.ipl.isel.leic.ps.androidclient.ui.viewholder.ARecyclerViewHolder
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.ARecyclerViewModel
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.CuisineRecyclerViewModel
 
@@ -24,7 +22,6 @@ const val COUNT = 10
 abstract class RecyclerListFragment<T : Any> : Fragment() {
 
     lateinit var viewModel: ARecyclerViewModel<T>
-    lateinit var adapter: ARecyclerAdapter<T, ARecyclerViewModel<T>, ARecyclerViewHolder<T>>
 
     lateinit var list: RecyclerView
     lateinit var progressBar: ProgressBar
@@ -49,7 +46,7 @@ abstract class RecyclerListFragment<T : Any> : Fragment() {
      */
     fun startObserver() {
         viewModel.observe(this) {
-            adapter.notifyDataSetChanged()
+            list.adapter?.notifyDataSetChanged()
 
             if (viewModel.mediatorLiveData.value!!.isEmpty()) {
                 Toast.makeText(
@@ -74,7 +71,11 @@ abstract class RecyclerListFragment<T : Any> : Fragment() {
             override fun loadMore() {
                 minimumListSize = viewModel.liveData?.value!!.size + 1
                 startLoading()
-                viewModel.getMoreItemsExchangingLiveData()
+                (viewModel as CuisineRecyclerViewModel).getCuisines(
+                    successFunction(),
+                    errorFunction(),
+                    COUNT
+                )
                 stopLoading()
             }
 
