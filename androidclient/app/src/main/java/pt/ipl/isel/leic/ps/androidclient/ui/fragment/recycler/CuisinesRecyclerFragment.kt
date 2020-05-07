@@ -9,15 +9,15 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp
 import pt.ipl.isel.leic.ps.androidclient.R
-import pt.ipl.isel.leic.ps.androidclient.data.source.model.Meal
-import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.MealRecyclerAdapter
-import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.MealRecyclerViewModel
+import pt.ipl.isel.leic.ps.androidclient.data.source.model.Cuisine
+import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.CuisineRecyclerAdapter
+import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.CuisineRecyclerViewModel
 
-class MealFragment: RecyclerListFragment<Meal>() {
+class CuisinesRecyclerFragment : ARecyclerListFragment<Cuisine>() {
 
-    private val adapter: MealRecyclerAdapter by lazy {
-        MealRecyclerAdapter(
-            viewModel as MealRecyclerViewModel,
+    private val adapter: CuisineRecyclerAdapter by lazy {
+        CuisineRecyclerAdapter(
+            viewModel as CuisineRecyclerViewModel,
             this.requireContext()
         )
     }
@@ -29,7 +29,7 @@ class MealFragment: RecyclerListFragment<Meal>() {
     private fun getViewModelFactory() = object : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-            return MealRecyclerViewModel(requireActivity().applicationContext as NutrioApp) as T
+            return CuisineRecyclerViewModel(requireActivity().applicationContext as NutrioApp) as T
         }
     }
 
@@ -39,8 +39,8 @@ class MealFragment: RecyclerListFragment<Meal>() {
     ): View? {
         viewModel =
             ViewModelProvider(this.requireActivity(), getViewModelFactory())
-                .get(MealRecyclerViewModel::class.java)
-        return inflater.inflate(R.layout.meal_list, container, false)
+                .get(CuisineRecyclerViewModel::class.java)
+        return inflater.inflate(R.layout.cuisines_list, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -48,8 +48,8 @@ class MealFragment: RecyclerListFragment<Meal>() {
         initRecyclerList(view)
         list.adapter = adapter
         list.layoutManager = LinearLayoutManager(this.requireContext())
-        (viewModel as MealRecyclerViewModel)
-            .getMeals(successFunction(), errorFunction())
+        (viewModel as CuisineRecyclerViewModel)
+            .getCuisines(successFunction(), errorFunction())
         startObserver()
         startScrollListener()
     }

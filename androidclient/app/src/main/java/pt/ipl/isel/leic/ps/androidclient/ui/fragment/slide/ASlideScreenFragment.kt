@@ -10,7 +10,7 @@ import com.google.android.material.tabs.TabLayout
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.ui.adapter.TabAdapter
 
-abstract class SlideScreenFragment(
+abstract class ASlideScreenFragment(
     private val tabs: Map<Fragment, String>
 ) : Fragment() {
 

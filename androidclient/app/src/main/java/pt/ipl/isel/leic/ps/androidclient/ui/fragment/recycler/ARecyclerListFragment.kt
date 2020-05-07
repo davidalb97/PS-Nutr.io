@@ -17,7 +17,7 @@ import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.ARecyclerViewModel
 // Default pagination value
 const val COUNT = 10
 
-abstract class RecyclerListFragment<T : Any> : Fragment() {
+abstract class ARecyclerListFragment<T : Any> : Fragment() {
 
     lateinit var viewModel: ARecyclerViewModel<T>
 

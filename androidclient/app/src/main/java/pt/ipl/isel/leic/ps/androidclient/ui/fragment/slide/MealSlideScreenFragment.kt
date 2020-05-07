@@ -1,14 +1,14 @@
 package pt.ipl.isel.leic.ps.androidclient.ui.fragment.slide
 
-import pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler.CuisinesFragment
+import pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler.CuisinesRecyclerFragment
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.LocationFragment
-import pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler.RestaurantFragment
+import pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler.RestaurantRecyclerFragment
 
 class MealSlideScreenFragment :
-    SlideScreenFragment(
+    ASlideScreenFragment(
         mapOf(
-            Pair(RestaurantFragment(), "Search by Restaurants"),
+            Pair(RestaurantRecyclerFragment(), "Search by Restaurants"),
             Pair(LocationFragment(), "Search by Location"),
-            Pair(CuisinesFragment(), "Search by Cuisines")
+            Pair(CuisinesRecyclerFragment(), "Search by Cuisines")
         )
     )

@@ -1,4 +1,4 @@
-package pt.ipl.isel.leic.ps.androidclient.ui.fragment
+package pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant
 
 import android.os.Bundle
 import android.view.LayoutInflater

@@ -9,15 +9,15 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp
 import pt.ipl.isel.leic.ps.androidclient.R
-import pt.ipl.isel.leic.ps.androidclient.data.source.model.Restaurant
-import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.RestaurantRecyclerAdapter
-import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.RestaurantRecyclerViewModel
+import pt.ipl.isel.leic.ps.androidclient.data.source.model.Meal
+import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.MealRecyclerAdapter
+import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.MealRecyclerViewModel
 
-class RestaurantFragment : RecyclerListFragment<Restaurant>(){
+class MealRecyclerFragment: ARecyclerListFragment<Meal>() {
 
-    private val adapter: RestaurantRecyclerAdapter by lazy {
-        RestaurantRecyclerAdapter(
-            viewModel as RestaurantRecyclerViewModel,
+    private val adapter: MealRecyclerAdapter by lazy {
+        MealRecyclerAdapter(
+            viewModel as MealRecyclerViewModel,
             this.requireContext()
         )
     }
@@ -29,7 +29,7 @@ class RestaurantFragment : RecyclerListFragment<Restaurant>(){
     private fun getViewModelFactory() = object : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-            return RestaurantRecyclerViewModel(requireActivity().application as NutrioApp) as T
+            return MealRecyclerViewModel(requireActivity().applicationContext as NutrioApp) as T
         }
     }
 
@@ -37,19 +37,19 @@ class RestaurantFragment : RecyclerListFragment<Restaurant>(){
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        ViewModelProvider(this.requireActivity(), getViewModelFactory())
-            .get(RestaurantRecyclerViewModel::class.java)
-        return inflater.inflate(R.layout.restaurant_list, container, false)
+        viewModel =
+            ViewModelProvider(this.requireActivity(), getViewModelFactory())
+                .get(MealRecyclerViewModel::class.java)
+        return inflater.inflate(R.layout.meal_list, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         initRecyclerList(view)
         list.adapter = adapter
         list.layoutManager = LinearLayoutManager(this.requireContext())
-        (viewModel as RestaurantRecyclerViewModel)
-            .getRestaurants(successFunction(), errorFunction())
+        (viewModel as MealRecyclerViewModel)
+            .getMeals(successFunction(), errorFunction())
         startObserver()
         startScrollListener()
     }
