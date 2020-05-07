@@ -12,6 +12,7 @@ abstract class ARecyclerViewModel<T> : ViewModel() {
     var mediatorLiveData: MediatorLiveData<List<T>> = MediatorLiveData()
     var liveData: LiveData<List<T>>? = null
     val items: List<T> get() = mediatorLiveData.value ?: emptyList()
+    var skip = 0
     //private lateinit var currentQuery: Iterable<Pair<"TODO", String>>
 
     /**

@@ -5,7 +5,7 @@ import pt.ipl.isel.leic.ps.androidclient.data.source.model.Meal
 
 class MealRepository(private val dataSource: DataSource) {
 
-    fun getMeal(
+    fun getMeals(
         success: (List<Meal>) -> Unit,
         error: () -> Unit,
         count: Int,
