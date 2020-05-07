@@ -9,8 +9,6 @@ class CuisineRecyclerViewModel(
     private val app: NutrioApp
 ) : ARecyclerViewModel<Cuisine>() {
 
-    var skip = 0
-
     fun getCuisines(
         onSuccess : (List<Cuisine>) -> Unit,
         onError : () -> Unit

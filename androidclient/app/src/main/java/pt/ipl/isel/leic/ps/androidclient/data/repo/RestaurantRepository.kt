@@ -1,8 +1,6 @@
 package pt.ipl.isel.leic.ps.androidclient.data.repo
 
-import android.content.Context
 import pt.ipl.isel.leic.ps.androidclient.data.source.DataSource
-import pt.ipl.isel.leic.ps.androidclient.data.source.model.Meal
 import pt.ipl.isel.leic.ps.androidclient.data.source.model.Restaurant
 
 /**
