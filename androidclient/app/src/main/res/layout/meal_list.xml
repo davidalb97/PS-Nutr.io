@@ -4,11 +4,11 @@
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <EditText
+    <SearchView
         android:id="@+id/search_meal"
         android:layout_width="match_parent"
         android:layout_height="50dp">
-    </EditText>
+    </SearchView>
 
     <ProgressBar
         android:id="@+id/progressBar"

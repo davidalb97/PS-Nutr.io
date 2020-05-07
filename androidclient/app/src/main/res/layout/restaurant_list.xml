@@ -5,11 +5,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <EditText
+    <SearchView
         android:id="@+id/search"
         android:layout_width="match_parent"
         android:layout_height="50dp">
-    </EditText>
+    </SearchView>
 
     <ProgressBar
         android:id="@+id/progressBar"

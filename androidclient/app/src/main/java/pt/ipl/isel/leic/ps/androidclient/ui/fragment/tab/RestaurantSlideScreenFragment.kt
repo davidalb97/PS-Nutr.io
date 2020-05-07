@@ -8,8 +8,8 @@ import pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler.RestaurantRecycler
 class RestaurantSlideScreenFragment :
     ASlideScreenFragment(
         mapOf(
-            Pair(RestaurantRecyclerFragment(), "Search by Location"),
-            Pair(CuisinesRecyclerFragment(), "Search by Cuisines"),
-            Pair(MealRecyclerFragment(), "Search by Meals")
+            Pair(RestaurantRecyclerFragment(), "Search by name"),
+            Pair(CuisinesRecyclerFragment(), "Search by cuisines"),
+            Pair(MealRecyclerFragment(), "Search by meals")
         )
     )
