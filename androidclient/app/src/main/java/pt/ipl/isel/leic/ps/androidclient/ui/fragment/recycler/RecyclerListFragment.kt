@@ -1,4 +1,4 @@
-package pt.ipl.isel.leic.ps.androidclient.ui.fragment
+package pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler
 
 import android.util.Log
 import android.view.View

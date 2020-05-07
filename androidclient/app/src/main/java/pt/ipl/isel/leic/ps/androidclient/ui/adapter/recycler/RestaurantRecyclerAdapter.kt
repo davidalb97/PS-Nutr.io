@@ -1,9 +1,10 @@
-package pt.ipl.isel.leic.ps.androidclient.ui.adapter
+package pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler
 
 import android.content.Context
 import android.view.ViewGroup
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.source.model.Restaurant
+import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.ARecyclerAdapter
 import pt.ipl.isel.leic.ps.androidclient.ui.viewholder.RestaurantRecyclerViewHolder
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.RestaurantRecyclerViewModel
 

@@ -1,4 +1,4 @@
-package pt.ipl.isel.leic.ps.androidclient.ui.adapter
+package pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler
 
 import android.content.Context
 import android.view.LayoutInflater

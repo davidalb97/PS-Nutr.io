@@ -1,8 +1,8 @@
-package pt.ipl.isel.leic.ps.androidclient.ui.tabfragment
+package pt.ipl.isel.leic.ps.androidclient.ui.fragment.slide
 
-import pt.ipl.isel.leic.ps.androidclient.ui.fragment.CuisinesFragment
+import pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler.CuisinesFragment
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.LocationFragment
-import pt.ipl.isel.leic.ps.androidclient.ui.fragment.RestaurantFragment
+import pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler.RestaurantFragment
 
 class MealSlideScreenFragment :
     SlideScreenFragment(

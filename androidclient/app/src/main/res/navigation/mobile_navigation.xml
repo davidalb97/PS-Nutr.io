@@ -31,19 +31,19 @@
 
     <fragment
         android:id="@+id/nav_tab_restaurants"
-        android:name="pt.ipl.isel.leic.ps.androidclient.ui.tabfragment.RestaurantSlideScreenFragment"
+        android:name="pt.ipl.isel.leic.ps.androidclient.ui.fragment.slide.RestaurantSlideScreenFragment"
         android:label="@string/tab_restaurants"
         tools:layout="@layout/fragment_tab" />
 
     <fragment
         android:id="@+id/nav_tab_meals"
-        android:name="pt.ipl.isel.leic.ps.androidclient.ui.tabfragment.MealSlideScreenFragment"
+        android:name="pt.ipl.isel.leic.ps.androidclient.ui.fragment.slide.MealSlideScreenFragment"
         android:label="@string/tab_meals"
         tools:layout="@layout/fragment_tab" />
 
     <fragment
         android:id="@+id/nav_cuisines"
-        android:name="pt.ipl.isel.leic.ps.androidclient.ui.fragment.CuisinesFragment"
+        android:name="pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler.CuisinesFragment"
         android:label="@string/tab_cuisines"
         tools:layout="@layout/fragment_cuisines" />
 

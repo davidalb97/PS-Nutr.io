@@ -3,7 +3,7 @@ package pt.ipl.isel.leic.ps.androidclient.ui.viewmodel
 import androidx.lifecycle.LiveData
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp
 import pt.ipl.isel.leic.ps.androidclient.data.source.model.Meal
-import pt.ipl.isel.leic.ps.androidclient.ui.fragment.COUNT
+import pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler.COUNT
 
 class MealRecyclerViewModel(
     val app: NutrioApp

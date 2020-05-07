@@ -1,4 +1,4 @@
-package pt.ipl.isel.leic.ps.androidclient.ui.fragment
+package pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,13 +10,16 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.source.model.Cuisine
-import pt.ipl.isel.leic.ps.androidclient.ui.adapter.CuisineRecyclerAdapter
+import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.CuisineRecyclerAdapter
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.CuisineRecyclerViewModel
 
 class CuisinesFragment : RecyclerListFragment<Cuisine>() {
 
     private val adapter: CuisineRecyclerAdapter by lazy {
-        CuisineRecyclerAdapter(viewModel as CuisineRecyclerViewModel, this.requireContext())
+        CuisineRecyclerAdapter(
+            viewModel as CuisineRecyclerViewModel,
+            this.requireContext()
+        )
     }
 
     /**
