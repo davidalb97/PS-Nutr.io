@@ -6,13 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.source.model.Cuisine
-import pt.ipl.isel.leic.ps.androidclient.ui.adapter.ARecyclerAdapter
 import pt.ipl.isel.leic.ps.androidclient.ui.adapter.CuisineRecyclerAdapter
-import pt.ipl.isel.leic.ps.androidclient.ui.viewholder.ARecyclerViewHolder
-import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.ARecyclerViewModel
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.CuisineRecyclerViewModel
 
 class CuisinesFragment : RecyclerListFragment<Cuisine>() {
@@ -44,9 +42,11 @@ class CuisinesFragment : RecyclerListFragment<Cuisine>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         initRecyclerList(view)
         list.adapter = adapter
+        list.layoutManager = LinearLayoutManager(this.requireContext())
+        (viewModel as CuisineRecyclerViewModel)
+            .getCuisines(successFunction(), errorFunction())
         startObserver()
         startScrollListener()
     }

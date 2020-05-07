@@ -10,10 +10,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import pt.ipl.isel.leic.ps.androidclient.TAG
-import pt.ipl.isel.leic.ps.androidclient.data.source.dtos.CuisinesDto
-import pt.ipl.isel.leic.ps.androidclient.data.source.dtos.IUnDto
-import pt.ipl.isel.leic.ps.androidclient.data.source.dtos.MealsDto
-import pt.ipl.isel.leic.ps.androidclient.data.source.dtos.RestaurantsDto
+import pt.ipl.isel.leic.ps.androidclient.data.source.dtos.*
 import pt.ipl.isel.leic.ps.androidclient.data.source.model.Cuisine
 import pt.ipl.isel.leic.ps.androidclient.data.source.model.Meal
 import pt.ipl.isel.leic.ps.androidclient.data.source.model.Restaurant
@@ -102,7 +99,7 @@ class DataSource(ctx: Context) {
         httpServerRequest(
             Method.GET,
             "$URI_BASE/$CUISINES",
-            CUISINES_DTO,
+            CuisinesDto::class.java,
             success,
             error,
             null
@@ -130,7 +127,7 @@ class DataSource(ctx: Context) {
         dtoClass: Class<Dto>,
         onSuccess: (Model) -> Unit,
         onError: (VolleyError) -> Unit = { Log.v(TAG, it.toString()) },
-        reqPayload: ReqPayload?
+        reqPayload: ReqPayload? = null
     ) {
 
         Log.v(TAG, urlStr)

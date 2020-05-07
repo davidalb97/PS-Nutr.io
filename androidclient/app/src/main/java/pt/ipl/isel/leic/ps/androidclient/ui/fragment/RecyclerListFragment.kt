@@ -10,11 +10,9 @@ import androidx.recyclerview.widget.RecyclerView
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.TAG
-import pt.ipl.isel.leic.ps.androidclient.data.source.model.Cuisine
 import pt.ipl.isel.leic.ps.androidclient.hasInternetConnection
 import pt.ipl.isel.leic.ps.androidclient.ui.listener.ScrollListener
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.ARecyclerViewModel
-import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.CuisineRecyclerViewModel
 
 // Default pagination value
 const val COUNT = 10
@@ -38,7 +36,6 @@ abstract class RecyclerListFragment<T : Any> : Fragment() {
             view.findViewById(R.id.progressBar) as ProgressBar
 
         list.setHasFixedSize(true)
-        list.layoutManager = LinearLayoutManager(this.requireContext())
     }
 
     /**
@@ -64,19 +61,17 @@ abstract class RecyclerListFragment<T : Any> : Fragment() {
      */
     fun startScrollListener() {
         list.addOnScrollListener(object :
-            ScrollListener(list.layoutManager as LinearLayoutManager) {
+            ScrollListener(list.layoutManager as LinearLayoutManager, progressBar) {
 
             var minimumListSize = 1
 
             override fun loadMore() {
                 minimumListSize = viewModel.liveData?.value!!.size + 1
-                startLoading()
-                (viewModel as CuisineRecyclerViewModel).getCuisines(
-                    successFunction(),
-                    errorFunction(),
-                    COUNT
-                )
-                stopLoading()
+                if (!isLoading) {
+                    startLoading()
+                    viewModel.getMoreItemsExchangingLiveData()
+                    stopLoading()
+                }
             }
 
             override fun shouldGetMore(): Boolean =
@@ -84,12 +79,14 @@ abstract class RecyclerListFragment<T : Any> : Fragment() {
         })
     }
 
+
     /**
      * The success function.
      * A Toast will pop up telling no results were found, if a request
      * returns an empty list.
      */
-    open fun successFunction(): (List<Cuisine>) -> Unit = {
+    open fun successFunction(): (List<T>) -> Unit = {
+        viewModel.setItems(it)
         if (it.isEmpty())
             Toast.makeText(
                 requireActivity().application, R.string.no_result_found,
@@ -103,7 +100,7 @@ abstract class RecyclerListFragment<T : Any> : Fragment() {
      * Pops up a Toast if there's no internet connection
      * or if it couldn't get results.
      */
-    fun errorFunction(): () -> Unit = {
+    open fun errorFunction(): () -> Unit = {
         if (!hasInternetConnection(requireActivity().application as NutrioApp)) {
             Toast.makeText(
                 requireActivity().application, R.string.no_internet_connection,

@@ -1,18 +1,23 @@
 package pt.ipl.isel.leic.ps.androidclient.ui.listener
 
 import android.view.View
+import android.widget.ProgressBar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
 /**
  * A listener for Recycler Views' scroll control.
  */
-abstract class ScrollListener
-    (var layoutManager: LinearLayoutManager) : RecyclerView.OnScrollListener() {
+abstract class ScrollListener(
+    private val layoutManager: LinearLayoutManager,
+    var progressBar: ProgressBar
+) : RecyclerView.OnScrollListener() {
 
     var isLoading = false
-    lateinit var progressBar: View
 
+    /**
+     * The scroll routine
+     */
     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
         super.onScrolled(recyclerView, dx, dy)
 
@@ -27,15 +32,27 @@ abstract class ScrollListener
         }
     }
 
+    /**
+     * Load more items
+     */
     abstract fun loadMore()
 
+    /**
+     * Does it has the conditions to load more?
+     */
     abstract fun shouldGetMore(): Boolean
 
+    /**
+     * Change to loading state
+     */
     fun startLoading() {
         isLoading = true
         progressBar.visibility = View.VISIBLE
     }
 
+    /**
+     * Stop loading state
+     */
     fun stopLoading() {
         isLoading = false
         progressBar.visibility = View.INVISIBLE
