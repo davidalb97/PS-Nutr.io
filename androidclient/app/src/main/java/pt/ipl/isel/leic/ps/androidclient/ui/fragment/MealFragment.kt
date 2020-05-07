@@ -37,6 +37,9 @@ class MealFragment: RecyclerListFragment<Meal>() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        viewModel =
+            ViewModelProvider(this.requireActivity(), getViewModelFactory())
+                .get(MealRecyclerViewModel::class.java)
         return inflater.inflate(R.layout.meal_list, container, false)
     }
 
