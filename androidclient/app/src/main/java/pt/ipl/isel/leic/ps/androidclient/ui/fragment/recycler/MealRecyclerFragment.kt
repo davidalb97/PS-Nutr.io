@@ -23,7 +23,8 @@ class MealRecyclerFragment : ARecyclerListFragment<Meal>() {
 
     /**
      * ViewModel builder
-     * Initializes the view model
+     * Initializes the view model, calling the respective
+     * view model provider factory
      */
     private fun buildViewModel(savedInstanceState: Bundle?) {
         val rootActivity = this.requireActivity()
