@@ -2,7 +2,6 @@ package pt.ipl.isel.leic.ps.androidclient.ui.provider
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.lifecycle.ViewModel
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.RestaurantRecyclerViewModel
 
 const val RESTAURANT_LIST_VIEW_STATE: String = "RESTAURANT_LIST_VIEW_STATE"
