@@ -1,38 +1,5 @@
-\documentclass{article}
-\usepackage[T1]{fontenc}
-\usepackage[utf8]{inputenc}
-\usepackage{indentfirst}
-\usepackage{float}
-\usepackage{natbib}
-\usepackage{graphicx}
-\usepackage{grffile}
-\usepackage{epsfig}
-\usepackage{soul}
-\usepackage{pdflscape}
-\usepackage{hyperref}
-\usepackage[scaled]{helvet}
-\renewcommand\familydefault{\sfdefault} 
-\usepackage[T1]{fontenc}
-\usepackage[a4paper, total={16cm, 25cm}]{geometry}
-
-\title{\textbf{Database's Models}}
-\date{April 8, 2020}
-
-\author{\textbf{Nutr.io}}
-
-\begin{document}
-
-\maketitle
-
-\section{Conceptual Model}
-
-\begin{figure}[H]
-    \includegraphics[scale=0.28]{Nutr.io_Database_Diagram.eps}
-    \centering 
-\end{figure}
-\newpage
-
-\section{Normalized Relational Model}
+\section*{Appendix C - Database relational model}
+\label{app:relational_model}
     \begin{itemize}
         \item \textbf{Submitter}        
         \begin{itemize}
@@ -145,6 +112,7 @@
             \item Not null: quantity
         \end{itemize}
 
+        \newpage
         \item \textbf{Ingredient}
         \begin{itemize}
             \item Attributes: \underline{\textit{submissionId}}, ingredientName
@@ -198,4 +166,3 @@
                 \end{itemize}   
         \end{itemize}
     \end{itemize}
-\end{document}
