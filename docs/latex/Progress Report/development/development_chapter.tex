@@ -1,0 +1,52 @@
+%
+% Chapter 2 - Report Development
+%
+\chapter{Project development}
+    
+	\section{Roadmap}
+
+    According to the proposed plan, the group managed to fulfill almost all the objectives
+    that were planned to be accomplished until now - a relational database, a working HTTP server
+    and a prototype Android aplication that can make requests to the server and 
+    use its information to display lists and detailed views.\\
+
+    However, as it will be detailed in the next section, the group faced some issues that caused slight
+    drawbacks, such as the relational database conception, which had to be redesigned multiple
+    times due to the project's requirements.\\
+
+    This report's appendix displays two project schedules: the initial one [\nameref{app:initial_plan}], also present in the
+    project's proposal, and the actual one [\nameref{app:actual_plan}], which was updated to match the 
+    actual progress made until now.
+
+
+    \section{Issues encountered and updates}
+
+    This section describes the issues found and the decisions made
+    to overcome them during development.
+    
+    \subsection{Relational database}
+
+    The group had to redesign the database's models multiple times.
+    One of the main issues that drove the redesign was the fact that the previous implementation 
+    only supported submissions from users, while it had to support submissions from both users and APIs.\\
+
+    Another issue is that our model offered no support to distinguish between API types and their submission, meaning that,
+    for example, different restaurants from two different APIs (e.g.: Zomato and Yelp) with equal identifiers would generate data collisions.\\
+
+    It is worth mentioning that with every major addition, the database had to be renormalized, taking a considerable amount of time,
+    which was not taken into account in the initial plan.\\
+
+    As such, this invested time ended up partially colliding with other schedules that were
+    reserved for other modules.
+
+    \subsection{HTTP server}
+
+    The group initially struggled to implement the HttpServer as we were utilizing and learning a new framework - Spring MVC, meaning that implementing
+    known patterns in server programing took more time than expected in the according to the initial project plan.\\
+
+    The group also recognizes that some functionalities are lacking as a result of the time invested in the database, namely endpoints that allow for resource creation.
+
+    \section{Roadmap updates}
+
+    Given that the previously mentioned issues are only minor setbacks, the group agrees that every mandatory requirement made in the initial draft can still be implemented,
+    however, the group expresses concerns that optional requirements will have to be reevaluated after the Beta release, if needed.
