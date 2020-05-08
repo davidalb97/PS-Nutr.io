@@ -5,6 +5,7 @@ import android.util.Log
 import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.VolleyError
+import com.android.volley.toolbox.JsonRequest
 import com.android.volley.toolbox.Volley
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -20,7 +21,7 @@ import pt.ipl.isel.leic.ps.androidclient.data.source.model.Meal
 import pt.ipl.isel.leic.ps.androidclient.data.source.model.Restaurant
 import pt.ipl.isel.leic.ps.androidclient.data.util.AsyncWorker
 
-const val ADDRESS = "localhost"
+const val ADDRESS = "10.0.2.2" // Loopback for the host machine
 const val PORT = "8080"
 const val URI_BASE = "http://$ADDRESS:$PORT"
 const val SKIP = "&skip="
@@ -215,7 +216,7 @@ class DataSource(ctx: Context) {
         onSuccess: (Model) -> Unit,
         onError: (VolleyError) -> Unit,
         reqPayload: ReqPayload?
-    ) {
+    ) : AsyncWorker<String?, Model>{
 
         Log.v(TAG, urlStr)
 
@@ -228,7 +229,7 @@ class DataSource(ctx: Context) {
         //Request payload serialization async worker
         AsyncWorker<Model, Unit> {
 
-            //Create a string payload from
+            //Passed payload to String
             val payloadStr = dtoMapper.writeValueAsString(reqPayload)
 
             //Custom string request that will allow a string payload
@@ -245,5 +246,7 @@ class DataSource(ctx: Context) {
             )
             queue.add(jsonRequest)
         }.execute()
+
+        return responseToDtoTask
     }
 }

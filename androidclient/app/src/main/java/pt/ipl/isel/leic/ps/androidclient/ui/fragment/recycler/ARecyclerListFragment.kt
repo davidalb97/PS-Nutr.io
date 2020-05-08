@@ -114,5 +114,6 @@ abstract class ARecyclerListFragment<T : Any, VM: ARecyclerViewModel<T>> : Fragm
             Toast.makeText(requireActivity().application, R.string.error_network, Toast.LENGTH_LONG)
                 .show()
         }
+        Log.v(TAG, exception.message, exception)
     }
 }
