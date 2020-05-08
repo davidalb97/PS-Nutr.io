@@ -24,7 +24,7 @@ class ZomatoUriBuilder {
 
     fun restaurantSearchUri(latitude: Float?, longitude: Float?, radius: Int? = MAX_RANGE, count: Int = MAX_RESULT_COUNT): URI {
         return UriComponentsBuilder
-                .fromPath(ZOMATO_SEARCH_URL)
+                .fromHttpUrl(ZOMATO_SEARCH_URL)
                 .queryParam(COUNT, count)
                 .nonNullQueryParam(LATITUDE, latitude)
                 .nonNullQueryParam(LONGITUDE, longitude)
@@ -35,7 +35,7 @@ class ZomatoUriBuilder {
 
     fun searchRestaurantById(restaurantId: Int): URI {
         return UriComponentsBuilder
-                .fromPath(ZOMATO_SEARCH_RESTAURANT)
+                .fromHttpUrl(ZOMATO_SEARCH_RESTAURANT)
                 .queryParam(RESTAURANT_ID, restaurantId)
                 .build()
                 .toUri()
@@ -43,7 +43,7 @@ class ZomatoUriBuilder {
 
     fun restaurantDailyMenuUri(restaurantId: Int): URI {
         return UriComponentsBuilder
-                .fromPath(ZOMATO_DAILY_MEALS_URL)
+                .fromHttpUrl(ZOMATO_DAILY_MEALS_URL)
                 .queryParam(RESTAURANT_ID, restaurantId).build().toUri()
     }
 }
