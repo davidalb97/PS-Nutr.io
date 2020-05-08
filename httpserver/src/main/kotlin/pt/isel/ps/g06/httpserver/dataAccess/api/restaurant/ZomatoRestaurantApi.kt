@@ -20,7 +20,7 @@ class ZomatoRestaurantApi(
 ) : IRestaurantApi, BaseApi(httpClient, restaurantMapper) {
     private val headers = mapOf(Pair("user-key", ZOMATO_API_KEY), Pair("Accept", "application/json"))
 
-    override fun getRestaurantInfo(id: Int): RestaurantDto? {
+    override fun getRestaurantInfo(id: String): RestaurantDto? {
         val uri = uriBuilder.searchRestaurantById(id)
         return requestDto(uri, ApiRestaurantDto::class.java, headers)
     }

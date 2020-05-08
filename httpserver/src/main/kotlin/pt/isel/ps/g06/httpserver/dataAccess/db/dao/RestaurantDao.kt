@@ -25,7 +25,7 @@ interface RestaurantDao {
 
     @SqlQuery("SELECT * FROM $table WHERE $id = :submission_id")
     @Transaction(TransactionIsolationLevel.SERIALIZABLE)
-    fun getById(@Bind submission_id: Int): DbRestaurantDto
+    fun getById(@Bind submission_id: String): DbRestaurantDto
 
     @SqlQuery("INSERT INTO $table($id, $name, $latitude, $longitude)" +
             " VALUES(:submission_id, :restaurant_name, :latitude, :longitude) RETURNING *")

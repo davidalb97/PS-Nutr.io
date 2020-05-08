@@ -5,6 +5,7 @@ import org.springframework.web.util.UriComponentsBuilder
 import java.net.URI
 
 private const val DISCOVER_PATH = "https://discover.search.hereapi.com/v1/discover"
+private const val LOOKUP_PATH = "https://lookup.search.hereapi.com/v1/lookup"
 
 private const val KEY = "G8OIAAXhyb2kdJQrmVfeXpuSWmIVEFjjLQNXf3fr2v4"
 private const val SEARCH_RESTAURANTS = "restaurant"
@@ -16,6 +17,7 @@ private const val IN_CIRCLE = "circle:"
 private const val RADIUS = "r"
 private const val QUERY = "q"
 private const val LIMIT = "limit"
+private const val ID = "id"
 private const val API_KEY = "apiKey"
 
 
@@ -38,8 +40,13 @@ class HereUriBuilder : RestaurantUri {
                 .toUri()
     }
 
-    override fun getRestaurantInfo(restaurantId: Int): URI {
-        TODO("Not yet implemented")
+    override fun getRestaurantInfo(restaurantId: String): URI {
+        return UriComponentsBuilder
+                .fromHttpUrl(LOOKUP_PATH)
+                .queryParam(ID, restaurantId)
+                .queryParam(API_KEY, KEY)
+                .build()
+                .toUri()
     }
 
     private fun nearbyCircleByGeocode(latitude: Float, longitude: Float, radius: Int): String {

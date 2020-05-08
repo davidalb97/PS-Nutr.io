@@ -19,16 +19,13 @@ class RestaurantController(private val restaurantService: RestaurantService) {
             latitude: Float?,
             longitude: Float?,
             radius: Int?,
-//            cuisines: List<String>? = emptyList(),
-//            meals: List<String>? = emptyList(),
             apiType: String?
     ): Set<Restaurant> {
         return restaurantService.getNearbyRestaurants(latitude, longitude, radius, apiType)
-//        return RestaurantFilter(nearbyRestaurants).filter(cuisines, meals).toSet()
     }
 
     @GetMapping(RESTAURANT, consumes = [MediaType.ALL_VALUE])
-    fun getRestaurantInformation(@PathVariable(RESTAURANT_ID_VALUE) id: Int, api: String?): Restaurant {
+    fun getRestaurantInformation(@PathVariable(RESTAURANT_ID_VALUE) id: String, api: String?): Restaurant {
         return restaurantService.getRestaurant(id, api) ?: throw RestaurantNotFoundException()
     }
 

@@ -5,6 +5,8 @@ import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.mapper.RestaurantApiM
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.model.RestaurantApiType
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.DbRestaurantRepository
 import pt.isel.ps.g06.httpserver.dataAccess.model.RestaurantDto
+import pt.isel.ps.g06.httpserver.exception.InvalidInputDomain
+import pt.isel.ps.g06.httpserver.exception.InvalidInputException
 import pt.isel.ps.g06.httpserver.model.Restaurant
 import java.util.concurrent.CompletableFuture
 
@@ -17,36 +19,38 @@ class RestaurantService(
         private val restaurantApiMapper: RestaurantApiMapper
 ) {
 
-    fun getNearbyRestaurants(latitude: Float?, longitude: Float?, radius: Int? = MAX_RADIUS, apiType: String?): Set<Restaurant> {
-        return if (latitude == null || longitude == null) emptySet() else {
-            val chosenRadius = if (radius != null && radius <= MAX_RADIUS) radius else MAX_RADIUS
-            val type = RestaurantApiType.getOrDefault(apiType)
-
-            val restaurantApi = restaurantApiMapper.getRestaurantApi(type)
-
-            val apiRestaurants = CompletableFuture
-                    .supplyAsync { restaurantApi.searchRestaurants(latitude, longitude, chosenRadius) }
-                    .thenApply { it.map(this::mapToRestaurant) }
-
-            val dbRestaurants = dbRestaurantRepository
-                    .getRestaurantsByCoordinates(latitude, longitude, chosenRadius)
-                    .map(this::mapToRestaurant)
-
-            //TODO Handle CompletableFuture exception
-            return filterRedundantApiRestaurants(dbRestaurants, apiRestaurants.get())
+    fun getNearbyRestaurants(latitude: Float?, longitude: Float?, radius: Int?, apiType: String?): Set<Restaurant> {
+        if (latitude == null || longitude == null) {
+            throw InvalidInputException(InvalidInputDomain.LOCATION, "A latitude and Longitude must be given.")
         }
+
+        val chosenRadius = if (radius != null && radius <= MAX_RADIUS) radius else MAX_RADIUS
+        val type = RestaurantApiType.getOrDefault(apiType)
+        val restaurantApi = restaurantApiMapper.getRestaurantApi(type)
+
+        val apiRestaurants = CompletableFuture
+                .supplyAsync { restaurantApi.searchRestaurants(latitude, longitude, chosenRadius) }
+                .thenApply { it.map(this::mapToRestaurant) }
+
+        val dbRestaurants = dbRestaurantRepository
+                .getRestaurantsByCoordinates(latitude, longitude, chosenRadius)
+                .map(this::mapToRestaurant)
+
+        //TODO Handle CompletableFuture exception
+        return filterRedundantApiRestaurants(dbRestaurants, apiRestaurants.get())
+
     }
 
     /**
      * Obtain more information for a Restaurant with given id.
      *
      * Current search algorithm will first query the Database for any restaurant and if none was found,
-     * search the preferred Restaurant API (Zomato, etc.)
+     * search the preferred Restaurant API (Zomato, Here, etc.)
      *
      * @param apiType - describes which api to search the Restaurant. See [RestaurantApiType] for possible types.
-     * Defaults to [RestaurantApiType.Zomato]
+     * Defaults to [RestaurantApiType.Here]
      */
-    fun getRestaurant(id: Int, apiType: String?): Restaurant? {
+    fun getRestaurant(id: String, apiType: String?): Restaurant? {
         val type = RestaurantApiType.getOrDefault(apiType)
         val restaurantApi = restaurantApiMapper.getRestaurantApi(type)
         val restaurant = dbRestaurantRepository.getRestaurantById(id) ?: restaurantApi.getRestaurantInfo(id)

@@ -4,7 +4,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.model.RestaurantDto
 
 interface IRestaurantApi {
 
-    fun getRestaurantInfo(id: Int): RestaurantDto?
+    fun getRestaurantInfo(id: String): RestaurantDto?
 
     fun searchRestaurants(latitude: Float, longitude: Float, radiusMeters: Int): Collection<RestaurantDto>
 

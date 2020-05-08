@@ -33,7 +33,7 @@ class ZomatoUriBuilder {
                 .toUri()
     }
 
-    fun searchRestaurantById(restaurantId: Int): URI {
+    fun searchRestaurantById(restaurantId: String): URI {
         return UriComponentsBuilder
                 .fromHttpUrl(ZOMATO_SEARCH_RESTAURANT)
                 .queryParam(RESTAURANT_ID, restaurantId)

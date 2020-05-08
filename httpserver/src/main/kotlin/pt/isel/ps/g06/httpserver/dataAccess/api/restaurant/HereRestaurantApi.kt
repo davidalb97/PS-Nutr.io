@@ -4,6 +4,7 @@ import org.springframework.stereotype.Repository
 import pt.isel.ps.g06.httpserver.dataAccess.api.common.BaseApi
 import pt.isel.ps.g06.httpserver.dataAccess.api.common.HttpApiClient
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.dto.here.HereResultContainer
+import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.dto.here.HereResultItem
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.mapper.ZomatoResponseMapper
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.uri.HereUriBuilder
 import pt.isel.ps.g06.httpserver.dataAccess.model.RestaurantDto
@@ -15,8 +16,9 @@ class HereRestaurantApi(
         restaurantMapper: ZomatoResponseMapper
 ) : IRestaurantApi, BaseApi(httpClient, restaurantMapper) {
 
-    override fun getRestaurantInfo(id: Int): RestaurantDto? {
-        TODO("Not yet implemented")
+    override fun getRestaurantInfo(id: String): RestaurantDto? {
+        val uri = uriBuilder.getRestaurantInfo(id)
+        return requestDto(uri, HereResultItem::class.java)
     }
 
     override fun searchRestaurants(latitude: Float, longitude: Float, radiusMeters: Int): Collection<RestaurantDto> {

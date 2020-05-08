@@ -11,5 +11,5 @@ interface RestaurantUri {
             limit: Int? = null
     ): URI
 
-    fun getRestaurantInfo(restaurantId: Int): URI
+    fun getRestaurantInfo(restaurantId: String): URI
 }
