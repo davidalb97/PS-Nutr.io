@@ -7,7 +7,9 @@
     <SearchView
         android:id="@+id/search_meal"
         android:layout_width="match_parent"
-        android:layout_height="50dp">
+        android:layout_height="50dp"
+        android:queryHint="@string/hint_meal_search"
+        android:layoutDirection="rtl">
     </SearchView>
 
     <ProgressBar

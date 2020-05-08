@@ -46,4 +46,7 @@
     <string name="downvote">Downvote</string>
     <string name="upvote">Upvote</string>
     <string name="no_internet_connection">Please connect your device to the internet</string>
+    <string name="hint_cuisine_search">Search for a specific cuisine</string>
+    <string name="hint_meal_search">Search for a specific meal</string>
+    <string name="hint_restaurant_search">Search for a specific restaurant</string>
 </resources>

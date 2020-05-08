@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.SearchView
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -48,9 +49,24 @@ class RestaurantRecyclerFragment : ARecyclerListFragment<Restaurant>(){
         initRecyclerList(view)
         list.adapter = adapter
         list.layoutManager = LinearLayoutManager(this.requireContext())
-        (viewModel as RestaurantRecyclerViewModel)
-            .getRestaurants(successFunction(), errorFunction())
         startObserver()
         startScrollListener()
+
+        val searchBar = view.findViewById<SearchView>(R.id.search_restaurant)
+
+        searchBar.setOnQueryTextListener(object: SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                if (query.isNullOrEmpty()) return false
+                viewModel.parameters["path"]?.put(":id", query)
+                searchBar.clearFocus()
+                /*(viewModel as RestaurantRecyclerViewModel)
+                    .getRestaurants(successFunction(), errorFunction())*/
+                return true
+            }
+
+            override fun onQueryTextChange(query: String?): Boolean = true
+
+        })
+
     }
 }

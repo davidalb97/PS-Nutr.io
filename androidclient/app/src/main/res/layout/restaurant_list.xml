@@ -6,9 +6,11 @@
     android:layout_height="match_parent">
 
     <SearchView
-        android:id="@+id/search"
+        android:id="@+id/search_restaurant"
         android:layout_width="match_parent"
-        android:layout_height="50dp">
+        android:layout_height="50dp"
+        android:queryHint="@string/hint_restaurant_search"
+        android:layoutDirection="rtl">
     </SearchView>
 
     <ProgressBar
@@ -25,7 +27,7 @@
         android:id="@+id/itemList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/search"
+        android:layout_below="@+id/search_restaurant"
         tools:listitem="@layout/restaurant_card">
     </androidx.recyclerview.widget.RecyclerView>
 

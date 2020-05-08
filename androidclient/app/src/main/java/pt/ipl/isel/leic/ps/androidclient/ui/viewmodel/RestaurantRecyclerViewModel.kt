@@ -17,6 +17,7 @@ class RestaurantRecyclerViewModel(
         app.restaurantRepository.getRestaurants(
             onSuccess,
             onError,
+            parameters,
             COUNT,
             skip
         )

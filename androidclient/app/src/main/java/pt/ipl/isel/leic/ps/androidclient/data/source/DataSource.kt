@@ -61,12 +61,18 @@ class DataSource(ctx: Context) {
     fun getRestaurants(
         success: (List<Restaurant>) -> Unit,
         error: (VolleyError) -> Unit,
+        uriParameters: HashMap<String, HashMap<String, String>>,
         count: Int,
         skip: Int
     ) {
+        val uri = "$URI_BASE/$RESTAURANT"
+        if (!uriParameters.isNullOrEmpty()) {
+               uri.plus("/${uriParameters["path"]?.get(":id")}")
+        }
+
         httpServerRequest(
             Method.GET,
-            "$URI_BASE/$RESTAURANT",
+            uri,
             RESTAURANTS_DTO,
             success,
             error,

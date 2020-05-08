@@ -9,7 +9,8 @@
         android:id="@+id/search"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:queryHint="Search for a specific cuisine">
+        android:queryHint="@string/hint_cuisine_search"
+        android:layoutDirection="rtl">
     </SearchView>
 
     <ProgressBar

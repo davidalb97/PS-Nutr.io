@@ -12,7 +12,7 @@ abstract class ARecyclerViewModel<T> : ViewModel() {
     var mediatorLiveData: MediatorLiveData<List<T>> = MediatorLiveData()
     var liveData: LiveData<List<T>>? = null
     val items: List<T> get() = mediatorLiveData.value ?: emptyList()
-    lateinit var parameters: Iterable<Pair<String, String>>
+    var parameters: HashMap<String, HashMap<String, String>> = HashMap()
     var skip = 0
 
     /**
