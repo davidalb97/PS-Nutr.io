@@ -2,7 +2,7 @@ package pt.isel.ps.g06.httpserver.dataAccess.db.dto
 
 import pt.isel.ps.g06.httpserver.dataAccess.model.RestaurantDto
 
-class DbRestaurantDto(
+class RestaurantDto(
         submission_id: Int,
         restaurant_name: String,
         latitude: Float,

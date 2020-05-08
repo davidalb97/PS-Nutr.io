@@ -3,10 +3,6 @@ package pt.isel.ps.g06.httpserver.controller
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
 import pt.isel.ps.g06.httpserver.common.*
-import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.mapper.RestaurantApiMapper
-import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.RestaurantApiRepository
-import pt.isel.ps.g06.httpserver.dataAccess.common.TransactionHolder
-import pt.isel.ps.g06.httpserver.dataAccess.db.repo.RestaurantDbRepository
 
 @Suppress("MVCPathVariableInspection")
 @RestController
@@ -14,11 +10,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.repo.RestaurantDbRepository
         produces = [MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_PROBLEM_JSON_VALUE],
         consumes = [MediaType.APPLICATION_JSON_VALUE]
 )
-class RestaurantMealsController(
-        private val transactionHolder: TransactionHolder,
-        private val dbRestaurantRepo: RestaurantDbRepository,
-        private val restaurantApiRepo: RestaurantApiRepository
-) {
+class RestaurantMealsController {
 
     @PostMapping(RESTAURANT_MEALS)
     fun addRestaurantMeal(@PathVariable(RESTAURANT_ID_VALUE) id: String, @RequestBody meal: String) {

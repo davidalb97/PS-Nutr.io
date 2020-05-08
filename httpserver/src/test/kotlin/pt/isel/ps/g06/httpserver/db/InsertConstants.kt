@@ -3,7 +3,6 @@ package pt.isel.ps.g06.httpserver.db
 import org.jdbi.v3.core.Jdbi
 import pt.isel.ps.g06.httpserver.dataAccess.api.food.FoodApiType
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.RestaurantApiType
-import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmitterType
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.*
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.SubmitterDto
@@ -48,7 +47,7 @@ class InsertConstants(val jdbi: Jdbi) {
                     " ON Ingredient.submission_id = SubmissionSubmitter.submission_id" +
                     " INNER JOIN Submitter" +
                     " ON SubmissionSubmitter.submitter_id = Submitter.submitter_id"
-    ).map { rs, ctx ->
+    ).map { rs, _ ->
         Ingredient(rs.getString("ingredient_name"),
                 rs.getInt("apiId"),
                 FoodApiType.valueOf(rs.getString("submitter_name"))

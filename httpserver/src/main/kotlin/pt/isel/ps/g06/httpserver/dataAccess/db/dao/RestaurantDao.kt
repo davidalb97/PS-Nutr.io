@@ -21,7 +21,7 @@ interface RestaurantDao {
             "false" +
             ") <= :radius"
     )
-    fun getByCoordinates(@Bind latitude: Float, @Bind longitude: Float, @Bind radius: Int): List<DbRestaurantDto>
+    fun getByCoordinates(@Bind latitude: Float, @Bind longitude: Float, @Bind radius: Int): List<RestaurantDto>
 
     @SqlQuery("SELECT * FROM $table WHERE $id = :submissionId")
     @Transaction(TransactionIsolationLevel.SERIALIZABLE)

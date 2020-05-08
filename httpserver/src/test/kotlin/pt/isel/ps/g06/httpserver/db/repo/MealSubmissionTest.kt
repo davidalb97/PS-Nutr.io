@@ -7,13 +7,10 @@ import org.springframework.boot.test.context.SpringBootTest
 import pt.isel.ps.g06.httpserver.dataAccess.api.food.FoodApiType
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionContractType.*
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType
-import pt.isel.ps.g06.httpserver.dataAccess.db.dao.ApiSubmissionDao
-import pt.isel.ps.g06.httpserver.dataAccess.db.dao.SubmissionDao
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.MealDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.model.Ingredient
 import pt.isel.ps.g06.httpserver.db.*
 import pt.isel.ps.g06.httpserver.exception.InvalidInputException
-import pt.isel.ps.g06.httpserver.model.toTest
 import pt.isel.ps.g06.httpserver.springConfig.dto.DbEditableDto
 
 @SpringBootTest
@@ -316,6 +313,7 @@ class MealSubmissionTest {
         }
     }
 
+/*
     @Test
     fun shouldUpdateUserMealWithNewSpoonacularIngredients() {
         TODO()
@@ -328,7 +326,7 @@ class MealSubmissionTest {
         }
     }
 
-    /*
+
     @Test
     fun shouldUpdateUserMealWithNewIngredients() {
         jdbi.inRollbackTransaction {

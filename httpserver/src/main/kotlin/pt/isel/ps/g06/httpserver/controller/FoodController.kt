@@ -12,7 +12,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.api.food.dto.ProductSearchContainerD
 import pt.isel.ps.g06.httpserver.dataAccess.api.food.dto.RecipeDto
 import pt.isel.ps.g06.httpserver.dataAccess.api.food.dto.RecipeIngredientsDto
 import pt.isel.ps.g06.httpserver.dataAccess.api.food.mapper.FoodApiMapper
-import pt.isel.ps.g06.httpserver.dataAccess.api.food.model.FoodApiType
+import pt.isel.ps.g06.httpserver.dataAccess.api.food.FoodApiType
 
 @RestController
 @RequestMapping("/spoonacular")

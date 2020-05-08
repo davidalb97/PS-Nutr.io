@@ -5,8 +5,8 @@ import org.springframework.web.bind.annotation.*
 import pt.isel.ps.g06.httpserver.RestaurantFilter
 import pt.isel.ps.g06.httpserver.common.*
 import pt.isel.ps.g06.httpserver.common.exception.RestaurantNotFoundException
-import pt.isel.ps.g06.httpserver.data.RestaurantInput
-import pt.isel.ps.g06.httpserver.data.VoteInput
+import pt.isel.ps.g06.httpserver.dataAccess.input.RestaurantInput
+import pt.isel.ps.g06.httpserver.dataAccess.input.VoteInput
 import pt.isel.ps.g06.httpserver.model.Restaurant
 import pt.isel.ps.g06.httpserver.service.RestaurantService
 
