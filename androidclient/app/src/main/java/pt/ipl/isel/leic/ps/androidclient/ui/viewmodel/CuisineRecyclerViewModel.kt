@@ -15,13 +15,12 @@ class CuisineRecyclerViewModel() : ARecyclerViewModel<Cuisine>() {
 
     fun getCuisines(
         onSuccess : (List<Cuisine>) -> Unit,
-        onError : () -> Unit,
-        uriParameters: HashMap<String, HashMap<String, String>>
+        onError : () -> Unit
     ) {
         cuisineRepository.getCuisines(
             onSuccess,
             onError,
-            uriParameters,
+            parameters,
             COUNT,
             skip
         )

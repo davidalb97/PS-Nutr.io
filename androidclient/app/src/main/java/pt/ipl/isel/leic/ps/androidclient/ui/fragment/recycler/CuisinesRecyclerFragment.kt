@@ -14,6 +14,8 @@ import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.CuisineRecyclerViewModel
 
 class CuisinesRecyclerFragment : ARecyclerListFragment<Cuisine>() {
 
+    private lateinit var fragmentModel: CuisineRecyclerViewModel
+
     private val adapter: CuisineRecyclerAdapter by lazy {
         CuisineRecyclerAdapter(
             viewModel as CuisineRecyclerViewModel,
@@ -29,7 +31,8 @@ class CuisinesRecyclerFragment : ARecyclerListFragment<Cuisine>() {
     private fun buildViewModel(savedInstanceState: Bundle?) {
         val rootActivity = this.requireActivity()
         val factory = CuisineRecyclerVMProviderFactory(savedInstanceState, rootActivity.intent)
-        viewModel = ViewModelProvider(rootActivity, factory)[CuisineRecyclerViewModel::class.java]
+        fragmentModel = ViewModelProvider(rootActivity, factory)[CuisineRecyclerViewModel::class.java]
+        viewModel = fragmentModel
     }
 
     override fun onCreateView(
@@ -45,6 +48,7 @@ class CuisinesRecyclerFragment : ARecyclerListFragment<Cuisine>() {
         initRecyclerList(view)
         list.adapter = adapter
         list.layoutManager = LinearLayoutManager(this.requireContext())
+        fragmentModel.getCuisines(successFunction(), errorFunction())
         startObserver()
         startScrollListener()
     }

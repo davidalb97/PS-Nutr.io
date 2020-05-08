@@ -14,13 +14,12 @@ class MealRecyclerViewModel() : ARecyclerViewModel<Meal>() {
 
     fun getMeals(
         onSuccess: (List<Meal>) -> Unit,
-        onError: () -> Unit,
-        uriParameters: HashMap<String, HashMap<String, String>>
+        onError: () -> Unit
     ) {
         mealRepository.getMeals(
             onSuccess,
             onError,
-            uriParameters,
+            parameters,
             COUNT,
             skip
         )

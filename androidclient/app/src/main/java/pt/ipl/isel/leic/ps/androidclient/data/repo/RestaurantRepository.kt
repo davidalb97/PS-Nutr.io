@@ -13,7 +13,7 @@ class RestaurantRepository(private val dataSource: DataSource) {
     fun getRestaurants(
         success: (List<Restaurant>) -> Unit,
         error: () -> Unit,
-        uriParameters: HashMap<String, HashMap<String, String>>,
+        uriParameters: HashMap<String, HashMap<String, String>>?,
         count: Int,
         skip: Int
     ) {

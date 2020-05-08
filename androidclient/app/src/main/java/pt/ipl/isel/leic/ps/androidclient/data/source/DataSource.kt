@@ -61,7 +61,7 @@ class DataSource(ctx: Context) {
     fun getRestaurants(
         success: (List<Restaurant>) -> Unit,
         error: (VolleyError) -> Unit,
-        uriParameters: HashMap<String, HashMap<String, String>>,
+        uriParameters: HashMap<String, HashMap<String, String>>?,
         count: Int,
         skip: Int
     ) {
@@ -83,7 +83,7 @@ class DataSource(ctx: Context) {
     fun getMeals(
         success: (List<Meal>) -> Unit,
         error: (VolleyError) -> Unit,
-        uriParameters: HashMap<String, HashMap<String, String>>,
+        uriParameters: HashMap<String, HashMap<String, String>>?,
         count: Int,
         skip: Int
     ) {
@@ -100,7 +100,7 @@ class DataSource(ctx: Context) {
     fun getCuisines(
         success: (List<Cuisine>) -> Unit,
         error: (VolleyError) -> Unit,
-        uriParameters: HashMap<String, HashMap<String, String>>,
+        uriParameters: HashMap<String, HashMap<String, String>>?,
         count: Int,
         skip: Int
     ) {
