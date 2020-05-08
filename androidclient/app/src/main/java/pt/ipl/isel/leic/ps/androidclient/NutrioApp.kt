@@ -19,30 +19,33 @@ const val TAG = "Nutr.io App"
  */
 class NutrioApp : Application() {
 
-    /**
-     * Application context
-     */
-    lateinit var app: Context
+    companion object {
+        /**
+         * Application context
+         */
+        lateinit var app: Context
 
-    /**
-     * DataSource initialization
-     */
-    private val dataSource
-            by lazy { DataSource(app) }
+        /**
+         * DataSource initialization
+         */
+        private val dataSource
+                by lazy { DataSource(app) }
 
-    /**
-     * Local databases initialization
-     */
+        /**
+         * Local databases initialization
+         */
 
-    /**
-     *  Repositories initialization
-     */
-    val restaurantRepository
-            by lazy { RestaurantRepository(dataSource) }
-    val mealRepository
-            by lazy { MealRepository(dataSource) }
-    val cuisineRepository
-            by lazy { CuisineRepository(dataSource) }
+        /**
+         *  Repositories initialization
+         */
+        val restaurantRepository
+                by lazy { RestaurantRepository(dataSource) }
+        val mealRepository
+                by lazy { MealRepository(dataSource) }
+        val cuisineRepository
+                by lazy { CuisineRepository(dataSource) }
+
+    }
 
     override fun onCreate() {
         super.onCreate()

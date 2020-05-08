@@ -1,5 +1,6 @@
 package pt.ipl.isel.leic.ps.androidclient.data.repo
 
+import androidx.lifecycle.LiveData
 import pt.ipl.isel.leic.ps.androidclient.data.source.DataSource
 import pt.ipl.isel.leic.ps.androidclient.data.source.model.Restaurant
 

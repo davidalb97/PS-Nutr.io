@@ -83,6 +83,7 @@ class DataSource(ctx: Context) {
     fun getMeals(
         success: (List<Meal>) -> Unit,
         error: (VolleyError) -> Unit,
+        uriParameters: HashMap<String, HashMap<String, String>>,
         count: Int,
         skip: Int
     ) {
@@ -99,6 +100,7 @@ class DataSource(ctx: Context) {
     fun getCuisines(
         success: (List<Cuisine>) -> Unit,
         error: (VolleyError) -> Unit,
+        uriParameters: HashMap<String, HashMap<String, String>>,
         count: Int,
         skip: Int
     ) {
@@ -132,7 +134,7 @@ class DataSource(ctx: Context) {
         urlStr: String,
         dtoClass: Class<Dto>,
         onSuccess: (Model) -> Unit,
-        onError: (VolleyError) -> Unit = { Log.v(TAG, it.toString()) },
+        onError: (VolleyError) -> Unit,
         reqPayload: ReqPayload? = null
     ) {
 

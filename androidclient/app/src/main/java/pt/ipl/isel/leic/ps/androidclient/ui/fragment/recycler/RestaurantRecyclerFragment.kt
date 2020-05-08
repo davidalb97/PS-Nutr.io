@@ -30,7 +30,7 @@ class RestaurantRecyclerFragment : ARecyclerListFragment<Restaurant>(){
     private fun getViewModelFactory() = object : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-            return RestaurantRecyclerViewModel(requireActivity().application as NutrioApp) as T
+            return RestaurantRecyclerViewModel() as T
         }
     }
 
@@ -59,8 +59,7 @@ class RestaurantRecyclerFragment : ARecyclerListFragment<Restaurant>(){
                 if (query.isNullOrEmpty()) return false
                 viewModel.parameters["path"]?.put(":id", query)
                 searchBar.clearFocus()
-                /*(viewModel as RestaurantRecyclerViewModel)
-                    .getRestaurants(successFunction(), errorFunction())*/
+                viewModel.fetchLiveData()
                 return true
             }
 

@@ -69,7 +69,7 @@ abstract class ARecyclerListFragment<T : Any> : Fragment() {
                 minimumListSize = viewModel.liveData?.value!!.size + 1
                 if (!isLoading) {
                     startLoading()
-                    viewModel.getMoreItemsExchangingLiveData()
+                    //viewModel.
                     stopLoading()
                 }
             }
@@ -79,14 +79,13 @@ abstract class ARecyclerListFragment<T : Any> : Fragment() {
         })
     }
 
-
     /**
      * The success function.
      * A Toast will pop up telling no results were found, if a request
      * returns an empty list.
      */
     open fun successFunction(): (List<T>) -> Unit = {
-        viewModel.setItems(it)
+        viewModel.setList(it)
         if (it.isEmpty())
             Toast.makeText(
                 requireActivity().application, R.string.no_result_found,
@@ -111,5 +110,4 @@ abstract class ARecyclerListFragment<T : Any> : Fragment() {
                 .show()
         }
     }
-
 }

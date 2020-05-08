@@ -29,7 +29,7 @@ class CuisinesRecyclerFragment : ARecyclerListFragment<Cuisine>() {
     private fun getViewModelFactory() = object : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-            return CuisineRecyclerViewModel(requireActivity().applicationContext as NutrioApp) as T
+            return CuisineRecyclerViewModel() as T
         }
     }
 
@@ -48,8 +48,6 @@ class CuisinesRecyclerFragment : ARecyclerListFragment<Cuisine>() {
         initRecyclerList(view)
         list.adapter = adapter
         list.layoutManager = LinearLayoutManager(this.requireContext())
-        (viewModel as CuisineRecyclerViewModel)
-            .getCuisines(successFunction(), errorFunction())
         startObserver()
         startScrollListener()
     }
