@@ -16,11 +16,11 @@ import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.RestaurantRecyclerA
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.RestaurantRecyclerVMProviderFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.RestaurantRecyclerViewModel
 
-class RestaurantRecyclerFragment : ARecyclerListFragment<Restaurant>(){
+class RestaurantRecyclerFragment : ARecyclerListFragment<Restaurant, RestaurantRecyclerViewModel>(){
 
     private val adapter: RestaurantRecyclerAdapter by lazy {
         RestaurantRecyclerAdapter(
-            viewModel as RestaurantRecyclerViewModel,
+            viewModel,
             this.requireContext()
         )
     }
@@ -48,6 +48,7 @@ class RestaurantRecyclerFragment : ARecyclerListFragment<Restaurant>(){
         super.onViewCreated(view, savedInstanceState)
 
         initRecyclerList(view)
+        setCallbackFunctions()
         list.adapter = adapter
         list.layoutManager = LinearLayoutManager(this.requireContext())
         startObserver()
@@ -60,7 +61,7 @@ class RestaurantRecyclerFragment : ARecyclerListFragment<Restaurant>(){
                 if (query.isNullOrEmpty()) return false
                 viewModel.parameters["path"]?.put(":id", query)
                 searchBar.clearFocus()
-                viewModel.fetchLiveData()
+                viewModel.getRestaurants()
                 return true
             }
 

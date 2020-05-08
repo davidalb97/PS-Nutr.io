@@ -5,6 +5,7 @@ import android.view.View
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModel
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp
@@ -17,9 +18,9 @@ import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.ARecyclerViewModel
 // Default pagination value
 const val COUNT = 10
 
-abstract class ARecyclerListFragment<T : Any> : Fragment() {
+abstract class ARecyclerListFragment<T : Any, VM: ARecyclerViewModel<T>> : Fragment() {
 
-    lateinit var viewModel: ARecyclerViewModel<T>
+    lateinit var viewModel: VM
 
     lateinit var list: RecyclerView
     lateinit var progressBar: ProgressBar
@@ -69,7 +70,7 @@ abstract class ARecyclerListFragment<T : Any> : Fragment() {
                 minimumListSize = viewModel.liveData?.value!!.size + 1
                 if (!isLoading) {
                     startLoading()
-                    //TODO - retrieve more data
+                    viewModel.updateListFromLiveData()
                     stopLoading()
                 }
             }
@@ -79,14 +80,18 @@ abstract class ARecyclerListFragment<T : Any> : Fragment() {
         })
     }
 
+    fun setCallbackFunctions() {
+        viewModel.onSuccess = this::successFunction
+        viewModel.onError = this::errorFunction
+    }
+
     /**
      * The success function.
      * A Toast will pop up telling no results were found, if a request
      * returns an empty list.
      */
-    open fun successFunction(): (List<T>) -> Unit = {
-        viewModel.setList(it)
-        if (it.isEmpty())
+    open fun successFunction(list: List<T>) {
+        if (list.isEmpty())
             Toast.makeText(
                 requireActivity().application, R.string.no_result_found,
                 Toast.LENGTH_LONG
@@ -99,7 +104,7 @@ abstract class ARecyclerListFragment<T : Any> : Fragment() {
      * Pops up a Toast if there's no internet connection
      * or if it couldn't get results.
      */
-    open fun errorFunction(): () -> Unit = {
+    open fun errorFunction(exception: Exception) {
         if (!hasInternetConnection(requireActivity().application as NutrioApp)) {
             Toast.makeText(
                 requireActivity().application, R.string.no_internet_connection,

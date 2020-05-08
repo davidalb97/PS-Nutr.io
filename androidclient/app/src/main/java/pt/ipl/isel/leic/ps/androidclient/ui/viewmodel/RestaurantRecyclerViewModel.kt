@@ -9,12 +9,13 @@ import pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler.COUNT
 
 class RestaurantRecyclerViewModel : ARecyclerViewModel<Restaurant>() {
 
-    fun getRestaurants(
-        onSuccess: (List<Restaurant>) -> Unit,
-        onError: () -> Unit
-    ) {
+    fun getRestaurants() {
+        val successFunction : (List<Restaurant>) -> Unit = {
+            updateList(it)
+            onSuccess(it)
+        }
         restaurantRepository.getRestaurants(
-            onSuccess,
+            successFunction,
             onError,
             parameters,
             COUNT,
@@ -22,9 +23,9 @@ class RestaurantRecyclerViewModel : ARecyclerViewModel<Restaurant>() {
         )
     }
 
-    override fun fetchLiveData(): LiveData<List<Restaurant>> {
-        TODO("Not yet implemented")
-    }
+    override fun fetchLiveData(): LiveData<List<Restaurant>> =
+        TODO()
+
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         TODO()

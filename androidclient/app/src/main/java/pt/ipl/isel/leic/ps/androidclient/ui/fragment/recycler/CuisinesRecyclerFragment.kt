@@ -12,13 +12,11 @@ import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.CuisineRecyclerAdap
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.CuisineRecyclerVMProviderFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.CuisineRecyclerViewModel
 
-class CuisinesRecyclerFragment : ARecyclerListFragment<Cuisine>() {
-
-    private lateinit var fragmentModel: CuisineRecyclerViewModel
+class CuisinesRecyclerFragment : ARecyclerListFragment<Cuisine, CuisineRecyclerViewModel>() {
 
     private val adapter: CuisineRecyclerAdapter by lazy {
         CuisineRecyclerAdapter(
-            viewModel as CuisineRecyclerViewModel,
+            viewModel,
             this.requireContext()
         )
     }
@@ -31,8 +29,7 @@ class CuisinesRecyclerFragment : ARecyclerListFragment<Cuisine>() {
     private fun buildViewModel(savedInstanceState: Bundle?) {
         val rootActivity = this.requireActivity()
         val factory = CuisineRecyclerVMProviderFactory(savedInstanceState, rootActivity.intent)
-        fragmentModel = ViewModelProvider(rootActivity, factory)[CuisineRecyclerViewModel::class.java]
-        viewModel = fragmentModel
+        viewModel = ViewModelProvider(rootActivity, factory)[CuisineRecyclerViewModel::class.java]
     }
 
     override fun onCreateView(
@@ -46,9 +43,9 @@ class CuisinesRecyclerFragment : ARecyclerListFragment<Cuisine>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initRecyclerList(view)
+        setCallbackFunctions()
         list.adapter = adapter
         list.layoutManager = LinearLayoutManager(this.requireContext())
-        fragmentModel.getCuisines(successFunction(), errorFunction())
         startObserver()
         startScrollListener()
     }

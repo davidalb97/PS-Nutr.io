@@ -5,11 +5,11 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import pt.ipl.isel.leic.ps.androidclient.data.source.model.Cuisine
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-data class CuisineDto(val name: String) : IUnDto<Cuisine> {
+class CuisineDto(val name: String) : IUnDto<Cuisine> {
     override fun unDto(): Cuisine = Cuisine(name)
 }
 
-data class CuisinesDto(
+class CuisinesDto(
     @JsonProperty("cuisines") val cuisines: Array<CuisineDto>
 ) : IUnDto<List<Cuisine>> {
 

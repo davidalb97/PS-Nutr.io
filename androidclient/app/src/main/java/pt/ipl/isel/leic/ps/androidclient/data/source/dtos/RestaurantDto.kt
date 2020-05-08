@@ -1,34 +1,18 @@
 package pt.ipl.isel.leic.ps.androidclient.data.source.dtos
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import com.fasterxml.jackson.annotation.JsonProperty
 import pt.ipl.isel.leic.ps.androidclient.data.source.model.Restaurant
 
-data class RestaurantsDto(val restaurants: Array<RestaurantDto>): IUnDto<List<Restaurant>> {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as RestaurantsDto
-
-        if (!restaurants.contentEquals(other.restaurants)) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        return restaurants.contentHashCode()
-    }
-
-    override fun unDto(): List<Restaurant> = restaurants.map(RestaurantDto::unDto)
-}
-
-data class RestaurantDto(
-        val apiId: Int,
-        val apiType: String,
-        val name: String,
-        val votes: List<Boolean>,
-        val latitude: Float,
-        val longitude: Float,
-        val cuisines: Array<String>
+@JsonIgnoreProperties(ignoreUnknown = true)
+class RestaurantDto(
+    val apiId: Int,
+    val apiType: String,
+    val name: String,
+    val votes: List<Boolean>,
+    val latitude: Float,
+    val longitude: Float,
+    val cuisines: Array<String>
 ): IUnDto<Restaurant> {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -65,4 +49,25 @@ data class RestaurantDto(
         longitude,
         cuisines
     )
+}
+
+class RestaurantsDto(
+    @JsonProperty("restaurants") val restaurants: Array<RestaurantDto>
+): IUnDto<List<Restaurant>> {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as RestaurantsDto
+
+        if (!restaurants.contentEquals(other.restaurants)) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return restaurants.contentHashCode()
+    }
+
+    override fun unDto(): List<Restaurant> = restaurants.map(RestaurantDto::unDto)
 }

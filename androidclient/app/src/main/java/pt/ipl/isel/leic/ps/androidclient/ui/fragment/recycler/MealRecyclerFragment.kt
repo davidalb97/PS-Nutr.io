@@ -12,7 +12,7 @@ import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.MealRecyclerAdapter
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.MealRecyclerVMProviderFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.MealRecyclerViewModel
 
-class MealRecyclerFragment : ARecyclerListFragment<Meal>() {
+class MealRecyclerFragment : ARecyclerListFragment<Meal, MealRecyclerViewModel>() {
 
     private val adapter: MealRecyclerAdapter by lazy {
         MealRecyclerAdapter(
@@ -43,6 +43,7 @@ class MealRecyclerFragment : ARecyclerListFragment<Meal>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initRecyclerList(view)
+        setCallbackFunctions()
         list.adapter = adapter
         list.layoutManager = LinearLayoutManager(this.requireContext())
         startObserver()

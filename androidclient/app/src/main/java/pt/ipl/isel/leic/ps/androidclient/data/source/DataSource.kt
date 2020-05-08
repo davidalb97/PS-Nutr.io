@@ -9,8 +9,12 @@ import com.android.volley.toolbox.Volley
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.KotlinModule
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import pt.ipl.isel.leic.ps.androidclient.TAG
-import pt.ipl.isel.leic.ps.androidclient.data.source.dtos.*
+import pt.ipl.isel.leic.ps.androidclient.data.source.dtos.CuisinesDto
+import pt.ipl.isel.leic.ps.androidclient.data.source.dtos.IUnDto
+import pt.ipl.isel.leic.ps.androidclient.data.source.dtos.MealsDto
+import pt.ipl.isel.leic.ps.androidclient.data.source.dtos.RestaurantsDto
 import pt.ipl.isel.leic.ps.androidclient.data.source.model.Cuisine
 import pt.ipl.isel.leic.ps.androidclient.data.source.model.Meal
 import pt.ipl.isel.leic.ps.androidclient.data.source.model.Restaurant
@@ -19,14 +23,21 @@ import pt.ipl.isel.leic.ps.androidclient.data.util.AsyncWorker
 const val ADDRESS = "localhost"
 const val PORT = "8080"
 const val URI_BASE = "http://$ADDRESS:$PORT"
-const val AND = "&"
-const val SKIP = "skip="
-const val COUNT = "count="
+const val SKIP = "&skip="
+const val COUNT = "&count="
 const val RESTAURANT = "restaurant"
 const val MEAL = "meal"
 const val CUISINES = "cuisines"
+const val URI_END = "$SKIP=:skip$COUNT=:count"
 const val INGREDIENTS = "ingredients"
 const val USER_QUERY = "user"
+
+const val RESTAURANT_ID_URI =
+    "$URI_BASE/$RESTAURANT/:id"
+const val MEAL_ID_URI =
+    "$URI_BASE/$MEAL/:id"
+const val CUISINE_ID_URI =
+    "$URI_BASE/$CUISINES/:name"
 
 val RESTAURANTS_DTO = RestaurantsDto::class.java
 val MEALS_DTO = MealsDto::class.java
@@ -47,11 +58,9 @@ enum class Method(val value: Int) {
  */
 class DataSource(ctx: Context) {
 
-    val dtoMapper = ObjectMapper()
-        //Ignore unknown json fields
+    // Jackson deserializer
+    val dtoMapper = jacksonObjectMapper()
         .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-        //Enable primary constructor on DTOs
-        .registerModule(KotlinModule())
 
     val queue = Volley.newRequestQueue(ctx)
 
@@ -65,10 +74,41 @@ class DataSource(ctx: Context) {
         count: Int,
         skip: Int
     ) {
-        val uri = "$URI_BASE/$RESTAURANT"
-        if (!uriParameters.isNullOrEmpty()) {
-               uri.plus("/${uriParameters["path"]?.get(":id")}")
-        }
+        var uri = RESTAURANT_ID_URI
+
+        uri =
+            if (uriParameters!!["path"]?.isEmpty()!!)
+                uri.removeSuffix("/:id/")
+            else
+                buildUri(uri, uriParameters)
+
+
+        httpServerRequest(
+            Method.GET,
+            uri,
+            RESTAURANTS_DTO,
+            success,
+            error,
+            null
+        )
+    }
+
+    // TODO
+    fun getNearbyRestaurants(
+        success: (List<Restaurant>) -> Unit,
+        error: (VolleyError) -> Unit,
+        uriParameters: HashMap<String, HashMap<String, String>>?,
+        count: Int,
+        skip: Int
+    ) {
+        var uri = RESTAURANT_ID_URI
+
+        uri =
+            if (uriParameters.isNullOrEmpty())
+                uri.removeSuffix("/:id")
+            else
+                buildUri(uri, uriParameters)
+
 
         httpServerRequest(
             Method.GET,
@@ -87,9 +127,17 @@ class DataSource(ctx: Context) {
         count: Int,
         skip: Int
     ) {
+        var uri = MEAL_ID_URI
+
+        uri =
+            if (uriParameters.isNullOrEmpty())
+                uri.removeSuffix("/:id")
+            else
+                buildUri(uri, uriParameters)
+
         httpServerRequest(
             Method.GET,
-            "$URI_BASE/$MEAL",
+            uri,
             MEALS_DTO,
             success,
             error,
@@ -104,9 +152,16 @@ class DataSource(ctx: Context) {
         count: Int,
         skip: Int
     ) {
+        var uri = CUISINE_ID_URI
+
+        uri =
+            if (uriParameters.isNullOrEmpty())
+                uri.removeSuffix("/:name")
+            else
+                buildUri(uri, uriParameters)
         httpServerRequest(
             Method.GET,
-            "$URI_BASE/$CUISINES",
+            uri,
             CuisinesDto::class.java,
             success,
             error,
@@ -127,6 +182,30 @@ class DataSource(ctx: Context) {
      */
 
     /**
+     * Uri builder
+     */
+    private fun buildUri(
+        baseUri: String,
+        parameters: HashMap<String, HashMap<String, String>>
+    ): String {
+
+        val path = parameters["path"]
+        val query = parameters["query"]
+
+        var uri = baseUri
+
+        path?.forEach { parameter ->
+            uri = uri.replace(parameter.key, parameter.value)
+        }
+
+        query?.forEach { parameter ->
+            uri = uri.replace(parameter.key, parameter.value)
+        }
+
+        return uri
+    }
+
+    /**
      * A generic Volley's requester
      */
     private fun <Model, Dto : IUnDto<Model>, ReqPayload> httpServerRequest(
@@ -135,12 +214,12 @@ class DataSource(ctx: Context) {
         dtoClass: Class<Dto>,
         onSuccess: (Model) -> Unit,
         onError: (VolleyError) -> Unit,
-        reqPayload: ReqPayload? = null
+        reqPayload: ReqPayload?
     ) {
 
         Log.v(TAG, urlStr)
 
-        //Response payload serialization async worker
+        //Response payload deserialization async worker
         val responseToDtoTask: AsyncWorker<String?, Model> =
             AsyncWorker<String?, Model> {
                 dtoMapper.readValue(it[0], dtoClass).unDto()
