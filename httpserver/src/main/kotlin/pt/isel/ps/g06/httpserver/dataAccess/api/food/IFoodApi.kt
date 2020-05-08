@@ -1,7 +1,6 @@
 package pt.isel.ps.g06.httpserver.dataAccess.api.food
 
 import pt.isel.ps.g06.httpserver.dataAccess.api.food.dto.*
-import java.util.concurrent.CompletableFuture
 
 interface IFoodApi {
 
@@ -17,16 +16,14 @@ interface IFoodApi {
             maxFat: Int? = null,
             offset: Int? = null,
             number: Int? = null
-    ): CompletableFuture<ProductSearchContainerDto>
-
-    fun getType(): FoodApiType
+    ): ProductSearchContainerDto
 
     fun productSearchAutocompleteUri(
             query: String,
             number: Int? = null
-    ): CompletableFuture<List<ProductSearchAutoComplDto>>
+    ): List<ProductSearchAutoComplDto>
 
-    fun recipeIngredients(recipeId: String): CompletableFuture<RecipeIngredientsDto>
+    fun recipeIngredients(recipeId: String): RecipeIngredientsDto
 
     fun searchRecipes(
             recipeName: String,
@@ -38,19 +35,19 @@ interface IFoodApi {
             number: Int? = null,
             limitLicense: Boolean? = null,
             instructionsRequired: Boolean? = null
-    ): CompletableFuture<List<RecipeDto>>
+    ): List<RecipeDto>
 
     fun ingredientSearchAutocomplete(
             query: String,
             number: Int? = null,
             metaInformation: Boolean? = null,
             intolerances: Array<String>? = null
-    ): CompletableFuture<IngredientSearchDto>
+    ): IngredientSearchDto
 
     fun ingredientInformation(
             id: Int,
             amount: Int? = null,
             unit: SpoonacularUnitTypes
-    ): CompletableFuture<IngredientInfoDto>
+    ): IngredientInfoDto
 
 }

@@ -34,7 +34,9 @@ dependencies {
     }
 
     //Mockito - Test
-    testImplementation("org.mockito:mockito-all")
+    testImplementation("org.mockito:mockito-core:3.3.3")
+    testImplementation("org.mockito:mockito-inline:2.13.0")
+
 
     //Jackson
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")

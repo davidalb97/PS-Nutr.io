@@ -1,20 +1,20 @@
 package pt.isel.ps.g06.httpserver.dataAccess.api.food.dto
 
-import pt.isel.ps.g06.httpserver.dataAccess.api.IUnDto
+import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.dto.DtoMapper
 
 @SuppressWarnings("")
-data class RecipeContainerDto(
+data class RecipeContainerDtoMapper(
         val offset: String?,
         val number: String?,
         val results: Array<RecipeDto>?
-) : IUnDto<List<RecipeDto>> {
+) : DtoMapper<List<RecipeDto>> {
 
-    override fun unDto(): List<RecipeDto> = results?.toList() ?: emptyList()
+    override fun mapDto(): List<RecipeDto> = results?.toList() ?: emptyList()
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as RecipeContainerDto
+        other as RecipeContainerDtoMapper
 
         if (offset != other.offset) return false
         if (number != other.number) return false

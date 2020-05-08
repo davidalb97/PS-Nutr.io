@@ -14,9 +14,14 @@ private const val longitude = "longitude"
 
 interface RestaurantDao {
 
-    //TODO! must call geo-location function!
-    @SqlQuery("SELECT * FROM $table WHERE geoloc($latitude, $longitude) < :radius")
-    fun getByCoordinates(@Bind latitude: Float, @Bind longitude: Float, radius: Int): List<RestaurantDto>
+    @SqlQuery("SELECT * FROM $table WHERE " +
+            "ST_Distance(" +
+            "ST_MakePoint($table.latitude, $table.longitude)::geography," +
+            "ST_MakePoint(:latitude, :longitude)::geography, " +
+            "false" +
+            ") <= :radius"
+    )
+    fun getByCoordinates(@Bind latitude: Float, @Bind longitude: Float, @Bind radius: Int): List<DbRestaurantDto>
 
     @SqlQuery("SELECT * FROM $table WHERE $id = :submissionId")
     @Transaction(TransactionIsolationLevel.SERIALIZABLE)
