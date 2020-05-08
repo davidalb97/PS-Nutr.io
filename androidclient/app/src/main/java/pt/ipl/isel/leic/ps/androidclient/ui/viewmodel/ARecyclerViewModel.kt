@@ -12,6 +12,8 @@ abstract class ARecyclerViewModel<T> : ViewModel(), Parcelable {
     var liveData: LiveData<List<T>>? = null
     val items: List<T> get() = mediatorLiveData.value ?: emptyList()
 
+    var preList: ArrayList<T> = ArrayList()
+
     /**
      * The parameters contains the pairs for the uri path and/or the query string
      */
@@ -22,7 +24,8 @@ abstract class ARecyclerViewModel<T> : ViewModel(), Parcelable {
      * Sets a item list to a Recycler List
      */
     fun setList(items: List<T>) {
-        mediatorLiveData.value = items
+        preList.addAll(items)
+        mediatorLiveData.value = preList
     }
 
     /**
@@ -32,6 +35,18 @@ abstract class ARecyclerViewModel<T> : ViewModel(), Parcelable {
         mediatorLiveData.observe(owner, Observer {
             observer(it)
         })
+    }
+
+    /**
+     * Adds more items to the existing ones inside the Recycler List
+     */
+    fun updateListExchangingLiveData() {
+        if (liveData != null)
+            mediatorLiveData.removeSource(liveData!!)
+        liveData = fetchLiveData()
+        mediatorLiveData.addSource(liveData!!) {
+            mediatorLiveData.value = it
+        }
     }
 
     abstract fun fetchLiveData(): LiveData<List<T>>

@@ -26,8 +26,9 @@ class CuisineRecyclerViewModel() : ARecyclerViewModel<Cuisine>() {
         )
     }
 
+
     override fun fetchLiveData(): LiveData<List<Cuisine>> {
-        TODO("Not yet implemented")
+        TODO()
     }
 
     override fun writeToParcel(dest: Parcel?, flags: Int) {
@@ -37,15 +38,15 @@ class CuisineRecyclerViewModel() : ARecyclerViewModel<Cuisine>() {
     override fun describeContents(): Int {
         TODO("Not yet implemented")
     }
-
     companion object CREATOR : Parcelable.Creator<CuisineRecyclerViewModel> {
+
         override fun createFromParcel(parcel: Parcel): CuisineRecyclerViewModel {
             return CuisineRecyclerViewModel(parcel)
         }
-
         override fun newArray(size: Int): Array<CuisineRecyclerViewModel?> {
             return arrayOfNulls(size)
         }
+
     }
 
 

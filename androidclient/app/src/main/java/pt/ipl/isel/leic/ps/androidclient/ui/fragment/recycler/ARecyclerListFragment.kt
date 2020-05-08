@@ -69,7 +69,7 @@ abstract class ARecyclerListFragment<T : Any> : Fragment() {
                 minimumListSize = viewModel.liveData?.value!!.size + 1
                 if (!isLoading) {
                     startLoading()
-                    //viewModel.
+                    //TODO - retrieve more data
                     stopLoading()
                 }
             }
