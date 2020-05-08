@@ -4,13 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import pt.ipl.isel.leic.ps.androidclient.NutrioApp
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.source.model.Cuisine
 import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.CuisineRecyclerAdapter
+import pt.ipl.isel.leic.ps.androidclient.ui.provider.CuisineRecyclerVMProviderFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.CuisineRecyclerViewModel
 
 class CuisinesRecyclerFragment : ARecyclerListFragment<Cuisine>() {
@@ -23,23 +22,20 @@ class CuisinesRecyclerFragment : ARecyclerListFragment<Cuisine>() {
     }
 
     /**
-     * ViewModel factory
+     * ViewModel builder
      * Initializes the view model
      */
-    private fun getViewModelFactory() = object : ViewModelProvider.Factory {
-        @Suppress("UNCHECKED_CAST")
-        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-            return CuisineRecyclerViewModel() as T
-        }
+    private fun buildViewModel(savedInstanceState: Bundle?) {
+        val rootActivity = this.requireActivity()
+        val factory = CuisineRecyclerVMProviderFactory(savedInstanceState, rootActivity.intent)
+        viewModel = ViewModelProvider(rootActivity, factory)[CuisineRecyclerViewModel::class.java]
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        viewModel =
-            ViewModelProvider(this.requireActivity(), getViewModelFactory())
-                .get(CuisineRecyclerViewModel::class.java)
+        buildViewModel(savedInstanceState)
         return inflater.inflate(R.layout.cuisines_list, container, false)
     }
 

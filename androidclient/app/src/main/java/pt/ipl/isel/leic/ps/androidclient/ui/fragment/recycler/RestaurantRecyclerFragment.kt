@@ -7,11 +7,13 @@ import android.view.ViewGroup
 import android.widget.SearchView
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.source.model.Restaurant
 import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.RestaurantRecyclerAdapter
+import pt.ipl.isel.leic.ps.androidclient.ui.provider.RestaurantRecyclerVMProviderFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.RestaurantRecyclerViewModel
 
 class RestaurantRecyclerFragment : ARecyclerListFragment<Restaurant>(){
@@ -24,22 +26,20 @@ class RestaurantRecyclerFragment : ARecyclerListFragment<Restaurant>(){
     }
 
     /**
-     * ViewModel factory
+     * ViewModel builder
      * Initializes the view model
      */
-    private fun getViewModelFactory() = object : ViewModelProvider.Factory {
-        @Suppress("UNCHECKED_CAST")
-        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-            return RestaurantRecyclerViewModel() as T
-        }
+    private fun buildViewModel(savedInstanceState: Bundle?) {
+        val rootActivity = this.requireActivity()
+        val factory = RestaurantRecyclerVMProviderFactory(savedInstanceState, rootActivity.intent)
+        viewModel = ViewModelProvider(rootActivity, factory)[RestaurantRecyclerViewModel::class.java]
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        viewModel = ViewModelProvider(this.requireActivity(), getViewModelFactory())
-            .get(RestaurantRecyclerViewModel::class.java)
+        buildViewModel(savedInstanceState)
         return inflater.inflate(R.layout.restaurant_list, container, false)
     }
 
@@ -66,6 +66,5 @@ class RestaurantRecyclerFragment : ARecyclerListFragment<Restaurant>(){
             override fun onQueryTextChange(query: String?): Boolean = true
 
         })
-
     }
 }
