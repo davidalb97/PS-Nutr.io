@@ -1,13 +1,13 @@
 package pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.dto.here
 
+import pt.isel.ps.g06.httpserver.dataAccess.model.RestaurantDto
+
 data class HereResultContainer(val items: Collection<HereResultItem>)
 
-data class HereResultItem(
-        val title: String,
-        val id: String,
-        val position: HereLocation,
+class HereResultItem(
+        title: String,
+        id: String,
+        position: Location
+) : RestaurantDto(id, title, position.lat, position.lng)
 
-        )
-
-
-data class HereLocation(val lat: Float, val lng: Float)
+data class Location(val lat: Float, val lng: Float)

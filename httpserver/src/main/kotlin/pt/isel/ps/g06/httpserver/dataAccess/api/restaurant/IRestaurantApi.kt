@@ -6,7 +6,7 @@ interface IRestaurantApi {
 
     fun getRestaurantInfo(id: Int): RestaurantDto?
 
-    fun searchRestaurants(latitude: Float, longitude: Float, radiusMeters: Int): List<RestaurantDto>
+    fun searchRestaurants(latitude: Float, longitude: Float, radiusMeters: Int): Collection<RestaurantDto>
 
     fun restaurantDailyMeals(restaurantId: Int): List<String>
 }

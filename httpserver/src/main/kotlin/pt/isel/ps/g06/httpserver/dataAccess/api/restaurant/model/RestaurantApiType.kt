@@ -5,13 +5,9 @@ enum class RestaurantApiType {
     Here;
 
     companion object {
-        fun getOrDefault(type: String?, default: RestaurantApiType = Zomato): RestaurantApiType {
-            return try {
-                return if (type == null) default
-                else valueOf(type)
-            } catch (e: IllegalArgumentException) {
-                default
-            }
+        fun getOrDefault(type: String?, default: RestaurantApiType = Here): RestaurantApiType {
+            return if (type == null) default
+            else values().find { it.toString().equals(type, true) } ?: default
         }
     }
 }

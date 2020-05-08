@@ -2,7 +2,6 @@ package pt.isel.ps.g06.httpserver.controller
 
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
-import pt.isel.ps.g06.httpserver.RestaurantFilter
 import pt.isel.ps.g06.httpserver.common.*
 import pt.isel.ps.g06.httpserver.common.exception.RestaurantNotFoundException
 import pt.isel.ps.g06.httpserver.data.RestaurantInput
@@ -20,12 +19,12 @@ class RestaurantController(private val restaurantService: RestaurantService) {
             latitude: Float?,
             longitude: Float?,
             radius: Int?,
-            cuisines: List<String> = emptyList(),
-            meals: List<String> = emptyList(),
+//            cuisines: List<String>? = emptyList(),
+//            meals: List<String>? = emptyList(),
             apiType: String?
     ): Set<Restaurant> {
-        val nearbyRestaurants = restaurantService.getNearbyRestaurants(latitude, longitude, radius, apiType)
-        return RestaurantFilter(nearbyRestaurants).filter(cuisines, meals).toSet()
+        return restaurantService.getNearbyRestaurants(latitude, longitude, radius, apiType)
+//        return RestaurantFilter(nearbyRestaurants).filter(cuisines, meals).toSet()
     }
 
     @GetMapping(RESTAURANT, consumes = [MediaType.ALL_VALUE])

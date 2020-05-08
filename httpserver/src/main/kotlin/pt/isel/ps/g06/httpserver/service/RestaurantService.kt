@@ -73,7 +73,6 @@ class RestaurantService(
             dto.id,
             dto.name,
             dto.latitude,
-            dto.longitude,
-            dto.cuisines
+            dto.longitude
     )
 }
