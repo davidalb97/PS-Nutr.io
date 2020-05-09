@@ -59,13 +59,20 @@ class RestaurantService(
      * Current search algorithm will first query the Database for any restaurant and if none was found,
      * search the preferred Restaurant API (Zomato, Here, etc.)
      *
-     * @param apiType - describes which api to search the Restaurant. See [RestaurantApiType] for possible types.
+     * @param apiType describes which api to search the Restaurant. See [RestaurantApiType] for possible types.
      * Defaults to [RestaurantApiType.Here]
      */
     fun getRestaurant(id: String, apiType: String?): Restaurant? {
         val type = RestaurantApiType.getOrDefault(apiType)
         val restaurantApi = restaurantApiMapper.getRestaurantApi(type)
-        val restaurant = dbRestaurantRepository.getRestaurantById(id) ?: restaurantApi.getRestaurantInfo(id)
+
+        //If 'id' cannot be converted to Integer, then don't search in database.
+        //This is a specification that happens because all restaurants are submissions, and as such,
+        //their unique identifier is always an auto-incremented integer
+        val restaurant = id
+                .toIntOrNull()
+                ?.let { dbRestaurantRepository.getRestaurantById(it) }
+                ?: restaurantApi.getRestaurantInfo(id)
 
         return restaurant?.let(this::mapToRestaurant)
     }

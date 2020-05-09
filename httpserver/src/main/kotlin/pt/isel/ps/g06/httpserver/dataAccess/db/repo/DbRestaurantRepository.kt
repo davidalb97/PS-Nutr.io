@@ -18,7 +18,7 @@ class DbRestaurantRepository(private val jdbi: Jdbi) {
     val serializable = TransactionIsolationLevel.SERIALIZABLE
     val restaurantDao = RestaurantDao::class.java
 
-    fun getRestaurantById(id: String): DbRestaurantDto? {
+    fun getRestaurantById(id: Int): DbRestaurantDto? {
         return inTransaction(jdbi, serializable) {
             return@inTransaction it.attach(restaurantDao).getById(id)
         }
