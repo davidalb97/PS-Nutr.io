@@ -8,11 +8,14 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.dto.MealCuisineDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.RestaurantCuisineDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.RestaurantMealPortionDto
 
-private const val table = "RestaurantCuisine"
-private const val id = "restaurant_submission_id"
-private const val cuisineName = "cuisine_name"
-
 interface RestaurantCuisineDao {
+
+    companion object {
+        const val table = "RestaurantCuisine"
+        const val id = "restaurant_submission_id"
+        const val cuisineName = "cuisine_name"
+    }
+
     @SqlQuery("SELECT * FROM $table")
     fun getAll(): List<RestaurantMealPortionDto>
 

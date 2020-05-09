@@ -6,12 +6,14 @@ import org.jdbi.v3.sqlobject.statement.SqlUpdate
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.VoteDto
 import pt.isel.ps.g06.httpserver.dataAccess.model.Votes
 
-private const val table = "Vote"
-private const val submissionId = "submission_id"
-private const val voterSubmitterId = "vote_submitter_id"
-private const val vote = "vote"
-
 interface VoteDao {
+
+    companion object {
+        const val table = "Vote"
+        const val submissionId = "submission_id"
+        const val voterSubmitterId = "vote_submitter_id"
+        const val vote = "vote"
+    }
 
     @SqlQuery("SELECT" +
             " Count(case when $vote = true then 1 end)," +

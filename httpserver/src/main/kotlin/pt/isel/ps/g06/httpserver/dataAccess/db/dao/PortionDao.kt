@@ -4,11 +4,13 @@ import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.PortionDto
 
-private const val table = "Portion"
-private const val id = "submission_id"
-private const val quantity = "quantity"
-
 interface PortionDao {
+
+    companion object {
+        const val table = "Portion"
+        const val id = "submission_id"
+        const val quantity = "quantity"
+    }
 
     @SqlQuery("SELECT * FROM $table WHERE $id = :submissionId")
     fun getById(@Bind submissionId: Int): List<PortionDto>

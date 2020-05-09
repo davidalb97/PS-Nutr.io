@@ -6,19 +6,24 @@ import org.jdbi.v3.sqlobject.customizer.BindList
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.ApiSubmissionDto
 
-private const val table = "ApiSubmission"
-private const val submissionId = "submission_id"
-private const val apiId = "apiId"
+//SubmissionSubmitter constants
+private const val SS_table = SubmissionSubmitterDao.table
+private const val SS_submissionId = SubmissionSubmitterDao.submissionId
+private const val SS_submitterId = SubmissionSubmitterDao.submitterId
 
-private const val SS_table = "SubmissionSubmitter"
-private const val SS_submissionId = "submission_id"
-private const val SS_submitterId = "submitter_id"
-
-private const val S_table = "Submission"
-private const val S_submissionId = "submission_id"
-private const val S_type = "submission_type"
+//Submitter constants
+private const val S_table = SubmitterDao.table
+private const val S_submissionId = SubmitterDao.id
+private const val S_type = SubmitterDao.type
 
 interface ApiSubmissionDao {
+
+    companion object {
+        const val table = "ApiSubmission"
+        const val submissionId = "submission_id"
+        const val apiId = "apiId"
+    }
+
     @SqlQuery("SELECT * FROM $table")
     fun getAll(): List<ApiSubmissionDto>
 

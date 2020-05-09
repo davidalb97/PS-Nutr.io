@@ -5,11 +5,12 @@ import org.jdbi.v3.sqlobject.customizer.BindBeanList
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.CuisineDto
 
-
-private const val table = "Cuisine"
-private const val name = "cuisine_name"
-
 interface CuisineDao {
+
+    companion object {
+        const val table = "Cuisine"
+        const val name = "cuisine_name"
+    }
 
     @SqlQuery("SELECT * FROM $table")
     fun getAll(): List<CuisineDto>

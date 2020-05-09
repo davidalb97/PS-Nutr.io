@@ -5,21 +5,24 @@ import org.jdbi.v3.sqlobject.statement.SqlQuery
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.ApiDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.SubmitterDto
 
-//API table constants
-private const val table = "Api"
-private const val id = "submitter_id"
-private const val apiToken = "api_token"
-
 //Submitter table constants
-private const val submitterTable = "Submitter"
-private const val submitterName = "submitter_name"
-private const val submitterId = "submitter_id"
+private const val submitterTable = SubmitterDao.table
+private const val submitterName = SubmitterDao.name
+private const val submitterId = SubmitterDao.id
 
-private const val SS_table = "SubmissionSubmitter"
-private const val SS_submissionId = "submission_id"
-private const val SS_submitterId = "submitter_id"
+//SubmissionSubmitter table constants
+private const val SS_table = SubmissionSubmitterDao.table
+private const val SS_submissionId = SubmissionSubmitterDao.submissionId
+private const val SS_submitterId = SubmissionSubmitterDao.submitterId
 
 interface ApiDao {
+
+    companion object {
+        const val table = "Api"
+        const val id = "submitter_id"
+        const val apiToken = "api_token"
+    }
+
     @SqlQuery("SELECT * FROM $table")
     fun getAll(): List<ApiDto>
 

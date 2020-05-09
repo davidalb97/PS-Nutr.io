@@ -4,12 +4,15 @@ import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.SubmitterDto
 
-private const val table = "Submitter"
-private const val id = "submitter_id"
-private const val name = "submitter_name"
-private const val type = "submitter_type"
-
 interface SubmitterDao {
+
+    companion object {
+        const val table = "Submitter"
+        const val id = "submitter_id"
+        const val name = "submitter_name"
+        const val type = "submitter_type"
+    }
+
     @SqlQuery("SELECT * FROM $table")
     fun getAll(): List<SubmitterDto>
 

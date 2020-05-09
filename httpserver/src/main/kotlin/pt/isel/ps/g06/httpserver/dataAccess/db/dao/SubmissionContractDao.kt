@@ -6,11 +6,13 @@ import org.jdbi.v3.sqlobject.statement.SqlQuery
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.IngredientDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.SubmissionContractDto
 
-private const val table = "SubmissionContract"
-private const val id = "submission_id"
-private const val contract = "submission_contract"
-
 interface SubmissionContractDao {
+
+    companion object {
+        const val table = "SubmissionContract"
+        const val id = "submission_id"
+        const val contract = "submission_contract"
+    }
 
     @SqlQuery("SELECT * FROM $table")
     fun getAll(): List<SubmissionContractDto>

@@ -6,13 +6,15 @@ import org.jdbi.v3.sqlobject.statement.SqlQuery
 import org.jdbi.v3.sqlobject.transaction.Transaction
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.RestaurantDto
 
-private const val table = "Restaurant"
-private const val id = "submission_id"
-private const val name = "restaurant_name"
-private const val latitude = "latitude"
-private const val longitude = "longitude"
-
 interface RestaurantDao {
+
+    companion object {
+        const val table = "Restaurant"
+        const val id = "submission_id"
+        const val name = "restaurant_name"
+        const val latitude = "latitude"
+        const val longitude = "longitude"
+    }
 
     @SqlQuery("SELECT * FROM $table WHERE " +
             "ST_Distance(" +

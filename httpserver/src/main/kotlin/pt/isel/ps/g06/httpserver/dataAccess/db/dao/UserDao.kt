@@ -4,12 +4,15 @@ import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.UserDto
 
-private const val table = "_User"
-private const val id = "submitter_id"
-private const val email = "email"
-private const val sessionSecret = "session_secret"
-
 interface UserDao {
+
+    companion object {
+        const val table = "_User"
+        const val id = "submitter_id"
+        const val email = "email"
+        const val sessionSecret = "session_secret"
+    }
+
     @SqlQuery("SELECT * FROM $table")
     fun getAll(): List<UserDto>
 
