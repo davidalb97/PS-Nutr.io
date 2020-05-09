@@ -12,7 +12,7 @@ import pt.isel.ps.g06.httpserver.exception.InvalidInputException
 import pt.isel.ps.g06.httpserver.model.Restaurant
 import pt.isel.ps.g06.httpserver.service.RestaurantService
 
-private const val INVALID_RESTAURANT_SEARCH = "To search nearby restaurants, either a geolocation or a name must be given!"
+private const val INVALID_RESTAURANT_SEARCH = "To search nearby restaurants, a geolocation must be given!"
 
 @Suppress("MVCPathVariableInspection") //False positive for IntelliJ
 @RestController
@@ -56,7 +56,6 @@ class RestaurantController(private val restaurantService: RestaurantService) {
 
     @PostMapping(consumes = [MediaType.APPLICATION_JSON_VALUE])
     fun createRestaurant(@RequestBody restaurant: RestaurantInput) {
-
     }
 
     @DeleteMapping(RESTAURANT, consumes = [MediaType.APPLICATION_JSON_VALUE])
