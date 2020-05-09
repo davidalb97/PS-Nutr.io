@@ -14,6 +14,7 @@ import pt.isel.ps.g06.httpserver.common.CUISINES
         consumes = [MediaType.APPLICATION_JSON_VALUE]
 )
 class CuisinesController {
+
     @GetMapping
     fun getCuisinesHandler(@RequestParam skip: Int?, @RequestParam count: Int?) {
     }

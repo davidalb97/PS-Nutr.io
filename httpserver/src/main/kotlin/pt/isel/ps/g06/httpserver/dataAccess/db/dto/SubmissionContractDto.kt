@@ -1,7 +1,6 @@
 package pt.isel.ps.g06.httpserver.dataAccess.db.dto
 
-data class VotableDto(
+data class SubmissionContractDto(
         val submission_id: Int,
-        val vote_submitter_id: Int,
-        val vote: Boolean
+        val submission_contract: String
 )

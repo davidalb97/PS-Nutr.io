@@ -5,11 +5,13 @@ import org.jdbi.v3.sqlobject.customizer.BindBeanList
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.SubmissionDto
 
-private const val table = "Submission"
-private const val type = "submission_type"
-private const val id = "submission_id"
-
 interface SubmissionDao {
+
+    companion object {
+        const val table = "Submission"
+        const val type = "submission_type"
+        const val id = "submission_id"
+    }
 
     @SqlQuery("SELECT * FROM $table")
     fun getAll(): List<SubmissionDto>
@@ -27,7 +29,7 @@ interface SubmissionDao {
     ) values: List<SubmissionParam>): List<SubmissionDto>
 
     @SqlQuery("DELETE FROM $table($type) WHERE $id = :submissionId RETURNING *")
-    fun delete(@Bind submission_id: Int): Boolean
+    fun delete(@Bind submissionId: Int): SubmissionDto
 }
 
 //Variable names must match sql columns!!!

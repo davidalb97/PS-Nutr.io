@@ -2,8 +2,8 @@ package pt.isel.ps.g06.httpserver.service
 
 import org.springframework.stereotype.Service
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.mapper.RestaurantApiMapper
-import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.model.RestaurantApiType
-import pt.isel.ps.g06.httpserver.dataAccess.db.repo.DbRestaurantRepository
+import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.RestaurantApiType
+import pt.isel.ps.g06.httpserver.dataAccess.db.repo.RestaurantDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.model.RestaurantDto
 import pt.isel.ps.g06.httpserver.model.Restaurant
 import java.util.concurrent.CompletableFuture
@@ -13,7 +13,7 @@ private const val MAX_RADIUS = 1000
 
 @Service
 class RestaurantService(
-        private val dbRestaurantRepository: DbRestaurantRepository,
+        private val dbRestaurantRepository: RestaurantDbRepository,
         private val restaurantApiMapper: RestaurantApiMapper
 ) {
 
@@ -29,7 +29,7 @@ class RestaurantService(
                     .thenApply { it.map(this::mapToRestaurant) }
 
             val dbRestaurants = dbRestaurantRepository
-                    .getRestaurantsByCoordinates(latitude, longitude, chosenRadius)
+                    .getAllByCoordinates(latitude, longitude, chosenRadius)
                     .map(this::mapToRestaurant)
 
             //TODO Handle CompletableFuture exception
@@ -49,7 +49,7 @@ class RestaurantService(
     fun getRestaurant(id: Int, apiType: String?): Restaurant? {
         val type = RestaurantApiType.getOrDefault(apiType)
         val restaurantApi = restaurantApiMapper.getRestaurantApi(type)
-        val restaurant = dbRestaurantRepository.getRestaurantById(id) ?: restaurantApi.getRestaurantInfo(id)
+        val restaurant = dbRestaurantRepository.getById(id) ?: restaurantApi.getRestaurantInfo(id)
 
         return restaurant?.let(this::mapToRestaurant)
     }

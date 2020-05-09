@@ -5,23 +5,26 @@ import org.jdbi.v3.sqlobject.customizer.BindBeanList
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.SubmissionSubmitterDto
 
-private const val table = "SubmissionSubmitter"
-private const val submissionId = "submission_id"
-private const val submitterId = "submitter_id"
-
 interface SubmissionSubmitterDao {
+
+    companion object {
+        const val table = "SubmissionSubmitter"
+        const val submissionId = "submission_id"
+        const val submitterId = "submitter_id"
+    }
+
     @SqlQuery("SELECT * FROM $table")
     fun getAll(): List<SubmissionSubmitterDto>
 
     @SqlQuery("SELECT * FROM $table WHERE $submissionId = :submissionId")
-    fun getBySubmissionId(submissionId: Int): SubmissionSubmitterDto?
+    fun getAllBySubmissionId(submissionId: Int): List<SubmissionSubmitterDto>
 
     @SqlQuery("SELECT * FROM $table WHERE $submitterId = :submitter_id")
-    fun getBySubmitterId(submitterId: Int): SubmissionSubmitterDto?
+    fun getAllBySubmitterId(submitterId: Int): List<SubmissionSubmitterDto>
 
     @SqlQuery("INSERT INTO $table($submissionId, $submitterId)" +
-            " VALUES(:submission_id, :submitter_id) RETURNING *")
-    fun insert(@Bind submission_id: Int, @Bind submitter_id: Int): SubmissionSubmitterDto
+            " VALUES(:submissionId, :submitterId) RETURNING *")
+    fun insert(@Bind submissionId: Int, @Bind submitterId: Int): SubmissionSubmitterDto
 
     @SqlQuery("INSERT INTO $table($submissionId, $submitterId) values <values> RETURNING *")
     fun insertAll(@BindBeanList(
@@ -29,8 +32,8 @@ interface SubmissionSubmitterDao {
             propertyNames = [submissionId, submitterId]
     ) values: List<SubmissionSubmitterParam>): List<SubmissionSubmitterDto>
 
-    @SqlQuery("DELETE FROM $table WHERE $submissionId = :submission_id")
-    fun delete(submission_id: Int): Boolean
+    @SqlQuery("DELETE FROM $table WHERE $submissionId = :submissionId RETURNING *")
+    fun deleteAllBySubmissionId(submissionId: Int): List<SubmissionSubmitterDto>
 }
 
 data class SubmissionSubmitterParam(
