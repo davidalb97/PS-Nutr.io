@@ -50,20 +50,6 @@ class HereUriBuilder : RestaurantUri {
                 .toUri()
     }
 
-    override fun searchRestaurantsByName(name: String, countryCode: String, count: Int?): URI {
-        return UriComponentsBuilder
-                .fromHttpUrl(DISCOVER_PATH)
-                .queryParam(IN, inCountryCode(countryCode))
-                .queryParam(LIMIT, count ?: MAX_LIMIT)
-                .queryParam(API_KEY, KEY)
-                .build()
-                .toUri()
-    }
-
-    private fun inCountryCode(countryCode: String): String {
-        return "$COUNTRY_CODE$countryCode"
-    }
-
     private fun nearbyCircleByGeocode(latitude: Float, longitude: Float, radius: Int): String {
         return "$IN_CIRCLE$latitude,$longitude;$RADIUS=$radius"
     }

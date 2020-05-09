@@ -12,6 +12,4 @@ interface RestaurantUri {
     ): URI
 
     fun getRestaurantInfo(restaurantId: String): URI
-
-    fun searchRestaurantsByName(name: String, countryCode: String, count: Int? = null): URI
 }

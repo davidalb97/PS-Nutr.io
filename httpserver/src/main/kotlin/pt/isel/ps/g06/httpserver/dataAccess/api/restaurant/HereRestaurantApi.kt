@@ -43,25 +43,12 @@ class HereRestaurantApi(
         }
     }
 
-    override fun searchRestaurantsByName(name: String, countryCode: String): Collection<RestaurantDto> {
-        val uri = restaurantUri.searchRestaurantsByName(name, countryCode)
-
-        val request = HttpRequest
-                .newBuilder(uri)
-                .GET()
-                .build()
-
-        val response = httpClient.send(request, HttpResponse.BodyHandlers.ofString())
-        return handleNearbyRestaurantsResponse(response)
-    }
-
     override fun buildGetRequest(uri: URI): HttpRequest {
         return HttpRequest
                 .newBuilder(uri)
                 .GET()
                 .build()
     }
-
 
     private fun mapToRestaurantDto(body: String?): RestaurantDto? {
         return responseMapper.readValue(body, HereResultItem::class.java)

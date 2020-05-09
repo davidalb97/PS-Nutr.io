@@ -35,8 +35,4 @@ class ZomatoUriBuilder : RestaurantUri {
                 .build()
                 .toUri()
     }
-
-    override fun searchRestaurantsByName(name: String, countryCode: String, count: Int?): URI {
-        TODO("Find a way to only search by name with Zomato. Probably impossible.")
-    }
 }

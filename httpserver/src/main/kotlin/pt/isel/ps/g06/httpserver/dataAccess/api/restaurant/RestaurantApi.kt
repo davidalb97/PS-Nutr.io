@@ -11,7 +11,7 @@ import java.net.http.HttpResponse
 
 abstract class RestaurantApi(
         httpClient: HttpClient = HttpClient.newHttpClient(),
-        protected val restaurantUri: RestaurantUri,
+        private val restaurantUri: RestaurantUri,
         responseMapper: ObjectMapper
 ) : BaseApiRequester(httpClient, responseMapper) {
 
@@ -26,8 +26,6 @@ abstract class RestaurantApi(
         val response = httpClient.send(buildGetRequest(uri), HttpResponse.BodyHandlers.ofString())
         return handleNearbyRestaurantsResponse(response)
     }
-
-    abstract fun searchRestaurantsByName(name: String, countryCode: String): Collection<RestaurantDto>
 
     abstract fun handleRestaurantInfoResponse(response: HttpResponse<String>): RestaurantDto?
 

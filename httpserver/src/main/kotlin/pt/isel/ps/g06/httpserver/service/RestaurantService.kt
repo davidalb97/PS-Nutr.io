@@ -40,19 +40,6 @@ class RestaurantService(
         return filterRedundantApiRestaurants(dbRestaurants, apiRestaurants.get())
     }
 
-    fun searchRestaurantsByName(name: String, countryCode: String?, apiType: String?): Set<Restaurant> {
-        val chosenCountry = countryCode ?: DEFAULT_LOCATION
-        val type = RestaurantApiType.getOrDefault(apiType)
-        val restaurantApi = restaurantApiMapper.getRestaurantApi(type)
-
-        val apiRestaurants = restaurantApi
-                .searchRestaurantsByName(name, chosenCountry)
-                .map(this::mapToRestaurant)
-
-        //TODO Add Database support
-        return apiRestaurants.toSet()
-    }
-
     /**
      * Obtain more information for a Restaurant with given id.
      *
