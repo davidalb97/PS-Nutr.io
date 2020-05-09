@@ -9,12 +9,26 @@ import pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler.COUNT
 
 class RestaurantRecyclerViewModel : ARecyclerViewModel<Restaurant>() {
 
-    fun getRestaurants() {
+    /*fun getRestaurantById() {
+        val successFunction : (Restaurant) -> Unit = {
+            updateList(it)
+            onSuccess(it)
+        }
+        restaurantRepository.getRestaurantById(
+            successFunction,
+            onError,
+            parameters,
+            COUNT,
+            skip
+        )
+    }*/
+
+    fun getNearbyRestaurants() {
         val successFunction : (List<Restaurant>) -> Unit = {
             updateList(it)
             onSuccess(it)
         }
-        restaurantRepository.getRestaurants(
+        restaurantRepository.getNearbyRestaurants(
             successFunction,
             onError,
             parameters,

@@ -12,10 +12,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import pt.ipl.isel.leic.ps.androidclient.TAG
-import pt.ipl.isel.leic.ps.androidclient.data.source.dtos.CuisinesDto
-import pt.ipl.isel.leic.ps.androidclient.data.source.dtos.IUnDto
-import pt.ipl.isel.leic.ps.androidclient.data.source.dtos.MealsDto
-import pt.ipl.isel.leic.ps.androidclient.data.source.dtos.RestaurantsDto
+import pt.ipl.isel.leic.ps.androidclient.data.source.dtos.*
 import pt.ipl.isel.leic.ps.androidclient.data.source.model.Cuisine
 import pt.ipl.isel.leic.ps.androidclient.data.source.model.Meal
 import pt.ipl.isel.leic.ps.androidclient.data.source.model.Restaurant
@@ -41,6 +38,7 @@ const val CUISINE_ID_URI =
     "$URI_BASE/$CUISINES/:name"
 
 val RESTAURANTS_DTO = RestaurantsDto::class.java
+val RESTAURANT_DTO = RestaurantDto::class.java
 val MEALS_DTO = MealsDto::class.java
 val CUISINES_DTO = CuisinesDto::class.java
 
@@ -68,8 +66,8 @@ class DataSource(ctx: Context) {
     /**
      * ----------------------------- GETs -----------------------------
      */
-    fun getRestaurants(
-        success: (List<Restaurant>) -> Unit,
+    fun getRestaurantById(
+        success: (Restaurant) -> Unit,
         error: (VolleyError) -> Unit,
         uriParameters: HashMap<String, HashMap<String, String>>?,
         count: Int,
@@ -87,7 +85,7 @@ class DataSource(ctx: Context) {
         httpServerRequest(
             Method.GET,
             uri,
-            RESTAURANTS_DTO,
+            RESTAURANT_DTO,
             success,
             error,
             null
@@ -216,14 +214,14 @@ class DataSource(ctx: Context) {
         onSuccess: (Model) -> Unit,
         onError: (VolleyError) -> Unit,
         reqPayload: ReqPayload?
-    ) : AsyncWorker<String?, Model>{
+    ) {
 
         Log.v(TAG, urlStr)
 
         //Response payload deserialization async worker
         val responseToDtoTask: AsyncWorker<String?, Model> =
             AsyncWorker<String?, Model> {
-                dtoMapper.readValue(it[0], dtoClass).unDto()
+                dtoMapper.readValue(it[0]!!, dtoClass).unDto()
             }.setOnPostExecute(onSuccess)
 
         //Request payload serialization async worker
@@ -246,7 +244,5 @@ class DataSource(ctx: Context) {
             )
             queue.add(jsonRequest)
         }.execute()
-
-        return responseToDtoTask
     }
 }

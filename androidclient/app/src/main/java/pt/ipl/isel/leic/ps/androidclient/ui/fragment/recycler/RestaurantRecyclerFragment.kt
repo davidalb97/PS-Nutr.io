@@ -49,6 +49,7 @@ class RestaurantRecyclerFragment : ARecyclerListFragment<Restaurant, RestaurantR
 
         initRecyclerList(view)
         setCallbackFunctions()
+        viewModel.getNearbyRestaurants()
         list.adapter = adapter
         list.layoutManager = LinearLayoutManager(this.requireContext())
         startObserver()
@@ -61,7 +62,6 @@ class RestaurantRecyclerFragment : ARecyclerListFragment<Restaurant, RestaurantR
                 if (query.isNullOrEmpty()) return false
                 viewModel.parameters["path"]?.put(":id", query)
                 searchBar.clearFocus()
-                viewModel.getRestaurants()
                 return true
             }
 

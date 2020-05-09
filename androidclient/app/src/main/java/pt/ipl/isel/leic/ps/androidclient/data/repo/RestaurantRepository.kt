@@ -11,14 +11,30 @@ import pt.ipl.isel.leic.ps.androidclient.data.source.model.Restaurant
  */
 class RestaurantRepository(private val dataSource: DataSource) {
 
-    fun getRestaurants(
+    fun getRestaurantById(
+        success: (Restaurant) -> Unit,
+        error: (VolleyError) -> Unit,
+        uriParameters: HashMap<String, HashMap<String, String>>?,
+        count: Int,
+        skip: Int
+    ) {
+        dataSource.getRestaurantById(
+            success,
+            error,
+            uriParameters,
+            count,
+            skip
+        )
+    }
+
+    fun getNearbyRestaurants(
         success: (List<Restaurant>) -> Unit,
         error: (VolleyError) -> Unit,
         uriParameters: HashMap<String, HashMap<String, String>>?,
         count: Int,
         skip: Int
     ) {
-        dataSource.getRestaurants(
+        dataSource.getNearbyRestaurants(
             success,
             error,
             uriParameters,
