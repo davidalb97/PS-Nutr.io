@@ -64,12 +64,13 @@
                         </ImageView>
 
                         <TextView
+                            android:id="@+id/link_pedro"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_centerVertical="true"
                             android:layout_marginStart="10dp"
                             android:layout_toEndOf="@id/github_icon"
-                            android:text="https://github.com/Pedrokase"
+                            android:text="@string/link_pedro"
                             android:textColor="@android:color/background_dark"
                             android:textSize="14sp">
                         </TextView>
@@ -126,12 +127,13 @@
                         </ImageView>
 
                         <TextView
+                            android:id="@+id/link_david"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_centerVertical="true"
                             android:layout_marginStart="10dp"
                             android:layout_toEndOf="@id/github_icon_david"
-                            android:text="https://github.com/davidalb97"
+                            android:text="@string/link_david"
                             android:textColor="@android:color/background_dark"
                             android:textSize="14sp">
                         </TextView>
@@ -188,12 +190,13 @@
                         </ImageView>
 
                         <TextView
+                            android:id="@+id/link_miguel"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_centerVertical="true"
                             android:layout_marginStart="10dp"
                             android:layout_toEndOf="@id/github_icon_mig"
-                            android:text="https://github.com/mig07"
+                            android:text="@string/link_miguel"
                             android:textColor="@android:color/background_dark"
                             android:textSize="14sp">
                         </TextView>

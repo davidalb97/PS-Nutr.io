@@ -49,4 +49,7 @@
     <string name="hint_cuisine_search">Search for a specific cuisine</string>
     <string name="hint_meal_search">Search for a specific meal</string>
     <string name="hint_restaurant_search">Search for a specific restaurant</string>
+    <string name="link_pedro">https://github.com/Pedrokase</string>
+    <string name="link_david">https://github.com/davidalb97</string>
+    <string name="link_miguel">https://github.com/mig07</string>
 </resources>
