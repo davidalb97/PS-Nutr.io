@@ -30,5 +30,5 @@ class MealController {
     fun updateMealVote(@PathVariable(MEAL_ID_VALUE) mealId: String, @RequestBody vote: String) = ""
 
     @DeleteMapping(MEAL_VOTE)
-    fun deleteMealVote(@PathVariable(MEAL_ID_VALUE) mealId: String, vote: String) = ""
+    fun deleteMealVote(@PathVariable(MEAL_ID_VALUE) mealId: String, @RequestParam vote: String) = ""
 }
