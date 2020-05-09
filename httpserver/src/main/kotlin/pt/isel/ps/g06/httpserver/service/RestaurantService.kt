@@ -29,7 +29,7 @@ class RestaurantService(
         val restaurantApi = restaurantApiMapper.getRestaurantApi(type)
 
         val apiRestaurants = CompletableFuture
-                .supplyAsync { restaurantApi.searchNearbyRestaurants(latitude, longitude, chosenRadius) }
+                .supplyAsync { restaurantApi.searchNearbyRestaurants(latitude, longitude, chosenRadius, name) }
                 .thenApply { it.map(this::mapToRestaurant) }
 
         val dbRestaurants = dbRestaurantRepository

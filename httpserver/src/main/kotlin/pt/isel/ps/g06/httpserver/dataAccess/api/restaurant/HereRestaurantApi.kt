@@ -26,8 +26,9 @@ class HereRestaurantApi(
 
         return when (response.statusCode()) {
             HttpStatus.OK.value() -> mapToRestaurantDto(body)
+            HttpStatus.BAD_REQUEST.value() -> null
             HttpStatus.NOT_FOUND.value() -> null
-            HttpStatus.BAD_REQUEST.value() -> throw mapToBadRequest(body)
+//            HttpStatus.BAD_REQUEST.value() -> throw mapToBadRequest(body)
             else -> throw mapToBadGateway(body)
         }
     }
