@@ -8,10 +8,6 @@ import java.net.URI
 private const val ZOMATO_BASE_URL = "https://developers.zomato.com/api/v2.1/"
 private const val ZOMATO_SEARCH_RESTAURANT = "${ZOMATO_BASE_URL}restaurant"
 private const val ZOMATO_SEARCH_URL = "${ZOMATO_BASE_URL}search"
-private const val ZOMATO_DAILY_MEALS_URL = "${ZOMATO_BASE_URL}dailymenu"
-
-private const val MAX_RANGE = 100
-private const val MAX_RESULT_COUNT = 30
 
 private const val COUNT = "count"
 private const val LATITUDE = "lat"
@@ -20,9 +16,8 @@ private const val RADIUS = "radius"
 private const val RESTAURANT_ID = "res_id"
 
 @Component
-class ZomatoUriBuilder {
-
-    fun restaurantSearchUri(latitude: Float?, longitude: Float?, radius: Int? = MAX_RANGE, count: Int = MAX_RESULT_COUNT): URI {
+class ZomatoUriBuilder : RestaurantUri {
+    override fun nearbyRestaurants(latitude: Float, longitude: Float, radius: Int, restaurantName: String?, count: Int?): URI {
         return UriComponentsBuilder
                 .fromHttpUrl(ZOMATO_SEARCH_URL)
                 .queryParam(COUNT, count)
@@ -33,7 +28,7 @@ class ZomatoUriBuilder {
                 .toUri()
     }
 
-    fun searchRestaurantById(restaurantId: String): URI {
+    override fun getRestaurantInfo(restaurantId: String): URI {
         return UriComponentsBuilder
                 .fromHttpUrl(ZOMATO_SEARCH_RESTAURANT)
                 .queryParam(RESTAURANT_ID, restaurantId)
@@ -41,9 +36,7 @@ class ZomatoUriBuilder {
                 .toUri()
     }
 
-    fun restaurantDailyMenuUri(restaurantId: Int): URI {
-        return UriComponentsBuilder
-                .fromHttpUrl(ZOMATO_DAILY_MEALS_URL)
-                .queryParam(RESTAURANT_ID, restaurantId).build().toUri()
+    override fun searchRestaurantsByName(name: String, countryCode: String, count: Int?): URI {
+        TODO("Find a way to only search by name with Zomato. Probably impossible.")
     }
 }

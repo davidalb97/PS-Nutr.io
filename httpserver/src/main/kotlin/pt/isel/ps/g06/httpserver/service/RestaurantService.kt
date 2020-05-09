@@ -5,13 +5,11 @@ import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.mapper.RestaurantApiM
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.model.RestaurantApiType
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.DbRestaurantRepository
 import pt.isel.ps.g06.httpserver.dataAccess.model.RestaurantDto
-import pt.isel.ps.g06.httpserver.exception.InvalidInputDomain
-import pt.isel.ps.g06.httpserver.exception.InvalidInputException
 import pt.isel.ps.g06.httpserver.model.Restaurant
 import java.util.concurrent.CompletableFuture
 
 private const val MAX_RADIUS = 1000
-
+private const val DEFAULT_LOCATION = "PRT"
 
 @Service
 class RestaurantService(
@@ -19,17 +17,19 @@ class RestaurantService(
         private val restaurantApiMapper: RestaurantApiMapper
 ) {
 
-    fun getNearbyRestaurants(latitude: Float?, longitude: Float?, radius: Int?, apiType: String?): Set<Restaurant> {
-        if (latitude == null || longitude == null) {
-            throw InvalidInputException(InvalidInputDomain.LOCATION, "A latitude and Longitude must be given.")
-        }
-
+    fun getNearbyRestaurants(
+            latitude: Float,
+            longitude: Float,
+            name: String?,
+            radius: Int?,
+            apiType: String?
+    ): Set<Restaurant> {
         val chosenRadius = if (radius != null && radius <= MAX_RADIUS) radius else MAX_RADIUS
         val type = RestaurantApiType.getOrDefault(apiType)
         val restaurantApi = restaurantApiMapper.getRestaurantApi(type)
 
         val apiRestaurants = CompletableFuture
-                .supplyAsync { restaurantApi.searchRestaurants(latitude, longitude, chosenRadius) }
+                .supplyAsync { restaurantApi.searchNearbyRestaurants(latitude, longitude, chosenRadius) }
                 .thenApply { it.map(this::mapToRestaurant) }
 
         val dbRestaurants = dbRestaurantRepository
@@ -38,7 +38,19 @@ class RestaurantService(
 
         //TODO Handle CompletableFuture exception
         return filterRedundantApiRestaurants(dbRestaurants, apiRestaurants.get())
+    }
 
+    fun searchRestaurantsByName(name: String, countryCode: String?, apiType: String?): Set<Restaurant> {
+        val chosenCountry = countryCode ?: DEFAULT_LOCATION
+        val type = RestaurantApiType.getOrDefault(apiType)
+        val restaurantApi = restaurantApiMapper.getRestaurantApi(type)
+
+        val apiRestaurants = restaurantApi
+                .searchRestaurantsByName(name, chosenCountry)
+                .map(this::mapToRestaurant)
+
+        //TODO Add Database support
+        return apiRestaurants.toSet()
     }
 
     /**

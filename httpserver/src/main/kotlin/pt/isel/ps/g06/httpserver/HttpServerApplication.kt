@@ -2,9 +2,6 @@ package pt.isel.ps.g06.httpserver
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
-import org.springframework.context.annotation.Bean
-import pt.isel.ps.g06.httpserver.dataAccess.api.common.HttpApiClient
-import java.net.http.HttpClient
 
 @SpringBootApplication
 class HttpServerApplication {
@@ -29,9 +26,6 @@ class HttpServerApplication {
 //
 //        return SpoonacularFoodApi(httpApiClient, objMapper)
 //    }
-
-    @Bean
-    fun buildApiRequester(): HttpApiClient = HttpApiClient(HttpClient.newHttpClient())
 }
 
 fun main(args: Array<String>) {

@@ -18,6 +18,7 @@ private const val RADIUS = "r"
 private const val QUERY = "q"
 private const val LIMIT = "limit"
 private const val ID = "id"
+private const val COUNTRY_CODE = "countryCode:"
 private const val API_KEY = "apiKey"
 
 
@@ -28,13 +29,13 @@ class HereUriBuilder : RestaurantUri {
             longitude: Float,
             radius: Int,
             restaurantName: String?,
-            limit: Int?
+            count: Int?
     ): URI {
         return UriComponentsBuilder
                 .fromHttpUrl(DISCOVER_PATH)
                 .queryParam(IN, nearbyCircleByGeocode(latitude, longitude, radius))
                 .queryParam(QUERY, queryRestaurantName(restaurantName))
-                .queryParam(LIMIT, limit ?: MAX_LIMIT)
+                .queryParam(LIMIT, count ?: MAX_LIMIT)
                 .queryParam(API_KEY, KEY)
                 .build()
                 .toUri()
@@ -47,6 +48,20 @@ class HereUriBuilder : RestaurantUri {
                 .queryParam(API_KEY, KEY)
                 .build()
                 .toUri()
+    }
+
+    override fun searchRestaurantsByName(name: String, countryCode: String, count: Int?): URI {
+        return UriComponentsBuilder
+                .fromHttpUrl(DISCOVER_PATH)
+                .queryParam(IN, inCountryCode(countryCode))
+                .queryParam(LIMIT, count ?: MAX_LIMIT)
+                .queryParam(API_KEY, KEY)
+                .build()
+                .toUri()
+    }
+
+    private fun inCountryCode(countryCode: String): String {
+        return "$COUNTRY_CODE$countryCode"
     }
 
     private fun nearbyCircleByGeocode(latitude: Float, longitude: Float, radius: Int): String {

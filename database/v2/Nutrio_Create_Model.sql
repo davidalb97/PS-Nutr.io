@@ -1,19 +1,24 @@
-DROP TABLE IF EXISTS MealCuisine;
-DROP TABLE IF EXISTS RestaurantCuisine;
-DROP TABLE IF EXISTS RestaurantMealPortion;
-DROP TABLE IF EXISTS Ingredient;
-DROP TABLE IF EXISTS Portion;
-DROP TABLE IF EXISTS Meal;
-DROP TABLE IF EXISTS Cuisine;
-DROP TABLE IF EXISTS Restaurant;
-DROP TABLE IF EXISTS Votable;
-DROP TABLE IF EXISTS Report;
-DROP TABLE IF EXISTS SubmissionSubmitter;
-DROP TABLE IF EXISTS ApiSubmission;
-DROP TABLE IF EXISTS Submission;
-DROP TABLE IF EXISTS Api;
-DROP TABLE IF EXISTS _User;
-DROP TABLE IF EXISTS Submitter;
+SET client_min_messages = error;
+DROP TABLE IF EXISTS MealCuisine CASCADE;
+DROP TABLE IF EXISTS RestaurantCuisine CASCADE;
+DROP TABLE IF EXISTS RestaurantMealPortion CASCADE;
+DROP TABLE IF EXISTS MealIngredient CASCADE;
+DROP TABLE IF EXISTS Ingredient CASCADE;
+DROP TABLE IF EXISTS Portion CASCADE;
+DROP TABLE IF EXISTS Meal CASCADE;
+DROP TABLE IF EXISTS Cuisine CASCADE;
+DROP TABLE IF EXISTS Restaurant CASCADE;
+DROP TABLE IF EXISTS Vote CASCADE;
+DROP TABLE IF EXISTS Report CASCADE;
+DROP TABLE IF EXISTS SubmissionContract CASCADE;
+DROP TABLE IF EXISTS SubmissionSubmitter CASCADE;
+DROP TABLE IF EXISTS ApiSubmission CASCADE;
+DROP TABLE IF EXISTS Submission CASCADE;
+--DROP SEQUENCE submission_submission_id_seq CASCADE;
+DROP TABLE IF EXISTS Api CASCADE;
+DROP TABLE IF EXISTS _User CASCADE;
+DROP TABLE IF EXISTS Submitter CASCADE;
+--DROP SEQUENCE submitter_submitter_id_seq CASCADE;
 
 CREATE TABLE Submitter(
 	submitter_id serial PRIMARY KEY,
@@ -25,7 +30,7 @@ CREATE TABLE _User(
 	submitter_id integer,
 	email varchar(50),
 	session_secret varchar(256) NOT NULL, -- TODO: Check maximum length
-	creation_date timestamp with time zone default CURRENT_TIMESTAMP(), -- Add to doc
+	creation_date timestamp with time zone default CURRENT_TIMESTAMP, -- Add to doc
 	PRIMARY KEY(submitter_id, email),
 	FOREIGN KEY(submitter_id) REFERENCES Submitter(submitter_id)
 );
@@ -43,18 +48,13 @@ CREATE TABLE Submission(
 		submission_type = 'Portion' OR
 		submission_type = 'Meal' OR
 		submission_type = 'Ingredient'
-	)
+	),
+	submission_date timestamp with time zone default CURRENT_TIMESTAMP
 );
 
 CREATE TABLE ApiSubmission(
 	submission_id integer,
-	apiId integer,
-	submission_type varchar(10) CHECK(
-		submission_type = 'Restaurant' OR
-		submission_type = 'Portion' OR
-		submission_type = 'Meal' OR
-		submission_type = 'Ingredient'
-	),	
+	apiId integer,	
 	PRIMARY KEY(submission_id, apiId),
 	FOREIGN KEY(submission_id) REFERENCES Submission(submission_id)
 );
@@ -62,22 +62,31 @@ CREATE TABLE ApiSubmission(
 CREATE TABLE SubmissionSubmitter(	
 	submission_id integer,
 	submitter_id integer,
-	submission_date timestamp with time zone default CURRENT_TIMESTAMP(), -- Add to doc
 	PRIMARY KEY(submission_id, submitter_id),
 	FOREIGN KEY(submission_id) REFERENCES Submission(submission_id),
 	FOREIGN KEY(submitter_id) REFERENCES Submitter(submitter_id)
 );
 
-CREATE TABLE Report(
-	report_submission_id integer,
+CREATE TABLE SubmissionContract(
 	submission_id integer,
-	description varchar(500) NOT NULL,
-	PRIMARY KEY(report_submission_id, submission_id),
-	FOREIGN KEY(submission_id) REFERENCES Submission(submission_id),
-	FOREIGN KEY(report_submission_id) REFERENCES Submitter(submitter_id)
+	submission_contract varchar(10) CHECK(
+		submission_contract = 'Votable' OR
+		submission_contract = 'Reportable' OR
+		submission_contract = 'API'
+	),
+	PRIMARY KEY(submission_id, submission_contract)
 );
 
-CREATE TABLE Votable(
+CREATE TABLE Report(
+	submitter_id integer,
+	submission_id integer,
+	description varchar(500) NOT NULL,
+	PRIMARY KEY(submitter_id, submission_id),
+	FOREIGN KEY(submission_id) REFERENCES Submission(submission_id),
+	FOREIGN KEY(submitter_id) REFERENCES Submitter(submitter_id)
+);
+
+CREATE TABLE Vote(
 	submission_id integer,
 	vote_submitter_id integer,
 	vote boolean NOT NULL,
@@ -88,7 +97,7 @@ CREATE TABLE Votable(
 
 CREATE TABLE Restaurant(
 	submission_id integer PRIMARY KEY,
-	restaurant_name varchar(20) NOT NULL,
+	restaurant_name varchar(30) NOT NULL,
 	latitude REAL,
 	longitude REAL,
 	FOREIGN KEY(submission_id) REFERENCES Submission(submission_id)

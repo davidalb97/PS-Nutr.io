@@ -42,24 +42,24 @@ private const val AMOUNT = "amount"
 private const val UNIT = "unit"
 
 @Component
-class SpoonacularUriBuilder {
+class SpoonacularUriBuilder : FoodUri {
     //-------------------------------Products------------------------------------
 
     /**
      * From Spoonacular [documentation.](https://spoonacular.com/food-api/docs#Search-Grocery-Products)
      */
-    fun productsSearch(
+    override fun productsSearch(
             query: String,
-            minCalories: Int? = null,
-            maxCalories: Int? = null,
-            minCarbs: Int? = null,
-            maxCarbs: Int? = null,
-            minProtein: Int? = null,
-            maxProtein: Int? = null,
-            minFat: Int? = null,
-            maxFat: Int? = null,
-            offset: Int? = null,
-            number: Int? = null
+            minCalories: Int?,
+            maxCalories: Int?,
+            minCarbs: Int?,
+            maxCarbs: Int?,
+            minProtein: Int?,
+            maxProtein: Int?,
+            minFat: Int?,
+            maxFat: Int?,
+            offset: Int?,
+            number: Int?
     ): URI {
         return baseUri(SPOONACULAR_GROCERY_PRODUCTS_URL)
                 .queryParam(QUERY, query)
@@ -80,7 +80,7 @@ class SpoonacularUriBuilder {
     /**
      * From Spoonacular [documentation.](https://spoonacular.com/food-api/docs#Autocomplete-Product-Search)
      */
-    fun productSearchAutocomplete(query: String, number: Int? = null): URI {
+    override fun productSearchAutocomplete(query: String, number: Int?): URI {
         return baseUri(SPOONACULAR_PRODUCT_SEARCH_AUTO_COMPL_URL)
                 .queryParam(QUERY, query)
                 .nonNullQueryParam(NUMBER, number)
@@ -93,7 +93,7 @@ class SpoonacularUriBuilder {
     /**
      * From Spoonacular [documentation.](https://spoonacular.com/food-api/docs#Get-Recipe-Ingredients-by-ID)
      */
-    fun recipeIngredients(recipeId: String): URI {
+    override fun recipeIngredients(recipeId: String): URI {
         return baseUri("$SPOONACULAR_RECIPE_INGREDIENTS_URL$recipeId/ingredientWidget.json")
                 .build()
                 .toUri()
@@ -102,16 +102,16 @@ class SpoonacularUriBuilder {
     /**
      * From Spoonacular [documentation.](https://spoonacular.com/food-api/docs#Search-Recipes)
      */
-    fun recipesSearch(
+    override fun recipesSearch(
             recipeName: String,
-            cuisines: Array<SpoonacularCuisine>? = null,
-            diet: SpoonacularDiet? = null,
-            excludeIngredients: Array<String>? = null,
-            intolerances: Array<String>? = null,
-            offset: Int? = null,
-            number: Int? = null,
-            limitLicense: Boolean? = null,
-            instructionsRequired: Boolean? = null
+            cuisines: Array<SpoonacularCuisine>?,
+            diet: SpoonacularDiet?,
+            excludeIngredients: Array<String>?,
+            intolerances: Array<String>?,
+            offset: Int?,
+            number: Int?,
+            limitLicense: Boolean?,
+            instructionsRequired: Boolean?
     ): URI {
         return baseUri(SPOONACULAR_SEARCH_URL)
                 .nonNullQueryParam(QUERY, recipeName)
@@ -132,11 +132,11 @@ class SpoonacularUriBuilder {
     /**
      * From Spoonacular [documentation.](https://spoonacular.com/food-api/docs#Autocomplete-Ingredient-Search)
      */
-    fun ingredientSearchAutocomplete(
+    override fun ingredientSearchAutocomplete(
             query: String,
-            number: Int? = null,
-            metaInformation: Boolean? = null,
-            intolerances: Array<String>? = null
+            number: Int?,
+            metaInformation: Boolean?,
+            intolerances: Array<String>?
     ): URI {
         return baseUri(SPOONACULAR_INGREDIENT_SEARCH_AUTO_COMPL_URL)
                 .queryParam(QUERY, query)
@@ -150,7 +150,7 @@ class SpoonacularUriBuilder {
     /**
      * From Spoonacular [documentation.]( https://spoonacular.com/food-api/docs#Get-Ingredient-Information)
      */
-    fun ingredientInfo(id: Int, amount: Int?, unit: SpoonacularUnitTypes): URI {
+    override fun ingredientInfo(id: Int, amount: Int?, unit: SpoonacularUnitTypes): URI {
         return baseUri("$SPOONACULAR_INGREDIENT_INFO_URL$id/information")
                 .nonNullQueryParam(AMOUNT, amount)
                 .nonNullQueryParam(UNIT, unit)

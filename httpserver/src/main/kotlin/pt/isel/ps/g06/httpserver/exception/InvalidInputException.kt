@@ -13,5 +13,5 @@ enum class InvalidInputDomain(val domain: String) {
     SUBMITTER("submitter"),
     SUBMISSION("submission"),
     API("api"),
-    LOCATION("location")
+    SEARCH_RESTAURANT("search-restaurant"),
 }
