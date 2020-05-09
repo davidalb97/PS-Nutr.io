@@ -3,6 +3,7 @@ package pt.isel.ps.g06.httpserver.controller
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import pt.isel.ps.g06.httpserver.common.CUISINES
 
@@ -13,7 +14,8 @@ import pt.isel.ps.g06.httpserver.common.CUISINES
         consumes = [MediaType.APPLICATION_JSON_VALUE]
 )
 class CuisinesController {
+
     @GetMapping
-    fun getCuisinesHandler(skip: Int?, count: Int?) {
+    fun getCuisinesHandler(@RequestParam skip: Int?, @RequestParam count: Int?) {
     }
 }

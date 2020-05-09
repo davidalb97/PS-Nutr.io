@@ -19,6 +19,8 @@ DROP TABLE IF EXISTS Api CASCADE;
 DROP TABLE IF EXISTS _User CASCADE;
 DROP TABLE IF EXISTS Submitter CASCADE;
 --DROP SEQUENCE submitter_submitter_id_seq CASCADE;
+CREATE EXTENSION IF NOT EXISTS postgis;
+ALTER EXTENSION postgis UPDATE;
 
 CREATE TABLE Submitter(
 	submitter_id serial PRIMARY KEY,
@@ -54,7 +56,7 @@ CREATE TABLE Submission(
 
 CREATE TABLE ApiSubmission(
 	submission_id integer,
-	apiId integer,	
+	apiId varchar(100),	
 	PRIMARY KEY(submission_id, apiId),
 	FOREIGN KEY(submission_id) REFERENCES Submission(submission_id)
 );

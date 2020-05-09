@@ -3,7 +3,7 @@ package pt.isel.ps.g06.httpserver.dataAccess.api.food.mapper
 import org.springframework.context.annotation.Configuration
 import pt.isel.ps.g06.httpserver.dataAccess.api.food.FoodApi
 import pt.isel.ps.g06.httpserver.dataAccess.api.food.SpoonacularFoodApi
-import pt.isel.ps.g06.httpserver.dataAccess.api.food.model.FoodApiType
+import pt.isel.ps.g06.httpserver.dataAccess.api.food.FoodApiType
 
 @Configuration
 class FoodApiMapper(private val spoonacularApi: SpoonacularFoodApi) {

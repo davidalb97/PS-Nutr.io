@@ -1,9 +1,10 @@
 package pt.isel.ps.g06.httpserver.controller
 
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import pt.isel.ps.g06.httpserver.dataAccess.api.food.mapper.FoodApiMapper
-import pt.isel.ps.g06.httpserver.dataAccess.api.food.model.FoodApiType
+import pt.isel.ps.g06.httpserver.dataAccess.api.food.FoodApiType
 
 @RestController
 @RequestMapping("/spoonacular")

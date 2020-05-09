@@ -2,26 +2,33 @@ package pt.isel.ps.g06.httpserver.dataAccess.db.dao
 
 import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.customizer.BindBeanList
+import org.jdbi.v3.sqlobject.customizer.BindList
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.IngredientDto
+import pt.isel.ps.g06.httpserver.dataAccess.model.Ingredient
 
-private const val table = "Ingredient"
-private const val name = "ingredient_name"
-private const val id = "submission_id"
+//SubmissionSubmitter constants
+private const val SS_table = SubmissionSubmitterDao.table
+private const val SS_submissionId = SubmissionSubmitterDao.submissionId
+private const val SS_submitterId = SubmissionSubmitterDao.submitterId
 
-private const val SS_table = "SubmissionSubmitter"
-private const val SS_submissionId = "submission_id"
-private const val SS_submitterId = "submitter_id"
-
-private const val AS_table = "ApiSubmission"
-private const val AS_submissionId = "submission_id"
-private const val AS_apiId = "apiId"
+//ApiSubmission constants
+private const val AS_table = ApiSubmissionDao.table
+private const val AS_submissionId = ApiSubmissionDao.submissionId
+private const val AS_apiId = ApiSubmissionDao.apiId
 
 interface IngredientDao {
+
+    companion object {
+        const val table = "Ingredient"
+        const val name = "ingredient_name"
+        const val id = "submission_id"
+    }
+
     @SqlQuery("SELECT * FROM $table")
     fun getAll(): List<IngredientDto>
 
-    @SqlQuery("SELECT $AS_table.$AS_apiId" +
+    @SqlQuery("SELECT $table.$id, $table.$name" +
             " FROM $table" +
             " INNER JOIN $SS_table" +
             " ON $SS_table.$SS_submissionId = $table.$id" +
@@ -29,10 +36,13 @@ interface IngredientDao {
             " ON $AS_table.$AS_submissionId = $table.$id" +
             " WHERE $SS_table.$SS_submitterId = :submitterId"
     )
-    fun getAllApiIdsBySubmitterId(submitterId: Int): List<Int>
+    fun getAllBySubmitterId(submitterId: Int): List<IngredientDto>
 
     @SqlQuery("SELECT * FROM $table WHERE $name = :ingredientName")
-    fun getByName(@Bind ingredientName: String): IngredientDto?
+    fun getAllByName(@Bind ingredientName: String): List<IngredientDto>
+
+    @SqlQuery("SELECT * FROM $table WHERE $id in (<values>)")
+    fun getAllByIds(@BindList("values") submissionIds: List<Int>): List<IngredientDto>
 
     @SqlQuery("INSERT INTO $table($id, $name) VALUES(:submissionId, :ingredientName) RETURNING *")
     fun insert(@Bind submissionId: Int, ingredientName: String): IngredientDto

@@ -4,8 +4,8 @@ import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
 import pt.isel.ps.g06.httpserver.common.*
 import pt.isel.ps.g06.httpserver.common.exception.RestaurantNotFoundException
-import pt.isel.ps.g06.httpserver.data.RestaurantInput
-import pt.isel.ps.g06.httpserver.data.VoteInput
+import pt.isel.ps.g06.httpserver.dataAccess.input.RestaurantInput
+import pt.isel.ps.g06.httpserver.dataAccess.input.VoteInput
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.model.RestaurantApiType
 import pt.isel.ps.g06.httpserver.exception.InvalidInputDomain
 import pt.isel.ps.g06.httpserver.exception.InvalidInputException
@@ -50,7 +50,7 @@ class RestaurantController(private val restaurantService: RestaurantService) {
     }
 
     @GetMapping(RESTAURANT, consumes = [MediaType.ALL_VALUE])
-    fun getRestaurantInformation(@PathVariable(RESTAURANT_ID_VALUE) id: String, api: String?): Restaurant {
+    fun getRestaurantInformation(@PathVariable(RESTAURANT_ID_VALUE) id: String, @RequestParam api: String?): Restaurant {
         return restaurantService.getRestaurant(id, api) ?: throw RestaurantNotFoundException()
     }
 
