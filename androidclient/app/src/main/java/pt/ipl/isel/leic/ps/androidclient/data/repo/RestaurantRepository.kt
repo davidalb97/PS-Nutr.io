@@ -1,15 +1,14 @@
 package pt.ipl.isel.leic.ps.androidclient.data.repo
 
-import androidx.lifecycle.LiveData
 import com.android.volley.VolleyError
-import pt.ipl.isel.leic.ps.androidclient.data.source.DataSource
+import pt.ipl.isel.leic.ps.androidclient.data.source.endpoint.RestaurantDataSource
 import pt.ipl.isel.leic.ps.androidclient.data.source.model.Restaurant
 
 /**
  * The repository that displays to the view models all the available methods
  * to request the HTTP server.
  */
-class RestaurantRepository(private val dataSource: DataSource) {
+class RestaurantRepository(private val dataSource: RestaurantDataSource) {
 
     fun getRestaurantById(
         success: (Restaurant) -> Unit,

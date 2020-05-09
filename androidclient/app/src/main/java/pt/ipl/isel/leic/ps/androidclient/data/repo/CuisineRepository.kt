@@ -1,9 +1,9 @@
 package pt.ipl.isel.leic.ps.androidclient.data.repo
 
-import pt.ipl.isel.leic.ps.androidclient.data.source.DataSource
+import pt.ipl.isel.leic.ps.androidclient.data.source.endpoint.CuisineDataSource
 import pt.ipl.isel.leic.ps.androidclient.data.source.model.Cuisine
 
-class CuisineRepository(private val dataSource: DataSource) {
+class CuisineRepository(private val dataSource: CuisineDataSource) {
 
     fun getCuisines(
         success: (List<Cuisine>) -> Unit,
