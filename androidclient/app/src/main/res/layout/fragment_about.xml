@@ -1,21 +1,208 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <TableLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
-        <RelativeLayout>
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="75dp"
+            android:layout_marginBottom="75dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-        </RelativeLayout>
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                card_view:cardCornerRadius="25dp"
+                card_view:cardElevation="4dp"
+                card_view:cardMaxElevation="6dp">
 
-    </TableLayout>
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
 
+                    <ImageView
+                        android:id="@+id/img_pedro"
+                        android:layout_width="150dp"
+                        android:layout_height="150dp"
+                        android:src="@drawable/ic_pedro">
+                    </ImageView>
 
+                    <TextView
+                        android:id="@+id/pedro"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_toEndOf="@+id/img_pedro"
+                        android:text="Pedro Pires"
+                        android:textColor="@android:color/background_dark"
+                        android:textSize="30sp">
+                    </TextView>
+
+                    <RelativeLayout
+                        android:id="@+id/github_link_pedro"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/pedro"
+                        android:layout_toEndOf="@+id/img_pedro">
+
+                        <ImageView
+                            android:id="@+id/github_icon"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_marginStart="10dp"
+                            android:src="@drawable/ic_github">
+                        </ImageView>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginStart="10dp"
+                            android:layout_toEndOf="@id/github_icon"
+                            android:text="https://github.com/Pedrokase"
+                            android:textColor="@android:color/background_dark"
+                            android:textSize="14sp">
+                        </TextView>
+
+                    </RelativeLayout>
+
+                </RelativeLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                card_view:cardCornerRadius="25dp"
+                card_view:cardElevation="4dp"
+                card_view:cardMaxElevation="6dp">
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:id="@+id/img_david"
+                        android:layout_width="150dp"
+                        android:layout_height="150dp"
+                        android:src="@drawable/ic_david">
+                    </ImageView>
+
+                    <TextView
+                        android:id="@+id/david"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_toEndOf="@+id/img_david"
+                        android:text="David Albuquerque"
+                        android:textColor="@android:color/background_dark"
+                        android:textSize="30sp">
+                    </TextView>
+
+                    <RelativeLayout
+                        android:id="@+id/github_link_david"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/david"
+                        android:layout_toEndOf="@+id/img_david">
+
+                        <ImageView
+                            android:id="@+id/github_icon_david"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_marginStart="10dp"
+                            android:src="@drawable/ic_github">
+                        </ImageView>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginStart="10dp"
+                            android:layout_toEndOf="@id/github_icon_david"
+                            android:text="https://github.com/davidalb97"
+                            android:textColor="@android:color/background_dark"
+                            android:textSize="14sp">
+                        </TextView>
+
+                    </RelativeLayout>
+
+                </RelativeLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                card_view:cardCornerRadius="25dp"
+                card_view:cardElevation="4dp"
+                card_view:cardMaxElevation="6dp">
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:id="@+id/img_miguel"
+                        android:layout_width="150dp"
+                        android:layout_height="150dp"
+                        android:src="@drawable/ic_miguel">
+                    </ImageView>
+
+                    <TextView
+                        android:id="@+id/miguel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_toEndOf="@+id/img_miguel"
+                        android:text="Miguel Luís"
+                        android:textColor="@android:color/background_dark"
+                        android:textSize="30sp">
+                    </TextView>
+
+                    <RelativeLayout
+                        android:id="@+id/github_link_miguel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/miguel"
+                        android:layout_toEndOf="@+id/img_miguel">
+
+                        <ImageView
+                            android:id="@+id/github_icon_mig"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_marginStart="10dp"
+                            android:src="@drawable/ic_github">
+                        </ImageView>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginStart="10dp"
+                            android:layout_toEndOf="@id/github_icon_mig"
+                            android:text="https://github.com/mig07"
+                            android:textColor="@android:color/background_dark"
+                            android:textSize="14sp">
+                        </TextView>
+
+                    </RelativeLayout>
+                </RelativeLayout>
+            </androidx.cardview.widget.CardView>
+        </TableLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </ScrollView>
