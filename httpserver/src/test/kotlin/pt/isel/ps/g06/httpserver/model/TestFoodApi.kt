@@ -8,7 +8,7 @@ data class TestFoodApi(
         val submitterId: Int
 )
 
-fun SubmitterDto.toTest(): TestFoodApi {
+fun SubmitterDto.toTestFoodApi(): TestFoodApi {
     return TestFoodApi(
             FoodApiType.valueOf(this.submitter_name),
             this.submitter_id

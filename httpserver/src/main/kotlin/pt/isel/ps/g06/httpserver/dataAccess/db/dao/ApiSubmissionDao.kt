@@ -11,10 +11,10 @@ private const val SS_table = SubmissionSubmitterDao.table
 private const val SS_submissionId = SubmissionSubmitterDao.submissionId
 private const val SS_submitterId = SubmissionSubmitterDao.submitterId
 
-//Submitter constants
-private const val S_table = SubmitterDao.table
-private const val S_submissionId = SubmitterDao.id
-private const val S_type = SubmitterDao.type
+//Submission constants
+private const val S_table = SubmissionDao.table
+private const val S_submissionId = SubmissionDao.id
+private const val S_type = SubmissionDao.type
 
 interface ApiSubmissionDao {
 
@@ -40,10 +40,10 @@ interface ApiSubmissionDao {
             " AND $S_table.$S_type = :submissionType" +
             " AND $table.$apiId in (<values>)"
     )
-    fun getAllBySubmitterIdTypeAndApiIds(
+    fun getAllBySubmitterIdSubmissionTypeAndApiIds(
             @Bind submitterId: Int,
             @Bind submissionType: String,
-            @BindList("values") apiIds: List<Int>
+            @BindList("values") apiIds: List<String>
     ): List<ApiSubmissionDto>
 
     @SqlQuery("SELECT $table.$submissionId, $table.$apiId" +
@@ -55,7 +55,7 @@ interface ApiSubmissionDao {
             " WHERE $SS_table.$SS_submitterId = :submitterId" +
             " AND $S_table.$S_type = :submissionType"
     )
-    fun getAllBySubmitterIdAndType(
+    fun getAllBySubmitterIdAndSubmissionType(
             @Bind submitterId: Int,
             @Bind submissionType: String
     ): List<ApiSubmissionDto>
@@ -66,11 +66,11 @@ interface ApiSubmissionDao {
     ): List<ApiSubmissionDto>
 
     @SqlQuery("SELECT * FROM $table WHERE $apiId = :apiId")
-    fun getAllByApiId(apiId: Int): List<ApiSubmissionDto>
+    fun getAllByApiId(apiId: String): List<ApiSubmissionDto>
 
     @SqlQuery("INSERT INTO $table($submissionId, $apiId)" +
             " VALUES(:submissionId, :apiId) RETURNING *")
-    fun insert(@Bind submissionId: Int, apiId: Int): ApiSubmissionDto
+    fun insert(@Bind submissionId: Int, apiId: String): ApiSubmissionDto
 
     @SqlQuery("INSERT INTO $table($submissionId, $apiId)" +
             " values <values> RETURNING *")
@@ -85,5 +85,5 @@ interface ApiSubmissionDao {
 
 data class ApiSubmissionParam(
         val submission_id: Int,
-        val apiId: Int
+        val apiId: String
 )

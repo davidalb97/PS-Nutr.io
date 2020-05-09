@@ -2,10 +2,15 @@ package pt.isel.ps.g06.httpserver.db
 
 import org.jdbi.v3.core.Handle
 import org.jdbi.v3.core.Jdbi
+import org.jdbi.v3.core.kotlin.inTransactionUnchecked
 import org.jdbi.v3.core.transaction.TransactionIsolationLevel
 import pt.isel.ps.g06.httpserver.dataAccess.api.food.FoodApiType
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType
-import pt.isel.ps.g06.httpserver.dataAccess.db.dao.*
+import pt.isel.ps.g06.httpserver.dataAccess.db.SubmitterType
+import pt.isel.ps.g06.httpserver.dataAccess.db.dao.ApiSubmissionDao
+import pt.isel.ps.g06.httpserver.dataAccess.db.dao.IngredientDao
+import pt.isel.ps.g06.httpserver.dataAccess.db.dao.MealIngredientDao
+import pt.isel.ps.g06.httpserver.dataAccess.db.dao.SubmitterDao
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.IngredientDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.MealDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.SubmitterDto
@@ -14,25 +19,41 @@ import pt.isel.ps.g06.httpserver.exceptions.TestParameterException
 import pt.isel.ps.g06.httpserver.model.TestFoodApi
 import pt.isel.ps.g06.httpserver.model.TestIngredient
 import pt.isel.ps.g06.httpserver.model.TestMeal
+import pt.isel.ps.g06.httpserver.model.toTestFoodApi
 
 /**
  * Runs func with a jdbi transaction handle and rolls back after completion.
  */
-fun <R> Jdbi.inRollbackTransaction(isolation: TransactionIsolationLevel = TransactionIsolationLevel.SERIALIZABLE, func: (Handle) -> R) {
-    inTransaction<R, Exception>(isolation) { handle ->
-        func(handle).also { handle.rollback() }
+fun <R> Jdbi.inSandbox(
+        const: Constants,
+        isolation: TransactionIsolationLevel = TransactionIsolationLevel.SERIALIZABLE,
+        func: (Handle) -> R
+) {
+    try {
+        inTransaction<R, Exception>(isolation) { handle ->
+            func(handle).also { handle.rollback() }
+        }
+    } finally {
+        const.resetSerials()
     }
 }
 
 fun nextSerialValue(jdbi: Jdbi, tableName: String, columnName: String): Int {
-    return jdbi.open().inTransaction<Int, Exception>(TransactionIsolationLevel.SERIALIZABLE) {
+    return jdbi.inTransactionUnchecked(TransactionIsolationLevel.SERIALIZABLE) {
         val nextVal = it.createQuery("SELECT * FROM nextval(pg_get_serial_sequence('$tableName', '$columnName'))")
                 .map { rs, _ -> rs.getInt("nextval") }
                 .list()
                 .first()
         it.createUpdate("SELECT setval(pg_get_serial_sequence('$tableName', '$columnName'), ${nextVal - 1})")
                 .execute()
-        return@inTransaction nextVal
+        return@inTransactionUnchecked nextVal
+    }
+}
+
+fun setSerialValue(jdbi: Jdbi, tableName: String, columnName: String, value: Int) {
+    return jdbi.inTransactionUnchecked(TransactionIsolationLevel.SERIALIZABLE) {
+        it.createUpdate("SELECT setval(pg_get_serial_sequence('$tableName', '$columnName'), $value)")
+                .execute()
     }
 }
 
@@ -46,7 +67,7 @@ fun List<Ingredient>.mapToTestIngredients(
             api.submitter_id
     )
     return handle.attach(ApiSubmissionDao::class.java)
-            .getAllBySubmitterIdTypeAndApiIds(
+            .getAllBySubmitterIdSubmissionTypeAndApiIds(
                     api.submitter_id,
                     SubmissionType.INGREDIENT.toString(),
                     ingredients.map { it.apiId }
@@ -80,6 +101,7 @@ fun getDtosFromIngredientNames(
     }
     return ingredientDtos
 }
+
 /*
 fun findFirstMealWithIngredients(handle: Handle): TestMeal {
     val mealIngredientDtos = handle.attach(MealIngredientDao::class.java)
@@ -100,13 +122,32 @@ fun findFirstMealWithIngredients(handle: Handle): TestMeal {
 
 }
 */
-fun MealDto.mapToTest(handle: Handle, mealDto: MealDto, apiSubmitter: TestFoodApi): TestMeal {
 
+fun getTestFoodApiBySubmissionId(handle: Handle, submissionId: Int): TestFoodApi? {
+    return handle.attach(SubmitterDao::class.java)
+            .getAllBySubmissionId(submissionId)
+            .firstOrNull { it.submitter_type == SubmitterType.API.toString() }
+            ?.toTestFoodApi()
+}
+
+fun getTestFoodApiByMealId(handle: Handle, submissionId: Int): TestFoodApi? {
+    return getTestFoodApiBySubmissionId(handle, submissionId)
+            ?: getTestFoodApiBySubmissionId(handle,
+                    handle.attach(MealIngredientDao::class.java)
+                            .getAllByMealId(submissionId)
+                            .first()
+                            .ingredient_submission_id
+            )
+}
+
+fun MealDto.mapToTest(handle: Handle): TestMeal {
     val mealIngredientIds = handle.attach(MealIngredientDao::class.java)
-            .getAllByMealId(mealDto.submission_id)
+            .getAllByMealId(this.submission_id)
             .map { it.ingredient_submission_id }
     val mealIngredients = handle.attach(IngredientDao::class.java)
-            .getAllBySubmitterId(apiSubmitter.submitterId)
+            .getAllByIds(mealIngredientIds)
+    val apiSubmitter = getTestFoodApiByMealId(handle, this.submission_id)!!
+
     val testIngredients = handle.attach(ApiSubmissionDao::class.java)
             .getAllBySubmissionIds(mealIngredientIds)
             .map { dto ->
@@ -119,14 +160,15 @@ fun MealDto.mapToTest(handle: Handle, mealDto: MealDto, apiSubmitter: TestFoodAp
                         apiSubmitter
                 )
             }
+
     val apiSubmission = handle.attach(ApiSubmissionDao::class.java)
             .getBySubmissionId(submission_id)
 
     return TestMeal(
-            mealDto.meal_name,
+            this.meal_name,
             apiSubmitter.submitterId,
-            mealDto.submission_id,
-            apiSubmission?.submission_id,
+            this.submission_id,
+            apiSubmission?.apiId,
             apiSubmitter,
             testIngredients
     )

@@ -4,6 +4,6 @@ import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.RestaurantApiType
 
 
 data class RestaurantApiId(
-     val id: Int,
+     val id: String,
      val apiType: RestaurantApiType
 )

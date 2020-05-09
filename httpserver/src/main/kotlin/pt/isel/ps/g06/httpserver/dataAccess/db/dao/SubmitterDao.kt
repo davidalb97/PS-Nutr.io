@@ -4,6 +4,11 @@ import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.SubmitterDto
 
+//SubmissionSubmitter table constants
+private const val SS_table = SubmissionSubmitterDao.table
+private const val SS_submissionId = SubmissionSubmitterDao.submissionId
+private const val SS_submitterId = SubmissionSubmitterDao.submitterId
+
 interface SubmitterDao {
 
     companion object {
@@ -22,8 +27,12 @@ interface SubmitterDao {
     @SqlQuery("SELECT * FROM $table WHERE $type = :submitterType")
     fun getAllByType(submitterType: String): List<SubmitterDto>
 
-    @SqlQuery("SELECT * FROM $table WHERE $id = :submissionId")
-    fun getBySubmissionId(submissionId: Int): SubmitterDto?
+    @SqlQuery("SELECT $table.$id, $table.$name, $table.$type" +
+            " FROM $table" +
+            " INNER JOIN $SS_table" +
+            " ON $table.$id = $SS_table.$SS_submitterId" +
+            " WHERE $SS_table.$SS_submissionId = :submissionId")
+    fun getAllBySubmissionId(submissionId: Int): List<SubmitterDto>
 
     @SqlQuery("INSERT INTO $table($name, $type) " +
             "VALUES(:name, :type) RETURNING *")

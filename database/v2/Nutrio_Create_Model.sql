@@ -56,7 +56,7 @@ CREATE TABLE Submission(
 
 CREATE TABLE ApiSubmission(
 	submission_id integer,
-	apiId integer,	
+	apiId varchar(100),	
 	PRIMARY KEY(submission_id, apiId),
 	FOREIGN KEY(submission_id) REFERENCES Submission(submission_id)
 );

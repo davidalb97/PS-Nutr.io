@@ -7,8 +7,11 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.*
 import pt.isel.ps.g06.httpserver.exceptions.TestParameterException
 
-class RepoAsserts(val const: InsertConstants) {
+class RepoAsserts(val const: Constants) {
 
+    fun assertSubmissionContract(handle: Handle, submissionId: Int, expectedContracts: List<SubmissionContractType>) {
+        assertSubmissionContract(handle, listOf(submissionId), expectedContracts)
+    }
     fun assertSubmissionContract(handle: Handle, submissionIds: List<Int>, expectedContracts: List<SubmissionContractType>) {
         val expectedContractNames = expectedContracts.map { it.toString() }.sorted()
         submissionIds.forEach {  submissionId ->
@@ -40,10 +43,17 @@ class RepoAsserts(val const: InsertConstants) {
         }
     }
 
-    fun assertSubmissionSubmitterCount(handle: Handle, insertCount: Int) {
+    fun assertSubmissionSubmitterInsertCount(handle: Handle, insertCount: Int) {
         val oldCount = const.submissionSubmitterDtos.count()
         val newCount = handle.attach(SubmissionSubmitterDao::class.java).getAll().count()
         Assertions.assertEquals(oldCount + insertCount, newCount)
+    }
+
+    fun assertSubmission(handle: Handle,
+                         expectedSubmissionId: Int,
+                         expectedSubmissionType: SubmissionType
+    ) {
+        assertSubmission(handle, listOf(expectedSubmissionId), expectedSubmissionType)
     }
 
     fun assertSubmission(handle: Handle,
@@ -69,10 +79,10 @@ class RepoAsserts(val const: InsertConstants) {
                             expectedApiSubmissionIds: List<Int>,
                             apiSubmitterId: Int,
                             submissionType: SubmissionType,
-                            apiIds: List<Int>
+                            apiIds: List<String>
     ) {
         val resultApiSubmissionIds = handle.attach(ApiSubmissionDao::class.java)
-                .getAllBySubmitterIdTypeAndApiIds(
+                .getAllBySubmitterIdSubmissionTypeAndApiIds(
                         apiSubmitterId,
                         submissionType.toString(),
                         apiIds
@@ -87,11 +97,10 @@ class RepoAsserts(val const: InsertConstants) {
         Assertions.assertEquals(oldCount + insertCount, newCount)
     }
 
-    fun assertMeal(it: Handle, expectedSubmissionId: Int, expectedMealName: String, resultSubmissionId: Int) {
+    fun assertMeal(it: Handle, expectedSubmissionId: Int, expectedMealName: String) {
         val mealDto = it.attach(MealDao::class.java)
-                .getById(resultSubmissionId)
+                .getById(expectedSubmissionId)
         Assertions.assertNotNull(mealDto)
-        Assertions.assertEquals(expectedSubmissionId, resultSubmissionId)
         Assertions.assertEquals(expectedMealName, mealDto!!.meal_name)
     }
 

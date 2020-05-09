@@ -36,7 +36,7 @@ class MealDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo(jdbi)
     fun insert(
             submitterId: Int,
             mealName: String,
-            apiId: Int? = null,
+            apiId: String? = null,
             cuisines: List<String> = emptyList(),
             ingredients: List<Ingredient> = emptyList(),
             foodApi: FoodApiType
@@ -183,7 +183,7 @@ class MealDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo(jdbi)
         insertMealIngredients(it, submissionId, apiSubmitterId, ingredients)
     }
 
-    private fun insertApiMeal(handle: Handle, mealSubmissionId: Int, apiSubmitterId: Int, apiId: Int) {
+    private fun insertApiMeal(handle: Handle, mealSubmissionId: Int, apiSubmitterId: Int, apiId: String) {
         //If this meal comes from an external API
         handle.attach(SubmissionSubmitterDao::class.java)
                 .insert(mealSubmissionId, apiSubmitterId)
@@ -266,7 +266,7 @@ class MealDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo(jdbi)
         )
     }
 
-    private fun insertAllIngredientApiSubmission(handle: Handle, submissionIds: List<Int>, apiIds: List<Int>) {
+    private fun insertAllIngredientApiSubmission(handle: Handle, submissionIds: List<Int>, apiIds: List<String>) {
         //Insert all Submission - ApiSubmission associations
         handle.attach(ApiSubmissionDao::class.java).insertAll(
                 submissionIds.zip(apiIds) { submissionId, apiId ->
@@ -306,7 +306,7 @@ class MealDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo(jdbi)
         val ingredientApiIds = ingredients.map { it.apiId }
         return handle.attach(ApiSubmissionDao::class.java)
                 // Api ingredient api dtos already present on this meal
-                .getAllBySubmitterIdTypeAndApiIds(apiSubmitterId, INGREDIENT.toString(), ingredientApiIds)
+                .getAllBySubmitterIdSubmissionTypeAndApiIds(apiSubmitterId, INGREDIENT.toString(), ingredientApiIds)
     }
 
     private fun getDtosFromIngredientNames(
