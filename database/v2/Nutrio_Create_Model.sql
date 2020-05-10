@@ -1,4 +1,5 @@
 SET client_min_messages = error;
+DROP TABLE IF EXISTS HereCuisine CASCADE;
 DROP TABLE IF EXISTS MealCuisine CASCADE;
 DROP TABLE IF EXISTS RestaurantCuisine CASCADE;
 DROP TABLE IF EXISTS RestaurantMealPortion CASCADE;
@@ -161,5 +162,12 @@ CREATE TABLE MealCuisine(
 	cuisine_name varchar(20),
 	PRIMARY KEY(meal_submission_id, cuisine_name),
 	FOREIGN KEY(meal_submission_id) REFERENCES Meal(submission_id),
+	FOREIGN KEY(cuisine_name) REFERENCES Cuisine(cuisine_name)
+);
+
+-- Add to doc
+CREATE TABLE HereCuisine(
+	here_cuisine varchar(10) PRIMARY KEY,
+	cuisine_name varchar(20),
 	FOREIGN KEY(cuisine_name) REFERENCES Cuisine(cuisine_name)
 );

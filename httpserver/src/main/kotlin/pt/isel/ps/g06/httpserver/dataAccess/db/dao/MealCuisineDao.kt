@@ -10,7 +10,9 @@ interface MealCuisineDao {
 
     companion object {
         const val table = "MealCuisine"
+        const val hereTable = "HereCuisine"
         const val mealId = "meal_submission_id"
+        const val hereCuisine = "here_cuisine"
         const val cuisineName = "cuisine_name"
     }
 
@@ -20,8 +22,20 @@ interface MealCuisineDao {
     @SqlQuery("SELECT * FROM $table WHERE $mealId = :mealId")
     fun getByMealId(@Bind mealId: Int): List<MealCuisineDto>
 
-    @SqlQuery("SELECT * FROM $table WHERE $cuisineName = :cuisineName")
-    fun getByCuisineName(@Bind cuisineName: String): List<MealCuisineDto>
+    @SqlQuery("SELECT * FROM $table WHERE $cuisineName IN (<values>)")
+    fun getByCuisines(@BindList("values") cuisines: Collection<String>): Collection<MealCuisineDto>
+
+    /**
+     * Specific query for cuisines that come from [Here API](https://developer.here.com/documentation/geocoding-search-api/dev_guide/topics-places/food-types-category-system-full.html),
+     * as they offer no endpoint to convert/map their unique cuisine ID's to a cuisine string.
+     *
+     * As such, a special table was created in our database that provides this needed mapping.
+     */
+    @SqlQuery("SELECT $table.$mealId, $table.$cuisineName FROM $table " +
+            "INNER JOIN $hereTable " +
+            "ON $hereTable.$cuisineName = $table.$cuisineName" +
+            "WHERE $hereTable.$hereCuisine IN (<values>)")
+    fun getByHereCuisines(@BindList("values") cuisines: Collection<String>): Collection<MealCuisineDto>
 
     @SqlQuery("INSERT INTO $table($mealId, $cuisineName)" +
             " VALUES(:restaurantId, :cuisineName) RETURNING *")
