@@ -126,11 +126,11 @@ BEGIN
 	('Portion');
 
 	INSERT INTO ApiSubmission(submission_id, apiId) VALUES
-	(1, '0'),--First user meal ingredients from food api
-	(2, '1'),--First user meal ingredients from food api
-	(3, '2'),--First user meal ingredients from food api
-	(4, '3'),--Second user meal from food api
-	(6, '4');--Second restaurant from restaurant api
+	(2, '0'),--First user meal ingredients from food api
+	(3, '1'),--First user meal ingredients from food api
+	(4, '2'),--First user meal ingredients from food api
+	(5, '3'),--Second user meal from food api
+	(7, '4');--Second restaurant from restaurant api
 
 	INSERT INTO SubmissionSubmitter(submission_id, submitter_id) VALUES
 	(1, submitter_id_user_admin), -- First user meal from ingredients
