@@ -17,39 +17,49 @@ class RestaurantService(
         private val restaurantApiMapper: RestaurantApiMapper
 ) {
 
-    fun getNearbyRestaurants(latitude: Float?, longitude: Float?, radius: Int? = MAX_RADIUS, apiType: String?): Set<Restaurant> {
-        return if (latitude == null || longitude == null) emptySet() else {
-            val chosenRadius = if (radius != null && radius <= MAX_RADIUS) radius else MAX_RADIUS
-            val type = RestaurantApiType.getOrDefault(apiType)
+    fun getNearbyRestaurants(
+            latitude: Float,
+            longitude: Float,
+            name: String?,
+            radius: Int?,
+            apiType: String?
+    ): Set<Restaurant> {
+        val chosenRadius = if (radius != null && radius <= MAX_RADIUS) radius else MAX_RADIUS
+        val type = RestaurantApiType.getOrDefault(apiType)
+        val restaurantApi = restaurantApiMapper.getRestaurantApi(type)
 
-            val restaurantApi = restaurantApiMapper.getRestaurantApi(type)
+        val apiRestaurants = CompletableFuture
+                .supplyAsync { restaurantApi.searchNearbyRestaurants(latitude, longitude, chosenRadius, name) }
+                .thenApply { it.map(this::mapToRestaurant) }
 
-            val apiRestaurants = CompletableFuture
-                    .supplyAsync { restaurantApi.searchRestaurants(latitude, longitude, chosenRadius) }
-                    .thenApply { it.map(this::mapToRestaurant) }
+        val dbRestaurants = dbRestaurantRepository
+                .getAllByCoordinates(latitude, longitude, chosenRadius)
+                .map(this::mapToRestaurant)
 
-            val dbRestaurants = dbRestaurantRepository
-                    .getAllByCoordinates(latitude, longitude, chosenRadius)
-                    .map(this::mapToRestaurant)
-
-            //TODO Handle CompletableFuture exception
-            return filterRedundantApiRestaurants(dbRestaurants, apiRestaurants.get())
-        }
+        //TODO Handle CompletableFuture exception
+        return filterRedundantApiRestaurants(dbRestaurants, apiRestaurants.get())
     }
 
     /**
      * Obtain more information for a Restaurant with given id.
      *
      * Current search algorithm will first query the Database for any restaurant and if none was found,
-     * search the preferred Restaurant API (Zomato, etc.)
+     * search the preferred Restaurant API (Zomato, Here, etc.)
      *
-     * @param apiType - describes which api to search the Restaurant. See [RestaurantApiType] for possible types.
-     * Defaults to [RestaurantApiType.Zomato]
+     * @param apiType describes which api to search the Restaurant. See [RestaurantApiType] for possible types.
+     * Defaults to [RestaurantApiType.Here]
      */
-    fun getRestaurant(id: Int, apiType: String?): Restaurant? {
+    fun getRestaurant(id: String, apiType: String?): Restaurant? {
         val type = RestaurantApiType.getOrDefault(apiType)
         val restaurantApi = restaurantApiMapper.getRestaurantApi(type)
-        val restaurant = dbRestaurantRepository.getById(id) ?: restaurantApi.getRestaurantInfo(id)
+
+        //If 'id' cannot be converted to Integer, then don't search in database.
+        //This is a specification that happens because all restaurants are submissions, and as such,
+        //their unique identifier is always an auto-incremented integer
+        val restaurant = id
+                .toIntOrNull()
+                ?.let { dbRestaurantRepository.getById(it) }
+                ?: restaurantApi.getRestaurantInfo(id)
 
         return restaurant?.let(this::mapToRestaurant)
     }
@@ -73,7 +83,6 @@ class RestaurantService(
             dto.id,
             dto.name,
             dto.latitude,
-            dto.longitude,
-            dto.cuisines
+            dto.longitude
     )
 }

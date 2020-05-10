@@ -1,9 +1,11 @@
-package pt.isel.ps.g06.httpserver.dataAccess.api.food
+package pt.isel.ps.g06.httpserver.dataAccess.api.food.uri
 
-import pt.isel.ps.g06.httpserver.dataAccess.api.food.dto.*
+import pt.isel.ps.g06.httpserver.dataAccess.api.food.SpoonacularCuisine
+import pt.isel.ps.g06.httpserver.dataAccess.api.food.SpoonacularDiet
+import pt.isel.ps.g06.httpserver.dataAccess.api.food.SpoonacularUnitTypes
+import java.net.URI
 
-interface IFoodApi {
-
+interface FoodUri {
     fun productsSearch(
             query: String,
             minCalories: Int? = null,
@@ -16,16 +18,13 @@ interface IFoodApi {
             maxFat: Int? = null,
             offset: Int? = null,
             number: Int? = null
-    ): ProductSearchContainerDto
+    ): URI
 
-    fun productSearchAutocompleteUri(
-            query: String,
-            number: Int? = null
-    ): List<ProductSearchAutoComplDto>
+    fun productSearchAutocomplete(query: String, number: Int? = null): URI
 
-    fun recipeIngredients(recipeId: String): RecipeIngredientsDto
+    fun recipeIngredients(recipeId: String): URI
 
-    fun searchRecipes(
+    fun recipesSearch(
             recipeName: String,
             cuisines: Array<SpoonacularCuisine>? = null,
             diet: SpoonacularDiet? = null,
@@ -35,19 +34,14 @@ interface IFoodApi {
             number: Int? = null,
             limitLicense: Boolean? = null,
             instructionsRequired: Boolean? = null
-    ): List<RecipeDto>
+    ): URI
 
     fun ingredientSearchAutocomplete(
             query: String,
             number: Int? = null,
             metaInformation: Boolean? = null,
             intolerances: Array<String>? = null
-    ): IngredientSearchDto
+    ): URI
 
-    fun ingredientInformation(
-            id: Int,
-            amount: Int? = null,
-            unit: SpoonacularUnitTypes
-    ): IngredientInfoDto
-
+    fun ingredientInfo(id: Int, amount: Int?, unit: SpoonacularUnitTypes): URI
 }

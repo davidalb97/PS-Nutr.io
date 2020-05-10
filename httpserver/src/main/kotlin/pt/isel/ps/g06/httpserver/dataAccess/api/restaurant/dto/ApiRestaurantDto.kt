@@ -22,7 +22,7 @@ data class RestaurantSearchResultDtoMapper(val restaurants: Array<RestaurantCont
 data class RestaurantContainerDto(val restaurant: ApiRestaurantDto)
 
 class ApiRestaurantDto(
-        id: Int,
+        id: String,
         name: String,
         url: String,
         cuisines: String,
@@ -31,8 +31,7 @@ class ApiRestaurantDto(
         id,
         name,
         location.latitude,
-        location.longitude,
-        cuisines.split(", ").toList()
+        location.longitude
 )
 
 data class Location(val address: String, val locality: String, val city: String, val city_id: Int, val latitude: Float, val longitude: Float)

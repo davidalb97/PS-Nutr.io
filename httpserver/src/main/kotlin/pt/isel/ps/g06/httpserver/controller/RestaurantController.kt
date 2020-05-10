@@ -2,42 +2,60 @@ package pt.isel.ps.g06.httpserver.controller
 
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
-import pt.isel.ps.g06.httpserver.RestaurantFilter
 import pt.isel.ps.g06.httpserver.common.*
 import pt.isel.ps.g06.httpserver.common.exception.RestaurantNotFoundException
+import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.RestaurantApiType
 import pt.isel.ps.g06.httpserver.dataAccess.input.RestaurantInput
 import pt.isel.ps.g06.httpserver.dataAccess.input.VoteInput
+import pt.isel.ps.g06.httpserver.exception.InvalidInputDomain
+import pt.isel.ps.g06.httpserver.exception.InvalidInputException
 import pt.isel.ps.g06.httpserver.model.Restaurant
 import pt.isel.ps.g06.httpserver.service.RestaurantService
+
+private const val INVALID_RESTAURANT_SEARCH = "To search nearby restaurants, a geolocation must be given!"
 
 @Suppress("MVCPathVariableInspection") //False positive for IntelliJ
 @RestController
 @RequestMapping(RESTAURANTS, produces = [MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_PROBLEM_JSON_VALUE])
 class RestaurantController(private val restaurantService: RestaurantService) {
 
+    /**
+     * Allows to search for Restaurants from both an API (see [RestaurantApiType] for supported APIs) and
+     * from a database around geolocation,
+     * giving priority to database values, as they may contain extra information added by an user.
+     *
+     * @param name optional, filters results by restaurant name
+     * @param radius optional, changes the search radius in a circle (meters).
+     *  @param apiType allows the user to select which API to search from. See [RestaurantApiType].
+     */
     @GetMapping(consumes = [MediaType.ALL_VALUE])
-    fun getNearbyRestaurants(
-            @RequestParam latitude: Float?,
-            @RequestParam longitude: Float?,
-            @RequestParam radius: Int?,
-            @RequestParam cuisines: List<String>?,
-            @RequestParam meals: List<String>?,
-            @RequestParam apiType: String?
+    fun searchRestaurants(
+            latitude: Float?,
+            longitude: Float?,
+            name: String?,
+            radius: Int?,
+            apiType: String?
     ): Set<Restaurant> {
-        val nearbyRestaurants = restaurantService.getNearbyRestaurants(latitude, longitude, radius, apiType)
-        return RestaurantFilter(nearbyRestaurants)
-                .filter(cuisines?: emptyList(), meals?: emptyList())
-                .toSet()
+        if (latitude == null || longitude == null) {
+            throw InvalidInputException(InvalidInputDomain.SEARCH_RESTAURANT, INVALID_RESTAURANT_SEARCH)
+        }
+
+        return restaurantService.getNearbyRestaurants(
+                latitude = latitude,
+                longitude = longitude,
+                name = name,
+                radius = radius,
+                apiType = apiType
+        )
     }
 
     @GetMapping(RESTAURANT, consumes = [MediaType.ALL_VALUE])
-    fun getRestaurantInformation(@PathVariable(RESTAURANT_ID_VALUE) id: Int, @RequestParam api: String?): Restaurant {
+    fun getRestaurantInformation(@PathVariable(RESTAURANT_ID_VALUE) id: String, @RequestParam api: String?): Restaurant {
         return restaurantService.getRestaurant(id, api) ?: throw RestaurantNotFoundException()
     }
 
     @PostMapping(consumes = [MediaType.APPLICATION_JSON_VALUE])
     fun createRestaurant(@RequestBody restaurant: RestaurantInput) {
-
     }
 
     @DeleteMapping(RESTAURANT, consumes = [MediaType.APPLICATION_JSON_VALUE])
