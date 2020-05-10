@@ -31,6 +31,13 @@ class RepoAsserts(val const: Constants) {
 
     fun assertSubmissionSubmitter(
             handle: Handle,
+            expectedSubmissionId: Int,
+            expectedSubmitterId: Int
+    ) {
+        assertSubmissionSubmitter(handle, listOf(expectedSubmissionId), expectedSubmitterId)
+    }
+    fun assertSubmissionSubmitter(
+            handle: Handle,
             expectedSubmissionIds: List<Int>,
             expectedSubmitterId: Int
     ) {
