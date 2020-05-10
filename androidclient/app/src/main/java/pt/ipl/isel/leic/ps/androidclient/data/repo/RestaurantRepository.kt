@@ -17,7 +17,7 @@ class RestaurantRepository(private val dataSource: RestaurantDataSource) {
         count: Int,
         skip: Int
     ) {
-        dataSource.getRestaurantById(
+        dataSource.getById(
             success,
             error,
             uriParameters,
@@ -33,7 +33,7 @@ class RestaurantRepository(private val dataSource: RestaurantDataSource) {
         count: Int,
         skip: Int
     ) {
-        dataSource.getNearbyRestaurants(
+        dataSource.getNearby(
             success,
             error,
             uriParameters,

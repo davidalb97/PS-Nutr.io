@@ -13,7 +13,7 @@ class MealRecyclerViewModel() : ARecyclerViewModel<Meal>() {
     }
 
     fun getMeals(
-        onSuccess: (List<Meal>) -> Unit,
+        onSuccess: (Meal) -> Unit,
         onError: () -> Unit
     ) {
         mealRepository.getMeals(

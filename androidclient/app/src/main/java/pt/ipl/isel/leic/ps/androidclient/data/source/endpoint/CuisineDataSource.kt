@@ -27,11 +27,7 @@ class CuisineDataSource(
         var uri =
             CUISINE_ID_URI
 
-        uri =
-            if (uriParameters.isNullOrEmpty())
-                uri.removeSuffix("/:name")
-            else
-                requester.buildUri(uri, uriParameters)
+        uri = requester.buildUri(uri, uriParameters)
         requester.httpServerRequest(
             Method.GET,
             uri,

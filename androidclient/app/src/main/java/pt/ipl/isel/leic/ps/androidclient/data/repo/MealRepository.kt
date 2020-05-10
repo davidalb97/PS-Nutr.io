@@ -6,13 +6,13 @@ import pt.ipl.isel.leic.ps.androidclient.data.source.model.Meal
 class MealRepository(private val dataSource: MealDataSource) {
 
     fun getMeals(
-        success: (List<Meal>) -> Unit,
+        success: (Meal) -> Unit,
         error: () -> Unit,
         uriParameters: HashMap<String, HashMap<String, String>>?,
         count: Int,
         skip: Int
     ) {
-        dataSource.getMeals(
+        dataSource.getById(
             { success(it) },
             { error() },
             uriParameters,

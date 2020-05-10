@@ -47,8 +47,12 @@ class Requester(
      */
     fun buildUri(
         baseUri: String,
-        parameters: HashMap<String, HashMap<String, String>>
+        parameters: HashMap<String, HashMap<String, String>>?
     ): String {
+
+        if (parameters.isNullOrEmpty()) {
+            return baseUri
+        }
 
         val path = parameters["path"]
         val query = parameters["query"]

@@ -36,7 +36,7 @@ class RestaurantDataSource(
     /**
      * ----------------------------- GETs -----------------------------
      */
-    fun getRestaurantById(
+    fun getById(
         success: (Restaurant) -> Unit,
         error: (VolleyError) -> Unit,
         uriParameters: HashMap<String, HashMap<String, String>>?,
@@ -46,7 +46,7 @@ class RestaurantDataSource(
         var uri =
             RESTAURANT_ID_URI
 
-        uri = requester.buildUri(uri, uriParameters!!)
+        uri = requester.buildUri(uri, uriParameters)
 
         requester.httpServerRequest(
             Method.GET,
@@ -58,7 +58,7 @@ class RestaurantDataSource(
         )
     }
 
-    fun getNearbyRestaurants(
+    fun getNearby(
         success: (List<Restaurant>) -> Unit,
         error: (VolleyError) -> Unit,
         uriParameters: HashMap<String, HashMap<String, String>>?,
@@ -68,7 +68,7 @@ class RestaurantDataSource(
         var uri =
             RESTAURANT_ID_URI
 
-        uri = requester.buildUri(uri, uriParameters!!)
+        uri = requester.buildUri(uri, uriParameters)
 
         requester.httpServerRequest(
             Method.GET,
@@ -94,7 +94,7 @@ class RestaurantDataSource(
         var uri =
             RESTAURANT_ID_URI
 
-        uri = requester.buildUri(uri, uriParameters!!)
+        uri = requester.buildUri(uri, uriParameters)
 
         requester.httpServerRequest(
             Method.POST,
@@ -106,7 +106,7 @@ class RestaurantDataSource(
         )
     }
 
-    fun postRestaurantReport(
+    fun postReport(
         success: (Restaurant) -> Unit,
         error: (VolleyError) -> Unit,
         uriParameters: HashMap<String, HashMap<String, String>>?,
@@ -116,10 +116,57 @@ class RestaurantDataSource(
         var uri =
             RESTAURANT_ID_URI
 
-        uri = requester.buildUri(uri, uriParameters!!)
+        uri = requester.buildUri(uri, uriParameters)
 
         requester.httpServerRequest(
             Method.POST,
+            uri,
+            RESTAURANT_DTO,
+            success,
+            error,
+            null
+        )
+    }
+
+    fun postVote(
+        success: (Restaurant) -> Unit,
+        error: (VolleyError) -> Unit,
+        uriParameters: HashMap<String, HashMap<String, String>>?,
+        count: Int,
+        skip: Int
+    ) {
+        var uri =
+            RESTAURANT_ID_URI
+
+        uri = requester.buildUri(uri, uriParameters)
+
+        requester.httpServerRequest(
+            Method.POST,
+            uri,
+            RESTAURANT_DTO,
+            success,
+            error,
+            null
+        )
+    }
+
+    /**
+     * ----------------------------- PUTs ------------------------------
+     */
+    fun updateVote(
+        success: (Restaurant) -> Unit,
+        error: (VolleyError) -> Unit,
+        uriParameters: HashMap<String, HashMap<String, String>>?,
+        count: Int,
+        skip: Int
+    ) {
+        var uri =
+            RESTAURANT_ID_URI
+
+        uri = requester.buildUri(uri, uriParameters)
+
+        requester.httpServerRequest(
+            Method.PUT,
             uri,
             RESTAURANT_DTO,
             success,
@@ -132,7 +179,26 @@ class RestaurantDataSource(
      * ----------------------------- DELETEs ---------------------------
      */
 
-    /**
-     * ----------------------------- PUTs ------------------------------
-     */
+    fun deleteVote(
+        success: (Restaurant) -> Unit,
+        error: (VolleyError) -> Unit,
+        uriParameters: HashMap<String, HashMap<String, String>>?,
+        count: Int,
+        skip: Int
+    ) {
+        var uri =
+            RESTAURANT_ID_URI
+
+        uri = requester.buildUri(uri, uriParameters)
+
+        requester.httpServerRequest(
+            Method.DELETE,
+            uri,
+            RESTAURANT_DTO,
+            success,
+            error,
+            null
+        )
+    }
+
 }
