@@ -20,7 +20,7 @@ import pt.ipl.isel.leic.ps.androidclient.data.source.endpoint.RestaurantDataSour
 
 const val TAG = "Nutr.io App"
 const val ROOM_DB_NAME = "nutrio-db"
-const val ROOM_DB_VERSION = 0
+const val ROOM_DB_VERSION = 1
 
 /**
  * The application context.
@@ -65,9 +65,9 @@ class NutrioApp : Application() {
     override fun onCreate() {
         super.onCreate()
         app = this
-        roomDb = Room.databaseBuilder(applicationContext, NutrioDb::class.java, ROOM_DB_NAME)
+        /*roomDb = Room.databaseBuilder(applicationContext, NutrioDb::class.java, ROOM_DB_NAME)
             .fallbackToDestructiveMigration()
-            .build()
+            .build()*/
     }
 }
 
