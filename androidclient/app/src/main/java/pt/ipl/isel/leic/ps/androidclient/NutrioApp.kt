@@ -5,9 +5,11 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
+import androidx.room.Room
 import com.android.volley.toolbox.Volley
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import pt.ipl.isel.leic.ps.androidclient.data.NutrioDb
 import pt.ipl.isel.leic.ps.androidclient.data.repo.CuisineRepository
 import pt.ipl.isel.leic.ps.androidclient.data.repo.MealRepository
 import pt.ipl.isel.leic.ps.androidclient.data.repo.RestaurantRepository
@@ -17,6 +19,8 @@ import pt.ipl.isel.leic.ps.androidclient.data.source.endpoint.MealDataSource
 import pt.ipl.isel.leic.ps.androidclient.data.source.endpoint.RestaurantDataSource
 
 const val TAG = "Nutr.io App"
+const val ROOM_DB_NAME = "nutrio-db"
+const val ROOM_DB_VERSION = 0
 
 /**
  * The application context.
@@ -43,8 +47,9 @@ class NutrioApp : Application() {
         }
 
         /**
-         * Local databases initialization
+         * Room database
          */
+        lateinit var roomDb: NutrioDb
 
         /**
          *  Repositories initialization
@@ -60,6 +65,9 @@ class NutrioApp : Application() {
     override fun onCreate() {
         super.onCreate()
         app = this
+        roomDb = Room.databaseBuilder(applicationContext, NutrioDb::class.java, ROOM_DB_NAME)
+            .fallbackToDestructiveMigration()
+            .build()
     }
 }
 
