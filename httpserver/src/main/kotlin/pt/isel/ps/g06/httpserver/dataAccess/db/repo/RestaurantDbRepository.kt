@@ -175,10 +175,13 @@ class RestaurantDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo
 
         //Insert new cuisines
         existingCuisines.removeAll(deletedCuisines)
-        restaurantCuisineDao.insertAll(
-                existingCuisines.map {
-                    RestaurantCuisineParam(it.restaurant_submission_id, it.cuisine_name)
-                }
-        )
+        val newCuisines = cuisines.filter { cuisineName ->
+            existingCuisines.none { it.cuisine_name == cuisineName }
+        }
+        if(newCuisines.isNotEmpty()) {
+            restaurantCuisineDao.insertAll(
+                    newCuisines.map { RestaurantCuisineParam(submissionId, it) }
+            )
+        }
     }
 }

@@ -136,7 +136,7 @@ class Constants(val jdbi: Jdbi) {
         it.createQuery(
                 "SELECT $mealTable.$mealId, $mealTable.$mealName, $AS_table.$AS_apiId, $ST_table.$ST_name, $SS_table.$SS_submitterId" +
                         " FROM Meal" +
-                        " INNER JOIN $AS_table" +
+                        " FULL OUTER JOIN $AS_table" +
                         " ON $mealTable.$mealId = $AS_table.$AS_submissionId" +
                         " INNER JOIN $SS_table" +
                         " ON $mealTable.$mealId = $SS_table.$SS_submissionId" +

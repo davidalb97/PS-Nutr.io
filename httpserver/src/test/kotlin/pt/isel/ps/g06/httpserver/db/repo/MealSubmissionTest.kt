@@ -334,27 +334,29 @@ class MealSubmissionTest {
 //        return const.mealDtos.first { it.submission_id == existingMealId }
 //                .mapToTest(handle)
 //    }
-/*
+
     @Test
-    fun shouldUpdateUserMealWithNewIngredientsCuisinesAndName() {
+    fun shouldUpdateUserMealWithNewIngredientsAndCuisinesPreservingOldValues() {
         jdbi.inSandbox(const) {
             val existingMeal = const.meals.first { it.ingredients.isNotEmpty() && it.cuisines.isNotEmpty()}
-            val expectedName = "TEST-" + existingMeal.mealName
+            val expectedName = "TestNewMealName"
             val newIngredientCount = 3
             val newIngredientIds =
                 (const.nextSubmissionId until const.nextSubmissionId + newIngredientCount)
                         .toList()
             val newIngredients = newIngredientIds.map { TestIngredient(
-                    "TEST-Ingredient-$it",
+                    "TestIngredient$it",
                     it,
-                    (-1)*it,
+                    "TestApiId$it",
                     existingMeal.foodApi
             ) }
-            val expectedIngredients = newIngredients.union(existingMeal.ingredients).toList()
+            val expectedIngredients = existingMeal.ingredients.union(newIngredients).toList()
+            val expectedIngredientIds = expectedIngredients.map { it.submissionId }
             val newCuisineCount = 3
-            val newCuisines = (0 until newCuisineCount).toList().map { "TEST-Cusine-$it" }
-            val expectedCuisines = newCuisines.union(existingMeal.cuisines).toList()
-
+            val newCuisines = const.cuisineNames.filter {
+                !existingMeal.cuisines.contains(it)
+            }.take(newCuisineCount)
+            val expectedCuisines = existingMeal.cuisines.union(newCuisines).toList()
 //            val existingIngredients =
 //
 //            val expectedMealName = "Debug meal"
@@ -370,7 +372,7 @@ class MealSubmissionTest {
 //            val expectedIngredients = expectedIngredientSubmissionIds
 //                    .map { Ingredient("Test Ingredient$it", it * (-1), expectedFoodApiType) }
 
-            val insertedMealDto = mealRepo.update(
+            mealRepo.update(
                     existingMeal.submitterId,
                     existingMeal.submissionId,
                     expectedName,
@@ -383,7 +385,7 @@ class MealSubmissionTest {
 
             //Assert current Meal submissions existence
             asserts.assertSubmission(it,
-                    expectedSubmissionIds = existingMealId,
+                    expectedSubmissionId = existingMeal.submissionId,
                     expectedSubmissionType = SubmissionType.MEAL
             )
             //Assert current Ingredient submissions existence (Ingredient old + new, without removed)
@@ -396,7 +398,7 @@ class MealSubmissionTest {
 
             //Assert SubmissionContract API contracts on meal submission
             asserts.assertSubmissionContract(it,
-                    submissionIds = existingMealId,
+                    submissionId = existingMeal.submissionId,
                     expectedContracts = expectedMealContracts
             )
             //Assert SubmissionContract API contracts on ingredient submissions
@@ -404,41 +406,41 @@ class MealSubmissionTest {
                     submissionIds = expectedIngredientIds,
                     expectedContracts = expectedIngredientContracts
             )
-            //Assert SubmissionContract API contracts insert counts 2 for each meal, 1 for each ingredient
+            //Assert SubmissionContract API contracts insert counts 1 for each ingredient
             asserts.assertSubmissionContractInsertCount(it,
-                    expectedIngredientIds.size * newIngredientIds.size
+                    expectedIngredientContracts.size * newIngredientIds.size
             )
 
             //Assert SubmissionSubmitter insertions (Meal)
             asserts.assertSubmissionSubmitter(it,
-                    expectedSubmissionIds = existingMealId,
-                    expectedSubmitterId = expectedSubmitterId
+                    expectedSubmissionId = existingMeal.submissionId,
+                    expectedSubmitterId = existingMeal.submitterId
             )
             //Assert SubmissionSubmitter insertions (Ingredient)
             asserts.assertSubmissionSubmitter(it,
                     expectedSubmissionIds = expectedIngredientIds,
-                    expectedSubmitterId = expectedApiSubmitter.submitter_id
+                    expectedSubmitterId = existingMeal.foodApi.submitterId
             )
             asserts.assertSubmissionSubmitterInsertCount(it, newIngredientIds.size)
 
             //Assert Meal insertions
             asserts.assertMeal(it,
-                    expectedSubmissionId = expectedSubmissionId,
-                    expectedMealName = expectedMealName
+                    expectedSubmissionId = existingMeal.submissionId,
+                    expectedMealName = existingMeal.mealName
             )
             asserts.assertMealInsertCount(it, 0)
 
             //Assert MealCuisine insertions
             asserts.assertMealCuisines(it,
                     expectedCuisines = expectedCuisines,
-                    resultSubmissionId = existingMealId
+                    resultSubmissionId = existingMeal.submissionId
             )
-            asserts.assertMealCuisinesInsertCount(it, 0)
+            asserts.assertMealCuisinesInsertCount(it, newCuisineCount)
 
             //Assert Ingredient ApiSubmission insertions (meal does not have apiId, ingredients not inserted)
             asserts.assertApiSubmission(it,
-                    expectedApiSubmissionIds = expectedIngredientSubmissionIds,
-                    apiSubmitterId = expectedApiSubmitter.submitter_id,
+                    expectedApiSubmissionIds = expectedIngredientIds,
+                    apiSubmitterId = existingMeal.foodApi.submitterId,
                     submissionType = SubmissionType.INGREDIENT,
                     apiIds = expectedIngredients.map { it.apiId }
             )
@@ -446,7 +448,7 @@ class MealSubmissionTest {
 
             //Assert Ingredient existence
             asserts.assertIngredient(it,
-                    expectedIngredientSubmissionIds = expectedIngredientSubmissionIds,
+                    expectedIngredientSubmissionIds = expectedIngredientIds,
                     expectedIngredientNames = expectedIngredients.map { it.name }
             )
             //Assert Ingredient insertion count
@@ -454,13 +456,13 @@ class MealSubmissionTest {
 
             //Assert MealCuisine existence
             asserts.assertMealIngredient(it,
-                    expectedMealSubmissionId = expectedSubmissionId,
-                    expectedIngredientSubmissionIds = expectedIngredientSubmissionIds
+                    expectedMealSubmissionId = existingMeal.submissionId,
+                    expectedIngredientSubmissionIds = expectedIngredientIds
             )
             //Assert MealCuisine insert count
-            asserts.assertMealIngredientInsertCount(it, expectedIngredientSubmissionIds.size)
+            asserts.assertMealIngredientInsertCount(it, newIngredientIds.size)
         }
     }
 
- */
+
 }
