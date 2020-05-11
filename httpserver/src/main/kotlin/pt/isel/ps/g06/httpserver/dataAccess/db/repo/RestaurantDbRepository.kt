@@ -35,7 +35,7 @@ class RestaurantDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo
             submitterId: Int,
             restaurantName: String,
             apiId: RestaurantApiId? = null,
-            cuisines: List<String> = emptyList(),
+            cuisines: Collection<String> = emptyList(),
             latitude: Float,
             longitude: Float
     ): SubmissionDto {

@@ -1,6 +1,12 @@
 package pt.isel.ps.g06.httpserver.controller
 
 import org.springframework.http.MediaType
+import org.springframework.http.ResponseEntity
+import org.springframework.validation.BindingResult
+import org.springframework.validation.ValidationUtils
+import org.springframework.validation.Validator
+import org.springframework.validation.annotation.Validated
+import org.springframework.web.bind.WebDataBinder
 import org.springframework.web.bind.annotation.*
 import pt.isel.ps.g06.httpserver.common.*
 import pt.isel.ps.g06.httpserver.common.exception.RestaurantNotFoundException
@@ -13,6 +19,9 @@ import pt.isel.ps.g06.httpserver.exception.InvalidInputDomain
 import pt.isel.ps.g06.httpserver.exception.InvalidInputException
 import pt.isel.ps.g06.httpserver.model.Restaurant
 import pt.isel.ps.g06.httpserver.service.RestaurantService
+import java.net.URI
+import java.net.http.HttpResponse
+import javax.validation.Valid
 
 private const val INVALID_RESTAURANT_SEARCH = "To search nearby restaurants, a geolocation must be given!"
 
@@ -20,7 +29,6 @@ private const val INVALID_RESTAURANT_SEARCH = "To search nearby restaurants, a g
 @RestController
 @RequestMapping(RESTAURANTS, produces = [MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_PROBLEM_JSON_VALUE])
 class RestaurantController(private val restaurantService: RestaurantService) {
-
     /**
      * Allows to search for Restaurants from both an API (see [RestaurantApiType] for supported APIs) and
      * from a database around geolocation,
@@ -59,7 +67,14 @@ class RestaurantController(private val restaurantService: RestaurantService) {
     }
 
     @PostMapping(consumes = [MediaType.APPLICATION_JSON_VALUE])
-    fun createRestaurant(@RequestBody restaurant: RestaurantInput) {
+    fun createRestaurant(@Valid restaurant: RestaurantInput, validator : Validator): ResponseEntity<Void> {
+        
+        val hasErrors = validator.
+        val createdRestaurant = restaurantService.createRestaurant(restaurant)
+
+        return ResponseEntity
+                .created(URI("$RESTAURANTS/${createdRestaurant.submission_id}"))
+                .build()
     }
 
     @DeleteMapping(RESTAURANT, consumes = [MediaType.APPLICATION_JSON_VALUE])
