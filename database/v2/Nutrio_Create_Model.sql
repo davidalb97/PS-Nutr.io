@@ -6,6 +6,7 @@ DROP TABLE IF EXISTS MealIngredient CASCADE;
 DROP TABLE IF EXISTS Ingredient CASCADE;
 DROP TABLE IF EXISTS Portion CASCADE;
 DROP TABLE IF EXISTS Meal CASCADE;
+DROP TABLE IF EXISTS ApiCuisine CASCADE;
 DROP TABLE IF EXISTS Cuisine CASCADE;
 DROP TABLE IF EXISTS Restaurant CASCADE;
 DROP TABLE IF EXISTS Vote CASCADE;
@@ -92,7 +93,7 @@ CREATE TABLE Vote(
 	submission_id integer,
 	vote_submitter_id integer,
 	vote boolean NOT NULL,
-	PRIMARY KEY(submission_id, vote_submitter_id) ,
+	PRIMARY KEY(submission_id, vote_submitter_id),
 	FOREIGN KEY(submission_id) REFERENCES Submission(submission_id),
 	FOREIGN KEY(vote_submitter_id) REFERENCES Submitter(submitter_id)
 );
@@ -106,7 +107,15 @@ CREATE TABLE Restaurant(
 );
 
 CREATE TABLE Cuisine(
-	cuisine_name varchar(20) PRIMARY KEY
+	cuisine_id serial PRIMARY KEY,
+	cuisine_name varchar(20) UNIQUE
+);
+
+CREATE TABLE ApiCuisine(
+	submission_id integer PRIMARY KEY,
+	cuisine_id integer,
+	FOREIGN KEY(submission_id) REFERENCES Submission(submission_id),
+	FOREIGN KEY(cuisine_id) REFERENCES Cuisine(cuisine_id)
 );
 
 CREATE TABLE Meal(
@@ -149,17 +158,17 @@ CREATE TABLE RestaurantMealPortion(
 -- Add to doc
 CREATE TABLE RestaurantCuisine(
 	restaurant_submission_id integer,
-	cuisine_name varchar(20),
-	PRIMARY KEY(restaurant_submission_id, cuisine_name),
+	cuisine_id integer,
+	PRIMARY KEY(restaurant_submission_id, cuisine_id),
 	FOREIGN KEY(restaurant_submission_id) REFERENCES Restaurant(submission_id),
-	FOREIGN KEY(cuisine_name) REFERENCES Cuisine(cuisine_name)
+	FOREIGN KEY(cuisine_id) REFERENCES Cuisine(cuisine_id)
 );
 
 -- Add to doc
 CREATE TABLE MealCuisine(
 	meal_submission_id integer,
-	cuisine_name varchar(20),
-	PRIMARY KEY(meal_submission_id, cuisine_name),
+	cuisine_id integer,
+	PRIMARY KEY(meal_submission_id, cuisine_id),
 	FOREIGN KEY(meal_submission_id) REFERENCES Meal(submission_id),
-	FOREIGN KEY(cuisine_name) REFERENCES Cuisine(cuisine_name)
+	FOREIGN KEY(cuisine_id) REFERENCES Cuisine(cuisine_id)
 );
