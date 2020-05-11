@@ -7,6 +7,8 @@
 
     <SearchView
         android:id="@+id/search_restaurant"
+        android:background="@drawable/searchview_background"
+        android:layout_marginTop="10dp"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:queryHint="@string/hint_restaurant_search"

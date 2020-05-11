@@ -24,7 +24,7 @@ class HomeFragment : Fragment() {
 
         val buttonActions = mapOf<RelativeLayout, Int>(
             Pair(view.findViewById(R.id.firstSection_button1), R.id.nav_tab_restaurants),
-            Pair(view.findViewById(R.id.firstSection_button2), R.id.nav_tab_restaurants),
+            Pair(view.findViewById(R.id.firstSection_button2), R.id.nav_tab_location_restaurants),
             Pair(view.findViewById(R.id.secondSection_button1), R.id.nav_tab_meals),
             Pair(view.findViewById(R.id.secondSection_button2), R.id.nav_tab_meals)
         )

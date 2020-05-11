@@ -36,6 +36,12 @@
         tools:layout="@layout/fragment_tab" />
 
     <fragment
+        android:id="@+id/nav_tab_location_restaurants"
+        android:name="pt.ipl.isel.leic.ps.androidclient.ui.fragment.tab.RestaurantLocationSlideScreenFragment"
+        android:label="@string/tab_restaurants"
+        tools:layout="@layout/fragment_tab" />
+
+    <fragment
         android:id="@+id/nav_tab_meals"
         android:name="pt.ipl.isel.leic.ps.androidclient.ui.fragment.tab.MealSlideScreenFragment"
         android:label="@string/tab_meals"

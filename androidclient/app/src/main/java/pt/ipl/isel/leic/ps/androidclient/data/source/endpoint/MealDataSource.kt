@@ -1,9 +1,6 @@
 package pt.ipl.isel.leic.ps.androidclient.data.source.endpoint
 
-import com.android.volley.VolleyError
 import pt.ipl.isel.leic.ps.androidclient.data.source.*
-import pt.ipl.isel.leic.ps.androidclient.data.source.dto.MealDto
-import pt.ipl.isel.leic.ps.androidclient.data.source.model.Meal
 
 const val MEAL_ID_URI =
     "$URI_BASE/$MEAL/:id"

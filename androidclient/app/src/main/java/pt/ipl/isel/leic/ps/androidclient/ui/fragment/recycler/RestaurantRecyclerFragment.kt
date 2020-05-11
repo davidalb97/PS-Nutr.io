@@ -38,6 +38,7 @@ class RestaurantRecyclerFragment : ARecyclerListFragment<ARestaurant, Restaurant
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        activityApp = this.requireActivity().application
         buildViewModel(savedInstanceState)
         return inflater.inflate(R.layout.restaurant_list, container, false)
     }

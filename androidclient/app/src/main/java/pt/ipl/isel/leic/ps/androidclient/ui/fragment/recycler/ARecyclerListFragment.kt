@@ -1,29 +1,27 @@
 package pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler
 
+import android.app.Application
 import android.util.Log
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModel
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.TAG
 import pt.ipl.isel.leic.ps.androidclient.hasInternetConnection
-import pt.ipl.isel.leic.ps.androidclient.ui.listener.ScrollListener
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.ARecyclerViewModel
 
 // Default pagination value
 const val COUNT = 10
 
-abstract class ARecyclerListFragment<T : Any, VM: ARecyclerViewModel<T>> : Fragment() {
+abstract class ARecyclerListFragment<T : Any, VM : ARecyclerViewModel<T>> : Fragment() {
 
     lateinit var viewModel: VM
-
     lateinit var list: RecyclerView
     lateinit var progressBar: ProgressBar
+    lateinit var activityApp: Application
 
     /**
      * Gets the list elements and initializes them
@@ -47,8 +45,6 @@ abstract class ARecyclerListFragment<T : Any, VM: ARecyclerViewModel<T>> : Fragm
     fun startObserver() {
         viewModel.observe(this) {
             list.adapter?.notifyDataSetChanged()
-
-            this.progressBar.visibility = View.INVISIBLE
             if (viewModel.mediatorLiveData.value!!.isEmpty()) {
                 Toast.makeText(
                     this.requireContext(),
@@ -56,12 +52,13 @@ abstract class ARecyclerListFragment<T : Any, VM: ARecyclerViewModel<T>> : Fragm
                     Toast.LENGTH_LONG
                 ).show()
             }
+            this.progressBar.visibility = View.INVISIBLE
         }
     }
 
     /**
      * Recycler list scroll listener
-     * Receives the fetch from the specific view model - TODO
+     * Receives the fetch from the specific view model
      */
     abstract fun startScrollListener()
 
@@ -78,7 +75,7 @@ abstract class ARecyclerListFragment<T : Any, VM: ARecyclerViewModel<T>> : Fragm
     open fun successFunction(list: List<T>) {
         if (list.isEmpty())
             Toast.makeText(
-                requireActivity().application, R.string.no_result_found,
+                activityApp, R.string.no_result_found,
                 Toast.LENGTH_LONG
             ).show()
         Log.v(TAG, "running on the thread : ${Thread.currentThread().name}")
@@ -90,15 +87,16 @@ abstract class ARecyclerListFragment<T : Any, VM: ARecyclerViewModel<T>> : Fragm
      * or if it couldn't get results.
      */
     open fun errorFunction(exception: Exception) {
-        if (!hasInternetConnection(requireActivity().application as NutrioApp)) {
+        if (!hasInternetConnection(activityApp as NutrioApp)) {
             Toast.makeText(
-                requireActivity().application, R.string.no_internet_connection,
+                activityApp, R.string.no_internet_connection,
                 Toast.LENGTH_LONG
             ).show()
         } else {
-            Toast.makeText(requireActivity().application, R.string.error_network, Toast.LENGTH_LONG)
+            Toast.makeText(activityApp, R.string.error_network, Toast.LENGTH_LONG)
                 .show()
         }
+        this.progressBar.visibility = View.INVISIBLE
         Log.v(TAG, exception.message, exception)
     }
 }

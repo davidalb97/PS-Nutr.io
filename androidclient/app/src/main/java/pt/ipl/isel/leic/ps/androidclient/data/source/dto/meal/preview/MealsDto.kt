@@ -1,4 +1,4 @@
-package pt.ipl.isel.leic.ps.androidclient.data.source.dto
+package pt.ipl.isel.leic.ps.androidclient.data.source.dto.meal.preview
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 

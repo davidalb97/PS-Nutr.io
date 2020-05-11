@@ -8,6 +8,8 @@
     <SearchView
         android:id="@+id/search"
         android:layout_width="match_parent"
+        android:background="@drawable/searchview_background"
+        android:layout_marginTop="10dp"
         android:layout_height="50dp"
         android:queryHint="@string/hint_cuisine_search"
         android:layoutDirection="rtl">

@@ -2,18 +2,18 @@ package pt.ipl.isel.leic.ps.androidclient.data.source.endpoint
 
 import com.android.volley.VolleyError
 import pt.ipl.isel.leic.ps.androidclient.data.source.*
-import pt.ipl.isel.leic.ps.androidclient.data.source.dto.restaurant.RestaurantDto
-import pt.ipl.isel.leic.ps.androidclient.data.source.dto.restaurant.RestaurantLocationDto
-import pt.ipl.isel.leic.ps.androidclient.data.source.dto.restaurant.RestaurantsIDto
-import pt.ipl.isel.leic.ps.androidclient.data.source.mapper.restaurant.RestaurantLocationMapper
-import pt.ipl.isel.leic.ps.androidclient.data.source.mapper.restaurant.RestaurantLocationsMapper
-import pt.ipl.isel.leic.ps.androidclient.data.source.model.restaurant.Restaurant
+import pt.ipl.isel.leic.ps.androidclient.data.source.dto.restaurant.preview.RestaurantPreviewDto
+import pt.ipl.isel.leic.ps.androidclient.data.source.dto.restaurant.preview.RestaurantLocationPreviewDto
+import pt.ipl.isel.leic.ps.androidclient.data.source.mapper.restaurant.preview.RestaurantLocationMapper
+import pt.ipl.isel.leic.ps.androidclient.data.source.mapper.restaurant.preview.RestaurantLocationsMapper
 import pt.ipl.isel.leic.ps.androidclient.data.source.model.restaurant.RestaurantLocation
 
 private const val RESTAURANT = "restaurant"
 
 private const val RESTAURANT_ID_URI =
     "$URI_BASE/$RESTAURANT?latitude=38.736946&longitude=-9.142685"
+private const val RESTAURANT_LOCATION =
+    "$URI_BASE/$RESTAURANT?latitude=:latitude&longitude=:longitude"
 private const val RESTAURANT_REPORT =
     "$RESTAURANT_ID_URI/report"
 private const val RESTAURANT_VOTE =
@@ -29,21 +29,24 @@ private const val RESTAURANT_MEAL_REPORT =
 private const val RESTAURANT_MEAL_VOTE =
     "$RESTAURANT_MEAL/vote"
 
-val RESTAURANTS_DTO = RestaurantsIDto::class.java
-val RESTAURANT_DTO = RestaurantDto::class.java
+val RESTAURANT_DTO = RestaurantPreviewDto::class.java
 
 
 class RestaurantDataSource(
     val requester: Requester
 ) {
 
-    private val restaurantLocationMapper = RestaurantLocationMapper()
-    private val restaurantLocationsMapper = RestaurantLocationsMapper(restaurantLocationMapper)
+    private val restaurantLocationMapper =
+        RestaurantLocationMapper()
+    private val restaurantLocationsMapper =
+        RestaurantLocationsMapper(
+            restaurantLocationMapper
+        )
 
     /**
      * ----------------------------- GETs -----------------------------
      */
-   /* fun getById(
+    /*fun getById(
         success: (Restaurant) -> Unit,
         error: (VolleyError) -> Unit,
         uriParameters: HashMap<String, HashMap<String, String>>?,
@@ -56,9 +59,10 @@ class RestaurantDataSource(
         uri = requester.buildUri(uri, uriParameters)
 
         requester.httpServerRequest(
-            Method.GET,
+         Method.GET,
             uri,
-            RESTAURANT_DTO,
+            RestaurantDto::class.java,
+            restaurantMapper::map,
             success,
             error,
             null
@@ -73,14 +77,14 @@ class RestaurantDataSource(
         skip: Int
     ) {
         var uri =
-            RESTAURANT_ID_URI
+            RESTAURANT_LOCATION
 
         //uri = requester.buildUri(uri, uriParameters)
 
         requester.httpServerRequest(
             Method.GET,
             uri,
-            Array<RestaurantLocationDto>::class.java,
+            Array<RestaurantLocationPreviewDto>::class.java,
             restaurantLocationsMapper::map,
             success,
             error
