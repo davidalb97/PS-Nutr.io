@@ -1,15 +1,15 @@
-package pt.ipl.isel.leic.ps.androidclient.data.source.model
+package pt.ipl.isel.leic.ps.androidclient.data.source.model.restaurant
 
-// TODO - add support for Room
+// TODO
 data class Restaurant(
         val apiId: Int,
         val apiType: String,
-        val name: String,
+        override val name: String,
         val votes: List<Boolean>,
         val latitude: Float,
         val longitude: Float,
         val cuisines: Array<String>
-) {
+) : ARestaurant(apiType, name){
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false

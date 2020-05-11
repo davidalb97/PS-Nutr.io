@@ -37,6 +37,7 @@ BEGIN
 	('Beverages'),
 	('Brazilian'),
 	('British'),	
+	('Burger'),	
 	('Cafe'),
 	('Cafe Food'),
 	('Canadian'),

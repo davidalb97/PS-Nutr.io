@@ -7,10 +7,7 @@ import com.android.volley.Response
 import com.android.volley.VolleyError
 import com.fasterxml.jackson.databind.ObjectMapper
 import pt.ipl.isel.leic.ps.androidclient.TAG
-import pt.ipl.isel.leic.ps.androidclient.data.source.dtos.*
-import pt.ipl.isel.leic.ps.androidclient.data.source.model.Cuisine
-import pt.ipl.isel.leic.ps.androidclient.data.source.model.Meal
-import pt.ipl.isel.leic.ps.androidclient.data.source.model.Restaurant
+import pt.ipl.isel.leic.ps.androidclient.data.source.mapper.IResponseMapper
 import pt.ipl.isel.leic.ps.androidclient.data.util.AsyncWorker
 
 const val ADDRESS = "10.0.2.2" // Loopback for the host machine
@@ -40,7 +37,7 @@ enum class Method(val value: Int) {
  */
 class Requester(
     private val requestQueue: RequestQueue,
-    private val mapper: ObjectMapper
+    private val jsonMapper: ObjectMapper
 ) {
     /**
      * Uri builder
@@ -73,28 +70,29 @@ class Requester(
     /**
      * A generic Volley's requester
      */
-    fun <Model, Dto : IUnDto<Model>, ReqPayload> httpServerRequest(
+    fun <Model, Dto> httpServerRequest(
         method: Method,
         urlStr: String,
         dtoClass: Class<Dto>,
+        mappingFunction: (Dto) -> Model,
         onSuccess: (Model) -> Unit,
         onError: (VolleyError) -> Unit,
-        reqPayload: ReqPayload?
+        reqPayload: Any? = null
     ) {
 
         Log.v(TAG, urlStr)
 
         //Response payload deserialization async worker
-        val responseToDtoTask: AsyncWorker<String?, Model> =
+        val dtoToModelResponseTask: AsyncWorker<String?, Model> =
             AsyncWorker<String?, Model> {
-                mapper.readValue(it[0]!!, dtoClass).unDto()
+                mappingFunction(jsonMapper.readValue(it[0]!!, dtoClass))
             }.setOnPostExecute(onSuccess)
 
         //Request payload serialization async worker
-        AsyncWorker<Model, Unit> {
+        AsyncWorker<Dto, Unit> {
 
             //Passed payload to String
-            val payloadStr = mapper.writeValueAsString(reqPayload)
+            val payloadStr = jsonMapper.writeValueAsString(reqPayload)
 
             //Custom string request that will allow a string payload
             val jsonRequest =
@@ -103,7 +101,7 @@ class Requester(
                     urlStr,
                     payloadStr,
                     Response.Listener {
-                        responseToDtoTask.execute(it)
+                        dtoToModelResponseTask.execute(it)
                     },
                     Response.ErrorListener {
                         onError(it)

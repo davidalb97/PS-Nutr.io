@@ -1,8 +1,8 @@
-package pt.ipl.isel.leic.ps.androidclient.data.source.dtos
+package pt.ipl.isel.leic.ps.androidclient.data.source.dto.restaurant
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
-import pt.ipl.isel.leic.ps.androidclient.data.source.model.Restaurant
+import pt.ipl.isel.leic.ps.androidclient.data.source.model.restaurant.Restaurant
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 class RestaurantDto(
@@ -13,7 +13,7 @@ class RestaurantDto(
     val latitude: Float,
     val longitude: Float,
     val cuisines: Array<String>
-): IUnDto<Restaurant> {
+) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
@@ -39,26 +39,16 @@ class RestaurantDto(
         result = 31 * result + cuisines.contentHashCode()
         return result
     }
-
-    override fun unDto(): Restaurant = Restaurant(
-        apiId,
-        apiType,
-        name,
-        votes,
-        latitude,
-        longitude,
-        cuisines
-    )
 }
 
-class RestaurantsDto(
+class RestaurantsIDto(
     @JsonProperty("restaurants") val restaurants: Array<RestaurantDto>
-): IUnDto<List<Restaurant>> {
+) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as RestaurantsDto
+        other as RestaurantsIDto
 
         if (!restaurants.contentEquals(other.restaurants)) return false
 
@@ -68,6 +58,4 @@ class RestaurantsDto(
     override fun hashCode(): Int {
         return restaurants.contentHashCode()
     }
-
-    override fun unDto(): List<Restaurant> = restaurants.map(RestaurantDto::unDto)
 }

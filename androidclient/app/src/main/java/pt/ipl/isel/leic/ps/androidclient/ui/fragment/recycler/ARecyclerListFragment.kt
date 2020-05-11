@@ -36,6 +36,8 @@ abstract class ARecyclerListFragment<T : Any, VM: ARecyclerViewModel<T>> : Fragm
         this.progressBar =
             view.findViewById(R.id.progressBar) as ProgressBar
 
+        this.progressBar.visibility = View.VISIBLE
+
         list.setHasFixedSize(true)
     }
 
@@ -46,6 +48,7 @@ abstract class ARecyclerListFragment<T : Any, VM: ARecyclerViewModel<T>> : Fragm
         viewModel.observe(this) {
             list.adapter?.notifyDataSetChanged()
 
+            this.progressBar.visibility = View.INVISIBLE
             if (viewModel.mediatorLiveData.value!!.isEmpty()) {
                 Toast.makeText(
                     this.requireContext(),
@@ -58,27 +61,9 @@ abstract class ARecyclerListFragment<T : Any, VM: ARecyclerViewModel<T>> : Fragm
 
     /**
      * Recycler list scroll listener
-     * Receives the fetch from the specific view model
+     * Receives the fetch from the specific view model - TODO
      */
-    fun startScrollListener() {
-        list.addOnScrollListener(object :
-            ScrollListener(list.layoutManager as LinearLayoutManager, progressBar) {
-
-            var minimumListSize = 1
-
-            override fun loadMore() {
-                minimumListSize = viewModel.liveData?.value!!.size + 1
-                if (!isLoading) {
-                    startLoading()
-                    viewModel.updateListFromLiveData()
-                    stopLoading()
-                }
-            }
-
-            override fun shouldGetMore(): Boolean =
-                !isLoading && minimumListSize < viewModel.liveData?.value!!.size
-        })
-    }
+    abstract fun startScrollListener()
 
     fun setCallbackFunctions() {
         viewModel.onSuccess = this::successFunction

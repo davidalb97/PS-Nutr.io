@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.source.model.Meal
 import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.MealRecyclerAdapter
+import pt.ipl.isel.leic.ps.androidclient.ui.listener.ScrollListener
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.MealRecyclerVMProviderFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.MealRecyclerViewModel
 
@@ -47,6 +48,26 @@ class MealRecyclerFragment : ARecyclerListFragment<Meal, MealRecyclerViewModel>(
         list.adapter = adapter
         list.layoutManager = LinearLayoutManager(this.requireContext())
         startObserver()
-        startScrollListener()
+        //startScrollListener()
+    }
+
+    override fun startScrollListener() {
+        list.addOnScrollListener(object :
+            ScrollListener(list.layoutManager as LinearLayoutManager, progressBar) {
+
+            var minimumListSize = 1
+
+            override fun loadMore() {
+                minimumListSize = viewModel.mediatorLiveData.value!!.size + 1
+                if (!isLoading && progressBar.visibility == View.INVISIBLE) {
+                    startLoading()
+                    viewModel.updateListFromLiveData()
+                    stopLoading()
+                }
+            }
+
+            override fun shouldGetMore(): Boolean =
+                !isLoading && minimumListSize < viewModel.mediatorLiveData.value!!.size
+        })
     }
 }

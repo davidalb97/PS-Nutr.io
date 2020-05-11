@@ -12,12 +12,12 @@ class CuisineRepository(private val dataSource: CuisineDataSource) {
         count: Int,
         skip: Int
     ) {
-        dataSource.getCuisines(
+        /*dataSource.getCuisines(
             { success(it) },
             { error() },
             uriParameters,
             count,
             skip
-        )
+        )*/
     }
 }

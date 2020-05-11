@@ -5,18 +5,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SearchView
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
-import pt.ipl.isel.leic.ps.androidclient.NutrioApp
 import pt.ipl.isel.leic.ps.androidclient.R
-import pt.ipl.isel.leic.ps.androidclient.data.source.model.Restaurant
+import pt.ipl.isel.leic.ps.androidclient.data.source.model.restaurant.ARestaurant
 import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.RestaurantRecyclerAdapter
+import pt.ipl.isel.leic.ps.androidclient.ui.listener.ScrollListener
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.RestaurantRecyclerVMProviderFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.RestaurantRecyclerViewModel
 
-class RestaurantRecyclerFragment : ARecyclerListFragment<Restaurant, RestaurantRecyclerViewModel>(){
+class RestaurantRecyclerFragment : ARecyclerListFragment<ARestaurant, RestaurantRecyclerViewModel>(){
 
     private val adapter: RestaurantRecyclerAdapter by lazy {
         RestaurantRecyclerAdapter(
@@ -53,7 +51,6 @@ class RestaurantRecyclerFragment : ARecyclerListFragment<Restaurant, RestaurantR
         list.adapter = adapter
         list.layoutManager = LinearLayoutManager(this.requireContext())
         startObserver()
-        startScrollListener()
 
         val searchBar = view.findViewById<SearchView>(R.id.search_restaurant)
 
@@ -67,6 +64,26 @@ class RestaurantRecyclerFragment : ARecyclerListFragment<Restaurant, RestaurantR
 
             override fun onQueryTextChange(query: String?): Boolean = true
 
+        })
+    }
+
+    override fun startScrollListener() {
+        list.addOnScrollListener(object :
+            ScrollListener(list.layoutManager as LinearLayoutManager, progressBar) {
+
+            var minimumListSize = 1
+
+            override fun loadMore() {
+                minimumListSize = viewModel.mediatorLiveData.value!!.size + 1
+                if (!isLoading && progressBar.visibility == View.INVISIBLE) {
+                    startLoading()
+                    viewModel.updateListFromLiveData()
+                    stopLoading()
+                }
+            }
+
+            override fun shouldGetMore(): Boolean =
+                !isLoading && minimumListSize < viewModel.mediatorLiveData.value!!.size
         })
     }
 }

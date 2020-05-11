@@ -46,6 +46,8 @@ abstract class ScrollListener(
      * Change to loading state
      */
     fun startLoading() {
+        if (isLoading || progressBar.visibility == View.VISIBLE)
+            return
         isLoading = true
         progressBar.visibility = View.VISIBLE
     }
@@ -54,6 +56,8 @@ abstract class ScrollListener(
      * Stop loading state
      */
     fun stopLoading() {
+        if (!isLoading || progressBar.visibility == View.INVISIBLE)
+            return
         isLoading = false
         progressBar.visibility = View.INVISIBLE
     }

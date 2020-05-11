@@ -2,16 +2,15 @@ package pt.ipl.isel.leic.ps.androidclient.data.source.endpoint
 
 import com.android.volley.VolleyError
 import pt.ipl.isel.leic.ps.androidclient.data.source.*
-import pt.ipl.isel.leic.ps.androidclient.data.source.dtos.MealDto
-import pt.ipl.isel.leic.ps.androidclient.data.source.dtos.MealsDto
+import pt.ipl.isel.leic.ps.androidclient.data.source.dto.MealDto
 import pt.ipl.isel.leic.ps.androidclient.data.source.model.Meal
 
 const val MEAL_ID_URI =
     "$URI_BASE/$MEAL/:id"
 
 
-val MEALS_DTO = MealsDto::class.java
-val MEAL_DTO = MealDto::class.java
+//val MEALS_DTO = MealsDto::class.java
+//val MEAL_DTO = MealDto::class.java
 
 class MealDataSource(
     private val requester: Requester
@@ -20,7 +19,7 @@ class MealDataSource(
     /**
      * ----------------------------- GETs -----------------------------
      */
-    fun getById(
+    /*fun getById(
         success: (Meal) -> Unit,
         error: (VolleyError) -> Unit,
         uriParameters: HashMap<String, HashMap<String, String>>?,
@@ -39,12 +38,12 @@ class MealDataSource(
             error,
             null
         )
-    }
+    }*/
 
     /**
      * ----------------------------- POSTs -----------------------------
      */
-    fun postMeal(
+    /*fun postMeal(
         success: (List<Meal>) -> Unit,
         error: (VolleyError) -> Unit,
         uriParameters: HashMap<String, HashMap<String, String>>?,
@@ -63,9 +62,9 @@ class MealDataSource(
             error,
             null
         )
-    }
+    }*/
 
-    fun postMealVote(
+    /*fun postMealVote(
         success: (List<Meal>) -> Unit,
         error: (VolleyError) -> Unit,
         uriParameters: HashMap<String, HashMap<String, String>>?,
@@ -84,12 +83,12 @@ class MealDataSource(
             error,
             null
         )
-    }
+    }*/
 
     /**
      * ----------------------------- DELETEs ---------------------------
      */
-    fun deleteMeal(
+    /*fun deleteMeal(
         success: (List<Meal>) -> Unit,
         error: (VolleyError) -> Unit,
         uriParameters: HashMap<String, HashMap<String, String>>?,
@@ -108,13 +107,13 @@ class MealDataSource(
             error,
             null
         )
-    }
+    }*/
 
     /**
      * ----------------------------- PUTs ------------------------------
      */
 
-    fun updateMealVote(
+    /*fun updateMealVote(
         success: (List<Meal>) -> Unit,
         error: (VolleyError) -> Unit,
         uriParameters: HashMap<String, HashMap<String, String>>?,
@@ -133,5 +132,5 @@ class MealDataSource(
             error,
             null
         )
-    }
+    }*/
 }

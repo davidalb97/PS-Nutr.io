@@ -4,10 +4,11 @@ import android.os.Parcel
 import android.os.Parcelable
 import androidx.lifecycle.LiveData
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.restaurantRepository
-import pt.ipl.isel.leic.ps.androidclient.data.source.model.Restaurant
+import pt.ipl.isel.leic.ps.androidclient.data.source.model.restaurant.ARestaurant
+import pt.ipl.isel.leic.ps.androidclient.data.source.model.restaurant.RestaurantLocation
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler.COUNT
 
-class RestaurantRecyclerViewModel : ARecyclerViewModel<Restaurant>() {
+class RestaurantRecyclerViewModel : ARecyclerViewModel<ARestaurant>() {
 
     /*fun getRestaurantById() {
         val successFunction : (Restaurant) -> Unit = {
@@ -24,9 +25,9 @@ class RestaurantRecyclerViewModel : ARecyclerViewModel<Restaurant>() {
     }*/
 
     fun getNearbyRestaurants() {
-        val successFunction : (List<Restaurant>) -> Unit = {
-            updateList(it)
-            onSuccess(it)
+        val successFunction: (Array<RestaurantLocation>) -> Unit = {
+            updateList(it.toList())
+            onSuccess(it.toList())
         }
         restaurantRepository.getNearbyRestaurants(
             successFunction,
@@ -37,7 +38,7 @@ class RestaurantRecyclerViewModel : ARecyclerViewModel<Restaurant>() {
         )
     }
 
-    override fun fetchLiveData(): LiveData<List<Restaurant>> =
+    override fun fetchLiveData(): LiveData<List<ARestaurant>> =
         TODO()
 
 

@@ -12,12 +12,12 @@ class MealRepository(private val dataSource: MealDataSource) {
         count: Int,
         skip: Int
     ) {
-        dataSource.getById(
+        /*dataSource.getById(
             { success(it) },
             { error() },
             uriParameters,
             count,
             skip
-        )
+        )*/
     }
 }

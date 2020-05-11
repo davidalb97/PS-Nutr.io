@@ -2,14 +2,18 @@ package pt.ipl.isel.leic.ps.androidclient.data.source.endpoint
 
 import com.android.volley.VolleyError
 import pt.ipl.isel.leic.ps.androidclient.data.source.*
-import pt.ipl.isel.leic.ps.androidclient.data.source.dtos.RestaurantDto
-import pt.ipl.isel.leic.ps.androidclient.data.source.dtos.RestaurantsDto
-import pt.ipl.isel.leic.ps.androidclient.data.source.model.Restaurant
+import pt.ipl.isel.leic.ps.androidclient.data.source.dto.restaurant.RestaurantDto
+import pt.ipl.isel.leic.ps.androidclient.data.source.dto.restaurant.RestaurantLocationDto
+import pt.ipl.isel.leic.ps.androidclient.data.source.dto.restaurant.RestaurantsIDto
+import pt.ipl.isel.leic.ps.androidclient.data.source.mapper.restaurant.RestaurantLocationMapper
+import pt.ipl.isel.leic.ps.androidclient.data.source.mapper.restaurant.RestaurantLocationsMapper
+import pt.ipl.isel.leic.ps.androidclient.data.source.model.restaurant.Restaurant
+import pt.ipl.isel.leic.ps.androidclient.data.source.model.restaurant.RestaurantLocation
 
 private const val RESTAURANT = "restaurant"
 
 private const val RESTAURANT_ID_URI =
-    "$URI_BASE/$RESTAURANT/:id"
+    "$URI_BASE/$RESTAURANT?latitude=38.736946&longitude=-9.142685"
 private const val RESTAURANT_REPORT =
     "$RESTAURANT_ID_URI/report"
 private const val RESTAURANT_VOTE =
@@ -25,7 +29,7 @@ private const val RESTAURANT_MEAL_REPORT =
 private const val RESTAURANT_MEAL_VOTE =
     "$RESTAURANT_MEAL/vote"
 
-val RESTAURANTS_DTO = RestaurantsDto::class.java
+val RESTAURANTS_DTO = RestaurantsIDto::class.java
 val RESTAURANT_DTO = RestaurantDto::class.java
 
 
@@ -33,10 +37,13 @@ class RestaurantDataSource(
     val requester: Requester
 ) {
 
+    private val restaurantLocationMapper = RestaurantLocationMapper()
+    private val restaurantLocationsMapper = RestaurantLocationsMapper(restaurantLocationMapper)
+
     /**
      * ----------------------------- GETs -----------------------------
      */
-    fun getById(
+   /* fun getById(
         success: (Restaurant) -> Unit,
         error: (VolleyError) -> Unit,
         uriParameters: HashMap<String, HashMap<String, String>>?,
@@ -56,10 +63,10 @@ class RestaurantDataSource(
             error,
             null
         )
-    }
+    }*/
 
     fun getNearby(
-        success: (List<Restaurant>) -> Unit,
+        success: (Array<RestaurantLocation>) -> Unit,
         error: (VolleyError) -> Unit,
         uriParameters: HashMap<String, HashMap<String, String>>?,
         count: Int,
@@ -68,15 +75,15 @@ class RestaurantDataSource(
         var uri =
             RESTAURANT_ID_URI
 
-        uri = requester.buildUri(uri, uriParameters)
+        //uri = requester.buildUri(uri, uriParameters)
 
         requester.httpServerRequest(
             Method.GET,
             uri,
-            RESTAURANTS_DTO,
+            Array<RestaurantLocationDto>::class.java,
+            restaurantLocationsMapper::map,
             success,
-            error,
-            null
+            error
         )
     }
 
@@ -84,7 +91,7 @@ class RestaurantDataSource(
      * ----------------------------- POSTs -----------------------------
      */
 
-    fun postRestaurant(
+    /*fun postRestaurant(
         success: (Restaurant) -> Unit,
         error: (VolleyError) -> Unit,
         uriParameters: HashMap<String, HashMap<String, String>>?,
@@ -104,9 +111,9 @@ class RestaurantDataSource(
             error,
             null
         )
-    }
+    }*/
 
-    fun postReport(
+    /*fun postReport(
         success: (Restaurant) -> Unit,
         error: (VolleyError) -> Unit,
         uriParameters: HashMap<String, HashMap<String, String>>?,
@@ -126,9 +133,9 @@ class RestaurantDataSource(
             error,
             null
         )
-    }
+    }*/
 
-    fun postVote(
+    /*fun postVote(
         success: (Restaurant) -> Unit,
         error: (VolleyError) -> Unit,
         uriParameters: HashMap<String, HashMap<String, String>>?,
@@ -148,12 +155,12 @@ class RestaurantDataSource(
             error,
             null
         )
-    }
+    }*/
 
     /**
      * ----------------------------- PUTs ------------------------------
      */
-    fun updateVote(
+    /*fun updateVote(
         success: (Restaurant) -> Unit,
         error: (VolleyError) -> Unit,
         uriParameters: HashMap<String, HashMap<String, String>>?,
@@ -173,13 +180,13 @@ class RestaurantDataSource(
             error,
             null
         )
-    }
+    }*/
 
     /**
      * ----------------------------- DELETEs ---------------------------
      */
 
-    fun deleteVote(
+    /*fun deleteVote(
         success: (Restaurant) -> Unit,
         error: (VolleyError) -> Unit,
         uriParameters: HashMap<String, HashMap<String, String>>?,
@@ -199,6 +206,6 @@ class RestaurantDataSource(
             error,
             null
         )
-    }
+    }*/
 
 }
