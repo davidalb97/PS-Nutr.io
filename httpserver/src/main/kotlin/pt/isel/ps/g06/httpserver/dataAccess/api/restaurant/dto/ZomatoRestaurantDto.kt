@@ -19,13 +19,12 @@ data class RestaurantSearchResultDtoMapper(val restaurants: Array<RestaurantCont
     }
 }
 
-data class RestaurantContainerDto(val restaurant: ApiRestaurantDto)
+data class RestaurantContainerDto(val restaurant: ZomatoRestaurantDto)
 
-class ApiRestaurantDto(
+class ZomatoRestaurantDto(
         id: String,
         name: String,
-        url: String,
-        cuisines: String,
+        val cuisines: String,
         location: Location
 ) : RestaurantDto(
         id,

@@ -4,9 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Repository
-import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.dto.ApiRestaurantDto
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.dto.RestaurantSearchResultDtoMapper
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.dto.ZomatoErrorDto
+import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.dto.ZomatoRestaurantDto
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.exception.ZomatoBadGatewayException
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.exception.ZomatoBadRequestException
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.uri.ZomatoUriBuilder
@@ -56,7 +56,7 @@ class ZomatoRestaurantApi(
     }
 
     private fun mapToRestaurantDto(body: String?): RestaurantDto? {
-        return responseMapper.readValue(body, ApiRestaurantDto::class.java)
+        return responseMapper.readValue(body, ZomatoRestaurantDto::class.java)
     }
 
     private fun mapToNearbyRestaurants(body: String?): Collection<RestaurantDto> {

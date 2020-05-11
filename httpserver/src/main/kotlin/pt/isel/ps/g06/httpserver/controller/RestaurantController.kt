@@ -7,6 +7,8 @@ import pt.isel.ps.g06.httpserver.common.exception.RestaurantNotFoundException
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.RestaurantApiType
 import pt.isel.ps.g06.httpserver.dataAccess.input.RestaurantInput
 import pt.isel.ps.g06.httpserver.dataAccess.input.VoteInput
+import pt.isel.ps.g06.httpserver.dataAccess.model.SimplifiedRestaurantOutputModel
+import pt.isel.ps.g06.httpserver.dataAccess.model.toSimplifiedRestaurant
 import pt.isel.ps.g06.httpserver.exception.InvalidInputDomain
 import pt.isel.ps.g06.httpserver.exception.InvalidInputException
 import pt.isel.ps.g06.httpserver.model.Restaurant
@@ -35,18 +37,20 @@ class RestaurantController(private val restaurantService: RestaurantService) {
             name: String?,
             radius: Int?,
             apiType: String?
-    ): Set<Restaurant> {
+    ): Collection<SimplifiedRestaurantOutputModel> {
         if (latitude == null || longitude == null) {
             throw InvalidInputException(InvalidInputDomain.SEARCH_RESTAURANT, INVALID_RESTAURANT_SEARCH)
         }
 
-        return restaurantService.getNearbyRestaurants(
+        val nearbyRestaurants = restaurantService.getNearbyRestaurants(
                 latitude = latitude,
                 longitude = longitude,
                 name = name,
                 radius = radius,
                 apiType = apiType
         )
+
+        return nearbyRestaurants.map { toSimplifiedRestaurant(it) }
     }
 
     @GetMapping(RESTAURANT, consumes = [MediaType.ALL_VALUE])

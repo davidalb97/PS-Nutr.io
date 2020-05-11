@@ -1,10 +1,10 @@
 package pt.isel.ps.g06.httpserver.service
 
 import org.springframework.stereotype.Service
-import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.mapper.RestaurantApiMapper
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.RestaurantApiType
+import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.mapper.RestaurantApiMapper
+import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.restaurant.RestaurantResponseMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.RestaurantDbRepository
-import pt.isel.ps.g06.httpserver.dataAccess.model.RestaurantDto
 import pt.isel.ps.g06.httpserver.model.Restaurant
 import java.util.concurrent.CompletableFuture
 
@@ -14,7 +14,8 @@ private const val MAX_RADIUS = 1000
 @Service
 class RestaurantService(
         private val dbRestaurantRepository: RestaurantDbRepository,
-        private val restaurantApiMapper: RestaurantApiMapper
+        private val restaurantApiMapper: RestaurantApiMapper,
+        private val restaurantResponseMapper: RestaurantResponseMapper
 ) {
 
     fun getNearbyRestaurants(
@@ -30,11 +31,11 @@ class RestaurantService(
 
         val apiRestaurants = CompletableFuture
                 .supplyAsync { restaurantApi.searchNearbyRestaurants(latitude, longitude, chosenRadius, name) }
-                .thenApply { it.map(this::mapToRestaurant) }
+                .thenApply { it.map(restaurantResponseMapper::mapTo) }
 
         val dbRestaurants = dbRestaurantRepository
                 .getAllByCoordinates(latitude, longitude, chosenRadius)
-                .map(this::mapToRestaurant)
+                .map(restaurantResponseMapper::mapTo)
 
         //TODO Handle CompletableFuture exception
         return filterRedundantApiRestaurants(dbRestaurants, apiRestaurants.get())
@@ -61,7 +62,7 @@ class RestaurantService(
                 ?.let { dbRestaurantRepository.getById(it) }
                 ?: restaurantApi.getRestaurantInfo(id)
 
-        return restaurant?.let(this::mapToRestaurant)
+        return restaurant?.let(restaurantResponseMapper::mapTo)
     }
 
     private fun filterRedundantApiRestaurants(dbRestaurants: Collection<Restaurant>, apiRestaurants: Collection<Restaurant>): Set<Restaurant> {
@@ -76,13 +77,6 @@ class RestaurantService(
     }
 
     private fun dbContainsRestaurant(dbRestaurants: Collection<Restaurant>, restaurant: Restaurant): Boolean {
-        return dbRestaurants.any { dbRestaurant -> restaurant.apiId == dbRestaurant.apiId }
+        return dbRestaurants.any { dbRestaurant -> restaurant.identifier == dbRestaurant.identifier }
     }
-
-    private fun mapToRestaurant(dto: RestaurantDto): Restaurant = Restaurant(
-            dto.id,
-            dto.name,
-            dto.latitude,
-            dto.longitude
-    )
 }

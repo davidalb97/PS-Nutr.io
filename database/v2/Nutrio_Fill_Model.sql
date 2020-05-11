@@ -37,7 +37,7 @@ BEGIN
 	('Beverages'),
 	('Brazilian'),
 	('British'),
-	('Burger'),
+	('International'),
 	('Cafe'),
 	('Cafe Food'),
 	('Canadian'),
@@ -114,6 +114,43 @@ BEGIN
 	('Vegetarian'),
 	('Vietnamese');
 
+	INSERT INTO HereCuisine(here_cuisine,cuisine_name) VALUES 
+	('101-000', 'American'),
+	('102-000', 'Mexican'),
+	('103-000', 'Canadian'),
+	('153-000', 'Cuban'),
+	('200-000', 'Asian'),
+	('201-000', 'Chinese'),
+	('203-000', 'Japanese'),
+	('203-026', 'Sushi'),
+	('205-000', 'Thai'),
+	('206-000', 'Vietnamese'),
+	('207-000', 'Korean'),
+	('208-000', 'Pakistani'),
+	('301-000', 'French'),
+	('303-000', 'Greek'),
+	('304-000', 'Italian'),
+	('307-000', 'Belgian'),
+	('310-000', 'Swiss'),
+	('311-000', 'Spanish'),
+	('311-034', 'Tapas'),
+	('313-000', 'Portuguese'),
+	('372-000', 'Mediterranean'),
+	('800-056', 'Steak'),
+	('800-057', 'Pizza'),
+	('800-058', 'Street Food'),
+	('800-060', 'Sandwich'),
+	('800-063', 'Ice Cream'),
+	('800-064', 'International'),
+	('800-067', 'Burger'),
+	('800-068', 'Crepes'),
+	('800-075', 'Seafood'),
+	('800-076', 'Vegan'),
+	('800-077', 'Vegetarian'),
+	('800-078', 'Grill'),
+	('800-085', 'Vietnamese');
+	
+	
 	INSERT INTO Submission(submission_type) VALUES
 	('Meal'),--First user meal from ingredients
 	('Ingredient'),--First user meal ingredients from food api
@@ -126,11 +163,11 @@ BEGIN
 	('Portion');
 
 	INSERT INTO ApiSubmission(submission_id, apiId) VALUES
-	(1, '0'),--First user meal ingredients from food api
-	(2, '1'),--First user meal ingredients from food api
-	(3, '2'),--First user meal ingredients from food api
-	(4, '3'),--Second user meal from food api
-	(6, '4');--Second restaurant from restaurant api
+	(2, '0'),--First user meal ingredients from food api
+	(3, '1'),--First user meal ingredients from food api
+	(4, '2'),--First user meal ingredients from food api
+	(5, '3'),--Second user meal from food api
+	(7, '4');--Second restaurant from restaurant api
 
 	INSERT INTO SubmissionSubmitter(submission_id, submitter_id) VALUES
 	(1, submitter_id_user_admin), -- First user meal from ingredients

@@ -2,6 +2,7 @@ package pt.isel.ps.g06.httpserver.dataAccess.db.dao
 
 import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.customizer.BindBeanList
+import org.jdbi.v3.sqlobject.customizer.BindList
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.CuisineDto
 
@@ -9,7 +10,9 @@ interface CuisineDao {
 
     companion object {
         const val table = "Cuisine"
+        const val hereTable = "HereCuisine"
         const val name = "cuisine_name"
+        const val hereCuisine = "here_cuisine"
     }
 
     @SqlQuery("SELECT * FROM $table")
@@ -17,6 +20,9 @@ interface CuisineDao {
 
     @SqlQuery("SELECT * FROM $table WHERE $name = :name")
     fun getByName(@Bind name: String): List<CuisineDto>
+
+    @SqlQuery("SELECT * FROM $hereTable WHERE $hereCuisine IN (<values>)")
+    fun getByHereCuisineIdentifiers(@BindList("values") cuisineIds: Collection<String>): Collection<CuisineDto>
 
     @SqlQuery("INSERT INTO $table($name) VALUES(:name) RETURNING *")
     fun insert(@Bind name: String): CuisineDto
