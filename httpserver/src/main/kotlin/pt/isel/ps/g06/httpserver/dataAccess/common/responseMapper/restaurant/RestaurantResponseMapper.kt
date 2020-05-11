@@ -5,7 +5,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.dto.ZomatoRestaurantD
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.dto.here.HereResultItem
 import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.ResponseMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.CuisineDbRepository
-import pt.isel.ps.g06.httpserver.dataAccess.db.repo.MealCuisineDbRepository
+import pt.isel.ps.g06.httpserver.dataAccess.db.repo.MealDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.model.RestaurantDto
 import pt.isel.ps.g06.httpserver.model.Restaurant
 import pt.isel.ps.g06.httpserver.util.log
@@ -31,7 +31,7 @@ class RestaurantResponseMapper(
 @Component
 class HereResponseMapper(
         private val cuisineDbRepository: CuisineDbRepository,
-        private val cuisineMealRepository: MealCuisineDbRepository,
+        private val mealRepository: MealDbRepository,
         private val mealResponseMapper: MealResponseMapper
 ) : ResponseMapper<HereResultItem, Restaurant> {
 
@@ -50,7 +50,7 @@ class HereResponseMapper(
                 },
                 meals = lazy {
                     cuisineIds
-                            ?.let { id -> cuisineMealRepository.getByHereCuisinesIdentifiers(id).map(mealResponseMapper::mapTo) }
+                            ?.let { id -> mealRepository.getByHereCuisinesIdentifiers(id).map(mealResponseMapper::mapTo) }
                             ?: emptyList()
                 }
         )
@@ -59,7 +59,7 @@ class HereResponseMapper(
 
 @Component
 class ZomatoResponseMapper(
-        private val mealCuisineDbRepository: MealCuisineDbRepository,
+        private val mealRepository: MealDbRepository,
         private val mealResponseMapper: MealResponseMapper
 ) : ResponseMapper<ZomatoRestaurantDto, Restaurant> {
 
@@ -73,7 +73,7 @@ class ZomatoResponseMapper(
                 longitude = dto.longitude,
                 cuisines = cuisines,
                 meals = lazy {
-                    mealCuisineDbRepository
+                    mealRepository
                             .getMealsForCuisines(cuisines.value)
                             .map(mealResponseMapper::mapTo)
                 }

@@ -10,6 +10,9 @@ interface MealCuisineDao {
 
     companion object {
         const val table = "MealCuisine"
+        const val mealTable = "Meal"
+        const val mealName = "meal_name"
+        const val submissionId = "submission_id"
         const val hereTable = "HereCuisine"
         const val mealId = "meal_submission_id"
         const val hereCuisine = "here_cuisine"
@@ -22,7 +25,10 @@ interface MealCuisineDao {
     @SqlQuery("SELECT * FROM $table WHERE $mealId = :mealId")
     fun getByMealId(@Bind mealId: Int): List<MealCuisineDto>
 
-    @SqlQuery("SELECT * FROM $table WHERE $cuisineName IN (<values>)")
+    @SqlQuery("SELECT $table.$mealId, $mealTable.$mealName, $table.$cuisineName FROM $table " +
+            "INNER JOIN $mealTable " +
+            "ON $mealTable.$submissionId = $table.$mealId " +
+            "WHERE $cuisineName IN (<values>)")
     fun getByCuisines(@BindList("values") cuisines: Collection<String>): Collection<MealCuisineDto>
 
     /**
@@ -31,9 +37,11 @@ interface MealCuisineDao {
      *
      * As such, a special table was created in our database that provides this needed mapping.
      */
-    @SqlQuery("SELECT $table.$mealId, $table.$cuisineName FROM $table " +
+    @SqlQuery("SELECT $table.$mealId, $mealTable.$mealName, $table.$cuisineName FROM $table " +
             "INNER JOIN $hereTable " +
-            "ON $hereTable.$cuisineName = $table.$cuisineName" +
+            "ON $hereTable.$cuisineName = $table.$cuisineName " +
+            "INNER JOIN $mealTable " +
+            "ON $mealTable.$submissionId = $table.$mealId " +
             "WHERE $hereTable.$hereCuisine IN (<values>)")
     fun getByHereCuisines(@BindList("values") cuisines: Collection<String>): Collection<MealCuisineDto>
 

@@ -11,12 +11,14 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType.MEAL
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.*
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.ApiSubmissionDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.IngredientDto
+import pt.isel.ps.g06.httpserver.dataAccess.db.dto.MealCuisineDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.MealDto
 import pt.isel.ps.g06.httpserver.dataAccess.model.Ingredient
 import pt.isel.ps.g06.httpserver.springConfig.dto.DbEditableDto
 
 private val isolationLevel = TransactionIsolationLevel.SERIALIZABLE
 private val mealDaoClass = MealDao::class.java
+private val mealCuisineDaoClass = MealCuisineDao::class.java
 
 @Repository
 class MealDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo(jdbi) {
@@ -30,6 +32,18 @@ class MealDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo(jdbi)
     fun getByName(mealName: String): List<MealDto> {
         return jdbi.inTransaction<List<MealDto>, Exception>(isolationLevel) {
             return@inTransaction it.attach(mealDaoClass).getByName(mealName)
+        }
+    }
+
+    fun getByHereCuisinesIdentifiers(cuisines: Collection<String>): Collection<MealDto> {
+        return jdbi.inTransaction<Collection<MealCuisineDto>, Exception>(isolationLevel) {
+            return@inTransaction it.attach(mealCuisineDaoClass).getByHereCuisines(cuisines)
+        }
+    }
+
+    fun getMealsForCuisines(cuisines: Collection<String>): Collection<MealDto> {
+        return jdbi.inTransaction<Collection<MealCuisineDto>, Exception>(isolationLevel) {
+            return@inTransaction it.attach(mealCuisineDaoClass).getByCuisines(cuisines)
         }
     }
 
