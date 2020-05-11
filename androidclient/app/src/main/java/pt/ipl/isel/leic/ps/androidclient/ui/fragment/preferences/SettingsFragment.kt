@@ -1,15 +1,19 @@
 package pt.ipl.isel.leic.ps.androidclient.ui.fragment.preferences
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.preference.PreferenceFragmentCompat
 import pt.ipl.isel.leic.ps.androidclient.R
 
-class SettingsFragment : Fragment() {
+
+class SettingsFragment : PreferenceFragmentCompat() {
+
+    override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+        addPreferencesFromResource(R.xml.preferences)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -19,14 +23,21 @@ class SettingsFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_settings, container, false)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        //TODO
+        childFragmentManager
+            .beginTransaction()
+            .replace(R.id.preferences, preferencesFragment())
+            .commit()
     }
 
-    class preferences : PreferenceFragmentCompat() {
+    class preferencesFragment : PreferenceFragmentCompat() {
+
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             addPreferencesFromResource(R.xml.preferences)
         }
-    }
 
+    }
 }
