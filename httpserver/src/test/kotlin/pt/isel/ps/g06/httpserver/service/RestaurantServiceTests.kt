@@ -6,8 +6,8 @@ import org.mockito.Mockito.*
 import org.springframework.util.Assert
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.ZomatoRestaurantApi
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.mapper.RestaurantApiMapper
-import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.model.RestaurantApiType
-import pt.isel.ps.g06.httpserver.dataAccess.db.repo.DbRestaurantRepository
+import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.RestaurantApiType
+import pt.isel.ps.g06.httpserver.dataAccess.db.repo.RestaurantDbRepository
 
 class RestaurantServiceTests {
     @Test
@@ -15,7 +15,7 @@ class RestaurantServiceTests {
         val reason = "Providing invalid coordinates to search nearby restaurants should return an empty set."
 
         val service = RestaurantService(
-                mock(DbRestaurantRepository::class.java),
+                mock(RestaurantDbRepository::class.java),
                 mock(RestaurantApiMapper::class.java)
         )
 
@@ -77,8 +77,8 @@ class RestaurantServiceTests {
 
     @Test
     fun searchRestaurantByIdShouldReturnNullWhenNoneIsFound() {
-        val dbRepository = mock(DbRestaurantRepository::class.java)
-        `when`(dbRepository.getRestaurantById(anyInt())).thenReturn(null)
+        val dbRepository = mock(RestaurantDbRepository::class.java)
+        `when`(dbRepository.getById(anyInt())).thenReturn(null)
 
         val api = mock(ZomatoRestaurantApi::class.java)
         `when`(api.getRestaurantInfo(anyInt())).thenReturn(null)

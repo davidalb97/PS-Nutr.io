@@ -4,6 +4,5 @@ import java.time.OffsetDateTime
 
 data class SubmissionSubmitterDto(
         val submission_id: Int,
-        val submitter_id: Int,
-        val submission_date: OffsetDateTime
+        val submitter_id: Int
 )

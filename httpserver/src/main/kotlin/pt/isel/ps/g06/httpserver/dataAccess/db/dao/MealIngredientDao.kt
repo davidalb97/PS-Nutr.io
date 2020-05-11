@@ -2,22 +2,27 @@ package pt.isel.ps.g06.httpserver.dataAccess.db.dao
 
 import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.customizer.BindBeanList
+import org.jdbi.v3.sqlobject.customizer.BindList
 import org.jdbi.v3.sqlobject.statement.SqlQuery
+import pt.isel.ps.g06.httpserver.dataAccess.db.dto.MealCuisineDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.MealIngredientDto
 
-private const val table = "MealIngredient"
-private const val mealId = "meal_submission_id"
-private const val ingredientId = "ingredient_submission_id"
-
 interface MealIngredientDao {
+
+    companion object {
+        const val table = "MealIngredient"
+        const val mealId = "meal_submission_id"
+        const val ingredientId = "ingredient_submission_id"
+    }
+
     @SqlQuery("SELECT * FROM $table")
     fun getAll(): List<MealIngredientDto>
 
     @SqlQuery("SELECT * FROM $table WHERE $mealId = :mealId")
-    fun getByMealId(@Bind mealId: Int): MealIngredientDto?
+    fun getAllByMealId(@Bind mealId: Int): List<MealIngredientDto>
 
     @SqlQuery("SELECT * FROM $table WHERE $ingredientId = :ingredientId")
-    fun getByIngredientId(@Bind ingredientId: Int): MealIngredientDto?
+    fun getAllByIngredientId(@Bind ingredientId: Int): List<MealIngredientDto>
 
     @SqlQuery("INSERT INTO $table($mealId, $ingredientId)" +
             " VALUES(:mealId, :ingredientId) RETURNING *")
@@ -28,7 +33,18 @@ interface MealIngredientDao {
             value = "values",
             propertyNames = [mealId, ingredientId]
     ) values: List<MealIngredientParam>): List<MealIngredientDto>
+
+    @SqlQuery("DELETE FROM $table WHERE $mealId = :submissionId RETURNING *")
+    fun deleteAllByMealId(submissionId: Int): List<MealIngredientDto>
+
+    @SqlQuery("DELETE FROM $table" +
+            " WHERE $mealId = :submissionId" +
+            " AND $ingredientId in <values> RETURNING *")
+    fun deleteAllByMealIdAndIngredientIds(
+            @Bind submissionId: Int,
+            @BindList("values") deleteIngredientIds: List<Int>
+    ): List<MealIngredientDto>
 }
 
-//Variable names must match sql columns!!!
+//Variable names must match sql columns
 data class MealIngredientParam(val meal_submission_id: Int, val ingredient_submission_id: Int)
