@@ -7,7 +7,10 @@ data class HereResultContainer(val items: Collection<HereResultItem>)
 class HereResultItem(
         title: String,
         id: String,
-        position: Location
+        position: Location,
+        val foodTypes: Collection<FoodTypes>?
 ) : RestaurantDto(id, title, position.lat, position.lng)
 
 data class Location(val lat: Float, val lng: Float)
+
+data class FoodTypes(val id: String)
