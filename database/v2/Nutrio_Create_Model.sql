@@ -50,7 +50,8 @@ CREATE TABLE Submission(
 		submission_type = 'Restaurant' OR
 		submission_type = 'Portion' OR
 		submission_type = 'Meal' OR
-		submission_type = 'Ingredient'
+		submission_type = 'Ingredient' OR 
+		submission_type = 'Cuisine'
 	),
 	submission_date timestamp with time zone default CURRENT_TIMESTAMP
 );
