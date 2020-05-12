@@ -7,19 +7,13 @@ import org.jdbi.v3.core.transaction.TransactionIsolationLevel
 import pt.isel.ps.g06.httpserver.dataAccess.api.food.FoodApiType
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmitterType
-import pt.isel.ps.g06.httpserver.dataAccess.db.dao.ApiSubmissionDao
-import pt.isel.ps.g06.httpserver.dataAccess.db.dao.IngredientDao
-import pt.isel.ps.g06.httpserver.dataAccess.db.dao.MealIngredientDao
-import pt.isel.ps.g06.httpserver.dataAccess.db.dao.SubmitterDao
+import pt.isel.ps.g06.httpserver.dataAccess.db.dao.*
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.IngredientDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.MealDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.SubmitterDto
 import pt.isel.ps.g06.httpserver.dataAccess.model.Ingredient
 import pt.isel.ps.g06.httpserver.exceptions.TestParameterException
-import pt.isel.ps.g06.httpserver.model.TestFoodApi
-import pt.isel.ps.g06.httpserver.model.TestIngredient
-import pt.isel.ps.g06.httpserver.model.TestMeal
-import pt.isel.ps.g06.httpserver.model.toTestFoodApi
+import pt.isel.ps.g06.httpserver.model.*
 
 /**
  * Runs func with a jdbi transaction handle and rolls back after completion.
@@ -138,6 +132,31 @@ fun getTestFoodApiByMealId(handle: Handle, submissionId: Int): TestFoodApi? {
                             .first()
                             .ingredient_submission_id
             )
+}
+
+fun getTestCuisinesByMealId(handle: Handle, submissionId: Int, testApi: TestFoodApi): List<TestCuisine> {
+    val apiSubmissionDtos = handle.attach(ApiSubmissionDao::class.java)
+            .getAllBySubmitterIdAndSubmissionType(
+                    testApi.submitterId,
+                    SubmissionType.CUISINE.toString()
+            )
+    return handle.attach(CuisineDao::class.java)
+            .getByMealId(submissionId)
+            .map { cuisineDto ->
+                val cuisineSubmissionIds =
+                        handle.attach(ApiCuisineDao::class.java)
+                                .getAllByCuisineId(cuisineDto.cuisine_id)
+                                .map { it.submission_id }
+                TestCuisine(
+                        cuisineDto.cuisine_id,
+                        cuisineDto.cuisine_name,
+                        testApi,
+                        //Api submissions from cuisine ids
+                        apiSubmissionDtos.filter {
+                            cuisineSubmissionIds.contains(it.submission_id)
+                        }
+                )
+            }
 }
 
 fun MealDto.mapToTest(handle: Handle): TestMeal {

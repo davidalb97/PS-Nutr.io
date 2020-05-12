@@ -7,5 +7,5 @@ data class TestMeal(
         val foodApiId: String?,
         val foodApi: TestFoodApi,
         val ingredients: List<TestIngredient> = emptyList(),
-        val cuisines: List<String> = emptyList()
+        val cuisines: List<TestCuisine> = emptyList()
 )

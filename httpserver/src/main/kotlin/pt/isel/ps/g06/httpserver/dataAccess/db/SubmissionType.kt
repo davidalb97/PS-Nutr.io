@@ -4,7 +4,8 @@ enum class SubmissionType(private val type: String) {
     RESTAURANT("Restaurant"),
     PORTION("Portion"),
     MEAL("Meal"),
-    INGREDIENT("Ingredient");
+    INGREDIENT("Ingredient"),
+    CUISINE("Cuisine");
 
     override fun toString(): String = this.type
 }

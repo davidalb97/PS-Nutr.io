@@ -8,6 +8,8 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionContractType
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType.RESTAURANT
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.*
+import pt.isel.ps.g06.httpserver.dataAccess.db.dto.MealCuisineDto
+import pt.isel.ps.g06.httpserver.dataAccess.db.dto.RestaurantCuisineDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.RestaurantDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.SubmissionDto
 import pt.isel.ps.g06.httpserver.dataAccess.model.RestaurantApiId
@@ -35,7 +37,7 @@ class RestaurantDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo
             submitterId: Int,
             restaurantName: String,
             apiId: RestaurantApiId? = null,
-            cuisines: List<String> = emptyList(),
+            cuisineNames: List<String> = emptyList(),
             latitude: Float,
             longitude: Float
     ): SubmissionDto {
@@ -55,8 +57,11 @@ class RestaurantDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo
                     .insert(submissionId, restaurantName, latitude, longitude)
 
             //Insert all RestaurantCuisine associations
+            val cuisineIds = it.attach(CuisineDao::class.java)
+                    .getAllByNames(cuisineNames)
+                    .map { it.cuisine_id }
             it.attach(RestaurantCuisineDao::class.java)
-                    .insertAll(cuisines.map { RestaurantCuisineParam(submissionId, it) })
+                    .insertAll(cuisineIds.map { RestaurantCuisineDto(submissionId, it) })
 
             val contracts = mutableListOf(SubmissionContractType.VOTABLE)
             if (apiId != null) {
@@ -156,32 +161,31 @@ class RestaurantDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo
                 .insert(submissionId, apiId.id)
     }
 
-    private fun updateCuisines(handle: Handle, submissionId: Int, cuisines: List<String>) {
+    private fun updateCuisines(handle: Handle, submissionId: Int, cuisineNames: Collection<String>) {
+        val cuisineDtos = handle.attach(CuisineDao::class.java)
+                .getAllByNames(cuisineNames)
         val restaurantCuisineDao = handle.attach(RestaurantCuisineDao::class.java)
 
         //Get existing cuisines
-        val existingCuisines = restaurantCuisineDao.getByRestaurantId(submissionId)
+        val existingMealCuisineIds = restaurantCuisineDao.getByRestaurantId(submissionId)
+                .map { it.cuisine_id }
                 .toMutableList()
 
         //Delete cuisines
-        val deletedCuisines = existingCuisines
-                .filter { !cuisines.contains(it.cuisine_name) }
-        if (deletedCuisines.isNotEmpty()) {
-            restaurantCuisineDao.deleteAllByRestaurantIdAndCuisine(
-                    submissionId,
-                    deletedCuisines.map { it.cuisine_name }
-            )
+        val deletedCuisineIds = existingMealCuisineIds
+                .filter { existing -> cuisineDtos.none { it.cuisine_id == existing } }
+        if (deletedCuisineIds.isNotEmpty()) {
+            restaurantCuisineDao.deleteAllByRestaurantIdAndCuisineIds(submissionId, deletedCuisineIds)
         }
 
         //Insert new cuisines
-        existingCuisines.removeAll(deletedCuisines)
-        val newCuisines = cuisines.filter { cuisineName ->
-            existingCuisines.none { it.cuisine_name == cuisineName }
-        }
-        if(newCuisines.isNotEmpty()) {
-            restaurantCuisineDao.insertAll(
-                    newCuisines.map { RestaurantCuisineParam(submissionId, it) }
-            )
+        existingMealCuisineIds.removeAll(deletedCuisineIds)
+        val newCuisineIds = cuisineDtos.filter { cuisine ->
+            existingMealCuisineIds.none { it == cuisine.cuisine_id }
+        }.map { it.cuisine_id }
+
+        if (newCuisineIds.isNotEmpty()) {
+            restaurantCuisineDao.insertAll(newCuisineIds.map { RestaurantCuisineDto(submissionId, it) })
         }
     }
 }

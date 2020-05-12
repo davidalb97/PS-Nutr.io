@@ -6,23 +6,68 @@ import org.jdbi.v3.sqlobject.customizer.BindList
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.CuisineDto
 
+//ApiCuisine table constants
+private const val AC_table = ApiCuisineDao.table
+private const val AC_submissionId = ApiCuisineDao.submissionId
+private const val AC_cuisineId = ApiCuisineDao.cuisineId
+
+//SubmissionSubmitter table constants
+private const val SS_table = SubmissionSubmitterDao.table
+private const val SS_submissionId = SubmissionSubmitterDao.submissionId
+private const val SS_submitterId = SubmissionSubmitterDao.submitterId
+
+//ApiSubmission constants
+private const val AS_table = ApiSubmissionDao.table
+private const val AS_submissionId = ApiSubmissionDao.submissionId
+private const val AS_apiId = ApiSubmissionDao.apiId
+
+private const val MC_table = MealCuisineDao.table
+private const val MC_mealId = MealCuisineDao.mealId
+private const val MC_cuisineId = MealCuisineDao.cuisineId
+
 interface CuisineDao {
 
     companion object {
         const val table = "Cuisine"
-        const val hereTable = "HereCuisine"
         const val name = "cuisine_name"
-        const val hereCuisine = "here_cuisine"
+        const val id = "cuisine_id"
     }
 
     @SqlQuery("SELECT * FROM $table")
-    fun getAll(): List<CuisineDto>
+    fun getAll(): Collection<CuisineDto>
 
     @SqlQuery("SELECT * FROM $table WHERE $name = :name")
-    fun getByName(@Bind name: String): List<CuisineDto>
+    fun getByName(@Bind name: String): Collection<CuisineDto>
 
-    @SqlQuery("SELECT * FROM $hereTable WHERE $hereCuisine IN (<values>)")
-    fun getByHereCuisineIdentifiers(@BindList("values") cuisineIds: Collection<String>): Collection<CuisineDto>
+    @SqlQuery("SELECT $table.$id, $table.$name" +
+            " FROM $table " +
+            " INNER JOIN $MC_table " +
+            " ON $MC_table.$MC_cuisineId = $table.$id" +
+            " WHERE $MC_table.$MC_mealId = :mealId"
+    )
+    fun getByMealId(@Bind mealId: Int): Collection<CuisineDto>
+
+    @SqlQuery("SELECT * FROM $table WHERE $name in (<values>)")
+    fun getAllByNames(@BindList cuisineIds: Collection<String>): Collection<CuisineDto>
+
+    @SqlQuery("SELECT * FROM $table WHERE $id = :cuisineId")
+    fun getById(@Bind cuisineId: String): Collection<CuisineDto>
+
+    @SqlQuery("SELECT $table.$id, $table.$name" +
+            " FROM $table " +
+            " INNER JOIN $AC_table " +
+            " ON $table.$id = $AC_table.$AC_cuisineId" +
+            " INNER JOIN $AS_table" +
+            " ON $AS_table.$AS_submissionId = $AC_table.$AC_submissionId" +
+            " INNER JOIN $SS_table" +
+            " ON $SS_table.$SS_submissionId = $AC_table.$AC_submissionId" +
+            " WHERE $SS_table.$SS_submitterId = :submitterId" +
+            " AND $AS_table.$AS_apiId IN (<values>)"
+    )
+    fun getAllByApiSubmitterAndApiIds(
+            @Bind submitterId: Int,
+            @BindList apiIds: Collection<String>
+    ): Collection<CuisineDto>
 
     @SqlQuery("INSERT INTO $table($name) VALUES(:name) RETURNING *")
     fun insert(@Bind name: String): CuisineDto
@@ -31,7 +76,7 @@ interface CuisineDao {
     fun insertAll(@BindBeanList(
             value = "values",
             propertyNames = [name]
-    ) newName: List<CuisineParam>): List<CuisineDto>
+    ) newName: Collection<CuisineParam>): Collection<CuisineDto>
 }
 
 //Variable names must match sql columns

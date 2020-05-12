@@ -117,12 +117,12 @@ class RepoAsserts(val const: Constants) {
         Assertions.assertEquals(oldCount + insertCount, newCount)
     }
 
-    fun assertMealCuisines(handle: Handle, expectedCuisines: List<String>, resultSubmissionId: Int) {
+    fun assertMealCuisines(handle: Handle, expectedCuisineIds: List<Int>, resultSubmissionId: Int) {
         val resultCuisines = handle.attach(MealCuisineDao::class.java)
-                .getByMealId(resultSubmissionId)
-                .map { it.cuisine_name }
+                .getAllByMealId(resultSubmissionId)
+                .map { it.cuisine_id }
                 .sorted()
-        Assertions.assertEquals(expectedCuisines.sorted(), resultCuisines)
+        Assertions.assertEquals(expectedCuisineIds.sorted(), resultCuisines)
     }
 
     fun assertMealCuisinesInsertCount(handle: Handle, insertCount: Int) {
