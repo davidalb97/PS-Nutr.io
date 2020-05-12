@@ -154,7 +154,7 @@ class Constants(val jdbi: Jdbi) {
             val ingredients = ingredients
                     .filter { ingredientIds.contains(it.submissionId) }
             val apiSubmitterId = getTestFoodApiByMealId(it, submissionId)!!
-            val cuisines = mealCuisineDtos.filter { it.meal_submission_id == submissionId }
+            val cuisines = mealCuisineDtos.filter { it.submission_id == submissionId }
                     .map { it.cuisine_name }
             TestMeal(
                     rs.getString(mealName),
