@@ -53,4 +53,16 @@
         android:label="@string/tab_cuisines"
         tools:layout="@layout/fragment_cuisines" />
 
+    <fragment
+        android:id="@+id/nav_calculator"
+        android:name="pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.CalculatorFragment"
+        android:label="@string/insulin_calculator_nav"
+        tools:layout="@layout/fragment_calculator" />
+
+    <fragment
+        android:id="@+id/nav_history"
+        android:name="pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler.HistoryFragment"
+        android:label="@string/insulin_calculator_nav"
+        tools:layout="@layout/fragment_calculator" />
+
 </navigation>

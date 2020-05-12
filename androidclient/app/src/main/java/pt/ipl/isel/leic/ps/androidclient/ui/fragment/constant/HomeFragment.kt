@@ -26,7 +26,9 @@ class HomeFragment : Fragment() {
             Pair(view.findViewById(R.id.firstSection_button1), R.id.nav_tab_restaurants),
             Pair(view.findViewById(R.id.firstSection_button2), R.id.nav_tab_location_restaurants),
             Pair(view.findViewById(R.id.secondSection_button1), R.id.nav_tab_meals),
-            Pair(view.findViewById(R.id.secondSection_button2), R.id.nav_tab_meals)
+            Pair(view.findViewById(R.id.secondSection_button2), R.id.nav_tab_meals),
+            Pair(view.findViewById(R.id.thirdSection_button1), R.id.nav_calculator),
+            Pair(view.findViewById(R.id.thirdSection_button2), R.id.nav_history)
         )
 
         buttonActions.forEach { button ->

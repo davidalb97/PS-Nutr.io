@@ -52,4 +52,11 @@
     <string name="link_pedro">https://github.com/Pedrokase</string>
     <string name="link_david">https://github.com/davidalb97</string>
     <string name="link_miguel">https://github.com/mig07</string>
+    <string name="insulin_calculator">Insulin Calculator</string>
+    <string name="insulin_type">Insulin type</string>
+    <string name="current_blood_glucose">Current blood glucose</string>
+    <string name="add_a_meal_to_this_calculation">Add a meal to this calculation</string>
+    <string name="pre_meal_blood_glucose_target">Pre-meal blood glucose target</string>
+    <string name="insulin_calculator_nav">Insulin calculator</string>
+    <string name="calculate">Calculate</string>
 </resources>
