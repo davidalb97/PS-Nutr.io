@@ -323,6 +323,9 @@ BEGIN
 	INSERT INTO SubmissionContract(submission_id, submission_contract) VALUES
 	(1, 'Votable'),--First user meal from ingredients
 	(1, 'Reportable'),--First user meal from ingredients
+	(2, 'API'),--ingredient Açucar
+	(3, 'API'),--ingredient sal
+	(4, 'API'),--ingredient azeite
 	(5, 'Votable'),--Second user meal from food api
 	(5, 'Reportable'),--Second user meal from food api
 	(5, 'API'),--Second user meal from food api
