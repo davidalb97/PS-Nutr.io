@@ -5,7 +5,6 @@ import org.jdbi.v3.sqlobject.customizer.BindBeanList
 import org.jdbi.v3.sqlobject.customizer.BindList
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.RestaurantCuisineDto
-import pt.isel.ps.g06.httpserver.dataAccess.db.dto.RestaurantMealPortionDto
 
 interface RestaurantCuisineDao {
 
@@ -16,7 +15,7 @@ interface RestaurantCuisineDao {
     }
 
     @SqlQuery("SELECT * FROM $table")
-    fun getAll(): List<RestaurantMealPortionDto>
+    fun getAll(): List<RestaurantCuisineDto>
 
     @SqlQuery("SELECT * FROM $table WHERE $id = :restaurantId")
     fun getByRestaurantId(@Bind restaurantId: Int): List<RestaurantCuisineDto>

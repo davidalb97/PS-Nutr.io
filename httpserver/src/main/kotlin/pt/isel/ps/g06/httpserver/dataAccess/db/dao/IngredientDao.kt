@@ -5,7 +5,6 @@ import org.jdbi.v3.sqlobject.customizer.BindBeanList
 import org.jdbi.v3.sqlobject.customizer.BindList
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.IngredientDto
-import pt.isel.ps.g06.httpserver.dataAccess.model.Ingredient
 
 //SubmissionSubmitter constants
 private const val SS_table = SubmissionSubmitterDao.table

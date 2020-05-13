@@ -1,9 +1,7 @@
 package pt.isel.ps.g06.httpserver.dataAccess.db.dao
 
-import org.jdbi.v3.core.transaction.TransactionIsolationLevel
 import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.statement.SqlQuery
-import org.jdbi.v3.sqlobject.transaction.Transaction
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.RestaurantDto
 
 interface RestaurantDao {
@@ -26,7 +24,6 @@ interface RestaurantDao {
     fun getByCoordinates(@Bind latitude: Float, @Bind longitude: Float, @Bind radius: Int): List<RestaurantDto>
 
     @SqlQuery("SELECT * FROM $table WHERE $id = :submissionId")
-    @Transaction(TransactionIsolationLevel.SERIALIZABLE)
     fun getById(@Bind submissionId: Int): RestaurantDto?
 
     @SqlQuery("INSERT INTO $table($id, $name, $latitude, $longitude)" +

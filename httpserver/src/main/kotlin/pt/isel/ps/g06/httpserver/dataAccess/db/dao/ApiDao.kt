@@ -3,7 +3,6 @@ package pt.isel.ps.g06.httpserver.dataAccess.db.dao
 import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.ApiDto
-import pt.isel.ps.g06.httpserver.dataAccess.db.dto.SubmitterDto
 
 //Submitter table constants
 private const val submitterTable = SubmitterDao.table

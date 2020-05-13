@@ -4,28 +4,12 @@ import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.customizer.BindBeanList
 import org.jdbi.v3.sqlobject.customizer.BindList
 import org.jdbi.v3.sqlobject.statement.SqlQuery
-import pt.isel.ps.g06.httpserver.dataAccess.db.dto.CuisineDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.MealCuisineDto
 
 //Cuisine table constants
 private const val C_table = CuisineDao.table
 private const val C_name = CuisineDao.name
 private const val C_cuisineId = CuisineDao.id
-
-//ApiCuisine table constants
-private const val AC_table = ApiCuisineDao.table
-private const val AC_submissionId = ApiCuisineDao.submissionId
-private const val AC_cuisineId = ApiCuisineDao.cuisineId
-
-//SubmissionSubmitter table constants
-private const val SS_table = SubmissionSubmitterDao.table
-private const val SS_submissionId = SubmissionSubmitterDao.submissionId
-private const val SS_submitterId = SubmissionSubmitterDao.submitterId
-
-//ApiSubmission constants
-private const val AS_table = ApiSubmissionDao.table
-private const val AS_submissionId = ApiSubmissionDao.submissionId
-private const val AS_apiId = ApiSubmissionDao.apiId
 
 //ApiSubmission constants
 private const val M_table = MealDao.table
