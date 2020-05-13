@@ -8,4 +8,12 @@ class RestaurantDto (
     val votes: List<Boolean>?,
     val cuisines: List<String>?,
     val meals: List<MealDto>?
-)
+) {
+    override fun equals(other: Any?): Boolean {
+        return super.equals(other)
+    }
+
+    override fun hashCode(): Int {
+        return super.hashCode()
+    }
+}

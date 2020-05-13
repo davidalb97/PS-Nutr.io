@@ -2,6 +2,7 @@ package pt.ipl.isel.leic.ps.androidclient.data.source.model
 
 import pt.ipl.isel.leic.ps.androidclient.data.source.dto.MealDto
 
+// TODO - add support for Room
 data class Restaurant(
     val id: Int,
     val name: String,
