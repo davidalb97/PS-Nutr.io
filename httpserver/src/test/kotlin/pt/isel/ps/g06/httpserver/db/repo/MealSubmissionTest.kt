@@ -315,18 +315,6 @@ class MealSubmissionTest {
         }
     }
 
-//    @Test
-//    fun shouldUpdateUserMealWithNewSpoonacularIngredients() {
-//
-//    }
-//
-//    @Test
-//    fun shouldNotUpdateApiMeal() {
-//        Assertions.assertThrows(InvalidInputException::class.java) {
-//            TODO()
-//        }
-//    }
-
     @Test
     fun shouldUpdateUserMealWithNewIngredientsAndCuisinesPreservingOldValues() {
         jdbi.inSandbox(const) {
@@ -422,6 +410,123 @@ class MealSubmissionTest {
                     resultSubmissionId = existingMeal.submissionId
             )
             asserts.assertMealCuisinesInsertCount(it, newCuisineCount)
+
+            //Assert Ingredient ApiSubmission insertions (meal does not have apiId, ingredients not inserted)
+            asserts.assertApiSubmission(it,
+                    expectedApiSubmissionIds = expectedIngredientIds,
+                    apiSubmitterId = existingMeal.foodApi.submitterId,
+                    submissionType = SubmissionType.INGREDIENT,
+                    apiIds = expectedIngredients.map { it.apiId }
+            )
+            asserts.assertApiSubmissionInsertCount(it, newIngredientIds.size)
+
+            //Assert Ingredient existence
+            asserts.assertIngredient(it,
+                    expectedIngredientSubmissionIds = expectedIngredientIds,
+                    expectedIngredientNames = expectedIngredients.map { it.name }
+            )
+            //Assert Ingredient insertion count
+            asserts.assertIngredientInsertCount(it, newIngredientIds.size)
+
+            //Assert MealCuisine existence
+            asserts.assertMealIngredient(it,
+                    expectedMealSubmissionId = existingMeal.submissionId,
+                    expectedIngredientSubmissionIds = expectedIngredientIds
+            )
+            //Assert MealCuisine insert count
+            asserts.assertMealIngredientInsertCount(it, newIngredientIds.size)
+        }
+    }
+
+    @Test
+    fun shouldUpdateUserMealWithNewIngredientsPreservingOldValues() {
+        jdbi.inSandbox(const) {
+            val existingMeal = const.meals.first { it.ingredients.isNotEmpty() && it.cuisines.isNotEmpty()}
+            val expectedName = "TestNewMealName"
+            val newIngredientCount = 3
+            val newIngredientIds =
+                    (const.nextSubmissionId until const.nextSubmissionId + newIngredientCount)
+                            .toList()
+            val newIngredients = newIngredientIds.map { TestIngredient(
+                    "TestIngredient$it",
+                    it,
+                    "TestApiId$it",
+                    existingMeal.foodApi
+            ) }
+            val expectedIngredients = existingMeal.ingredients.union(newIngredients).toList()
+            val expectedIngredientIds = expectedIngredients.map { it.submissionId }
+
+            //Bypass time restriction
+            val updatedSubmission = it.createQuery("UPDATE ${SubmissionDao.table}" +
+                    " SET ${SubmissionDao.date} = CURRENT_TIMESTAMP" +
+                    " WHERE ${SubmissionDao.id} = ${existingMeal.submissionId}" +
+                    " RETURNING *"
+            ).map(SubmissionMapper()).first()
+
+            mealRepo.update(
+                    existingMeal.submitterId,
+                    existingMeal.submissionId,
+                    expectedName,
+                    existingMeal.cuisines.map { it.cuisineName },
+                    expectedIngredients.map(TestIngredient::toModel)
+            )
+
+            val expectedMealContracts = listOf(VOTABLE, REPORTABLE)
+            val expectedIngredientContracts = listOf(API)
+
+            //Assert current Meal submissions existence
+            asserts.assertSubmission(it,
+                    expectedSubmissionId = existingMeal.submissionId,
+                    expectedSubmissionType = SubmissionType.MEAL
+            )
+            //Assert current Ingredient submissions existence (Ingredient old + new, without removed)
+            asserts.assertSubmission(it,
+                    expectedSubmissionIds = expectedIngredientIds,
+                    expectedSubmissionType = SubmissionType.INGREDIENT
+            )
+            //Assert Submission insertion count (new ingredients)
+            asserts.assertSubmissionInsertCount(it, newIngredientIds.size)
+
+            //Assert SubmissionContract API contracts on meal submission
+            asserts.assertSubmissionContract(it,
+                    submissionId = existingMeal.submissionId,
+                    expectedContracts = expectedMealContracts
+            )
+            //Assert SubmissionContract API contracts on ingredient submissions
+            asserts.assertSubmissionContract(it,
+                    submissionIds = expectedIngredientIds,
+                    expectedContracts = expectedIngredientContracts
+            )
+            //Assert SubmissionContract API contracts insert counts 1 for each ingredient
+            asserts.assertSubmissionContractInsertCount(it,
+                    expectedIngredientContracts.size * newIngredientIds.size
+            )
+
+            //Assert SubmissionSubmitter insertions (Meal)
+            asserts.assertSubmissionSubmitter(it,
+                    expectedSubmissionId = existingMeal.submissionId,
+                    expectedSubmitterId = existingMeal.submitterId
+            )
+            //Assert SubmissionSubmitter insertions (Ingredient)
+            asserts.assertSubmissionSubmitter(it,
+                    expectedSubmissionIds = expectedIngredientIds,
+                    expectedSubmitterId = existingMeal.foodApi.submitterId
+            )
+            asserts.assertSubmissionSubmitterInsertCount(it, newIngredientIds.size)
+
+            //Assert Meal insertions
+            asserts.assertMeal(it,
+                    expectedSubmissionId = existingMeal.submissionId,
+                    expectedMealName = expectedName
+            )
+            asserts.assertMealInsertCount(it, 0)
+
+            //Assert MealCuisine insertions
+            asserts.assertMealCuisines(it,
+                    expectedCuisineIds = existingMeal.cuisines.map { it.cuisineId },
+                    resultSubmissionId = existingMeal.submissionId
+            )
+            asserts.assertMealCuisinesInsertCount(it, 0)
 
             //Assert Ingredient ApiSubmission insertions (meal does not have apiId, ingredients not inserted)
             asserts.assertApiSubmission(it,
