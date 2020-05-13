@@ -1,6 +1,6 @@
 package pt.ipl.isel.leic.ps.androidclient.ui.viewmodel
 
-import pt.ipl.isel.leic.ps.androidclient.data.source.model.restaurant.Restaurant
+import pt.ipl.isel.leic.ps.androidclient.data.source.model.Restaurant
 
 interface IStaticViewModel<T> {
 

@@ -2,11 +2,10 @@ package pt.ipl.isel.leic.ps.androidclient.data.source.endpoint
 
 import com.android.volley.VolleyError
 import pt.ipl.isel.leic.ps.androidclient.data.source.*
-import pt.ipl.isel.leic.ps.androidclient.data.source.dto.restaurant.preview.RestaurantPreviewDto
-import pt.ipl.isel.leic.ps.androidclient.data.source.dto.restaurant.preview.RestaurantLocationPreviewDto
-import pt.ipl.isel.leic.ps.androidclient.data.source.mapper.restaurant.preview.RestaurantLocationMapper
-import pt.ipl.isel.leic.ps.androidclient.data.source.mapper.restaurant.preview.RestaurantLocationsMapper
-import pt.ipl.isel.leic.ps.androidclient.data.source.model.restaurant.RestaurantLocation
+import pt.ipl.isel.leic.ps.androidclient.data.source.dto.RestaurantDto
+import pt.ipl.isel.leic.ps.androidclient.data.source.mapper.RestaurantMapper
+import pt.ipl.isel.leic.ps.androidclient.data.source.mapper.RestaurantsMapper
+import pt.ipl.isel.leic.ps.androidclient.data.source.model.Restaurant
 
 private const val RESTAURANT = "restaurant"
 
@@ -29,24 +28,24 @@ private const val RESTAURANT_MEAL_REPORT =
 private const val RESTAURANT_MEAL_VOTE =
     "$RESTAURANT_MEAL/vote"
 
-val RESTAURANT_DTO = RestaurantPreviewDto::class.java
+val RESTAURANT_DTO = RestaurantDto::class.java
 
 
 class RestaurantDataSource(
     val requester: Requester
 ) {
 
-    private val restaurantLocationMapper =
-        RestaurantLocationMapper()
-    private val restaurantLocationsMapper =
-        RestaurantLocationsMapper(
-            restaurantLocationMapper
+    private val restaurantMapper =
+        RestaurantMapper()
+    private val restaurantsMapper =
+        RestaurantsMapper(
+            restaurantMapper
         )
 
     /**
      * ----------------------------- GETs -----------------------------
      */
-    /*fun getById(
+    fun getById(
         success: (Restaurant) -> Unit,
         error: (VolleyError) -> Unit,
         uriParameters: HashMap<String, HashMap<String, String>>?,
@@ -67,10 +66,10 @@ class RestaurantDataSource(
             error,
             null
         )
-    }*/
+    }
 
     fun getNearby(
-        success: (Array<RestaurantLocation>) -> Unit,
+        success: (Array<Restaurant>) -> Unit,
         error: (VolleyError) -> Unit,
         uriParameters: HashMap<String, HashMap<String, String>>?,
         count: Int,
@@ -84,8 +83,8 @@ class RestaurantDataSource(
         requester.httpServerRequest(
             Method.GET,
             uri,
-            Array<RestaurantLocationPreviewDto>::class.java,
-            restaurantLocationsMapper::map,
+            Array<RestaurantDto>::class.java,
+            restaurantsMapper::map,
             success,
             error
         )

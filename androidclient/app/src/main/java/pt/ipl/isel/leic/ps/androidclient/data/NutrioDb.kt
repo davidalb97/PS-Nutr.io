@@ -8,7 +8,7 @@ import pt.ipl.isel.leic.ps.androidclient.data.dao.MealDao
 import pt.ipl.isel.leic.ps.androidclient.data.dao.RestaurantDao
 import pt.ipl.isel.leic.ps.androidclient.data.source.model.Cuisine
 import pt.ipl.isel.leic.ps.androidclient.data.source.model.Meal
-import pt.ipl.isel.leic.ps.androidclient.data.source.model.restaurant.Restaurant
+import pt.ipl.isel.leic.ps.androidclient.data.source.model.Restaurant
 
 @Database(entities = [Restaurant::class, Meal::class, Cuisine::class], version = ROOM_DB_VERSION)
 abstract class NutrioDb : RoomDatabase() {

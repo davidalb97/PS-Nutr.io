@@ -8,13 +8,14 @@ import android.widget.SearchView
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import pt.ipl.isel.leic.ps.androidclient.R
-import pt.ipl.isel.leic.ps.androidclient.data.source.model.restaurant.ARestaurant
+import pt.ipl.isel.leic.ps.androidclient.data.source.model.Restaurant
 import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.RestaurantRecyclerAdapter
 import pt.ipl.isel.leic.ps.androidclient.ui.listener.ScrollListener
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.RestaurantRecyclerVMProviderFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.RestaurantRecyclerViewModel
 
-class RestaurantRecyclerFragment : ARecyclerListFragment<ARestaurant, RestaurantRecyclerViewModel>(){
+class RestaurantRecyclerFragment :
+    ARecyclerListFragment<Restaurant, RestaurantRecyclerViewModel>() {
 
     private val adapter: RestaurantRecyclerAdapter by lazy {
         RestaurantRecyclerAdapter(
@@ -31,7 +32,8 @@ class RestaurantRecyclerFragment : ARecyclerListFragment<ARestaurant, Restaurant
     private fun buildViewModel(savedInstanceState: Bundle?) {
         val rootActivity = this.requireActivity()
         val factory = RestaurantRecyclerVMProviderFactory(savedInstanceState, rootActivity.intent)
-        viewModel = ViewModelProvider(rootActivity, factory)[RestaurantRecyclerViewModel::class.java]
+        viewModel =
+            ViewModelProvider(rootActivity, factory)[RestaurantRecyclerViewModel::class.java]
     }
 
     override fun onCreateView(
@@ -55,7 +57,7 @@ class RestaurantRecyclerFragment : ARecyclerListFragment<ARestaurant, Restaurant
 
         val searchBar = view.findViewById<SearchView>(R.id.search_restaurant)
 
-        searchBar.setOnQueryTextListener(object: SearchView.OnQueryTextListener {
+        searchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 if (query.isNullOrEmpty()) return false
                 viewModel.parameters["path"]?.put(":id", query)
