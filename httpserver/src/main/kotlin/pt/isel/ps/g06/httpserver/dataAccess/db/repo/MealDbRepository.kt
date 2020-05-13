@@ -287,8 +287,12 @@ class MealDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo(jdbi)
         val newIngredientSubmissionIds = ingredientSubmissionIds.filter {
             !existingMealIngredientIds.contains(it)
         }
-        handle.attach(MealIngredientDao::class.java)
-                .insertAll(newIngredientSubmissionIds.map { MealIngredientParam(mealSubmissionId, it) })
+        if(newIngredientSubmissionIds.isNotEmpty()) {
+            handle.attach(MealIngredientDao::class.java)
+                    .insertAll(newIngredientSubmissionIds.map {
+                        MealIngredientParam(mealSubmissionId, it)
+                    })
+        }
     }
 
     private fun insertAllIngredients(handle: Handle, submissionIds: List<Int>, ingredientNames: List<String>) {
