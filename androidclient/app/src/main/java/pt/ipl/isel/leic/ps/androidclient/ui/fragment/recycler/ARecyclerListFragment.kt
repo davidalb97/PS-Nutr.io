@@ -73,7 +73,7 @@ abstract class ARecyclerListFragment<T : Any, VM : ARecyclerViewModel<T>> : Frag
      * returns an empty list.
      */
     open fun successFunction(list: List<T>) {
-        if (list.isEmpty())
+        if (list.isEmpty() && this.isAdded)
             Toast.makeText(
                 activityApp, R.string.no_result_found,
                 Toast.LENGTH_LONG
@@ -87,16 +87,19 @@ abstract class ARecyclerListFragment<T : Any, VM : ARecyclerViewModel<T>> : Frag
      * or if it couldn't get results.
      */
     open fun errorFunction(exception: Exception) {
-        if (!hasInternetConnection(activityApp as NutrioApp)) {
-            Toast.makeText(
-                activityApp, R.string.no_internet_connection,
-                Toast.LENGTH_LONG
-            ).show()
-        } else {
-            Toast.makeText(activityApp, R.string.error_network, Toast.LENGTH_LONG)
-                .show()
+        if (this.isAdded) {
+            if (!hasInternetConnection(activityApp as NutrioApp)) {
+                Toast.makeText(
+                    activityApp, R.string.no_internet_connection,
+                    Toast.LENGTH_LONG
+                ).show()
+            } else {
+                Toast.makeText(activityApp, R.string.error_network, Toast.LENGTH_LONG)
+                    .show()
+            }
         }
         this.progressBar.visibility = View.INVISIBLE
         Log.v(TAG, exception.message, exception)
     }
+
 }

@@ -1,7 +1,6 @@
 package pt.ipl.isel.leic.ps.androidclient.ui.fragment.tab
 
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler.CuisinesRecyclerFragment
-import pt.ipl.isel.leic.ps.androidclient.ui.fragment.LocationFragment
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler.MealRecyclerFragment
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler.RestaurantRecyclerFragment
 

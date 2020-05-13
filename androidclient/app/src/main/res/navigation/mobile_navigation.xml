@@ -9,60 +9,66 @@
         android:id="@+id/nav_home"
         android:name="pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.HomeFragment"
         android:label="@string/menu_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/home_fragment" />
 
     <fragment
         android:id="@+id/nav_profile"
         android:name="pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.SettingsFragment"
         android:label="@string/menu_profile"
-        tools:layout="@layout/fragment_settings" />
+        tools:layout="@layout/settings_fragment" />
 
     <fragment
         android:id="@+id/nav_settings"
         android:name="pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.SettingsFragment"
         android:label="@string/menu_settings"
-        tools:layout="@layout/fragment_settings" />
+        tools:layout="@layout/settings_fragment" />
 
     <fragment
         android:id="@+id/nav_about"
         android:name="pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.AboutFragment"
         android:label="@string/menu_about"
-        tools:layout="@layout/fragment_about" />
+        tools:layout="@layout/about_fragment" />
 
     <fragment
         android:id="@+id/nav_tab_restaurants"
         android:name="pt.ipl.isel.leic.ps.androidclient.ui.fragment.tab.RestaurantSlideScreenFragment"
         android:label="@string/tab_restaurants"
-        tools:layout="@layout/fragment_tab" />
+        tools:layout="@layout/tab_fragment" />
 
     <fragment
         android:id="@+id/nav_tab_location_restaurants"
         android:name="pt.ipl.isel.leic.ps.androidclient.ui.fragment.tab.RestaurantLocationSlideScreenFragment"
         android:label="@string/tab_restaurants"
-        tools:layout="@layout/fragment_tab" />
+        tools:layout="@layout/tab_fragment" />
 
     <fragment
         android:id="@+id/nav_tab_meals"
         android:name="pt.ipl.isel.leic.ps.androidclient.ui.fragment.tab.MealSlideScreenFragment"
         android:label="@string/tab_meals"
-        tools:layout="@layout/fragment_tab" />
+        tools:layout="@layout/tab_fragment" />
 
     <fragment
         android:id="@+id/nav_cuisines"
         android:name="pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler.CuisinesRecyclerFragment"
         android:label="@string/tab_cuisines"
-        tools:layout="@layout/fragment_cuisines" />
+        tools:layout="@layout/cuisines_fragment" />
+
+    <fragment
+        android:id="@+id/nav_map"
+        android:name="pt.ipl.isel.leic.ps.androidclient.ui.fragment.MapFragment"
+        android:label="Restaurants by location"
+        tools:layout="@layout/map_fragment" />
 
     <fragment
         android:id="@+id/nav_calculator"
         android:name="pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.CalculatorFragment"
         android:label="@string/insulin_calculator_nav"
-        tools:layout="@layout/fragment_calculator" />
+        tools:layout="@layout/calculator_fragment" />
 
     <fragment
         android:id="@+id/nav_history"
         android:name="pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler.HistoryFragment"
         android:label="@string/insulin_calculator_nav"
-        tools:layout="@layout/fragment_calculator" />
+        tools:layout="@layout/calculator_fragment" />
 
 </navigation>

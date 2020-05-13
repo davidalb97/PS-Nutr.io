@@ -23,7 +23,7 @@ abstract class ASlideScreenFragment(
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_tab, container, false) as ViewGroup
+        return inflater.inflate(R.layout.tab_fragment, container, false) as ViewGroup
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

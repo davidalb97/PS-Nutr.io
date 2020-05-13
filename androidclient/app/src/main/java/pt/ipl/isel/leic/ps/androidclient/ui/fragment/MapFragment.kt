@@ -1,4 +1,4 @@
-package pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant
+package pt.ipl.isel.leic.ps.androidclient.ui.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,14 +7,14 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import pt.ipl.isel.leic.ps.androidclient.R
 
-class CalculatorFragment : Fragment(){
+class MapFragment() : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.calculator_fragment, container, false)
+        return inflater.inflate(R.layout.restaurant_list, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
