@@ -22,6 +22,7 @@ DROP TABLE IF EXISTS Submitter CASCADE;
 --DROP SEQUENCE submitter_submitter_id_seq CASCADE;
 CREATE EXTENSION IF NOT EXISTS postgis;
 ALTER EXTENSION postgis UPDATE;
+SET TIMEZONE='Portugal';
 
 CREATE TABLE Submitter(
 	submitter_id serial PRIMARY KEY,
