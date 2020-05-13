@@ -9,6 +9,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.*
 import pt.isel.ps.g06.httpserver.exception.InvalidInputDomain
 import pt.isel.ps.g06.httpserver.exception.InvalidInputException
+import java.time.Clock
 import java.time.Duration
 import java.time.OffsetDateTime
 
@@ -142,12 +143,12 @@ class BaseDbRepo constructor(internal val jdbi: Jdbi) {
         return jdbi.inTransaction<Unit, Exception>(defaultIsolation) {
             val creationDate = it.attach(SubmissionDao::class.java)
                     .getById(submissionId)!!.submission_date
+            val currentTime = OffsetDateTime.now(Clock.systemDefaultZone())
+            val seconds = Duration.between(creationDate, currentTime).seconds
 
-            val seconds = Duration.between(creationDate, OffsetDateTime.now()).seconds
-
-            if(timeout.seconds > seconds) {
+            if(seconds > timeout.seconds) {
                 throw InvalidInputException(InvalidInputDomain.TIMEOUT,
-                        "Submission change timed out!"
+                        "Submission update timed out!"
                 )
             }
         }
