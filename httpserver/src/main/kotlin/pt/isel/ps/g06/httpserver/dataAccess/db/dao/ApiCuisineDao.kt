@@ -32,9 +32,8 @@ interface ApiCuisineDao {
     fun insert(@Bind submissionId: Int, @Bind cuisineId: Int): ApiCuisineDto
 
     @SqlQuery("INSERT INTO $table($submissionId, $cuisineId)" +
-            " values <values> RETURNING *")
-    fun insertAll(@BindBeanList(
-            value = "values",
-            propertyNames = [submissionId, cuisineId]
-    ) apiCuisines: List<ApiCuisineDto>): List<ApiCuisineDto>
+            " values <apiCuisines> RETURNING *")
+    fun insertAll(@BindBeanList(propertyNames = [submissionId, cuisineId])
+                  apiCuisines: List<ApiCuisineDto>
+    ): List<ApiCuisineDto>
 }

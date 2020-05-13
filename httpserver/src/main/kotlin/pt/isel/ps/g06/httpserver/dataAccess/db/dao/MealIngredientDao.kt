@@ -28,21 +28,20 @@ interface MealIngredientDao {
             " VALUES(:mealId, :ingredientId) RETURNING *")
     fun insert(@Bind mealId: Int, @Bind ingredientId: Int): MealIngredientDto
 
-    @SqlQuery("INSERT INTO $table($mealId, $ingredientId) values <values> RETURNING *")
-    fun insertAll(@BindBeanList(
-            value = "values",
-            propertyNames = [mealId, ingredientId]
-    ) values: List<MealIngredientParam>): List<MealIngredientDto>
+    @SqlQuery("INSERT INTO $table($mealId, $ingredientId) values <mealIngredientParams> RETURNING *")
+    fun insertAll(@BindBeanList(propertyNames = [mealId, ingredientId])
+                  mealIngredientParams: List<MealIngredientParam>
+    ): List<MealIngredientDto>
 
     @SqlQuery("DELETE FROM $table WHERE $mealId = :submissionId RETURNING *")
     fun deleteAllByMealId(submissionId: Int): List<MealIngredientDto>
 
     @SqlQuery("DELETE FROM $table" +
             " WHERE $mealId = :submissionId" +
-            " AND $ingredientId in <values> RETURNING *")
+            " AND $ingredientId in <deleteIngredientIds> RETURNING *")
     fun deleteAllByMealIdAndIngredientIds(
             @Bind submissionId: Int,
-            @BindList("values") deleteIngredientIds: List<Int>
+            @BindList deleteIngredientIds: List<Int>
     ): List<MealIngredientDto>
 }
 

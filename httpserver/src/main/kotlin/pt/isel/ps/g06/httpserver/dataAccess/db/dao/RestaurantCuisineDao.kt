@@ -25,11 +25,12 @@ interface RestaurantCuisineDao {
             " VALUES(:restaurantId, :cuisineId) RETURNING *")
     fun insert(@Bind restaurantId: Int, @Bind cuisineId: Int): RestaurantCuisineDto
 
-    @SqlQuery("INSERT INTO $table($id, $cuisineId) values <values> RETURNING *")
-    fun insertAll(@BindBeanList(
-            value = "values",
-            propertyNames = [id, cuisineId]
-    ) restaurantCuisine: List<RestaurantCuisineDto>): List<RestaurantCuisineDto>
+    @SqlQuery("INSERT INTO $table($id, $cuisineId)" +
+            " values <restaurantCuisineDtos> RETURNING *"
+    )
+    fun insertAll(@BindBeanList(propertyNames = [id, cuisineId])
+                  restaurantCuisineDtos: List<RestaurantCuisineDto>
+    ): List<RestaurantCuisineDto>
 
     @SqlQuery("DELETE FROM $table WHERE $id = :restaurantId RETURNING *")
     fun deleteAllByRestaurantId(@Bind restaurantId: Int): List<RestaurantCuisineDto>
@@ -39,6 +40,6 @@ interface RestaurantCuisineDao {
             " AND $cuisineId in <cuisineIds> RETURNING *")
     fun deleteAllByRestaurantIdAndCuisineIds(
             @Bind restaurantSubmissionId: Int,
-            @BindList("cuisineIds") cuisineIds: List<Int>
+            @BindList cuisineIds: List<Int>
     ): List<RestaurantCuisineDto>
 }

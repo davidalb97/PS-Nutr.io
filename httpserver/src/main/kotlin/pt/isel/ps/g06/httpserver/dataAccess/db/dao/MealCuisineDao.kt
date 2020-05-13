@@ -54,18 +54,16 @@ interface MealCuisineDao {
             " ON $C_table.$C_cuisineId = $table.$cuisineId " +
             " WHERE $C_table.$C_name IN (<cuisineNames>)")
     fun getByCuisineNames(
-            @BindList("cuisineNames") cuisineNames: Collection<String>
+            @BindList cuisineNames: Collection<String>
     ): Collection<MealCuisineDto>
 
     @SqlQuery("INSERT INTO $table($mealId, $cuisineId)" +
             " VALUES(:submissionId, :cuisineName) RETURNING *")
     fun insert(@Bind submissionId: Int, @Bind cuisineId: Int): MealCuisineDto
 
-    @SqlQuery("INSERT INTO $table($mealId, $cuisineId) values <values> RETURNING *")
-    fun insertAll(@BindBeanList(
-            value = "values",
-            propertyNames = [mealId, cuisineId]
-    ) newName: List<MealCuisineDto>): List<MealCuisineDto>
+    @SqlQuery("INSERT INTO $table($mealId, $cuisineId) values <mealCuisineDtos> RETURNING *")
+    fun insertAll(@BindBeanList(propertyNames = [mealId, cuisineId])
+                  mealCuisineDtos: List<MealCuisineDto>): List<MealCuisineDto>
 
     @SqlQuery("DELETE FROM $table WHERE $mealId = :submissionId RETURNING *")
     fun deleteAllByMealId(@Bind submissionId: Int): List<MealCuisineDto>
@@ -75,6 +73,6 @@ interface MealCuisineDao {
             " AND $cuisineId in <cuisineIds> RETURNING *")
     fun deleteAllByMealIdAndCuisineIds(
             @Bind submissionId: Int,
-            @BindList("cuisineIds") cuisineIds: Collection<Int>
+            @BindList cuisineIds: Collection<Int>
     ): Collection<MealCuisineDto>
 }

@@ -38,12 +38,12 @@ interface ApiSubmissionDao {
             " ON $table.$submissionId = $S_table.$S_submissionId" +
             " WHERE $SS_table.$SS_submitterId = :submitterId" +
             " AND $S_table.$S_type = :submissionType" +
-            " AND $table.$apiId in (<values>)"
+            " AND $table.$apiId in (<apiIds>)"
     )
     fun getAllBySubmitterIdSubmissionTypeAndApiIds(
             @Bind submitterId: Int,
             @Bind submissionType: String,
-            @BindList("values") apiIds: List<String>
+            @BindList apiIds: List<String>
     ): List<ApiSubmissionDto>
 
     @SqlQuery("SELECT $table.$submissionId, $table.$apiId" +
@@ -60,9 +60,9 @@ interface ApiSubmissionDao {
             @Bind submissionType: String
     ): List<ApiSubmissionDto>
 
-    @SqlQuery("SELECT * FROM $table WHERE $submissionId in (<values>)")
+    @SqlQuery("SELECT * FROM $table WHERE $submissionId in (<submissionIds>)")
     fun getAllBySubmissionIds(
-            @BindList("values") submissionIds: List<Int>
+            @BindList submissionIds: List<Int>
     ): List<ApiSubmissionDto>
 
     @SqlQuery("SELECT * FROM $table WHERE $apiId = :apiId")
@@ -73,11 +73,10 @@ interface ApiSubmissionDao {
     fun insert(@Bind submissionId: Int, apiId: String): ApiSubmissionDto
 
     @SqlQuery("INSERT INTO $table($submissionId, $apiId)" +
-            " values <values> RETURNING *")
-    fun insertAll(@BindBeanList(
-            value = "values",
-            propertyNames = [submissionId, apiId]
-    ) values: List<ApiSubmissionParam>): List<ApiSubmissionDto>
+            " values <apiSubmissionParams> RETURNING *")
+    fun insertAll(@BindBeanList(propertyNames = [submissionId, apiId])
+                  apiSubmissionParams: List<ApiSubmissionParam>
+    ): List<ApiSubmissionDto>
 
     @SqlQuery("DELETE FROM $table WHERE $submissionId = :submissionId RETURNING *")
     fun deleteById(submissionId: Int): ApiSubmissionDto

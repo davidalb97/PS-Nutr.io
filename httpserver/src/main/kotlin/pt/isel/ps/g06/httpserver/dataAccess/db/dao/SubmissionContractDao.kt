@@ -24,11 +24,10 @@ interface SubmissionContractDao {
             "VALUES(:submissionId, :contract) RETURNING *")
     fun insert(@Bind submissionId: Int, contract: String): SubmissionContractDto
 
-    @SqlQuery("INSERT INTO $table($id, $contract) values <values> RETURNING *")
-    fun insertAll(@BindBeanList(
-            value = "values",
-            propertyNames = [id, contract]
-    ) values: List<SubmissionContractParam>): List<SubmissionContractDto>
+    @SqlQuery("INSERT INTO $table($id, $contract) values <submissionContractParams> RETURNING *")
+    fun insertAll(@BindBeanList(propertyNames = [id, contract])
+                  submissionContractParams: List<SubmissionContractParam>
+    ): List<SubmissionContractDto>
 
     @SqlQuery("DELETE FROM $table WHERE $id = :submissionId RETURNING *")
     fun deleteAllById(submissionId: Int): List<SubmissionContractDto>

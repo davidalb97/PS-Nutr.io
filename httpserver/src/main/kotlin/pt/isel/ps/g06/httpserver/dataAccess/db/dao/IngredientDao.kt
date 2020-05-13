@@ -41,17 +41,16 @@ interface IngredientDao {
     @SqlQuery("SELECT * FROM $table WHERE $name = :ingredientName")
     fun getAllByName(@Bind ingredientName: String): List<IngredientDto>
 
-    @SqlQuery("SELECT * FROM $table WHERE $id in (<values>)")
-    fun getAllByIds(@BindList("values") submissionIds: List<Int>): List<IngredientDto>
+    @SqlQuery("SELECT * FROM $table WHERE $id in (<submissionIds>)")
+    fun getAllByIds(@BindList submissionIds: List<Int>): List<IngredientDto>
 
     @SqlQuery("INSERT INTO $table($id, $name) VALUES(:submissionId, :ingredientName) RETURNING *")
     fun insert(@Bind submissionId: Int, ingredientName: String): IngredientDto
 
-    @SqlQuery("INSERT INTO $table($id, $name) values <values> RETURNING *")
-    fun insertAll(@BindBeanList(
-            value = "values",
-            propertyNames = [id, name]
-    ) values: List<IngredientParam>): List<IngredientDto>
+    @SqlQuery("INSERT INTO $table($id, $name) values <ingredientParams> RETURNING *")
+    fun insertAll(@BindBeanList(propertyNames = [id, name])
+                  ingredientParams: List<IngredientParam>
+    ): List<IngredientDto>
 }
 
 //Variable names must match sql columns!!!

@@ -47,7 +47,7 @@ interface CuisineDao {
     )
     fun getByMealId(@Bind mealId: Int): Collection<CuisineDto>
 
-    @SqlQuery("SELECT * FROM $table WHERE $name in (<values>)")
+    @SqlQuery("SELECT * FROM $table WHERE $name in (<cuisineIds>)")
     fun getAllByNames(@BindList cuisineIds: Collection<String>): Collection<CuisineDto>
 
     @SqlQuery("SELECT * FROM $table WHERE $id = :cuisineId")
@@ -62,7 +62,7 @@ interface CuisineDao {
             " INNER JOIN $SS_table" +
             " ON $SS_table.$SS_submissionId = $AC_table.$AC_submissionId" +
             " WHERE $SS_table.$SS_submitterId = :submitterId" +
-            " AND $AS_table.$AS_apiId IN (<values>)"
+            " AND $AS_table.$AS_apiId IN (<apiIds>)"
     )
     fun getAllByApiSubmitterAndApiIds(
             @Bind submitterId: Int,
@@ -72,11 +72,10 @@ interface CuisineDao {
     @SqlQuery("INSERT INTO $table($name) VALUES(:name) RETURNING *")
     fun insert(@Bind name: String): CuisineDto
 
-    @SqlQuery("INSERT INTO $table($name) values <values> RETURNING *")
-    fun insertAll(@BindBeanList(
-            value = "values",
-            propertyNames = [name]
-    ) newName: Collection<CuisineParam>): Collection<CuisineDto>
+    @SqlQuery("INSERT INTO $table($name) values <cuisineParams> RETURNING *")
+    fun insertAll(@BindBeanList(propertyNames = [name])
+                  cuisineParams: Collection<CuisineParam>
+    ): Collection<CuisineDto>
 }
 
 //Variable names must match sql columns

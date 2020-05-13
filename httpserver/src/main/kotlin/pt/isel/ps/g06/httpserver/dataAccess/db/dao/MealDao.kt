@@ -53,7 +53,7 @@ interface MealDao {
             " ON $table.$id = $MC_table.$MC_mealId" +
             " INNER JOIN $C_table" +
             " ON $MC_table.$MC_cuisineId = $C_table.$C_cuisineId" +
-            " WHERE $C_table.$C_name IN (<values>)"
+            " WHERE $C_table.$C_name IN (<mealNames>)"
     )
     fun getAllByCuisineNames(@BindList mealNames: Collection<String>): Collection<MealDto>
 
@@ -70,7 +70,7 @@ interface MealDao {
             " INNER JOIN $table" +
             " ON $table.$id = $MC_table.$MC_mealId" +
             " WHERE $SS_table.$SS_submitterId = :submitterId" +
-            " AND $AS_table.$AS_apiId IN (<values>)"
+            " AND $AS_table.$AS_apiId IN (<apiIds>)"
     )
     fun getAllByApiSubmitterAndCuisineApiIds(
             @Bind submitterId: Int,
