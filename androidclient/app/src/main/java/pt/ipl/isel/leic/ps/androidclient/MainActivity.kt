@@ -38,7 +38,8 @@ class MainActivity : AppCompatActivity() {
                 R.id.nav_calculator,
                 R.id.nav_history,
                 R.id.nav_restaurant_detail,
-                R.id.nav_meal_detail
+                R.id.nav_meal_detail,
+                R.id.nav_map
             ),
             drawerLayout
         )
