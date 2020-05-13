@@ -25,7 +25,7 @@ class RestaurantRecyclerViewModel : ARecyclerViewModel<Restaurant>() {
     }*/
 
     fun getNearbyRestaurants() {
-        val successFunction: (Array<Restaurant>) -> Unit = {
+        val successFunction: (List<Restaurant>) -> Unit = {
             updateList(it.toList())
             onSuccess(it.toList())
         }

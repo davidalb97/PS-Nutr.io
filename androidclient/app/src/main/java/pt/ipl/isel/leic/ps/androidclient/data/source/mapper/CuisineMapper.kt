@@ -14,6 +14,6 @@ class CuisinesMapper(
 ) {
 
     fun map(dtos: Array<CuisineDto>) {
-        dtos.map { mapper.map(it) }.toTypedArray()
+        dtos.map { mapper.map(it) }
     }
 }

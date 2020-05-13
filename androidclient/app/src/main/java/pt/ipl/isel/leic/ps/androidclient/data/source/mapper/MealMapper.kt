@@ -16,7 +16,6 @@ class MealsMapper(
     val mapper: MealMapper
 ) {
 
-    fun map(dtos: Array<MealDto>) {
-        dtos.map { mapper.map(it) }.toTypedArray()
-    }
+    fun map(dtos: Array<MealDto>): List<Meal> =
+        dtos.map { mapper.map(it) }
 }

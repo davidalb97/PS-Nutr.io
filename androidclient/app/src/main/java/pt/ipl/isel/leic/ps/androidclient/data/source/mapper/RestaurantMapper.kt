@@ -20,6 +20,6 @@ class RestaurantsMapper(
     private val restaurantMapper: RestaurantMapper
 ) {
 
-    fun map(dtos: Array<RestaurantDto>) =
-        dtos.map { restaurantMapper.map(it) }.toTypedArray()
+    fun map(dtos: Array<RestaurantDto>): List<Restaurant> =
+        dtos.map { restaurantMapper.map(it) }
 }
