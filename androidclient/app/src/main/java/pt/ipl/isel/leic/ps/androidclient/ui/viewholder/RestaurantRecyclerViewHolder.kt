@@ -1,11 +1,14 @@
 package pt.ipl.isel.leic.ps.androidclient.ui.viewholder
 
 import android.content.Context
+import android.os.Bundle
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.cardview.widget.CardView
+import androidx.navigation.findNavController
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.source.model.Restaurant
 
@@ -25,10 +28,16 @@ class RestaurantRecyclerViewHolder(
     val favoriteButton = view.findViewById<ImageButton>(R.id.favorite)
     val optionsButton = view.findViewById<ImageButton>(R.id.options)
 
+
     override fun bindTo(item: Restaurant) {
         super.bindTo(item)
         //restaurantImage.setImageResource(item.)
         restaurantName.text = item.name
+
+        itemView.setOnClickListener {
+            val bundle = Bundle()
+            view.findNavController().navigate(R.id.nav_restaurant_detail)
+        }
     }
 
 }

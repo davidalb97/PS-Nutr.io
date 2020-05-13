@@ -76,7 +76,7 @@ class RestaurantDataSource(
         skip: Int
     ) {
         var uri =
-            RESTAURANT_LOCATION
+            RESTAURANT_ID_URI
 
         //uri = requester.buildUri(uri, uriParameters)
 
