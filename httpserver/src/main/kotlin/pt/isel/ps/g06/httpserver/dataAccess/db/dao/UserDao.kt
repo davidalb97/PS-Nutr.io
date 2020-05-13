@@ -1,9 +1,12 @@
 package pt.isel.ps.g06.httpserver.dataAccess.db.dao
 
+import org.jdbi.v3.sqlobject.config.RegisterRowMapper
 import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.UserDto
+import pt.isel.ps.g06.httpserver.dataAccess.db.mapper.UserMapper
 
+@RegisterRowMapper(UserMapper::class)
 interface UserDao {
 
     companion object {
@@ -11,6 +14,7 @@ interface UserDao {
         const val id = "submitter_id"
         const val email = "email"
         const val sessionSecret = "session_secret"
+        const val date = "creation_date"
     }
 
     @SqlQuery("SELECT * FROM $table")

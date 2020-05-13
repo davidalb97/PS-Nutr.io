@@ -1,10 +1,13 @@
 package pt.isel.ps.g06.httpserver.dataAccess.db.dao
 
+import org.jdbi.v3.sqlobject.config.RegisterRowMapper
 import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.customizer.BindBeanList
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.SubmissionDto
+import pt.isel.ps.g06.httpserver.dataAccess.db.mapper.SubmissionMapper
 
+@RegisterRowMapper(SubmissionMapper::class)
 interface SubmissionDao {
 
     companion object {
