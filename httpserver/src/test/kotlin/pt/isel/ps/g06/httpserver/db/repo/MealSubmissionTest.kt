@@ -1,15 +1,21 @@
 package pt.isel.ps.g06.httpserver.db.repo
 
 import org.jdbi.v3.core.Jdbi
-import org.junit.jupiter.api.*
+import org.junit.jupiter.api.MethodOrderer
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestMethodOrder
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import pt.isel.ps.g06.httpserver.dataAccess.api.food.FoodApiType
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionContractType.*
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType
+import pt.isel.ps.g06.httpserver.dataAccess.db.dao.SubmissionDao
+import pt.isel.ps.g06.httpserver.dataAccess.db.mapper.SubmissionMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.MealDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.model.Ingredient
-import pt.isel.ps.g06.httpserver.db.*
+import pt.isel.ps.g06.httpserver.db.Constants
+import pt.isel.ps.g06.httpserver.db.RepoAsserts
+import pt.isel.ps.g06.httpserver.db.inSandbox
 import pt.isel.ps.g06.httpserver.model.TestCuisine
 import pt.isel.ps.g06.httpserver.model.TestIngredient
 import pt.isel.ps.g06.httpserver.springConfig.dto.DbEditableDto
@@ -321,19 +327,6 @@ class MealSubmissionTest {
 //        }
 //    }
 
-
-//    private fun getFirstMealWithIngredients(handle: Handle): TestMeal {
-//        //Existing meal with ingredients
-//        val existingMealId = const.submissionDtos
-//                //Only meal submissions
-//                .filter { it.submission_type == SubmissionType.MEAL.toString() }
-//                .map { it.submission_id }
-//                //Meal with ingredients
-//                .first { mealId -> const.mealIngredienteDtos.any { it.meal_submission_id == mealId } }
-//        return const.mealDtos.first { it.submission_id == existingMealId }
-//                .mapToTest(handle)
-//    }
-
     @Test
     fun shouldUpdateUserMealWithNewIngredientsAndCuisinesPreservingOldValues() {
         jdbi.inSandbox(const) {
@@ -357,20 +350,13 @@ class MealSubmissionTest {
             }.take(newCuisineCount)
             val expectedCuisines = existingMeal.cuisines.map(TestCuisine::toCuisineDto)
                     .union(newCuisines).toList()
-//            val existingIngredients =
-//
-//            val expectedMealName = "Debug meal"
-//            val expectedMealApiId = null
-//            val expectedCuisines = const.cuisineNames.take(4)
-//            val expectedApiSubmitter = const.firstFoodApi
-//            val expectedFoodApiType = FoodApiType.valueOf(expectedApiSubmitter.submitter_name)
-//            val expectedSubmissionId = const.nextSubmissionId
-//            val expectedIngredientCount = 3
-//            val expectedIngredientSubmissionIds =
-//                    ((expectedSubmissionId + 1)..(expectedSubmissionId + expectedIngredientCount))
-//                            .toList()
-//            val expectedIngredients = expectedIngredientSubmissionIds
-//                    .map { Ingredient("Test Ingredient$it", it * (-1), expectedFoodApiType) }
+
+            //Bypass time restriction
+            val updatedSubmission = it.createQuery("UPDATE ${SubmissionDao.table}" +
+                    " SET ${SubmissionDao.date} = CURRENT_TIMESTAMP" +
+                    " WHERE ${SubmissionDao.id} = ${existingMeal.submissionId}" +
+                    " RETURNING *"
+            ).map(SubmissionMapper()).first()
 
             mealRepo.update(
                     existingMeal.submitterId,
@@ -426,7 +412,7 @@ class MealSubmissionTest {
             //Assert Meal insertions
             asserts.assertMeal(it,
                     expectedSubmissionId = existingMeal.submissionId,
-                    expectedMealName = existingMeal.mealName
+                    expectedMealName = expectedName
             )
             asserts.assertMealInsertCount(it, 0)
 
@@ -463,6 +449,4 @@ class MealSubmissionTest {
             asserts.assertMealIngredientInsertCount(it, newIngredientIds.size)
         }
     }
-
-
 }
