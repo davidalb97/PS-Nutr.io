@@ -1,7 +1,10 @@
 package pt.ipl.isel.leic.ps.androidclient.data.source
 
+import com.android.volley.NetworkResponse
+import com.android.volley.ParseError
 import com.android.volley.Response
 import com.android.volley.VolleyLog
+import com.android.volley.toolbox.HttpHeaderParser
 import com.android.volley.toolbox.StringRequest
 import java.io.UnsupportedEncodingException
 
@@ -43,6 +46,25 @@ class BodyStringRequest : StringRequest {
                 PROTOCOL_CHARSET
             )
             null
+        }
+    }
+
+    /**
+     * Overriding to set the charset to UTF-8
+     */
+    override fun parseNetworkResponse(response: NetworkResponse): Response<String> {
+        var parsed = ""
+
+        val encoding = charset(PROTOCOL_CHARSET)
+
+        try {
+            parsed = String(response.data, encoding)
+            val bytes = parsed.toByteArray(encoding)
+            parsed = String(bytes, charset("UTF-8"))
+
+            return Response.success(parsed, HttpHeaderParser.parseCacheHeaders(response))
+        } catch (e: UnsupportedEncodingException) {
+            return Response.error(ParseError(e))
         }
     }
 
