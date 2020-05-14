@@ -33,14 +33,14 @@ interface VoteDao {
             " VALUES(:voteSubmissionId, :voteSubmitterId, :vote) RETURNING *")
     fun insert(@Bind voteSubmissionId: Int, voterSubmitterId: Int, vote: Boolean): VoteDto
 
-    @SqlUpdate("UPDATE $table" +
+    @SqlQuery("UPDATE $table" +
             " SET $vote = :vote" +
             " WHERE $submissionId =" +
             " :submissionId, $voterSubmitterId = :voteSubmitterId RETURNING *"
     )
     fun update(@Bind submissionId: Int, voteSubmitterId: Int, vote: Boolean): VoteDto
 
-    @SqlUpdate("DELETE FROM $table" +
+    @SqlQuery("DELETE FROM $table" +
             " WHERE $submissionId = :submissionId" +
             " AND $voterSubmitterId = :voteSubmitterId RETURNING *")
     fun delete(@Bind submissionId: Int, voteSubmitterId: Int): VoteDto
