@@ -8,7 +8,7 @@ class MealRepository(private val dataSource: MealDataSource) {
     fun getMeals(
         success: (Meal) -> Unit,
         error: () -> Unit,
-        uriParameters: HashMap<String, HashMap<String, String>>?,
+        uriParameters: HashMap<String, String>?,
         count: Int,
         skip: Int
     ) {

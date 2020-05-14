@@ -13,7 +13,7 @@ class RestaurantRepository(private val dataSource: RestaurantDataSource) {
     fun getRestaurantById(
         success: (Restaurant) -> Unit,
         error: (VolleyError) -> Unit,
-        uriParameters: HashMap<String, HashMap<String, String>>?,
+        uriParameters: HashMap<String, String>?,
         count: Int,
         skip: Int
     ) {
@@ -29,7 +29,7 @@ class RestaurantRepository(private val dataSource: RestaurantDataSource) {
     fun getNearbyRestaurants(
         success: (List<Restaurant>) -> Unit,
         error: (VolleyError) -> Unit,
-        uriParameters: HashMap<String, HashMap<String, String>>?,
+        uriParameters: HashMap<String, String>?,
         count: Int,
         skip: Int
     ) {

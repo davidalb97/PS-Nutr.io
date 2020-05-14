@@ -44,23 +44,16 @@ class Requester(
      */
     fun buildUri(
         baseUri: String,
-        parameters: HashMap<String, HashMap<String, String>>?
+        parameters: HashMap<String, String>?
     ): String {
 
         if (parameters.isNullOrEmpty()) {
             return baseUri
         }
 
-        val path = parameters["path"]
-        val query = parameters["query"]
-
         var uri = baseUri
 
-        path?.forEach { parameter ->
-            uri = uri.replace(parameter.key, parameter.value)
-        }
-
-        query?.forEach { parameter ->
+        parameters?.forEach { parameter ->
             uri = uri.replace(parameter.key, parameter.value)
         }
 

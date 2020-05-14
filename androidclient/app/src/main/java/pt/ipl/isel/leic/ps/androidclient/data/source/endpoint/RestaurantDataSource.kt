@@ -48,7 +48,7 @@ class RestaurantDataSource(
     fun getById(
         success: (Restaurant) -> Unit,
         error: (VolleyError) -> Unit,
-        uriParameters: HashMap<String, HashMap<String, String>>?,
+        uriParameters: HashMap<String, String>?,
         count: Int,
         skip: Int
     ) {
@@ -58,7 +58,7 @@ class RestaurantDataSource(
         uri = requester.buildUri(uri, uriParameters)
 
         requester.httpServerRequest(
-         Method.GET,
+            Method.GET,
             uri,
             RestaurantDto::class.java,
             restaurantMapper::map,
@@ -71,14 +71,14 @@ class RestaurantDataSource(
     fun getNearby(
         success: (List<Restaurant>) -> Unit,
         error: (VolleyError) -> Unit,
-        uriParameters: HashMap<String, HashMap<String, String>>?,
+        uriParameters: HashMap<String, String>?,
         count: Int,
         skip: Int
     ) {
         var uri =
-            RESTAURANT_ID_URI
+            RESTAURANT_LOCATION
 
-        //uri = requester.buildUri(uri, uriParameters)
+        uri = requester.buildUri(uri, uriParameters)
 
         requester.httpServerRequest(
             Method.GET,
@@ -97,7 +97,7 @@ class RestaurantDataSource(
     /*fun postRestaurant(
         success: (Restaurant) -> Unit,
         error: (VolleyError) -> Unit,
-        uriParameters: HashMap<String, HashMap<String, String>>?,
+        uriParameters:  HashMap<String, String>?,
         count: Int,
         skip: Int
     ) {
@@ -119,7 +119,7 @@ class RestaurantDataSource(
     /*fun postReport(
         success: (Restaurant) -> Unit,
         error: (VolleyError) -> Unit,
-        uriParameters: HashMap<String, HashMap<String, String>>?,
+        uriParameters:  HashMap<String, String>?,
         count: Int,
         skip: Int
     ) {
@@ -141,7 +141,7 @@ class RestaurantDataSource(
     /*fun postVote(
         success: (Restaurant) -> Unit,
         error: (VolleyError) -> Unit,
-        uriParameters: HashMap<String, HashMap<String, String>>?,
+        uriParameters:  HashMap<String, String>?,
         count: Int,
         skip: Int
     ) {
@@ -166,7 +166,7 @@ class RestaurantDataSource(
     /*fun updateVote(
         success: (Restaurant) -> Unit,
         error: (VolleyError) -> Unit,
-        uriParameters: HashMap<String, HashMap<String, String>>?,
+        uriParameters:  HashMap<String, String>?,
         count: Int,
         skip: Int
     ) {
@@ -192,7 +192,7 @@ class RestaurantDataSource(
     /*fun deleteVote(
         success: (Restaurant) -> Unit,
         error: (VolleyError) -> Unit,
-        uriParameters: HashMap<String, HashMap<String, String>>?,
+        uriParameters:  HashMap<String, String>?,
         count: Int,
         skip: Int
     ) {

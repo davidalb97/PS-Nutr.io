@@ -19,10 +19,7 @@ abstract class ARecyclerViewModel<T> : ViewModel(), Parcelable {
     /**
      * The parameters contains the pairs for the uri path and/or the query string
      */
-    var parameters: HashMap<String, HashMap<String, String>> = hashMapOf(
-        Pair("path", HashMap()),
-        Pair("query", HashMap())
-    )
+    var parameters: HashMap<String, String> = hashMapOf()
     var skip = 0
 
     /**

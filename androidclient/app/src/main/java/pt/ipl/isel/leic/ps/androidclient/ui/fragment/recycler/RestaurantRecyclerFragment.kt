@@ -60,7 +60,7 @@ class RestaurantRecyclerFragment :
         searchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 if (query.isNullOrEmpty()) return false
-                viewModel.parameters["path"]?.put(":id", query)
+                viewModel.parameters[":id"] = query
                 searchBar.clearFocus()
                 return true
             }

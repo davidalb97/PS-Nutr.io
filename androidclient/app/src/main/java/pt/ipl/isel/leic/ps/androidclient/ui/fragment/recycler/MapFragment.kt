@@ -41,7 +41,8 @@ class MapFragment : ARecyclerListFragment<Restaurant, RestaurantRecyclerViewMode
     }
 
     lateinit var mFusedLocationClient: FusedLocationProviderClient
-
+    private var latitude: Double? = null
+    private var longitude: Double? = null
 
     val PERMISSION_ID = 42
 
@@ -74,7 +75,6 @@ class MapFragment : ARecyclerListFragment<Restaurant, RestaurantRecyclerViewMode
 
         initRecyclerList(view)
         setCallbackFunctions()
-        viewModel.getNearbyRestaurants()
         list.adapter = adapter
         list.layoutManager = LinearLayoutManager(this.requireContext())
         startObserver()
@@ -84,7 +84,6 @@ class MapFragment : ARecyclerListFragment<Restaurant, RestaurantRecyclerViewMode
         searchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 if (query.isNullOrEmpty()) return false
-                viewModel.parameters["path"]?.put(":id", query)
                 searchBar.clearFocus()
                 return true
             }
@@ -158,9 +157,12 @@ class MapFragment : ARecyclerListFragment<Restaurant, RestaurantRecyclerViewMode
                     if (location == null) {
                         requestNewLocationData()
                     } else {
+                        viewModel.parameters[":latitude"] = location.latitude.toString()
+                        viewModel.parameters[":longitude"] = location.longitude.toString()
+                        viewModel.getNearbyRestaurants()
                         Toast.makeText(
                             activityApp,
-                            "latitude: ${location?.latitude} // longitude: ${location?.longitude}",
+                            "latitude: ${location.latitude} // longitude: ${location.longitude}",
                             Toast.LENGTH_LONG
                         ).show()
                     }
