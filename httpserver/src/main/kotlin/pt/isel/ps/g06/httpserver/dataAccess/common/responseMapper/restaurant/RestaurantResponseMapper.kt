@@ -9,6 +9,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.repo.CuisineDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.MealDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.RestaurantDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.model.RestaurantDto
+import pt.isel.ps.g06.httpserver.model.Meal
 import pt.isel.ps.g06.httpserver.model.Restaurant
 import pt.isel.ps.g06.httpserver.util.log
 
@@ -104,7 +105,7 @@ class DbRestaurantResponseMapper(
                 latitude = dto.latitude,
                 longitude = dto.longitude,
                 cuisines = cuisines,
-                meals = lazy { emptyList() }
+                meals = lazy { emptyList<Meal>() }
                 //TODO - Handle obtaining meals for Database restaurant: Should it only get from DB? Also from API?
         )
     }

@@ -37,9 +37,9 @@ fun calculateMealInsulin(insulinProfile: InsulinProfile, glucose: Int, carbs: In
     return rounded
 }
 
-class InsulinCalculator {
+class InsulinCalculatorTests {
     @Test
-    fun test() {
+    fun testSimpleProfile() {
         val profile = InsulinProfile(100, 40, 1F, 12)
         calculateMealInsulin(profile, 200, 24)
     }
