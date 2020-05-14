@@ -20,7 +20,7 @@ class BaseDbRepo constructor(internal val jdbi: Jdbi) {
     /**
      * @throws InvalidInputException If submissionId is invalid or contract is unexpected.
      */
-    internal fun requireSubmission(
+    protected fun requireSubmission(
             submissionId: Int,
             submissionType: SubmissionType,
             defaultIsolation: TransactionIsolationLevel = SERIALIZABLE
@@ -39,7 +39,7 @@ class BaseDbRepo constructor(internal val jdbi: Jdbi) {
     /**
      * @throws InvalidInputException If submitter does not own the submission.
      */
-    internal fun requireSubmissionSubmitter(
+    protected fun requireSubmissionSubmitter(
             submissionId: Int,
             submitterId: Int,
             defaultIsolation: TransactionIsolationLevel = SERIALIZABLE
@@ -62,7 +62,7 @@ class BaseDbRepo constructor(internal val jdbi: Jdbi) {
     /**
      * @throws InvalidInputException If submission was voted by submitter or if submission does not exist.
      */
-    internal fun requireNoVote(
+    protected fun requireNoVote(
             submissionId: Int,
             submitterId: Int,
             defaultIsolation: TransactionIsolationLevel = SERIALIZABLE
@@ -84,7 +84,7 @@ class BaseDbRepo constructor(internal val jdbi: Jdbi) {
     /**
      * @throws InvalidInputException If submission was not voted by submitter or if submission does not exist.
      */
-    internal fun requireVote(
+    protected fun requireVote(
             submissionId: Int,
             submitterId: Int,
             defaultIsolation: TransactionIsolationLevel = SERIALIZABLE
@@ -105,7 +105,7 @@ class BaseDbRepo constructor(internal val jdbi: Jdbi) {
      * @throws InvalidInputException If the submission does not meet the IS-A contract or
      * if the submission does not exist.
      */
-    internal fun requireContract(
+    protected fun requireContract(
             submissionId: Int,
             contract: SubmissionContractType,
             defaultIsolation: TransactionIsolationLevel = SERIALIZABLE
@@ -122,14 +122,14 @@ class BaseDbRepo constructor(internal val jdbi: Jdbi) {
         }
     }
 
-    internal fun isFromApi(submissionId: Int, defaultIsolation: TransactionIsolationLevel = SERIALIZABLE): Boolean {
+    protected fun isFromApi(submissionId: Int, defaultIsolation: TransactionIsolationLevel = SERIALIZABLE): Boolean {
         return jdbi.inTransaction<Boolean, Exception>(defaultIsolation) {
             return@inTransaction it.attach(ApiSubmissionDao::class.java)
                     .getBySubmissionId(submissionId) != null
         }
     }
 
-    internal fun isApi(submitterId: Int, defaultIsolation: TransactionIsolationLevel = SERIALIZABLE): Boolean {
+    protected fun isApi(submitterId: Int, defaultIsolation: TransactionIsolationLevel = SERIALIZABLE): Boolean {
         return jdbi.inTransaction<Boolean, Exception>(defaultIsolation) {
             return@inTransaction it.attach(ApiDao::class.java)
                     .getById(submitterId) != null
@@ -139,7 +139,7 @@ class BaseDbRepo constructor(internal val jdbi: Jdbi) {
     /**
      * @throws InvalidInputException If submission change timed out.
      */
-    fun requireEditable(submissionId: Int, timeout: Duration, defaultIsolation: TransactionIsolationLevel = SERIALIZABLE) {
+    protected fun requireEditable(submissionId: Int, timeout: Duration, defaultIsolation: TransactionIsolationLevel = SERIALIZABLE) {
         return jdbi.inTransaction<Unit, Exception>(defaultIsolation) {
             val creationDate = it.attach(SubmissionDao::class.java)
                     .getById(submissionId)!!.submission_date
@@ -154,7 +154,7 @@ class BaseDbRepo constructor(internal val jdbi: Jdbi) {
         }
     }
 
-    fun requireFromUser(submissionId: Int, isolationLevel: TransactionIsolationLevel) {
+    protected fun requireFromUser(submissionId: Int, isolationLevel: TransactionIsolationLevel) {
         if(isFromApi(submissionId, isolationLevel)) {
             throw InvalidInputException(InvalidInputDomain.API,
                     "The submission id \"$submissionId\" is not an API submission."
