@@ -59,4 +59,7 @@
     <string name="pre_meal_blood_glucose_target">Pre-meal blood glucose target</string>
     <string name="insulin_calculator_nav">Insulin calculator</string>
     <string name="calculate">Calculate</string>
+
+    <!-- MapBox api key -->
+    <string name="access_token">pk.eyJ1IjoibWlnMDciLCJhIjoiY2thNm96MWQzMDh6cTJybzMybnVjMjZ4dCJ9.VEnqYHRE7wBwhTp7-ASOBQ</string>
 </resources>

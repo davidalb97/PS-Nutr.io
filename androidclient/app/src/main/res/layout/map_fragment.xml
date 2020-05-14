@@ -1,21 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:mapbox="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <RelativeLayout
-        android:id="@+id/mapView"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-    </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+            <com.mapbox.mapboxsdk.maps.MapView
+                android:id="@+id/mapBoxView"
+                android:layout_width="match_parent"
+                android:layout_height="350dp"
+                mapbox:mapbox_cameraZoom="12">
+            </com.mapbox.mapboxsdk.maps.MapView>
 
-    <include
-        android:id="@+id/restaurant_location_list"
-        android:layout_below="@+id/mapView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        layout="@layout/restaurant_list"/>
+            <include
+                android:id="@+id/restaurant_location_list"
+                android:layout_below="@+id/mapBoxView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                layout="@layout/restaurant_list"/>
 
+        </RelativeLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-</RelativeLayout>
+</ScrollView>
