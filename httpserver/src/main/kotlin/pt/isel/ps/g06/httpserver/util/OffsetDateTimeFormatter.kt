@@ -9,7 +9,7 @@ fun parsePostgresql(dateTimeWithTimeZone: String): OffsetDateTime {
             .append(DateTimeFormatter.ISO_DATE)
             .appendLiteral(' ')
             .appendPattern("HH:mm:ss")
-            .appendPattern("[.SSSSSSSSS][.SSSSSS][.SSS]")
+            .appendPattern("[.SSSSSSSSS][.SSSSSSS][.SSSSSSS][.SSSSSS][.SSSSS][.SSSS][.SSS][.SS][.S]")
             .appendOffset("+HH", "Z")
             .toFormatter()
     return OffsetDateTime.parse(dateTimeWithTimeZone, formatter)
