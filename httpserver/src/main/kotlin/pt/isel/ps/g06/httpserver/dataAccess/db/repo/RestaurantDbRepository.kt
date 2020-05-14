@@ -82,7 +82,7 @@ class RestaurantDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo
         return jdbi.inTransaction<Unit, Exception>(isolationLevel) {
 
             // Check if the submitter is the creator of this restaurant
-            requireSubmissionSubmitter(submitterId, submissionId, isolationLevel)
+            requireSubmissionSubmitter(submissionId, submitterId, isolationLevel)
 
             // Check if the submission is a Restaurant
             requireSubmission(submissionId, RESTAURANT, isolationLevel)
@@ -130,7 +130,7 @@ class RestaurantDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo
         return jdbi.inTransaction<Unit, Exception>(isolationLevel) {
 
             // Check if the submitter is the creator of this restaurant
-            requireSubmissionSubmitter(submitterId, submissionId, isolationLevel)
+            requireSubmissionSubmitter(submissionId, submitterId, isolationLevel)
 
             // Check if the submission is a Restaurant
             requireSubmission(submissionId, SubmissionType.MEAL, isolationLevel)

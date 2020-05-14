@@ -111,7 +111,7 @@ class MealDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo(jdbi)
         return jdbi.inTransaction<Unit, Exception>(isolationLevel) {
 
             // Check if the submitter is the creator of this meal
-            requireSubmissionSubmitter(submitterId, submissionId, isolationLevel)
+            requireSubmissionSubmitter(submissionId, submitterId, isolationLevel)
 
             // Check if the submission is a Meal
             requireSubmission(submissionId, MEAL, isolationLevel)
@@ -162,7 +162,7 @@ class MealDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo(jdbi)
         jdbi.inTransaction<Unit, Exception>(isolationLevel) {
 
             // Check if the submitter is the creator of this meal
-            requireSubmissionSubmitter(submitterId, submissionId, isolationLevel)
+            requireSubmissionSubmitter(submissionId, submitterId, isolationLevel)
 
             // Check if the submission is a Meal
             requireSubmission(submissionId, MEAL, isolationLevel)
