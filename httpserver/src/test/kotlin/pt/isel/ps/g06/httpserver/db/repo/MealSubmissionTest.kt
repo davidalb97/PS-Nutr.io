@@ -35,9 +35,8 @@ class MealSubmissionTest {
     @Autowired
     lateinit var const: Constants
 
-
     @Test
-    fun shouldInsertUserMealWithoutIngredients() {
+    fun shouldInsertApiMealWithoutIngredients() {
         jdbi.inSandbox(const) {
 
             val expectedSubmitterId = const.userDtos.first().submitter_id
@@ -663,5 +662,118 @@ class MealSubmissionTest {
             //Assert MealCuisine insert count
             asserts.assertMealIngredientInsertCount(it, 0)
         }
+    }
+
+    @Test
+    fun shouldDeleteUserMealWithIngredientsAndCuisines() {
+        jdbi.inSandbox(const) {
+            val existingMeal = const.meals.first { it.ingredients.isNotEmpty() && it.cuisines.isNotEmpty()}
+            val expectedIngredientIds = existingMeal.ingredients.map { it.submissionId }
+
+            //Bypass time restriction
+            val updatedSubmission = it.createQuery("UPDATE ${SubmissionDao.table}" +
+                    " SET ${SubmissionDao.date} = CURRENT_TIMESTAMP" +
+                    " WHERE ${SubmissionDao.id} = ${existingMeal.submissionId}" +
+                    " RETURNING *"
+            ).map(SubmissionMapper()).first()
+
+            mealRepo.delete(existingMeal.submitterId, existingMeal.submissionId)
+
+            val expectedMealContracts = listOf(VOTABLE, REPORTABLE)
+            val expectedIngredientContracts = listOf(API)
+
+            //Assert current Meal submissions existence
+            asserts.assertSubmission(it,
+                    expectedSubmissionId = existingMeal.submissionId,
+                    expectedSubmissionType = SubmissionType.MEAL,
+                    isDeleted = true
+            )
+            //Assert current Ingredient submissions existence (Ingredient old + new, without removed)
+            asserts.assertSubmission(it,
+                    expectedSubmissionIds = expectedIngredientIds,
+                    expectedSubmissionType = SubmissionType.INGREDIENT,
+                    isDeleted = false
+            )
+            //Assert Submission insertion count (deleted meal submission)
+            asserts.assertSubmissionInsertCount(it, -1)
+
+            //Assert SubmissionContract API contracts on meal submission
+            asserts.assertSubmissionContract(it,
+                    submissionId = existingMeal.submissionId,
+                    expectedContracts = expectedMealContracts,
+                    isDeleted = true
+            )
+            //Assert SubmissionContract API contracts on ingredient submissions
+            asserts.assertSubmissionContract(it,
+                    submissionIds = expectedIngredientIds,
+                    expectedContracts = expectedIngredientContracts,
+                    isDeleted = false
+            )
+            //Assert SubmissionContract meal API contracts delete count
+            asserts.assertSubmissionContractInsertCount(it, expectedMealContracts.size * (-1))
+
+            //Assert SubmissionSubmitter insertions (Meal)
+            asserts.assertSubmissionSubmitter(it,
+                    expectedSubmissionId = existingMeal.submissionId,
+                    expectedSubmitterId = existingMeal.submitterId,
+                    isDeleted = true
+            )
+            //Assert SubmissionSubmitter insertions (Ingredient)
+            asserts.assertSubmissionSubmitter(it,
+                    expectedSubmissionIds = expectedIngredientIds,
+                    expectedSubmitterId = existingMeal.foodApi.submitterId,
+                    isDeleted = false
+            )
+            asserts.assertSubmissionSubmitterInsertCount(it, -1)
+
+            //Assert Meal insertions
+            asserts.assertMeal(it,
+                    expectedSubmissionId = existingMeal.submissionId,
+                    expectedMealName = existingMeal.mealName,
+                    isDeleted = true
+            )
+            asserts.assertMealInsertCount(it, -1)
+
+            //Assert MealCuisine insertions
+            asserts.assertMealCuisines(it,
+                    expectedCuisineIds = existingMeal.cuisines.map { it.cuisineId },
+                    resultSubmissionId = existingMeal.submissionId,
+                    isDeleted = true
+            )
+            asserts.assertMealCuisinesInsertCount(it, existingMeal.cuisines.size * (-1))
+
+            //Assert Ingredient ApiSubmission insertions (meal does not have apiId, ingredients not inserted)
+            asserts.assertApiSubmission(it,
+                    expectedApiSubmissionIds = expectedIngredientIds,
+                    apiSubmitterId = existingMeal.foodApi.submitterId,
+                    submissionType = SubmissionType.INGREDIENT,
+                    apiIds = existingMeal.ingredients.map { it.apiId },
+                    isDeleted = false
+            )
+            asserts.assertApiSubmissionInsertCount(it, 0)
+
+            //Assert Ingredient existence
+            asserts.assertIngredient(it,
+                    expectedIngredientSubmissionIds = expectedIngredientIds,
+                    expectedIngredientNames = existingMeal.ingredients.map { it.name },
+                    isDeleted = false
+            )
+            //Assert Ingredient insertion count
+            asserts.assertIngredientInsertCount(it, 0)
+
+            //Assert MealCuisine existence
+            asserts.assertMealIngredient(it,
+                    expectedMealSubmissionId = existingMeal.submissionId,
+                    expectedIngredientSubmissionIds = expectedIngredientIds,
+                    isDeleted = true
+            )
+            //Assert MealCuisine insert count
+            asserts.assertMealIngredientInsertCount(it, expectedIngredientIds.size * (-1))
+        }
+    }
+
+    @Test
+    fun shouldDeleteApiMealWithCuisines() {
+        TODO()
     }
 }
