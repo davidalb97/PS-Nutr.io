@@ -42,10 +42,7 @@ class MapFragment
         )
     }
 
-    /*lateinit var mFusedLocationClient: FusedLocationProviderClient
-    private var latitude: Double? = null
-    private var longitude: Double? = null*/
-    private val DEFAULT_INTERVAL_IN_MILLISECONDS: Long = 1000L
+    private val DEFAULT_INTERVAL_IN_MILLISECONDS: Long = 100000L
     private val DEFAULT_MAX_WAIT_TIME = DEFAULT_INTERVAL_IN_MILLISECONDS * 5
     private var mapboxMap: MapboxMap? = null
     private var mapView: MapView? = null
@@ -74,9 +71,6 @@ class MapFragment
     ): View? {
         activityApp = this.requireActivity().application
         buildViewModel(savedInstanceState)
-        /*mFusedLocationClient = LocationServices.getFusedLocationProviderClient(activityApp)
-        getLastLocation()*/
-        initCallback()
         Mapbox.getInstance(activityApp, getString(R.string.access_token))
         return inflater.inflate(R.layout.map_fragment, container, false)
     }
@@ -84,6 +78,7 @@ class MapFragment
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        initLocationEngineCallback()
         mapView = view.findViewById(R.id.mapBoxView)
         mapView?.onCreate(savedInstanceState)
         mapView?.getMapAsync(this);
@@ -245,35 +240,33 @@ class MapFragment
     }
 
 
-    private fun initCallback() {
+    private fun initLocationEngineCallback() {
         this.callback = object : LocationEngineCallback<LocationEngineResult> {
             override fun onSuccess(result: LocationEngineResult?) {
                 val location = result!!.lastLocation ?: return
 
                 // Create a Toast which displays the new location's coordinates
-                Toast.makeText(
-                    activityApp, java.lang.String.format(
-                        "New location",
-                        result.lastLocation!!.latitude,
-                        result.lastLocation!!.longitude
-                    ),
-                    Toast.LENGTH_SHORT
-                ).show()
+                viewModel.parameters[":latitude"] =
+                    result.lastLocation!!.latitude.toString()
+
+                viewModel.parameters[":longitude"] =
+                    result.lastLocation!!.longitude.toString()
 
                 // Pass the new location to the Maps SDK's LocationComponent
                 if (mapboxMap != null && result.lastLocation != null) {
                     mapboxMap!!.locationComponent
                         .forceLocationUpdate(result.lastLocation)
                 }
+
+                viewModel.getNearbyRestaurants()
             }
 
             override fun onFailure(exception: java.lang.Exception) {
-                if (activityApp != null) {
-                    Toast.makeText(
-                        activityApp, exception.localizedMessage,
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
+                Toast.makeText(
+                    activityApp,
+                    exception.localizedMessage,
+                    Toast.LENGTH_SHORT
+                ).show()
             }
 
         }
