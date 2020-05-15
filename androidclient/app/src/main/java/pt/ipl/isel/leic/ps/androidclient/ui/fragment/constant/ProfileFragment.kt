@@ -1,4 +1,4 @@
-package pt.ipl.isel.leic.ps.androidclient.ui.fragment.tab
+package pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,10 +9,10 @@ import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.ui.adapter.TabAdapter
+import pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler.ProfileProfilesRecyclerFragment
+import pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler.ProfileSubmissionsRecyclerFragment
 
-abstract class ASlideScreenFragment(
-    private val tabs: Map<Fragment, String>
-) : Fragment() {
+class ProfileFragment : Fragment() {
 
     lateinit var tabPagerAdapter: TabAdapter
     lateinit var viewPager: ViewPager
@@ -23,7 +23,7 @@ abstract class ASlideScreenFragment(
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.tab_fragment, container, false) as ViewGroup
+        return inflater.inflate(R.layout.profile_fragment, container, false) as ViewGroup
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -31,12 +31,13 @@ abstract class ASlideScreenFragment(
         tabPagerAdapter = TabAdapter(childFragmentManager)
 
         // Add fragments and tab tiles to show in the tab layout
-        tabs.forEach { tab ->
-            tabPagerAdapter.addFragment(tab.key, tab.value)
-        }
+        tabPagerAdapter.addFragment(ProfileOverviewFragment(), "Overview")
+        tabPagerAdapter.addFragment(ProfileProfilesRecyclerFragment(), "Profiles")
+        tabPagerAdapter.addFragment(ProfileSubmissionsRecyclerFragment(), "Submissions")
 
-        viewPager = view.findViewById(R.id.viewPager)
-        tabLayout = view.findViewById(R.id.tab)
+
+        viewPager = view.findViewById(R.id.profile_view_pager)
+        tabLayout = view.findViewById(R.id.profile_tab)
         viewPager.adapter = tabPagerAdapter
         tabLayout.setupWithViewPager(viewPager);
     }

@@ -22,6 +22,8 @@ import com.mapbox.mapboxsdk.maps.MapboxMap
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback
 import com.mapbox.mapboxsdk.maps.Style
 import pt.ipl.isel.leic.ps.androidclient.R
+import pt.ipl.isel.leic.ps.androidclient.data.source.endpoint.LATITUDE_VAR
+import pt.ipl.isel.leic.ps.androidclient.data.source.endpoint.LONGITUDE_VAR
 import pt.ipl.isel.leic.ps.androidclient.data.source.model.Restaurant
 import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.RestaurantRecyclerAdapter
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler.ARecyclerListFragment
@@ -246,10 +248,10 @@ class MapFragment
                 val location = result!!.lastLocation ?: return
 
                 // Create a Toast which displays the new location's coordinates
-                viewModel.parameters[":latitude"] =
+                viewModel.parameters[LATITUDE_VAR] =
                     result.lastLocation!!.latitude.toString()
 
-                viewModel.parameters[":longitude"] =
+                viewModel.parameters[LONGITUDE_VAR] =
                     result.lastLocation!!.longitude.toString()
 
                 // Pass the new location to the Maps SDK's LocationComponent

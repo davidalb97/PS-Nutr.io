@@ -15,8 +15,7 @@
             android:id="@+id/tab"
             android:layout_width="match_parent"
             android:layout_height="?android:attr/actionBarSize"
-            app:tabGravity="fill"
-            app:tabMode="scrollable" />
+            app:tabGravity="fill" />
 
         <androidx.viewpager.widget.ViewPager
             android:id="@+id/viewPager"

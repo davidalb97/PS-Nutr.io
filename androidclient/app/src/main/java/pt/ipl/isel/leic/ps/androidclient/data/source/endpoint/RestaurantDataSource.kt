@@ -7,12 +7,14 @@ import pt.ipl.isel.leic.ps.androidclient.data.source.mapper.RestaurantMapper
 import pt.ipl.isel.leic.ps.androidclient.data.source.mapper.RestaurantsMapper
 import pt.ipl.isel.leic.ps.androidclient.data.source.model.Restaurant
 
-private const val RESTAURANT = "restaurant"
+const val LATITUDE_VAR = ":latitude"
+const val LONGITUDE_VAR = ":longitude"
 
+private const val RESTAURANT = "restaurant"
 private const val RESTAURANT_ID_URI =
     "$URI_BASE/$RESTAURANT?latitude=38.736946&longitude=-9.142685"
 private const val RESTAURANT_LOCATION =
-    "$URI_BASE/$RESTAURANT?latitude=:latitude&longitude=:longitude"
+    "$URI_BASE/$RESTAURANT?latitude=$LATITUDE_VAR&longitude=$LONGITUDE_VAR"
 private const val RESTAURANT_REPORT =
     "$RESTAURANT_ID_URI/report"
 private const val RESTAURANT_VOTE =
@@ -32,7 +34,7 @@ val RESTAURANT_DTO = RestaurantDto::class.java
 
 
 class RestaurantDataSource(
-    val requester: Requester
+    private val requester: Requester
 ) {
 
     private val restaurantMapper =

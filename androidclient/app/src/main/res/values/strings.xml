@@ -62,4 +62,6 @@
 
     <!-- MapBox api key -->
     <string name="access_token">pk.eyJ1IjoibWlnMDciLCJhIjoiY2thNm96MWQzMDh6cTJybzMybnVjMjZ4dCJ9.VEnqYHRE7wBwhTp7-ASOBQ</string>
+    <string name="create_your_routine">Create your routine</string>
+    <string name="touch_to_create_your_routine_profiles">Touch to create your routine profiles</string>
 </resources>

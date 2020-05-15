@@ -60,7 +60,7 @@ class BodyStringRequest : StringRequest {
         try {
             parsed = String(response.data, encoding)
             val bytes = parsed.toByteArray(encoding)
-            parsed = String(bytes, charset("UTF-8"))
+            parsed = String(bytes, charset(PROTOCOL_CHARSET))
 
             return Response.success(parsed, HttpHeaderParser.parseCacheHeaders(response))
         } catch (e: UnsupportedEncodingException) {
