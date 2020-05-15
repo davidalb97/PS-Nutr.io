@@ -327,6 +327,32 @@ class MealSubmissionTest {
     }
 
     @Test
+    fun `shouldn't insert with invalid cuisines names`() {
+        val exception = Assertions.assertThrows(InvalidInputException::class.java) {
+            jdbi.inSandbox(const) {
+                val expectedSubmitterId = const.userDtos.first().submitter_id
+                val expectedMealName = "Debug meal"
+                val expectedMealApiId = "5000"
+                val invalidCuisines = generateSequence(0) {it+1}
+                        .map { "TestCuisine$it" }
+                        .filter { testCuisine -> const.cuisineNames.none { it == testCuisine } }
+                        .take(4)
+                val expectedApiSubmitter = const.firstFoodApi
+                val expectedFoodApiType = FoodApiType.valueOf(expectedApiSubmitter.submitter_name)
+
+                mealRepo.insert(
+                        submitterId = expectedSubmitterId,
+                        mealName = expectedMealName,
+                        apiId = expectedMealApiId,
+                        cuisineNames = invalidCuisines.toList(),
+                        foodApi = expectedFoodApiType
+                )
+            }
+        }
+        Assertions.assertEquals(InvalidInputDomain.CUISINE, exception.domain)
+    }
+
+    @Test
     fun `should update user meal with new name, ingredients & Cuisines preserving old values`() {
         jdbi.inSandbox(const) {
             val existingMeal = const.meals.first { it.ingredients.isNotEmpty() && it.cuisines.isNotEmpty() }
@@ -760,6 +786,33 @@ class MealSubmissionTest {
                         submitterId = existingMeal.submitterId,
                         name = newName,
                         cuisineNames = expectedCuisines,
+                        ingredients = expectedIngredients
+                )
+            }
+        }
+        Assertions.assertEquals(InvalidInputDomain.API, exception.domain)
+    }
+
+    @Test
+    fun `shouldn't update with invalid cuisine names`() {
+        val exception = Assertions.assertThrows(InvalidInputException::class.java) {
+            jdbi.inSandbox(const) {
+                val existingMeal = const.meals.first { it.foodApiId != null }
+                val newName = "TestName"
+                val invalidCuisines = generateSequence(0) {it+1}
+                        .map { "TestCuisine$it" }
+                        .filter { testCuisine -> const.cuisineNames.none { it == testCuisine } }
+                        .take(4)
+                val expectedIngredients = emptyList<Ingredient>()
+
+                //Bypass time restriction
+                bypassSubmissionEditLock(it, existingMeal.submissionId)
+
+                mealRepo.update(
+                        submissionId = existingMeal.submissionId,
+                        submitterId = existingMeal.submitterId,
+                        name = newName,
+                        cuisineNames = invalidCuisines.toList(),
                         ingredients = expectedIngredients
                 )
             }
