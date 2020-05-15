@@ -81,6 +81,11 @@ class RestaurantDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo
         }
     }
 
+    /**
+     * @throws InvalidInputException On invalid submission ownership, invalid submission type,
+     *                               submission change timed out.
+     *                               (Annotation required for testing purposes)
+     */
     @Throws(InvalidInputException::class)
     fun delete(submitterId: Int, submissionId: Int) {
         return jdbi.inTransaction<Unit, Exception>(isolationLevel) {
@@ -130,6 +135,11 @@ class RestaurantDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo
         }
     }
 
+    /**
+     * @throws InvalidInputException On invalid submission ownership, invalid submission type,
+     *                               submission change timed out.
+     *                               (Annotation required for testing purposes)
+     */
     @Throws(InvalidInputException::class)
     fun update(submitterId: Int, submissionId: Int, name: String, cuisines: List<String>) {
         return jdbi.inTransaction<Unit, Exception>(isolationLevel) {

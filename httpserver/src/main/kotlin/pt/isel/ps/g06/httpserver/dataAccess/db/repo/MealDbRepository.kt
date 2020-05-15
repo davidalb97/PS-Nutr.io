@@ -108,6 +108,11 @@ class MealDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo(jdbi)
         }
     }
 
+    /**
+     * @throws InvalidInputException On invalid submission ownership, invalid submission type,
+     *                               submission change timed out.
+     *                               (Annotation required for testing purposes)
+     */
     @Throws(InvalidInputException::class)
     fun delete(submitterId: Int, submissionId: Int) {
         return jdbi.inTransaction<Unit, Exception>(isolationLevel) {
@@ -155,6 +160,11 @@ class MealDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo(jdbi)
         }
     }
 
+    /**
+     * @throws InvalidInputException On invalid submission ownership, invalid submission type,
+     *                               submission change timed out or if it is an api meal.
+     *                               (Annotation required for testing purposes)
+     */
     @Throws(InvalidInputException::class)
     fun update(submitterId: Int,
                submissionId: Int,
