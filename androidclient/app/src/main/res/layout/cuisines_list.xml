@@ -30,7 +30,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/search"
-        tools:listitem="@layout/cuisine_card">
+        tools:listitem="@layout/profile_submission_card">
     </androidx.recyclerview.widget.RecyclerView>
 
 </RelativeLayout>

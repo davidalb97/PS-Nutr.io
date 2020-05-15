@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="175dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_margin="4dp"
+    android:elevation="10dp"
+    app:cardCornerRadius="15dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/insulin_profile_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/profile_name"
+            android:textSize="28sp"
+            android:textColor="@android:color/background_dark"
+            android:textStyle="bold"
+            android:layout_margin="10dp">
+        </TextView>
+
+        <TextView
+            android:id="@+id/profile_start_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/insulin_profile_name"
+            android:layout_marginStart="10dp"
+            android:text="@string/start_time"
+            android:textColor="@android:color/background_dark">
+        </TextView>
+
+        <TextView
+            android:id="@+id/profile_end_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/profile_start_time"
+            android:layout_marginStart="10dp"
+            android:text="@string/end_time"
+            android:textColor="@android:color/background_dark">
+        </TextView>
+
+        <TextView
+            android:id="@+id/profile_fsi"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/profile_end_time"
+            android:layout_marginStart="10dp"
+            android:text="@string/fsi"
+            android:textColor="@android:color/background_dark">
+        </TextView>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/profile_fsi"
+            android:layout_marginStart="10dp"
+            android:text="@string/carbohydrate_ratio"
+            android:textColor="@android:color/background_dark">
+        </TextView>
+
+    </RelativeLayout>
+
+</androidx.cardview.widget.CardView>

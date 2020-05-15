@@ -36,8 +36,8 @@ class ProfileFragment : Fragment() {
         tabPagerAdapter.addFragment(ProfileSubmissionsRecyclerFragment(), "Submissions")
 
 
-        viewPager = view.findViewById(R.id.profile_view_pager)
         tabLayout = view.findViewById(R.id.profile_tab)
+        viewPager = view.findViewById(R.id.profile_view_pager)
         viewPager.adapter = tabPagerAdapter
         tabLayout.setupWithViewPager(viewPager);
     }
