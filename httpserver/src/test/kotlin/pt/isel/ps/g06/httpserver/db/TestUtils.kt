@@ -7,6 +7,7 @@ import org.jdbi.v3.core.transaction.TransactionIsolationLevel
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmitterType
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.*
+import pt.isel.ps.g06.httpserver.dataAccess.db.mapper.SubmissionMapper
 import pt.isel.ps.g06.httpserver.model.*
 
 /**
@@ -71,6 +72,15 @@ fun List<Ingredient>.mapToTestIngredients(
             }
 }
  */
+
+fun bypassSubmissionEditLock(handle: Handle, submissionId: Int) {
+    val updatedSubmission = handle.createQuery("UPDATE ${SubmissionDao.table}" +
+            " SET ${SubmissionDao.date} = CURRENT_TIMESTAMP" +
+            " WHERE ${SubmissionDao.id} = $submissionId" +
+            " RETURNING *"
+    ).map(SubmissionMapper()).first()
+}
+
 /*
 fun getDtosFromIngredientNames(
         handle: Handle,

@@ -17,6 +17,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.repo.MealDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.model.Ingredient
 import pt.isel.ps.g06.httpserver.db.Constants
 import pt.isel.ps.g06.httpserver.db.RepoAsserts
+import pt.isel.ps.g06.httpserver.db.bypassSubmissionEditLock
 import pt.isel.ps.g06.httpserver.db.inSandbox
 import pt.isel.ps.g06.httpserver.exception.InvalidInputDomain
 import pt.isel.ps.g06.httpserver.exception.InvalidInputException
@@ -351,13 +352,11 @@ class MealSubmissionTest {
             }.take(newCuisineCount)
             val expectedCuisines = existingMeal.cuisines.map(TestCuisine::toCuisineDto)
                     .union(newCuisines).toList()
+            val expectedMealContracts = listOf(VOTABLE, REPORTABLE)
+            val expectedIngredientContracts = listOf(API)
 
             //Bypass time restriction
-            val updatedSubmission = it.createQuery("UPDATE ${SubmissionDao.table}" +
-                    " SET ${SubmissionDao.date} = CURRENT_TIMESTAMP" +
-                    " WHERE ${SubmissionDao.id} = ${existingMeal.submissionId}" +
-                    " RETURNING *"
-            ).map(SubmissionMapper()).first()
+            bypassSubmissionEditLock(it, existingMeal.submissionId)
 
             mealRepo.update(
                     existingMeal.submitterId,
@@ -366,9 +365,6 @@ class MealSubmissionTest {
                     expectedCuisines.map { it.cuisine_name },
                     expectedIngredients.map(TestIngredient::toModel)
             )
-
-            val expectedMealContracts = listOf(VOTABLE, REPORTABLE)
-            val expectedIngredientContracts = listOf(API)
 
             //Assert current Meal submissions existence
             asserts.assertSubmission(it,
@@ -471,13 +467,11 @@ class MealSubmissionTest {
             }
             val expectedIngredients = existingMeal.ingredients.union(newIngredients).toList()
             val expectedIngredientIds = expectedIngredients.map { it.submissionId }
+            val expectedMealContracts = listOf(VOTABLE, REPORTABLE)
+            val expectedIngredientContracts = listOf(API)
 
             //Bypass time restriction
-            val updatedSubmission = it.createQuery("UPDATE ${SubmissionDao.table}" +
-                    " SET ${SubmissionDao.date} = CURRENT_TIMESTAMP" +
-                    " WHERE ${SubmissionDao.id} = ${existingMeal.submissionId}" +
-                    " RETURNING *"
-            ).map(SubmissionMapper()).first()
+            bypassSubmissionEditLock(it, existingMeal.submissionId)
 
             mealRepo.update(
                     existingMeal.submitterId,
@@ -486,9 +480,6 @@ class MealSubmissionTest {
                     existingMeal.cuisines.map { it.cuisineName },
                     expectedIngredients.map(TestIngredient::toModel)
             )
-
-            val expectedMealContracts = listOf(VOTABLE, REPORTABLE)
-            val expectedIngredientContracts = listOf(API)
 
             //Assert current Meal submissions existence
             asserts.assertSubmission(it,
@@ -583,13 +574,11 @@ class MealSubmissionTest {
             val expectedCuisines = existingMeal.cuisines.map(TestCuisine::toCuisineDto)
                     .union(newCuisines).toList()
             val existingMealIngredientIds = existingMeal.ingredients.map { it.submissionId }
+            val expectedMealContracts = listOf(VOTABLE, REPORTABLE)
+            val expectedIngredientContracts = listOf(API)
 
             //Bypass time restriction
-            val updatedSubmission = it.createQuery("UPDATE ${SubmissionDao.table}" +
-                    " SET ${SubmissionDao.date} = CURRENT_TIMESTAMP" +
-                    " WHERE ${SubmissionDao.id} = ${existingMeal.submissionId}" +
-                    " RETURNING *"
-            ).map(SubmissionMapper()).first()
+            bypassSubmissionEditLock(it, existingMeal.submissionId)
 
             mealRepo.update(
                     existingMeal.submitterId,
@@ -598,9 +587,6 @@ class MealSubmissionTest {
                     expectedCuisines.map { it.cuisine_name },
                     existingMeal.ingredients.map(TestIngredient::toModel)
             )
-
-            val expectedMealContracts = listOf(VOTABLE, REPORTABLE)
-            val expectedIngredientContracts = listOf(API)
 
             //Assert current Meal submissions existence
             asserts.assertSubmission(it,
@@ -692,6 +678,10 @@ class MealSubmissionTest {
                 val newName = "TestName"
                 val expectedCuisines = emptyList<String>()
                 val expectedIngredients = emptyList<Ingredient>()
+
+                //Bypass time restriction
+                bypassSubmissionEditLock(it, existingMeal.submissionId)
+
                 mealRepo.update(
                         submissionId = existingMeal.submissionId,
                         submitterId = invalidSubmitterId,
@@ -712,6 +702,10 @@ class MealSubmissionTest {
                 val newName = "TestName"
                 val expectedCuisines = emptyList<String>()
                 val expectedIngredients = emptyList<Ingredient>()
+
+                //Bypass time restriction
+                bypassSubmissionEditLock(it, invalidSubmission.submissionId)
+
                 mealRepo.update(
                         submissionId = invalidSubmission.submissionId,
                         submitterId = invalidSubmission.foodApi.submitterId,
@@ -757,6 +751,10 @@ class MealSubmissionTest {
                 val newName = "TestName"
                 val expectedCuisines = emptyList<String>()
                 val expectedIngredients = emptyList<Ingredient>()
+
+                //Bypass time restriction
+                bypassSubmissionEditLock(it, existingMeal.submissionId)
+
                 mealRepo.update(
                         submissionId = existingMeal.submissionId,
                         submitterId = existingMeal.submitterId,
@@ -774,18 +772,13 @@ class MealSubmissionTest {
         jdbi.inSandbox(const) {
             val existingMeal = const.meals.first { it.ingredients.isNotEmpty() && it.cuisines.isNotEmpty() }
             val expectedIngredientIds = existingMeal.ingredients.map { it.submissionId }
-
-            //Bypass time restriction
-            val updatedSubmission = it.createQuery("UPDATE ${SubmissionDao.table}" +
-                    " SET ${SubmissionDao.date} = CURRENT_TIMESTAMP" +
-                    " WHERE ${SubmissionDao.id} = ${existingMeal.submissionId}" +
-                    " RETURNING *"
-            ).map(SubmissionMapper()).first()
-
-            mealRepo.delete(existingMeal.submitterId, existingMeal.submissionId)
-
             val expectedMealContracts = listOf(VOTABLE, REPORTABLE)
             val expectedIngredientContracts = listOf(API)
+
+            //Bypass time restriction
+            bypassSubmissionEditLock(it, existingMeal.submissionId)
+
+            mealRepo.delete(existingMeal.submitterId, existingMeal.submissionId)
 
             //Assert current Meal submissions existence
             asserts.assertSubmission(it,
@@ -881,17 +874,12 @@ class MealSubmissionTest {
     fun `should delete api meal with cuisines`() {
         jdbi.inSandbox(const) {
             val existingMeal = const.meals.first { it.ingredients.isEmpty() && it.cuisines.isNotEmpty() }
+            val expectedMealContracts = listOf(VOTABLE, REPORTABLE, API)
 
             //Bypass time restriction
-            val updatedSubmission = it.createQuery("UPDATE ${SubmissionDao.table}" +
-                    " SET ${SubmissionDao.date} = CURRENT_TIMESTAMP" +
-                    " WHERE ${SubmissionDao.id} = ${existingMeal.submissionId}" +
-                    " RETURNING *"
-            ).map(SubmissionMapper()).first()
+            bypassSubmissionEditLock(it, existingMeal.submissionId)
 
             mealRepo.delete(existingMeal.submitterId, existingMeal.submissionId)
-
-            val expectedMealContracts = listOf(VOTABLE, REPORTABLE, API)
 
             //Assert current Meal submissions existence
             asserts.assertSubmission(it,
@@ -951,6 +939,10 @@ class MealSubmissionTest {
                 val invalidSubmitterId = const.submitterDtos.first {
                     it.submitter_id != existingMeal.submitterId
                 }.submitter_id
+
+                //Bypass time restriction
+                bypassSubmissionEditLock(it, existingMeal.submissionId)
+
                 mealRepo.delete(
                         submissionId = existingMeal.submissionId,
                         submitterId = invalidSubmitterId
@@ -965,6 +957,10 @@ class MealSubmissionTest {
         val exception = Assertions.assertThrows(InvalidInputException::class.java) {
             jdbi.inSandbox(const) {
                 val invalidSubmission = const.ingredients.first()
+
+                //Bypass time restriction
+                bypassSubmissionEditLock(it, invalidSubmission.submissionId)
+
                 mealRepo.delete(
                         submissionId = invalidSubmission.submissionId,
                         submitterId = invalidSubmission.foodApi.submitterId

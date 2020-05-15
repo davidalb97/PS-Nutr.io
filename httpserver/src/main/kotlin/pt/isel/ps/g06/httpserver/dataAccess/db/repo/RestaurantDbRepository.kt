@@ -10,6 +10,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType.RESTAURANT
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.*
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.*
 import pt.isel.ps.g06.httpserver.dataAccess.model.RestaurantApiId
+import pt.isel.ps.g06.httpserver.exception.InvalidInputException
 import pt.isel.ps.g06.httpserver.springConfig.dto.DbEditableDto
 
 private val isolationLevel = TransactionIsolationLevel.SERIALIZABLE
@@ -80,7 +81,7 @@ class RestaurantDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo
         }
     }
 
-
+    @Throws(InvalidInputException::class)
     fun delete(submitterId: Int, submissionId: Int) {
         return jdbi.inTransaction<Unit, Exception>(isolationLevel) {
 
@@ -129,6 +130,7 @@ class RestaurantDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo
         }
     }
 
+    @Throws(InvalidInputException::class)
     fun update(submitterId: Int, submissionId: Int, name: String, cuisines: List<String>) {
         return jdbi.inTransaction<Unit, Exception>(isolationLevel) {
 

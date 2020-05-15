@@ -108,6 +108,7 @@ class MealDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo(jdbi)
         }
     }
 
+    @Throws(InvalidInputException::class)
     fun delete(submitterId: Int, submissionId: Int) {
         return jdbi.inTransaction<Unit, Exception>(isolationLevel) {
 
@@ -154,6 +155,7 @@ class MealDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo(jdbi)
         }
     }
 
+    @Throws(InvalidInputException::class)
     fun update(submitterId: Int,
                submissionId: Int,
                name: String,
