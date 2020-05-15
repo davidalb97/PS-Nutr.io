@@ -4,7 +4,9 @@ import org.springframework.stereotype.Service
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.RestaurantApiType
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.mapper.RestaurantApiMapper
 import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.restaurant.RestaurantResponseMapper
+import pt.isel.ps.g06.httpserver.dataAccess.db.dto.SubmissionDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.RestaurantDbRepository
+import pt.isel.ps.g06.httpserver.dataAccess.input.RestaurantInput
 import pt.isel.ps.g06.httpserver.model.Restaurant
 import java.util.concurrent.CompletableFuture
 
@@ -63,6 +65,17 @@ class RestaurantService(
                 ?: restaurantApi.getRestaurantInfo(id)
 
         return restaurant?.let(restaurantResponseMapper::mapTo)
+    }
+
+    fun createRestaurant(restaurant: RestaurantInput): SubmissionDto {
+        return dbRestaurantRepository.insert(
+                submitterId = restaurant.submitterId!!,
+                restaurantName = restaurant.name!!,
+                apiId = null,
+                cuisines = restaurant.cuisines!!,
+                latitude = restaurant.latitude!!,
+                longitude = restaurant.longitude!!
+        )
     }
 
     private fun filterRedundantApiRestaurants(dbRestaurants: Collection<Restaurant>, apiRestaurants: Collection<Restaurant>): Set<Restaurant> {

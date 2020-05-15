@@ -4,21 +4,27 @@ import org.springframework.stereotype.Component
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.dto.ZomatoRestaurantDto
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.dto.here.HereResultItem
 import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.ResponseMapper
+import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbRestaurantDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.CuisineDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.MealDbRepository
+import pt.isel.ps.g06.httpserver.dataAccess.db.repo.RestaurantDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.model.RestaurantDto
+import pt.isel.ps.g06.httpserver.model.Meal
 import pt.isel.ps.g06.httpserver.model.Restaurant
 import pt.isel.ps.g06.httpserver.util.log
 
 @Component
 class RestaurantResponseMapper(
         private val zomatoResponseMapper: ZomatoResponseMapper,
-        private val hereResponseMapper: HereResponseMapper
+        private val hereResponseMapper: HereResponseMapper,
+        private val dbResponseMapper: DbRestaurantResponseMapper
 ) : ResponseMapper<RestaurantDto, Restaurant> {
+
     override fun mapTo(dto: RestaurantDto): Restaurant {
         return when (dto) {
             is HereResultItem -> hereResponseMapper.mapTo(dto)
             is ZomatoRestaurantDto -> zomatoResponseMapper.mapTo(dto)
+            is DbRestaurantDto -> dbResponseMapper.mapTo(dto)
             else -> {
                 log("ERROR: Unregistered mapper for RestaurantDto of type '${dto.javaClass.typeName}'!")
                 //TODO Should a handler listen to this exception?
@@ -79,6 +85,30 @@ class ZomatoResponseMapper(
                             .getAllByCuisineNames(cuisines.value)
                             .map(mealResponseMapper::mapTo)
                 }
+        )
+    }
+}
+
+@Component
+class DbRestaurantResponseMapper(
+        private val restaurantRepository: RestaurantDbRepository
+) : ResponseMapper<DbRestaurantDto, Restaurant> {
+
+    override fun mapTo(dto: DbRestaurantDto): Restaurant {
+        val cuisines = lazy {
+            restaurantRepository
+                    .getRestaurantCuisines(dto.submission_id)
+                    .map { it.cuisine_name }
+        }
+
+        return Restaurant(
+                identifier = dto.id,
+                name = dto.name,
+                latitude = dto.latitude,
+                longitude = dto.longitude,
+                cuisines = cuisines,
+                meals = lazy { emptyList<Meal>() }
+                //TODO - Handle obtaining meals for Database restaurant: Should it only get from DB? Also from API?
         )
     }
 }
