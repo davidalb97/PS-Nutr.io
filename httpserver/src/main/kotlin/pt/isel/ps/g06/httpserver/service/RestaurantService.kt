@@ -68,6 +68,8 @@ class RestaurantService(
     }
 
     fun createRestaurant(restaurant: RestaurantInput): SubmissionDto {
+        //We know for sure that restaurantInput fields are not null due to
+        //Spring's validation taking action
         return dbRestaurantRepository.insert(
                 submitterId = restaurant.submitterId!!,
                 restaurantName = restaurant.name!!,

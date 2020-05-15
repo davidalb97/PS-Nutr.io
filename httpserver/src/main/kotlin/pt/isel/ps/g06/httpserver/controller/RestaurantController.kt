@@ -14,6 +14,7 @@ import pt.isel.ps.g06.httpserver.exception.InvalidInputDomain
 import pt.isel.ps.g06.httpserver.exception.InvalidInputException
 import pt.isel.ps.g06.httpserver.model.Restaurant
 import pt.isel.ps.g06.httpserver.service.RestaurantService
+import java.net.URI
 import javax.validation.Valid
 
 private const val INVALID_RESTAURANT_SEARCH = "To search nearby restaurants, a geolocation must be given!"
@@ -61,11 +62,11 @@ class RestaurantController(private val restaurantService: RestaurantService) {
 
     @PostMapping(consumes = [MediaType.APPLICATION_JSON_VALUE])
     fun createRestaurant(@Valid @RequestBody restaurantInput: RestaurantInput): ResponseEntity<Void> {
-//        val createdRestaurant = restaurantService.createRestaurant(restaurant)
+        //TODO - Right now cuisines aren't being validated to make sure they exist in the database
+        val createdRestaurant = restaurantService.createRestaurant(restaurantInput)
 
         return ResponseEntity
-                .ok()
-//                .created(URI("$RESTAURANTS/${createdRestaurant.submission_id}"))
+                .created(URI("$RESTAURANTS/${createdRestaurant.submission_id}"))
                 .build()
     }
 
