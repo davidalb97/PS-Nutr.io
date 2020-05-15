@@ -47,7 +47,7 @@ class MealSubmissionTest {
     lateinit var const: Constants
 
     @Test
-    fun shouldInsertApiMealWithoutIngredients() {
+    fun `should insert Api meal without ingredients`() {
         jdbi.inSandbox(const) {
 
             val expectedSubmitterId = const.userDtos.first().submitter_id
@@ -127,7 +127,7 @@ class MealSubmissionTest {
     }
 
     @Test
-    fun shouldInsertUserMealWithExistingSpoonacularIngredients() {
+    fun `should insert user meal with existing Api ingredients`() {
         jdbi.inSandbox(const) {
             val expectedSubmitterId = const.userDtos.first().submitter_id
             val expectedMealName = "Debug meal"
@@ -216,7 +216,7 @@ class MealSubmissionTest {
     }
 
     @Test
-    fun shouldInsertUserMealWithoutExistingSpoonacularIngredients() {
+    fun `should insert user meal without existing Api ingredients`() {
         jdbi.inSandbox(const) {
             val expectedSubmitterId = const.userDtos.first().submitter_id
             val expectedMealName = "Debug meal"
@@ -326,7 +326,7 @@ class MealSubmissionTest {
     }
 
     @Test
-    fun shouldUpdateUserMealWithNewIngredientsAndCuisinesPreservingOldValues() {
+    fun `should update user meal with new name, ingredients & Cuisines preserving old values`() {
         jdbi.inSandbox(const) {
             val existingMeal = const.meals.first { it.ingredients.isNotEmpty() && it.cuisines.isNotEmpty() }
             val expectedName = "TestNewMealName"
@@ -452,7 +452,7 @@ class MealSubmissionTest {
     }
 
     @Test
-    fun shouldUpdateUserMealWithNewIngredientsPreservingOldValues() {
+    fun `should update user meal with new name & ingredients preserving old values`() {
         jdbi.inSandbox(const) {
             val existingMeal = const.meals.first { it.ingredients.isNotEmpty() && it.cuisines.isNotEmpty() }
             val expectedName = "TestNewMealName"
@@ -572,7 +572,7 @@ class MealSubmissionTest {
     }
 
     @Test
-    fun shouldUpdateUserMealWithNewCuisinesPreservingOldValues() {
+    fun `should update user meal with new name & cuisines preserving old values`() {
         jdbi.inSandbox(const) {
             val existingMeal = const.meals.first { it.ingredients.isNotEmpty() && it.cuisines.isNotEmpty() }
             val expectedName = "TestNewMealName"
@@ -682,7 +682,7 @@ class MealSubmissionTest {
     }
 
     @Test
-    fun shouldNotUpdateFromInvalidSubmitter() {
+    fun `shouldn't update from invalid submitter`() {
         val exception = Assertions.assertThrows(InvalidInputException::class.java) {
             jdbi.inSandbox(const) {
                 val existingMeal = const.meals.first()
@@ -705,7 +705,7 @@ class MealSubmissionTest {
     }
 
     @Test
-    fun shouldNotUpdateFromInvalidSubmission() {
+    fun `shouldn't update from invalid submission`() {
         val exception = Assertions.assertThrows(InvalidInputException::class.java) {
             jdbi.inSandbox(const) {
                 val invalidSubmission = const.ingredients.first()
@@ -725,7 +725,7 @@ class MealSubmissionTest {
     }
 
     @Test
-    fun shouldNotUpdateFromNonEditableSubmission() {
+    fun `shouldn't update from non-editable submission`() {
         val exception = Assertions.assertThrows(InvalidInputException::class.java) {
             jdbi.inSandbox(const) {
                 val currentTime = OffsetDateTime.now(Clock.systemDefaultZone())
@@ -750,7 +750,7 @@ class MealSubmissionTest {
     }
 
     @Test
-    fun shouldNotUpdateFromApiSubmission() {
+    fun `shouldn't update from api submission`() {
         val exception = Assertions.assertThrows(InvalidInputException::class.java) {
             jdbi.inSandbox(const) {
                 val existingMeal = const.meals.first { it.foodApiId != null }
@@ -770,7 +770,7 @@ class MealSubmissionTest {
     }
 
     @Test
-    fun shouldDeleteUserMealWithIngredientsAndCuisines() {
+    fun `should delete user meal with ingredients & cuisines`() {
         jdbi.inSandbox(const) {
             val existingMeal = const.meals.first { it.ingredients.isNotEmpty() && it.cuisines.isNotEmpty() }
             val expectedIngredientIds = existingMeal.ingredients.map { it.submissionId }
@@ -878,7 +878,7 @@ class MealSubmissionTest {
     }
 
     @Test
-    fun shouldDeleteApiMealWithCuisines() {
+    fun `should delete api meal with cuisines`() {
         jdbi.inSandbox(const) {
             val existingMeal = const.meals.first { it.ingredients.isEmpty() && it.cuisines.isNotEmpty() }
 
@@ -944,7 +944,7 @@ class MealSubmissionTest {
     }
 
     @Test
-    fun shouldNotDeleteFromInvalidSubmitter() {
+    fun `shouldn't delete from invalid submitter`() {
         val exception = Assertions.assertThrows(InvalidInputException::class.java) {
             jdbi.inSandbox(const) {
                 val existingMeal = const.meals.first()
@@ -961,7 +961,7 @@ class MealSubmissionTest {
     }
 
     @Test
-    fun shouldNotDeleteFromInvalidSubmission() {
+    fun `shouldn't delete from invalid submission`() {
         val exception = Assertions.assertThrows(InvalidInputException::class.java) {
             jdbi.inSandbox(const) {
                 val invalidSubmission = const.ingredients.first()
@@ -975,7 +975,7 @@ class MealSubmissionTest {
     }
 
     @Test
-    fun shouldNotDeleteFromNonEditableSubmission() {
+    fun `shouldn't not delete from non editable submission`() {
         val exception = Assertions.assertThrows(InvalidInputException::class.java) {
             jdbi.inSandbox(const) {
                 val currentTime = OffsetDateTime.now(Clock.systemDefaultZone())
