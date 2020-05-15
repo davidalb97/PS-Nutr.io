@@ -4,7 +4,7 @@ import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.customizer.BindBeanList
 import org.jdbi.v3.sqlobject.customizer.BindList
 import org.jdbi.v3.sqlobject.statement.SqlQuery
-import pt.isel.ps.g06.httpserver.dataAccess.db.dto.CuisineDto
+import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbCuisineDto
 
 //ApiCuisine table constants
 private const val AC_table = ApiCuisineDao.table
@@ -25,6 +25,10 @@ private const val MC_table = MealCuisineDao.table
 private const val MC_mealId = MealCuisineDao.mealId
 private const val MC_cuisineId = MealCuisineDao.cuisineId
 
+private const val RC_table = RestaurantCuisineDao.table
+private const val RC_restaurantId = RestaurantCuisineDao.id
+private const val RC_cuisineId = RestaurantCuisineDao.cuisineId
+
 interface CuisineDao {
 
     companion object {
@@ -34,10 +38,10 @@ interface CuisineDao {
     }
 
     @SqlQuery("SELECT * FROM $table")
-    fun getAll(): Collection<CuisineDto>
+    fun getAll(): Collection<DbCuisineDto>
 
     @SqlQuery("SELECT * FROM $table WHERE $name = :name")
-    fun getByName(@Bind name: String): Collection<CuisineDto>
+    fun getByName(@Bind name: String): Collection<DbCuisineDto>
 
     @SqlQuery("SELECT $table.$id, $table.$name" +
             " FROM $table " +
@@ -45,13 +49,21 @@ interface CuisineDao {
             " ON $MC_table.$MC_cuisineId = $table.$id" +
             " WHERE $MC_table.$MC_mealId = :mealId"
     )
-    fun getByMealId(@Bind mealId: Int): Collection<CuisineDto>
+    fun getByMealId(@Bind mealId: Int): Collection<DbCuisineDto>
+
+    @SqlQuery("SELECT $table.$id, $table.$name" +
+            " FROM $table " +
+            " INNER JOIN $RC_table " +
+            " ON $RC_table.$RC_cuisineId = $table.$id" +
+            " WHERE $RC_table.$RC_restaurantId = :restaurantId"
+    )
+    fun getByRestaurantId(@Bind restaurantId: Int): Collection<DbCuisineDto>
 
     @SqlQuery("SELECT * FROM $table WHERE $name in (<cuisineIds>)")
-    fun getAllByNames(@BindList cuisineIds: Collection<String>): Collection<CuisineDto>
+    fun getAllByNames(@BindList cuisineIds: Collection<String>): Collection<DbCuisineDto>
 
     @SqlQuery("SELECT * FROM $table WHERE $id = :cuisineId")
-    fun getById(@Bind cuisineId: String): Collection<CuisineDto>
+    fun getById(@Bind cuisineId: String): Collection<DbCuisineDto>
 
     @SqlQuery("SELECT $table.$id, $table.$name" +
             " FROM $table " +
@@ -67,15 +79,15 @@ interface CuisineDao {
     fun getAllByApiSubmitterAndApiIds(
             @Bind submitterId: Int,
             @BindList apiIds: Collection<String>
-    ): Collection<CuisineDto>
+    ): Collection<DbCuisineDto>
 
     @SqlQuery("INSERT INTO $table($name) VALUES(:name) RETURNING *")
-    fun insert(@Bind name: String): CuisineDto
+    fun insert(@Bind name: String): DbCuisineDto
 
     @SqlQuery("INSERT INTO $table($name) values <cuisineParams> RETURNING *")
     fun insertAll(@BindBeanList(propertyNames = [name])
                   cuisineParams: Collection<CuisineParam>
-    ): Collection<CuisineDto>
+    ): Collection<DbCuisineDto>
 }
 
 //Variable names must match sql columns

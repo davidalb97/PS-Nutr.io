@@ -1,14 +1,13 @@
 package pt.isel.ps.g06.httpserver.db
 
 import org.jdbi.v3.core.Jdbi
-import org.jdbi.v3.core.kotlin.inTransactionUnchecked
 import org.jdbi.v3.core.transaction.TransactionIsolationLevel
 import pt.isel.ps.g06.httpserver.dataAccess.api.food.FoodApiType
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.RestaurantApiType
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmitterType
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.*
-import pt.isel.ps.g06.httpserver.dataAccess.db.dto.SubmitterDto
+import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbSubmitterDto
 import pt.isel.ps.g06.httpserver.model.TestFoodApi
 import pt.isel.ps.g06.httpserver.model.TestIngredient
 import pt.isel.ps.g06.httpserver.model.TestMeal
@@ -72,7 +71,7 @@ class Constants(val jdbi: Jdbi) {
     }.first { submitter ->
         FoodApiType.values().any { it.toString() == submitter.submitter_name }
     }.let { submitterDto ->
-        SubmitterDto(submitterDto.submitter_id, submitterDto.submitter_name, SubmitterType.API.toString())
+        DbSubmitterDto(submitterDto.submitter_id, submitterDto.submitter_name, SubmitterType.API.toString())
     }
 
     val firstRestaurantApi = submitterDtos.filter {
@@ -80,7 +79,7 @@ class Constants(val jdbi: Jdbi) {
     }.first { submitter ->
         RestaurantApiType.values().any { it.toString() == submitter.submitter_name }
     }.let { submitterDto ->
-        SubmitterDto(submitterDto.submitter_id, submitterDto.submitter_name, SubmitterType.API.toString())
+        DbSubmitterDto(submitterDto.submitter_id, submitterDto.submitter_name, SubmitterType.API.toString())
     }
 
     val ingredients: List<TestIngredient> = jdbi.open().let {

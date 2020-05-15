@@ -5,7 +5,7 @@ import org.jdbi.v3.core.transaction.TransactionIsolationLevel
 import org.springframework.stereotype.Repository
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionContractType.VOTABLE
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.VoteDao
-import pt.isel.ps.g06.httpserver.dataAccess.db.dto.VoteDto
+import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbVoteDto
 import pt.isel.ps.g06.httpserver.dataAccess.model.Votes
 
 private val isolationLevel = TransactionIsolationLevel.SERIALIZABLE
@@ -30,8 +30,8 @@ class VoteDbRepository(jdbi: Jdbi) : BaseDbRepo(jdbi) {
             submitterId: Int,
             submissionId: Int,
             vote: Boolean
-    ): VoteDto {
-        return jdbi.inTransaction<VoteDto, Exception>(isolationLevel) {
+    ): DbVoteDto {
+        return jdbi.inTransaction<DbVoteDto, Exception>(isolationLevel) {
 
             // Check if the submission exists and it is votable
             requireContract(submissionId, VOTABLE, isolationLevel)

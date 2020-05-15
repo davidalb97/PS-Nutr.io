@@ -3,7 +3,7 @@ package pt.isel.ps.g06.httpserver.dataAccess.db.dao
 import org.jdbi.v3.sqlobject.config.RegisterRowMapper
 import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.statement.SqlQuery
-import pt.isel.ps.g06.httpserver.dataAccess.db.dto.UserDto
+import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbUserDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.mapper.UserMapper
 
 @RegisterRowMapper(UserMapper::class)
@@ -18,15 +18,15 @@ interface UserDao {
     }
 
     @SqlQuery("SELECT * FROM $table")
-    fun getAll(): List<UserDto>
+    fun getAll(): List<DbUserDto>
 
     @SqlQuery("SELECT * FROM $table WHERE $id = :submitterId")
-    fun getById(@Bind submitterId: Int): UserDto?
+    fun getById(@Bind submitterId: Int): DbUserDto?
 
     @SqlQuery("SELECT * FROM $table WHERE $email = :email")
-    fun getByEmail(@Bind email: String): UserDto?
+    fun getByEmail(@Bind email: String): DbUserDto?
 
     @SqlQuery("INSERT INTO $table($id, $email, $sessionSecret) " +
             "VALUES(:submitter_id, :email, :session_secret) RETURNING *")
-    fun insert(@Bind submitter_id: Int, @Bind email: String, @Bind sessionSecret: String): UserDto
+    fun insert(@Bind submitter_id: Int, @Bind email: String, @Bind sessionSecret: String): DbUserDto
 }

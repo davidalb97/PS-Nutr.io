@@ -2,7 +2,7 @@ package pt.isel.ps.g06.httpserver.dataAccess.db.dao
 
 import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.statement.SqlQuery
-import pt.isel.ps.g06.httpserver.dataAccess.db.dto.PortionDto
+import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbPortionDto
 
 interface PortionDao {
 
@@ -13,15 +13,15 @@ interface PortionDao {
     }
 
     @SqlQuery("SELECT * FROM $table WHERE $id = :submissionId")
-    fun getById(@Bind submissionId: Int): List<PortionDto>
+    fun getById(@Bind submissionId: Int): List<DbPortionDto>
 
     @SqlQuery("INSERT INTO $table($id, $quantity)" +
             " VALUES(:submissionId, :quantity) RETURNING *")
-    fun insert(@Bind submissionId: Int, quantity: Int): PortionDto
+    fun insert(@Bind submissionId: Int, quantity: Int): DbPortionDto
 
     @SqlQuery("UPDATE $table" +
             " SET $quantity = :quantity" +
             " WHERE $id = :submissionId RETURNING *"
     )
-    fun update(submissionId: Int, quantity: Int): PortionDto
+    fun update(submissionId: Int, quantity: Int): DbPortionDto
 }

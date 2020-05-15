@@ -8,12 +8,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionContractType
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType.RESTAURANT
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.*
-import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbRestaurantDto
-import pt.isel.ps.g06.httpserver.dataAccess.db.dto.RestaurantCuisineDto
-import pt.isel.ps.g06.httpserver.dataAccess.db.dto.MealCuisineDto
-import pt.isel.ps.g06.httpserver.dataAccess.db.dto.RestaurantCuisineDto
-import pt.isel.ps.g06.httpserver.dataAccess.db.dto.RestaurantDto
-import pt.isel.ps.g06.httpserver.dataAccess.db.dto.SubmissionDto
+import pt.isel.ps.g06.httpserver.dataAccess.db.dto.*
 import pt.isel.ps.g06.httpserver.dataAccess.model.RestaurantApiId
 import pt.isel.ps.g06.httpserver.springConfig.dto.DbEditableDto
 
@@ -29,9 +24,9 @@ class RestaurantDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo
         }
     }
 
-    fun getRestaurantCuisines(id: Int): Collection<RestaurantCuisineDto> {
-        return jdbi.inTransaction<Collection<RestaurantCuisineDto>, Exception>(isolationLevel) {
-            return@inTransaction it.attach(RestaurantCuisineDao::class.java).getByRestaurantId(id)
+    fun getRestaurantCuisines(id: Int): Collection<DbCuisineDto> {
+        return jdbi.inTransaction<Collection<DbCuisineDto>, Exception>(isolationLevel) {
+            return@inTransaction it.attach(CuisineDao::class.java).getByRestaurantId(id)
         }
     }
 
@@ -48,8 +43,8 @@ class RestaurantDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo
             cuisineNames: Collection<String> = emptyList(),
             latitude: Float,
             longitude: Float
-    ): SubmissionDto {
-        return jdbi.inTransaction<SubmissionDto, Exception>(isolationLevel) {
+    ): DbSubmissionDto {
+        return jdbi.inTransaction<DbSubmissionDto, Exception>(isolationLevel) {
 
             //Insert Submission
             val submissionDto = it.attach(SubmissionDao::class.java)
@@ -69,7 +64,7 @@ class RestaurantDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo
                     .getAllByNames(cuisineNames)
                     .map { it.cuisine_id }
             it.attach(RestaurantCuisineDao::class.java)
-                    .insertAll(cuisineIds.map { RestaurantCuisineDto(submissionId, it) })
+                    .insertAll(cuisineIds.map { DbRestaurantCuisineDto(submissionId, it) })
 
             val contracts = mutableListOf(SubmissionContractType.VOTABLE)
             if (apiId != null) {
@@ -193,7 +188,7 @@ class RestaurantDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo
         }.map { it.cuisine_id }
 
         if (newCuisineIds.isNotEmpty()) {
-            restaurantCuisineDao.insertAll(newCuisineIds.map { RestaurantCuisineDto(submissionId, it) })
+            restaurantCuisineDao.insertAll(newCuisineIds.map { DbRestaurantCuisineDto(submissionId, it) })
         }
     }
 }

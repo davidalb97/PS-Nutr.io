@@ -2,8 +2,7 @@ package pt.isel.ps.g06.httpserver.dataAccess.db.dao
 
 import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.statement.SqlQuery
-import org.jdbi.v3.sqlobject.statement.SqlUpdate
-import pt.isel.ps.g06.httpserver.dataAccess.db.dto.VoteDto
+import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbVoteDto
 import pt.isel.ps.g06.httpserver.dataAccess.model.Votes
 
 interface VoteDao {
@@ -31,20 +30,20 @@ interface VoteDao {
 
     @SqlQuery("INSERT INTO $table($submissionId, $voterSubmitterId, $vote)" +
             " VALUES(:voteSubmissionId, :voteSubmitterId, :vote) RETURNING *")
-    fun insert(@Bind voteSubmissionId: Int, voterSubmitterId: Int, vote: Boolean): VoteDto
+    fun insert(@Bind voteSubmissionId: Int, voterSubmitterId: Int, vote: Boolean): DbVoteDto
 
     @SqlQuery("UPDATE $table" +
             " SET $vote = :vote" +
             " WHERE $submissionId =" +
             " :submissionId, $voterSubmitterId = :voteSubmitterId RETURNING *"
     )
-    fun update(@Bind submissionId: Int, voteSubmitterId: Int, vote: Boolean): VoteDto
+    fun update(@Bind submissionId: Int, voteSubmitterId: Int, vote: Boolean): DbVoteDto
 
     @SqlQuery("DELETE FROM $table" +
             " WHERE $submissionId = :submissionId" +
             " AND $voterSubmitterId = :voteSubmitterId RETURNING *")
-    fun delete(@Bind submissionId: Int, voteSubmitterId: Int): VoteDto
+    fun delete(@Bind submissionId: Int, voteSubmitterId: Int): DbVoteDto
 
     @SqlQuery("DELETE FROM $table WHERE $submissionId = :submissionId RETURNING *")
-    fun deleteAllById(submissionId: Int): List<VoteDto>
+    fun deleteAllById(submissionId: Int): List<DbVoteDto>
 }

@@ -24,7 +24,7 @@ interface RestaurantDao {
     fun getByCoordinates(@Bind latitude: Float, @Bind longitude: Float, @Bind radius: Int): List<DbRestaurantDto>
 
     @SqlQuery("SELECT * FROM $table WHERE $id = :submissionId")
-    fun getById(@Bind submissionId: Int): RestaurantDto?
+    fun getById(@Bind submissionId: Int): DbRestaurantDto?
 
     @SqlQuery("INSERT INTO $table($id, $name, $latitude, $longitude)" +
             " VALUES(:submissionId, :restaurantName, :latitude, :longitude) RETURNING *")

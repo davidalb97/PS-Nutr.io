@@ -4,7 +4,7 @@ import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.customizer.BindBeanList
 import org.jdbi.v3.sqlobject.customizer.BindList
 import org.jdbi.v3.sqlobject.statement.SqlQuery
-import pt.isel.ps.g06.httpserver.dataAccess.db.dto.RestaurantCuisineDto
+import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbRestaurantCuisineDto
 
 interface RestaurantCuisineDao {
 
@@ -15,24 +15,24 @@ interface RestaurantCuisineDao {
     }
 
     @SqlQuery("SELECT * FROM $table")
-    fun getAll(): List<RestaurantCuisineDto>
+    fun getAll(): List<DbRestaurantCuisineDto>
 
     @SqlQuery("SELECT * FROM $table WHERE $id = :restaurantId")
-    fun getByRestaurantId(@Bind restaurantId: Int): List<RestaurantCuisineDto>
+    fun getByRestaurantId(@Bind restaurantId: Int): List<DbRestaurantCuisineDto>
 
     @SqlQuery("INSERT INTO $table($id, $cuisineId)" +
             " VALUES(:restaurantId, :cuisineId) RETURNING *")
-    fun insert(@Bind restaurantId: Int, @Bind cuisineId: Int): RestaurantCuisineDto
+    fun insert(@Bind restaurantId: Int, @Bind cuisineId: Int): DbRestaurantCuisineDto
 
     @SqlQuery("INSERT INTO $table($id, $cuisineId)" +
             " values <restaurantCuisineDtos> RETURNING *"
     )
     fun insertAll(@BindBeanList(propertyNames = [id, cuisineId])
-                  restaurantCuisineDtos: List<RestaurantCuisineDto>
-    ): List<RestaurantCuisineDto>
+                  restaurantCuisineDtos: List<DbRestaurantCuisineDto>
+    ): List<DbRestaurantCuisineDto>
 
     @SqlQuery("DELETE FROM $table WHERE $id = :restaurantId RETURNING *")
-    fun deleteAllByRestaurantId(@Bind restaurantId: Int): List<RestaurantCuisineDto>
+    fun deleteAllByRestaurantId(@Bind restaurantId: Int): List<DbRestaurantCuisineDto>
 
     @SqlQuery("DELETE FROM $table" +
             " WHERE $id = :submission_id" +
@@ -40,5 +40,5 @@ interface RestaurantCuisineDao {
     fun deleteAllByRestaurantIdAndCuisineIds(
             @Bind restaurantSubmissionId: Int,
             @BindList cuisineIds: List<Int>
-    ): List<RestaurantCuisineDto>
+    ): List<DbRestaurantCuisineDto>
 }
