@@ -12,6 +12,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.SubmitterType
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.*
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.*
 import pt.isel.ps.g06.httpserver.dataAccess.model.Ingredient
+import pt.isel.ps.g06.httpserver.exception.InvalidInputDomain
 import pt.isel.ps.g06.httpserver.exception.InvalidInputException
 import pt.isel.ps.g06.httpserver.springConfig.dto.DbEditableDto
 
@@ -53,6 +54,11 @@ class MealDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo(jdbi)
         }
     }
 
+    /**
+     * @throws InvalidInputException On invalid cuisines passed.
+     *                               (Annotation required for testing purposes)
+     */
+    @Throws(InvalidInputException::class)
     fun insert(
             submitterId: Int,
             mealName: String,
@@ -85,11 +91,7 @@ class MealDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo(jdbi)
                     .insert(mealSubmissionId, mealName)
 
             //Insert all MealCuisine associations
-            val cuisineIds = it.attach(CuisineDao::class.java)
-                    .getAllByNames(cuisineNames)
-                    .map { it.cuisine_id }
-            it.attach(MealCuisineDao::class.java)
-                    .insertAll(cuisineIds.map { DbMealCuisineDto(mealSubmissionId, it) })
+            insertMealCuisines(it, mealSubmissionId, cuisineNames)
 
             //Get API submitter id
             val apiSubmitterId = it.attach(ApiDao::class.java)
@@ -162,7 +164,8 @@ class MealDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo(jdbi)
 
     /**
      * @throws InvalidInputException On invalid submission ownership, invalid submission type,
-     *                               submission change timed out or if it is an api meal.
+     *                               submission change timed out, if it is an api meal
+     *                               or invalid cuisines were passed.
      *                               (Annotation required for testing purposes)
      */
     @Throws(InvalidInputException::class)
@@ -199,6 +202,13 @@ class MealDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo(jdbi)
                 updateIngredients(it, submissionId, ingredients)
             }
         }
+    }
+
+    private fun insertMealCuisines(it: Handle, submissionId: Int, cuisineNames: Collection<String>) {
+        val cuisineIds = getCuisinesByNames(cuisineNames, isolationLevel)
+                .map { it.cuisine_id }
+        it.attach(MealCuisineDao::class.java)
+                .insertAll(cuisineIds.map { DbMealCuisineDto(submissionId, it) })
     }
 
     private fun updateIngredients(it: Handle, submissionId: Int, ingredients: List<Ingredient>) {
@@ -328,8 +338,7 @@ class MealDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo(jdbi)
     }
 
     private fun updateCuisines(handle: Handle, submissionId: Int, cuisineNames: Collection<String>) {
-        val cuisineDtos = handle.attach(CuisineDao::class.java)
-                .getAllByNames(cuisineNames)
+        val cuisineDtos = getCuisinesByNames(cuisineNames, isolationLevel)
         val mealCuisineDao = handle.attach(MealCuisineDao::class.java)
 
         //Get existing cuisines

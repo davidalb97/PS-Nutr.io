@@ -10,6 +10,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType.RESTAURANT
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.*
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.*
 import pt.isel.ps.g06.httpserver.dataAccess.model.RestaurantApiId
+import pt.isel.ps.g06.httpserver.exception.InvalidInputDomain
 import pt.isel.ps.g06.httpserver.exception.InvalidInputException
 import pt.isel.ps.g06.httpserver.springConfig.dto.DbEditableDto
 
@@ -37,6 +38,10 @@ class RestaurantDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo
         }
     }
 
+    /**
+     * @throws InvalidInputException On invalid cuisines passed.
+     *                               (Annotation required for testing purposes)
+     */
     fun insert(
             submitterId: Int,
             restaurantName: String,
@@ -61,11 +66,7 @@ class RestaurantDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo
                     .insert(submissionId, restaurantName, latitude, longitude)
 
             //Insert all RestaurantCuisine associations
-            val cuisineIds = it.attach(CuisineDao::class.java)
-                    .getAllByNames(cuisineNames)
-                    .map { it.cuisine_id }
-            it.attach(RestaurantCuisineDao::class.java)
-                    .insertAll(cuisineIds.map { DbRestaurantCuisineDto(submissionId, it) })
+            insertRestaurantCuisines(it, submissionId, cuisineNames)
 
             val contracts = mutableListOf(SubmissionContractType.REPORTABLE)
             if (apiId != null) {
@@ -137,7 +138,7 @@ class RestaurantDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo
 
     /**
      * @throws InvalidInputException On invalid submission ownership, invalid submission type,
-     *                               submission change timed out.
+     *                               submission change timed out or invalid cuisines were passed.
      *                               (Annotation required for testing purposes)
      */
     @Throws(InvalidInputException::class)
@@ -163,6 +164,13 @@ class RestaurantDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo
         }
     }
 
+    private fun insertRestaurantCuisines(it: Handle, submissionId: Int, cuisineNames: Collection<String>) {
+        val cuisineIds = getCuisinesByNames(cuisineNames, isolationLevel)
+                .map { it.cuisine_id }
+        it.attach(RestaurantCuisineDao::class.java)
+                .insertAll(cuisineIds.map { DbRestaurantCuisineDto(submissionId, it) })
+    }
+
     private fun insertApiRestaurant(handle: Handle, submissionId: Int, apiId: RestaurantApiId) {
         //Get api submitterId, abort if failed
         val apiDao = handle.attach(ApiDao::class.java)
@@ -177,8 +185,7 @@ class RestaurantDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo
     }
 
     private fun updateCuisines(handle: Handle, submissionId: Int, cuisineNames: Collection<String>) {
-        val cuisineDtos = handle.attach(CuisineDao::class.java)
-                .getAllByNames(cuisineNames)
+        val cuisineDtos = getCuisinesByNames(cuisineNames, isolationLevel)
         val restaurantCuisineDao = handle.attach(RestaurantCuisineDao::class.java)
 
         //Get existing cuisines

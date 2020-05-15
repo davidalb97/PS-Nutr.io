@@ -1,5 +1,6 @@
 package pt.isel.ps.g06.httpserver.dataAccess.db.repo
 
+import org.jdbi.v3.core.Handle
 import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.transaction.TransactionIsolationLevel
 import org.jdbi.v3.core.transaction.TransactionIsolationLevel.SERIALIZABLE
@@ -7,6 +8,7 @@ import org.springframework.stereotype.Repository
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionContractType
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.*
+import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbCuisineDto
 import pt.isel.ps.g06.httpserver.exception.InvalidInputDomain
 import pt.isel.ps.g06.httpserver.exception.InvalidInputException
 import java.time.Clock
@@ -159,6 +161,22 @@ class BaseDbRepo constructor(internal val jdbi: Jdbi) {
             throw InvalidInputException(InvalidInputDomain.API,
                     "The submission id \"$submissionId\" is not an API submission."
             )
+        }
+    }
+
+    protected fun getCuisinesByNames(cuisineNames: Collection<String>, isolationLevel: TransactionIsolationLevel): Collection<DbCuisineDto> {
+        return jdbi.inTransaction<Collection<DbCuisineDto>, Exception>(isolationLevel) {
+            val cuisineDtos = it.attach(CuisineDao::class.java)
+                    .getAllByNames(cuisineNames)
+            if(cuisineDtos.size != cuisineNames.size) {
+                val invalidCuisines = cuisineNames.filter { name ->
+                    cuisineDtos.none { it.cuisine_name == name }
+                }
+                throw InvalidInputException(InvalidInputDomain.CUISINE,
+                        "Invalid cuisines: " + invalidCuisines.joinToString(",", "[", "]")
+                )
+            }
+            return@inTransaction cuisineDtos
         }
     }
 }
