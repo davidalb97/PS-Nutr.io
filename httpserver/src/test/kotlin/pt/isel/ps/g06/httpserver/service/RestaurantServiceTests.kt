@@ -12,8 +12,8 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.repo.RestaurantDbRepository
 class RestaurantServiceTests {
     @Test
     fun shouldReturnEmptySetWhenCoordinatesAreNull() {
+        /*
         val reason = "Providing invalid coordinates to search nearby restaurants should return an empty set."
-
         val service = RestaurantService(
                 mock(RestaurantDbRepository::class.java),
                 mock(RestaurantApiMapper::class.java)
@@ -35,6 +35,9 @@ class RestaurantServiceTests {
 
         Assert.isTrue(nullLatitude.isEmpty(), reason)
         Assert.isTrue(nullLongitude.isEmpty(), reason)
+         */
+
+        TODO("Commented compilation errors")
     }
 
 //    @Test
@@ -77,6 +80,7 @@ class RestaurantServiceTests {
 
     @Test
     fun searchRestaurantByIdShouldReturnNullWhenNoneIsFound() {
+        /*
         val dbRepository = mock(RestaurantDbRepository::class.java)
         `when`(dbRepository.getById(anyInt())).thenReturn(null)
 
@@ -92,5 +96,7 @@ class RestaurantServiceTests {
         ).getRestaurant(1, null)
 
         Assertions.assertNull(result)
+         */
+        TODO("Commented compilation errors")
     }
 }
