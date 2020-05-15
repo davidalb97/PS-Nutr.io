@@ -67,11 +67,11 @@ class RestaurantDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo
             it.attach(RestaurantCuisineDao::class.java)
                     .insertAll(cuisineIds.map { DbRestaurantCuisineDto(submissionId, it) })
 
-            val contracts = mutableListOf(SubmissionContractType.VOTABLE)
+            val contracts = mutableListOf(SubmissionContractType.REPORTABLE)
             if (apiId != null) {
                 insertApiRestaurant(it, submissionId, apiId)
                 contracts.add(SubmissionContractType.API)
-            } else contracts.add(SubmissionContractType.REPORTABLE)
+            } else contracts.add(SubmissionContractType.VOTABLE)
 
             //Insert contracts (VOTABLE,  API if there is an apiId, REPORTABLE if it doesn't)
             it.attach(SubmissionContractDao::class.java)
