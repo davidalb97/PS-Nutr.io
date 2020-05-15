@@ -1,6 +1,8 @@
 package pt.isel.ps.g06.httpserver.db.repo
 
 import org.jdbi.v3.core.Jdbi
+import org.jdbi.v3.core.transaction.TransactionIsolationLevel
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.MethodOrderer
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestMethodOrder
@@ -16,9 +18,14 @@ import pt.isel.ps.g06.httpserver.dataAccess.model.Ingredient
 import pt.isel.ps.g06.httpserver.db.Constants
 import pt.isel.ps.g06.httpserver.db.RepoAsserts
 import pt.isel.ps.g06.httpserver.db.inSandbox
+import pt.isel.ps.g06.httpserver.exception.InvalidInputDomain
+import pt.isel.ps.g06.httpserver.exception.InvalidInputException
 import pt.isel.ps.g06.httpserver.model.TestCuisine
 import pt.isel.ps.g06.httpserver.model.TestIngredient
 import pt.isel.ps.g06.httpserver.springConfig.dto.DbEditableDto
+import java.time.Clock
+import java.time.Duration
+import java.time.OffsetDateTime
 
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.Random::class)
@@ -26,12 +33,16 @@ class MealSubmissionTest {
 
     @Autowired
     lateinit var jdbi: Jdbi
+
     @Autowired
     lateinit var mealRepo: MealDbRepository
+
     @Autowired
     lateinit var asserts: RepoAsserts
+
     @Autowired
     lateinit var dbEditableConfig: DbEditableDto
+
     @Autowired
     lateinit var const: Constants
 
@@ -317,18 +328,21 @@ class MealSubmissionTest {
     @Test
     fun shouldUpdateUserMealWithNewIngredientsAndCuisinesPreservingOldValues() {
         jdbi.inSandbox(const) {
-            val existingMeal = const.meals.first { it.ingredients.isNotEmpty() && it.cuisines.isNotEmpty()}
+            val existingMeal = const.meals.first { it.ingredients.isNotEmpty() && it.cuisines.isNotEmpty() }
             val expectedName = "TestNewMealName"
             val newIngredientCount = 3
             val newIngredientIds =
-                (const.nextSubmissionId until const.nextSubmissionId + newIngredientCount)
-                        .toList()
-            val newIngredients = newIngredientIds.map { TestIngredient(
-                    "TestIngredient$it",
-                    it,
-                    "TestApiId$it",
-                    existingMeal.foodApi
-            ) }
+                    (const.nextSubmissionId until const.nextSubmissionId + newIngredientCount)
+                            .toList()
+            val newIngredients = newIngredientIds.map {
+                TestIngredient(
+                        "TestIngredient$it",
+                        it,
+                        OffsetDateTime.now(),
+                        "TestApiId$it",
+                        existingMeal.foodApi
+                )
+            }
             val expectedIngredients = existingMeal.ingredients.union(newIngredients).toList()
             val expectedIngredientIds = expectedIngredients.map { it.submissionId }
             val newCuisineCount = 3
@@ -440,18 +454,21 @@ class MealSubmissionTest {
     @Test
     fun shouldUpdateUserMealWithNewIngredientsPreservingOldValues() {
         jdbi.inSandbox(const) {
-            val existingMeal = const.meals.first { it.ingredients.isNotEmpty() && it.cuisines.isNotEmpty()}
+            val existingMeal = const.meals.first { it.ingredients.isNotEmpty() && it.cuisines.isNotEmpty() }
             val expectedName = "TestNewMealName"
             val newIngredientCount = 3
             val newIngredientIds =
                     (const.nextSubmissionId until const.nextSubmissionId + newIngredientCount)
                             .toList()
-            val newIngredients = newIngredientIds.map { TestIngredient(
-                    "TestIngredient$it",
-                    it,
-                    "TestApiId$it",
-                    existingMeal.foodApi
-            ) }
+            val newIngredients = newIngredientIds.map {
+                TestIngredient(
+                        "TestIngredient$it",
+                        it,
+                        OffsetDateTime.now(),
+                        "TestApiId$it",
+                        existingMeal.foodApi
+                )
+            }
             val expectedIngredients = existingMeal.ingredients.union(newIngredients).toList()
             val expectedIngredientIds = expectedIngredients.map { it.submissionId }
 
@@ -557,7 +574,7 @@ class MealSubmissionTest {
     @Test
     fun shouldUpdateUserMealWithNewCuisinesPreservingOldValues() {
         jdbi.inSandbox(const) {
-            val existingMeal = const.meals.first { it.ingredients.isNotEmpty() && it.cuisines.isNotEmpty()}
+            val existingMeal = const.meals.first { it.ingredients.isNotEmpty() && it.cuisines.isNotEmpty() }
             val expectedName = "TestNewMealName"
             val newCuisineCount = 3
             val newCuisines = const.cuisineDtos.filter { cuisineDto ->
@@ -665,9 +682,97 @@ class MealSubmissionTest {
     }
 
     @Test
+    fun shouldNotUpdateFromInvalidSubmitter() {
+        val exception = Assertions.assertThrows(InvalidInputException::class.java) {
+            jdbi.inSandbox(const) {
+                val existingMeal = const.meals.first()
+                val invalidSubmitterId = const.submitterDtos.first {
+                    it.submitter_id != existingMeal.submitterId
+                }.submitter_id
+                val newName = "TestName"
+                val expectedCuisines = emptyList<String>()
+                val expectedIngredients = emptyList<Ingredient>()
+                mealRepo.update(
+                        submissionId = existingMeal.submissionId,
+                        submitterId = invalidSubmitterId,
+                        name = newName,
+                        cuisineNames = expectedCuisines,
+                        ingredients = expectedIngredients
+                )
+            }
+        }
+        Assertions.assertEquals(InvalidInputDomain.SUBMISSION_SUBMITTER, exception.domain)
+    }
+
+    @Test
+    fun shouldNotUpdateFromInvalidSubmission() {
+        val exception = Assertions.assertThrows(InvalidInputException::class.java) {
+            jdbi.inSandbox(const) {
+                val invalidSubmission = const.ingredients.first()
+                val newName = "TestName"
+                val expectedCuisines = emptyList<String>()
+                val expectedIngredients = emptyList<Ingredient>()
+                mealRepo.update(
+                        submissionId = invalidSubmission.submissionId,
+                        submitterId = invalidSubmission.foodApi.submitterId,
+                        name = newName,
+                        cuisineNames = expectedCuisines,
+                        ingredients = expectedIngredients
+                )
+            }
+        }
+        Assertions.assertEquals(InvalidInputDomain.SUBMISSION, exception.domain)
+    }
+
+    @Test
+    fun shouldNotUpdateFromNonEditableSubmission() {
+        val exception = Assertions.assertThrows(InvalidInputException::class.java) {
+            jdbi.inSandbox(const) {
+                val currentTime = OffsetDateTime.now(Clock.systemDefaultZone())
+                val timeout = dbEditableConfig.`edit-timeout-minutes`!!.seconds
+                //First meal that is not possible to edit
+                val existingMeal = const.meals.first {
+                    Duration.between(it.date, currentTime).seconds > timeout
+                }
+                val newName = "TestName"
+                val expectedCuisines = emptyList<String>()
+                val expectedIngredients = emptyList<Ingredient>()
+                mealRepo.update(
+                        submissionId = existingMeal.submissionId,
+                        submitterId = existingMeal.submitterId,
+                        name = newName,
+                        cuisineNames = expectedCuisines,
+                        ingredients = expectedIngredients
+                )
+            }
+        }
+        Assertions.assertEquals(InvalidInputDomain.TIMEOUT, exception.domain)
+    }
+
+    @Test
+    fun shouldNotUpdateFromApiSubmission() {
+        val exception = Assertions.assertThrows(InvalidInputException::class.java) {
+            jdbi.inSandbox(const) {
+                val existingMeal = const.meals.first { it.foodApiId != null }
+                val newName = "TestName"
+                val expectedCuisines = emptyList<String>()
+                val expectedIngredients = emptyList<Ingredient>()
+                mealRepo.update(
+                        submissionId = existingMeal.submissionId,
+                        submitterId = existingMeal.submitterId,
+                        name = newName,
+                        cuisineNames = expectedCuisines,
+                        ingredients = expectedIngredients
+                )
+            }
+        }
+        Assertions.assertEquals(InvalidInputDomain.API, exception.domain)
+    }
+
+    @Test
     fun shouldDeleteUserMealWithIngredientsAndCuisines() {
         jdbi.inSandbox(const) {
-            val existingMeal = const.meals.first { it.ingredients.isNotEmpty() && it.cuisines.isNotEmpty()}
+            val existingMeal = const.meals.first { it.ingredients.isNotEmpty() && it.cuisines.isNotEmpty() }
             val expectedIngredientIds = existingMeal.ingredients.map { it.submissionId }
 
             //Bypass time restriction
@@ -775,7 +880,7 @@ class MealSubmissionTest {
     @Test
     fun shouldDeleteApiMealWithCuisines() {
         jdbi.inSandbox(const) {
-            val existingMeal = const.meals.first { it.ingredients.isEmpty() && it.cuisines.isNotEmpty()}
+            val existingMeal = const.meals.first { it.ingredients.isEmpty() && it.cuisines.isNotEmpty() }
 
             //Bypass time restriction
             val updatedSubmission = it.createQuery("UPDATE ${SubmissionDao.table}" +
@@ -836,5 +941,55 @@ class MealSubmissionTest {
             )
             asserts.assertMealCuisinesInsertCount(it, existingMeal.cuisines.size * (-1))
         }
+    }
+
+    @Test
+    fun shouldNotDeleteFromInvalidSubmitter() {
+        val exception = Assertions.assertThrows(InvalidInputException::class.java) {
+            jdbi.inSandbox(const) {
+                val existingMeal = const.meals.first()
+                val invalidSubmitterId = const.submitterDtos.first {
+                    it.submitter_id != existingMeal.submitterId
+                }.submitter_id
+                mealRepo.delete(
+                        submissionId = existingMeal.submissionId,
+                        submitterId = invalidSubmitterId
+                )
+            }
+        }
+        Assertions.assertEquals(InvalidInputDomain.SUBMISSION_SUBMITTER, exception.domain)
+    }
+
+    @Test
+    fun shouldNotDeleteFromInvalidSubmission() {
+        val exception = Assertions.assertThrows(InvalidInputException::class.java) {
+            jdbi.inSandbox(const) {
+                val invalidSubmission = const.ingredients.first()
+                mealRepo.delete(
+                        submissionId = invalidSubmission.submissionId,
+                        submitterId = invalidSubmission.foodApi.submitterId
+                )
+            }
+        }
+        Assertions.assertEquals(InvalidInputDomain.SUBMISSION, exception.domain)
+    }
+
+    @Test
+    fun shouldNotDeleteFromNonEditableSubmission() {
+        val exception = Assertions.assertThrows(InvalidInputException::class.java) {
+            jdbi.inSandbox(const) {
+                val currentTime = OffsetDateTime.now(Clock.systemDefaultZone())
+                val timeout = dbEditableConfig.`edit-timeout-minutes`!!.seconds
+                //First meal that is not possible to edit
+                val existingMeal = const.meals.first {
+                    Duration.between(it.date, currentTime).seconds > timeout
+                }
+                mealRepo.delete(
+                        submissionId = existingMeal.submissionId,
+                        submitterId = existingMeal.submitterId
+                )
+            }
+        }
+        Assertions.assertEquals(InvalidInputDomain.TIMEOUT, exception.domain)
     }
 }

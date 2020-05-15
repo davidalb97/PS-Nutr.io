@@ -12,6 +12,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.dto.SubmitterDto
 import pt.isel.ps.g06.httpserver.model.TestFoodApi
 import pt.isel.ps.g06.httpserver.model.TestIngredient
 import pt.isel.ps.g06.httpserver.model.TestMeal
+import pt.isel.ps.g06.httpserver.util.parsePostgresql
 
 private val isolation = TransactionIsolationLevel.SERIALIZABLE
 
@@ -95,18 +96,24 @@ class Constants(val jdbi: Jdbi) {
         val SS_table = SubmissionSubmitterDao.table
         val SS_submissionId = SubmissionSubmitterDao.submissionId
         val SS_submitterId = SubmissionSubmitterDao.submitterId
+        val SN_table = SubmissionDao.table
+        val SN_id = SubmissionDao.id
+        val SN_date = SubmissionDao.date
         it.createQuery(
-                "SELECT $I_table.$I_id, $I_table.$I_name, $AS_table.$AS_apiId, $S_table.$S_name, $SS_table.$SS_submitterId" +
+                "SELECT $I_table.$I_id, $I_table.$I_name, $AS_table.$AS_apiId, $S_table.$S_name, $SS_table.$SS_submitterId, $SN_table.$SN_date" +
                         " FROM $I_table" +
                         " INNER JOIN $AS_table" +
                         " ON $I_table.$I_id = $AS_table.$AS_submissionId" +
                         " INNER JOIN $SS_table" +
                         " ON $I_table.$I_id = $SS_table.$SS_submissionId" +
                         " INNER JOIN $S_table" +
-                        " ON $SS_table.$SS_submitterId = $S_table.$S_id"
+                        " ON $SS_table.$SS_submitterId = $S_table.$S_id" +
+                        " INNER JOIN $SN_table" +
+                        " ON $SN_table.$SN_id = $S_table.$S_id"
         ).map { rs, _ ->
             TestIngredient(rs.getString("ingredient_name"),
                     rs.getInt("submission_id"),
+                    parsePostgresql(rs.getString(SN_date)),
                     rs.getString("apiId"),
                     TestFoodApi(
                             FoodApiType.valueOf(rs.getString("submitter_name")),
@@ -130,11 +137,12 @@ class Constants(val jdbi: Jdbi) {
         val SN_table = SubmissionDao.table
         val SN_id = SubmissionDao.id
         val SN_type = SubmissionDao.type
+        val SN_date = SubmissionDao.date
         val SS_table = SubmissionSubmitterDao.table
         val SS_submissionId = SubmissionSubmitterDao.submissionId
         val SS_submitterId = SubmissionSubmitterDao.submitterId
         it.createQuery(
-                "SELECT $mealTable.$mealId, $mealTable.$mealName, $AS_table.$AS_apiId, $ST_table.$ST_name, $SS_table.$SS_submitterId" +
+                "SELECT $mealTable.$mealId, $mealTable.$mealName, $AS_table.$AS_apiId, $ST_table.$ST_name, $SS_table.$SS_submitterId, $SN_table.$SN_date" +
                         " FROM Meal" +
                         " FULL OUTER JOIN $AS_table" +
                         " ON $mealTable.$mealId = $AS_table.$AS_submissionId" +
@@ -163,6 +171,7 @@ class Constants(val jdbi: Jdbi) {
                     submissionId,
                     rs.getString(AS_apiId),
                     apiSubmitterId,
+                    parsePostgresql(rs.getString(SN_date)),
                     ingredients,
                     cuisines
             )

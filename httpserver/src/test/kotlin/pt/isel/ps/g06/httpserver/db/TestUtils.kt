@@ -50,7 +50,7 @@ fun setSerialValue(jdbi: Jdbi, tableName: String, columnName: String, value: Int
                 .execute()
     }
 }
-
+/*
 fun List<Ingredient>.mapToTestIngredients(
         handle: Handle,
         api: SubmitterDto,
@@ -76,7 +76,8 @@ fun List<Ingredient>.mapToTestIngredients(
                 )
             }
 }
-
+ */
+/*
 fun getDtosFromIngredientNames(
         handle: Handle,
         apiSubmitter: Int,
@@ -95,7 +96,7 @@ fun getDtosFromIngredientNames(
     }
     return ingredientDtos
 }
-
+*/
 /*
 fun findFirstMealWithIngredients(handle: Handle): TestMeal {
     val mealIngredientDtos = handle.attach(MealIngredientDao::class.java)
@@ -158,7 +159,7 @@ fun getTestCuisinesByMealId(handle: Handle, submissionId: Int, testApi: TestFood
                 )
             }
 }
-
+/*
 fun MealDto.mapToTest(handle: Handle): TestMeal {
     val mealIngredientIds = handle.attach(MealIngredientDao::class.java)
             .getAllByMealId(this.submission_id)
@@ -189,6 +190,8 @@ fun MealDto.mapToTest(handle: Handle): TestMeal {
             this.submission_id,
             apiSubmission?.apiId,
             apiSubmitter,
+            this.
             testIngredients
     )
 }
+ */
