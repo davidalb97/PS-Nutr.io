@@ -9,28 +9,26 @@ import org.springframework.http.ResponseEntity
  * Class used for error models, based on the [Problem Json spec](https://tools.ietf.org/html/rfc7807)
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-data class ProblemJson(
-        val type: String,
-        val title: String,
-        val detail: String,
-        val status: Int
-)
-
-fun toResponseEntity(
-        status: HttpStatus,
-        type: String = "about:blank",
-        title: String = status.reasonPhrase,
-        detail: String
-): ResponseEntity<ProblemJson> {
-    val problem = ProblemJson(
-            type = type,
-            title = title,
-            detail = detail,
-            status = status.value()
-    )
-
-    return ResponseEntity
+open class ProblemJson(
+        val status: HttpStatus,
+        val type: String = "about:blank",
+        val title: String = status.reasonPhrase,
+        val detail: String?
+) {
+    fun toResponseEntity(): ResponseEntity<ProblemJson> = ResponseEntity
             .status(status)
             .contentType(MediaType.APPLICATION_PROBLEM_JSON)
-            .body(problem)
+            .body(this)
 }
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
+class InvalidMethodArgumentProblemJson(
+        detail: String = "Read the field 'invalidParams' to check which fields are invalid.",
+        val invalidParams: Collection<MissingArgument>
+) : ProblemJson(
+        status = HttpStatus.BAD_REQUEST,
+        title = "Your request parameters didn't validate.",
+        detail = detail
+)
+
+data class MissingArgument(val name: String, val reason: String?)
