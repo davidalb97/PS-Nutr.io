@@ -1,11 +1,15 @@
 package pt.isel.ps.g06.httpserver.dataAccess.api.food.uri
 
+import org.springframework.stereotype.Component
 import pt.isel.ps.g06.httpserver.dataAccess.api.food.SpoonacularCuisine
 import pt.isel.ps.g06.httpserver.dataAccess.api.food.SpoonacularDiet
 import pt.isel.ps.g06.httpserver.dataAccess.api.food.SpoonacularUnitTypes
 import java.net.URI
 
+@Component
 interface FoodUri {
+    fun searchMeals(name: String, cuisines: Collection<String>?): URI
+
     fun productsSearch(
             query: String,
             minCalories: Int? = null,

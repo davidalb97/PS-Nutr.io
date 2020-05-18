@@ -1,16 +1,33 @@
 package pt.isel.ps.g06.httpserver.dataAccess.api.food
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import org.springframework.stereotype.Repository
 import pt.isel.ps.g06.httpserver.dataAccess.api.common.BaseApiRequester
+import pt.isel.ps.g06.httpserver.dataAccess.api.food.dto.MealDto
 import pt.isel.ps.g06.httpserver.dataAccess.api.food.uri.FoodUri
 import java.net.http.HttpClient
+import java.net.http.HttpResponse
+import java.util.concurrent.CompletableFuture
 
+@Repository
 abstract class FoodApi(
         httpClient: HttpClient = HttpClient.newHttpClient(),
-        protected val uriBuilder: FoodUri,
+        private val foodUri: FoodUri,
         responseMapper: ObjectMapper
 ) : BaseApiRequester(httpClient, responseMapper) {
     //TODO - Uncomment as needed. I dislike the "adding as much and never needing it" policy.
+
+    fun searchMeals(name: String, cuisines: Collection<String>?): CompletableFuture<Collection<MealDto>> {
+        val uri = foodUri.searchMeals(name, cuisines)
+        val request = buildGetRequest(uri)
+
+        return httpClient
+                .sendAsync(request, HttpResponse.BodyHandlers.ofString())
+                .thenApply(this::handleSearchMealResponse)
+    }
+
+    protected abstract fun handleSearchMealResponse(response: HttpResponse<String>): Collection<MealDto>
+
 //
 //    fun productsSearch(
 //            query: String,

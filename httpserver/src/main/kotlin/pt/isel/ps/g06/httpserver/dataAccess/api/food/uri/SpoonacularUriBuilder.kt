@@ -41,10 +41,26 @@ private const val META_INFO = "metaInformation"
 private const val AMOUNT = "amount"
 private const val UNIT = "unit"
 
+private const val DEFAULT_AMOUNT = 100
+
 @Component
 class SpoonacularUriBuilder : FoodUri {
-    //-------------------------------Products------------------------------------
 
+    /**
+     * From Spoonacular [documentation.](https://spoonacular.com/food-api/docs#Search-Recipes)
+     */
+    override fun searchMeals(name: String, cuisines: Collection<String>?): URI {
+        var builder = baseUri(SPOONACULAR_SEARCH_URL)
+                .queryParam(QUERY, name)
+                .queryParam(NUMBER, DEFAULT_AMOUNT)
+
+        if (cuisines != null && cuisines.isNotEmpty()) {
+            builder = builder.queryParam(CUISINE, cuisines)
+        }
+        return builder.build().toUri()
+    }
+
+    //-------------------------------Products------------------------------------
     /**
      * From Spoonacular [documentation.](https://spoonacular.com/food-api/docs#Search-Grocery-Products)
      */
@@ -163,7 +179,7 @@ class SpoonacularUriBuilder : FoodUri {
      * a query parameter, since all requests require it.
      */
     private fun baseUri(path: String): UriComponentsBuilder {
-        return UriComponentsBuilder.fromPath(path).queryParam(API_KEY, SPOONACULAR_API_KEY)
+        return UriComponentsBuilder.fromHttpUrl(path).queryParam(API_KEY, SPOONACULAR_API_KEY)
     }
 }
 

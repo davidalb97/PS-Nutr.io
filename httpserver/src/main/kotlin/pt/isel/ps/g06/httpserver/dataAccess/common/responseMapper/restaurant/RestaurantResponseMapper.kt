@@ -4,6 +4,7 @@ import org.springframework.stereotype.Component
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.dto.ZomatoRestaurantDto
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.dto.here.HereResultItem
 import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.ResponseMapper
+import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.food.MealResponseMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbRestaurantDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.CuisineDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.MealDbRepository
@@ -51,15 +52,13 @@ class HereResponseMapper(
                 longitude = dto.longitude,
                 cuisines = lazy {
                     cuisineIds
-                            ?.let { id -> cuisineDbRepository.getAllByNames(id)
-                                    .map { it.cuisine_name }
-                            } ?: emptyList()
+                            ?.let { id -> cuisineDbRepository.getAllByNames(id).map { it.cuisine_name } }
+                            ?: emptyList()
                 },
                 meals = lazy {
                     cuisineIds
-                            ?.let { id -> mealRepository.getAllByCuisineNames(id)
-                                    .map(mealResponseMapper::mapTo)
-                            } ?: emptyList()
+                            ?.let { id -> mealRepository.getAllByCuisineNames(id).map(mealResponseMapper::mapTo) }
+                            ?: emptyList()
                 }
         )
     }

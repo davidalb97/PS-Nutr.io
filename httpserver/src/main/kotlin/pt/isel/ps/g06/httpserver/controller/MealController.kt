@@ -1,18 +1,32 @@
 package pt.isel.ps.g06.httpserver.controller
 
 import org.springframework.http.MediaType
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import pt.isel.ps.g06.httpserver.common.MEAL
+import pt.isel.ps.g06.httpserver.common.MEALS
 import pt.isel.ps.g06.httpserver.common.MEAL_ID_VALUE
 import pt.isel.ps.g06.httpserver.common.MEAL_VOTE
+import pt.isel.ps.g06.httpserver.model.Meal
+import pt.isel.ps.g06.httpserver.service.MealService
 
 @Suppress("MVCPathVariableInspection")
 @RestController
-@RequestMapping(
-        produces = [MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_PROBLEM_JSON_VALUE],
-        consumes = [MediaType.APPLICATION_JSON_VALUE]
-)
-class MealController {
+@RequestMapping(produces = [MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_PROBLEM_JSON_VALUE])
+class MealController(private val mealService: MealService) {
+
+    @GetMapping(MEALS, consumes = [MediaType.ALL_VALUE])
+    fun searchMeals(
+            @RequestParam name: String,
+            @RequestParam cuisines: Collection<String>?,
+            @RequestParam apiType: String?
+    ): ResponseEntity<Collection<Meal>> {
+        val meals = mealService.searchMeals(name, cuisines, apiType)
+
+        return ResponseEntity
+                .ok()
+                .body(meals)
+    }
 
     @GetMapping(MEAL)
     fun getMealInformation(@PathVariable(MEAL_ID_VALUE) mealId: String) = ""

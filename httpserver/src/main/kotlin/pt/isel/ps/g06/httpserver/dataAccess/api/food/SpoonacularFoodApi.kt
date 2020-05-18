@@ -1,9 +1,14 @@
 package pt.isel.ps.g06.httpserver.dataAccess.api.food
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Repository
+import pt.isel.ps.g06.httpserver.dataAccess.api.food.dto.MealDto
+import pt.isel.ps.g06.httpserver.dataAccess.api.food.dto.spoonacular.SpoonacularMealSearchResult
 import pt.isel.ps.g06.httpserver.dataAccess.api.food.uri.FoodUri
+import pt.isel.ps.g06.httpserver.util.log
 import java.net.http.HttpClient
+import java.net.http.HttpResponse
 
 @Repository
 class SpoonacularFoodApi(
@@ -11,6 +16,23 @@ class SpoonacularFoodApi(
         uriBuilder: FoodUri,
         responseMapper: ObjectMapper
 ) : FoodApi(httpClient, uriBuilder, responseMapper) {
+    override fun handleSearchMealResponse(response: HttpResponse<String>): Collection<MealDto> {
+        val body = response.body()
+
+        return when (response.statusCode()) {
+            HttpStatus.OK.value() -> mapToMealDto(body)
+            HttpStatus.UNAUTHORIZED.value() -> {
+                //TODO We need proper Logging
+                log("WARN: Spoonacular refused access. Is the API-Key valid?")
+                return emptyList()
+            }
+            else -> emptyList()
+        }
+    }
+
+    private fun mapToMealDto(body: String): Collection<MealDto> {
+        return responseMapper.readValue(body, SpoonacularMealSearchResult::class.java).results
+    }
 //
 //    override fun productsSearch(
 //            query: String,
