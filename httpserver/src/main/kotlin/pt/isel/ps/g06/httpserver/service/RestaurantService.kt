@@ -31,14 +31,12 @@ class RestaurantService(
         val type = RestaurantApiType.getOrDefault(apiType)
         val restaurantApi = restaurantApiMapper.getRestaurantApi(type)
 
-        val apiRestaurants = CompletableFuture
-                .supplyAsync { restaurantApi.searchNearbyRestaurants(latitude, longitude, chosenRadius, name) }
-                .thenApply { it.map(restaurantResponseMapper::mapTo) }
-
+        val apiRestaurants =
+                restaurantApi.searchNearbyRestaurants(latitude, longitude, chosenRadius, name)
+                        .thenApply { it.map(restaurantResponseMapper::mapTo) }
         val dbRestaurants = dbRestaurantRepository
                 .getAllByCoordinates(latitude, longitude, chosenRadius)
                 .map(restaurantResponseMapper::mapTo)
-
         //TODO Handle CompletableFuture exception
         return filterRedundantApiRestaurants(dbRestaurants, apiRestaurants.get())
     }
@@ -62,7 +60,7 @@ class RestaurantService(
         val restaurant = id
                 .toIntOrNull()
                 ?.let { dbRestaurantRepository.getById(it) }
-                ?: restaurantApi.getRestaurantInfo(id)
+                ?: restaurantApi.getRestaurantInfo(id).get()
 
         return restaurant?.let(restaurantResponseMapper::mapTo)
     }
