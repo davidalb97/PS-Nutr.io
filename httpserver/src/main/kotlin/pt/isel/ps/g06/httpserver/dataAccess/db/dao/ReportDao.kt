@@ -2,7 +2,7 @@ package pt.isel.ps.g06.httpserver.dataAccess.db.dao
 
 import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.statement.SqlQuery
-import pt.isel.ps.g06.httpserver.dataAccess.db.dto.ReportDto
+import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbReportDto
 
 interface ReportDao {
 
@@ -15,8 +15,8 @@ interface ReportDao {
 
     @SqlQuery("INSERT INTO $table($reporterId, $submissionId, $description) " +
             "VALUES(:reporterSubmitterId, :submissionId, :description) RETURNING *")
-    fun insert(@Bind reporterSubmitterId: Int, submissionId: Int, description: String): ReportDto
+    fun insert(@Bind reporterSubmitterId: Int, submissionId: Int, description: String): DbReportDto
 
     @SqlQuery("DELETE FROM $table WHERE $submissionId = :submissionId RETURNING *")
-    fun deleteAllBySubmissionId(submissionId: Int): List<ReportDto>
+    fun deleteAllBySubmissionId(submissionId: Int): List<DbReportDto>
 }

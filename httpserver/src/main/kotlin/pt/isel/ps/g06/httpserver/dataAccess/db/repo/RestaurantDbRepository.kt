@@ -8,10 +8,10 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionContractType
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType.RESTAURANT
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.*
-import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbRestaurantDto
-import pt.isel.ps.g06.httpserver.dataAccess.db.dto.RestaurantCuisineDto
-import pt.isel.ps.g06.httpserver.dataAccess.db.dto.SubmissionDto
+import pt.isel.ps.g06.httpserver.dataAccess.db.dto.*
 import pt.isel.ps.g06.httpserver.dataAccess.model.RestaurantApiId
+import pt.isel.ps.g06.httpserver.exception.InvalidInputDomain
+import pt.isel.ps.g06.httpserver.exception.InvalidInputException
 import pt.isel.ps.g06.httpserver.springConfig.dto.DbEditableDto
 
 private val isolationLevel = TransactionIsolationLevel.SERIALIZABLE
@@ -26,27 +26,31 @@ class RestaurantDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo
         }
     }
 
-    fun getRestaurantCuisines(id: Int): Collection<RestaurantCuisineDto> {
-        return jdbi.inTransaction<Collection<RestaurantCuisineDto>, Exception>(isolationLevel) {
-            return@inTransaction it.attach(RestaurantCuisineDao::class.java).getByRestaurantId(id)
+    fun getRestaurantCuisines(id: Int): Collection<DbCuisineDto> {
+        return jdbi.inTransaction<Collection<DbCuisineDto>, Exception>(isolationLevel) {
+            return@inTransaction it.attach(CuisineDao::class.java).getByRestaurantId(id)
         }
     }
 
-    fun getAllByCoordinates(latitude: Float, longitude: Float, radius: Int): List<DbRestaurantDto> {
+    fun getAllByCoordinates(latitude: Float, longitude: Float, radius: Int): Collection<DbRestaurantDto> {
         return jdbi.inTransaction<List<DbRestaurantDto>, Exception>(isolationLevel) {
             return@inTransaction it.attach(restaurantDaoClass).getByCoordinates(latitude, longitude, radius)
         }
     }
 
+    /**
+     * @throws InvalidInputException On invalid cuisines passed.
+     *                               (Annotation required for testing purposes)
+     */
     fun insert(
             submitterId: Int,
             restaurantName: String,
             apiId: RestaurantApiId? = null,
-            cuisines: Collection<String> = emptyList(),
+            cuisineNames: Collection<String> = emptyList(),
             latitude: Float,
             longitude: Float
-    ): SubmissionDto {
-        return jdbi.inTransaction<SubmissionDto, Exception>(isolationLevel) {
+    ): DbSubmissionDto {
+        return jdbi.inTransaction<DbSubmissionDto, Exception>(isolationLevel) {
 
             //Insert Submission
             val submissionDto = it.attach(SubmissionDao::class.java)
@@ -62,14 +66,13 @@ class RestaurantDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo
                     .insert(submissionId, restaurantName, latitude, longitude)
 
             //Insert all RestaurantCuisine associations
-            it.attach(RestaurantCuisineDao::class.java)
-                    .insertAll(cuisines.map { RestaurantCuisineParam(submissionId, it) })
+            insertRestaurantCuisines(it, submissionId, cuisineNames)
 
-            val contracts = mutableListOf(SubmissionContractType.VOTABLE)
+            val contracts = mutableListOf(SubmissionContractType.REPORTABLE)
             if (apiId != null) {
                 insertApiRestaurant(it, submissionId, apiId)
                 contracts.add(SubmissionContractType.API)
-            } else contracts.add(SubmissionContractType.REPORTABLE)
+            } else contracts.add(SubmissionContractType.VOTABLE)
 
             //Insert contracts (VOTABLE,  API if there is an apiId, REPORTABLE if it doesn't)
             it.attach(SubmissionContractDao::class.java)
@@ -79,12 +82,17 @@ class RestaurantDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo
         }
     }
 
-
+    /**
+     * @throws InvalidInputException On invalid submission ownership, invalid submission type,
+     *                               submission change timed out.
+     *                               (Annotation required for testing purposes)
+     */
+    @Throws(InvalidInputException::class)
     fun delete(submitterId: Int, submissionId: Int) {
         return jdbi.inTransaction<Unit, Exception>(isolationLevel) {
 
             // Check if the submitter is the creator of this restaurant
-            requireSubmissionSubmitter(submitterId, submissionId, isolationLevel)
+            requireSubmissionSubmitter(submissionId, submitterId, isolationLevel)
 
             // Check if the submission is a Restaurant
             requireSubmission(submissionId, RESTAURANT, isolationLevel)
@@ -128,11 +136,17 @@ class RestaurantDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo
         }
     }
 
+    /**
+     * @throws InvalidInputException On invalid submission ownership, invalid submission type,
+     *                               submission change timed out or invalid cuisines were passed.
+     *                               (Annotation required for testing purposes)
+     */
+    @Throws(InvalidInputException::class)
     fun update(submitterId: Int, submissionId: Int, name: String, cuisines: List<String>) {
         return jdbi.inTransaction<Unit, Exception>(isolationLevel) {
 
             // Check if the submitter is the creator of this restaurant
-            requireSubmissionSubmitter(submitterId, submissionId, isolationLevel)
+            requireSubmissionSubmitter(submissionId, submitterId, isolationLevel)
 
             // Check if the submission is a Restaurant
             requireSubmission(submissionId, SubmissionType.MEAL, isolationLevel)
@@ -150,6 +164,13 @@ class RestaurantDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo
         }
     }
 
+    private fun insertRestaurantCuisines(it: Handle, submissionId: Int, cuisineNames: Collection<String>) {
+        val cuisineIds = getCuisinesByNames(cuisineNames, isolationLevel)
+                .map { it.cuisine_id }
+        it.attach(RestaurantCuisineDao::class.java)
+                .insertAll(cuisineIds.map { DbRestaurantCuisineDto(submissionId, it) })
+    }
+
     private fun insertApiRestaurant(handle: Handle, submissionId: Int, apiId: RestaurantApiId) {
         //Get api submitterId, abort if failed
         val apiDao = handle.attach(ApiDao::class.java)
@@ -163,32 +184,30 @@ class RestaurantDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo
                 .insert(submissionId, apiId.id)
     }
 
-    private fun updateCuisines(handle: Handle, submissionId: Int, cuisines: List<String>) {
+    private fun updateCuisines(handle: Handle, submissionId: Int, cuisineNames: Collection<String>) {
+        val cuisineDtos = getCuisinesByNames(cuisineNames, isolationLevel)
         val restaurantCuisineDao = handle.attach(RestaurantCuisineDao::class.java)
 
         //Get existing cuisines
-        val existingCuisines = restaurantCuisineDao.getByRestaurantId(submissionId)
+        val existingMealCuisineIds = restaurantCuisineDao.getByRestaurantId(submissionId)
+                .map { it.cuisine_id }
                 .toMutableList()
 
         //Delete cuisines
-        val deletedCuisines = existingCuisines
-                .filter { !cuisines.contains(it.cuisine_name) }
-        if (deletedCuisines.isNotEmpty()) {
-            restaurantCuisineDao.deleteAllByRestaurantIdAndCuisine(
-                    submissionId,
-                    deletedCuisines.map { it.cuisine_name }
-            )
+        val deletedCuisineIds = existingMealCuisineIds
+                .filter { existing -> cuisineDtos.none { it.cuisine_id == existing } }
+        if (deletedCuisineIds.isNotEmpty()) {
+            restaurantCuisineDao.deleteAllByRestaurantIdAndCuisineIds(submissionId, deletedCuisineIds)
         }
 
         //Insert new cuisines
-        existingCuisines.removeAll(deletedCuisines)
-        val newCuisines = cuisines.filter { cuisineName ->
-            existingCuisines.none { it.cuisine_name == cuisineName }
-        }
-        if (newCuisines.isNotEmpty()) {
-            restaurantCuisineDao.insertAll(
-                    newCuisines.map { RestaurantCuisineParam(submissionId, it) }
-            )
+        existingMealCuisineIds.removeAll(deletedCuisineIds)
+        val newCuisineIds = cuisineDtos.filter { cuisine ->
+            existingMealCuisineIds.none { it == cuisine.cuisine_id }
+        }.map { it.cuisine_id }
+
+        if (newCuisineIds.isNotEmpty()) {
+            restaurantCuisineDao.insertAll(newCuisineIds.map { DbRestaurantCuisineDto(submissionId, it) })
         }
     }
 }

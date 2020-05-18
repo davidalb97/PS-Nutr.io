@@ -7,16 +7,16 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.dao.PortionDao
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.RestaurantMealPortionDao
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.SubmissionDao
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.SubmissionSubmitterDao
-import pt.isel.ps.g06.httpserver.dataAccess.db.dto.PortionDto
-import pt.isel.ps.g06.httpserver.dataAccess.db.dto.RestaurantMealPortionDto
+import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbPortionDto
+import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbRestaurantMealPortionDto
 
 private val isolationLevel = TransactionIsolationLevel.SERIALIZABLE
 private val portionDaoClass = PortionDao::class.java
 
 class PortionDbRepository(jdbi: Jdbi) : BaseDbRepo(jdbi) {
 
-    fun getPortionsFromMealId(mealSubmissionId: Int): List<PortionDto> {
-        return jdbi.inTransaction<List<PortionDto>, Exception>(isolationLevel) {
+    fun getPortionsFromMealId(mealSubmissionId: Int): List<DbPortionDto> {
+        return jdbi.inTransaction<List<DbPortionDto>, Exception>(isolationLevel) {
             return@inTransaction it.attach(portionDaoClass).getById(mealSubmissionId)
         }
     }
@@ -26,8 +26,8 @@ class PortionDbRepository(jdbi: Jdbi) : BaseDbRepo(jdbi) {
             restaurantId: Int,
             mealId: Int,
             quantity: Int
-    ): RestaurantMealPortionDto {
-        return jdbi.inTransaction<RestaurantMealPortionDto, Exception>(isolationLevel) {
+    ): DbRestaurantMealPortionDto {
+        return jdbi.inTransaction<DbRestaurantMealPortionDto, Exception>(isolationLevel) {
 
             // Check if the mealId is from a Meal
             requireSubmission(mealId, MEAL, isolationLevel)

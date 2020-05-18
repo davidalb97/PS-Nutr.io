@@ -4,22 +4,11 @@ import org.jdbi.v3.core.Handle
 import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.kotlin.inTransactionUnchecked
 import org.jdbi.v3.core.transaction.TransactionIsolationLevel
-import pt.isel.ps.g06.httpserver.dataAccess.api.food.FoodApiType
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmitterType
-import pt.isel.ps.g06.httpserver.dataAccess.db.dao.ApiSubmissionDao
-import pt.isel.ps.g06.httpserver.dataAccess.db.dao.IngredientDao
-import pt.isel.ps.g06.httpserver.dataAccess.db.dao.MealIngredientDao
-import pt.isel.ps.g06.httpserver.dataAccess.db.dao.SubmitterDao
-import pt.isel.ps.g06.httpserver.dataAccess.db.dto.IngredientDto
-import pt.isel.ps.g06.httpserver.dataAccess.db.dto.MealDto
-import pt.isel.ps.g06.httpserver.dataAccess.db.dto.SubmitterDto
-import pt.isel.ps.g06.httpserver.dataAccess.model.Ingredient
-import pt.isel.ps.g06.httpserver.exceptions.TestParameterException
-import pt.isel.ps.g06.httpserver.model.TestFoodApi
-import pt.isel.ps.g06.httpserver.model.TestIngredient
-import pt.isel.ps.g06.httpserver.model.TestMeal
-import pt.isel.ps.g06.httpserver.model.toTestFoodApi
+import pt.isel.ps.g06.httpserver.dataAccess.db.dao.*
+import pt.isel.ps.g06.httpserver.dataAccess.db.mapper.SubmissionMapper
+import pt.isel.ps.g06.httpserver.model.*
 
 /**
  * Runs func with a jdbi transaction handle and rolls back after completion.
@@ -56,7 +45,7 @@ fun setSerialValue(jdbi: Jdbi, tableName: String, columnName: String, value: Int
                 .execute()
     }
 }
-
+/*
 fun List<Ingredient>.mapToTestIngredients(
         handle: Handle,
         api: SubmitterDto,
@@ -82,7 +71,17 @@ fun List<Ingredient>.mapToTestIngredients(
                 )
             }
 }
+ */
 
+fun bypassSubmissionEditLock(handle: Handle, submissionId: Int) {
+    val updatedSubmission = handle.createQuery("UPDATE ${SubmissionDao.table}" +
+            " SET ${SubmissionDao.date} = CURRENT_TIMESTAMP" +
+            " WHERE ${SubmissionDao.id} = $submissionId" +
+            " RETURNING *"
+    ).map(SubmissionMapper()).first()
+}
+
+/*
 fun getDtosFromIngredientNames(
         handle: Handle,
         apiSubmitter: Int,
@@ -101,7 +100,7 @@ fun getDtosFromIngredientNames(
     }
     return ingredientDtos
 }
-
+*/
 /*
 fun findFirstMealWithIngredients(handle: Handle): TestMeal {
     val mealIngredientDtos = handle.attach(MealIngredientDao::class.java)
@@ -140,6 +139,31 @@ fun getTestFoodApiByMealId(handle: Handle, submissionId: Int): TestFoodApi? {
             )
 }
 
+fun getTestCuisinesByMealId(handle: Handle, submissionId: Int, testApi: TestFoodApi): List<TestCuisine> {
+    val apiSubmissionDtos = handle.attach(ApiSubmissionDao::class.java)
+            .getAllBySubmitterIdAndSubmissionType(
+                    testApi.submitterId,
+                    SubmissionType.CUISINE.toString()
+            )
+    return handle.attach(CuisineDao::class.java)
+            .getByMealId(submissionId)
+            .map { cuisineDto ->
+                val cuisineSubmissionIds =
+                        handle.attach(ApiCuisineDao::class.java)
+                                .getAllByCuisineId(cuisineDto.cuisine_id)
+                                .map { it.submission_id }
+                TestCuisine(
+                        cuisineDto.cuisine_id,
+                        cuisineDto.cuisine_name,
+                        testApi,
+                        //Api submissions from cuisine ids
+                        apiSubmissionDtos.filter {
+                            cuisineSubmissionIds.contains(it.submission_id)
+                        }
+                )
+            }
+}
+/*
 fun MealDto.mapToTest(handle: Handle): TestMeal {
     val mealIngredientIds = handle.attach(MealIngredientDao::class.java)
             .getAllByMealId(this.submission_id)
@@ -170,6 +194,8 @@ fun MealDto.mapToTest(handle: Handle): TestMeal {
             this.submission_id,
             apiSubmission?.apiId,
             apiSubmitter,
+            this.
             testIngredients
     )
 }
+ */

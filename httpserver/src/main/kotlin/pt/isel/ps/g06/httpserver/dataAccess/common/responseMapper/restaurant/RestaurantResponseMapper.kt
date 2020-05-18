@@ -51,13 +51,15 @@ class HereResponseMapper(
                 longitude = dto.longitude,
                 cuisines = lazy {
                     cuisineIds
-                            ?.let { id -> cuisineDbRepository.getByHereCuisineIdentifiers(id).map { it.cuisine_name } }
-                            ?: emptyList()
+                            ?.let { id -> cuisineDbRepository.getAllByNames(id)
+                                    .map { it.cuisine_name }
+                            } ?: emptyList()
                 },
                 meals = lazy {
                     cuisineIds
-                            ?.let { id -> mealRepository.getByHereCuisinesIdentifiers(id).map(mealResponseMapper::mapTo) }
-                            ?: emptyList()
+                            ?.let { id -> mealRepository.getAllByCuisineNames(id)
+                                    .map(mealResponseMapper::mapTo)
+                            } ?: emptyList()
                 }
         )
     }
@@ -80,7 +82,7 @@ class ZomatoResponseMapper(
                 cuisines = cuisines,
                 meals = lazy {
                     mealRepository
-                            .getMealsForCuisines(cuisines.value)
+                            .getAllByCuisineNames(cuisines.value)
                             .map(mealResponseMapper::mapTo)
                 }
         )

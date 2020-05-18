@@ -2,8 +2,7 @@ package pt.isel.ps.g06.httpserver.dataAccess.db.dao
 
 import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.statement.SqlQuery
-import pt.isel.ps.g06.httpserver.dataAccess.db.dto.ApiDto
-import pt.isel.ps.g06.httpserver.dataAccess.db.dto.SubmitterDto
+import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbApiDto
 
 //Submitter table constants
 private const val submitterTable = SubmitterDao.table
@@ -24,10 +23,10 @@ interface ApiDao {
     }
 
     @SqlQuery("SELECT * FROM $table")
-    fun getAll(): List<ApiDto>
+    fun getAll(): List<DbApiDto>
 
     @SqlQuery("SELECT * FROM $table WHERE $id = :submitterId")
-    fun getById(@Bind submitterId: Int): ApiDto?
+    fun getById(@Bind submitterId: Int): DbApiDto?
 
     @SqlQuery("SELECT $table.$id, $table.$apiToken" +
             " FROM $table" +
@@ -35,7 +34,7 @@ interface ApiDao {
             " ON $SS_table.$SS_submitterId = $table.$id" +
             " WHERE $SS_table.$SS_submissionId = :submissionId"
     )
-    fun getSubmitterBySubmissionId(submissionId: Int): ApiDto?
+    fun getSubmitterBySubmissionId(submissionId: Int): DbApiDto?
 
     @SqlQuery("SELECT $submitterTable.$submitterId, $table.$apiToken" +
             " FROM $submitterTable" +
@@ -43,9 +42,9 @@ interface ApiDao {
             " ON $submitterTable.$submitterId = $table.$id" +
             " WHERE $submitterName = :submitterName"
     )
-    fun getByName(@Bind submitterName: String): ApiDto?
+    fun getByName(@Bind submitterName: String): DbApiDto?
 
     @SqlQuery("INSERT INTO $table($id, $apiToken) " +
             "VALUES(:submitterId, :apiToken) RETURNING *")
-    fun insert(@Bind submitterId: Int, @Bind apiToken: String): ApiDto
+    fun insert(@Bind submitterId: Int, @Bind apiToken: String): DbApiDto
 }

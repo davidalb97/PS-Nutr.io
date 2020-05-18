@@ -4,7 +4,7 @@ import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.customizer.BindBeanList
 import org.jdbi.v3.sqlobject.customizer.BindList
 import org.jdbi.v3.sqlobject.statement.SqlQuery
-import pt.isel.ps.g06.httpserver.dataAccess.db.dto.ApiSubmissionDto
+import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbApiSubmissionDto
 
 //SubmissionSubmitter constants
 private const val SS_table = SubmissionSubmitterDao.table
@@ -25,10 +25,10 @@ interface ApiSubmissionDao {
     }
 
     @SqlQuery("SELECT * FROM $table")
-    fun getAll(): List<ApiSubmissionDto>
+    fun getAll(): List<DbApiSubmissionDto>
 
     @SqlQuery("SELECT * FROM $table WHERE $submissionId = :submissionId")
-    fun getBySubmissionId(submissionId: Int): ApiSubmissionDto?
+    fun getBySubmissionId(submissionId: Int): DbApiSubmissionDto?
 
     @SqlQuery("SELECT $table.$submissionId, $table.$apiId" +
             " FROM $table" +
@@ -38,13 +38,13 @@ interface ApiSubmissionDao {
             " ON $table.$submissionId = $S_table.$S_submissionId" +
             " WHERE $SS_table.$SS_submitterId = :submitterId" +
             " AND $S_table.$S_type = :submissionType" +
-            " AND $table.$apiId in (<values>)"
+            " AND $table.$apiId in (<apiIds>)"
     )
     fun getAllBySubmitterIdSubmissionTypeAndApiIds(
             @Bind submitterId: Int,
             @Bind submissionType: String,
-            @BindList("values") apiIds: List<String>
-    ): List<ApiSubmissionDto>
+            @BindList apiIds: List<String>
+    ): List<DbApiSubmissionDto>
 
     @SqlQuery("SELECT $table.$submissionId, $table.$apiId" +
             " FROM $table" +
@@ -58,29 +58,28 @@ interface ApiSubmissionDao {
     fun getAllBySubmitterIdAndSubmissionType(
             @Bind submitterId: Int,
             @Bind submissionType: String
-    ): List<ApiSubmissionDto>
+    ): List<DbApiSubmissionDto>
 
-    @SqlQuery("SELECT * FROM $table WHERE $submissionId in (<values>)")
+    @SqlQuery("SELECT * FROM $table WHERE $submissionId in (<submissionIds>)")
     fun getAllBySubmissionIds(
-            @BindList("values") submissionIds: List<Int>
-    ): List<ApiSubmissionDto>
+            @BindList submissionIds: List<Int>
+    ): List<DbApiSubmissionDto>
 
     @SqlQuery("SELECT * FROM $table WHERE $apiId = :apiId")
-    fun getAllByApiId(apiId: String): List<ApiSubmissionDto>
+    fun getAllByApiId(apiId: String): List<DbApiSubmissionDto>
 
     @SqlQuery("INSERT INTO $table($submissionId, $apiId)" +
             " VALUES(:submissionId, :apiId) RETURNING *")
-    fun insert(@Bind submissionId: Int, apiId: String): ApiSubmissionDto
+    fun insert(@Bind submissionId: Int, apiId: String): DbApiSubmissionDto
 
     @SqlQuery("INSERT INTO $table($submissionId, $apiId)" +
-            " values <values> RETURNING *")
-    fun insertAll(@BindBeanList(
-            value = "values",
-            propertyNames = [submissionId, apiId]
-    ) values: List<ApiSubmissionParam>): List<ApiSubmissionDto>
+            " values <apiSubmissionParams> RETURNING *")
+    fun insertAll(@BindBeanList(propertyNames = [submissionId, apiId])
+                  apiSubmissionParams: List<ApiSubmissionParam>
+    ): List<DbApiSubmissionDto>
 
     @SqlQuery("DELETE FROM $table WHERE $submissionId = :submissionId RETURNING *")
-    fun deleteById(submissionId: Int): ApiSubmissionDto
+    fun deleteById(submissionId: Int): DbApiSubmissionDto
 }
 
 data class ApiSubmissionParam(

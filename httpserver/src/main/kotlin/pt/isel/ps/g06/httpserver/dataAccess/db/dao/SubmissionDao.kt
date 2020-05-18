@@ -1,35 +1,38 @@
 package pt.isel.ps.g06.httpserver.dataAccess.db.dao
 
+import org.jdbi.v3.sqlobject.config.RegisterRowMapper
 import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.customizer.BindBeanList
 import org.jdbi.v3.sqlobject.statement.SqlQuery
-import pt.isel.ps.g06.httpserver.dataAccess.db.dto.SubmissionDto
+import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbSubmissionDto
+import pt.isel.ps.g06.httpserver.dataAccess.db.mapper.SubmissionMapper
 
+@RegisterRowMapper(SubmissionMapper::class)
 interface SubmissionDao {
 
     companion object {
         const val table = "Submission"
         const val type = "submission_type"
         const val id = "submission_id"
+        const val date = "submission_date"
     }
 
     @SqlQuery("SELECT * FROM $table")
-    fun getAll(): List<SubmissionDto>
+    fun getAll(): List<DbSubmissionDto>
 
     @SqlQuery("SELECT * FROM $table WHERE $id = :submissionId")
-    fun getById(submissionId: Int): SubmissionDto?
+    fun getById(submissionId: Int): DbSubmissionDto?
 
     @SqlQuery("INSERT INTO $table($type) VALUES(:submission_type) RETURNING *")
-    fun insert(@Bind submission_type: String): SubmissionDto
+    fun insert(@Bind submission_type: String): DbSubmissionDto
 
-    @SqlQuery("INSERT INTO $table($type) values <values> RETURNING *")
-    fun insertAll(@BindBeanList(
-            value = "values",
-            propertyNames = [type]
-    ) values: List<SubmissionParam>): List<SubmissionDto>
+    @SqlQuery("INSERT INTO $table($type) values <submissionParams> RETURNING *")
+    fun insertAll(@BindBeanList(propertyNames = [type])
+                  submissionParams: List<SubmissionParam>
+    ): List<DbSubmissionDto>
 
-    @SqlQuery("DELETE FROM $table($type) WHERE $id = :submissionId RETURNING *")
-    fun delete(@Bind submissionId: Int): SubmissionDto
+    @SqlQuery("DELETE FROM $table WHERE $id = :submissionId RETURNING *")
+    fun delete(@Bind submissionId: Int): DbSubmissionDto
 }
 
 //Variable names must match sql columns!!!
