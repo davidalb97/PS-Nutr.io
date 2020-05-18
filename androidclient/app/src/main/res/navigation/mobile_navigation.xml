@@ -83,4 +83,10 @@
         android:label="@string/insulin_calculator_nav"
         tools:layout="@layout/calculator_fragment" />
 
+    <fragment
+        android:id="@+id/nav_add_insulin"
+        android:name="pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.AddProfileFragment"
+        android:label="Add a profile to your routine"
+        tools:layout="@layout/add_insulin_profile_fragment" />
+
 </navigation>

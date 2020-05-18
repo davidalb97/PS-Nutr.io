@@ -71,4 +71,19 @@
     <string name="carbohydrate_ratio">Carbohydrate ratio:</string>
     <string name="recent_activity">Recent activity</string>
     <string name="routine_graph">Routine graph</string>
+    <string name="add_insulin_profile_nav">Add an insulin profile</string>
+    <string name="add_a_profile_dialog">Add a profile</string>
+    <string name="cancel_add_profile_dialog">cancel</string>
+    <string name="confirm_add_profile_dialog">ok</string>
+    <string name="add_profile_name_hint">Add profile name</string>
+    <string name="profile_name_label">Profile name</string>
+    <string name="define_the_profile_time_period">Define the profile time period</string>
+    <string name="glucose_objective">Your glucose objective</string>
+    <string name="define_your_carbohydrate_ratio_value">Define your carbohydrate ratio value</string>
+    <string name="how_much_glucose_is_reduced_by_an_unit_of_insulin">How much glucose is reduced by an unit of insulin?</string>
+    <string name="glucose_object_hint">Glucose objective</string>
+    <string name="glucose_amount_hint">Glucose amount</string>
+    <string name="how_many_carbohydrates_are_lowered_by_1_insulin_dose">How many carbohydrates are lowered by 1 insulin dose?</string>
+    <string name="carbohydrate_amount">Carbohydrate amount</string>
+    <string name="create_button">Create</string>
 </resources>
