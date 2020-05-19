@@ -9,7 +9,7 @@ import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.ui.adapter.TabAdapter
-import pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler.ProfileProfilesRecyclerFragment
+import pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler.InsulinProfilesRecyclerFragment
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler.ProfileSubmissionsRecyclerFragment
 
 class ProfileFragment : Fragment() {
@@ -32,7 +32,7 @@ class ProfileFragment : Fragment() {
 
         // Add fragments and tab tiles to show in the tab layout
         tabPagerAdapter.addFragment(ProfileOverviewFragment(), "Overview")
-        tabPagerAdapter.addFragment(ProfileProfilesRecyclerFragment(), "Profiles")
+        tabPagerAdapter.addFragment(InsulinProfilesRecyclerFragment(), "Profiles")
         tabPagerAdapter.addFragment(ProfileSubmissionsRecyclerFragment(), "Submissions")
 
 

@@ -11,6 +11,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import pt.ipl.isel.leic.ps.androidclient.data.NutrioDb
 import pt.ipl.isel.leic.ps.androidclient.data.repo.CuisineRepository
+import pt.ipl.isel.leic.ps.androidclient.data.repo.InsulinProfileRepository
 import pt.ipl.isel.leic.ps.androidclient.data.repo.MealRepository
 import pt.ipl.isel.leic.ps.androidclient.data.repo.RestaurantRepository
 import pt.ipl.isel.leic.ps.androidclient.data.source.Requester
@@ -60,14 +61,16 @@ class NutrioApp : Application() {
                 by lazy { MealRepository(MealDataSource(requester)) }
         val cuisineRepository
                 by lazy { CuisineRepository(CuisineDataSource(requester)) }
+        val insulinProfilesRepository
+                by lazy { InsulinProfileRepository() }
     }
 
     override fun onCreate() {
         super.onCreate()
         app = this
-        /*roomDb = Room.databaseBuilder(applicationContext, NutrioDb::class.java, ROOM_DB_NAME)
+        roomDb = Room.databaseBuilder(applicationContext, NutrioDb::class.java, ROOM_DB_NAME)
             .fallbackToDestructiveMigration()
-            .build()*/
+            .build()
     }
 }
 

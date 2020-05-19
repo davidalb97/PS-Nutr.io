@@ -1,5 +1,6 @@
 package pt.ipl.isel.leic.ps.androidclient.data.dao
 
+import androidx.lifecycle.LiveData
 import androidx.room.*
 import pt.ipl.isel.leic.ps.androidclient.data.source.model.InsulinProfile
 
@@ -7,7 +8,7 @@ import pt.ipl.isel.leic.ps.androidclient.data.source.model.InsulinProfile
 interface InsulinProfileDao {
 
     @Query("SELECT * FROM InsulinProfile")
-    fun getAll(): List<InsulinProfile>
+    fun getAll(): LiveData<List<InsulinProfile>>
 
     @Update
     fun update(vararg profile: InsulinProfile)

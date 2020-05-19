@@ -8,14 +8,15 @@ import android.widget.ImageButton
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import pt.ipl.isel.leic.ps.androidclient.NutrioApp
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.source.model.InsulinProfile
+import pt.ipl.isel.leic.ps.androidclient.data.util.AsyncWorker
 import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.InsulinProfileRecyclerAdapter
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.InsulinProfilesVMProviderFactory
-import pt.ipl.isel.leic.ps.androidclient.ui.provider.MealRecyclerVMProviderFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.InsulinProfilesRecyclerViewModel
 
-class ProfileProfilesRecyclerFragment :
+class InsulinProfilesRecyclerFragment :
     ARecyclerListFragment<InsulinProfile, InsulinProfilesRecyclerViewModel>() {
 
     private val adapter: InsulinProfileRecyclerAdapter by lazy {
@@ -37,7 +38,7 @@ class ProfileProfilesRecyclerFragment :
         savedInstanceState: Bundle?
     ): View? {
         buildViewModel(savedInstanceState)
-        return inflater.inflate(R.layout.profile_profiles_fragment, container, false)
+        return inflater.inflate(R.layout.insulin_profiles_fragment, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -47,7 +48,7 @@ class ProfileProfilesRecyclerFragment :
         list.adapter = adapter
         list.layoutManager = LinearLayoutManager(this.requireContext())
         startObserver()
-
+        viewModel.updateListFromLiveData()
         // Retrieve button to add an insulin profile
         val addButton =
             view.findViewById<ImageButton>(R.id.add_profile)

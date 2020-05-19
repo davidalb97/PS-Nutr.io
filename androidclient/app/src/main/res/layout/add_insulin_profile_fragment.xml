@@ -61,6 +61,7 @@
                 android:id="@+id/start_time_user"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
                 android:layout_below="@+id/start_time_label">
             </TextView>
 
@@ -83,6 +84,7 @@
                 android:id="@+id/end_time_user"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
                 android:layout_below="@+id/end_time_label">
             </TextView>
 
@@ -104,6 +106,7 @@
     </TextView>
 
     <EditText
+        android:id="@+id/glucose_objective"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -123,6 +126,7 @@
     </TextView>
 
     <EditText
+        android:id="@+id/glucose_amount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -143,6 +147,7 @@
     </TextView>
 
     <EditText
+        android:id="@+id/carbo_amount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -150,6 +155,7 @@
     </EditText>
 
     <Button
+        android:id="@+id/create_profile"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
