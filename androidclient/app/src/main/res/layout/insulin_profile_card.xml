@@ -43,19 +43,30 @@
         </TextView>
 
         <TextView
-            android:id="@+id/profile_fsi"
+            android:id="@+id/profile_glucose_objective_card"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/profile_end_time"
             android:layout_marginStart="10dp"
-            android:text="@string/fsi"
+            android:text="@string/glucose_objective_card"
             android:textColor="@android:color/background_dark">
         </TextView>
 
         <TextView
+            android:id="@+id/profile_fsi_card"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/profile_fsi"
+            android:layout_below="@+id/profile_glucose_objective_card"
+            android:layout_marginStart="10dp"
+            android:text="@string/insulin_sensitivity_factor"
+            android:textColor="@android:color/background_dark">
+        </TextView>
+
+        <TextView
+            android:id="@+id/profile_carbo_ratio_card"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/profile_fsi_card"
             android:layout_marginStart="10dp"
             android:text="@string/carbohydrate_ratio"
             android:textColor="@android:color/background_dark">

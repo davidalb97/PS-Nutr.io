@@ -64,9 +64,8 @@
     <string name="access_token">pk.eyJ1IjoibWlnMDciLCJhIjoiY2thNm96MWQzMDh6cTJybzMybnVjMjZ4dCJ9.VEnqYHRE7wBwhTp7-ASOBQ</string>
     <string name="create_your_routine">Create your routine</string>
     <string name="touch_to_create_your_routine_profiles">Touch to create your routine profiles</string>
-    <string name="start_time">Start time:</string>
-    <string name="end_time">End time:</string>
-    <string name="fsi">FSI:</string>
+    <string name="start_time">Starts at:</string>
+    <string name="end_time">Ends at:</string>
     <string name="profile_name">Profile name</string>
     <string name="carbohydrate_ratio">Carbohydrate ratio:</string>
     <string name="recent_activity">Recent activity</string>
@@ -86,4 +85,8 @@
     <string name="how_many_carbohydrates_are_lowered_by_1_insulin_dose">How many carbohydrates are lowered by 1 insulin dose?</string>
     <string name="carbohydrate_amount">Carbohydrate amount</string>
     <string name="create_button">Create</string>
+    <string name="you_don_t_have_a_routine_right_now">You don\'t have a routine right now</string>
+    <string name="glucose_objective_card">Glucose objective:</string>
+    <string name="insulin_sensitivity_factor">Insulin sensitivity factor:</string>
+    <string name="insulin_unit">1 insulin dose</string>
 </resources>

@@ -5,6 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
+import android.widget.TextView
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -56,6 +58,18 @@ class InsulinProfilesRecyclerFragment :
         // Setup a listener to go to the fragment that adds a profile
         addButton.setOnClickListener {
             view.findNavController().navigate(R.id.nav_add_insulin)
+        }
+    }
+
+    override fun startObserver() {
+        viewModel.observe(this) {
+            list.adapter?.notifyDataSetChanged()
+            if (viewModel.mediatorLiveData.value!!.isEmpty()) {
+                val noProfilesText =
+                    requireView().findViewById<TextView>(R.id.no_insulin_profiles)
+                noProfilesText.visibility = View.VISIBLE
+            }
+            this.progressBar.visibility = View.INVISIBLE
         }
     }
 

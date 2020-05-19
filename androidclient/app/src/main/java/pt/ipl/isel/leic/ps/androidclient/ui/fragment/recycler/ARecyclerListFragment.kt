@@ -42,7 +42,7 @@ abstract class ARecyclerListFragment<T : Any, VM : ARecyclerViewModel<T>> : Frag
     /**
      * Starts the observer inside the view model
      */
-    fun startObserver() {
+    open fun startObserver() {
         viewModel.observe(this) {
             list.adapter?.notifyDataSetChanged()
             if (viewModel.mediatorLiveData.value!!.isEmpty()) {
