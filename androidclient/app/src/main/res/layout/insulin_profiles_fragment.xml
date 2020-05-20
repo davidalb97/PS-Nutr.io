@@ -46,6 +46,7 @@
             android:indeterminate="true"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
+            android:gravity="center"
             android:layout_marginRight="50dp"
             android:layout_marginLeft="50dp"
             android:text="@string/you_don_t_have_a_routine_right_now"

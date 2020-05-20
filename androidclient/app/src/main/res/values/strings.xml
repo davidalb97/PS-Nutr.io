@@ -94,4 +94,5 @@
     <string name="DialogAlert_Yes">Yes</string>
     <string name="Dialog_no">No</string>
     <string name="DialogAlert_deleted">Item deleted</string>
+    <string name="you_don_t_have_any_submissions_right_now">You don\'t have any submissions right now</string>
 </resources>

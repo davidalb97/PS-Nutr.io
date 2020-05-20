@@ -12,6 +12,13 @@ class InsulinProfileRecyclerAdapter(
     ctx: Context
 ) : ARecyclerAdapter<InsulinProfile, InsulinProfilesRecyclerViewModel, InsulinProfileRecyclerViewHolder>(viewModelInsulin, ctx) {
 
+    override fun onBindViewHolder(holder: InsulinProfileRecyclerViewHolder, position: Int) {
+        val item: InsulinProfile = viewModel.items[position]
+        holder.bindTo(item)
+        holder.list = viewModel.items.toMutableList()
+        holder.onDelete = { viewModel.deleteItem(item) }
+    }
+
     override fun getItemViewId(): Int = R.layout.insulin_profile_card
 
     override fun newViewHolder(layout: ViewGroup): InsulinProfileRecyclerViewHolder =

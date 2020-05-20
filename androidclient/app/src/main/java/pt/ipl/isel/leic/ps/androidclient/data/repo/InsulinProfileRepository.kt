@@ -46,6 +46,6 @@ class InsulinProfileRepository {
     fun deleteProfile(profile: InsulinProfile) =
         AsyncWorker<Unit, Unit> {
             roomDb.insulinProfileDao().delete(profile)
-        }
+        }.execute()
 }
 

@@ -20,4 +20,5 @@ class CuisineRecyclerViewHolder(view: ViewGroup, ctx: Context) :
     override fun onClick(v: View?) {
         TODO("Not yet implemented")
     }
+
 }

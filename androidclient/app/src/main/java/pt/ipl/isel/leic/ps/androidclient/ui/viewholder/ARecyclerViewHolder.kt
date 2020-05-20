@@ -17,4 +17,5 @@ abstract class ARecyclerViewHolder<T : Any>(
     open fun bindTo(item: T) {
         this.item = item
     }
+
 }

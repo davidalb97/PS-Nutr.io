@@ -6,12 +6,16 @@ import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.source.model.Cuisine
 import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.ARecyclerAdapter
 import pt.ipl.isel.leic.ps.androidclient.ui.viewholder.CuisineRecyclerViewHolder
+import pt.ipl.isel.leic.ps.androidclient.ui.viewholder.MealRecyclerViewHolder
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.CuisineRecyclerViewModel
 
 class CuisineRecyclerAdapter(
     model: CuisineRecyclerViewModel,
     ctx: Context
 ) : ARecyclerAdapter<Cuisine, CuisineRecyclerViewModel, CuisineRecyclerViewHolder>(model, ctx) {
+
+    override fun onBindViewHolder(holder: CuisineRecyclerViewHolder, position: Int) =
+        holder.bindTo(viewModel.items[position])
 
     override fun getItemViewId(): Int = R.layout.cuisine_card
 

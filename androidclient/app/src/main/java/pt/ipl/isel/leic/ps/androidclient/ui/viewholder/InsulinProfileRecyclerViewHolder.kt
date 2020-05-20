@@ -6,13 +6,14 @@ import android.content.Context
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.source.model.InsulinProfile
 
 class InsulinProfileRecyclerViewHolder(
     view: ViewGroup,
-    val ctx: Context
-) : ADeletableRecyclerViewHolder<InsulinProfile>(view) {
+    ctx: Context
+) : ADeletableRecyclerViewHolder<InsulinProfile>(view, ctx) {
 
     private val profileName: TextView =
         view.findViewById(R.id.insulin_profile_name)
@@ -28,13 +29,16 @@ class InsulinProfileRecyclerViewHolder(
         view.findViewById(R.id.profile_carbo_ratio_card)
 
 
-    @SuppressLint("SetTextI18n")
     override fun bindTo(item: InsulinProfile) {
         super.bindTo(item)
-        val resources = ctx.resources
+        setupTextFields()
+        setupListeners()
+    }
 
+    @SuppressLint("SetTextI18n")
+    fun setupTextFields() {
         profileName.text = item.profile_name
-
+        val resources = ctx.resources
         startTime.text =
             resources.getString(R.string.start_time) +
                     " ${item.start_time}"
@@ -56,8 +60,14 @@ class InsulinProfileRecyclerViewHolder(
             resources.getString(R.string.carbohydrate_ratio) +
                     " ${item.carbohydrate_amount} / " +
                     resources.getString(R.string.insulin_unit)
-
-        this.view.setOnLongClickListener(this)
-
     }
+
+    fun setupListeners() {
+        this.view.setOnLongClickListener(this)
+    }
+
+    override fun onClick(v: View?) {
+        TODO("Not yet implemented")
+    }
+
 }
