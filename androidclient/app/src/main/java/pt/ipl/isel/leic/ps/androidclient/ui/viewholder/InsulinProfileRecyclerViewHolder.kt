@@ -6,15 +6,13 @@ import android.content.Context
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import android.widget.Toast
-import androidx.recyclerview.widget.RecyclerView
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.source.model.InsulinProfile
 
 class InsulinProfileRecyclerViewHolder(
     view: ViewGroup,
     val ctx: Context
-) : ARecyclerViewHolder<InsulinProfile>(view) {
+) : ADeletableRecyclerViewHolder<InsulinProfile>(view) {
 
     private val profileName: TextView =
         view.findViewById(R.id.insulin_profile_name)
@@ -59,6 +57,7 @@ class InsulinProfileRecyclerViewHolder(
                     " ${item.carbohydrate_amount} / " +
                     resources.getString(R.string.insulin_unit)
 
+        this.view.setOnLongClickListener(this)
 
     }
 }

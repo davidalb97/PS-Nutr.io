@@ -1,5 +1,6 @@
 package pt.ipl.isel.leic.ps.androidclient.ui.viewholder
 
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 
@@ -8,7 +9,8 @@ import androidx.recyclerview.widget.RecyclerView
  */
 abstract class ARecyclerViewHolder<T : Any>(
     val view: ViewGroup
-) : RecyclerView.ViewHolder(view) {
+) : RecyclerView.ViewHolder(view),
+    View.OnClickListener {
 
     lateinit var item: T
 

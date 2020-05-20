@@ -15,6 +15,7 @@ abstract class ARecyclerAdapter<T : Any, ViewModelType : ARecyclerViewModel<T>, 
     val viewModel: ViewModelType,
     val ctx: Context
 ) : RecyclerView.Adapter<ViewHolderType>() {
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolderType {
         val view = LayoutInflater.from(parent.context)
             .inflate(getItemViewId(), parent, false) as ViewGroup

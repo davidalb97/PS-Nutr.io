@@ -1,6 +1,7 @@
 package pt.ipl.isel.leic.ps.androidclient.ui.viewholder
 
 import android.content.Context
+import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
@@ -26,5 +27,9 @@ class MealRecyclerViewHolder(view: ViewGroup, ctx: Context) : ARecyclerViewHolde
         super.bindTo(meal)
 
         mealName.text = meal.name
+    }
+
+    override fun onClick(v: View?) {
+        TODO("Not yet implemented")
     }
 }
