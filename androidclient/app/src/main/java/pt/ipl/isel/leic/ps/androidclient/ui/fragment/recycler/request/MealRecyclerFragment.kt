@@ -1,4 +1,4 @@
-package pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler
+package pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler.request
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,17 +7,18 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import pt.ipl.isel.leic.ps.androidclient.R
-import pt.ipl.isel.leic.ps.androidclient.data.source.model.Cuisine
-import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.CuisineRecyclerAdapter
+import pt.ipl.isel.leic.ps.androidclient.data.source.model.Meal
+import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.MealRecyclerAdapter
+import pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler.ARecyclerListFragment
 import pt.ipl.isel.leic.ps.androidclient.ui.listener.ScrollListener
-import pt.ipl.isel.leic.ps.androidclient.ui.provider.CuisineRecyclerVMProviderFactory
-import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.CuisineRecyclerViewModel
+import pt.ipl.isel.leic.ps.androidclient.ui.provider.MealRecyclerVMProviderFactory
+import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.MealRecyclerViewModel
 
-class CuisinesRecyclerFragment : ARecyclerListFragment<Cuisine, CuisineRecyclerViewModel>() {
+class MealRecyclerFragment : ARequestRecyclerListFragment<Meal, MealRecyclerViewModel>() {
 
-    private val adapter: CuisineRecyclerAdapter by lazy {
-        CuisineRecyclerAdapter(
-            viewModel,
+    private val adapter: MealRecyclerAdapter by lazy {
+        MealRecyclerAdapter(
+            viewModel as MealRecyclerViewModel,
             this.requireContext()
         )
     }
@@ -29,8 +30,8 @@ class CuisinesRecyclerFragment : ARecyclerListFragment<Cuisine, CuisineRecyclerV
      */
     private fun buildViewModel(savedInstanceState: Bundle?) {
         val rootActivity = this.requireActivity()
-        val factory = CuisineRecyclerVMProviderFactory(savedInstanceState, rootActivity.intent)
-        viewModel = ViewModelProvider(rootActivity, factory)[CuisineRecyclerViewModel::class.java]
+        val factory = MealRecyclerVMProviderFactory(savedInstanceState, rootActivity.intent)
+        viewModel = ViewModelProvider(rootActivity, factory)[MealRecyclerViewModel::class.java]
     }
 
     override fun onCreateView(
@@ -38,7 +39,7 @@ class CuisinesRecyclerFragment : ARecyclerListFragment<Cuisine, CuisineRecyclerV
         savedInstanceState: Bundle?
     ): View? {
         buildViewModel(savedInstanceState)
-        return inflater.inflate(R.layout.cuisines_list, container, false)
+        return inflater.inflate(R.layout.meal_list, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

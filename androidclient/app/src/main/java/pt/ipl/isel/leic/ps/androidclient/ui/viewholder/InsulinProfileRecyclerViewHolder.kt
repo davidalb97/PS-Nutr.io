@@ -1,9 +1,13 @@
 package pt.ipl.isel.leic.ps.androidclient.ui.viewholder
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.content.Context
+import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
+import androidx.recyclerview.widget.RecyclerView
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.source.model.InsulinProfile
 
@@ -54,6 +58,7 @@ class InsulinProfileRecyclerViewHolder(
             resources.getString(R.string.carbohydrate_ratio) +
                     " ${item.carbohydrate_amount} / " +
                     resources.getString(R.string.insulin_unit)
+
 
     }
 }

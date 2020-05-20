@@ -26,14 +26,14 @@ import pt.ipl.isel.leic.ps.androidclient.data.source.endpoint.LATITUDE_VAR
 import pt.ipl.isel.leic.ps.androidclient.data.source.endpoint.LONGITUDE_VAR
 import pt.ipl.isel.leic.ps.androidclient.data.source.model.Restaurant
 import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.RestaurantRecyclerAdapter
-import pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler.ARecyclerListFragment
+import pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler.request.ARequestRecyclerListFragment
 import pt.ipl.isel.leic.ps.androidclient.ui.listener.ScrollListener
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.RestaurantRecyclerVMProviderFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.RestaurantRecyclerViewModel
 
 
 class MapFragment
-    : ARecyclerListFragment<Restaurant, RestaurantRecyclerViewModel>(),
+    : ARequestRecyclerListFragment<Restaurant, RestaurantRecyclerViewModel>(),
     OnMapReadyCallback,
     PermissionsListener {
 

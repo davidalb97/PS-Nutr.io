@@ -9,8 +9,8 @@ import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.ui.adapter.TabAdapter
-import pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler.InsulinProfilesRecyclerFragment
-import pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler.ProfileSubmissionsRecyclerFragment
+import pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler.room.InsulinProfilesRecyclerFragment
+import pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler.room.ProfileSubmissionsRecyclerFragment
 
 class ProfileFragment : Fragment() {
 

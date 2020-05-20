@@ -1,24 +1,22 @@
-package pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler
+package pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler.request
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.SearchView
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import pt.ipl.isel.leic.ps.androidclient.R
-import pt.ipl.isel.leic.ps.androidclient.data.source.model.Restaurant
-import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.RestaurantRecyclerAdapter
+import pt.ipl.isel.leic.ps.androidclient.data.source.model.Cuisine
+import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.CuisineRecyclerAdapter
 import pt.ipl.isel.leic.ps.androidclient.ui.listener.ScrollListener
-import pt.ipl.isel.leic.ps.androidclient.ui.provider.RestaurantRecyclerVMProviderFactory
-import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.RestaurantRecyclerViewModel
+import pt.ipl.isel.leic.ps.androidclient.ui.provider.CuisineRecyclerVMProviderFactory
+import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.CuisineRecyclerViewModel
 
-class RestaurantRecyclerFragment :
-    ARecyclerListFragment<Restaurant, RestaurantRecyclerViewModel>() {
+class CuisinesRecyclerFragment : ARequestRecyclerListFragment<Cuisine, CuisineRecyclerViewModel>() {
 
-    private val adapter: RestaurantRecyclerAdapter by lazy {
-        RestaurantRecyclerAdapter(
+    private val adapter: CuisineRecyclerAdapter by lazy {
+        CuisineRecyclerAdapter(
             viewModel,
             this.requireContext()
         )
@@ -31,43 +29,26 @@ class RestaurantRecyclerFragment :
      */
     private fun buildViewModel(savedInstanceState: Bundle?) {
         val rootActivity = this.requireActivity()
-        val factory = RestaurantRecyclerVMProviderFactory(savedInstanceState, rootActivity.intent)
-        viewModel =
-            ViewModelProvider(rootActivity, factory)[RestaurantRecyclerViewModel::class.java]
+        val factory = CuisineRecyclerVMProviderFactory(savedInstanceState, rootActivity.intent)
+        viewModel = ViewModelProvider(rootActivity, factory)[CuisineRecyclerViewModel::class.java]
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        activityApp = this.requireActivity().application
         buildViewModel(savedInstanceState)
-        return inflater.inflate(R.layout.restaurant_list, container, false)
+        return inflater.inflate(R.layout.cuisines_list, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         initRecyclerList(view)
         setCallbackFunctions()
-        viewModel.getNearbyRestaurants()
         list.adapter = adapter
         list.layoutManager = LinearLayoutManager(this.requireContext())
         startObserver()
-
-        val searchBar = view.findViewById<SearchView>(R.id.search_restaurant)
-
-        searchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                if (query.isNullOrEmpty()) return false
-                viewModel.parameters[":id"] = query
-                searchBar.clearFocus()
-                return true
-            }
-
-            override fun onQueryTextChange(query: String?): Boolean = true
-
-        })
+        //startScrollListener()
     }
 
     override fun startScrollListener() {

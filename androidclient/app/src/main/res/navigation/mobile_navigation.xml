@@ -61,7 +61,7 @@
 
     <fragment
         android:id="@+id/nav_cuisines"
-        android:name="pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler.CuisinesRecyclerFragment"
+        android:name="pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler.request.CuisinesRecyclerFragment"
         android:label="@string/tab_cuisines"
         tools:layout="@layout/cuisines_fragment" />
 
@@ -79,13 +79,13 @@
 
     <fragment
         android:id="@+id/nav_history"
-        android:name="pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler.HistoryFragment"
+        android:name="pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler.room.HistoryFragment"
         android:label="@string/insulin_calculator_nav"
         tools:layout="@layout/calculator_fragment" />
 
     <fragment
         android:id="@+id/nav_insulin_profiles"
-        android:name="pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler.InsulinProfilesRecyclerFragment"
+        android:name="pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler.room.InsulinProfilesRecyclerFragment"
         tools:layout="@layout/insulin_profiles_fragment" />
 
     <fragment

@@ -1,4 +1,4 @@
-package pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler
+package pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler.room
 
 import android.os.Bundle
 import android.view.LayoutInflater

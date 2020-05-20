@@ -1,25 +1,21 @@
-package pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler
+package pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler.room
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
-import android.widget.TextView
-import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import pt.ipl.isel.leic.ps.androidclient.NutrioApp
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.source.model.InsulinProfile
-import pt.ipl.isel.leic.ps.androidclient.data.util.AsyncWorker
 import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.InsulinProfileRecyclerAdapter
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.InsulinProfilesVMProviderFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.InsulinProfilesRecyclerViewModel
 
 class InsulinProfilesRecyclerFragment :
-    ARecyclerListFragment<InsulinProfile, InsulinProfilesRecyclerViewModel>() {
+    ARoomRecyclerListFragment<InsulinProfile, InsulinProfilesRecyclerViewModel>() {
 
     private val adapter: InsulinProfileRecyclerAdapter by lazy {
         InsulinProfileRecyclerAdapter(
@@ -61,19 +57,48 @@ class InsulinProfilesRecyclerFragment :
         }
     }
 
-    override fun startObserver() {
-        viewModel.observe(this) {
-            list.adapter?.notifyDataSetChanged()
-            if (viewModel.mediatorLiveData.value!!.isEmpty()) {
-                val noProfilesText =
-                    requireView().findViewById<TextView>(R.id.no_insulin_profiles)
-                noProfilesText.visibility = View.VISIBLE
-            }
-            this.progressBar.visibility = View.INVISIBLE
-        }
-    }
-
     override fun startScrollListener() {
         TODO("Not yet implemented")
     }
+
+
+    /* override fun startScrollListener() {
+         TODO("Not yet implemented")
+     }*/
+
+    /*fun <T> deleteListener(
+        view: View,
+        position: Int,
+        element: T,
+        elementList: MutableList<T>,
+        deleteFunction: (T) -> Unit,
+        adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>
+    ): Boolean {
+
+        val builder = AlertDialog.Builder(view.context)
+
+        builder.setTitle(view.context.getString(R.string.DialogAlert_Warning))
+
+        builder.setMessage(view.context.getString(R.string.AlertDialog_deleteQuestion))
+
+        builder.setPositiveButton(view.context.getString(R.string.DialogAlert_Yes)) { _, _ ->
+
+            deleteFunction(element)
+            Toast.makeText(
+                view.context,
+                view.context.getString(R.string.DialogAlert_deleted), Toast.LENGTH_SHORT
+            ).show()
+            elementList.removeAt(position)
+            adapter.notifyItemRemoved(position)
+            adapter.notifyDataSetChanged()
+        }
+
+        builder.setNegativeButton(view.context.getString(R.string.Dialog_no)) { _, _ -> }
+
+        val dialog: AlertDialog = builder.create()
+
+        dialog.show()
+
+        return true
+    }*/
 }
