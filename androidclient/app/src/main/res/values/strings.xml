@@ -2,8 +2,8 @@
     <string name="app_name">PS-Nutr.io (Android Client)</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Android Studio</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_title">Nutri.io user</string>
+    <string name="nav_header_subtitle">nutri.io-user@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
 
@@ -14,8 +14,85 @@
 
     <string name="home_second">Home Second</string>
     <string name="category_name">category_name</string>
-    <string name="menu_restaurant">Restaurant</string>
+    <string name="tab_restaurants">Search for restaurants</string>
+    <string name="tab_cuisines">Search for cuisines</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="section_name">Section_name</string>
+    <string name="restaurants">Restaurants</string>
+    <string name="by_location">By location</string>
+    <string name="by_name">By name</string>
+    <string name="meals">Meals</string>
+    <string name="cuisines">Cuisines</string>
+    <string name="no_result_found">No results found</string>
+    <string name="error_network">Couldn\'t get results</string>
+    <string name="no_more_results_found">Couldn\'t fetch more items</string>
+    <string name="item_name">Item Name</string>
+    <string name="item_cuisines">Cuisines</string>
+    <string name="tab_meals">Search for meals</string>
+    <string name="saved">Saved</string>
+    <string name="insulin_values">Insulin</string>
+    <string name="calculator">Calculator</string>
+    <string name="history">History</string>
+    <string name="meal_example">Hamburguer</string>
+    <string name="meal_detail_info">info</string>
+    <string name="add_meal_to_calc">Add to insulin calculator</string>
+    <string name="quantity_to_submit">Quantity:</string>
+    <string name="vote_this_restaurant">Vote this restaurant</string>
+    <string name="vote_this_meal">Vote this meal</string>
+    <string name="submit_a_meal_to_this_menu">Submit a meal to this menu</string>
+    <string name="menu">Menu</string>
+    <string name="downvote">Downvote</string>
+    <string name="upvote">Upvote</string>
+    <string name="no_internet_connection">Please connect your device to the internet</string>
+    <string name="hint_cuisine_search">Search for a specific cuisine</string>
+    <string name="hint_meal_search">Search for a specific meal</string>
+    <string name="hint_restaurant_search">Search for a specific restaurant</string>
+    <string name="link_pedro">https://github.com/Pedrokase</string>
+    <string name="link_david">https://github.com/davidalb97</string>
+    <string name="link_miguel">https://github.com/mig07</string>
+    <string name="insulin_calculator">Insulin Calculator</string>
+    <string name="insulin_type">Insulin type</string>
+    <string name="current_blood_glucose">Current blood glucose</string>
+    <string name="add_a_meal_to_this_calculation">Add a meal to this calculation</string>
+    <string name="pre_meal_blood_glucose_target">Pre-meal blood glucose target</string>
+    <string name="insulin_calculator_nav">Insulin calculator</string>
+    <string name="calculate">Calculate</string>
+
+    <!-- MapBox api key -->
+    <string name="access_token">pk.eyJ1IjoibWlnMDciLCJhIjoiY2thNm96MWQzMDh6cTJybzMybnVjMjZ4dCJ9.VEnqYHRE7wBwhTp7-ASOBQ</string>
+    <string name="create_your_routine">Create your routine</string>
+    <string name="touch_to_create_your_routine_profiles">Touch to create your routine profiles</string>
+    <string name="start_time">Starts at:</string>
+    <string name="end_time">Ends at:</string>
+    <string name="profile_name">Profile name</string>
+    <string name="carbohydrate_ratio">Carbohydrate ratio:</string>
+    <string name="recent_activity">Recent activity</string>
+    <string name="routine_graph">Routine graph</string>
+    <string name="add_insulin_profile_nav">Add an insulin profile</string>
+    <string name="add_a_profile_dialog">Add a profile</string>
+    <string name="cancel_add_profile_dialog">cancel</string>
+    <string name="confirm_add_profile_dialog">ok</string>
+    <string name="add_profile_name_hint">Add profile name</string>
+    <string name="profile_name_label">Profile name</string>
+    <string name="define_the_profile_time_period">Define the profile time period</string>
+    <string name="glucose_objective">Your glucose objective</string>
+    <string name="define_your_carbohydrate_ratio_value">Define your carbohydrate ratio value</string>
+    <string name="how_much_glucose_is_reduced_by_an_unit_of_insulin">How much glucose is reduced by an unit of insulin?</string>
+    <string name="glucose_object_hint">Glucose objective</string>
+    <string name="glucose_amount_hint">Glucose amount</string>
+    <string name="how_many_carbohydrates_are_lowered_by_1_insulin_dose">How many carbohydrates are lowered by 1 insulin dose?</string>
+    <string name="carbohydrate_amount">Carbohydrate amount</string>
+    <string name="create_button">Create</string>
+    <string name="you_don_t_have_a_routine_right_now">You don\'t have a routine right now</string>
+    <string name="glucose_objective_card">Glucose objective:</string>
+    <string name="insulin_sensitivity_factor">Insulin sensitivity factor:</string>
+    <string name="insulin_unit">1 insulin dose</string>
+    <string name="DialogAlert_deleteWarning">Warning</string>
+    <string name="AlertDialog_deleteQuestion">Do you want to delete this item?</string>
+    <string name="DialogAlert_Yes">Yes</string>
+    <string name="Dialog_no">No</string>
+    <string name="DialogAlert_deleted">Item deleted</string>
+    <string name="you_don_t_have_any_submissions_right_now">You don\'t have any submissions right now</string>
 </resources>
