@@ -41,13 +41,13 @@ abstract class ARecyclerListFragment<T : Any, VM : ARecyclerViewModel<T>> : Frag
      * A Toast will pop up telling no results were found, if a request
      * returns an empty list.
      */
-    abstract fun successFunction(list: List<T>)
+    open fun successFunction(list: List<T>) {}
 
     /**
      * The error function.
      * Pops up a Toast if there's no internet connection
      * or if it couldn't get results.
      */
-    abstract fun errorFunction(exception: Exception)
+    open fun errorFunction(exception: Exception) {}
 
 }

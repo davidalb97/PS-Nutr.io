@@ -41,6 +41,8 @@ class InsulinProfilesRecyclerFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        noItemsLabel =
+            view.findViewById(R.id.no_insulin_profiles)
         initRecyclerList(view)
         setCallbackFunctions()
         list.adapter = adapter
@@ -60,45 +62,4 @@ class InsulinProfilesRecyclerFragment :
     override fun startScrollListener() {
         TODO("Not yet implemented")
     }
-
-
-    /* override fun startScrollListener() {
-         TODO("Not yet implemented")
-     }*/
-
-    /*fun <T> deleteListener(
-        view: View,
-        position: Int,
-        element: T,
-        elementList: MutableList<T>,
-        deleteFunction: (T) -> Unit,
-        adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>
-    ): Boolean {
-
-        val builder = AlertDialog.Builder(view.context)
-
-        builder.setTitle(view.context.getString(R.string.DialogAlert_Warning))
-
-        builder.setMessage(view.context.getString(R.string.AlertDialog_deleteQuestion))
-
-        builder.setPositiveButton(view.context.getString(R.string.DialogAlert_Yes)) { _, _ ->
-
-            deleteFunction(element)
-            Toast.makeText(
-                view.context,
-                view.context.getString(R.string.DialogAlert_deleted), Toast.LENGTH_SHORT
-            ).show()
-            elementList.removeAt(position)
-            adapter.notifyItemRemoved(position)
-            adapter.notifyDataSetChanged()
-        }
-
-        builder.setNegativeButton(view.context.getString(R.string.Dialog_no)) { _, _ -> }
-
-        val dialog: AlertDialog = builder.create()
-
-        dialog.show()
-
-        return true
-    }*/
 }
