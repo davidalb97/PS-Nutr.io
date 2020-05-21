@@ -1,7 +1,6 @@
 package pt.isel.ps.g06.httpserver.dataAccess.db.dto
 
-
-open class MealDto(
+data class DbApiSubmissionDto(
         val submission_id: Int,
-        val meal_name: String
+        val apiId: String
 )

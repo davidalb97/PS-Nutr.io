@@ -5,7 +5,7 @@ import org.jdbi.v3.core.transaction.TransactionIsolationLevel
 import org.springframework.stereotype.Repository
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionContractType.REPORTABLE
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.ReportDao
-import pt.isel.ps.g06.httpserver.dataAccess.db.dto.ReportDto
+import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbReportDto
 
 private val isolationLevel = TransactionIsolationLevel.SERIALIZABLE
 private val reportDaoClass = ReportDao::class.java
@@ -17,8 +17,8 @@ class ReportDbRepository(jdbi: Jdbi) : BaseDbRepo(jdbi) {
             submitterId: Int,
             submission_id: Int,
             report: String
-    ): ReportDto {
-        return jdbi.inTransaction<ReportDto, Exception>(isolationLevel) {
+    ): DbReportDto {
+        return jdbi.inTransaction<DbReportDto, Exception>(isolationLevel) {
 
             // Check if the submission exists and it is votable
             requireContract(submitterId, REPORTABLE, isolationLevel)

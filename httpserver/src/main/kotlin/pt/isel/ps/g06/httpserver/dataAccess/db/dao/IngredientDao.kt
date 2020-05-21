@@ -4,8 +4,7 @@ import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.customizer.BindBeanList
 import org.jdbi.v3.sqlobject.customizer.BindList
 import org.jdbi.v3.sqlobject.statement.SqlQuery
-import pt.isel.ps.g06.httpserver.dataAccess.db.dto.IngredientDto
-import pt.isel.ps.g06.httpserver.dataAccess.model.Ingredient
+import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbIngredientDto
 
 //SubmissionSubmitter constants
 private const val SS_table = SubmissionSubmitterDao.table
@@ -26,7 +25,7 @@ interface IngredientDao {
     }
 
     @SqlQuery("SELECT * FROM $table")
-    fun getAll(): List<IngredientDto>
+    fun getAll(): List<DbIngredientDto>
 
     @SqlQuery("SELECT $table.$id, $table.$name" +
             " FROM $table" +
@@ -36,22 +35,21 @@ interface IngredientDao {
             " ON $AS_table.$AS_submissionId = $table.$id" +
             " WHERE $SS_table.$SS_submitterId = :submitterId"
     )
-    fun getAllBySubmitterId(submitterId: Int): List<IngredientDto>
+    fun getAllBySubmitterId(submitterId: Int): List<DbIngredientDto>
 
     @SqlQuery("SELECT * FROM $table WHERE $name = :ingredientName")
-    fun getAllByName(@Bind ingredientName: String): List<IngredientDto>
+    fun getAllByName(@Bind ingredientName: String): List<DbIngredientDto>
 
-    @SqlQuery("SELECT * FROM $table WHERE $id in (<values>)")
-    fun getAllByIds(@BindList("values") submissionIds: List<Int>): List<IngredientDto>
+    @SqlQuery("SELECT * FROM $table WHERE $id in (<submissionIds>)")
+    fun getAllByIds(@BindList submissionIds: List<Int>): List<DbIngredientDto>
 
     @SqlQuery("INSERT INTO $table($id, $name) VALUES(:submissionId, :ingredientName) RETURNING *")
-    fun insert(@Bind submissionId: Int, ingredientName: String): IngredientDto
+    fun insert(@Bind submissionId: Int, ingredientName: String): DbIngredientDto
 
-    @SqlQuery("INSERT INTO $table($id, $name) values <values> RETURNING *")
-    fun insertAll(@BindBeanList(
-            value = "values",
-            propertyNames = [id, name]
-    ) values: List<IngredientParam>): List<IngredientDto>
+    @SqlQuery("INSERT INTO $table($id, $name) values <ingredientParams> RETURNING *")
+    fun insertAll(@BindBeanList(propertyNames = [id, name])
+                  ingredientParams: List<IngredientParam>
+    ): List<DbIngredientDto>
 }
 
 //Variable names must match sql columns!!!

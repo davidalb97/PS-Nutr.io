@@ -1,6 +1,6 @@
 package pt.isel.ps.g06.httpserver.dataAccess.db.dto
 
-data class SubmissionContractDto(
+data class DbPortionDto(
         val submission_id: Int,
-        val submission_contract: String
+        val quantity: Int
 )

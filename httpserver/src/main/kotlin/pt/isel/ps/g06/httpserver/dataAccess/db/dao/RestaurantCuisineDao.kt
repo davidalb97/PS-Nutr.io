@@ -4,51 +4,41 @@ import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.customizer.BindBeanList
 import org.jdbi.v3.sqlobject.customizer.BindList
 import org.jdbi.v3.sqlobject.statement.SqlQuery
-import pt.isel.ps.g06.httpserver.dataAccess.db.dto.MealCuisineDto
-import pt.isel.ps.g06.httpserver.dataAccess.db.dto.RestaurantCuisineDto
-import pt.isel.ps.g06.httpserver.dataAccess.db.dto.RestaurantMealPortionDto
+import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbRestaurantCuisineDto
 
 interface RestaurantCuisineDao {
 
     companion object {
         const val table = "RestaurantCuisine"
         const val id = "restaurant_submission_id"
-        const val cuisineName = "cuisine_name"
+        const val cuisineId = "cuisine_id"
     }
 
     @SqlQuery("SELECT * FROM $table")
-    fun getAll(): List<RestaurantMealPortionDto>
+    fun getAll(): List<DbRestaurantCuisineDto>
 
     @SqlQuery("SELECT * FROM $table WHERE $id = :restaurantId")
-    fun getByRestaurantId(@Bind restaurantId: Int): List<RestaurantCuisineDto>
+    fun getByRestaurantId(@Bind restaurantId: Int): List<DbRestaurantCuisineDto>
 
-    @SqlQuery("SELECT * FROM $table WHERE $cuisineName = :cuisineName")
-    fun getByCuisineName(@Bind cuisineName: String): List<RestaurantCuisineDto>
+    @SqlQuery("INSERT INTO $table($id, $cuisineId)" +
+            " VALUES(:restaurantId, :cuisineId) RETURNING *")
+    fun insert(@Bind restaurantId: Int, @Bind cuisineId: Int): DbRestaurantCuisineDto
 
-    @SqlQuery("INSERT INTO $table($id, $cuisineName)" +
-            " VALUES(:restaurantId, :cuisineName) RETURNING *")
-    fun insert(@Bind restaurantId: Int, @Bind cuisineName: String): RestaurantCuisineDto
-
-    @SqlQuery("INSERT INTO $table($id, $cuisineName) values <values> RETURNING *")
-    fun insertAll(@BindBeanList(
-            value = "values",
-            propertyNames = [id, cuisineName]
-    ) newName: List<RestaurantCuisineParam>): List<RestaurantCuisineDto>
+    @SqlQuery("INSERT INTO $table($id, $cuisineId)" +
+            " values <restaurantCuisineDtos> RETURNING *"
+    )
+    fun insertAll(@BindBeanList(propertyNames = [id, cuisineId])
+                  restaurantCuisineDtos: List<DbRestaurantCuisineDto>
+    ): List<DbRestaurantCuisineDto>
 
     @SqlQuery("DELETE FROM $table WHERE $id = :restaurantId RETURNING *")
-    fun deleteAllByRestaurantId(@Bind restaurantId: Int): List<RestaurantCuisineDto>
+    fun deleteAllByRestaurantId(@Bind restaurantId: Int): List<DbRestaurantCuisineDto>
 
     @SqlQuery("DELETE FROM $table" +
             " WHERE $id = :submission_id" +
-            " AND $cuisineName in <values> RETURNING *")
-    fun deleteAllByRestaurantIdAndCuisine(
+            " AND $cuisineId in <cuisineIds> RETURNING *")
+    fun deleteAllByRestaurantIdAndCuisineIds(
             @Bind restaurantSubmissionId: Int,
-            @BindList("values") newName: List<String>
-    ): List<RestaurantCuisineDto>
+            @BindList cuisineIds: List<Int>
+    ): List<DbRestaurantCuisineDto>
 }
-
-//Variable names must match sql columns
-data class RestaurantCuisineParam(
-        val restaurant_submission_id: Int,
-        val cuisine_name: String
-)

@@ -1,6 +1,7 @@
 package pt.isel.ps.g06.httpserver.dataAccess.db.dto
 
-data class PortionDto(
+
+open class DbMealDto(
         val submission_id: Int,
-        val quantity: Int
+        val meal_name: String
 )

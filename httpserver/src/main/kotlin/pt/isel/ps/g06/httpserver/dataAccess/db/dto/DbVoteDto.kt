@@ -1,6 +1,7 @@
 package pt.isel.ps.g06.httpserver.dataAccess.db.dto
 
-data class IngredientDto(
+data class DbVoteDto(
         val submission_id: Int,
-        val ingredient_name: String
+        val vote_submitter_id: Int,
+        val vote: Boolean
 )

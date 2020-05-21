@@ -1,6 +1,6 @@
 package pt.isel.ps.g06.httpserver.dataAccess.db.dto
 
-data class ApiDto(
+data class DbApiDto(
         val submitter_id: Int,
         val api_token: String
 )

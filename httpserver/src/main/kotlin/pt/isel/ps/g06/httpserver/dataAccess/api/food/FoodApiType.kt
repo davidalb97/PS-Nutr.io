@@ -1,7 +1,8 @@
 package pt.isel.ps.g06.httpserver.dataAccess.api.food
 
 enum class FoodApiType {
-    Spoonacular;
+    Spoonacular,
+    Here;
 
     companion object {
         fun getOrDefault(type: String?, default: FoodApiType = Spoonacular): FoodApiType {

@@ -51,6 +51,8 @@ dependencies {
     implementation("org.jdbi", "jdbi3-spring4", jdbiVersion)
     implementation("org.postgresql", "postgresql", "42.2.12")
 
+    //Validators for body input
+    implementation("org.springframework.boot:spring-boot-starter-validation")
 }
 
 tasks.withType<Test> {
