@@ -14,9 +14,6 @@ class CuisineRecyclerAdapter(
     ctx: Context
 ) : ARecyclerAdapter<Cuisine, CuisineRecyclerViewModel, CuisineRecyclerViewHolder>(model, ctx) {
 
-    override fun onBindViewHolder(holder: CuisineRecyclerViewHolder, position: Int) =
-        holder.bindTo(viewModel.items[position])
-
     override fun getItemViewId(): Int = R.layout.cuisine_card
 
     override fun newViewHolder(layout: ViewGroup): CuisineRecyclerViewHolder =

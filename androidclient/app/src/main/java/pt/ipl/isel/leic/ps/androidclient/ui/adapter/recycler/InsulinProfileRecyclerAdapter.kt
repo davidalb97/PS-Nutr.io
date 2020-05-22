@@ -15,7 +15,6 @@ class InsulinProfileRecyclerAdapter(
     override fun onBindViewHolder(holder: InsulinProfileRecyclerViewHolder, position: Int) {
         val item: InsulinProfile = viewModel.items[position]
         holder.bindTo(item)
-        holder.list = viewModel.items.toMutableList()
         holder.onDelete = { viewModel.deleteItem(item) }
     }
 

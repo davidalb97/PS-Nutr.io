@@ -13,9 +13,6 @@ class RestaurantRecyclerAdapter(
     ctx: Context
 ) : ARecyclerAdapter<Restaurant, RestaurantRecyclerViewModel, RestaurantRecyclerViewHolder>(model, ctx) {
 
-    override fun onBindViewHolder(holder: RestaurantRecyclerViewHolder, position: Int) =
-        holder.bindTo(viewModel.items[position])
-
     override fun getItemViewId(): Int = R.layout.restaurant_card
 
     override fun newViewHolder(layout: ViewGroup): RestaurantRecyclerViewHolder =

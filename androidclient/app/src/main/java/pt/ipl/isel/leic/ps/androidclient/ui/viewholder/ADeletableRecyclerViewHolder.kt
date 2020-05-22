@@ -14,10 +14,9 @@ abstract class ADeletableRecyclerViewHolder<T : Any>(
     View.OnLongClickListener {
 
     lateinit var onDelete: (T) -> Unit
-    lateinit var list: MutableList<T>
 
     override fun onLongClick(v: View?): Boolean {
-        val builder = AlertDialog.Builder(view.context)
+        val builder = AlertDialog.Builder(ctx)
         val currentAdapter = this.bindingAdapter
 
         builder.setTitle(view.context.getString(R.string.DialogAlert_deleteWarning))
@@ -28,12 +27,10 @@ abstract class ADeletableRecyclerViewHolder<T : Any>(
 
             onDelete(this.item)
             Toast.makeText(
-                view.context,
-                view.context.getString(R.string.DialogAlert_deleted), Toast.LENGTH_SHORT
+                ctx,
+                ctx.getString(R.string.DialogAlert_deleted), Toast.LENGTH_SHORT
             ).show()
-            this.list.removeAt(layoutPosition)
             currentAdapter?.notifyItemRemoved(layoutPosition)
-            currentAdapter?.notifyDataSetChanged()
         }
 
         builder.setNegativeButton(view.context.getString(R.string.Dialog_no)) { _, _ -> }

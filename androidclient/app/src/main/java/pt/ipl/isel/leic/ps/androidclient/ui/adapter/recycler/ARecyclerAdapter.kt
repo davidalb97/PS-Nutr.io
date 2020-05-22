@@ -24,6 +24,8 @@ abstract class ARecyclerAdapter<T : Any, ViewModelType : ARecyclerViewModel<T>, 
 
     override fun getItemCount(): Int = viewModel.items.size
 
+    override fun onBindViewHolder(holder: ViewHolderType, position: Int) =
+        holder.bindTo(viewModel.items[position])
 
     @LayoutRes
     abstract fun getItemViewId(): Int

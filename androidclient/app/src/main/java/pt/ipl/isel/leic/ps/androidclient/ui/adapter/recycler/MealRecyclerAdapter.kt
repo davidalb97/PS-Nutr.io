@@ -14,9 +14,6 @@ class MealRecyclerAdapter(
     ctx: Context
 ) : ARecyclerAdapter<Meal, MealRecyclerViewModel, MealRecyclerViewHolder>(model, ctx) {
 
-    override fun onBindViewHolder(holder: MealRecyclerViewHolder, position: Int) =
-        holder.bindTo(viewModel.items[position])
-
     override fun getItemViewId(): Int = R.layout.meal_card
 
     override fun newViewHolder(layout: ViewGroup): MealRecyclerViewHolder =
