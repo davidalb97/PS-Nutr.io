@@ -3,12 +3,13 @@ package pt.isel.ps.g06.httpserver.service
 import org.springframework.stereotype.Service
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.RestaurantApiType
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.mapper.RestaurantApiMapper
+import pt.isel.ps.g06.httpserver.dataAccess.common.TransactionHolder
 import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.restaurant.RestaurantResponseMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbSubmissionDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.RestaurantDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.input.RestaurantInput
 import pt.isel.ps.g06.httpserver.model.Restaurant
-import java.util.concurrent.CompletableFuture
+import kotlin.streams.asSequence
 
 private const val MAX_RADIUS = 1000
 
@@ -18,6 +19,8 @@ class RestaurantService(
         private val dbRestaurantRepository: RestaurantDbRepository,
         private val restaurantApiMapper: RestaurantApiMapper,
         private val restaurantResponseMapper: RestaurantResponseMapper
+        /*,
+        private val transactionHolder: TransactionHolder*/
 ) {
 
     fun getNearbyRestaurants(
@@ -26,19 +29,39 @@ class RestaurantService(
             name: String?,
             radius: Int?,
             apiType: String?
-    ): Set<Restaurant> {
+    ): Collection<Restaurant> {
         val chosenRadius = if (radius != null && radius <= MAX_RADIUS) radius else MAX_RADIUS
         val type = RestaurantApiType.getOrDefault(apiType)
         val restaurantApi = restaurantApiMapper.getRestaurantApi(type)
 
+        //Get API restaurants
         val apiRestaurants =
                 restaurantApi.searchNearbyRestaurants(latitude, longitude, chosenRadius, name)
-                        .thenApply { it.map(restaurantResponseMapper::mapTo) }
-        val dbRestaurants = dbRestaurantRepository
+                        .thenApply {
+                            it.map(restaurantResponseMapper::mapTo)
+                        }
+
+        return dbRestaurantRepository
                 .getAllByCoordinates(latitude, longitude, chosenRadius)
                 .map(restaurantResponseMapper::mapTo)
-        //TODO Handle CompletableFuture exception
-        return filterRedundantApiRestaurants(dbRestaurants, apiRestaurants.get())
+                .let { filterRedundantApiRestaurants(it, apiRestaurants.get()) }
+
+        //Keeps an open transaction while we iterate the DB response Stream
+//        return transactionHolder.inTransaction {
+//
+//            //Get db restaurants
+//            dbRestaurantRepository
+//                    .getAllByCoordinates(latitude, longitude, chosenRadius)
+//                    //Must close database resources even when database row iteration fails
+//                    .use {
+//                        //Convert to sequence & map
+//                        val mapped = it.asSequence()
+//                                .map(restaurantResponseMapper::mapTo)
+//
+//                        //Return all restaurants
+//                        return@inTransaction filterRedundantApiRestaurants(mapped, apiRestaurants.get())
+//                    }
+//        }
     }
 
     /**
@@ -76,18 +99,21 @@ class RestaurantService(
         )
     }
 
-    private fun filterRedundantApiRestaurants(dbRestaurants: Collection<Restaurant>, apiRestaurants: Collection<Restaurant>): Set<Restaurant> {
-        val result = dbRestaurants.toMutableSet()
-
-        apiRestaurants.forEach {
-            if (!dbContainsRestaurant(result, it)) {
-                result.add(it)
-            }
-        }
-        return result
+    private fun filterRedundantApiRestaurants(dbRestaurants: Collection<Restaurant>, apiRestaurants: Collection<Restaurant>): Collection<Restaurant> {
+        return (dbRestaurants.union(apiRestaurants.filter {
+            dbRestaurants.none { dbRestaurant -> it.identifier == dbRestaurant.identifier }
+        }))
+//        val result = dbRestaurants.toMutableSet()
+//
+//        apiRestaurants.forEach {
+//            if (!dbContainsRestaurant(result, it)) {
+//                result.add(it)
+//            }
+//        }
+//        return result
     }
 
-    private fun dbContainsRestaurant(dbRestaurants: Collection<Restaurant>, restaurant: Restaurant): Boolean {
-        return dbRestaurants.any { dbRestaurant -> restaurant.identifier == dbRestaurant.identifier }
-    }
+//    private fun dbContainsRestaurant(dbRestaurants: Collection<Restaurant>, restaurant: Restaurant): Boolean {
+//        return dbRestaurants.any { dbRestaurant -> restaurant.identifier == dbRestaurant.identifier }
+//    }
 }
