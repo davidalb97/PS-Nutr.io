@@ -9,28 +9,10 @@ class InsulinProfileRepository {
 
     fun getAllProfiles(): LiveData<List<InsulinProfile>> {
         return roomDb.insulinProfileDao().getAll()
-        /*var res: LiveData<List<InsulinProfile>>? = null
-
-        AsyncWorker<Unit, LiveData<List<InsulinProfile>>> {
-            roomDb.insulinProfileDao().getAll()
-        }.setOnPostExecute{
-            res = it
-        }
-
-        return res!!*/
     }
 
     fun getProfile(name: String): InsulinProfile {
         return roomDb.insulinProfileDao().get(name)
-        /*var res: InsulinProfile? = null
-
-        AsyncWorker<Unit, InsulinProfile> {
-            roomDb.insulinProfileDao().get(name)
-        }.setOnPostExecute{
-            res = it
-        }
-
-        return res!!*/
     }
 
     fun addProfile(profile: InsulinProfile) =

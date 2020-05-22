@@ -54,11 +54,9 @@
     <string name="link_miguel">https://github.com/mig07</string>
     <string name="insulin_calculator">Insulin Calculator</string>
     <string name="insulin_type">Insulin type</string>
-    <string name="current_blood_glucose">Current blood glucose</string>
     <string name="add_a_meal_to_this_calculation">Add a meal to this calculation</string>
     <string name="pre_meal_blood_glucose_target">Pre-meal blood glucose target</string>
     <string name="insulin_calculator_nav">Insulin calculator</string>
-    <string name="calculate">Calculate</string>
 
     <!-- MapBox api key -->
     <string name="access_token">pk.eyJ1IjoibWlnMDciLCJhIjoiY2thNm96MWQzMDh6cTJybzMybnVjMjZ4dCJ9.VEnqYHRE7wBwhTp7-ASOBQ</string>
@@ -95,4 +93,9 @@
     <string name="Dialog_no">No</string>
     <string name="DialogAlert_deleted">Item deleted</string>
     <string name="you_don_t_have_any_submissions_right_now">You don\'t have any submissions right now</string>
+    <string name="Fill_in_all_the_available_fields">Fill in all the available fields</string>
+    <string name="This_time_period_is_already_occupied">This time period is already occupied</string>
+    <string name="add_a_meal">Add a meal</string>
+    <string name="current_blood_glucose">Current blood glucose</string>
+    <string name="calculate">Calculate</string>
 </resources>

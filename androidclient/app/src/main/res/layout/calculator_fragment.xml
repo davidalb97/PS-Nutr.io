@@ -6,82 +6,65 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="50dp">
+        android:layout_height="wrap_content">
 
         <TableLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <RelativeLayout
-                android:id="@+id/add_meal_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp">
 
+            <RelativeLayout
+                android:layout_margin="30dp"
+                android:gravity="center">
                 <TextView
+                    android:id="@+id/add_a_meal_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:text="@string/add_a_meal_to_this_calculation"
-                    android:textColor="@android:color/background_dark"
-                    android:textSize="20sp">
+                    android:text="@string/add_a_meal"
+                    android:layout_centerVertical="true"
+                    android:textSize="24sp">
                 </TextView>
 
+                <ImageButton
+                    android:id="@+id/insulin_add_button"
+                    android:background="@drawable/material_button_shape"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:src="@drawable/ic_add"
+                    android:layout_toEndOf="@id/add_a_meal_text"
+                    android:layout_marginStart="20dp">
+                </ImageButton>
             </RelativeLayout>
 
             <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp">
-
+                android:layout_margin="30dp">
                 <TextView
+                    android:id="@+id/blood_glucose"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
                     android:text="@string/current_blood_glucose"
-                    android:textColor="@android:color/background_dark"
-                    android:textSize="20sp">
+                    android:textSize="24sp">
                 </TextView>
 
                 <EditText
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true">
+                    android:layout_toEndOf="@id/blood_glucose">
                 </EditText>
 
             </RelativeLayout>
 
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:text="@string/pre_meal_blood_glucose_target"
-                    android:textColor="@android:color/background_dark"
-                    android:textSize="20sp">
-                </TextView>
-
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp">
+            <RelativeLayout>
                 <Button
-                    android:id="@+id/calculation_button"
-                    android:layout_width="wrap_content"
+                    android:layout_width="150dp"
                     android:layout_height="wrap_content"
+                    android:layout_below="@+id/quantity_slider"
+                    android:layout_marginTop="10dp"
                     android:layout_centerHorizontal="true"
-                    android:background="@drawable/rect_material_button_shape"
                     android:text="@string/calculate"
-                    android:textColor="@color/cardview_light_background">
+                    android:textColor="@color/cardview_light_background"
+                    android:background="@drawable/rect_material_button_shape">
                 </Button>
-
             </RelativeLayout>
 
 
