@@ -29,7 +29,12 @@ class MealController(private val mealService: MealService) {
     }
 
     @GetMapping(MEAL)
-    fun getMealInformation(@PathVariable(MEAL_ID_VALUE) mealId: String) = ""
+    fun getMealInformation(
+            @PathVariable(MEAL_ID_VALUE) mealId: String,
+            @RequestParam apiType: String?
+    ) {
+        mealService.getMeal(mealId, apiType)
+    }
 
     @PostMapping(MEAL)
     fun postMeal(@PathVariable(MEAL_ID_VALUE) mealId: String) = ""

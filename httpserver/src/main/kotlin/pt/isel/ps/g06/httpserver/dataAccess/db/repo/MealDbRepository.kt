@@ -10,10 +10,12 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType.INGREDIENT
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType.MEAL
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmitterType
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.*
-import pt.isel.ps.g06.httpserver.dataAccess.db.dto.*
-import pt.isel.ps.g06.httpserver.dataAccess.model.Ingredient
-import pt.isel.ps.g06.httpserver.exception.InvalidInputDomain
+import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbApiSubmissionDto
+import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbIngredientDto
+import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbMealCuisineDto
+import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbMealDto
 import pt.isel.ps.g06.httpserver.exception.InvalidInputException
+import pt.isel.ps.g06.httpserver.model.Ingredient
 import pt.isel.ps.g06.httpserver.springConfig.dto.DbEditableDto
 
 private val isolationLevel = TransactionIsolationLevel.SERIALIZABLE
@@ -220,7 +222,7 @@ class MealDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo(jdbi)
     }
 
     private fun deleteMissingIngredientsFromMeal(it: Handle, submissionId: Int, apiSubmitterId: Int, ingredients: List<Ingredient>) {
-        val ingredientApiIds = ingredients.map { it.apiId }
+        val ingredientApiIds = ingredients.map { it.id }
         val deleteIngredientIds = getExistingIngredients(it, apiSubmitterId, ingredients)
                 .filter { !ingredientApiIds.contains(it.apiId) }
                 .map { it.submission_id }
@@ -255,7 +257,7 @@ class MealDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo(jdbi)
                 .map { it.apiId }
 
         val missingIngredients = ingredients
-                .filter { !existingIngredientApiIds.contains(it.apiId) }
+                .filter { !existingIngredientApiIds.contains(it.id) }
 
         val existingIngredientIds = existingApiIngredientDtos.map { it.submission_id }
                 .toMutableList()
@@ -276,7 +278,7 @@ class MealDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo(jdbi)
             insertAllIngredients(handle, insertedIngredientSubmissionIds, missingIngredients.map { it.name })
 
             //Insert all new Submission - ApiSubmission associations
-            insertAllIngredientApiSubmission(handle, insertedIngredientSubmissionIds, missingIngredients.map { it.apiId })
+            insertAllIngredientApiSubmission(handle, insertedIngredientSubmissionIds, missingIngredients.map { it.id })
         }
 
         //Insert all new ingredient - meal associations
@@ -370,7 +372,7 @@ class MealDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo(jdbi)
             ingredients: Collection<Ingredient>
     ): Collection<DbApiSubmissionDto> {
         //Get already inserted ingredient dtos
-        val ingredientApiIds = ingredients.map { it.apiId }
+        val ingredientApiIds = ingredients.map { it.id }
         return handle.attach(ApiSubmissionDao::class.java)
                 // Api ingredient api dtos already present on this meal
                 .getAllBySubmitterIdSubmissionTypeAndApiIds(apiSubmitterId, INGREDIENT.toString(), ingredientApiIds)

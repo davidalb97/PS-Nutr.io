@@ -1,6 +1,5 @@
 package pt.isel.ps.g06.httpserver.model
 
-import pt.isel.ps.g06.httpserver.dataAccess.model.Ingredient
 import java.time.OffsetDateTime
 
 data class TestIngredient(

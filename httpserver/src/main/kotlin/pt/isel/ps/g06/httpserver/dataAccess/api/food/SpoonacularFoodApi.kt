@@ -4,8 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Repository
 import pt.isel.ps.g06.httpserver.dataAccess.api.food.dto.MealDto
+import pt.isel.ps.g06.httpserver.dataAccess.api.food.dto.spoonacular.SpoonacularMealDto
 import pt.isel.ps.g06.httpserver.dataAccess.api.food.dto.spoonacular.SpoonacularMealSearchResult
-import pt.isel.ps.g06.httpserver.dataAccess.api.food.uri.FoodUri
+import pt.isel.ps.g06.httpserver.dataAccess.api.food.uri.SpoonacularUriBuilder
 import pt.isel.ps.g06.httpserver.util.log
 import java.net.http.HttpClient
 import java.net.http.HttpResponse
@@ -13,14 +14,14 @@ import java.net.http.HttpResponse
 @Repository
 class SpoonacularFoodApi(
         httpClient: HttpClient,
-        uriBuilder: FoodUri,
+        foodUri: SpoonacularUriBuilder,
         responseMapper: ObjectMapper
-) : FoodApi(httpClient, uriBuilder, responseMapper) {
+) : FoodApi(httpClient, foodUri, responseMapper) {
     override fun handleSearchMealResponse(response: HttpResponse<String>): Collection<MealDto> {
         val body = response.body()
 
         return when (response.statusCode()) {
-            HttpStatus.OK.value() -> mapToMealDto(body)
+            HttpStatus.OK.value() -> mapToMealDtoCollection(body)
             HttpStatus.UNAUTHORIZED.value() -> {
                 //TODO We need proper Logging
                 log("WARN: Spoonacular refused access. Is the API-Key valid?")
@@ -30,8 +31,26 @@ class SpoonacularFoodApi(
         }
     }
 
-    private fun mapToMealDto(body: String): Collection<MealDto> {
+    override fun handleMealInfoResponse(response: HttpResponse<String>): MealDto? {
+        val body = response.body()
+
+        return when (response.statusCode()) {
+            HttpStatus.OK.value() -> mapToDetailedMealDto(body)
+            HttpStatus.UNAUTHORIZED.value() -> {
+                //TODO We need proper Logging
+                log("WARN: Spoonacular refused access. Is the API-Key valid?")
+                return null
+            }
+            else -> null
+        }
+    }
+
+    private fun mapToMealDtoCollection(body: String): Collection<MealDto> {
         return responseMapper.readValue(body, SpoonacularMealSearchResult::class.java).results
+    }
+
+    private fun mapToDetailedMealDto(body: String): MealDto {
+        return responseMapper.readValue(body, SpoonacularMealDto::class.java)
     }
 //
 //    override fun productsSearch(
