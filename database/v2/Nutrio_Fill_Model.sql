@@ -74,7 +74,11 @@ BEGIN
 	('Beverages'),
 	('Brazilian'),
 	('British'),	
+<<<<<<< HEAD
+	('Burger'),	
+=======
 	('Burger'),--Here cuisine_here_api_id_burger
+>>>>>>> 75767dd03f3a2d18e1a688adc962aa31703c0875
 	('Cafe'),
 	('Cafe Food'),
 	('Canadian'),--Here cuisine_here_api_id_canadian
