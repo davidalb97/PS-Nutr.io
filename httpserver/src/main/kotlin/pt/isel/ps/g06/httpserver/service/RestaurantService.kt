@@ -3,13 +3,11 @@ package pt.isel.ps.g06.httpserver.service
 import org.springframework.stereotype.Service
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.RestaurantApiType
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.mapper.RestaurantApiMapper
-import pt.isel.ps.g06.httpserver.dataAccess.common.TransactionHolder
 import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.restaurant.RestaurantResponseMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbSubmissionDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.RestaurantDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.input.RestaurantInput
 import pt.isel.ps.g06.httpserver.model.Restaurant
-import kotlin.streams.asSequence
 
 private const val MAX_RADIUS = 1000
 
@@ -100,9 +98,15 @@ class RestaurantService(
     }
 
     private fun filterRedundantApiRestaurants(dbRestaurants: Collection<Restaurant>, apiRestaurants: Collection<Restaurant>): Collection<Restaurant> {
-        return (dbRestaurants.union(apiRestaurants.filter {
-            dbRestaurants.none { dbRestaurant -> it.identifier == dbRestaurant.identifier }
-        }))
+        //Join db restaurants with filtered api restaurants
+        return dbRestaurants.union(
+                //Filter api restaurants that already exist in db
+                apiRestaurants.filter { apiRestaurant ->
+                    //Db does not contain a restaurant with the api identifier
+                    dbRestaurants.none { dbRestaurant -> apiRestaurant.identifier == dbRestaurant.identifier }
+                }
+        )
+
 //        val result = dbRestaurants.toMutableSet()
 //
 //        apiRestaurants.forEach {
