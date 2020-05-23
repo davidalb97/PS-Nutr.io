@@ -74,7 +74,7 @@ class AddProfileFragment : Fragment() {
                 return@setOnClickListener
             }
 
-            // Creates profile
+            // Creates profile if everything is ok until here
             val profile = InsulinProfile(
                 profileName.text.toString(),
                 startTimeUser.text.toString(),
@@ -99,10 +99,13 @@ class AddProfileFragment : Fragment() {
         }
     }
 
+    /**
+     * Checks if the time period passed to the time pickers is valid
+     */
     @SuppressLint("NewApi")
     private fun isTimePeriodValid(
         profile: InsulinProfile,
-        consumer: (Boolean) -> Unit
+        cb: (Boolean) -> Unit
     ) {
         val parsedStartTime = LocalTime.parse(profile.start_time)
         val parsedEndTime = LocalTime.parse(profile.end_time)
@@ -122,7 +125,7 @@ class AddProfileFragment : Fragment() {
             .observe(this.viewLifecycleOwner, Observer { profiles ->
                 var isValid = true
                 if (profiles.isEmpty()) {
-                    consumer(isValid)
+                    cb(isValid)
                     return@Observer
                 }
                 profiles?.forEach { savedProfile ->
@@ -137,10 +140,14 @@ class AddProfileFragment : Fragment() {
                         isValid = false
                     }
                 }
-                consumer(isValid)
+                cb(isValid)
             })
     }
 
+    /**
+     * Setups each time picker dialog saving the chosen values to a TextView
+     * so it can also display to the user
+     */
     @SuppressLint("SetTextI18n")
     private fun setupTimePickerDialog(textView: TextView, hour: Int, minute: Int)
             : TimePickerDialog =

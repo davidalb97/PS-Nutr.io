@@ -5,16 +5,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.Button
+import android.widget.ImageButton
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.navigation.findNavController
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.source.model.InsulinProfile
 import java.time.LocalTime
-import java.util.*
 
 class CalculatorFragment : Fragment() {
 
@@ -40,8 +39,17 @@ class CalculatorFragment : Fragment() {
             carboRatio = it.carbohydrate_amount
         }
 
+        val addButton = view.findViewById<ImageButton>(R.id.insulin_add_button)
+
+        addButton.setOnClickListener {
+            view.findNavController().navigate(R.id.nav_add_meal_to_calculator)
+        }
+
     }
 
+    /**
+     * Searchs for a profile that matches the current time and returns it
+     */
     @SuppressLint("NewApi")
     private fun getActualProfile(cb: (InsulinProfile?) -> Unit) {
 

@@ -53,7 +53,7 @@ class Requester(
 
         var uri = baseUri
 
-        parameters?.forEach { parameter ->
+        parameters.forEach { parameter ->
             uri = uri.replace(parameter.key, parameter.value)
         }
 
@@ -61,7 +61,7 @@ class Requester(
     }
 
     /**
-     * A generic Volley's requester
+     * A generic Volley's requester - TODO
      */
     fun <Model, Dto> httpServerRequest(
         method: Method,
@@ -78,7 +78,7 @@ class Requester(
         //Response payload deserialization async worker
         val dtoToModelResponseTask: AsyncWorker<String?, Model> =
             AsyncWorker<String?, Model> {
-                mappingFunction(jsonMapper.readValue(it[0]!!, dtoClass))
+                mappingFunction(jsonMapper.readValue(it[0], dtoClass))
             }.setOnPostExecute(onSuccess)
 
         //Request payload serialization async worker
