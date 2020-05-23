@@ -38,7 +38,9 @@ class RestaurantServiceTests {
     @Autowired
     lateinit var objMapper: ObjectMapper
 
-
+    /**
+     * Mocks a RestaurantService with supplied mapped results
+     */
     private fun mockRestaurantSearchService(
             expectedDbRestaurants: List<Restaurant> = emptyList(),
             expectedZomatoApiRestaurants: List<Restaurant> = emptyList(),
@@ -84,6 +86,9 @@ class RestaurantServiceTests {
         return RestaurantService(db, restaurantApiRepo, restaurantMapper)
     }
 
+    /**
+     * Returns a list of mapped Restaurants to be used on a service
+     */
     private fun mockMappedRestaurant(from: Int, to: Int, namePrefix: String): List<Restaurant> {
         return (from..to).map {
             Restaurant(
