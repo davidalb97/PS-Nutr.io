@@ -1,7 +1,9 @@
 package pt.ipl.isel.leic.ps.androidclient.data.source.endpoint
 
 import com.android.volley.VolleyError
-import pt.ipl.isel.leic.ps.androidclient.data.source.*
+import pt.ipl.isel.leic.ps.androidclient.data.source.Method
+import pt.ipl.isel.leic.ps.androidclient.data.source.RequestMapper
+import pt.ipl.isel.leic.ps.androidclient.data.source.URI_BASE
 import pt.ipl.isel.leic.ps.androidclient.data.source.dto.RestaurantDto
 import pt.ipl.isel.leic.ps.androidclient.data.source.mapper.RestaurantMapper
 import pt.ipl.isel.leic.ps.androidclient.data.source.mapper.RestaurantsMapper
@@ -82,14 +84,14 @@ class RestaurantDataSource(
 
         uri = requestMapper.buildUri(uri, uriParameters)
 
-       /* requestParser.asyncRequest(
+        requestMapper.requestAndRespond(
             Method.GET,
             uri,
             Array<RestaurantDto>::class.java,
             restaurantsMapper::map,
             success,
             error
-        )*/
+        )
     }
 
     /**

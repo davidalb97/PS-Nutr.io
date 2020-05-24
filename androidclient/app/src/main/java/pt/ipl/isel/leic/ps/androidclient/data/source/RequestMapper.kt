@@ -4,6 +4,7 @@ import android.util.Log
 import com.android.volley.Request
 import com.android.volley.RequestQueue
 import com.android.volley.Response
+import com.android.volley.VolleyError
 import com.fasterxml.jackson.databind.ObjectMapper
 import pt.ipl.isel.leic.ps.androidclient.TAG
 import pt.ipl.isel.leic.ps.androidclient.data.util.AsyncWorker
@@ -58,17 +59,41 @@ class RequestMapper(
         return uri
     }
 
-    private var work: ((String?) -> Unit)? = null
-
-    fun <Dto> asyncRequest(
+    /**
+     * A all-in-one function: requests, parses string to Dto and
+     * maps the Dtos to the respective data model using the functions
+     * below.
+     */
+    fun <Dto, Model> requestAndRespond(
         method: Method,
         urlStr: String,
+        dtoClass: Class<Dto>,
+        mappingFunc: (Dto) -> Model,
+        onSuccess: (Model) -> Unit,
+        onError: (VolleyError) -> Unit,
         reqPayload: Any? = null
+    ) {
+        request(method, urlStr, reqPayload, onError) { strResponse ->
+            parseDto(strResponse, dtoClass) { dtoArray ->
+                onSuccess(map(dtoArray, mappingFunc))
+            }
+        }
+    }
+
+    /**
+     * Makes an asynchronous request with an optional payload
+     */
+    fun request(
+        method: Method,
+        urlStr: String,
+        reqPayload: Any? = null,
+        onError: (VolleyError) -> Unit,
+        responseConsumer: (String) -> Unit
     ) {
         Log.v(TAG, urlStr)
 
         //Request payload serialization async worker
-        AsyncWorker<Dto, Unit> {
+        AsyncWorker<Unit, Unit> {
 
             //Passed payload to String
             val payloadStr = jsonMapper.writeValueAsString(reqPayload)
@@ -79,29 +104,27 @@ class RequestMapper(
                     method.value,
                     urlStr,
                     payloadStr,
-                    Response.Listener { work?.let { param -> param(it) } },
-                    Response.ErrorListener { throw it }
+                    Response.Listener { responseConsumer(it!!) },
+                    Response.ErrorListener { onError(it) }
                 )
             requestQueue.add(jsonRequest)
         }.execute()
     }
 
     /**
-     * Adds more work on top of the request
+     * Maps the Dto object to the respective data model.
      */
-    infix fun then(moreWork: (String?) -> Unit) {
-        this.work = moreWork
-    }
+    fun <Dto, Model> map(
+        dto: Dto,
+        mappingFunc: (Dto) -> Model
+    ) = mappingFunc(dto)
 
     /**
-     * Maps to the respective data model.
-     * The AsyncWorker's setOnPostExecute must be set
-     * by who is calling this function after use it.
-     * TODO - improve
+     * Parses string to Dto
      */
-    fun <Dto, Model> thenMapTo(
+    fun <Dto> parseDto(
+        value: String,
         dtoClass: Class<Dto>,
-        mappingFunc: (Dto) -> Model
-    ): AsyncWorker<String?, Model> =
-        AsyncWorker { mappingFunc(jsonMapper.readValue(it[0]!!, dtoClass)) }
+        dtoConsumer: (Dto) -> Unit
+    ) = dtoConsumer(jsonMapper.readValue(value, dtoClass))
 }
