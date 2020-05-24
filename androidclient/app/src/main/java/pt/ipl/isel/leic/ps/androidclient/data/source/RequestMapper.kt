@@ -75,7 +75,7 @@ class RequestMapper(
     ) {
         request(method, urlStr, reqPayload, onError) { strResponse ->
             parseDto(strResponse, dtoClass) { dtoArray ->
-                onSuccess(map(dtoArray, mappingFunc))
+                onSuccess(mappingFunc(dtoArray))
             }
         }
     }
@@ -112,12 +112,12 @@ class RequestMapper(
     }
 
     /**
-     * Maps the Dto object to the respective data model.
+     * Maps the Dto object to the respective data model. (No need to exist)
      */
-    fun <Dto, Model> map(
+    /*fun <Dto, Model> map(
         dto: Dto,
         mappingFunc: (Dto) -> Model
-    ) = mappingFunc(dto)
+    ) = mappingFunc(dto)*/
 
     /**
      * Parses string to Dto
