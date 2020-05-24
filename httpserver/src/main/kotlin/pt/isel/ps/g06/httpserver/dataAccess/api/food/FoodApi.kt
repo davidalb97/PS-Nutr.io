@@ -17,7 +17,7 @@ abstract class FoodApi(
 ) : BaseApiRequester(httpClient, responseMapper) {
     //TODO - Uncomment as needed. I dislike the "adding as much and never needing it" policy.
 
-    final fun searchMeals(name: String, cuisines: Collection<String>?): CompletableFuture<Collection<MealDto>> {
+    fun searchMeals(name: String, cuisines: Collection<String>?): CompletableFuture<Collection<MealDto>> {
         val uri = foodUri.searchMeals(name, cuisines)
         val request = buildGetRequest(uri)
 
@@ -26,7 +26,7 @@ abstract class FoodApi(
                 .thenApply(this::handleSearchMealResponse)
     }
 
-    final fun getMealInfo(mealId: String): CompletableFuture<MealDto?> {
+    fun getMealInfo(mealId: String): CompletableFuture<MealDto?> {
         val uri = foodUri.getMealInfo(mealId)
         val request = buildGetRequest(uri)
 

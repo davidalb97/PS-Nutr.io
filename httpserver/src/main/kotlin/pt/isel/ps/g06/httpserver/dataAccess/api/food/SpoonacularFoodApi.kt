@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Repository
 import pt.isel.ps.g06.httpserver.dataAccess.api.food.dto.MealDto
-import pt.isel.ps.g06.httpserver.dataAccess.api.food.dto.spoonacular.SpoonacularMealDto
+import pt.isel.ps.g06.httpserver.dataAccess.api.food.dto.spoonacular.SpoonacularDetailedMealDto
 import pt.isel.ps.g06.httpserver.dataAccess.api.food.dto.spoonacular.SpoonacularMealSearchResult
 import pt.isel.ps.g06.httpserver.dataAccess.api.food.uri.SpoonacularUriBuilder
 import pt.isel.ps.g06.httpserver.util.log
@@ -49,8 +49,8 @@ class SpoonacularFoodApi(
         return responseMapper.readValue(body, SpoonacularMealSearchResult::class.java).results
     }
 
-    private fun mapToDetailedMealDto(body: String): MealDto {
-        return responseMapper.readValue(body, SpoonacularMealDto::class.java)
+    private fun mapToDetailedMealDto(body: String): SpoonacularDetailedMealDto {
+        return responseMapper.readValue(body, SpoonacularDetailedMealDto::class.java)
     }
 //
 //    override fun productsSearch(
