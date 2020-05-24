@@ -6,7 +6,6 @@ import pt.isel.ps.g06.httpserver.dataAccess.api.food.SpoonacularFoodApi
 import pt.isel.ps.g06.httpserver.dataAccess.api.food.dto.MealDto
 import pt.isel.ps.g06.httpserver.dataAccess.api.food.dto.spoonacular.SpoonacularDetailedMealDto
 import pt.isel.ps.g06.httpserver.dataAccess.api.food.dto.spoonacular.SpoonacularMealDto
-import pt.isel.ps.g06.httpserver.dataAccess.api.food.dto.spoonacular.SpoonacularMealNutrition
 import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.ResponseMapper
 import pt.isel.ps.g06.httpserver.model.Ingredient
 import pt.isel.ps.g06.httpserver.model.Meal
@@ -53,19 +52,19 @@ class SpoonacularResponseMapper(private val spoonacularFoodApi: SpoonacularFoodA
                 identifier = dto.id,
                 name = dto.name,
                 image = buildImageURI(dto.id),
-                info = lazy { buildMealInfo(dto.nutrition) }
+                info = lazy { buildMealInfo(dto) }
         )
     }
 
-    private fun buildMealInfo(nutrition: SpoonacularMealNutrition): MealInfo {
+    private fun buildMealInfo(dto: SpoonacularDetailedMealDto): MealInfo {
         return MealInfo(
-                carbohydrates = nutrition
+                carbohydrates = dto
+                        .nutrition
                         .nutrients
                         .firstOrNull { it.title.equals(CARBOHYDRATES, true) }
                         ?.amount,
                 //TODO Add proper ingredient mapper
-                //TODO Consider if ingredients need API id - right now it's a choice between having carbs or API ID
-                ingredients = nutrition.ingredients.map { Ingredient(it.name, "-1") }.stream()
+                ingredients = dto.extendedIngredients.map { Ingredient(it.name, it.id) }.stream()
         )
     }
 
