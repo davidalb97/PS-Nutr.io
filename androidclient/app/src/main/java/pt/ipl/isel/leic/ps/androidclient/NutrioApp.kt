@@ -21,7 +21,7 @@ import pt.ipl.isel.leic.ps.androidclient.data.source.endpoint.RestaurantDataSour
 
 const val TAG = "Nutr.io App"
 const val ROOM_DB_NAME = "nutrio-db"
-const val ROOM_DB_VERSION = 1
+const val ROOM_DB_VERSION = 2
 
 /**
  * The application context.

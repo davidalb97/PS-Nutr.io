@@ -9,7 +9,7 @@ class MealMapper : IResponseMapper<MealDto, Meal> {
             dto.identifier,
             dto.name,
             dto.image_url,
-            dto.info
+            "" // TODO
         )
 }
 

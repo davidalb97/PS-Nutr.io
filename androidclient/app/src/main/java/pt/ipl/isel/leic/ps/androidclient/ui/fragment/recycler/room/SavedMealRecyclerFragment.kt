@@ -4,7 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.source.model.Meal
 import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.MealRecyclerAdapter
@@ -32,11 +35,23 @@ class SavedMealRecyclerFragment : ARoomRecyclerListFragment<Meal, MealRecyclerVi
         savedInstanceState: Bundle?
     ): View? {
         buildViewModel(savedInstanceState)
-        return inflater.inflate(R.layout.meal_list, container, false)
+        return inflater.inflate(R.layout.saved_meals_list, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        noItemsLabel = view.findViewById(R.id.no_saved_meals)
+        val addButton = view.findViewById<ImageButton>(R.id.add_custom_meal)
+        initRecyclerList(view)
+        setCallbackFunctions()
+        list.adapter = adapter
+        list.layoutManager = LinearLayoutManager(this.requireContext())
+        startObserver()
+        viewModel.updateListFromLiveData()
+
+        addButton.setOnClickListener {
+            view.findNavController().navigate(R.id.nav_add_custom_meal)
+        }
     }
 
     override fun startScrollListener() {

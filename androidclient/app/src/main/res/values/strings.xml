@@ -98,4 +98,13 @@
     <string name="add_a_meal">Add a meal</string>
     <string name="current_blood_glucose">Current blood glucose</string>
     <string name="calculate">Calculate</string>
+    <string name="you_don_t_have_any_saved_meals_at_the_moment">You don\'t have any saved meals at the moment</string>
+    <string name="meal_name">Meal name</string>
+    <string name="glucose_amount">Glucose amount</string>
+    <string name="meal_carbohydrates_amount">Meal carbohydrates amount</string>
+    <string name="meal_glucose_amount">Meal glucose amount</string>
+    <string name="the_meal_total_quantity">The meal total quantity</string>
+    <string name="carbohydrates_amount">Carbohydrates amount</string>
+    <string name="add_the_meal_name">Add the meal name</string>
+    <string name="add_ingredients">Add ingredients</string>
 </resources>

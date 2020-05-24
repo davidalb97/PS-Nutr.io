@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/meal_name_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginLeft="30dp"
+        android:text="@string/meal_name"
+        android:textColor="@android:color/background_dark"
+        android:textSize="24sp"
+        android:layout_gravity="center">
+    </TextView>
+
+    <EditText
+        android:id="@+id/meal_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:layout_gravity="center"
+        android:hint="@string/add_the_meal_name" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginLeft="30dp"
+        android:text="@string/add_ingredients"
+        android:textColor="@android:color/background_dark"
+        android:textSize="24sp"
+        android:layout_gravity="center">
+    </TextView>
+
+    <ImageButton
+        android:id="@+id/add_profile"
+        android:background="@drawable/material_button_shape"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:src="@drawable/ic_add">
+    </ImageButton>
+
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="30dp"
+        android:layout_marginLeft="30dp">
+
+        <TextView
+            android:id="@+id/meal_total_quantity_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            android:text="@string/the_meal_total_quantity"
+            android:textColor="@android:color/background_dark"
+            android:textSize="18sp"
+            android:layout_gravity="center"
+            android:layout_centerVertical="true">
+        </TextView>
+
+        <EditText
+            android:id="@+id/glucose_objective"
+            android:layout_toEndOf="@id/meal_total_quantity_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:hint="@string/glucose_object_hint"
+            android:layout_centerVertical="true">
+        </EditText>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="30dp"
+        android:layout_marginLeft="30dp">
+
+        <TextView
+            android:id="@+id/meal_glucose"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            android:text="@string/glucose_amount"
+            android:textColor="@android:color/background_dark"
+            android:textSize="18sp"
+            android:layout_centerVertical="true">
+        </TextView>
+
+        <EditText
+            android:id="@+id/glucose_amount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_toEndOf="@+id/meal_glucose"
+            android:hint="@string/meal_glucose_amount"
+            android:layout_centerVertical="true">
+        </EditText>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="30dp"
+        android:layout_marginLeft="30dp">
+
+        <TextView
+            android:id="@+id/meal_carbs"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            android:text="@string/carbohydrates_amount"
+            android:textColor="@android:color/background_dark"
+            android:textSize="18sp"
+            android:layout_centerVertical="true">
+        </TextView>
+
+        <EditText
+            android:id="@+id/carbs_amount"
+            android:layout_toEndOf="@id/meal_carbs"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:hint="@string/meal_carbohydrates_amount">
+        </EditText>
+    </RelativeLayout>
+
+    <Button
+        android:id="@+id/create_profile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:layout_gravity="center"
+        android:text="@string/create_button">
+    </Button>
+
+</LinearLayout>

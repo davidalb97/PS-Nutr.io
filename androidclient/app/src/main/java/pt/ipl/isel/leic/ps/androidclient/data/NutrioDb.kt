@@ -16,7 +16,7 @@ import pt.ipl.isel.leic.ps.androidclient.data.source.model.Restaurant
     entities =
     [
         //Restaurant::class,
-        //Meal::class,
+        Meal::class,
         //Cuisine::class,
         InsulinProfile::class
     ],
@@ -24,11 +24,11 @@ import pt.ipl.isel.leic.ps.androidclient.data.source.model.Restaurant
 )
 abstract class NutrioDb : RoomDatabase() {
 
-    /*abstract fun restaurantDao(): RestaurantDao
+    //abstract fun restaurantDao(): RestaurantDao
 
     abstract fun mealDao(): MealDao
 
-    abstract fun cuisineDao(): CuisineDao*/
+    //abstract fun cuisineDao(): CuisineDao
 
     abstract fun insulinProfileDao(): InsulinProfileDao
 }

@@ -1,9 +1,14 @@
 package pt.ipl.isel.leic.ps.androidclient.data.source.model
 
-// TODO - add support for Room
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import pt.ipl.isel.leic.ps.androidclient.data.source.dto.MealInfoDto
+
+@Entity(tableName = "Meal")
 data class Meal(
-    val identifier: String,
+    @PrimaryKey val identifier: String,
     val name: String,
     val image_url: String,
-    val info: MealInfo
+    //val info: MealInfoDto
+    val info: String
 )
