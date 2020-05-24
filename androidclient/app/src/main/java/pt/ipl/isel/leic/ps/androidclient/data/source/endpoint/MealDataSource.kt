@@ -10,7 +10,7 @@ const val MEAL_ID_URI =
 //val MEAL_DTO = MealDto::class.java
 
 class MealDataSource(
-    private val requester: Requester
+    private val requestMapper: RequestMapper
 ) {
 
     /**

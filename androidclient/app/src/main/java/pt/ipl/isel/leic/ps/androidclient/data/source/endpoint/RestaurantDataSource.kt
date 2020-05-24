@@ -34,7 +34,7 @@ val RESTAURANT_DTO = RestaurantDto::class.java
 
 
 class RestaurantDataSource(
-    private val requester: Requester
+    private val requestMapper: RequestMapper
 ) {
 
     private val restaurantMapper =
@@ -57,9 +57,9 @@ class RestaurantDataSource(
         var uri =
             RESTAURANT_ID_URI
 
-        uri = requester.buildUri(uri, uriParameters)
+        uri = requestMapper.buildUri(uri, uriParameters)
 
-        requester.httpServerRequest(
+        /*requestParser.asyncRequest(
             Method.GET,
             uri,
             RestaurantDto::class.java,
@@ -67,7 +67,7 @@ class RestaurantDataSource(
             success,
             error,
             null
-        )
+        )*/
     }
 
     fun getNearby(
@@ -80,16 +80,16 @@ class RestaurantDataSource(
         var uri =
             RESTAURANT_LOCATION
 
-        uri = requester.buildUri(uri, uriParameters)
+        uri = requestMapper.buildUri(uri, uriParameters)
 
-        requester.httpServerRequest(
+       /* requestParser.asyncRequest(
             Method.GET,
             uri,
             Array<RestaurantDto>::class.java,
             restaurantsMapper::map,
             success,
             error
-        )
+        )*/
     }
 
     /**
