@@ -45,7 +45,7 @@ private const val AMOUNT = "amount"
 private const val UNIT = "unit"
 private const val INCLUDE_NUTRITION = "includeNutrition"
 
-private const val DEFAULT_AMOUNT = 2
+private const val DEFAULT_AMOUNT = 50
 
 @Component
 class SpoonacularUriBuilder : FoodUri {

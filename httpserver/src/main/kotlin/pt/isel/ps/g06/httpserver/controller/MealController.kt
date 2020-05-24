@@ -7,8 +7,10 @@ import pt.isel.ps.g06.httpserver.common.MEAL
 import pt.isel.ps.g06.httpserver.common.MEALS
 import pt.isel.ps.g06.httpserver.common.MEAL_ID_VALUE
 import pt.isel.ps.g06.httpserver.common.MEAL_VOTE
+import pt.isel.ps.g06.httpserver.common.exception.MealNotFoundException
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.output.SimplifiedMealOutput
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.output.toSimplifiedMealOutput
+import pt.isel.ps.g06.httpserver.model.Meal
 import pt.isel.ps.g06.httpserver.service.MealService
 
 @Suppress("MVCPathVariableInspection")
@@ -33,8 +35,9 @@ class MealController(private val mealService: MealService) {
     fun getMealInformation(
             @PathVariable(MEAL_ID_VALUE) mealId: String,
             @RequestParam apiType: String?
-    ) {
-        mealService.getMeal(mealId, apiType)
+    ): ResponseEntity<Meal> {
+        val meal = mealService.getMeal(mealId, apiType)
+        return meal?.let { ResponseEntity.ok().body(it) } ?: throw MealNotFoundException()
     }
 
     @PostMapping(MEAL)
