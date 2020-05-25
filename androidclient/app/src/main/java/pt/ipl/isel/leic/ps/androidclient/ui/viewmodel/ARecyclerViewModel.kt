@@ -9,9 +9,9 @@ import androidx.lifecycle.*
 abstract class ARecyclerViewModel<T> : ViewModel(), Parcelable {
 
     var mediatorLiveData: MediatorLiveData<List<T>> = MediatorLiveData()
-    var liveData: LiveData<List<T>>? = null
+    private var liveData: LiveData<List<T>>? = null
     val items: List<T> get() = mediatorLiveData.value ?: emptyList()
-    var preList: ArrayList<T> = ArrayList()
+    private var preList: ArrayList<T> = ArrayList()
 
     lateinit var onSuccess: (List<T>) -> Unit
     lateinit var onError: (Exception) -> Unit

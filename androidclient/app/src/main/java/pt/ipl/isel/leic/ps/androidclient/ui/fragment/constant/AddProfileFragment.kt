@@ -9,19 +9,33 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.insulinProfilesRepository
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.source.model.InsulinProfile
+import pt.ipl.isel.leic.ps.androidclient.ui.provider.InsulinProfilesVMProviderFactory
+import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.InsulinProfilesRecyclerViewModel
 import java.time.LocalTime
 import java.util.*
 
 class AddProfileFragment : Fragment() {
+
+    lateinit var viewModel: InsulinProfilesRecyclerViewModel
+
+    private fun buildViewModel(savedInstanceState: Bundle?) {
+        val rootActivity = this.requireActivity()
+        val factory = InsulinProfilesVMProviderFactory(savedInstanceState, rootActivity.intent)
+        viewModel =
+            ViewModelProvider(rootActivity, factory)[InsulinProfilesRecyclerViewModel::class.java]
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        buildViewModel(savedInstanceState)
         return inflater.inflate(R.layout.add_insulin_profile_fragment, container, false)
     }
 
@@ -52,6 +66,9 @@ class AddProfileFragment : Fragment() {
             setupTimePickerDialog(endTimeUser, mHour, mMinute)
                 .show()
         }
+
+        // Get all profiles before the new insertion
+        viewModel.updateListFromLiveData()
 
         createButton.setOnClickListener {
             // Checks if any field is blank
@@ -85,25 +102,27 @@ class AddProfileFragment : Fragment() {
             )
 
             // Asserts time period with the other profiles
-            isTimePeriodValid(profile) { isValid ->
+            profileTimesValidation(profile) { isValid ->
                 if (!isValid) {
                     Toast.makeText(
                         this.context,
                         getString(R.string.This_time_period_is_already_occupied),
                         Toast.LENGTH_LONG
                     ).show()
-                    return@isTimePeriodValid
+                } else {
+                    insulinProfilesRepository.addProfile(profile)
+                    view.findNavController().navigate(R.id.nav_profile)
                 }
-                insulinProfilesRepository.addProfile(profile)
             }
         }
+
     }
 
     /**
      * Checks if the time period passed to the time pickers is valid
      */
     @SuppressLint("NewApi")
-    private fun isTimePeriodValid(
+    private fun profileTimesValidation(
         profile: InsulinProfile,
         cb: (Boolean) -> Unit
     ) {
@@ -121,43 +140,39 @@ class AddProfileFragment : Fragment() {
         }
 
         // Checks if it is not overlapping other time periods
-        insulinProfilesRepository.getAllProfiles()
-            .observe(this.viewLifecycleOwner, Observer { profiles ->
-                var isValid = true
-                if (profiles.isEmpty()) {
-                    cb(isValid)
-                    return@Observer
-                }
-                profiles?.forEach { savedProfile ->
-                    val parsedSavedStartTime =
-                        LocalTime.parse(savedProfile.start_time)
-                    val parsedSavedEndTime =
-                        LocalTime.parse(savedProfile.end_time)
+        val insulinProfiles = viewModel.mediatorLiveData.value
+        var isValid = true
+        if (insulinProfiles!!.isNotEmpty()) {
+            insulinProfiles.forEach { savedProfile ->
+                val parsedSavedStartTime =
+                    LocalTime.parse(savedProfile.start_time)
+                val parsedSavedEndTime =
+                    LocalTime.parse(savedProfile.end_time)
 
-                    if (!(parsedEndTime.isBefore(parsedSavedStartTime) ||
-                        parsedStartTime.isAfter(parsedSavedEndTime))
-                    ) {
-                        isValid = false
-                    }
+                if (!(parsedEndTime.isBefore(parsedSavedStartTime) ||
+                            parsedStartTime.isAfter(parsedSavedEndTime))
+                ) {
+                    isValid = false
                 }
-                cb(isValid)
-            })
+            }
+        }
+        cb(isValid)
     }
 
-    /**
-     * Setups each time picker dialog saving the chosen values to a TextView
-     * so it can also display to the user
-     */
-    @SuppressLint("SetTextI18n")
-    private fun setupTimePickerDialog(textView: TextView, hour: Int, minute: Int)
-            : TimePickerDialog =
-        TimePickerDialog(
-            view?.context,
-            TimePickerDialog.OnTimeSetListener { timePicker: TimePicker, hour: Int, minute: Int ->
-                textView.text = "$hour:$minute"
-            },
-            hour,
-            minute,
-            true
-        )
-}
+        /**
+         * Setups each time picker dialog saving the chosen values to a TextView
+         * so it can also display to the user
+         */
+        @SuppressLint("SetTextI18n")
+        private fun setupTimePickerDialog(textView: TextView, hour: Int, minute: Int)
+                : TimePickerDialog =
+            TimePickerDialog(
+                view?.context,
+                TimePickerDialog.OnTimeSetListener { timePicker: TimePicker, hour: Int, minute: Int ->
+                    textView.text = "$hour:$minute"
+                },
+                hour,
+                minute,
+                true
+            )
+    }
