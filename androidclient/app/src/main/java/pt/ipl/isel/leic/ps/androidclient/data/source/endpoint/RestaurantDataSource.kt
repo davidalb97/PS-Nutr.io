@@ -4,6 +4,7 @@ import com.android.volley.VolleyError
 import pt.ipl.isel.leic.ps.androidclient.data.source.Method
 import pt.ipl.isel.leic.ps.androidclient.data.source.RequestMapper
 import pt.ipl.isel.leic.ps.androidclient.data.source.URI_BASE
+import pt.ipl.isel.leic.ps.androidclient.data.source.UriBuilder
 import pt.ipl.isel.leic.ps.androidclient.data.source.dto.RestaurantDto
 import pt.ipl.isel.leic.ps.androidclient.data.source.mapper.RestaurantMapper
 import pt.ipl.isel.leic.ps.androidclient.data.source.mapper.RestaurantsMapper
@@ -39,6 +40,7 @@ class RestaurantDataSource(
     private val requestMapper: RequestMapper
 ) {
 
+    private val uriBuilder = UriBuilder()
     private val restaurantMapper =
         RestaurantMapper()
     private val restaurantsMapper =
@@ -59,7 +61,7 @@ class RestaurantDataSource(
         var uri =
             RESTAURANT_ID_URI
 
-        uri = requestMapper.buildUri(uri, uriParameters)
+        uri = uriBuilder.buildUri(uri, uriParameters)
 
         /*requestParser.asyncRequest(
             Method.GET,
@@ -82,7 +84,7 @@ class RestaurantDataSource(
         var uri =
             RESTAURANT_LOCATION
 
-        uri = requestMapper.buildUri(uri, uriParameters)
+        uri = uriBuilder.buildUri(uri, uriParameters)
 
         requestMapper.requestAndRespond(
             Method.GET,

@@ -40,25 +40,6 @@ class RequestMapper(
     private val jsonMapper: ObjectMapper
 ) {
 
-    // TODO: change
-    fun buildUri(
-        baseUri: String,
-        parameters: HashMap<String, String>?
-    ): String {
-
-        if (parameters.isNullOrEmpty()) {
-            return baseUri
-        }
-
-        var uri = baseUri
-
-        parameters.forEach { parameter ->
-            uri = uri.replace(parameter.key, parameter.value)
-        }
-
-        return uri
-    }
-
     /**
      * A all-in-one function: requests, parses string to Dto and
      * maps the Dtos to the respective data model using the functions
@@ -110,14 +91,6 @@ class RequestMapper(
             requestQueue.add(jsonRequest)
         }.execute()
     }
-
-    /**
-     * Maps the Dto object to the respective data model. (No need to exist)
-     */
-    /*fun <Dto, Model> map(
-        dto: Dto,
-        mappingFunc: (Dto) -> Model
-    ) = mappingFunc(dto)*/
 
     /**
      * Parses string to Dto
