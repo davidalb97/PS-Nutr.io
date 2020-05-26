@@ -7,7 +7,6 @@ import com.android.volley.Response
 import com.android.volley.VolleyError
 import com.fasterxml.jackson.databind.ObjectMapper
 import pt.ipl.isel.leic.ps.androidclient.TAG
-import pt.ipl.isel.leic.ps.androidclient.data.api.mapper.IResponseMapper
 import pt.ipl.isel.leic.ps.androidclient.data.util.AsyncWorker
 
 const val ADDRESS = "10.0.2.2" // Loopback for the host machine
@@ -33,56 +32,49 @@ enum class Method(val value: Int) {
 }
 
 /**
- * This class contains the endpoints available for this app
+ * This class makes asynchronous HTTP requests and maps
+ * the results to their respective data models
  */
-class Requester(
+class RequestMapper(
     private val requestQueue: RequestQueue,
     private val jsonMapper: ObjectMapper
 ) {
-    /**
-     * Uri builder
-     */
-    fun buildUri(
-        baseUri: String,
-        parameters: HashMap<String, String>?
-    ): String {
-
-        if (parameters.isNullOrEmpty()) {
-            return baseUri
-        }
-
-        var uri = baseUri
-
-        parameters.forEach { parameter ->
-            uri = uri.replace(parameter.key, parameter.value)
-        }
-
-        return uri
-    }
 
     /**
-     * A generic Volley's requester - TODO
+     * A all-in-one function: requests, parses string to Dto and
+     * maps the Dtos to the respective data model using the functions
+     * below.
      */
-    fun <Model, Dto> httpServerRequest(
+    fun <Dto, Model> requestAndRespond(
         method: Method,
         urlStr: String,
         dtoClass: Class<Dto>,
-        mappingFunction: (Dto) -> Model,
+        mappingFunc: (Dto) -> Model,
         onSuccess: (Model) -> Unit,
         onError: (VolleyError) -> Unit,
         reqPayload: Any? = null
     ) {
+        request(method, urlStr, reqPayload, onError) { strResponse ->
+            parseDto(strResponse, dtoClass) { dtoArray ->
+                onSuccess(mappingFunc(dtoArray))
+            }
+        }
+    }
 
+    /**
+     * Makes an asynchronous request with an optional payload
+     */
+    fun request(
+        method: Method,
+        urlStr: String,
+        reqPayload: Any? = null,
+        onError: (VolleyError) -> Unit,
+        responseConsumer: (String) -> Unit
+    ) {
         Log.v(TAG, urlStr)
 
-        //Response payload deserialization async worker
-        val dtoToModelResponseTask: AsyncWorker<String?, Model> =
-            AsyncWorker<String?, Model> {
-                mappingFunction(jsonMapper.readValue(it[0], dtoClass))
-            }.setOnPostExecute(onSuccess)
-
         //Request payload serialization async worker
-        AsyncWorker<Dto, Unit> {
+        AsyncWorker<Unit, Unit> {
 
             //Passed payload to String
             val payloadStr = jsonMapper.writeValueAsString(reqPayload)
@@ -93,14 +85,19 @@ class Requester(
                     method.value,
                     urlStr,
                     payloadStr,
-                    Response.Listener {
-                        dtoToModelResponseTask.execute(it)
-                    },
-                    Response.ErrorListener {
-                        onError(it)
-                    }
+                    Response.Listener { responseConsumer(it!!) },
+                    Response.ErrorListener { onError(it) }
                 )
             requestQueue.add(jsonRequest)
         }.execute()
     }
+
+    /**
+     * Parses string to Dto
+     */
+    fun <Dto> parseDto(
+        value: String,
+        dtoClass: Class<Dto>,
+        dtoConsumer: (Dto) -> Unit
+    ) = dtoConsumer(jsonMapper.readValue(value, dtoClass))
 }
