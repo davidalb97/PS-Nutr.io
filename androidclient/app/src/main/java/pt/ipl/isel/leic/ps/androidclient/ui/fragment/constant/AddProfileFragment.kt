@@ -10,9 +10,8 @@ import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
-import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.insulinProfilesRepository
 import pt.ipl.isel.leic.ps.androidclient.R
-import pt.ipl.isel.leic.ps.androidclient.data.source.model.InsulinProfile
+import pt.ipl.isel.leic.ps.androidclient.data.db.dto.InsulinProfileDto
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.InsulinProfilesVMProviderFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.InsulinProfilesRecyclerViewModel
 import java.time.LocalTime
@@ -44,7 +43,7 @@ class AddProfileFragment : Fragment() {
 
         val profileName = view.findViewById<EditText>(R.id.profile_name)
         val glucoseObjective = view.findViewById<EditText>(R.id.glucose_objective)
-        val glucoseAmount = view.findViewById<EditText>(R.id.profile_name)
+        val glucoseAmount = view.findViewById<EditText>(R.id.glucose_amount)
         val carboAmount = view.findViewById<EditText>(R.id.carbo_amount)
         val createButton = view.findViewById<Button>(R.id.create_profile)
         val addStartTime = view.findViewById<Button>(R.id.start_time_label)
@@ -91,14 +90,15 @@ class AddProfileFragment : Fragment() {
             }
 
             // Creates profile if everything is ok until here
-            val profile = InsulinProfile(
-                profileName.text.toString(),
-                startTimeUser.text.toString(),
-                endTimeUser.text.toString(),
-                glucoseObjective.text.toString().toInt(),
-                glucoseAmount.text.toString().toInt(),
-                carboAmount.text.toString().toInt()
-            )
+            val profile =
+                InsulinProfileDto(
+                    profileName.text.toString(),
+                    startTimeUser.text.toString(),
+                    endTimeUser.text.toString(),
+                    glucoseObjective.text.toString().toInt(),
+                    glucoseAmount.text.toString().toInt(),
+                    carboAmount.text.toString().toInt()
+                )
 
             // Asserts time period with the other profiles
             profileTimesValidation(profile) { isValid ->
@@ -109,7 +109,7 @@ class AddProfileFragment : Fragment() {
                         Toast.LENGTH_LONG
                     ).show()
                 } else {
-                    insulinProfilesRepository.addProfile(profile)
+                    viewModel.addInsulinProfile(profile)
                     view.findNavController().navigate(R.id.nav_profile)
                 }
             }
@@ -122,7 +122,7 @@ class AddProfileFragment : Fragment() {
      */
     @SuppressLint("NewApi")
     private fun profileTimesValidation(
-        profile: InsulinProfile,
+        profile: InsulinProfileDto,
         cb: (Boolean) -> Unit
     ) {
         val parsedStartTime = LocalTime.parse(profile.start_time)

@@ -1,8 +1,8 @@
-package pt.ipl.isel.leic.ps.androidclient.data.dao
+package pt.ipl.isel.leic.ps.androidclient.data.db.dao
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import pt.ipl.isel.leic.ps.androidclient.data.source.model.Ingredient
+import pt.ipl.isel.leic.ps.androidclient.data.model.Ingredient
 
 @Dao
 interface IngredientDao {

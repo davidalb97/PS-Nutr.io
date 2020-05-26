@@ -3,21 +3,21 @@ package pt.ipl.isel.leic.ps.androidclient.ui.viewmodel
 import android.os.Parcel
 import android.os.Parcelable
 import androidx.lifecycle.LiveData
-import pt.ipl.isel.leic.ps.androidclient.NutrioApp
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.insulinProfilesRepository
-import pt.ipl.isel.leic.ps.androidclient.data.repo.InsulinProfileRepository
-import pt.ipl.isel.leic.ps.androidclient.data.source.model.InsulinProfile
+import pt.ipl.isel.leic.ps.androidclient.data.db.dto.InsulinProfileDto
 
-class InsulinProfilesRecyclerViewModel() : ARecyclerViewModel<InsulinProfile>() {
+class InsulinProfilesRecyclerViewModel() : ARecyclerViewModel<InsulinProfileDto>() {
 
     constructor(parcel: Parcel) : this() {
     }
 
-    fun deleteItem(profile: InsulinProfile) {
-        insulinProfilesRepository.deleteProfile(profile)
-    }
+    fun addInsulinProfile(profile: InsulinProfileDto) =
+        insulinProfilesRepository.addProfile(profile)
 
-    override fun fetchLiveData(): LiveData<List<InsulinProfile>> =
+    fun deleteItem(profile: InsulinProfileDto) =
+        insulinProfilesRepository.deleteProfile(profile)
+
+    override fun fetchLiveData(): LiveData<List<InsulinProfileDto>> =
         insulinProfilesRepository.getAllProfiles()
 
     override fun writeToParcel(dest: Parcel?, flags: Int) {

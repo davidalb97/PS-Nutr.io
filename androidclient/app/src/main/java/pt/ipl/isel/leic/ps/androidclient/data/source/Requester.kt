@@ -7,7 +7,7 @@ import com.android.volley.Response
 import com.android.volley.VolleyError
 import com.fasterxml.jackson.databind.ObjectMapper
 import pt.ipl.isel.leic.ps.androidclient.TAG
-import pt.ipl.isel.leic.ps.androidclient.data.source.mapper.IResponseMapper
+import pt.ipl.isel.leic.ps.androidclient.data.api.mapper.IResponseMapper
 import pt.ipl.isel.leic.ps.androidclient.data.util.AsyncWorker
 
 const val ADDRESS = "10.0.2.2" // Loopback for the host machine

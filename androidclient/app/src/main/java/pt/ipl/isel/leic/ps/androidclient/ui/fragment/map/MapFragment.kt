@@ -22,9 +22,9 @@ import com.mapbox.mapboxsdk.maps.MapboxMap
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback
 import com.mapbox.mapboxsdk.maps.Style
 import pt.ipl.isel.leic.ps.androidclient.R
-import pt.ipl.isel.leic.ps.androidclient.data.source.endpoint.LATITUDE_VAR
-import pt.ipl.isel.leic.ps.androidclient.data.source.endpoint.LONGITUDE_VAR
-import pt.ipl.isel.leic.ps.androidclient.data.source.model.Restaurant
+import pt.ipl.isel.leic.ps.androidclient.data.api.datasource.LATITUDE_VAR
+import pt.ipl.isel.leic.ps.androidclient.data.api.datasource.LONGITUDE_VAR
+import pt.ipl.isel.leic.ps.androidclient.data.model.Restaurant
 import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.RestaurantRecyclerAdapter
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler.request.ARequestRecyclerListFragment
 import pt.ipl.isel.leic.ps.androidclient.ui.listener.ScrollListener

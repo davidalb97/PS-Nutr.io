@@ -8,7 +8,7 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import pt.ipl.isel.leic.ps.androidclient.R
-import pt.ipl.isel.leic.ps.androidclient.data.source.model.Meal
+import pt.ipl.isel.leic.ps.androidclient.data.model.Meal
 
 // TODO: Create Cuisines
 class MealRecyclerViewHolder(view: ViewGroup, ctx: Context) : ARecyclerViewHolder<Meal>(view) {

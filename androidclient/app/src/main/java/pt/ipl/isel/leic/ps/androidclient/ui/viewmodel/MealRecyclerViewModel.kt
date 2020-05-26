@@ -3,9 +3,8 @@ package pt.ipl.isel.leic.ps.androidclient.ui.viewmodel
 import android.os.Parcel
 import android.os.Parcelable
 import androidx.lifecycle.LiveData
-import pt.ipl.isel.leic.ps.androidclient.NutrioApp
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.mealRepository
-import pt.ipl.isel.leic.ps.androidclient.data.source.model.Meal
+import pt.ipl.isel.leic.ps.androidclient.data.model.Meal
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler.COUNT
 
 class MealRecyclerViewModel() : ARecyclerViewModel<Meal>() {
@@ -26,8 +25,11 @@ class MealRecyclerViewModel() : ARecyclerViewModel<Meal>() {
         )
     }
 
+    fun addCustomMeal(meal: Meal) =
+        mealRepository.insertCustomMeal(meal)
+
     override fun fetchLiveData(): LiveData<List<Meal>> =
-        mealRepository.getAllSavedMeals()
+        mealRepository.getAllCustomMeals()
 
     override fun writeToParcel(dest: Parcel?, flags: Int) {
         TODO("Not yet implemented")

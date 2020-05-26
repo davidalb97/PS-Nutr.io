@@ -1,9 +1,10 @@
-package pt.ipl.isel.leic.ps.androidclient.data.source.mapper
+package pt.ipl.isel.leic.ps.androidclient.data.api.mapper
 
 import pt.ipl.isel.leic.ps.androidclient.data.source.dto.CuisineDto
-import pt.ipl.isel.leic.ps.androidclient.data.source.model.Cuisine
+import pt.ipl.isel.leic.ps.androidclient.data.model.Cuisine
 
-class CuisineMapper : IResponseMapper<CuisineDto, Cuisine> {
+class CuisineMapper :
+    IResponseMapper<CuisineDto, Cuisine> {
 
     override fun map(dto: CuisineDto): Cuisine =
         Cuisine(dto.name)

@@ -8,7 +8,7 @@ import android.widget.SearchView
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import pt.ipl.isel.leic.ps.androidclient.R
-import pt.ipl.isel.leic.ps.androidclient.data.source.model.Restaurant
+import pt.ipl.isel.leic.ps.androidclient.data.model.Restaurant
 import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.RestaurantRecyclerAdapter
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler.ARecyclerListFragment
 import pt.ipl.isel.leic.ps.androidclient.ui.listener.ScrollListener

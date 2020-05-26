@@ -1,6 +1,6 @@
 package pt.ipl.isel.leic.ps.androidclient.data.source.dto
 
-import pt.ipl.isel.leic.ps.androidclient.data.source.model.MealInfo
+import pt.ipl.isel.leic.ps.androidclient.data.model.MealInfo
 
 class MealDto(
     val identifier: String,

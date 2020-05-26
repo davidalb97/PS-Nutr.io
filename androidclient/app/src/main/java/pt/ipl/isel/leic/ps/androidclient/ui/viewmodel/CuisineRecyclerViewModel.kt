@@ -5,7 +5,7 @@ import android.os.Parcelable
 import androidx.lifecycle.LiveData
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.cuisineRepository
-import pt.ipl.isel.leic.ps.androidclient.data.source.model.Cuisine
+import pt.ipl.isel.leic.ps.androidclient.data.model.Cuisine
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler.COUNT
 
 class CuisineRecyclerViewModel() : ARecyclerViewModel<Cuisine>() {

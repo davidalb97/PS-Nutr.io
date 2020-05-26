@@ -5,7 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import pt.ipl.isel.leic.ps.androidclient.R
-import pt.ipl.isel.leic.ps.androidclient.data.source.model.Cuisine
+import pt.ipl.isel.leic.ps.androidclient.data.model.Cuisine
 
 class CuisineRecyclerViewHolder(view: ViewGroup, ctx: Context) :
     ARecyclerViewHolder<Cuisine>(view) {

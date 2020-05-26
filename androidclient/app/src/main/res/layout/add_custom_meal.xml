@@ -66,12 +66,12 @@
         </TextView>
 
         <EditText
-            android:id="@+id/glucose_objective"
+            android:id="@+id/meal_portion_quantity"
             android:layout_toEndOf="@id/meal_total_quantity_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:hint="@string/glucose_object_hint"
+            android:hint="@string/portion_quantity"
             android:layout_centerVertical="true">
         </EditText>
     </RelativeLayout>

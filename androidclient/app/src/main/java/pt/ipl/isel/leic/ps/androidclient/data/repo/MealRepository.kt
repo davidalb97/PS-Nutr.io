@@ -1,11 +1,10 @@
 package pt.ipl.isel.leic.ps.androidclient.data.repo
 
 import androidx.lifecycle.LiveData
-import pt.ipl.isel.leic.ps.androidclient.NutrioApp
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.roomDb
-import pt.ipl.isel.leic.ps.androidclient.data.source.endpoint.MealDataSource
-import pt.ipl.isel.leic.ps.androidclient.data.source.model.InsulinProfile
-import pt.ipl.isel.leic.ps.androidclient.data.source.model.Meal
+import pt.ipl.isel.leic.ps.androidclient.data.api.datasource.MealDataSource
+import pt.ipl.isel.leic.ps.androidclient.data.model.Meal
+import pt.ipl.isel.leic.ps.androidclient.data.util.AsyncWorker
 
 class MealRepository(private val dataSource: MealDataSource) {
 
@@ -25,7 +24,13 @@ class MealRepository(private val dataSource: MealDataSource) {
         )*/
     }
 
-    fun getAllSavedMeals(): LiveData<List<Meal>> {
+    fun getAllCustomMeals(): LiveData<List<Meal>> {
         return roomDb.mealDao().getAll()
+    }
+
+    fun insertCustomMeal(meal: Meal) {
+        AsyncWorker<Unit, Unit> {
+            roomDb.mealDao().insert(meal)
+        }.execute()
     }
 }

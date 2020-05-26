@@ -1,10 +1,8 @@
-package pt.ipl.isel.leic.ps.androidclient.data
+package pt.ipl.isel.leic.ps.androidclient.data.db
 
 import androidx.room.TypeConverter
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import pt.ipl.isel.leic.ps.androidclient.data.source.model.Ingredient
-import pt.ipl.isel.leic.ps.androidclient.data.source.model.Meal
-import pt.ipl.isel.leic.ps.androidclient.data.source.model.MealInfo
+import pt.ipl.isel.leic.ps.androidclient.data.model.MealInfo
 
 class DbConverters {
 

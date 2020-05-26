@@ -1,4 +1,4 @@
-package pt.ipl.isel.leic.ps.androidclient.data.source.model
+package pt.ipl.isel.leic.ps.androidclient.data.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

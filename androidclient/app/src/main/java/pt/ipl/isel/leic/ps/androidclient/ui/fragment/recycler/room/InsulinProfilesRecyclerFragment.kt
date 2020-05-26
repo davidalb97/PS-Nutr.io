@@ -9,13 +9,13 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import pt.ipl.isel.leic.ps.androidclient.R
-import pt.ipl.isel.leic.ps.androidclient.data.source.model.InsulinProfile
+import pt.ipl.isel.leic.ps.androidclient.data.db.dto.InsulinProfileDto
 import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.InsulinProfileRecyclerAdapter
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.InsulinProfilesVMProviderFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.InsulinProfilesRecyclerViewModel
 
 class InsulinProfilesRecyclerFragment :
-    ARoomRecyclerListFragment<InsulinProfile, InsulinProfilesRecyclerViewModel>() {
+    ARoomRecyclerListFragment<InsulinProfileDto, InsulinProfilesRecyclerViewModel>() {
 
     private val adapter: InsulinProfileRecyclerAdapter by lazy {
         InsulinProfileRecyclerAdapter(

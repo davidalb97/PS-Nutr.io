@@ -1,19 +1,17 @@
 package pt.ipl.isel.leic.ps.androidclient.ui.viewholder
 
 import android.annotation.SuppressLint
-import android.app.AlertDialog
 import android.content.Context
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import android.widget.Toast
 import pt.ipl.isel.leic.ps.androidclient.R
-import pt.ipl.isel.leic.ps.androidclient.data.source.model.InsulinProfile
+import pt.ipl.isel.leic.ps.androidclient.data.db.dto.InsulinProfileDto
 
 class InsulinProfileRecyclerViewHolder(
     view: ViewGroup,
     ctx: Context
-) : ADeletableRecyclerViewHolder<InsulinProfile>(view, ctx) {
+) : ADeletableRecyclerViewHolder<InsulinProfileDto>(view, ctx) {
 
     private val profileName: TextView =
         view.findViewById(R.id.insulin_profile_name)
@@ -29,7 +27,7 @@ class InsulinProfileRecyclerViewHolder(
         view.findViewById(R.id.profile_carbo_ratio_card)
 
 
-    override fun bindTo(item: InsulinProfile) {
+    override fun bindTo(item: InsulinProfileDto) {
         super.bindTo(item)
         setupTextFields()
         setupListeners()

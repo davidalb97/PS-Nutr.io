@@ -1,8 +1,8 @@
-package pt.ipl.isel.leic.ps.androidclient.data.dao
+package pt.ipl.isel.leic.ps.androidclient.data.db.dao
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import pt.ipl.isel.leic.ps.androidclient.data.source.model.Meal
+import pt.ipl.isel.leic.ps.androidclient.data.model.Meal
 
 @Dao
 interface MealDao {

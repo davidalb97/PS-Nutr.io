@@ -1,4 +1,4 @@
-package pt.ipl.isel.leic.ps.androidclient.data.source.endpoint
+package pt.ipl.isel.leic.ps.androidclient.data.api.datasource
 
 import pt.ipl.isel.leic.ps.androidclient.data.source.*
 

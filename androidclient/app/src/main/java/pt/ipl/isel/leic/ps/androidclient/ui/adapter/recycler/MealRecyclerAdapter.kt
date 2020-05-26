@@ -3,7 +3,7 @@ package pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler
 import android.content.Context
 import android.view.ViewGroup
 import pt.ipl.isel.leic.ps.androidclient.R
-import pt.ipl.isel.leic.ps.androidclient.data.source.model.Meal
+import pt.ipl.isel.leic.ps.androidclient.data.model.Meal
 import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.ARecyclerAdapter
 import pt.ipl.isel.leic.ps.androidclient.ui.viewholder.InsulinProfileRecyclerViewHolder
 import pt.ipl.isel.leic.ps.androidclient.ui.viewholder.MealRecyclerViewHolder

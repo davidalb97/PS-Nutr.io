@@ -1,11 +1,11 @@
-package pt.ipl.isel.leic.ps.androidclient.data.source.endpoint
+package pt.ipl.isel.leic.ps.androidclient.data.api.datasource
 
 import com.android.volley.VolleyError
 import pt.ipl.isel.leic.ps.androidclient.data.source.*
 import pt.ipl.isel.leic.ps.androidclient.data.source.dto.RestaurantDto
-import pt.ipl.isel.leic.ps.androidclient.data.source.mapper.RestaurantMapper
-import pt.ipl.isel.leic.ps.androidclient.data.source.mapper.RestaurantsMapper
-import pt.ipl.isel.leic.ps.androidclient.data.source.model.Restaurant
+import pt.ipl.isel.leic.ps.androidclient.data.api.mapper.RestaurantMapper
+import pt.ipl.isel.leic.ps.androidclient.data.api.mapper.RestaurantsMapper
+import pt.ipl.isel.leic.ps.androidclient.data.model.Restaurant
 
 const val LATITUDE_VAR = ":latitude"
 const val LONGITUDE_VAR = ":longitude"

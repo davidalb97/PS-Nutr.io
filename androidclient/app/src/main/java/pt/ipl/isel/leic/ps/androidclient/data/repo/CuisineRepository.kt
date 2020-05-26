@@ -1,7 +1,7 @@
 package pt.ipl.isel.leic.ps.androidclient.data.repo
 
-import pt.ipl.isel.leic.ps.androidclient.data.source.endpoint.CuisineDataSource
-import pt.ipl.isel.leic.ps.androidclient.data.source.model.Cuisine
+import pt.ipl.isel.leic.ps.androidclient.data.api.datasource.CuisineDataSource
+import pt.ipl.isel.leic.ps.androidclient.data.model.Cuisine
 
 class CuisineRepository(private val dataSource: CuisineDataSource) {
 
