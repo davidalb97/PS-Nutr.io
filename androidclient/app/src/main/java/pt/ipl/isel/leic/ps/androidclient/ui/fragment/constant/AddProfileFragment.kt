@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.insulinProfilesRepository
@@ -159,20 +158,20 @@ class AddProfileFragment : Fragment() {
         cb(isValid)
     }
 
-        /**
-         * Setups each time picker dialog saving the chosen values to a TextView
-         * so it can also display to the user
-         */
-        @SuppressLint("SetTextI18n")
-        private fun setupTimePickerDialog(textView: TextView, hour: Int, minute: Int)
-                : TimePickerDialog =
-            TimePickerDialog(
-                view?.context,
-                TimePickerDialog.OnTimeSetListener { timePicker: TimePicker, hour: Int, minute: Int ->
-                    textView.text = "$hour:$minute"
-                },
-                hour,
-                minute,
-                true
-            )
-    }
+    /**
+     * Setups each time picker dialog saving the chosen values to a TextView
+     * so it can also display to the user
+     */
+    @SuppressLint("SetTextI18n")
+    private fun setupTimePickerDialog(textView: TextView, hour: Int, minute: Int)
+            : TimePickerDialog =
+        TimePickerDialog(
+            view?.context,
+            TimePickerDialog.OnTimeSetListener { timePicker: TimePicker, hour: Int, minute: Int ->
+                textView.text = String.format("%02d:%02d", hour, minute)
+            },
+            hour,
+            minute,
+            true
+        )
+}
