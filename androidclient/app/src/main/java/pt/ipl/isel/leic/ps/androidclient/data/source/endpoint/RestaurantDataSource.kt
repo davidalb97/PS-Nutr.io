@@ -1,7 +1,10 @@
 package pt.ipl.isel.leic.ps.androidclient.data.source.endpoint
 
 import com.android.volley.VolleyError
-import pt.ipl.isel.leic.ps.androidclient.data.source.*
+import pt.ipl.isel.leic.ps.androidclient.data.source.Method
+import pt.ipl.isel.leic.ps.androidclient.data.source.RequestMapper
+import pt.ipl.isel.leic.ps.androidclient.data.source.URI_BASE
+import pt.ipl.isel.leic.ps.androidclient.data.source.UriBuilder
 import pt.ipl.isel.leic.ps.androidclient.data.source.dto.RestaurantDto
 import pt.ipl.isel.leic.ps.androidclient.data.source.mapper.RestaurantMapper
 import pt.ipl.isel.leic.ps.androidclient.data.source.mapper.RestaurantsMapper
@@ -34,9 +37,10 @@ val RESTAURANT_DTO = RestaurantDto::class.java
 
 
 class RestaurantDataSource(
-    private val requester: Requester
+    private val requestMapper: RequestMapper
 ) {
 
+    private val uriBuilder = UriBuilder()
     private val restaurantMapper =
         RestaurantMapper()
     private val restaurantsMapper =
@@ -57,9 +61,9 @@ class RestaurantDataSource(
         var uri =
             RESTAURANT_ID_URI
 
-        uri = requester.buildUri(uri, uriParameters)
+        uri = uriBuilder.buildUri(uri, uriParameters)
 
-        requester.httpServerRequest(
+        /*requestParser.asyncRequest(
             Method.GET,
             uri,
             RestaurantDto::class.java,
@@ -67,7 +71,7 @@ class RestaurantDataSource(
             success,
             error,
             null
-        )
+        )*/
     }
 
     fun getNearby(
@@ -80,9 +84,9 @@ class RestaurantDataSource(
         var uri =
             RESTAURANT_LOCATION
 
-        uri = requester.buildUri(uri, uriParameters)
+        uri = uriBuilder.buildUri(uri, uriParameters)
 
-        requester.httpServerRequest(
+        requestMapper.requestAndRespond(
             Method.GET,
             uri,
             Array<RestaurantDto>::class.java,

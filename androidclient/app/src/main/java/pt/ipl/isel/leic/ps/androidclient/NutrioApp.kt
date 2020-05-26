@@ -14,7 +14,7 @@ import pt.ipl.isel.leic.ps.androidclient.data.repo.CuisineRepository
 import pt.ipl.isel.leic.ps.androidclient.data.repo.InsulinProfileRepository
 import pt.ipl.isel.leic.ps.androidclient.data.repo.MealRepository
 import pt.ipl.isel.leic.ps.androidclient.data.repo.RestaurantRepository
-import pt.ipl.isel.leic.ps.androidclient.data.source.Requester
+import pt.ipl.isel.leic.ps.androidclient.data.source.RequestMapper
 import pt.ipl.isel.leic.ps.androidclient.data.source.endpoint.CuisineDataSource
 import pt.ipl.isel.leic.ps.androidclient.data.source.endpoint.MealDataSource
 import pt.ipl.isel.leic.ps.androidclient.data.source.endpoint.RestaurantDataSource
@@ -40,7 +40,7 @@ class NutrioApp : Application() {
          * Volley queue and json mapper initialization
          */
         private val requester by lazy {
-            Requester(
+            RequestMapper(
                 Volley.newRequestQueue(app),
                 jacksonObjectMapper()
                     .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)

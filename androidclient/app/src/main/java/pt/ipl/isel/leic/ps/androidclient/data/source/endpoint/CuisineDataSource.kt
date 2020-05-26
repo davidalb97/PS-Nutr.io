@@ -1,8 +1,6 @@
 package pt.ipl.isel.leic.ps.androidclient.data.source.endpoint
 
-import com.android.volley.VolleyError
 import pt.ipl.isel.leic.ps.androidclient.data.source.*
-import pt.ipl.isel.leic.ps.androidclient.data.source.model.Cuisine
 
 private const val CUISINE_ID_URI =
     "$URI_BASE/$CUISINES/:name"
@@ -10,7 +8,7 @@ private const val CUISINE_ID_URI =
 //private val CUISINES_DTO = CuisinesIDto::class.java
 
 class CuisineDataSource(
-    private val requester: Requester
+    private val requestMapper: RequestMapper
 ) {
 
     /**
