@@ -1,7 +1,8 @@
 package pt.ipl.isel.leic.ps.androidclient.data.api.datasource
 
-import pt.ipl.isel.leic.ps.androidclient.data.source.*
-import pt.ipl.isel.leic.ps.androidclient.data.model.Cuisine
+import pt.ipl.isel.leic.ps.androidclient.data.api.CUISINES
+import pt.ipl.isel.leic.ps.androidclient.data.api.RequestMapper
+import pt.ipl.isel.leic.ps.androidclient.data.api.URI_BASE
 
 private const val CUISINE_ID_URI =
     "$URI_BASE/$CUISINES/:name"

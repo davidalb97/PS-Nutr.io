@@ -6,16 +6,16 @@ import androidx.room.TypeConverters
 import pt.ipl.isel.leic.ps.androidclient.ROOM_DB_VERSION
 import pt.ipl.isel.leic.ps.androidclient.data.db.dao.IngredientDao
 import pt.ipl.isel.leic.ps.androidclient.data.db.dao.InsulinProfileDao
-import pt.ipl.isel.leic.ps.androidclient.data.db.dao.MealDao
+import pt.ipl.isel.leic.ps.androidclient.data.db.dao.CustomMealDao
 import pt.ipl.isel.leic.ps.androidclient.data.model.Ingredient
 import pt.ipl.isel.leic.ps.androidclient.data.db.dto.InsulinProfileDto
-import pt.ipl.isel.leic.ps.androidclient.data.model.Meal
+import pt.ipl.isel.leic.ps.androidclient.data.db.dto.CustomMealDto
 
 @Database(
     entities =
     [
         //Restaurant::class,
-        Meal::class,
+        CustomMealDto::class,
         Ingredient::class,
         //Cuisine::class,
         InsulinProfileDto::class
@@ -27,7 +27,7 @@ abstract class NutrioDb : RoomDatabase() {
 
     //abstract fun restaurantDao(): RestaurantDao
 
-    abstract fun mealDao(): MealDao
+    abstract fun customMealDao(): CustomMealDao
 
     abstract fun ingredientDao(): IngredientDao
 

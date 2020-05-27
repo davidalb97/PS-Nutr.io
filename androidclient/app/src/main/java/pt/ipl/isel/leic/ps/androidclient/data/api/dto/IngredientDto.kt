@@ -1,4 +1,4 @@
-package pt.ipl.isel.leic.ps.androidclient.data.source.dto
+package pt.ipl.isel.leic.ps.androidclient.data.api.dto
 
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealInfo
 

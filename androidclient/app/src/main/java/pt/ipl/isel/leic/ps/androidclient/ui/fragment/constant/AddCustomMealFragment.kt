@@ -10,21 +10,19 @@ import android.widget.EditText
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import pt.ipl.isel.leic.ps.androidclient.R
-import pt.ipl.isel.leic.ps.androidclient.data.model.Meal
-import pt.ipl.isel.leic.ps.androidclient.ui.provider.InsulinProfilesVMProviderFactory
-import pt.ipl.isel.leic.ps.androidclient.ui.provider.MealRecyclerVMProviderFactory
-import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.InsulinProfilesRecyclerViewModel
-import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.MealRecyclerViewModel
+import pt.ipl.isel.leic.ps.androidclient.data.db.dto.CustomMealDto
+import pt.ipl.isel.leic.ps.androidclient.ui.provider.CustomMealRecyclerVMProviderFactory
+import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.CustomMealRecyclerViewModel
 
 class AddCustomMealFragment : Fragment() {
 
-    lateinit var viewModel: MealRecyclerViewModel
+    lateinit var viewModel: CustomMealRecyclerViewModel
 
     private fun buildViewModel(savedInstanceState: Bundle?) {
         val rootActivity = this.requireActivity()
-        val factory = MealRecyclerVMProviderFactory(savedInstanceState, rootActivity.intent)
+        val factory = CustomMealRecyclerVMProviderFactory(savedInstanceState, rootActivity.intent)
         viewModel =
-            ViewModelProvider(rootActivity, factory)[MealRecyclerViewModel::class.java]
+            ViewModelProvider(rootActivity, factory)[CustomMealRecyclerViewModel::class.java]
     }
 
     override fun onCreateView(
@@ -44,26 +42,28 @@ class AddCustomMealFragment : Fragment() {
         val customMealPortion = view.findViewById<EditText>(R.id.meal_portion_quantity)
         val customMealGlucoseAmount = view.findViewById<EditText>(R.id.glucose_amount)
         val customMealCarbsAmount = view.findViewById<EditText>(R.id.carbs_amount)
-        val createButton = view.findViewById<Button>(R.id.create_profile)
+        val createButton = view.findViewById<Button>(R.id.create_custom_meal_button)
 
-        viewModel.updateListFromLiveData()
-
-        val anyFieldBlank =
-            listOf(
-                customMealName,
-                customMealPortion,
-                customMealGlucoseAmount,
-                customMealCarbsAmount
-            ).any { it.text.isBlank() }
 
         createButton.setOnClickListener {
+            val anyFieldBlank =
+                listOf(
+                    customMealName,
+                    customMealPortion,
+                    customMealGlucoseAmount,
+                    customMealCarbsAmount
+                ).any { it.text.isBlank() }
+
             if (!anyFieldBlank) {
 
-                /*val customMeal = Meal(
-
+                val customMeal = CustomMealDto(
+                    customMealName.text.toString(),
+                    customMealPortion.text.toString().toInt(),
+                    customMealGlucoseAmount.text.toString().toInt(),
+                    customMealCarbsAmount.text.toString().toInt()
                 )
 
-                viewModel.addCustomMeal(customMeal)*/
+                viewModel.addCustomMeal(customMeal)
             }
         }
     }

@@ -9,15 +9,15 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import pt.ipl.isel.leic.ps.androidclient.R
-import pt.ipl.isel.leic.ps.androidclient.data.model.Meal
-import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.MealRecyclerAdapter
-import pt.ipl.isel.leic.ps.androidclient.ui.provider.MealRecyclerVMProviderFactory
-import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.MealRecyclerViewModel
+import pt.ipl.isel.leic.ps.androidclient.data.db.dto.CustomMealDto
+import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.CustomMealRecyclerAdapter
+import pt.ipl.isel.leic.ps.androidclient.ui.provider.CustomMealRecyclerVMProviderFactory
+import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.CustomMealRecyclerViewModel
 
-class SavedMealRecyclerFragment : ARoomRecyclerListFragment<Meal, MealRecyclerViewModel>() {
+class CustomMealRecyclerFragment : ARoomRecyclerListFragment<CustomMealDto, CustomMealRecyclerViewModel>() {
 
-    private val adapter: MealRecyclerAdapter by lazy {
-        MealRecyclerAdapter(
+    private val adapter: CustomMealRecyclerAdapter by lazy {
+        CustomMealRecyclerAdapter(
             viewModel,
             this.requireContext()
         )
@@ -25,8 +25,8 @@ class SavedMealRecyclerFragment : ARoomRecyclerListFragment<Meal, MealRecyclerVi
 
     private fun buildViewModel(savedInstanceState: Bundle?) {
         val rootActivity = this.requireActivity()
-        val factory = MealRecyclerVMProviderFactory(savedInstanceState, rootActivity.intent)
-        viewModel = ViewModelProvider(rootActivity, factory)[MealRecyclerViewModel::class.java]
+        val factory = CustomMealRecyclerVMProviderFactory(savedInstanceState, rootActivity.intent)
+        viewModel = ViewModelProvider(rootActivity, factory)[CustomMealRecyclerViewModel::class.java]
     }
 
     override fun onCreateView(
@@ -35,7 +35,7 @@ class SavedMealRecyclerFragment : ARoomRecyclerListFragment<Meal, MealRecyclerVi
         savedInstanceState: Bundle?
     ): View? {
         buildViewModel(savedInstanceState)
-        return inflater.inflate(R.layout.saved_meals_list, container, false)
+        return inflater.inflate(R.layout.custom_meals_list, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

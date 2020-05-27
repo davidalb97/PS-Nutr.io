@@ -45,7 +45,7 @@ class AddProfileFragment : Fragment() {
         val glucoseObjective = view.findViewById<EditText>(R.id.glucose_objective)
         val glucoseAmount = view.findViewById<EditText>(R.id.glucose_amount)
         val carboAmount = view.findViewById<EditText>(R.id.carbo_amount)
-        val createButton = view.findViewById<Button>(R.id.create_profile)
+        val createButton = view.findViewById<Button>(R.id.create_custom_meal)
         val addStartTime = view.findViewById<Button>(R.id.start_time_label)
         val startTimeUser = view.findViewById<TextView>(R.id.start_time_user)
         val addEndTime = view.findViewById<Button>(R.id.end_time_label)

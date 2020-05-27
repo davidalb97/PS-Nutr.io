@@ -13,7 +13,7 @@
             android:id="@+id/itemList"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:listitem="@layout/meal_card">
+            tools:listitem="@layout/custom_meal_card">
         </androidx.recyclerview.widget.RecyclerView>
 
         <ImageButton

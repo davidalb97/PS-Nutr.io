@@ -1,4 +1,4 @@
-package pt.ipl.isel.leic.ps.androidclient.data.source
+package pt.ipl.isel.leic.ps.androidclient.data.api
 
 class UriBuilder {
 

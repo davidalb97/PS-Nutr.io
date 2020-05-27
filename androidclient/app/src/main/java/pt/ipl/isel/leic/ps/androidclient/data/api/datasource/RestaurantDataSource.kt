@@ -1,11 +1,11 @@
 package pt.ipl.isel.leic.ps.androidclient.data.api.datasource
 
 import com.android.volley.VolleyError
-import pt.ipl.isel.leic.ps.androidclient.data.source.Method
-import pt.ipl.isel.leic.ps.androidclient.data.source.RequestMapper
-import pt.ipl.isel.leic.ps.androidclient.data.source.URI_BASE
-import pt.ipl.isel.leic.ps.androidclient.data.source.UriBuilder
-import pt.ipl.isel.leic.ps.androidclient.data.source.dto.RestaurantDto
+import pt.ipl.isel.leic.ps.androidclient.data.api.Method
+import pt.ipl.isel.leic.ps.androidclient.data.api.RequestMapper
+import pt.ipl.isel.leic.ps.androidclient.data.api.URI_BASE
+import pt.ipl.isel.leic.ps.androidclient.data.api.UriBuilder
+import pt.ipl.isel.leic.ps.androidclient.data.api.dto.RestaurantDto
 import pt.ipl.isel.leic.ps.androidclient.data.api.mapper.RestaurantMapper
 import pt.ipl.isel.leic.ps.androidclient.data.api.mapper.RestaurantsMapper
 import pt.ipl.isel.leic.ps.androidclient.data.model.Restaurant
@@ -40,7 +40,8 @@ class RestaurantDataSource(
     private val requestMapper: RequestMapper
 ) {
 
-    private val uriBuilder = UriBuilder()
+    private val uriBuilder =
+        UriBuilder()
     private val restaurantMapper =
         RestaurantMapper()
     private val restaurantsMapper =

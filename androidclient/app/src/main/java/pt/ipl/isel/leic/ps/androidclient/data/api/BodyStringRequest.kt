@@ -1,4 +1,4 @@
-package pt.ipl.isel.leic.ps.androidclient.data.source
+package pt.ipl.isel.leic.ps.androidclient.data.api
 
 import com.android.volley.NetworkResponse
 import com.android.volley.ParseError

@@ -1,6 +1,6 @@
 package pt.ipl.isel.leic.ps.androidclient.data.api.mapper
 
-import pt.ipl.isel.leic.ps.androidclient.data.source.dto.MealDto
+import pt.ipl.isel.leic.ps.androidclient.data.api.dto.MealDto
 import pt.ipl.isel.leic.ps.androidclient.data.model.Meal
 
 class MealMapper :

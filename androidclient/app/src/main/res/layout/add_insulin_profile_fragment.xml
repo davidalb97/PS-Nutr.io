@@ -155,7 +155,7 @@
     </EditText>
 
     <Button
-        android:id="@+id/create_profile"
+        android:id="@+id/create_custom_meal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
