@@ -1,10 +1,10 @@
 SET client_min_messages = error;
 DROP TABLE IF EXISTS MealCuisine CASCADE;
 DROP TABLE IF EXISTS RestaurantCuisine CASCADE;
-DROP TABLE IF EXISTS RestaurantMealPortion CASCADE;
 DROP TABLE IF EXISTS MealIngredient CASCADE;
-DROP TABLE IF EXISTS Ingredient CASCADE;
 DROP TABLE IF EXISTS Portion CASCADE;
+DROP TABLE IF EXISTS RestaurantMeal CASCADE;
+DROP TABLE IF EXISTS Ingredient CASCADE;
 DROP TABLE IF EXISTS Meal CASCADE;
 DROP TABLE IF EXISTS ApiCuisine CASCADE;
 DROP TABLE IF EXISTS Cuisine CASCADE;
@@ -47,12 +47,14 @@ CREATE TABLE Api(
 
 CREATE TABLE Submission(
 	submission_id serial PRIMARY KEY,
-	submission_type varchar(10) CHECK(
+	submission_type varchar(15) CHECK(
 		submission_type = 'Restaurant' OR
 		submission_type = 'Portion' OR
 		submission_type = 'Meal' OR
 		submission_type = 'Ingredient' OR 
-		submission_type = 'Cuisine'
+		submission_type = 'Cuisine' OR
+		submission_type = 'ApiCuisine' OR
+		submission_type = 'RestaurantMeal'
 	),
 	submission_date timestamp with time zone default CURRENT_TIMESTAMP
 );
@@ -77,7 +79,8 @@ CREATE TABLE SubmissionContract(
 	submission_contract varchar(10) CHECK(
 		submission_contract = 'Votable' OR
 		submission_contract = 'Reportable' OR
-		submission_contract = 'API'
+		submission_contract = 'API' OR
+		submission_contract = 'Favorable'
 	),
 	PRIMARY KEY(submission_id, submission_contract)
 );
@@ -109,15 +112,15 @@ CREATE TABLE Restaurant(
 );
 
 CREATE TABLE Cuisine(
-	cuisine_id serial PRIMARY KEY,
+	submission_id integer PRIMARY KEY,
 	cuisine_name varchar(20) UNIQUE
 );
 
 CREATE TABLE ApiCuisine(
 	submission_id integer PRIMARY KEY,
-	cuisine_id integer,
+	cuisine_submission_id integer,
 	FOREIGN KEY(submission_id) REFERENCES Submission(submission_id),
-	FOREIGN KEY(cuisine_id) REFERENCES Cuisine(cuisine_id)
+	FOREIGN KEY(cuisine_submission_id) REFERENCES Cuisine(submission_id)
 );
 
 CREATE TABLE Meal(
@@ -126,10 +129,21 @@ CREATE TABLE Meal(
 	FOREIGN KEY(submission_id) REFERENCES Submission(submission_id)
 );
 
+CREATE TABLE RestaurantMeal(
+	submission_id integer PRIMARY KEY,
+	meal_submission_id integer,
+	restaurant_submission_id integer,
+	UNIQUE(meal_submission_id, restaurant_submission_id),
+	FOREIGN KEY(meal_submission_id) REFERENCES Meal(submission_id),
+	FOREIGN KEY(restaurant_submission_id) REFERENCES Restaurant(submission_id)
+);
+
 CREATE TABLE Portion(
-	submission_id integer PRIMARY KEY,	
+	submission_id integer PRIMARY KEY,
+	restaurant_meal_submission_id integer,
 	quantity integer,
-	FOREIGN KEY(submission_id) REFERENCES Submission(submission_id)	
+	FOREIGN KEY(submission_id) REFERENCES Submission(submission_id),
+	FOREIGN KEY(restaurant_meal_submission_id) REFERENCES RestaurantMeal(submission_id)
 );
 
 CREATE TABLE Ingredient(
@@ -147,30 +161,20 @@ CREATE TABLE MealIngredient(
 	FOREIGN KEY(ingredient_submission_id) REFERENCES Ingredient(submission_id)
 );
 
-CREATE TABLE RestaurantMealPortion(
-	meal_submission_id integer,
-	portion_submission_id integer,
-	restaurant_submission_id integer,	
-	PRIMARY KEY(meal_submission_id, portion_submission_id),
-	FOREIGN KEY(meal_submission_id) REFERENCES Meal(submission_id),
-	FOREIGN KEY(portion_submission_id) REFERENCES Portion(submission_id),
-	FOREIGN KEY(restaurant_submission_id) REFERENCES Restaurant(submission_id)
-);
-
 -- Add to doc
 CREATE TABLE RestaurantCuisine(
 	restaurant_submission_id integer,
-	cuisine_id integer,
-	PRIMARY KEY(restaurant_submission_id, cuisine_id),
+	cuisine_submission_id integer,
+	PRIMARY KEY(restaurant_submission_id, cuisine_submission_id),
 	FOREIGN KEY(restaurant_submission_id) REFERENCES Restaurant(submission_id),
-	FOREIGN KEY(cuisine_id) REFERENCES Cuisine(cuisine_id)
+	FOREIGN KEY(cuisine_submission_id) REFERENCES Cuisine(submission_id)
 );
 
 -- Add to doc
 CREATE TABLE MealCuisine(
 	meal_submission_id integer,
-	cuisine_id integer,
-	PRIMARY KEY(meal_submission_id, cuisine_id),
+	cuisine_submission_id integer,
+	PRIMARY KEY(meal_submission_id, cuisine_submission_id),
 	FOREIGN KEY(meal_submission_id) REFERENCES Meal(submission_id),
-	FOREIGN KEY(cuisine_id) REFERENCES Cuisine(cuisine_id)
+	FOREIGN KEY(cuisine_submission_id) REFERENCES Cuisine(submission_id)
 );
