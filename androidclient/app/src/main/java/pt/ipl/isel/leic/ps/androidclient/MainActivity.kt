@@ -35,6 +35,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.nav_about,
                 R.id.nav_tab_restaurants,
                 R.id.nav_tab_meals,
+                R.id.nav_tab_your_meals,
                 R.id.nav_calculator,
                 R.id.nav_history,
                 R.id.nav_restaurant_detail,

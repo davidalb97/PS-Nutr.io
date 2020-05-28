@@ -13,6 +13,7 @@ abstract class ARecyclerViewHolder<T : Any>(
     View.OnClickListener {
 
     lateinit var item: T
+    var needsAddButton: Boolean = false
 
     open fun bindTo(item: T) {
         this.item = item

@@ -17,6 +17,7 @@ abstract class ASlideScreenFragment(
     lateinit var tabPagerAdapter: TabAdapter
     lateinit var viewPager: ViewPager
     lateinit var tabLayout: TabLayout
+    var broadcastBundle: Bundle? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -30,10 +31,13 @@ abstract class ASlideScreenFragment(
         super.onViewCreated(view, savedInstanceState)
         tabPagerAdapter = TabAdapter(childFragmentManager)
 
+        tabPagerAdapter.addBroadcastBundle(broadcastBundle)
+
         // Add fragments and tab tiles to show in the tab layout
         tabs.forEach { tab ->
             tabPagerAdapter.addFragment(tab.key, tab.value)
         }
+
 
         viewPager = view.findViewById(R.id.viewPager)
         tabLayout = view.findViewById(R.id.tab)

@@ -14,19 +14,21 @@ import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.CustomMealRecyclerA
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.CustomMealRecyclerVMProviderFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.CustomMealRecyclerViewModel
 
-class CustomMealRecyclerFragment : ARoomRecyclerListFragment<CustomMealDto, CustomMealRecyclerViewModel>() {
+class CustomMealRecyclerFragment :
+    ARoomRecyclerListFragment<CustomMealDto, CustomMealRecyclerViewModel>() {
 
-    private val adapter: CustomMealRecyclerAdapter by lazy {
+    /*private val adapter: CustomMealRecyclerAdapter by lazy {
         CustomMealRecyclerAdapter(
             viewModel,
             this.requireContext()
         )
-    }
+    }*/
 
     private fun buildViewModel(savedInstanceState: Bundle?) {
         val rootActivity = this.requireActivity()
         val factory = CustomMealRecyclerVMProviderFactory(savedInstanceState, rootActivity.intent)
-        viewModel = ViewModelProvider(rootActivity, factory)[CustomMealRecyclerViewModel::class.java]
+        viewModel =
+            ViewModelProvider(rootActivity, factory)[CustomMealRecyclerViewModel::class.java]
     }
 
     override fun onCreateView(
@@ -40,11 +42,27 @@ class CustomMealRecyclerFragment : ARoomRecyclerListFragment<CustomMealDto, Cust
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val bundle: Bundle? = this.arguments
+
         noItemsLabel = view.findViewById(R.id.no_saved_meals)
         val addButton = view.findViewById<ImageButton>(R.id.add_custom_meal)
         initRecyclerList(view)
         setCallbackFunctions()
-        list.adapter = adapter
+        if (bundle != null && bundle.getBoolean("isAdd", true)) {
+            list.adapter =
+                CustomMealRecyclerAdapter(
+                    viewModel,
+                    this.requireContext(),
+                    true
+                )
+        } else {
+            list.adapter =
+                CustomMealRecyclerAdapter(
+                    viewModel,
+                    this.requireContext()
+                )
+        }
         list.layoutManager = LinearLayoutManager(this.requireContext())
         startObserver()
         viewModel.updateListFromLiveData()

@@ -11,7 +11,8 @@ import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.CustomMealRecyclerViewMode
 
 class CustomMealRecyclerAdapter(
     model: CustomMealRecyclerViewModel,
-    ctx: Context
+    ctx: Context,
+    private val isAdd: Boolean = false
 ) : ARecyclerAdapter<CustomMealDto, CustomMealRecyclerViewModel, CustomMealRecyclerViewHolder>(
     model,
     ctx
@@ -20,6 +21,7 @@ class CustomMealRecyclerAdapter(
     override fun onBindViewHolder(holder: CustomMealRecyclerViewHolder, position: Int) {
         val item: CustomMealDto = viewModel.items[position]
         holder.bindTo(item)
+        holder.needsAddButton = isAdd
         holder.onDelete = { viewModel.deleteItem(item) }
     }
 

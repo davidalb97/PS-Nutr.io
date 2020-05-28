@@ -164,7 +164,7 @@
                         android:layout_below="@+id/secondSection_image2"
                         android:layout_alignParentBottom="true"
                         android:layout_centerHorizontal="true"
-                        android:text="@string/saved"
+                        android:text="@string/tab_your_meals"
                         android:textColor="@android:color/background_dark"
                         android:textSize="18sp"
                         android:textStyle="bold">

@@ -10,11 +10,11 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="130dp"
+        android:layout_height="wrap_content"
         android:layout_margin="4dp">
 
         <TextView
-            android:id="@+id/saved_meal_name"
+            android:id="@+id/custom_meal_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
@@ -25,12 +25,39 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/saved_meal_cuisines"
+            android:id="@+id/custom_meal_quantity"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/saved_meal_name"
-            android:text="@string/item_cuisines"
+            android:layout_below="@+id/custom_meal_name"
+            android:text="@string/meal_quantity_card"
             android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/custom_meal_glucose_amount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/custom_meal_quantity"
+            android:text="@string/glucose_amount_card"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/custom_meal_carbs_amount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/custom_meal_glucose_amount"
+            android:text="@string/carbohydrates_amount_card"
+            android:textSize="15sp" />
+
+        <ImageButton
+            android:id="@+id/add_custom_meal_to_calc"
+            android:background="@drawable/material_button_shape"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:src="@drawable/ic_add"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:visibility="invisible">
+        </ImageButton>
 
     </RelativeLayout>
 
