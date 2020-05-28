@@ -4,47 +4,39 @@ import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.transaction.TransactionIsolationLevel
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType.*
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.PortionDao
-import pt.isel.ps.g06.httpserver.dataAccess.db.dao.RestaurantMealPortionDao
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.SubmissionDao
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.SubmissionSubmitterDao
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbPortionDto
-import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbRestaurantMealPortionDto
 
 private val isolationLevel = TransactionIsolationLevel.SERIALIZABLE
 private val portionDaoClass = PortionDao::class.java
 
 class PortionDbRepository(jdbi: Jdbi) : BaseDbRepo(jdbi) {
 
-    fun getPortionsFromMealId(mealSubmissionId: Int): List<DbPortionDto> {
-        return jdbi.inTransaction<List<DbPortionDto>, Exception>(isolationLevel) {
-            return@inTransaction it.attach(portionDaoClass).getById(mealSubmissionId)
+    fun getByRestaurantMealId(restaurantMealId: Int): DbPortionDto? {
+        return jdbi.inTransaction<DbPortionDto, Exception>(isolationLevel) {
+            return@inTransaction it.attach(portionDaoClass).getById(restaurantMealId)
         }
     }
 
     fun insert(
             submitterId: Int,
-            restaurantId: Int,
-            mealId: Int,
+            restaurantMealId: Int,
             quantity: Int
-    ): DbRestaurantMealPortionDto {
-        return jdbi.inTransaction<DbRestaurantMealPortionDto, Exception>(isolationLevel) {
+    ): DbPortionDto {
+        return jdbi.inTransaction<DbPortionDto, Exception>(isolationLevel) {
 
-            // Check if the mealId is from a Meal
-            requireSubmission(mealId, MEAL, isolationLevel)
-
-            // Check if the restaurantId is from a Restaurant
-            requireSubmission(restaurantId, RESTAURANT, isolationLevel)
+            // Check if the restaurant meal
+            requireSubmission(restaurantMealId, RESTAURANT_MEAL, isolationLevel)
 
             val submissionId = it.attach(SubmissionDao::class.java)
-                    .insert(PORTION.name)
+                    .insert(PORTION.toString())
                     .submission_id
 
             it.attach(SubmissionSubmitterDao::class.java).insert(submissionId, submitterId)
 
-            it.attach(portionDaoClass).insert(submissionId, quantity)
-
-            return@inTransaction it.attach(RestaurantMealPortionDao::class.java)
-                    .insert(mealId, submissionId, restaurantId)
+            return@inTransaction it.attach(portionDaoClass)
+                    .insert(submissionId, restaurantMealId, quantity)
         }
     }
 
@@ -78,7 +70,7 @@ class PortionDbRepository(jdbi: Jdbi) : BaseDbRepo(jdbi) {
             // Check if the submitter is the submission owner
             requireSubmissionSubmitter(submissionId, submitterId, isolationLevel)
 
-            it.attach(portionDaoClass).update(submissionId, quantity)
+            it.attach(portionDaoClass).deleteById(submissionId)
         }
     }
 }

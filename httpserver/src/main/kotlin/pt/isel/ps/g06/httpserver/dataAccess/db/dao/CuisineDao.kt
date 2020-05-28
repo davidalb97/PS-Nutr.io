@@ -34,7 +34,7 @@ interface CuisineDao {
     companion object {
         const val table = "Cuisine"
         const val name = "cuisine_name"
-        const val id = "cuisine_id"
+        const val id = "submission_id"
     }
 
     @SqlQuery("SELECT * FROM $table")

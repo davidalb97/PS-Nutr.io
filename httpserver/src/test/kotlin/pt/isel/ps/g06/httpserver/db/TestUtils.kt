@@ -150,10 +150,10 @@ fun getTestCuisinesByMealId(handle: Handle, submissionId: Int, testApi: TestFood
             .map { cuisineDto ->
                 val cuisineSubmissionIds =
                         handle.attach(ApiCuisineDao::class.java)
-                                .getAllByCuisineId(cuisineDto.cuisine_id)
+                                .getAllByCuisineId(cuisineDto.submission_id)
                                 .map { it.submission_id }
                 TestCuisine(
-                        cuisineDto.cuisine_id,
+                        cuisineDto.submission_id,
                         cuisineDto.cuisine_name,
                         testApi,
                         //Api submissions from cuisine ids

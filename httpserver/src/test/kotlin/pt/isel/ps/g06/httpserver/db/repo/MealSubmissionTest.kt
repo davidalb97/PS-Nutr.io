@@ -1,7 +1,6 @@
 package pt.isel.ps.g06.httpserver.db.repo
 
 import org.jdbi.v3.core.Jdbi
-import org.jdbi.v3.core.transaction.TransactionIsolationLevel
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.MethodOrderer
 import org.junit.jupiter.api.Test
@@ -11,8 +10,6 @@ import org.springframework.boot.test.context.SpringBootTest
 import pt.isel.ps.g06.httpserver.dataAccess.api.food.FoodApiType
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionContractType.*
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType
-import pt.isel.ps.g06.httpserver.dataAccess.db.dao.SubmissionDao
-import pt.isel.ps.g06.httpserver.dataAccess.db.mapper.SubmissionMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.MealDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.model.Ingredient
 import pt.isel.ps.g06.httpserver.db.Constants
@@ -104,7 +101,7 @@ class MealSubmissionTest {
 
             //Assert MealCuisine insertions
             asserts.assertMealCuisines(it,
-                    expectedCuisineIds = expectedCuisines.map { it.cuisine_id },
+                    expectedCuisineIds = expectedCuisines.map { it.submission_id },
                     resultSubmissionId = insertedMealDto.submission_id
             )
             asserts.assertMealCuisinesInsertCount(it, expectedCuisines.size)
@@ -189,7 +186,7 @@ class MealSubmissionTest {
 
             //Assert MealCuisine insertions
             asserts.assertMealCuisines(it,
-                    expectedCuisineIds = expectedCuisines.map { it.cuisine_id },
+                    expectedCuisineIds = expectedCuisines.map { it.submission_id },
                     resultSubmissionId = insertedMealDto.submission_id
             )
             asserts.assertMealCuisinesInsertCount(it, expectedCuisines.size)
@@ -294,7 +291,7 @@ class MealSubmissionTest {
 
             //Assert MealCuisine insertions
             asserts.assertMealCuisines(it,
-                    expectedCuisineIds = expectedCuisines.map { it.cuisine_id },
+                    expectedCuisineIds = expectedCuisines.map { it.submission_id },
                     resultSubmissionId = insertedMealDto.submission_id
             )
             asserts.assertMealCuisinesInsertCount(it, expectedCuisines.size)
@@ -374,7 +371,7 @@ class MealSubmissionTest {
             val expectedIngredientIds = expectedIngredients.map { it.submissionId }
             val newCuisineCount = 3
             val newCuisines = const.cuisineDtos.filter { cuisineDto ->
-                existingMeal.cuisines.none { it.cuisineId == cuisineDto.cuisine_id }
+                existingMeal.cuisines.none { it.cuisineId == cuisineDto.submission_id }
             }.take(newCuisineCount)
             val expectedCuisines = existingMeal.cuisines.map(TestCuisine::toCuisineDto)
                     .union(newCuisines).toList()
@@ -441,7 +438,7 @@ class MealSubmissionTest {
 
             //Assert MealCuisine insertions
             asserts.assertMealCuisines(it,
-                    expectedCuisineIds = expectedCuisines.map { it.cuisine_id },
+                    expectedCuisineIds = expectedCuisines.map { it.submission_id },
                     resultSubmissionId = existingMeal.submissionId
             )
             asserts.assertMealCuisinesInsertCount(it, newCuisineCount)
@@ -595,7 +592,7 @@ class MealSubmissionTest {
             val expectedName = "TestNewMealName"
             val newCuisineCount = 3
             val newCuisines = const.cuisineDtos.filter { cuisineDto ->
-                existingMeal.cuisines.none { it.cuisineId == cuisineDto.cuisine_id }
+                existingMeal.cuisines.none { it.cuisineId == cuisineDto.submission_id }
             }.take(newCuisineCount)
             val expectedCuisines = existingMeal.cuisines.map(TestCuisine::toCuisineDto)
                     .union(newCuisines).toList()
@@ -661,7 +658,7 @@ class MealSubmissionTest {
 
             //Assert MealCuisine insertions
             asserts.assertMealCuisines(it,
-                    expectedCuisineIds = expectedCuisines.map { it.cuisine_id },
+                    expectedCuisineIds = expectedCuisines.map { it.submission_id },
                     resultSubmissionId = existingMeal.submissionId
             )
             asserts.assertMealCuisinesInsertCount(it, newCuisineCount)

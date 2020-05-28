@@ -152,7 +152,7 @@ class RepoAsserts(val const: Constants) {
     ) {
         val resultCuisines = handle.attach(MealCuisineDao::class.java)
                 .getAllByMealId(resultSubmissionId)
-                .map { it.cuisine_id }
+                .map { it.cuisine_submission_id }
                 .sorted()
         if(isDeleted) {
             Assertions.assertTrue(resultCuisines.isEmpty())

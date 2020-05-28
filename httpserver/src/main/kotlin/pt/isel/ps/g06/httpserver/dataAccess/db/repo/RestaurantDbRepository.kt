@@ -10,7 +10,6 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType.RESTAURANT
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.*
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.*
 import pt.isel.ps.g06.httpserver.dataAccess.model.RestaurantApiId
-import pt.isel.ps.g06.httpserver.exception.InvalidInputDomain
 import pt.isel.ps.g06.httpserver.exception.InvalidInputException
 import pt.isel.ps.g06.httpserver.springConfig.dto.DbEditableDto
 
@@ -100,14 +99,14 @@ class RestaurantDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo
             // Check if the submission is modifiable
             requireEditable(submissionId, config.`edit-timeout-minutes`!!, isolationLevel)
 
-            // Delete portions and meals associated to this restaurant
-            it.attach(RestaurantMealPortionDao::class.java).deleteAllByRestaurantId(submissionId)
+            // Delete RestaurantMeal portions
+            deleteRestaurantPortions(it, submissionId)
+
+            // Delete RestaurantMeals from this restaurant
+            it.attach(RestaurantMealDao::class.java).deleteAllByRestaurantId(submissionId)
 
             // Delete all RestaurantCuisine associations
             it.attach(RestaurantCuisineDao::class.java).deleteAllByRestaurantId(submissionId)
-
-            // Delete all restaurant portions
-            it.attach(RestaurantMealPortionDao::class.java).deleteAllByRestaurantId(submissionId)
 
             // Delete all submission contracts
             it.attach(SubmissionContractDao::class.java).deleteAllById(submissionId)
@@ -166,7 +165,7 @@ class RestaurantDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo
 
     private fun insertRestaurantCuisines(it: Handle, submissionId: Int, cuisineNames: Collection<String>) {
         val cuisineIds = getCuisinesByNames(cuisineNames, isolationLevel)
-                .map { it.cuisine_id }
+                .map { it.submission_id }
         it.attach(RestaurantCuisineDao::class.java)
                 .insertAll(cuisineIds.map { DbRestaurantCuisineDto(submissionId, it) })
     }
@@ -190,12 +189,12 @@ class RestaurantDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo
 
         //Get existing cuisines
         val existingMealCuisineIds = restaurantCuisineDao.getByRestaurantId(submissionId)
-                .map { it.cuisine_id }
+                .map { it.cuisine_submission_id }
                 .toMutableList()
 
         //Delete cuisines
         val deletedCuisineIds = existingMealCuisineIds
-                .filter { existing -> cuisineDtos.none { it.cuisine_id == existing } }
+                .filter { existing -> cuisineDtos.none { it.submission_id == existing } }
         if (deletedCuisineIds.isNotEmpty()) {
             restaurantCuisineDao.deleteAllByRestaurantIdAndCuisineIds(submissionId, deletedCuisineIds)
         }
@@ -203,11 +202,20 @@ class RestaurantDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo
         //Insert new cuisines
         existingMealCuisineIds.removeAll(deletedCuisineIds)
         val newCuisineIds = cuisineDtos.filter { cuisine ->
-            existingMealCuisineIds.none { it == cuisine.cuisine_id }
-        }.map { it.cuisine_id }
+            existingMealCuisineIds.none { it == cuisine.submission_id }
+        }.map { it.submission_id }
 
         if (newCuisineIds.isNotEmpty()) {
             restaurantCuisineDao.insertAll(newCuisineIds.map { DbRestaurantCuisineDto(submissionId, it) })
         }
+    }
+
+    private fun deleteRestaurantPortions(handle: Handle, submissionId: Int) {
+        //Get all restaurant meal ids
+        val restaurantMealIds = handle.attach(RestaurantMealDao::class.java)
+                .getAllByRestaurantId(submissionId)
+                .map { it.submission_id }
+        //Delete all portions with the restaurant meal ids
+        handle.attach(PortionDao::class.java).deleteAllByRestaurantMealIds(restaurantMealIds)
     }
 }
