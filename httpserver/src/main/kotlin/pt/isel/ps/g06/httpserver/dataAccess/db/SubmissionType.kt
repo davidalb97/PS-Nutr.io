@@ -5,7 +5,9 @@ enum class SubmissionType(private val type: String) {
     PORTION("Portion"),
     MEAL("Meal"),
     INGREDIENT("Ingredient"),
-    CUISINE("Cuisine");
+    CUISINE("Cuisine"),
+    API_CUISINE("ApiCuisine"),
+    RESTAURANT_MEAL("RestaurantMeal");
 
     override fun toString(): String = this.type
 }
