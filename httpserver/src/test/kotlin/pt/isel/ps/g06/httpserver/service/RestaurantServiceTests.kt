@@ -1,15 +1,177 @@
 package pt.isel.ps.g06.httpserver.service
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import org.jdbi.v3.core.Jdbi
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.*
-import org.springframework.util.Assert
-import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.ZomatoRestaurantApi
-import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.mapper.RestaurantApiMapper
+import org.springframework.beans.factory.annotation.Autowired
+import pt.isel.ps.g06.httpserver.anyNonNull
+import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.HereRestaurantApi
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.RestaurantApiType
+import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.ZomatoRestaurantApi
+import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.dto.ZomatoRestaurantDto
+import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.dto.here.HereResultItem
+import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.mapper.RestaurantApiMapper
+import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.restaurant.RestaurantResponseMapper
+import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbRestaurantDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.RestaurantDbRepository
+import pt.isel.ps.g06.httpserver.db.Constants
+import pt.isel.ps.g06.httpserver.db.RepoAsserts
+import pt.isel.ps.g06.httpserver.model.Restaurant
+import java.util.concurrent.CompletableFuture
 
 class RestaurantServiceTests {
+
+    @Autowired
+    lateinit var jdbi: Jdbi
+
+    @Autowired
+    lateinit var restaurantDbRepo: RestaurantDbRepository
+
+    @Autowired
+    lateinit var asserts: RepoAsserts
+
+    @Autowired
+    lateinit var const: Constants
+
+    @Autowired
+    lateinit var objMapper: ObjectMapper
+
+    /**
+     * Mocks a RestaurantService with supplied mapped results
+     */
+    private fun mockRestaurantSearchService(
+            expectedDbRestaurants: List<Restaurant> = emptyList(),
+            expectedZomatoApiRestaurants: List<Restaurant> = emptyList(),
+            expectedHereApiRestaurants: List<Restaurant> = emptyList(),
+            callCount: Int
+    ): RestaurantService {
+        val callList = (1..callCount)
+        val totalExpectedDbRestaurants = callList.flatMap { expectedDbRestaurants }
+        val totalExpectedZomatoApiRestaurants = callList.flatMap { expectedZomatoApiRestaurants }
+        val totalExpectedHereApiRestaurants = callList.flatMap { expectedHereApiRestaurants }
+
+        val db = mock(RestaurantDbRepository::class.java)
+        `when`(db.getAllByCoordinates(anyFloat(), anyFloat(), anyInt()))
+                .thenReturn((1..expectedDbRestaurants.size).map { mock(DbRestaurantDto::class.java) })
+
+        val zomatoApi = mock(ZomatoRestaurantApi::class.java)
+        `when`(zomatoApi.searchNearbyRestaurants(anyFloat(), anyFloat(), anyInt(), anyString()))
+                .thenReturn(CompletableFuture.completedFuture((1..expectedZomatoApiRestaurants.size).map {
+                    mock(ZomatoRestaurantDto::class.java)
+                }))
+
+        val hereApi = mock(HereRestaurantApi::class.java)
+        `when`(hereApi.searchNearbyRestaurants(anyFloat(), anyFloat(), anyInt(), anyString()))
+                .thenReturn(CompletableFuture.completedFuture((1..expectedHereApiRestaurants.size).map {
+                    mock(HereResultItem::class.java)
+                }))
+
+        //Mock restaurant mapper that maps each dto type
+        val restaurantMapper = mock(RestaurantResponseMapper::class.java)
+        //Db dto mapper
+        `when`(restaurantMapper.mapTo(anyNonNull<DbRestaurantDto>()))
+                .thenReturn(totalExpectedDbRestaurants[0], *totalExpectedDbRestaurants.drop(1).toTypedArray())
+        //Api Zomato dto mapper
+        `when`(restaurantMapper.mapTo(anyNonNull<ZomatoRestaurantDto>()))
+                .thenReturn(totalExpectedZomatoApiRestaurants[0], *totalExpectedZomatoApiRestaurants.drop(1).toTypedArray())
+        //Api Here dto mapper
+        `when`(restaurantMapper.mapTo(anyNonNull<HereResultItem>()))
+                .thenReturn(totalExpectedHereApiRestaurants[0], *totalExpectedHereApiRestaurants.drop(1).toTypedArray())
+
+        //Mock api repo
+        val restaurantApiRepo = RestaurantApiMapper(zomatoApi, hereApi)
+
+        return RestaurantService(db, restaurantApiRepo, restaurantMapper)
+    }
+
+    /**
+     * Returns a list of mapped Restaurants to be used on a service
+     */
+    private fun mockMappedRestaurant(from: Int, to: Int, namePrefix: String): List<Restaurant> {
+        return (from..to).map {
+            Restaurant(
+                    "Test-$it",
+                    "$namePrefix-Test-$it",
+                    0.0F + it,
+                    0.0F + it,
+                    lazyOf(emptyList()),
+                    lazyOf(emptyList())
+            )
+        }
+    }
+
+    @Test
+    fun `Should return existing db restaurants ignoring api restaurants`() {
+        val expectedDbRestaurants = mockMappedRestaurant(1, 3, "Db")
+        val expectedZomatoApiRestaurants = mockMappedRestaurant(1, 3, RestaurantApiType.Zomato.toString())
+        val expectedHereApiRestaurants = mockMappedRestaurant(1, 3, RestaurantApiType.Here.toString())
+        val service = mockRestaurantSearchService(
+                expectedDbRestaurants,
+                expectedZomatoApiRestaurants,
+                expectedHereApiRestaurants,
+                2
+        )
+        //Db / Zomato test
+        var restaurants = service.getNearbyRestaurants(
+                anyFloat(),
+                anyFloat(),
+                anyString(),
+                anyInt(),
+                RestaurantApiType.Zomato.toString()
+        )
+        //Should only contain db restaurants
+        Assertions.assertTrue(restaurants.containsAll(expectedDbRestaurants))
+        Assertions.assertTrue(restaurants.none { expectedZomatoApiRestaurants.contains(it) })
+
+        restaurants = service.getNearbyRestaurants(
+                anyFloat(),
+                anyFloat(),
+                anyString(),
+                anyInt(),
+                RestaurantApiType.Here.toString()
+        )
+        //Should only contain db restaurants
+        Assertions.assertTrue(restaurants.containsAll(expectedDbRestaurants))
+        Assertions.assertTrue(restaurants.none { expectedHereApiRestaurants.contains(it) })
+    }
+
+    @Test
+    fun `Should return existing db restaurants and new api restaurants`() {
+        val expectedDbRestaurants = mockMappedRestaurant(1, 3, "Db")
+        val expectedZomatoApiRestaurants = mockMappedRestaurant(4, 6, RestaurantApiType.Zomato.toString())
+        val expectedHereApiRestaurants = mockMappedRestaurant(4, 6, RestaurantApiType.Here.toString())
+        val service = mockRestaurantSearchService(
+                expectedDbRestaurants,
+                expectedZomatoApiRestaurants,
+                expectedHereApiRestaurants,
+                2
+        )
+        //Db / Zomato test
+        var restaurants = service.getNearbyRestaurants(
+                anyFloat(),
+                anyFloat(),
+                anyString(),
+                anyInt(),
+                RestaurantApiType.Zomato.toString()
+        )
+        //Should only contain db restaurants
+        Assertions.assertTrue(restaurants.containsAll(expectedDbRestaurants))
+        Assertions.assertTrue(restaurants.containsAll(expectedZomatoApiRestaurants))
+
+        restaurants = service.getNearbyRestaurants(
+                anyFloat(),
+                anyFloat(),
+                anyString(),
+                anyInt(),
+                RestaurantApiType.Here.toString()
+        )
+        //Should only contain db restaurants
+        Assertions.assertTrue(restaurants.containsAll(expectedDbRestaurants))
+        Assertions.assertTrue(restaurants.containsAll(expectedHereApiRestaurants))
+    }
+
     @Test
     fun shouldReturnEmptySetWhenCoordinatesAreNull() {
         /*
