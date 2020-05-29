@@ -10,10 +10,10 @@ import androidx.recyclerview.widget.RecyclerView
 abstract class ARecyclerViewHolder<T : Any>(
     val view: ViewGroup
 ) : RecyclerView.ViewHolder(view),
-    View.OnClickListener {
+    View.OnClickListener,
+    View.OnLongClickListener {
 
     lateinit var item: T
-    var needsAddButton: Boolean = false
 
     open fun bindTo(item: T) {
         this.item = item

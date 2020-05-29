@@ -32,4 +32,8 @@ class MealRecyclerViewHolder(view: ViewGroup, ctx: Context) : ARecyclerViewHolde
     override fun onClick(v: View?) {
         TODO("Not yet implemented")
     }
+
+    override fun onLongClick(v: View?): Boolean {
+        TODO("Not yet implemented")
+    }
 }

@@ -53,11 +53,25 @@
             android:background="@drawable/material_button_shape"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:src="@drawable/ic_add"
+            android:src="@drawable/ic_calculate"
+            android:layout_marginEnd="10dp"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:visibility="invisible">
         </ImageButton>
+
+        <ImageButton
+            android:id="@+id/delete_item_button"
+            android:background="@drawable/material_bin_button_background"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:src="@drawable/ic_delete"
+            android:layout_marginEnd="10dp"
+            android:layout_toStartOf="@+id/add_custom_meal_to_calc"
+            android:layout_centerVertical="true"
+            android:visibility="invisible">
+        </ImageButton>
+
 
     </RelativeLayout>
 

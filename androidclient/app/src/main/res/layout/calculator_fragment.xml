@@ -26,7 +26,7 @@
                 </TextView>
 
                 <ImageButton
-                    android:id="@+id/insulin_add_button"
+                    android:id="@+id/meal_add_button"
                     android:background="@drawable/material_button_shape"
                     android:layout_width="60dp"
                     android:layout_height="60dp"

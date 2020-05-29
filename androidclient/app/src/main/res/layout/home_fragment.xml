@@ -211,7 +211,7 @@
                         android:id="@+id/thirdSection_image1"
                         android:layout_width="130dp"
                         android:layout_height="130dp"
-                        android:src="@drawable/ic_calculator">
+                        android:src="@drawable/ic_calculate">
                     </ImageView>
 
                     <TextView

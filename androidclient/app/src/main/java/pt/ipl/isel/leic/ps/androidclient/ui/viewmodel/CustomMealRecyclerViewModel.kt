@@ -7,6 +7,7 @@ import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.mealRepository
 import pt.ipl.isel.leic.ps.androidclient.data.db.dto.CustomMealDto
 
 class CustomMealRecyclerViewModel() : ARecyclerViewModel<CustomMealDto>() {
+
     constructor(parcel: Parcel) : this() {
     }
 

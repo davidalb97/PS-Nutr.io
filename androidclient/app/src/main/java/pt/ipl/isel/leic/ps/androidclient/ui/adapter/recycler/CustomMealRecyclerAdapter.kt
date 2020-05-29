@@ -4,15 +4,13 @@ import android.content.Context
 import android.view.ViewGroup
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.db.dto.CustomMealDto
-import pt.ipl.isel.leic.ps.androidclient.data.db.dto.InsulinProfileDto
 import pt.ipl.isel.leic.ps.androidclient.ui.viewholder.CustomMealRecyclerViewHolder
-import pt.ipl.isel.leic.ps.androidclient.ui.viewholder.InsulinProfileRecyclerViewHolder
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.CustomMealRecyclerViewModel
 
 class CustomMealRecyclerAdapter(
     model: CustomMealRecyclerViewModel,
     ctx: Context,
-    private val isAdd: Boolean = false
+    private val isAddable: Boolean = false
 ) : ARecyclerAdapter<CustomMealDto, CustomMealRecyclerViewModel, CustomMealRecyclerViewHolder>(
     model,
     ctx
@@ -21,8 +19,7 @@ class CustomMealRecyclerAdapter(
     override fun onBindViewHolder(holder: CustomMealRecyclerViewHolder, position: Int) {
         val item: CustomMealDto = viewModel.items[position]
         holder.bindTo(item)
-        holder.needsAddButton = isAdd
-        holder.onDelete = { viewModel.deleteItem(item) }
+        //holder.onDelete = { viewModel.deleteItem(item) }
     }
 
     override fun getItemViewId(): Int = R.layout.custom_meal_card

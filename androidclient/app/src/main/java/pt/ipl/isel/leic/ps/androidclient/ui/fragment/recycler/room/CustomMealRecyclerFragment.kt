@@ -14,15 +14,15 @@ import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.CustomMealRecyclerA
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.CustomMealRecyclerVMProviderFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.CustomMealRecyclerViewModel
 
-class CustomMealRecyclerFragment :
+class CustomMealRecyclerFragment() :
     ARoomRecyclerListFragment<CustomMealDto, CustomMealRecyclerViewModel>() {
 
-    /*private val adapter: CustomMealRecyclerAdapter by lazy {
+    private val adapter: CustomMealRecyclerAdapter by lazy {
         CustomMealRecyclerAdapter(
             viewModel,
             this.requireContext()
         )
-    }*/
+    }
 
     private fun buildViewModel(savedInstanceState: Bundle?) {
         val rootActivity = this.requireActivity()
@@ -49,20 +49,7 @@ class CustomMealRecyclerFragment :
         val addButton = view.findViewById<ImageButton>(R.id.add_custom_meal)
         initRecyclerList(view)
         setCallbackFunctions()
-        if (bundle != null && bundle.getBoolean("isAdd", true)) {
-            list.adapter =
-                CustomMealRecyclerAdapter(
-                    viewModel,
-                    this.requireContext(),
-                    true
-                )
-        } else {
-            list.adapter =
-                CustomMealRecyclerAdapter(
-                    viewModel,
-                    this.requireContext()
-                )
-        }
+        list.adapter = adapter
         list.layoutManager = LinearLayoutManager(this.requireContext())
         startObserver()
         viewModel.updateListFromLiveData()

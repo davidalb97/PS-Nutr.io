@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ImageButton xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/bin_button"
+    android:layout_width="60dp"
+    android:layout_height="60dp"
+    android:background="@drawable/material_bin_button_background"
+    android:src="@drawable/ic_delete">
+</ImageButton>

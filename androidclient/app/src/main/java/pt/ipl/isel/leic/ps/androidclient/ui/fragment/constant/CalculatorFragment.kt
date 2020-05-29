@@ -51,12 +51,10 @@ class CalculatorFragment : Fragment() {
             carboRatio = it.carbohydrate_amount
         }
 
-        val addButton = view.findViewById<ImageButton>(R.id.insulin_add_button)
+        val addButton = view.findViewById<ImageButton>(R.id.meal_add_button)
 
         addButton.setOnClickListener {
-            val bundle = Bundle()
-            bundle.putBoolean("isAdd", true)
-            view.findNavController().navigate(R.id.nav_add_meal_to_calculator, bundle)
+            view.findNavController().navigate(R.id.nav_add_meal_to_calculator)
         }
 
     }

@@ -21,4 +21,8 @@ class CuisineRecyclerViewHolder(view: ViewGroup, ctx: Context) :
         TODO("Not yet implemented")
     }
 
+    override fun onLongClick(v: View?): Boolean {
+        TODO("Not yet implemented")
+    }
+
 }
