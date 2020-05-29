@@ -5,13 +5,17 @@ import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.transaction.TransactionIsolationLevel
 import org.springframework.stereotype.Repository
 import pt.isel.ps.g06.httpserver.dataAccess.api.food.FoodApiType
-import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionContractType.*
+import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionContractType.API
+import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionContractType.FAVORABLE
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType.INGREDIENT
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType.MEAL
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmitterType
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.*
-import pt.isel.ps.g06.httpserver.dataAccess.db.dto.*
+import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbApiSubmissionDto
+import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbMealCuisineDto
+import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbMealDto
 import pt.isel.ps.g06.httpserver.dataAccess.model.Ingredient
+import pt.isel.ps.g06.httpserver.exception.InvalidInputDomain
 import pt.isel.ps.g06.httpserver.exception.InvalidInputException
 import pt.isel.ps.g06.httpserver.springConfig.dto.DbEditableDto
 
@@ -73,17 +77,20 @@ class MealDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo(jdbi)
                     .insert(MEAL.toString())
                     .submission_id
 
-            //Insert contracts (VOTABLE, REPORTABLE and API if there is an apiId)
+            //Insert contracts (FAVORABLE and API if there is an apiId)
             it.attach(SubmissionContractDao::class.java)
-                    .insertAll(
-                            mutableListOf(VOTABLE, REPORTABLE)
-                                    .also { if (apiId != null) it.add(API) }
-                                    .map { SubmissionContractParam(mealSubmissionId, it.toString()) }
+                    .insertAll(mutableListOf(FAVORABLE, API)
+                            .map { SubmissionContractParam(mealSubmissionId, it.toString()) }
                     )
 
-            //Insert SubmissionSubmitter associations
-            it.attach(SubmissionSubmitterDao::class.java)
-                    .insert(mealSubmissionId, submitterId)
+            //Get API submitter id
+            val apiSubmitterId = it.attach(ApiDao::class.java)
+                    .getByName(foodApi.toString())!!.submitter_id
+
+            //Insert SubmissionSubmitter associations for user and Api
+            val submissionSubmitterDao = it.attach(SubmissionSubmitterDao::class.java)
+            submissionSubmitterDao.insert(mealSubmissionId, submitterId)
+            submissionSubmitterDao.insert(mealSubmissionId, apiSubmitterId)
 
             //Insert Meal
             val mealDto = it.attach(mealDaoClass)
@@ -92,19 +99,12 @@ class MealDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo(jdbi)
             //Insert all MealCuisine associations
             insertMealCuisines(it, mealSubmissionId, cuisineNames)
 
-            //Get API submitter id
-            val apiSubmitterId = it.attach(ApiDao::class.java)
-                    .getByName(foodApi.toString())!!.submitter_id
-
-            //Insert API meal
-            if (apiId != null) {
-                insertApiMeal(it, mealSubmissionId, apiSubmitterId, apiId)
-            }
-
+            //Insert apiId in ApiSubmission for the meal
+            if (apiId != null)
+                it.attach(ApiSubmissionDao::class.java).insert(mealSubmissionId, apiId)
             //Insert meal's API ingredients
-            if (ingredients.isNotEmpty()) {
-                insertMealIngredients(it, mealSubmissionId, apiSubmitterId, ingredients)
-            }
+            else insertMealIngredients(it, mealSubmissionId, apiSubmitterId, ingredients)
+
             return@inTransaction mealDto
         }
     }
@@ -166,8 +166,9 @@ class MealDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo(jdbi)
 
     /**
      * @throws InvalidInputException On invalid submission ownership, invalid submission type,
-     *                               submission change timed out, if it is an api meal
-     *                               or invalid cuisines were passed.
+     *                               submission change timed out, if it is an api meal,
+     *                               invalid cuisines were passed, no cuisines were passed
+     *                               or no ingredients were passed.
      *                               (Annotation required for testing purposes)
      */
     @Throws(InvalidInputException::class)
@@ -195,18 +196,18 @@ class MealDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo(jdbi)
             it.attach(MealDao::class.java).update(submissionId, name)
 
             // Update cuisines
-            if (cuisineNames.isNotEmpty()) {
-                updateCuisines(it, submissionId, cuisineNames)
-            }
+            updateCuisines(it, submissionId, cuisineNames)
 
             // Update ingredients
-            if (ingredients.isNotEmpty()) {
-                updateIngredients(it, submissionId, ingredients)
-            }
+            updateIngredients(it, submissionId, ingredients)
         }
     }
 
     private fun insertMealCuisines(it: Handle, submissionId: Int, cuisineNames: Collection<String>) {
+        if (cuisineNames.isEmpty()) {
+            throw InvalidInputException(InvalidInputDomain.CUISINE, "A meal must have at least a cuisine!")
+        }
+
         val cuisineIds = getCuisinesByNames(cuisineNames, isolationLevel)
                 .map { it.submission_id }
         it.attach(MealCuisineDao::class.java)
@@ -214,7 +215,9 @@ class MealDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo(jdbi)
     }
 
     private fun updateIngredients(it: Handle, submissionId: Int, ingredients: List<Ingredient>) {
-        val apiSubmitterId = getApiSubmitterIdByMealId(it, submissionId)
+
+        val apiSubmitterId = it.attach(ApiDao::class.java)
+                .getSubmitterBySubmissionId(submissionId)!!.submitter_id
 
         deleteMissingIngredientsFromMeal(it, submissionId, apiSubmitterId, ingredients)
 
@@ -233,22 +236,12 @@ class MealDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo(jdbi)
         }
     }
 
-    private fun getApiSubmitterIdByMealId(it: Handle, submissionId: Int): Int {
-        return it.attach(MealIngredientDao::class.java)
-                .getAllByMealId(submissionId).first().ingredient_submission_id
-    }
-
-    private fun insertApiMeal(handle: Handle, mealSubmissionId: Int, apiSubmitterId: Int, apiId: String) {
-        //If this meal comes from an external API
-        handle.attach(SubmissionSubmitterDao::class.java)
-                .insert(mealSubmissionId, apiSubmitterId)
-
-        //Insert api SubmissionSubmitter for the meal
-        handle.attach(ApiSubmissionDao::class.java)
-                .insert(mealSubmissionId, apiId)
-    }
-
     private fun insertMealIngredients(handle: Handle, mealSubmissionId: Int, apiSubmitterId: Int, ingredients: List<Ingredient>) {
+        if (ingredients.isEmpty()) {
+            throw InvalidInputException(InvalidInputDomain.INGREDIENT,
+                    "A custom meal must have at least one ingredient!"
+            )
+        }
 
         val existingApiIngredientDtos = getExistingIngredients(handle, apiSubmitterId, ingredients)
 
@@ -312,7 +305,7 @@ class MealDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo(jdbi)
         val newIngredientSubmissionIds = ingredientSubmissionIds.filter {
             !existingMealIngredientIds.contains(it)
         }
-        if(newIngredientSubmissionIds.isNotEmpty()) {
+        if (newIngredientSubmissionIds.isNotEmpty()) {
             handle.attach(MealIngredientDao::class.java)
                     .insertAll(newIngredientSubmissionIds.map {
                         MealIngredientParam(mealSubmissionId, it)
@@ -340,6 +333,10 @@ class MealDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo(jdbi)
     }
 
     private fun updateCuisines(handle: Handle, submissionId: Int, cuisineNames: Collection<String>) {
+        if (cuisineNames.isEmpty()) {
+            throw InvalidInputException(InvalidInputDomain.CUISINE, "A meal must have at least a cuisine!")
+        }
+
         val cuisineDtos = getCuisinesByNames(cuisineNames, isolationLevel)
         val mealCuisineDao = handle.attach(MealCuisineDao::class.java)
 

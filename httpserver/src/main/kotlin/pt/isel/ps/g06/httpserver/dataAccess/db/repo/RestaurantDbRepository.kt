@@ -5,6 +5,7 @@ import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.transaction.TransactionIsolationLevel
 import org.springframework.stereotype.Repository
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionContractType
+import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionContractType.*
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType.RESTAURANT
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.*
@@ -67,11 +68,11 @@ class RestaurantDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo
             //Insert all RestaurantCuisine associations
             insertRestaurantCuisines(it, submissionId, cuisineNames)
 
-            val contracts = mutableListOf(SubmissionContractType.REPORTABLE)
+            val contracts = mutableListOf(REPORTABLE, FAVORABLE)
             if (apiId != null) {
                 insertApiRestaurant(it, submissionId, apiId)
-                contracts.add(SubmissionContractType.API)
-            } else contracts.add(SubmissionContractType.VOTABLE)
+                contracts.add(API)
+            } else contracts.add(VOTABLE)
 
             //Insert contracts (VOTABLE,  API if there is an apiId, REPORTABLE if it doesn't)
             it.attach(SubmissionContractDao::class.java)
