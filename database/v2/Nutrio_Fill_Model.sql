@@ -297,6 +297,7 @@ BEGIN
 
 		INSERT INTO SubmissionSubmitter(submission_id, submitter_id) VALUES
 		(mealFromIngredientsId,									submitter_id_user_admin),
+		(mealFromIngredientsId,									submitter_id_api_spoonacular),
 		(mealIngredient1Id,										submitter_id_api_spoonacular),
 		(mealIngredient2Id,										submitter_id_api_spoonacular),
 		(mealIngredient3Id,										submitter_id_api_spoonacular),
