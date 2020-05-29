@@ -2,6 +2,7 @@ package pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +13,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp
 import pt.ipl.isel.leic.ps.androidclient.R
+import pt.ipl.isel.leic.ps.androidclient.TAG
+import pt.ipl.isel.leic.ps.androidclient.data.db.dto.CustomMealDto
 import pt.ipl.isel.leic.ps.androidclient.data.db.dto.InsulinProfileDto
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.InsulinProfilesVMProviderFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.InsulinProfilesRecyclerViewModel
@@ -43,6 +46,12 @@ class CalculatorFragment : Fragment() {
         var glucoseObjective: Int? = 0
         var insulinSensitivity: Int? = 0
         var carboRatio: Int? = 0
+        var receivedMeal: CustomMealDto?
+
+        val bundle: Bundle? = this.arguments
+        if (bundle != null) {
+            receivedMeal = bundle.getParcelable("bundledMeal")!!
+        }
 
         getActualProfile {
             if (it == null) return@getActualProfile

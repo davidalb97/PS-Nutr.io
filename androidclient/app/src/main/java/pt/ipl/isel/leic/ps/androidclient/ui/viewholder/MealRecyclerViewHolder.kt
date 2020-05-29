@@ -11,7 +11,7 @@ import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.Meal
 
 // TODO: Create Cuisines
-class MealRecyclerViewHolder(view: ViewGroup, ctx: Context) : ARecyclerViewHolder<Meal>(view) {
+class MealRecyclerViewHolder(view: ViewGroup, ctx: Context) : ARecyclerViewHolder<Meal>(view, ctx) {
     val mealImage = view.findViewById<ImageView>(R.id.restaurantImage)
     val mealName = view.findViewById<TextView>(R.id.restaurantName)
     //val restaurantCuisines = view.findViewById<TextView>(R.id.restaurantCuisines)

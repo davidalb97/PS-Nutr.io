@@ -19,7 +19,7 @@ class CustomMealRecyclerAdapter(
     override fun onBindViewHolder(holder: CustomMealRecyclerViewHolder, position: Int) {
         val item: CustomMealDto = viewModel.items[position]
         holder.bindTo(item)
-        //holder.onDelete = { viewModel.deleteItem(item) }
+        holder.onDelete = { viewModel.deleteItem(item) }
     }
 
     override fun getItemViewId(): Int = R.layout.custom_meal_card

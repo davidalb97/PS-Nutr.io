@@ -8,7 +8,7 @@ import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.Cuisine
 
 class CuisineRecyclerViewHolder(view: ViewGroup, ctx: Context) :
-    ARecyclerViewHolder<Cuisine>(view) {
+    ARecyclerViewHolder<Cuisine>(view, ctx) {
 
     val cuisineName = view.findViewById<TextView>(R.id.cuisine_name)
 

@@ -4,44 +4,53 @@ import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
 import android.content.DialogInterface
+import android.os.Bundle
+import android.os.Parcelable
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.Toast
+import androidx.navigation.findNavController
 import pt.ipl.isel.leic.ps.androidclient.R
 
-abstract class ADeletableRecyclerViewHolder<T : Any>(
+abstract class ADeletableRecyclerViewHolder<T : Parcelable>(
     view: ViewGroup,
-    val ctx: Context
-) : ARecyclerViewHolder<T>(view),
-    View.OnLongClickListener {
+    ctx: Context
+) : ARecyclerViewHolder<T>(view, ctx) {
 
     lateinit var onDelete: (T) -> Unit
+    lateinit var deleteButton: ImageButton
 
-    @SuppressLint("ResourceType")
+    override fun onClick(v: View?) {
+        turnButtonsInvisible()
+    }
+
     override fun onLongClick(v: View?): Boolean {
-        val builder = AlertDialog.Builder(ctx)
+        turnButtonsVisible()
+        setupDeleteButton()
+        setupAddToCalculatorButton()
+        return true
+    }
 
-        val currentAdapter = this.bindingAdapter
-
-        builder.setTitle(view.context.getString(R.string.DialogAlert_deleteWarning))
-
-        builder.setMessage(view.context.getString(R.string.AlertDialog_deleteQuestion))
-
-        builder.setPositiveButton(view.context.getString(R.string.DialogAlert_Yes)) { _, _ ->
-
+    private fun setupDeleteButton() {
+        deleteButton.setOnClickListener {
             onDelete(this.item)
             Toast.makeText(
                 ctx,
                 ctx.getString(R.string.DialogAlert_deleted), Toast.LENGTH_SHORT
             ).show()
-            currentAdapter?.notifyItemRemoved(layoutPosition)
+            turnButtonsInvisible()
+            this.bindingAdapter?.notifyItemRemoved(layoutPosition)
         }
+    }
 
-        builder.setNegativeButton(view.context.getString(R.string.Dialog_no)) { _, _ -> }
+    override fun turnButtonsVisible() {
+        super.turnButtonsVisible()
+        deleteButton.visibility = View.VISIBLE
+    }
 
-        val dialog: AlertDialog = builder.create()
-
-        dialog.show()
-        return true
+    override fun turnButtonsInvisible() {
+        super.turnButtonsInvisible()
+        deleteButton.visibility = View.INVISIBLE
     }
 }

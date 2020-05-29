@@ -6,9 +6,12 @@
     android:layout_height="wrap_content"
     android:layout_margin="4dp"
     android:elevation="10dp"
-    app:cardCornerRadius="15dp">
+    app:cardCornerRadius="15dp"
+    android:focusable="true"
+    android:background="?android:selectableItemBackground">
 
     <RelativeLayout
+        android:id="@+id/custom_meal_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="4dp">
@@ -71,6 +74,7 @@
             android:layout_centerVertical="true"
             android:visibility="invisible">
         </ImageButton>
+
 
 
     </RelativeLayout>

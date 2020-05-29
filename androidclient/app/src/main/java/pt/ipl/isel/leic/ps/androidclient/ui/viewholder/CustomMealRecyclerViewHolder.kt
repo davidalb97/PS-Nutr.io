@@ -1,20 +1,21 @@
 package pt.ipl.isel.leic.ps.androidclient.ui.viewholder
 
 import android.annotation.SuppressLint
-import android.app.AlertDialog
 import android.content.Context
+import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
+import androidx.navigation.findNavController
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.db.dto.CustomMealDto
 
 class CustomMealRecyclerViewHolder(
     view: ViewGroup,
-    val ctx: Context
-) : ARecyclerViewHolder<CustomMealDto>(view){
+    ctx: Context
+) : ADeletableRecyclerViewHolder<CustomMealDto>(view, ctx){
 
     private val customMealName: TextView =
         view.findViewById(R.id.custom_meal_name)
@@ -31,12 +32,12 @@ class CustomMealRecyclerViewHolder(
 
     override fun bindTo(item: CustomMealDto) {
         super.bindTo(item)
-        setupTextFields()
+        setupViewHolderElements()
         setupListeners()
     }
 
     @SuppressLint("SetTextI18n")
-    private fun setupTextFields() {
+    private fun setupViewHolderElements() {
         val resources = ctx.resources
         customMealName.text = item.name
         customMealQuantity.text =
@@ -48,23 +49,13 @@ class CustomMealRecyclerViewHolder(
         customMealCarbs.text =
             resources.getString(R.string.carbohydrates_amount_card) +
                     " ${item.carboAmount}"
+        this.deleteButton = customMealDelete
+        this.addToCalculatorButton = customMealAddToCalc
     }
 
     private fun setupListeners() {
+        this.view.setOnClickListener(this)
         this.view.setOnLongClickListener(this)
     }
 
-    override fun onClick(v: View?) {
-        TODO("Not yet implemented")
-    }
-
-    override fun onLongClick(v: View?): Boolean {
-
-        val currentAdapter = this.bindingAdapter
-
-        customMealDelete.visibility = View.VISIBLE
-        customMealAddToCalc.visibility = View.VISIBLE
-
-        return true
-    }
 }
