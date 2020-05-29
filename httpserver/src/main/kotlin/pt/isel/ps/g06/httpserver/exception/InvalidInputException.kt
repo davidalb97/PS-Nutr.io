@@ -20,5 +20,6 @@ enum class InvalidInputDomain(val domain: String) {
     TIMEOUT("timeout"),
     SEARCH_RESTAURANT("search-restaurant"),
     CUISINE("cuisine"),
-    RESTAURANT_MEAL("restaurant meal")
+    RESTAURANT_MEAL("restaurant meal"),
+    INGREDIENT("ingredient")
 }
