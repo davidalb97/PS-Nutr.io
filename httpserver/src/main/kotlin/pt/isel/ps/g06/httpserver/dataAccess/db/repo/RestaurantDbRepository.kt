@@ -13,6 +13,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.dto.*
 import pt.isel.ps.g06.httpserver.dataAccess.model.RestaurantApiId
 import pt.isel.ps.g06.httpserver.exception.InvalidInputException
 import pt.isel.ps.g06.httpserver.springConfig.dto.DbEditableDto
+import java.util.stream.Stream
 
 private val isolationLevel = TransactionIsolationLevel.SERIALIZABLE
 private val restaurantDaoClass = RestaurantDao::class.java
@@ -33,7 +34,7 @@ class RestaurantDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo
     }
 
     fun getAllByCoordinates(latitude: Float, longitude: Float, radius: Int): Collection<DbRestaurantDto> {
-        return jdbi.inTransaction<List<DbRestaurantDto>, Exception>(isolationLevel) {
+        return jdbi.inTransaction<Collection<DbRestaurantDto>, Exception>(isolationLevel) {
             return@inTransaction it.attach(restaurantDaoClass).getByCoordinates(latitude, longitude, radius)
         }
     }
