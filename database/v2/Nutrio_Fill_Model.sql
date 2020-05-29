@@ -494,11 +494,11 @@ BEGIN
 	(1, 3),--First user meal from ingredients
 	(1, 4);--First user meal from ingredients
 
-	INSERT INTO RestaurantMeal(submission_id, meal_submission_id, restaurant_submission_id) VALUES
-	(137, 1, 6),--First user meal from ingredients + First restaurant from user location
-	(138, 1, 7),--First user meal from ingredients + Second restaurant from restaurant api
-	(139, 5, 6),--Second user meal from food api + First restaurant from user location
-	(140, 5, 7);--Second user meal from food api + Second restaurant from restaurant api
+	INSERT INTO RestaurantMeal(submission_id, restaurant_submission_id, meal_submission_id) VALUES
+	(137, 6, 1),--First restaurant from user location + First user meal from ingredients
+	(138, 7, 1),--Second restaurant from restaurant api + First user meal from ingredients
+	(139, 6, 5),--First restaurant from user location + Second user meal from food api
+	(140, 7, 5);--Second restaurant from restaurant api + Second user meal from food api
 	
 	INSERT INTO Portion(submission_id, restaurant_meal_submission_id, quantity) VALUES
 	(8, 137, 100),--First user meal from ingredients + First restaurant from user location

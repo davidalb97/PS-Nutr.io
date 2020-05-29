@@ -131,11 +131,11 @@ CREATE TABLE Meal(
 
 CREATE TABLE RestaurantMeal(
 	submission_id integer PRIMARY KEY,
-	meal_submission_id integer,
 	restaurant_submission_id integer,
+	meal_submission_id integer,
 	UNIQUE(meal_submission_id, restaurant_submission_id),
-	FOREIGN KEY(meal_submission_id) REFERENCES Meal(submission_id),
-	FOREIGN KEY(restaurant_submission_id) REFERENCES Restaurant(submission_id)
+	FOREIGN KEY(restaurant_submission_id) REFERENCES Restaurant(submission_id),
+	FOREIGN KEY(meal_submission_id) REFERENCES Meal(submission_id)
 );
 
 CREATE TABLE Portion(

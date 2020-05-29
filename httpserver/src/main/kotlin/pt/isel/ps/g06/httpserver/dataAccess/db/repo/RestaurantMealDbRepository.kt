@@ -41,7 +41,8 @@ class RestaurantMealDbRepository(jdbi: Jdbi) : BaseDbRepo(jdbi) {
             // Check if the restaurantId is from a Restaurant
             requireSubmission(restaurantId, RESTAURANT, isolationLevel)
 
-            val existingRestaurantMeal = it.attach(restaurantMealDao)
+            val restaurantMealDao = it.attach(restaurantMealDao)
+            val existingRestaurantMeal = restaurantMealDao
                     .getByRestaurantAndMealId(restaurantId, mealId)
             if(existingRestaurantMeal != null) {
                 throw InvalidInputException(InvalidInputDomain.RESTAURANT_MEAL,
@@ -55,7 +56,7 @@ class RestaurantMealDbRepository(jdbi: Jdbi) : BaseDbRepo(jdbi) {
 
             it.attach(SubmissionSubmitterDao::class.java).insert(submissionId, submitterId)
 
-            return@inTransaction null
+            return@inTransaction restaurantMealDao.insert(submissionId, restaurantId, mealId)
         }
     }
 
