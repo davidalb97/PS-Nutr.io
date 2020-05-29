@@ -356,10 +356,12 @@ BEGIN
 		(portionRestaurantMealWithApiWithoutIngredients,		restaurantMealWithApiWithoutIngredients, 400);
 
 		INSERT INTO SubmissionContract(submission_id, submission_contract) VALUES
+		(mealFromIngredientsId,							'Favorable'),
 		(mealIngredient1Id,								'API'),
 		(mealIngredient2Id, 							'API'),
 		(mealIngredient3Id,								'API'),
 		(mealFromApiId,									'API'),
+		(mealFromApiId,									'Favorable'),
 		(restaurantFromLocationId,						'Votable'),
 		(restaurantFromLocationId,						'Reportable'),
 		(restaurantFromApiId,							'Votable'),
