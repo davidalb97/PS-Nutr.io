@@ -12,14 +12,15 @@ class RepoAsserts(val const: Constants) {
     fun assertSubmissionContract(handle: Handle, submissionId: Int, expectedContracts: List<SubmissionContractType>, isDeleted: Boolean = false) {
         assertSubmissionContract(handle, listOf(submissionId), expectedContracts, isDeleted)
     }
+
     fun assertSubmissionContract(handle: Handle, submissionIds: List<Int>, expectedContracts: List<SubmissionContractType>, isDeleted: Boolean = false) {
         val expectedContractNames = expectedContracts.map { it.toString() }.sorted()
-        submissionIds.forEach {  submissionId ->
+        submissionIds.forEach { submissionId ->
             val resultConstantNames = handle.attach(SubmissionContractDao::class.java)
                     .getAllById(submissionId)
                     .map { it.submission_contract }
                     .sorted()
-            if(isDeleted) {
+            if (isDeleted) {
                 Assertions.assertTrue(resultConstantNames.isEmpty())
             } else {
                 Assertions.assertEquals(expectedContractNames, resultConstantNames)
@@ -41,6 +42,7 @@ class RepoAsserts(val const: Constants) {
     ) {
         assertSubmissionSubmitter(handle, listOf(expectedSubmissionId), expectedSubmitterId, isDeleted)
     }
+
     fun assertSubmissionSubmitter(
             handle: Handle,
             expectedSubmissionIds: List<Int>,
@@ -50,7 +52,7 @@ class RepoAsserts(val const: Constants) {
         expectedSubmissionIds.forEach { expectedSubmissionId ->
             val submissionSubmitterDto = handle.attach(SubmissionSubmitterDao::class.java)
                     .getAllBySubmissionId(expectedSubmissionId)
-            if(isDeleted) {
+            if (isDeleted) {
                 Assertions.assertTrue(submissionSubmitterDto.none {
                     it.submitter_id == expectedSubmitterId
                 })
@@ -84,7 +86,7 @@ class RepoAsserts(val const: Constants) {
         expectedSubmissionIds.forEach { resultSubmissionId ->
             val submissionDto = handle.attach(SubmissionDao::class.java)
                     .getById(resultSubmissionId)
-            if(isDeleted) {
+            if (isDeleted) {
                 Assertions.assertNull(submissionDto)
             } else {
                 //Assert existence
@@ -113,7 +115,7 @@ class RepoAsserts(val const: Constants) {
                         submissionType.toString(),
                         apiIds
                 ).map { it.submission_id }
-        if(isDeleted) {
+        if (isDeleted) {
             Assertions.assertTrue(resultApiSubmissionIds.isEmpty())
         } else {
             Assertions.assertFalse(resultApiSubmissionIds.isEmpty())
@@ -130,7 +132,7 @@ class RepoAsserts(val const: Constants) {
     fun assertMeal(it: Handle, expectedSubmissionId: Int, expectedMealName: String, isDeleted: Boolean = false) {
         val mealDto = it.attach(MealDao::class.java)
                 .getById(expectedSubmissionId)
-        if(isDeleted) {
+        if (isDeleted) {
             Assertions.assertNull(mealDto)
         } else {
             Assertions.assertNotNull(mealDto)
@@ -154,7 +156,7 @@ class RepoAsserts(val const: Constants) {
                 .getAllByMealId(resultSubmissionId)
                 .map { it.cuisine_submission_id }
                 .sorted()
-        if(isDeleted) {
+        if (isDeleted) {
             Assertions.assertTrue(resultCuisines.isEmpty())
         } else {
             Assertions.assertEquals(expectedCuisineIds.sorted(), resultCuisines)
@@ -172,19 +174,19 @@ class RepoAsserts(val const: Constants) {
                          expectedIngredientNames: List<String>,
                          isDeleted: Boolean = false
     ) {
-        if(expectedIngredientSubmissionIds.size != expectedIngredientNames.size) {
+        if (expectedIngredientSubmissionIds.size != expectedIngredientNames.size) {
             throw TestParameterException("expectedIngredientSubmissionIds size \""
                     + expectedIngredientSubmissionIds.size +
                     "\" is different from expectedIngredientNames \"" +
-                    + expectedIngredientNames.size +
+                    +expectedIngredientNames.size +
                     "\" !")
         }
         val existingIngredientDtos = handle.attach(IngredientDao::class.java)
                 .getAll()
         val filtered = existingIngredientDtos
                 .filter { expectedIngredientSubmissionIds.contains(it.submission_id) }
-                //.filter { expectedIngredientNames.contains(it.ingredient_name) }
-        if(isDeleted) {
+        //.filter { expectedIngredientNames.contains(it.ingredient_name) }
+        if (isDeleted) {
             Assertions.assertTrue(filtered.isEmpty())
         } else {
             Assertions.assertEquals(expectedIngredientNames.size, filtered.size)
@@ -205,7 +207,7 @@ class RepoAsserts(val const: Constants) {
         val existingIngredientSubmissionIds = handle.attach(MealIngredientDao::class.java)
                 .getAllByMealId(expectedMealSubmissionId)
                 .map { it.ingredient_submission_id }
-        if(isDeleted) {
+        if (isDeleted) {
             Assertions.assertTrue(existingIngredientSubmissionIds.isEmpty())
         } else {
             //Assert that old ingredients were used on this meal
@@ -218,6 +220,62 @@ class RepoAsserts(val const: Constants) {
     fun assertMealIngredientInsertCount(handle: Handle, insertCount: Int) {
         val oldCount = const.ingredientDtos.count()
         val newCount = handle.attach(MealIngredientDao::class.java).getAll().count()
+        Assertions.assertEquals(oldCount + insertCount, newCount)
+    }
+
+    fun assertPortion(handle: Handle,
+                      expectedPortionIds: List<Int>,
+                      expectedRestaurantMealIdsAndQuantities: List<Pair<Int, Int>> = emptyList(),
+                      isDeleted: Boolean = false
+    ) {
+        expectedPortionIds.forEach { expectedPortionId ->
+            val existingPortionDto = handle.attach(PortionDao::class.java)
+                    .getById(expectedPortionId)
+            if (isDeleted) {
+                Assertions.assertNull(existingPortionDto)
+            } else {
+                if(expectedRestaurantMealIdsAndQuantities.isNotEmpty()) {
+                    Assertions.assertNotNull(existingPortionDto)
+                    Assertions.assertTrue(expectedRestaurantMealIdsAndQuantities.any { pair ->
+                        existingPortionDto!!.restaurant_meal_submission_id == pair.first &&
+                                existingPortionDto.quantity == pair.second
+                    })
+                }
+            }
+        }
+    }
+
+    fun assertPortionInsertCount(handle: Handle, insertCount: Int) {
+        val oldCount = const.portionDtos.count()
+        val newCount = handle.attach(PortionDao::class.java).getAll().count()
+        Assertions.assertEquals(oldCount + insertCount, newCount)
+    }
+
+    fun assertRestaurantMeal(handle: Handle,
+                             expectedRestaurantMealIds: List<Int>,
+                             expectedRestaurantAndMealIds: List<Pair<Int, Int>> = emptyList(),
+                             isDeleted: Boolean = false
+    ) {
+        expectedRestaurantMealIds.forEach { expectedRestaurantMealId ->
+            val existingRestaurantMealDto = handle.attach(RestaurantMealDao::class.java)
+                    .getById(expectedRestaurantMealId)
+            if (isDeleted) {
+                Assertions.assertNull(existingRestaurantMealDto)
+            } else {
+                if(expectedRestaurantAndMealIds.isNotEmpty()) {
+                    Assertions.assertNotNull(existingRestaurantMealDto)
+                    Assertions.assertTrue(expectedRestaurantAndMealIds.any { pair ->
+                        existingRestaurantMealDto!!.restaurant_submission_id == pair.first &&
+                                existingRestaurantMealDto.meal_submission_id == pair.second
+                    })
+                }
+            }
+        }
+    }
+
+    fun assertRestaurantMealInsertCount(handle: Handle, insertCount: Int) {
+        val oldCount = const.restaurantMealDtos.count()
+        val newCount = handle.attach(RestaurantMealDao::class.java).getAll().count()
         Assertions.assertEquals(oldCount + insertCount, newCount)
     }
 }
