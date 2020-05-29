@@ -17,18 +17,16 @@ import pt.ipl.isel.leic.ps.androidclient.R
 abstract class ARecyclerViewHolder<T : Parcelable>(
     val view: ViewGroup,
     val ctx: Context
-) : RecyclerView.ViewHolder(view),
-    View.OnClickListener,
-    View.OnLongClickListener {
+) : RecyclerView.ViewHolder(view) {
 
     lateinit var item: T
-    lateinit var addToCalculatorButton: ImageButton
+    //lateinit var addToCalculatorButton: ImageButton
 
     open fun bindTo(item: T) {
         this.item = item
     }
 
-    override fun onClick(v: View?) {
+    /*override fun onClick(v: View?) {
         turnButtonsInvisible()
     }
 
@@ -53,5 +51,5 @@ abstract class ARecyclerViewHolder<T : Parcelable>(
 
     open fun turnButtonsInvisible() {
         addToCalculatorButton.visibility = View.INVISIBLE
-    }
+    }*/
 }

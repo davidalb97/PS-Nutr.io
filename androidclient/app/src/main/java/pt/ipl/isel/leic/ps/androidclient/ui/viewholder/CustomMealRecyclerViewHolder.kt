@@ -15,7 +15,11 @@ import pt.ipl.isel.leic.ps.androidclient.data.db.dto.CustomMealDto
 class CustomMealRecyclerViewHolder(
     view: ViewGroup,
     ctx: Context
-) : ADeletableRecyclerViewHolder<CustomMealDto>(view, ctx){
+) : ARecyclerViewHolder<CustomMealDto>(view, ctx),
+    IDeletable<CustomMealDto>,
+    ICalculatable<CustomMealDto>{
+
+    override lateinit var onDelete: (CustomMealDto) -> Unit
 
     private val customMealName: TextView =
         view.findViewById(R.id.custom_meal_name)
@@ -25,9 +29,9 @@ class CustomMealRecyclerViewHolder(
         view.findViewById(R.id.custom_meal_glucose_amount)
     private val customMealCarbs: TextView =
         view.findViewById(R.id.custom_meal_carbs_amount)
-    private val customMealDelete: ImageButton =
+    override var deleteButton: ImageButton =
         view.findViewById(R.id.delete_item_button)
-    private val customMealAddToCalc: ImageButton =
+    override var calculatorButton: ImageButton =
         view.findViewById(R.id.add_custom_meal_to_calc)
 
     override fun bindTo(item: CustomMealDto) {
@@ -49,8 +53,6 @@ class CustomMealRecyclerViewHolder(
         customMealCarbs.text =
             resources.getString(R.string.carbohydrates_amount_card) +
                     " ${item.carboAmount}"
-        this.deleteButton = customMealDelete
-        this.addToCalculatorButton = customMealAddToCalc
     }
 
     private fun setupListeners() {
@@ -58,4 +60,37 @@ class CustomMealRecyclerViewHolder(
         this.view.setOnLongClickListener(this)
     }
 
+    override fun onClick(v: View?) {
+        turnInvisible()
+    }
+
+    override fun onLongClick(v: View?): Boolean {
+        turnVisible()
+        deleteButton.setOnClickListener {
+            onDelete(this.item)
+            Toast.makeText(
+                ctx,
+                ctx.getString(R.string.DialogAlert_deleted), Toast.LENGTH_SHORT
+            ).show()
+            turnInvisible()
+            this.bindingAdapter?.notifyItemRemoved(layoutPosition)
+        }
+
+        calculatorButton.setOnClickListener{
+            val bundle = Bundle()
+            bundle.putParcelable("bundledMeal", this.item)
+            view.findNavController().navigate(R.id.nav_calculator, bundle)
+        }
+        return true
+    }
+
+    override fun turnVisible() {
+        deleteButton.visibility = View.VISIBLE
+        calculatorButton.visibility = View.VISIBLE
+    }
+
+    override fun turnInvisible() {
+        deleteButton.visibility = View.INVISIBLE
+        calculatorButton.visibility = View.INVISIBLE
+    }
 }

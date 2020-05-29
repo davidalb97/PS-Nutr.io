@@ -28,12 +28,4 @@ class MealRecyclerViewHolder(view: ViewGroup, ctx: Context) : ARecyclerViewHolde
 
         mealName.text = meal.name
     }
-
-    override fun onClick(v: View?) {
-        TODO("Not yet implemented")
-    }
-
-    override fun onLongClick(v: View?): Boolean {
-        TODO("Not yet implemented")
-    }
 }

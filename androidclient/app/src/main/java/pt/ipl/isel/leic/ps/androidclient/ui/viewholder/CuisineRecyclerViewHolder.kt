@@ -17,12 +17,4 @@ class CuisineRecyclerViewHolder(view: ViewGroup, ctx: Context) :
         cuisineName.text = item.name
     }
 
-    override fun onClick(v: View?) {
-        TODO("Not yet implemented")
-    }
-
-    override fun onLongClick(v: View?): Boolean {
-        TODO("Not yet implemented")
-    }
-
 }

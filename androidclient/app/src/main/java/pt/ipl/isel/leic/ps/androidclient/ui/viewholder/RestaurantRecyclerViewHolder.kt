@@ -40,12 +40,4 @@ class RestaurantRecyclerViewHolder(
             view.findNavController().navigate(R.id.nav_restaurant_detail)
         }
     }
-
-    override fun onClick(v: View?) {
-        TODO("Not yet implemented")
-    }
-
-    override fun onLongClick(v: View?): Boolean {
-        TODO("Not yet implemented")
-    }
 }
