@@ -14,7 +14,7 @@ import pt.ipl.isel.leic.ps.androidclient.ui.listener.ScrollListener
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.MealRecyclerVMProviderFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.MealRecyclerViewModel
 
-class MealRecyclerFragment : ARequestRecyclerListFragment<Meal, MealRecyclerViewModel>() {
+class MealRecyclerFragment(val addMode: Boolean = false) : ARequestRecyclerListFragment<Meal, MealRecyclerViewModel>() {
 
     private val adapter: MealRecyclerAdapter by lazy {
         MealRecyclerAdapter(

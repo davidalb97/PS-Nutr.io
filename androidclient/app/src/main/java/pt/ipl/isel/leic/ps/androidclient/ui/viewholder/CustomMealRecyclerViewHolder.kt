@@ -17,8 +17,9 @@ class CustomMealRecyclerViewHolder(
     ctx: Context
 ) : ARecyclerViewHolder<CustomMealDto>(view, ctx),
     IDeletable<CustomMealDto>,
-    ICalculatable<CustomMealDto>{
+    ICalculatable<CustomMealDto> {
 
+    var addMode: Boolean = false
     override lateinit var onDelete: (CustomMealDto) -> Unit
 
     private val customMealName: TextView =
@@ -62,24 +63,28 @@ class CustomMealRecyclerViewHolder(
 
     override fun onClick(v: View?) {
         turnInvisible()
+        if (addMode) {
+            sendToCalculator()
+        }
     }
 
     override fun onLongClick(v: View?): Boolean {
-        turnVisible()
-        deleteButton.setOnClickListener {
-            onDelete(this.item)
-            Toast.makeText(
-                ctx,
-                ctx.getString(R.string.DialogAlert_deleted), Toast.LENGTH_SHORT
-            ).show()
-            turnInvisible()
-            this.bindingAdapter?.notifyItemRemoved(layoutPosition)
-        }
+        if (!addMode) {
+            turnVisible()
+            deleteButton.setOnClickListener {
+                onDelete(this.item)
+                Toast.makeText(
+                    ctx,
+                    ctx.getString(R.string.DialogAlert_deleted), Toast.LENGTH_SHORT
+                ).show()
+                turnInvisible()
+                this.bindingAdapter?.notifyItemRemoved(layoutPosition)
+            }
 
-        calculatorButton.setOnClickListener{
-            val bundle = Bundle()
-            bundle.putParcelable("bundledMeal", this.item)
-            view.findNavController().navigate(R.id.nav_calculator, bundle)
+            calculatorButton.setOnClickListener {
+                sendToCalculator()
+            }
+            return true
         }
         return true
     }
@@ -92,5 +97,11 @@ class CustomMealRecyclerViewHolder(
     override fun turnInvisible() {
         deleteButton.visibility = View.INVISIBLE
         calculatorButton.visibility = View.INVISIBLE
+    }
+
+    private fun sendToCalculator() {
+        val bundle = Bundle()
+        bundle.putParcelable("bundledMeal", this.item)
+        view.findNavController().navigate(R.id.nav_calculator, bundle)
     }
 }

@@ -14,8 +14,9 @@ import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.CustomMealRecyclerA
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.CustomMealRecyclerVMProviderFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.CustomMealRecyclerViewModel
 
-class CustomMealRecyclerFragment() :
-    ARoomRecyclerListFragment<CustomMealDto, CustomMealRecyclerViewModel>() {
+class CustomMealRecyclerFragment(
+    private val addToCalculatorMode: Boolean = false
+) : ARoomRecyclerListFragment<CustomMealDto, CustomMealRecyclerViewModel>() {
 
     private val adapter: CustomMealRecyclerAdapter by lazy {
         CustomMealRecyclerAdapter(
@@ -37,25 +38,30 @@ class CustomMealRecyclerFragment() :
         savedInstanceState: Bundle?
     ): View? {
         buildViewModel(savedInstanceState)
+        // If the mode is active and it's the first onCreateView, then update viewModel
+        if (!viewModel.addToCalculatorMode && this.addToCalculatorMode) {
+            viewModel.addToCalculatorMode = this.addToCalculatorMode
+        }
         return inflater.inflate(R.layout.custom_meals_list, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val bundle: Bundle? = this.arguments
-
         noItemsLabel = view.findViewById(R.id.no_saved_meals)
         val addButton = view.findViewById<ImageButton>(R.id.add_custom_meal)
+        addButton.visibility = View.INVISIBLE
         initRecyclerList(view)
         setCallbackFunctions()
         list.adapter = adapter
         list.layoutManager = LinearLayoutManager(this.requireContext())
         startObserver()
         viewModel.updateListFromLiveData()
-
-        addButton.setOnClickListener {
-            view.findNavController().navigate(R.id.nav_add_custom_meal)
+        if (!viewModel.addToCalculatorMode) {
+            addButton.visibility = View.VISIBLE
+            addButton.setOnClickListener {
+                view.findNavController().navigate(R.id.nav_add_custom_meal)
+            }
         }
     }
 

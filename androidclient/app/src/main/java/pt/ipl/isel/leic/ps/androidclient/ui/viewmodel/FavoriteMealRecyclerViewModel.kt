@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import pt.ipl.isel.leic.ps.androidclient.data.db.dto.FavoriteMealDto
 
 class FavoriteMealRecyclerViewModel() : ARecyclerViewModel<FavoriteMealDto>() {
+
     constructor(parcel: Parcel) : this() {
     }
 

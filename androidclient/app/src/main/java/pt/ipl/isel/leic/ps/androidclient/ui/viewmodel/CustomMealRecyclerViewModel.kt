@@ -8,6 +8,8 @@ import pt.ipl.isel.leic.ps.androidclient.data.db.dto.CustomMealDto
 
 class CustomMealRecyclerViewModel() : ARecyclerViewModel<CustomMealDto>() {
 
+    var addToCalculatorMode: Boolean = false
+
     constructor(parcel: Parcel) : this() {
     }
 

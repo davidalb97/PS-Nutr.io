@@ -3,7 +3,7 @@ package pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler.room
 import pt.ipl.isel.leic.ps.androidclient.data.db.dto.FavoriteMealDto
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.FavoriteMealRecyclerViewModel
 
-class FavoriteMealRecyclerFragment() :
+class FavoriteMealRecyclerFragment(val addMode: Boolean = false) :
     ARoomRecyclerListFragment<FavoriteMealDto, FavoriteMealRecyclerViewModel>() {
 
     override fun startScrollListener() {
