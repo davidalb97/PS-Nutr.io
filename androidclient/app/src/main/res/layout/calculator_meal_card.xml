@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/calc_meal_card"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginStart="60dp"
+    android:layout_marginEnd="60dp"
+    android:elevation="10dp"
+    app:cardCornerRadius="15dp">
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center">
+
+        <TextView
+            android:id="@+id/calc_meal_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="15dp"
+            android:text="Meal name"
+            android:textSize="18sp">
+        </TextView>
+
+        <ImageButton
+            android:id="@+id/remove_meal_from_calc_button"
+            android:background="@drawable/material_bin_button_background"
+            android:layout_toEndOf="@+id/calc_meal_name"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/ic_close"
+            android:layout_marginStart="20dp">
+        </ImageButton>
+
+    </RelativeLayout>
+
+</androidx.cardview.widget.CardView>

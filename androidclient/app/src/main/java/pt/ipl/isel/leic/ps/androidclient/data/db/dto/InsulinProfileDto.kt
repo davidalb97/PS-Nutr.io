@@ -11,8 +11,8 @@ data class InsulinProfileDto(
     val start_time: String,
     val end_time: String,
     val glucose_objective: Int,
-    val glucose_amount: Int,
-    val carbohydrate_amount: Int
+    val glucoseAmountPerInsulin: Int,
+    val carbsAmountPerInsulin: Int
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString()!!,
@@ -29,8 +29,8 @@ data class InsulinProfileDto(
         parcel.writeString(start_time)
         parcel.writeString(end_time)
         parcel.writeInt(glucose_objective)
-        parcel.writeInt(glucose_amount)
-        parcel.writeInt(carbohydrate_amount)
+        parcel.writeInt(glucoseAmountPerInsulin)
+        parcel.writeInt(carbsAmountPerInsulin)
     }
 
     override fun describeContents(): Int {

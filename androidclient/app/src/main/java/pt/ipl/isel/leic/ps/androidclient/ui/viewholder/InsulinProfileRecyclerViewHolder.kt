@@ -57,12 +57,12 @@ class InsulinProfileRecyclerViewHolder(
 
         insulinSensitivityFactor.text =
             resources.getString(R.string.insulin_sensitivity_factor) +
-                    " ${item.glucose_amount} / " +
+                    " ${item.glucoseAmountPerInsulin} / " +
                     resources.getString(R.string.insulin_unit)
 
         carboRatio.text =
             resources.getString(R.string.carbohydrate_ratio) +
-                    " ${item.carbohydrate_amount} / " +
+                    " ${item.carbsAmountPerInsulin} / " +
                     resources.getString(R.string.insulin_unit)
     }
 
