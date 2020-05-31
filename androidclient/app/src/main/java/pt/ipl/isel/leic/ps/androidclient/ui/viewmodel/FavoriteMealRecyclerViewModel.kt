@@ -3,14 +3,14 @@ package pt.ipl.isel.leic.ps.androidclient.ui.viewmodel
 import android.os.Parcel
 import android.os.Parcelable
 import androidx.lifecycle.LiveData
-import pt.ipl.isel.leic.ps.androidclient.data.db.dto.FavoriteMealDto
+import pt.ipl.isel.leic.ps.androidclient.data.db.dto.DbFavoriteMealDto
 
-class FavoriteMealRecyclerViewModel() : ARecyclerViewModel<FavoriteMealDto>() {
+class FavoriteMealRecyclerViewModel() : ARecyclerViewModel<DbFavoriteMealDto>() {
 
     constructor(parcel: Parcel) : this() {
     }
 
-    override fun fetchLiveData(): LiveData<List<FavoriteMealDto>> {
+    override fun fetchLiveData(): LiveData<List<DbFavoriteMealDto>> {
         TODO("Not yet implemented")
     }
 

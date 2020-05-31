@@ -3,24 +3,24 @@ package pt.ipl.isel.leic.ps.androidclient.data.repo
 import androidx.lifecycle.LiveData
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.roomDb
 import pt.ipl.isel.leic.ps.androidclient.data.api.datasource.MealDataSource
-import pt.ipl.isel.leic.ps.androidclient.data.db.dto.CustomMealDto
+import pt.ipl.isel.leic.ps.androidclient.data.db.dto.DbCustomMealDto
 import pt.ipl.isel.leic.ps.androidclient.data.util.AsyncWorker
 
 class MealRepository(private val dataSource: MealDataSource) {
 
-    fun getAllCustomMeals(): LiveData<List<CustomMealDto>> {
+    fun getAllCustomMeals(): LiveData<List<DbCustomMealDto>> {
         return roomDb.customMealDao().getAll()
     }
 
-    fun insertCustomMeal(customMeal: CustomMealDto) {
+    fun insertCustomMeal(dbCustomMeal: DbCustomMealDto) {
         AsyncWorker<Unit, Unit> {
-            roomDb.customMealDao().insert(customMeal)
+            roomDb.customMealDao().insert(dbCustomMeal)
         }.execute()
     }
 
-    fun deleteCustomMeal(customMeal: CustomMealDto) {
+    fun deleteCustomMeal(dbCustomMeal: DbCustomMealDto) {
         AsyncWorker<Unit, Unit> {
-            roomDb.customMealDao().delete(customMeal)
+            roomDb.customMealDao().delete(dbCustomMeal)
         }.execute()
     }
 }

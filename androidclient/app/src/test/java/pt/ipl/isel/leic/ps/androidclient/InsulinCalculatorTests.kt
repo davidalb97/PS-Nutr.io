@@ -3,7 +3,7 @@ package pt.ipl.isel.leic.ps.androidclient
 import org.junit.Assert
 import org.junit.Test
 import pt.ipl.isel.leic.ps.androidclient.data.db.InsulinCalculator
-import pt.ipl.isel.leic.ps.androidclient.data.db.dto.InsulinProfileDto
+import pt.ipl.isel.leic.ps.androidclient.data.db.dto.DbInsulinProfileDto
 
 class InsulinCalculatorTests {
 
@@ -14,7 +14,7 @@ class InsulinCalculatorTests {
 
         // A insulin profile mock
         val insulinProfileMock =
-            InsulinProfileDto(
+            DbInsulinProfileDto(
                 "ProfileTest1",
                 "00:00",
                 "23:59",
@@ -40,7 +40,7 @@ class InsulinCalculatorTests {
     fun insulinCalculatorTest2() {
         // A insulin profile mock
         val insulinProfileMock =
-            InsulinProfileDto(
+            DbInsulinProfileDto(
                 "ProfileTest1",
                 "00:00",
                 "23:59",

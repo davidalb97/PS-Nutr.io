@@ -13,7 +13,7 @@ class RestaurantMapper :
             dto.longitude,
             dto.votes,
             dto.cuisines,
-            dto.meals
+            dto.apiMeals
         )
 }
 

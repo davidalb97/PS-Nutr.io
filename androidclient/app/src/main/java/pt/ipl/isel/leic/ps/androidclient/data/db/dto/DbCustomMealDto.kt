@@ -6,7 +6,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "CustomMeal")
-data class CustomMealDto(
+data class DbCustomMealDto(
     @PrimaryKey val name: String,
     val mealQuantity: Int,
     val glucoseAmount: Int,
@@ -29,12 +29,12 @@ data class CustomMealDto(
         return 0
     }
 
-    companion object CREATOR : Parcelable.Creator<CustomMealDto> {
-        override fun createFromParcel(parcel: Parcel): CustomMealDto {
-            return CustomMealDto(parcel)
+    companion object CREATOR : Parcelable.Creator<DbCustomMealDto> {
+        override fun createFromParcel(parcel: Parcel): DbCustomMealDto {
+            return DbCustomMealDto(parcel)
         }
 
-        override fun newArray(size: Int): Array<CustomMealDto?> {
+        override fun newArray(size: Int): Array<DbCustomMealDto?> {
             return arrayOfNulls(size)
         }
     }

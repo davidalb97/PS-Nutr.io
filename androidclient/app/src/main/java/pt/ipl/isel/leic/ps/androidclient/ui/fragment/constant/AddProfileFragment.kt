@@ -11,7 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import pt.ipl.isel.leic.ps.androidclient.R
-import pt.ipl.isel.leic.ps.androidclient.data.db.dto.InsulinProfileDto
+import pt.ipl.isel.leic.ps.androidclient.data.db.dto.DbInsulinProfileDto
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.InsulinProfilesVMProviderFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.InsulinProfilesRecyclerViewModel
 import java.time.LocalTime
@@ -91,7 +91,7 @@ class AddProfileFragment : Fragment() {
 
             // Creates profile if everything is ok until here
             val profile =
-                InsulinProfileDto(
+                DbInsulinProfileDto(
                     profileName.text.toString(),
                     startTimeUser.text.toString(),
                     endTimeUser.text.toString(),
@@ -122,11 +122,11 @@ class AddProfileFragment : Fragment() {
      */
     @SuppressLint("NewApi")
     private fun profileTimesValidation(
-        profile: InsulinProfileDto,
+        profileDb: DbInsulinProfileDto,
         cb: (Boolean) -> Unit
     ) {
-        val parsedStartTime = LocalTime.parse(profile.start_time)
-        val parsedEndTime = LocalTime.parse(profile.end_time)
+        val parsedStartTime = LocalTime.parse(profileDb.start_time)
+        val parsedEndTime = LocalTime.parse(profileDb.end_time)
 
         // Checks if start time is before end time
         if (parsedEndTime.isBefore(parsedStartTime)) {

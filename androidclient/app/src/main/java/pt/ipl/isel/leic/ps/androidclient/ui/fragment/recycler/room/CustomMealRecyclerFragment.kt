@@ -9,13 +9,13 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import pt.ipl.isel.leic.ps.androidclient.R
-import pt.ipl.isel.leic.ps.androidclient.data.db.dto.CustomMealDto
+import pt.ipl.isel.leic.ps.androidclient.data.db.dto.DbCustomMealDto
 import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.CustomMealRecyclerAdapter
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.tab.CALCULATOR_BUNDLE_FLAG
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.CustomMealRecyclerVMProviderFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.CustomMealRecyclerViewModel
 
-class CustomMealRecyclerFragment : ARoomRecyclerListFragment<CustomMealDto, CustomMealRecyclerViewModel>() {
+class CustomMealRecyclerFragment : ARoomRecyclerListFragment<DbCustomMealDto, CustomMealRecyclerViewModel>() {
 
     private val isCalculatorMode: Boolean by lazy {
         this.requireArguments().getBoolean(CALCULATOR_BUNDLE_FLAG)

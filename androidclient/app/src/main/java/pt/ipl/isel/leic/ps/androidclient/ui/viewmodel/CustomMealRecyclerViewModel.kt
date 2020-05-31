@@ -4,20 +4,20 @@ import android.os.Parcel
 import android.os.Parcelable
 import androidx.lifecycle.LiveData
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.mealRepository
-import pt.ipl.isel.leic.ps.androidclient.data.db.dto.CustomMealDto
+import pt.ipl.isel.leic.ps.androidclient.data.db.dto.DbCustomMealDto
 
-class CustomMealRecyclerViewModel() : ARecyclerViewModel<CustomMealDto>() {
+class CustomMealRecyclerViewModel() : ARecyclerViewModel<DbCustomMealDto>() {
 
     constructor(parcel: Parcel) : this() {
     }
 
-    fun addCustomMeal(customMeal: CustomMealDto) =
-        mealRepository.insertCustomMeal(customMeal)
+    fun addCustomMeal(dbCustomMeal: DbCustomMealDto) =
+        mealRepository.insertCustomMeal(dbCustomMeal)
 
-    fun deleteItem(customMeal: CustomMealDto) =
-        mealRepository.deleteCustomMeal(customMeal)
+    fun deleteItem(dbCustomMeal: DbCustomMealDto) =
+        mealRepository.deleteCustomMeal(dbCustomMeal)
 
-    override fun fetchLiveData(): LiveData<List<CustomMealDto>> =
+    override fun fetchLiveData(): LiveData<List<DbCustomMealDto>> =
         mealRepository.getAllCustomMeals()
 
     override fun writeToParcel(dest: Parcel?, flags: Int) {

@@ -8,15 +8,15 @@ import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import pt.ipl.isel.leic.ps.androidclient.R
-import pt.ipl.isel.leic.ps.androidclient.data.db.dto.InsulinProfileDto
+import pt.ipl.isel.leic.ps.androidclient.data.db.dto.DbInsulinProfileDto
 
 class InsulinProfileRecyclerViewHolder(
     view: ViewGroup,
     ctx: Context
-) : ARecyclerViewHolder<InsulinProfileDto>(view, ctx),
-    IDeletable<InsulinProfileDto> {
+) : ARecyclerViewHolder<DbInsulinProfileDto>(view, ctx),
+    IDeletable<DbInsulinProfileDto> {
 
-    override lateinit var onDelete: (InsulinProfileDto) -> Unit
+    override lateinit var onDelete: (DbInsulinProfileDto) -> Unit
 
     private val profileName: TextView =
         view.findViewById(R.id.insulin_profile_name)
@@ -33,7 +33,7 @@ class InsulinProfileRecyclerViewHolder(
     override var deleteButton: ImageButton =
         view.findViewById(R.id.delete_item_button)
 
-    override fun bindTo(item: InsulinProfileDto) {
+    override fun bindTo(item: DbInsulinProfileDto) {
         super.bindTo(item)
         setupTextFields()
         setupListeners()

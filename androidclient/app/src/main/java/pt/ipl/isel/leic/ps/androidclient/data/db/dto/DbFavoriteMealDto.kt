@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealInfo
 
 @Entity(tableName = "FavoriteMeal")
-data class FavoriteMealDto(
+data class DbFavoriteMealDto(
     @PrimaryKey val identifier: String,
     val name: String,
     val image_url: String

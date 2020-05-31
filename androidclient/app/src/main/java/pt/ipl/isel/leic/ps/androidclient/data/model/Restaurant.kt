@@ -2,7 +2,7 @@ package pt.ipl.isel.leic.ps.androidclient.data.model
 
 import android.os.Parcel
 import android.os.Parcelable
-import pt.ipl.isel.leic.ps.androidclient.data.api.dto.MealDto
+import pt.ipl.isel.leic.ps.androidclient.data.api.dto.ApiMealDto
 
 // TODO - add support for Room
 data class Restaurant(
@@ -12,7 +12,7 @@ data class Restaurant(
     val longitude: Float?,
     val votes: List<Boolean>?,
     val cuisines: List<String>?,
-    val meals: List<MealDto>?
+    val apiMeals: List<ApiMealDto>?
 ): Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readInt(),

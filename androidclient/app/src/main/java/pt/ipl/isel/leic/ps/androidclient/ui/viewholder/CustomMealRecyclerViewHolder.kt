@@ -10,18 +10,18 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.navigation.findNavController
 import pt.ipl.isel.leic.ps.androidclient.R
-import pt.ipl.isel.leic.ps.androidclient.data.db.dto.CustomMealDto
+import pt.ipl.isel.leic.ps.androidclient.data.db.dto.DbCustomMealDto
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.BUNDLED_MEAL_TAG
 
 class CustomMealRecyclerViewHolder(
     view: ViewGroup,
     ctx: Context
-) : ARecyclerViewHolder<CustomMealDto>(view, ctx),
-    IDeletable<CustomMealDto>,
-    ICalculatable<CustomMealDto> {
+) : ARecyclerViewHolder<DbCustomMealDto>(view, ctx),
+    IDeletable<DbCustomMealDto>,
+    ICalculatable<DbCustomMealDto> {
 
     var isCalculatorMode: Boolean = false
-    override lateinit var onDelete: (CustomMealDto) -> Unit
+    override lateinit var onDelete: (DbCustomMealDto) -> Unit
 
     private val customMealName: TextView =
         view.findViewById(R.id.custom_meal_name)
@@ -36,7 +36,7 @@ class CustomMealRecyclerViewHolder(
     override var calculatorButton: ImageButton =
         view.findViewById(R.id.add_custom_meal_to_calc)
 
-    override fun bindTo(item: CustomMealDto) {
+    override fun bindTo(item: DbCustomMealDto) {
         super.bindTo(item)
         setupViewHolderElements()
         setupListeners()

@@ -13,8 +13,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.db.InsulinCalculator
-import pt.ipl.isel.leic.ps.androidclient.data.db.dto.CustomMealDto
-import pt.ipl.isel.leic.ps.androidclient.data.db.dto.InsulinProfileDto
+import pt.ipl.isel.leic.ps.androidclient.data.db.dto.DbCustomMealDto
+import pt.ipl.isel.leic.ps.androidclient.data.db.dto.DbInsulinProfileDto
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.InsulinProfilesVMProviderFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.util.closeKeyboard
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.InsulinProfilesRecyclerViewModel
@@ -26,8 +26,8 @@ class CalculatorFragment : Fragment() {
 
     lateinit var viewModel: InsulinProfilesRecyclerViewModel
 
-    private var receivedMeal: CustomMealDto? = null
-    private var currentProfile: InsulinProfileDto? = null
+    private var receivedMealDb: DbCustomMealDto? = null
+    private var currentProfileDb: DbInsulinProfileDto? = null
     private val calculator = InsulinCalculator()
 
     private fun buildViewModel(savedInstanceState: Bundle?) {
@@ -62,7 +62,7 @@ class CalculatorFragment : Fragment() {
     private fun searchForBundledMeal() {
         val bundle: Bundle? = this.arguments
         if (bundle != null) {
-            receivedMeal = bundle.getParcelable(BUNDLED_MEAL_TAG)!!
+            receivedMealDb = bundle.getParcelable(BUNDLED_MEAL_TAG)!!
             addBundledMealHolder()
         }
     }
@@ -79,7 +79,7 @@ class CalculatorFragment : Fragment() {
         val selectedMealDeleteButton =
             view?.findViewById<ImageButton>(R.id.remove_meal_from_calc_button)
 
-        selectedMealName?.text = receivedMeal?.name
+        selectedMealName?.text = receivedMealDb?.name
         selectedMealCard?.visibility = View.VISIBLE
 
         selectedMealDeleteButton?.setOnClickListener { view ->
@@ -144,14 +144,14 @@ class CalculatorFragment : Fragment() {
     private fun getProfileAndCalculateResult() {
         val currentBloodGlucose =
             view?.findViewById<EditText>(R.id.user_blood_glucose)
-        getActualProfile { profile -> currentProfile = profile!! }
+        getActualProfile { profile -> currentProfileDb = profile!! }
         val result: Float
-        if (receivedMeal != null && currentProfile != null) {
+        if (receivedMealDb != null && currentProfileDb != null) {
             result =
                 calculator.calculateMealInsulin(
-                    currentProfile!!,
+                    currentProfileDb!!,
                     currentBloodGlucose!!.text.toString().toInt(),
-                    receivedMeal!!.carboAmount
+                    receivedMealDb!!.carboAmount
                 )
             showResultDialog(result)
 
@@ -165,7 +165,7 @@ class CalculatorFragment : Fragment() {
      * Searches for a profile that matches the current time
      */
     @SuppressLint("NewApi")
-    private fun getActualProfile(cb: (InsulinProfileDto?) -> Unit) {
+    private fun getActualProfile(cb: (DbInsulinProfileDto?) -> Unit) {
 
         // Gets actual time in hh:mm format
         val time = LocalTime.now()
@@ -230,7 +230,7 @@ class CalculatorFragment : Fragment() {
                 view?.findViewById(R.id.calc_meal_card)
             selectedMealCard?.visibility = View.INVISIBLE
         }
-        receivedMeal = null
+        receivedMealDb = null
         this.arguments?.remove(BUNDLED_MEAL_TAG)
     }
 }

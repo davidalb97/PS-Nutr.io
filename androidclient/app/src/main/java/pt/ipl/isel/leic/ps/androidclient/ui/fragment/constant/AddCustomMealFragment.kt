@@ -10,7 +10,7 @@ import android.widget.EditText
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import pt.ipl.isel.leic.ps.androidclient.R
-import pt.ipl.isel.leic.ps.androidclient.data.db.dto.CustomMealDto
+import pt.ipl.isel.leic.ps.androidclient.data.db.dto.DbCustomMealDto
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.CustomMealRecyclerVMProviderFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.CustomMealRecyclerViewModel
 
@@ -56,7 +56,7 @@ class AddCustomMealFragment : Fragment() {
 
             if (!anyFieldBlank) {
 
-                val customMeal = CustomMealDto(
+                val customMeal = DbCustomMealDto(
                     customMealName.text.toString(),
                     customMealPortion.text.toString().toInt(),
                     customMealGlucoseAmount.text.toString().toInt(),

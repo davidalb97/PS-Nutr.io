@@ -7,7 +7,7 @@ class RestaurantDto (
     val longitude: Float?,
     val votes: List<Boolean>?,
     val cuisines: List<String>?,
-    val meals: List<MealDto>?
+    val apiMeals: List<ApiMealDto>?
 ) {
     override fun equals(other: Any?): Boolean {
         return super.equals(other)

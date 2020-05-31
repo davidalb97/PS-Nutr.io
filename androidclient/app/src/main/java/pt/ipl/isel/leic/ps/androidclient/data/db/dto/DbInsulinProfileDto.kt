@@ -6,7 +6,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "InsulinProfile")
-data class InsulinProfileDto(
+data class DbInsulinProfileDto(
     @PrimaryKey val profile_name: String,
     val start_time: String,
     val end_time: String,
@@ -37,12 +37,12 @@ data class InsulinProfileDto(
         return 0
     }
 
-    companion object CREATOR : Parcelable.Creator<InsulinProfileDto> {
-        override fun createFromParcel(parcel: Parcel): InsulinProfileDto {
-            return InsulinProfileDto(parcel)
+    companion object CREATOR : Parcelable.Creator<DbInsulinProfileDto> {
+        override fun createFromParcel(parcel: Parcel): DbInsulinProfileDto {
+            return DbInsulinProfileDto(parcel)
         }
 
-        override fun newArray(size: Int): Array<InsulinProfileDto?> {
+        override fun newArray(size: Int): Array<DbInsulinProfileDto?> {
             return arrayOfNulls(size)
         }
     }

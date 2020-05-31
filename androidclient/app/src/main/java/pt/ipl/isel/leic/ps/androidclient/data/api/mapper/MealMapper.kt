@@ -1,11 +1,11 @@
 package pt.ipl.isel.leic.ps.androidclient.data.api.mapper
 
-import pt.ipl.isel.leic.ps.androidclient.data.api.dto.MealDto
+import pt.ipl.isel.leic.ps.androidclient.data.api.dto.ApiMealDto
 import pt.ipl.isel.leic.ps.androidclient.data.model.Meal
 
 class MealMapper :
-    IResponseMapper<MealDto, Meal> {
-    override fun map(dto: MealDto): Meal =
+    IResponseMapper<ApiMealDto, Meal> {
+    override fun map(dto: ApiMealDto): Meal =
         Meal(
             dto.identifier,
             dto.name,
@@ -18,6 +18,6 @@ class MealsMapper(
     private val mapper: MealMapper
 ) {
 
-    fun map(dtos: Array<MealDto>): List<Meal> =
+    fun map(dtos: Array<ApiMealDto>): List<Meal> =
         dtos.map { mapper.map(it) }
 }
