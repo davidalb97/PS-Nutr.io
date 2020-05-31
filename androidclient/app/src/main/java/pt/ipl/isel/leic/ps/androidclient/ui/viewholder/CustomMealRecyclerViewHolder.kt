@@ -19,7 +19,7 @@ class CustomMealRecyclerViewHolder(
     IDeletable<CustomMealDto>,
     ICalculatable<CustomMealDto> {
 
-    var addMode: Boolean = false
+    var isCalculatorMode: Boolean = false
     override lateinit var onDelete: (CustomMealDto) -> Unit
 
     private val customMealName: TextView =
@@ -63,13 +63,13 @@ class CustomMealRecyclerViewHolder(
 
     override fun onClick(v: View?) {
         turnInvisible()
-        if (addMode) {
+        if (isCalculatorMode) {
             sendToCalculator()
         }
     }
 
     override fun onLongClick(v: View?): Boolean {
-        if (!addMode) {
+        if (!isCalculatorMode) {
             turnVisible()
             deleteButton.setOnClickListener {
                 onDelete(this.item)

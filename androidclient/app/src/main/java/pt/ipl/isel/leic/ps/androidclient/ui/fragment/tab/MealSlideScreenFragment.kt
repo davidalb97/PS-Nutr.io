@@ -10,5 +10,6 @@ class MealSlideScreenFragment :
             Pair(RestaurantRecyclerFragment(), "Search by Restaurants"),
             Pair(MapFragment(), "Search by Location"),
             Pair(CuisinesRecyclerFragment(), "Search by Cuisines")
-        )
+        ),
+        false
     )

@@ -8,5 +8,6 @@ class YourMealsSlideScreenFragment :
         mapOf(
             Pair(CustomMealRecyclerFragment(), "Custom Meals"),
             Pair(FavoriteMealRecyclerFragment(), "Favorite Meals")
-        )
+        ),
+        false
     )

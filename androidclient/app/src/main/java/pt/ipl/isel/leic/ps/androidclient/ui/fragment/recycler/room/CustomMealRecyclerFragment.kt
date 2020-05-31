@@ -11,17 +11,17 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.db.dto.CustomMealDto
 import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.CustomMealRecyclerAdapter
+import pt.ipl.isel.leic.ps.androidclient.ui.fragment.tab.CALCULATOR_BUNDLE_FLAG
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.CustomMealRecyclerVMProviderFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.CustomMealRecyclerViewModel
 
-class CustomMealRecyclerFragment(
-    private val addToCalculatorMode: Boolean = false
-) : ARoomRecyclerListFragment<CustomMealDto, CustomMealRecyclerViewModel>() {
+class CustomMealRecyclerFragment : ARoomRecyclerListFragment<CustomMealDto, CustomMealRecyclerViewModel>() {
 
     private val adapter: CustomMealRecyclerAdapter by lazy {
         CustomMealRecyclerAdapter(
             viewModel,
-            this.requireContext()
+            this.requireContext(),
+            this.requireArguments().getBoolean(CALCULATOR_BUNDLE_FLAG)
         )
     }
 
@@ -38,10 +38,6 @@ class CustomMealRecyclerFragment(
         savedInstanceState: Bundle?
     ): View? {
         buildViewModel(savedInstanceState)
-        // If the mode is active and it's the first onCreateView, then update viewModel
-        if (!viewModel.addToCalculatorMode && this.addToCalculatorMode) {
-            viewModel.addToCalculatorMode = this.addToCalculatorMode
-        }
         return inflater.inflate(R.layout.custom_meals_list, container, false)
     }
 
@@ -57,7 +53,7 @@ class CustomMealRecyclerFragment(
         list.layoutManager = LinearLayoutManager(this.requireContext())
         startObserver()
         viewModel.updateListFromLiveData()
-        if (!viewModel.addToCalculatorMode) {
+        if (!this.requireArguments().getBoolean(CALCULATOR_BUNDLE_FLAG)) {
             addButton.visibility = View.VISIBLE
             addButton.setOnClickListener {
                 view.findNavController().navigate(R.id.nav_add_custom_meal)

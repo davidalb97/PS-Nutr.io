@@ -9,7 +9,8 @@ import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.CustomMealRecyclerViewMode
 
 class CustomMealRecyclerAdapter(
     model: CustomMealRecyclerViewModel,
-    ctx: Context
+    ctx: Context,
+    private val isCalculatorMode: Boolean
 ) : ARecyclerAdapter<CustomMealDto, CustomMealRecyclerViewModel, CustomMealRecyclerViewHolder>(
     model,
     ctx
@@ -18,7 +19,7 @@ class CustomMealRecyclerAdapter(
     override fun onBindViewHolder(holder: CustomMealRecyclerViewHolder, position: Int) {
         val item: CustomMealDto = viewModel.items[position]
         holder.bindTo(item)
-        holder.addMode = viewModel.addToCalculatorMode
+        holder.isCalculatorMode = isCalculatorMode
         holder.onDelete = { viewModel.deleteItem(item) }
     }
 

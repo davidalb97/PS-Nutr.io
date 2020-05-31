@@ -8,5 +8,6 @@ class RestaurantLocationSlideScreenFragment :
         mapOf(
             Pair(RestaurantRecyclerFragment(), "Search by name"),
             Pair(MealRecyclerFragment(), "Map")
-        )
+        ),
+        false
     )
