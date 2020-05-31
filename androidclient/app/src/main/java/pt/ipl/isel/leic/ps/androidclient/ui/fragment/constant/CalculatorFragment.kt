@@ -64,53 +64,85 @@ class CalculatorFragment : Fragment() {
         val bundle: Bundle? = this.arguments
         if (bundle != null) {
             receivedMeal = bundle.getParcelable(BUNDLED_MEAL_TAG)!!
+            addBundledMealHolder()
         }
     }
 
     /**
-     * Setups the button that allows the user to select meals for the
-     * calculation.
+     * Setups the CardView in the fragment that will hold the chosen
+     * meal.
+     */
+    private fun addBundledMealHolder() {
+        //(view as ViewGroup).addView()
+        //val mealCardCalc = R.layout.calculator_meal_card
+    }
+
+    /**
+     * Setups the button that allows the user to select meals.
      */
     private fun setupAddMealButtonListener() {
-        val addButton = view?.findViewById<ImageButton>(R.id.meal_add_button)
+        val addButton =
+            view?.findViewById<ImageButton>(R.id.meal_add_button)
         addButton?.setOnClickListener {
             view?.findNavController()?.navigate(R.id.nav_add_meal_to_calculator)
         }
     }
 
     /**
-     * Setups the calculation button behaviour. Starts the calculation
-     * based on existing user profiles.
+     * Setups the calculation button behaviour.
      */
     private fun setupCalculateButtonListener() {
-        val calculateButton = view?.findViewById<Button>(R.id.calculate_button)
-        val currentBloodGlucose = view?.findViewById<EditText>(R.id.user_blood_glucose)
+        val calculateButton =
+            view?.findViewById<Button>(R.id.calculate_button)
 
         calculateButton?.setOnClickListener {
-            var result: Float = 0.0f
-
-            viewModel.observe(this) {
-                if (it.isEmpty()) {
-                    Toast.makeText(
-                        this.context,
-                        "Please setup a profile before proceed",
-                        Toast.LENGTH_LONG
-                    ).show()
-                } else {
-                    getActualProfile { profile -> currentProfile = profile!! }
-
-                    if (receivedMeal != null && currentProfile != null) {
-                        result =
-                            calculator.calculateMealInsulin(
-                                currentProfile!!,
-                                currentBloodGlucose!!.text.toString().toInt(),
-                                receivedMeal!!.carboAmount
-                            )
-                        showResultDialog(result)
-                    }
-                }
-            }
+            observeExistingInsulinProfiles()
+            // Gets the profiles, unplugging the observer later
             viewModel.updateListFromLiveData()
+        }
+    }
+
+    /**
+     * Observes modifications in the LiveData
+     */
+    private fun observeExistingInsulinProfiles() {
+        viewModel.observe(this) { profilesList ->
+            if (profilesList.isEmpty())
+                showNoProfilesToast()
+            else
+                getValidProfileAndCalculateResult()
+        }
+    }
+
+    /**
+     * Pops up when there are no insulin profiles created
+     */
+    private fun showNoProfilesToast() {
+        Toast.makeText(
+            this.context,
+            "Please setup a profile before proceed",
+            Toast.LENGTH_LONG
+        ).show()
+    }
+
+    /**
+     * Gets a valid profile based on the current LocalTime;
+     * Gets the bundled meal, saved in this fragment field;
+     * Calculates the insulin dosage that needs to be injected.
+     */
+    private fun getValidProfileAndCalculateResult() {
+        val currentBloodGlucose =
+            view?.findViewById<EditText>(R.id.user_blood_glucose)
+        getActualProfile { profile -> currentProfile = profile!! }
+        val result: Float
+        if (receivedMeal != null && currentProfile != null) {
+            result =
+                calculator.calculateMealInsulin(
+                    currentProfile!!,
+                    currentBloodGlucose!!.text.toString().toInt(),
+                    receivedMeal!!.carboAmount
+                )
+            showResultDialog(result)
         }
     }
 
