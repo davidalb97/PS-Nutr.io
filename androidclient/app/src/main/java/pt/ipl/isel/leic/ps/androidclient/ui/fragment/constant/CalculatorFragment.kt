@@ -119,16 +119,16 @@ class CalculatorFragment : Fragment() {
     private fun observeExistingInsulinProfiles() {
         viewModel.observe(this) { profilesList ->
             if (profilesList.isEmpty())
-                showNoProfilesToast()
+                showNoExistingProfilesToast()
             else
-                getValidProfileAndCalculateResult()
+                getProfileAndCalculateResult()
         }
     }
 
     /**
      * Pops up when there are no insulin profiles created
      */
-    private fun showNoProfilesToast() {
+    private fun showNoExistingProfilesToast() {
         Toast.makeText(
             this.context,
             "Please setup a profile before proceed",
@@ -141,7 +141,7 @@ class CalculatorFragment : Fragment() {
      * Gets the bundled meal, saved in this fragment field;
      * Calculates the insulin dosage that needs to be injected.
      */
-    private fun getValidProfileAndCalculateResult() {
+    private fun getProfileAndCalculateResult() {
         val currentBloodGlucose =
             view?.findViewById<EditText>(R.id.user_blood_glucose)
         getActualProfile { profile -> currentProfile = profile!! }
