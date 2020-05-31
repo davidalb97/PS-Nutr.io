@@ -6,10 +6,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageButton
-import android.widget.Toast
+import android.widget.*
+import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
@@ -18,6 +16,7 @@ import pt.ipl.isel.leic.ps.androidclient.data.db.InsulinCalculator
 import pt.ipl.isel.leic.ps.androidclient.data.db.dto.CustomMealDto
 import pt.ipl.isel.leic.ps.androidclient.data.db.dto.InsulinProfileDto
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.InsulinProfilesVMProviderFactory
+import pt.ipl.isel.leic.ps.androidclient.ui.util.closeKeyboard
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.InsulinProfilesRecyclerViewModel
 import java.time.LocalTime
 
@@ -73,8 +72,19 @@ class CalculatorFragment : Fragment() {
      * meal.
      */
     private fun addBundledMealHolder() {
-        //(view as ViewGroup).addView()
-        //val mealCardCalc = R.layout.calculator_meal_card
+        val selectedMealCard =
+            view?.findViewById<CardView>(R.id.calc_meal_card)
+        val selectedMealName =
+            view?.findViewById<TextView>(R.id.calc_meal_name)
+        val selectedMealDeleteButton =
+            view?.findViewById<ImageButton>(R.id.remove_meal_from_calc_button)
+
+        selectedMealName?.text = receivedMeal?.name
+        selectedMealCard?.visibility = View.VISIBLE
+
+        selectedMealDeleteButton?.setOnClickListener { view ->
+            cleanBundledMeal(selectedMealCard)
+        }
     }
 
     /**
@@ -96,6 +106,7 @@ class CalculatorFragment : Fragment() {
             view?.findViewById<Button>(R.id.calculate_button)
 
         calculateButton?.setOnClickListener {
+            closeKeyboard(this.requireActivity())
             observeExistingInsulinProfiles()
             // Gets the profiles, unplugging the observer later
             viewModel.updateListFromLiveData()
@@ -143,6 +154,10 @@ class CalculatorFragment : Fragment() {
                     receivedMeal!!.carboAmount
                 )
             showResultDialog(result)
+
+            // Clean fields after show result
+            cleanCurrentGlucose(currentBloodGlucose)
+            cleanBundledMeal()
         }
     }
 
@@ -187,5 +202,35 @@ class CalculatorFragment : Fragment() {
         builder.setMessage("You need to inject $result insulin doses")
         builder.setPositiveButton(view?.context?.getString(R.string.Dialog_Ok)) { _, _ -> }
         builder.create().show()
+    }
+
+    /**
+     * Cleans the current blood glucose text field
+     */
+    private fun cleanCurrentGlucose(textBox: EditText? = null) {
+        if (textBox != null) {
+            textBox.text = null
+            textBox.clearFocus()
+        } else {
+            val currentBloodGlucose =
+                view?.findViewById<EditText>(R.id.user_blood_glucose)
+            currentBloodGlucose?.text = null
+            currentBloodGlucose?.clearFocus()
+        }
+    }
+
+    /**
+     * Cleans the bundled meal and the fragment meal holder
+     */
+    private fun cleanBundledMeal(card: CardView? = null) {
+        if (card != null) {
+            card.visibility = View.INVISIBLE
+        } else {
+            val selectedMealCard: CardView? =
+                view?.findViewById(R.id.calc_meal_card)
+            selectedMealCard?.visibility = View.INVISIBLE
+        }
+        receivedMeal = null
+        this.arguments?.remove(BUNDLED_MEAL_TAG)
     }
 }
