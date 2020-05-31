@@ -53,7 +53,7 @@ class InsulinCalculatorTests {
         val mealCarbsMock = 40
 
         Assert.assertEquals(
-            1.67f, // expected 1.42 insulin doses to be injected
+            1.67f, // expected 1.67 insulin doses to be injected
             insulinCalculator.calculateMealInsulin(
                 insulinProfileMock,
                 currentBloodGlucose,
