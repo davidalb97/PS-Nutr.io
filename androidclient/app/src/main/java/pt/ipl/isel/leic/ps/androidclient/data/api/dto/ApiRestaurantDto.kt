@@ -1,6 +1,6 @@
 package pt.ipl.isel.leic.ps.androidclient.data.api.dto
 
-class RestaurantDto (
+class ApiRestaurantDto (
     val id: Int,
     val name: String,
     val latitude: Float?,

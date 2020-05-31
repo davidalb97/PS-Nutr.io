@@ -5,7 +5,7 @@ import pt.ipl.isel.leic.ps.androidclient.data.api.Method
 import pt.ipl.isel.leic.ps.androidclient.data.api.RequestMapper
 import pt.ipl.isel.leic.ps.androidclient.data.api.URI_BASE
 import pt.ipl.isel.leic.ps.androidclient.data.api.UriBuilder
-import pt.ipl.isel.leic.ps.androidclient.data.api.dto.RestaurantDto
+import pt.ipl.isel.leic.ps.androidclient.data.api.dto.ApiRestaurantDto
 import pt.ipl.isel.leic.ps.androidclient.data.api.mapper.RestaurantMapper
 import pt.ipl.isel.leic.ps.androidclient.data.api.mapper.RestaurantsMapper
 import pt.ipl.isel.leic.ps.androidclient.data.model.Restaurant
@@ -33,7 +33,7 @@ private const val RESTAURANT_MEAL_REPORT =
 private const val RESTAURANT_MEAL_VOTE =
     "$RESTAURANT_MEAL/vote"
 
-val RESTAURANT_DTO = RestaurantDto::class.java
+val RESTAURANT_DTO = ApiRestaurantDto::class.java
 
 
 class RestaurantDataSource(
@@ -90,7 +90,7 @@ class RestaurantDataSource(
         requestMapper.requestAndRespond(
             Method.GET,
             uri,
-            Array<RestaurantDto>::class.java,
+            Array<ApiRestaurantDto>::class.java,
             restaurantsMapper::map,
             success,
             error
