@@ -17,11 +17,15 @@ import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.CustomMealRecyclerViewMode
 
 class CustomMealRecyclerFragment : ARoomRecyclerListFragment<CustomMealDto, CustomMealRecyclerViewModel>() {
 
+    private val isCalculatorMode: Boolean by lazy {
+        this.requireArguments().getBoolean(CALCULATOR_BUNDLE_FLAG)
+    }
+
     private val adapter: CustomMealRecyclerAdapter by lazy {
         CustomMealRecyclerAdapter(
             viewModel,
             this.requireContext(),
-            this.requireArguments().getBoolean(CALCULATOR_BUNDLE_FLAG)
+            isCalculatorMode
         )
     }
 
@@ -43,7 +47,6 @@ class CustomMealRecyclerFragment : ARoomRecyclerListFragment<CustomMealDto, Cust
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         noItemsLabel = view.findViewById(R.id.no_saved_meals)
         val addButton = view.findViewById<ImageButton>(R.id.add_custom_meal)
         addButton.visibility = View.INVISIBLE
@@ -53,7 +56,7 @@ class CustomMealRecyclerFragment : ARoomRecyclerListFragment<CustomMealDto, Cust
         list.layoutManager = LinearLayoutManager(this.requireContext())
         startObserver()
         viewModel.updateListFromLiveData()
-        if (!this.requireArguments().getBoolean(CALCULATOR_BUNDLE_FLAG)) {
+        if (!isCalculatorMode) {
             addButton.visibility = View.VISIBLE
             addButton.setOnClickListener {
                 view.findNavController().navigate(R.id.nav_add_custom_meal)

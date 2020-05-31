@@ -11,6 +11,7 @@ import android.widget.Toast
 import androidx.navigation.findNavController
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.db.dto.CustomMealDto
+import pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.BUNDLED_MEAL_TAG
 
 class CustomMealRecyclerViewHolder(
     view: ViewGroup,
@@ -101,7 +102,7 @@ class CustomMealRecyclerViewHolder(
 
     private fun sendToCalculator() {
         val bundle = Bundle()
-        bundle.putParcelable("bundledMeal", this.item)
+        bundle.putParcelable(BUNDLED_MEAL_TAG, this.item)
         view.findNavController().navigate(R.id.nav_calculator, bundle)
     }
 }

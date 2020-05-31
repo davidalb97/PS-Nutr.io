@@ -21,9 +21,14 @@ import pt.ipl.isel.leic.ps.androidclient.ui.provider.InsulinProfilesVMProviderFa
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.InsulinProfilesRecyclerViewModel
 import java.time.LocalTime
 
+const val BUNDLED_MEAL_TAG = "bundledMeal"
+
 class CalculatorFragment : Fragment() {
 
     lateinit var viewModel: InsulinProfilesRecyclerViewModel
+
+    private var receivedMeal: CustomMealDto? = null
+    private var currentProfile: InsulinProfileDto? = null
     private val calculator = InsulinCalculator()
 
     private fun buildViewModel(savedInstanceState: Bundle?) {
@@ -45,24 +50,43 @@ class CalculatorFragment : Fragment() {
     @SuppressLint("NewApi")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        searchForBundledMeal()
+        setupAddMealButtonListener()
+        setupCalculateButtonListener()
+    }
 
-        var receivedMeal: CustomMealDto? = null
-        var currentProfile: InsulinProfileDto? = null
-
+    /**
+     * Checks if the user already selected a meal for the calculation.
+     * This meal will be present inside the fragment bundle if it was
+     * already selected.
+     */
+    private fun searchForBundledMeal() {
         val bundle: Bundle? = this.arguments
         if (bundle != null) {
-            receivedMeal = bundle.getParcelable("bundledMeal")!!
+            receivedMeal = bundle.getParcelable(BUNDLED_MEAL_TAG)!!
         }
+    }
 
-        val addButton = view.findViewById<ImageButton>(R.id.meal_add_button)
-        val calculateButton = view.findViewById<Button>(R.id.calculate_button)
-        val currentBloodGlucose = view.findViewById<EditText>(R.id.user_blood_glucose)
-
-        addButton.setOnClickListener {
-            view.findNavController().navigate(R.id.nav_add_meal_to_calculator)
+    /**
+     * Setups the button that allows the user to select meals for the
+     * calculation.
+     */
+    private fun setupAddMealButtonListener() {
+        val addButton = view?.findViewById<ImageButton>(R.id.meal_add_button)
+        addButton?.setOnClickListener {
+            view?.findNavController()?.navigate(R.id.nav_add_meal_to_calculator)
         }
+    }
 
-        calculateButton.setOnClickListener {
+    /**
+     * Setups the calculation button behaviour. Starts the calculation
+     * based on existing user profiles.
+     */
+    private fun setupCalculateButtonListener() {
+        val calculateButton = view?.findViewById<Button>(R.id.calculate_button)
+        val currentBloodGlucose = view?.findViewById<EditText>(R.id.user_blood_glucose)
+
+        calculateButton?.setOnClickListener {
             var result: Float = 0.0f
 
             viewModel.observe(this) {
@@ -73,14 +97,14 @@ class CalculatorFragment : Fragment() {
                         Toast.LENGTH_LONG
                     ).show()
                 } else {
-                    getActualProfile { profile -> currentProfile = profile }
+                    getActualProfile { profile -> currentProfile = profile!! }
 
                     if (receivedMeal != null && currentProfile != null) {
                         result =
                             calculator.calculateMealInsulin(
                                 currentProfile!!,
-                                currentBloodGlucose.text.toString().toInt(),
-                                receivedMeal.carboAmount
+                                currentBloodGlucose!!.text.toString().toInt(),
+                                receivedMeal!!.carboAmount
                             )
                         showResultDialog(result)
                     }
@@ -91,7 +115,7 @@ class CalculatorFragment : Fragment() {
     }
 
     /**
-     * Searchs for a profile that matches the current time and returns it
+     * Searches for a profile that matches the current time
      */
     @SuppressLint("NewApi")
     private fun getActualProfile(cb: (InsulinProfileDto?) -> Unit) {
@@ -121,6 +145,10 @@ class CalculatorFragment : Fragment() {
         }
     }
 
+
+    /**
+     * Shows the result dialog window
+     */
     private fun showResultDialog(result: Float) {
         val builder = AlertDialog.Builder(requireContext())
         builder.setTitle("Results")
