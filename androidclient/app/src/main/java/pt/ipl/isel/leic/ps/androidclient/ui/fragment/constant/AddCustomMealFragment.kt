@@ -63,7 +63,9 @@ class AddCustomMealFragment : Fragment() {
                     customMealCarbsAmount.text.toString().toInt()
                 )
 
-                viewModel.addCustomMeal(customMeal)
+                viewModel
+                    .addCustomMeal(customMeal)
+                    .execute()
             }
         }
     }

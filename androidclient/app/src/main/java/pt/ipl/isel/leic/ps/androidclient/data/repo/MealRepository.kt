@@ -16,15 +16,14 @@ class MealRepository(private val dataSource: MealDataSource) {
         customMealMapper.mapToListModel(roomDb.customMealDao().getAll())
 
 
-    fun insertCustomMeal(dbCustomMeal: DbCustomMeal) {
+    fun insertCustomMeal(dbCustomMeal: DbCustomMeal): AsyncWorker<Unit, Unit> =
         AsyncWorker<Unit, Unit> {
             roomDb.customMealDao().insert(dbCustomMeal)
-        }.execute()
-    }
+        }
 
-    fun deleteCustomMeal(dbCustomMeal: DbCustomMeal) {
+
+    fun deleteCustomMeal(dbCustomMeal: DbCustomMeal): AsyncWorker<Unit, Unit> =
         AsyncWorker<Unit, Unit> {
             roomDb.customMealDao().delete(dbCustomMeal)
-        }.execute()
-    }
+        }
 }

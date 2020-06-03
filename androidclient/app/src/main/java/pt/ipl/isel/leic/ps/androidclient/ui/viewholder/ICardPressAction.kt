@@ -6,6 +6,5 @@ interface ICardPressAction:
     View.OnClickListener,
     View.OnLongClickListener {
 
-    fun turnVisible()
-    fun turnInvisible()
+    fun setButtonsVisibility(isVisible: Boolean)
 }

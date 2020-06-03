@@ -16,19 +16,19 @@ class InsulinProfileRepository {
         roomDb.insulinProfileDao().get(name)
 
 
-    fun addProfile(profileDb: pt.ipl.isel.leic.ps.androidclient.data.db.entity.DbInsulinProfile) =
+    fun addProfile(profileDb: DbInsulinProfile): AsyncWorker<Unit, Unit> =
         AsyncWorker<Unit, Unit> {
             roomDb.insulinProfileDao().insert(profileDb)
-        }.execute()
+        }
 
-    fun updateProfile(profileDb: pt.ipl.isel.leic.ps.androidclient.data.db.entity.DbInsulinProfile) =
+    fun updateProfile(profileDb: DbInsulinProfile): AsyncWorker<Unit, Unit> =
         AsyncWorker<Unit, Unit> {
             roomDb.insulinProfileDao().update(profileDb)
         }
 
-    fun deleteProfile(profileDb: pt.ipl.isel.leic.ps.androidclient.data.db.entity.DbInsulinProfile) =
+    fun deleteProfile(profileDb: DbInsulinProfile): AsyncWorker<Unit, Unit> =
         AsyncWorker<Unit, Unit> {
             roomDb.insulinProfileDao().delete(profileDb)
-        }.execute()
+        }
 }
 

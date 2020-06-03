@@ -9,6 +9,7 @@ import android.widget.TextView
 import android.widget.Toast
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.db.entity.DbInsulinProfile
+import pt.ipl.isel.leic.ps.androidclient.data.util.AsyncWorker
 
 class InsulinProfileRecyclerViewHolder(
     view: ViewGroup,
@@ -16,7 +17,7 @@ class InsulinProfileRecyclerViewHolder(
 ) : ARecyclerViewHolder<DbInsulinProfile>(view, ctx),
     IDeletable<DbInsulinProfile> {
 
-    override lateinit var onDelete: (DbInsulinProfile) -> Unit
+    override lateinit var onDelete: (DbInsulinProfile) -> AsyncWorker<Unit, Unit>
 
     private val profileName: TextView =
         view.findViewById(R.id.insulin_profile_name)
@@ -72,28 +73,28 @@ class InsulinProfileRecyclerViewHolder(
     }
 
     override fun onClick(v: View?) {
-        turnInvisible()
+        setButtonsVisibility(false)
     }
     override fun onLongClick(v: View?): Boolean {
-        turnVisible()
+        setButtonsVisibility(true)
         deleteButton.setOnClickListener {
             onDelete(this.item)
-            Toast.makeText(
-                ctx,
-                ctx.getString(R.string.DialogAlert_deleted), Toast.LENGTH_SHORT
-            ).show()
-            turnInvisible()
-            this.bindingAdapter?.notifyItemRemoved(layoutPosition)
+                .setOnPostExecute {
+                    Toast.makeText(
+                        ctx,
+                        ctx.getString(R.string.DialogAlert_deleted), Toast.LENGTH_SHORT
+                    ).show()
+                    setButtonsVisibility(false)
+                    this.bindingAdapter?.notifyItemRemoved(layoutPosition)
+                }.execute()
         }
         return true
     }
 
-    override fun turnVisible() {
-        deleteButton.visibility = View.VISIBLE
-    }
-
-    override fun turnInvisible() {
-        deleteButton.visibility = View.INVISIBLE
+    override fun setButtonsVisibility(isVisible: Boolean) {
+        val visibility =
+            if (isVisible) View.VISIBLE else View.INVISIBLE
+        deleteButton.visibility = visibility
     }
 
 }

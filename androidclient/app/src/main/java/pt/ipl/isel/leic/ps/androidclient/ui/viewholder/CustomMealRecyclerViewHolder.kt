@@ -11,6 +11,7 @@ import android.widget.Toast
 import androidx.navigation.findNavController
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.CustomMeal
+import pt.ipl.isel.leic.ps.androidclient.data.util.AsyncWorker
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.BUNDLED_MEAL_TAG
 
 class CustomMealRecyclerViewHolder(
@@ -21,7 +22,7 @@ class CustomMealRecyclerViewHolder(
     ICalculatable<CustomMeal> {
 
     var isCalculatorMode: Boolean = false
-    override lateinit var onDelete: (CustomMeal) -> Unit
+    override lateinit var onDelete: (CustomMeal) -> AsyncWorker<Unit, Unit>
 
     private val customMealName: TextView =
         view.findViewById(R.id.custom_meal_name)
@@ -63,7 +64,7 @@ class CustomMealRecyclerViewHolder(
     }
 
     override fun onClick(v: View?) {
-        turnInvisible()
+        setButtonsVisibility(false)
         if (isCalculatorMode) {
             sendToCalculator()
         }
@@ -71,15 +72,17 @@ class CustomMealRecyclerViewHolder(
 
     override fun onLongClick(v: View?): Boolean {
         if (!isCalculatorMode) {
-            turnVisible()
+            setButtonsVisibility(true)
             deleteButton.setOnClickListener {
                 onDelete(this.item)
-                Toast.makeText(
-                    ctx,
-                    ctx.getString(R.string.DialogAlert_deleted), Toast.LENGTH_SHORT
-                ).show()
-                turnInvisible()
-                this.bindingAdapter?.notifyItemRemoved(layoutPosition)
+                    .setOnPostExecute {
+                        Toast.makeText(
+                            ctx,
+                            ctx.getString(R.string.DialogAlert_deleted), Toast.LENGTH_SHORT
+                        ).show()
+                        setButtonsVisibility(false)
+                        this.bindingAdapter?.notifyItemRemoved(layoutPosition)
+                    }.execute()
             }
 
             calculatorButton.setOnClickListener {
@@ -90,14 +93,11 @@ class CustomMealRecyclerViewHolder(
         return true
     }
 
-    override fun turnVisible() {
-        deleteButton.visibility = View.VISIBLE
-        calculatorButton.visibility = View.VISIBLE
-    }
-
-    override fun turnInvisible() {
-        deleteButton.visibility = View.INVISIBLE
-        calculatorButton.visibility = View.INVISIBLE
+    override fun setButtonsVisibility(isVisible: Boolean) {
+        val visibility =
+            if (isVisible) View.VISIBLE else View.INVISIBLE
+        deleteButton.visibility = visibility
+        calculatorButton.visibility = visibility
     }
 
     private fun sendToCalculator() {

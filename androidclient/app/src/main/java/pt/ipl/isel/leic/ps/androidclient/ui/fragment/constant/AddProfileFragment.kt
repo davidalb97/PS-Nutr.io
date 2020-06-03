@@ -109,7 +109,9 @@ class AddProfileFragment : Fragment() {
                         Toast.LENGTH_LONG
                     ).show()
                 } else {
-                    viewModel.addInsulinProfile(profile)
+                    viewModel
+                        .addInsulinProfile(profile)
+                        .execute()
                     view.findNavController().navigate(R.id.nav_profile)
                 }
             }
