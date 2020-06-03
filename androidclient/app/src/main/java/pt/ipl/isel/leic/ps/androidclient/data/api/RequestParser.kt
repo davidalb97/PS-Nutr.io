@@ -32,10 +32,12 @@ enum class Method(val value: Int) {
 }
 
 /**
- * This class makes asynchronous HTTP requests and maps
- * the results to their respective data models
+ * This class makes asynchronous HTTP requests and parses
+ * the received data to objects (DTOs), as specified by
+ * the repository pattern.
+ * @Link https://miro.medium.com/max/1130/1*xxr1Idc8UoNELOzqXcJnag.png
  */
-class RequestMapper(
+class RequestParser(
     private val requestQueue: RequestQueue,
     private val jsonMapper: ObjectMapper
 ) {
@@ -45,18 +47,17 @@ class RequestMapper(
      * maps the Dtos to the respective data model using the functions
      * below.
      */
-    fun <Dto, Model> requestAndRespond(
+    fun <Dto> requestAndRespond(
         method: Method,
         urlStr: String,
         dtoClass: Class<Dto>,
-        mappingFunc: (Dto) -> Model,
-        onSuccess: (Model) -> Unit,
+        onSuccess: (Dto) -> Unit,
         onError: (VolleyError) -> Unit,
         reqPayload: Any? = null
     ) {
         request(method, urlStr, reqPayload, onError) { strResponse ->
             parseDto(strResponse, dtoClass) { dtoArray ->
-                onSuccess(mappingFunc(dtoArray))
+                onSuccess(dtoArray)
             }
         }
     }
@@ -95,7 +96,7 @@ class RequestMapper(
     /**
      * Parses string to Dto
      */
-    fun <Dto> parseDto(
+    private fun <Dto> parseDto(
         value: String,
         dtoClass: Class<Dto>,
         dtoConsumer: (Dto) -> Unit

@@ -13,8 +13,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.db.InsulinCalculator
-import pt.ipl.isel.leic.ps.androidclient.data.db.dto.DbCustomMealDto
-import pt.ipl.isel.leic.ps.androidclient.data.db.dto.DbInsulinProfileDto
+import pt.ipl.isel.leic.ps.androidclient.data.db.entity.DbCustomMeal
+import pt.ipl.isel.leic.ps.androidclient.data.db.entity.DbInsulinProfile
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.InsulinProfilesVMProviderFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.util.closeKeyboard
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.InsulinProfilesRecyclerViewModel
@@ -26,8 +26,8 @@ class CalculatorFragment : Fragment() {
 
     lateinit var viewModel: InsulinProfilesRecyclerViewModel
 
-    private var receivedMealDb: DbCustomMealDto? = null
-    private var currentProfileDb: DbInsulinProfileDto? = null
+    private var receivedMealDb: DbCustomMeal? = null
+    private var currentProfileDb: DbInsulinProfile? = null
     private val calculator = InsulinCalculator()
 
     private fun buildViewModel(savedInstanceState: Bundle?) {
@@ -79,7 +79,7 @@ class CalculatorFragment : Fragment() {
         val selectedMealDeleteButton =
             view?.findViewById<ImageButton>(R.id.remove_meal_from_calc_button)
 
-        selectedMealName?.text = receivedMealDb?.name
+        selectedMealName?.text = receivedMealDb?.customMealName
         selectedMealCard?.visibility = View.VISIBLE
 
         selectedMealDeleteButton?.setOnClickListener { view ->
@@ -165,7 +165,7 @@ class CalculatorFragment : Fragment() {
      * Searches for a profile that matches the current time
      */
     @SuppressLint("NewApi")
-    private fun getActualProfile(cb: (DbInsulinProfileDto?) -> Unit) {
+    private fun getActualProfile(cb: (DbInsulinProfile?) -> Unit) {
 
         // Gets actual time in hh:mm format
         val time = LocalTime.now()
@@ -184,9 +184,9 @@ class CalculatorFragment : Fragment() {
         }
         viewModel.items.forEach { savedProfile ->
             val parsedSavedStartTime =
-                LocalTime.parse(savedProfile.start_time)
+                LocalTime.parse(savedProfile.startTime)
             val parsedSavedEndTime =
-                LocalTime.parse(savedProfile.end_time)
+                LocalTime.parse(savedProfile.endTime)
             if (time.isAfter(parsedSavedStartTime) && time.isBefore(parsedSavedEndTime))
                 cb(savedProfile)
         }

@@ -2,13 +2,10 @@ package pt.ipl.isel.leic.ps.androidclient.data.api.datasource
 
 import com.android.volley.VolleyError
 import pt.ipl.isel.leic.ps.androidclient.data.api.Method
-import pt.ipl.isel.leic.ps.androidclient.data.api.RequestMapper
+import pt.ipl.isel.leic.ps.androidclient.data.api.RequestParser
 import pt.ipl.isel.leic.ps.androidclient.data.api.URI_BASE
 import pt.ipl.isel.leic.ps.androidclient.data.api.UriBuilder
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.ApiRestaurantDto
-import pt.ipl.isel.leic.ps.androidclient.data.api.mapper.RestaurantMapper
-import pt.ipl.isel.leic.ps.androidclient.data.api.mapper.RestaurantsMapper
-import pt.ipl.isel.leic.ps.androidclient.data.model.Restaurant
 
 const val LATITUDE_VAR = ":latitude"
 const val LONGITUDE_VAR = ":longitude"
@@ -37,23 +34,17 @@ val RESTAURANT_DTO = ApiRestaurantDto::class.java
 
 
 class RestaurantDataSource(
-    private val requestMapper: RequestMapper
+    private val requestParser: RequestParser
 ) {
 
     private val uriBuilder =
         UriBuilder()
-    private val restaurantMapper =
-        RestaurantMapper()
-    private val restaurantsMapper =
-        RestaurantsMapper(
-            restaurantMapper
-        )
 
     /**
      * ----------------------------- GETs -----------------------------
      */
     fun getById(
-        success: (Restaurant) -> Unit,
+        success: (ApiRestaurantDto) -> Unit,
         error: (VolleyError) -> Unit,
         uriParameters: HashMap<String, String>?,
         count: Int,
@@ -76,7 +67,7 @@ class RestaurantDataSource(
     }
 
     fun getNearby(
-        success: (List<Restaurant>) -> Unit,
+        success: (Array<ApiRestaurantDto>) -> Unit,
         error: (VolleyError) -> Unit,
         uriParameters: HashMap<String, String>?,
         count: Int,
@@ -87,11 +78,10 @@ class RestaurantDataSource(
 
         uri = uriBuilder.buildUri(uri, uriParameters)
 
-        requestMapper.requestAndRespond(
+        requestParser.requestAndRespond(
             Method.GET,
             uri,
             Array<ApiRestaurantDto>::class.java,
-            restaurantsMapper::map,
             success,
             error
         )

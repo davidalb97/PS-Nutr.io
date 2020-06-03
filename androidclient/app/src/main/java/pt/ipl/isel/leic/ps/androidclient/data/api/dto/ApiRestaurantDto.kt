@@ -8,12 +8,4 @@ class ApiRestaurantDto (
     val votes: List<Boolean>?,
     val cuisines: List<String>?,
     val apiMeals: List<ApiMealDto>?
-) {
-    override fun equals(other: Any?): Boolean {
-        return super.equals(other)
-    }
-
-    override fun hashCode(): Int {
-        return super.hashCode()
-    }
-}
+)

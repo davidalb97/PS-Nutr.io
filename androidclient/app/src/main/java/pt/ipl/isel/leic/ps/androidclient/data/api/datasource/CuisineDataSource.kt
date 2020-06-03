@@ -1,7 +1,7 @@
 package pt.ipl.isel.leic.ps.androidclient.data.api.datasource
 
 import pt.ipl.isel.leic.ps.androidclient.data.api.CUISINES
-import pt.ipl.isel.leic.ps.androidclient.data.api.RequestMapper
+import pt.ipl.isel.leic.ps.androidclient.data.api.RequestParser
 import pt.ipl.isel.leic.ps.androidclient.data.api.URI_BASE
 
 private const val CUISINE_ID_URI =
@@ -10,7 +10,7 @@ private const val CUISINE_ID_URI =
 //private val CUISINES_DTO = CuisinesIDto::class.java
 
 class CuisineDataSource(
-    private val requestMapper: RequestMapper
+    private val requestParser: RequestParser
 ) {
 
     /**

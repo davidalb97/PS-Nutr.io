@@ -3,7 +3,6 @@ package pt.ipl.isel.leic.ps.androidclient.data.model
 import android.os.Parcel
 import android.os.Parcelable
 
-// TODO - add support for Room
 data class Cuisine(val name: String) : Parcelable {
 
     constructor(parcel: Parcel) : this(parcel.readString()!!) {

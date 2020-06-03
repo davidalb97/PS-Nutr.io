@@ -3,17 +3,17 @@ package pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler
 import android.content.Context
 import android.view.ViewGroup
 import pt.ipl.isel.leic.ps.androidclient.R
-import pt.ipl.isel.leic.ps.androidclient.data.db.dto.DbInsulinProfileDto
+import pt.ipl.isel.leic.ps.androidclient.data.db.entity.DbInsulinProfile
 import pt.ipl.isel.leic.ps.androidclient.ui.viewholder.InsulinProfileRecyclerViewHolder
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.InsulinProfilesRecyclerViewModel
 
 class InsulinProfileRecyclerAdapter(
     viewModelInsulin: InsulinProfilesRecyclerViewModel,
     ctx: Context
-) : ARecyclerAdapter<DbInsulinProfileDto, InsulinProfilesRecyclerViewModel, InsulinProfileRecyclerViewHolder>(viewModelInsulin, ctx) {
+) : ARecyclerAdapter<DbInsulinProfile, InsulinProfilesRecyclerViewModel, InsulinProfileRecyclerViewHolder>(viewModelInsulin, ctx) {
 
     override fun onBindViewHolder(holder: InsulinProfileRecyclerViewHolder, position: Int) {
-        val item: DbInsulinProfileDto = viewModel.items[position]
+        val item: DbInsulinProfile = viewModel.items[position]
         holder.bindTo(item)
         holder.onDelete = { viewModel.deleteItem(item) }
     }

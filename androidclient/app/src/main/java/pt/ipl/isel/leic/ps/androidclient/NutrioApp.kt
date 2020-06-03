@@ -17,11 +17,11 @@ import pt.ipl.isel.leic.ps.androidclient.data.repo.CuisineRepository
 import pt.ipl.isel.leic.ps.androidclient.data.repo.InsulinProfileRepository
 import pt.ipl.isel.leic.ps.androidclient.data.repo.MealRepository
 import pt.ipl.isel.leic.ps.androidclient.data.repo.RestaurantRepository
-import pt.ipl.isel.leic.ps.androidclient.data.api.RequestMapper
+import pt.ipl.isel.leic.ps.androidclient.data.api.RequestParser
 
 const val TAG = "Nutr.io App"
 const val ROOM_DB_NAME = "nutrio-db"
-const val ROOM_DB_VERSION = 6
+const val ROOM_DB_VERSION = 11
 
 /**
  * The application context.
@@ -40,7 +40,7 @@ class NutrioApp : Application() {
          * Volley queue and json mapper initialization
          */
         private val requester by lazy {
-            RequestMapper(
+            RequestParser(
                 Volley.newRequestQueue(app),
                 jacksonObjectMapper()
                     .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)

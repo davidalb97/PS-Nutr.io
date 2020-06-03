@@ -8,15 +8,15 @@ import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import pt.ipl.isel.leic.ps.androidclient.R
-import pt.ipl.isel.leic.ps.androidclient.data.db.dto.DbInsulinProfileDto
+import pt.ipl.isel.leic.ps.androidclient.data.db.entity.DbInsulinProfile
 
 class InsulinProfileRecyclerViewHolder(
     view: ViewGroup,
     ctx: Context
-) : ARecyclerViewHolder<DbInsulinProfileDto>(view, ctx),
-    IDeletable<DbInsulinProfileDto> {
+) : ARecyclerViewHolder<DbInsulinProfile>(view, ctx),
+    IDeletable<DbInsulinProfile> {
 
-    override lateinit var onDelete: (DbInsulinProfileDto) -> Unit
+    override lateinit var onDelete: (DbInsulinProfile) -> Unit
 
     private val profileName: TextView =
         view.findViewById(R.id.insulin_profile_name)
@@ -33,7 +33,7 @@ class InsulinProfileRecyclerViewHolder(
     override var deleteButton: ImageButton =
         view.findViewById(R.id.delete_item_button)
 
-    override fun bindTo(item: DbInsulinProfileDto) {
+    override fun bindTo(item: DbInsulinProfile) {
         super.bindTo(item)
         setupTextFields()
         setupListeners()
@@ -41,19 +41,19 @@ class InsulinProfileRecyclerViewHolder(
 
     @SuppressLint("SetTextI18n")
     fun setupTextFields() {
-        profileName.text = item.profile_name
+        profileName.text = item.profileName
         val resources = ctx.resources
         startTime.text =
             resources.getString(R.string.start_time) +
-                    " ${item.start_time}"
+                    " ${item.startTime}"
 
         endTime.text =
             resources.getString(R.string.end_time) +
-                    " ${item.end_time}"
+                    " ${item.endTime}"
 
         glucoseObjective.text =
             resources.getString(R.string.glucose_objective_card) +
-                    " ${item.glucose_objective}"
+                    " ${item.glucoseObjective}"
 
         insulinSensitivityFactor.text =
             resources.getString(R.string.insulin_sensitivity_factor) +

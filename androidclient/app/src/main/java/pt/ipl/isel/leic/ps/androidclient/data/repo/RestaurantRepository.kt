@@ -2,6 +2,8 @@ package pt.ipl.isel.leic.ps.androidclient.data.repo
 
 import com.android.volley.VolleyError
 import pt.ipl.isel.leic.ps.androidclient.data.api.datasource.RestaurantDataSource
+import pt.ipl.isel.leic.ps.androidclient.data.api.dto.ApiRestaurantDto
+import pt.ipl.isel.leic.ps.androidclient.data.api.mapper.ApiRestaurantMapper
 import pt.ipl.isel.leic.ps.androidclient.data.model.Restaurant
 
 /**
@@ -10,8 +12,10 @@ import pt.ipl.isel.leic.ps.androidclient.data.model.Restaurant
  */
 class RestaurantRepository(private val dataSource: RestaurantDataSource) {
 
+    val apiMapper = ApiRestaurantMapper()
+
     fun getRestaurantById(
-        success: (Restaurant) -> Unit,
+        success: (ApiRestaurantDto) -> Unit,
         error: (VolleyError) -> Unit,
         uriParameters: HashMap<String, String>?,
         count: Int,
@@ -27,7 +31,7 @@ class RestaurantRepository(private val dataSource: RestaurantDataSource) {
     }
 
     fun getNearbyRestaurants(
-        success: (List<Restaurant>) -> Unit,
+        success: (Array<ApiRestaurantDto>) -> Unit,
         error: (VolleyError) -> Unit,
         uriParameters: HashMap<String, String>?,
         count: Int,
