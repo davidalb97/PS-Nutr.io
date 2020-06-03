@@ -5,13 +5,13 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.Relation
 
-@Entity
-data class DbFavoriteMeal(
+class DbFavoriteMeal(
     val mealId: String,
     @Embedded val meal: DbMeal,
     @Relation(
         parentColumn = "mealName",
-        entityColumn = "ingredientMealName"
+        entityColumn = "ingredientMealName",
+        entity = DbIngredient::class
     )
     val ingredients: List<DbIngredient>
 )
