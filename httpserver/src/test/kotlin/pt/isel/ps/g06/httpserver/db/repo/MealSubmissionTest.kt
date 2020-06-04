@@ -1,7 +1,6 @@
 package pt.isel.ps.g06.httpserver.db.repo
 
 import org.jdbi.v3.core.Jdbi
-import org.jdbi.v3.core.transaction.TransactionIsolationLevel
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.MethodOrderer
 import org.junit.jupiter.api.Test
@@ -11,16 +10,14 @@ import org.springframework.boot.test.context.SpringBootTest
 import pt.isel.ps.g06.httpserver.dataAccess.api.food.FoodApiType
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionContractType.*
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType
-import pt.isel.ps.g06.httpserver.dataAccess.db.dao.SubmissionDao
-import pt.isel.ps.g06.httpserver.dataAccess.db.mapper.SubmissionMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.MealDbRepository
-import pt.isel.ps.g06.httpserver.dataAccess.model.Ingredient
 import pt.isel.ps.g06.httpserver.db.Constants
 import pt.isel.ps.g06.httpserver.db.RepoAsserts
 import pt.isel.ps.g06.httpserver.db.bypassSubmissionEditLock
 import pt.isel.ps.g06.httpserver.db.inSandbox
 import pt.isel.ps.g06.httpserver.exception.InvalidInputDomain
 import pt.isel.ps.g06.httpserver.exception.InvalidInputException
+import pt.isel.ps.g06.httpserver.model.Ingredient
 import pt.isel.ps.g06.httpserver.model.TestCuisine
 import pt.isel.ps.g06.httpserver.model.TestIngredient
 import pt.isel.ps.g06.httpserver.springConfig.dto.DbEditableDto
@@ -304,7 +301,7 @@ class MealSubmissionTest {
                     expectedApiSubmissionIds = expectedIngredientSubmissionIds,
                     apiSubmitterId = expectedApiSubmitter.submitter_id,
                     submissionType = SubmissionType.INGREDIENT,
-                    apiIds = expectedIngredients.map { it.apiId }
+                    apiIds = expectedIngredients.map { it.id }
             )
             asserts.assertApiSubmissionInsertCount(it, expectedIngredientCount)
 

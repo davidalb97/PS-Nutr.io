@@ -26,7 +26,18 @@ abstract class FoodApi(
                 .thenApply(this::handleSearchMealResponse)
     }
 
+    fun getMealInfo(mealId: String): CompletableFuture<MealDto?> {
+        val uri = foodUri.getMealInfo(mealId)
+        val request = buildGetRequest(uri)
+
+        return httpClient
+                .sendAsync(request, HttpResponse.BodyHandlers.ofString())
+                .thenApply(this::handleMealInfoResponse)
+    }
+
     protected abstract fun handleSearchMealResponse(response: HttpResponse<String>): Collection<MealDto>
+
+    protected abstract fun handleMealInfoResponse(response: HttpResponse<String>): MealDto?
 
 //
 //    fun productsSearch(

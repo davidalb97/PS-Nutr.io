@@ -7,6 +7,9 @@ import pt.isel.ps.g06.httpserver.common.MEAL
 import pt.isel.ps.g06.httpserver.common.MEALS
 import pt.isel.ps.g06.httpserver.common.MEAL_ID_VALUE
 import pt.isel.ps.g06.httpserver.common.MEAL_VOTE
+import pt.isel.ps.g06.httpserver.common.exception.MealNotFoundException
+import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.output.SimplifiedMealOutput
+import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.output.toSimplifiedMealOutput
 import pt.isel.ps.g06.httpserver.model.Meal
 import pt.isel.ps.g06.httpserver.service.MealService
 
@@ -20,16 +23,22 @@ class MealController(private val mealService: MealService) {
             @RequestParam name: String,
             @RequestParam cuisines: Collection<String>?,
             @RequestParam apiType: String?
-    ): ResponseEntity<Collection<Meal>> {
+    ): ResponseEntity<Collection<SimplifiedMealOutput>> {
         val meals = mealService.searchMeals(name, cuisines, apiType)
 
         return ResponseEntity
                 .ok()
-                .body(meals)
+                .body(meals.map { toSimplifiedMealOutput(it) })
     }
 
     @GetMapping(MEAL)
-    fun getMealInformation(@PathVariable(MEAL_ID_VALUE) mealId: String) = ""
+    fun getMealInformation(
+            @PathVariable(MEAL_ID_VALUE) mealId: String,
+            @RequestParam apiType: String?
+    ): ResponseEntity<Meal> {
+        val meal = mealService.getMeal(mealId, apiType)
+        return meal?.let { ResponseEntity.ok().body(it) } ?: throw MealNotFoundException()
+    }
 
     @PostMapping(MEAL)
     fun postMeal(@PathVariable(MEAL_ID_VALUE) mealId: String) = ""

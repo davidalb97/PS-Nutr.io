@@ -8,13 +8,16 @@ import pt.isel.ps.g06.httpserver.dataAccess.api.food.SpoonacularDiet
 import pt.isel.ps.g06.httpserver.dataAccess.api.food.SpoonacularUnitTypes
 import java.net.URI
 
-private const val SPOONACULAR_BASE_URL = "https://api.spoonacular.com/"
-private const val SPOONACULAR_SEARCH_URL = "${SPOONACULAR_BASE_URL}recipes/search"
-private const val SPOONACULAR_INGREDIENT_INFO_URL = "${SPOONACULAR_BASE_URL}food/ingredients/"
-private const val SPOONACULAR_GROCERY_PRODUCTS_URL = "${SPOONACULAR_BASE_URL}food/products/search"
-private const val SPOONACULAR_INGREDIENT_SEARCH_AUTO_COMPL_URL = "${SPOONACULAR_BASE_URL}food/ingredients/autocomplete"
-private const val SPOONACULAR_PRODUCT_SEARCH_AUTO_COMPL_URL = "${SPOONACULAR_BASE_URL}food/products/suggest"
-private const val SPOONACULAR_RECIPE_INGREDIENTS_URL = "${SPOONACULAR_BASE_URL}recipes/"
+private const val BASE_URI = "https://api.spoonacular.com/"
+private const val RECIPES = "${BASE_URI}recipes"
+private const val SEARCH_MEALS = "${RECIPES}/search"
+private const val MEAL_INFO = "${BASE_URI}recipes/"
+
+private const val SPOONACULAR_INGREDIENT_INFO_URL = "${BASE_URI}food/ingredients/"
+private const val SPOONACULAR_GROCERY_PRODUCTS_URL = "${BASE_URI}food/products/search"
+private const val SPOONACULAR_INGREDIENT_SEARCH_AUTO_COMPL_URL = "${BASE_URI}food/ingredients/autocomplete"
+private const val SPOONACULAR_PRODUCT_SEARCH_AUTO_COMPL_URL = "${BASE_URI}food/products/suggest"
+private const val SPOONACULAR_RECIPE_INGREDIENTS_URL = "${BASE_URI}recipes/"
 
 private const val SPOONACULAR_API_KEY = "9d90d89e9ecc4844a88385816df04fec"
 
@@ -40,8 +43,9 @@ private const val INTOLERANCES = "intolerances"
 private const val META_INFO = "metaInformation"
 private const val AMOUNT = "amount"
 private const val UNIT = "unit"
+private const val INCLUDE_NUTRITION = "includeNutrition"
 
-private const val DEFAULT_AMOUNT = 100
+private const val DEFAULT_AMOUNT = 50
 
 @Component
 class SpoonacularUriBuilder : FoodUri {
@@ -50,7 +54,7 @@ class SpoonacularUriBuilder : FoodUri {
      * From Spoonacular [documentation.](https://spoonacular.com/food-api/docs#Search-Recipes)
      */
     override fun searchMeals(name: String, cuisines: Collection<String>?): URI {
-        var builder = baseUri(SPOONACULAR_SEARCH_URL)
+        var builder = baseUri(SEARCH_MEALS)
                 .queryParam(QUERY, name)
                 .queryParam(NUMBER, DEFAULT_AMOUNT)
 
@@ -58,6 +62,13 @@ class SpoonacularUriBuilder : FoodUri {
             builder = builder.queryParam(CUISINE, cuisines)
         }
         return builder.build().toUri()
+    }
+
+    override fun getMealInfo(mealId: String): URI {
+        return baseUri("$RECIPES/$mealId/information")
+                .queryParam(INCLUDE_NUTRITION, true)
+                .build()
+                .toUri()
     }
 
     //-------------------------------Products------------------------------------
@@ -129,7 +140,7 @@ class SpoonacularUriBuilder : FoodUri {
             limitLicense: Boolean?,
             instructionsRequired: Boolean?
     ): URI {
-        return baseUri(SPOONACULAR_SEARCH_URL)
+        return baseUri(SEARCH_MEALS)
                 .nonNullQueryParam(QUERY, recipeName)
                 .nonNullQueryParam(CUISINE, cuisines)
                 .nonNullQueryParam(DIET, diet)

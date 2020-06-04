@@ -10,6 +10,8 @@ import java.net.URI
 interface FoodUri {
     fun searchMeals(name: String, cuisines: Collection<String>?): URI
 
+    fun getMealInfo(mealId: String): URI
+
     fun productsSearch(
             query: String,
             minCalories: Int? = null,
