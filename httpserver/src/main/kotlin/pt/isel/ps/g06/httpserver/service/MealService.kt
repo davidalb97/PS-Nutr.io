@@ -2,10 +2,10 @@ package pt.isel.ps.g06.httpserver.service
 
 import org.springframework.stereotype.Service
 import pt.isel.ps.g06.httpserver.dataAccess.api.food.FoodApiType
-import pt.isel.ps.g06.httpserver.dataAccess.api.food.dto.MealDto
 import pt.isel.ps.g06.httpserver.dataAccess.api.food.mapper.FoodApiMapper
 import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.food.MealResponseMapper
 import pt.isel.ps.g06.httpserver.model.Meal
+import pt.isel.ps.g06.httpserver.util.log
 
 @Service
 class MealService(
@@ -19,17 +19,13 @@ class MealService(
 
         return foodApi
                 .searchMeals(name = name, cuisines = cuisines)
-                .handle(this::handleSearchResult)
+                .exceptionally { exception ->
+                    log(exception)
+                    return@exceptionally emptyList()
+                }
+                .thenApply { mealDtos ->
+                    mealDtos.map(mealResponseMapper::mapTo)
+                }
                 .get()
-    }
-
-
-    private fun handleSearchResult(meals: Collection<MealDto>?, exception: Throwable?): Collection<Meal> {
-        if (exception != null) {
-            //TODO proper handling here, but what?
-            return emptyList()
-        }
-
-        return meals?.map(mealResponseMapper::mapTo) ?: emptyList()
     }
 }
