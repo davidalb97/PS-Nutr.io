@@ -8,15 +8,10 @@ import org.junit.jupiter.api.TestMethodOrder
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import pt.isel.ps.g06.httpserver.dataAccess.api.food.FoodApiType
-import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionContractType
-import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionContractType.*
+import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionContractType.API
+import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionContractType.FAVORABLE
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.MealDbRepository
-import pt.isel.ps.g06.httpserver.db.Constants
-import pt.isel.ps.g06.httpserver.db.RepoAsserts
-import pt.isel.ps.g06.httpserver.db.bypassSubmissionEditLock
-import pt.isel.ps.g06.httpserver.db.inSandbox
-import pt.isel.ps.g06.httpserver.dataAccess.model.Ingredient
 import pt.isel.ps.g06.httpserver.db.*
 import pt.isel.ps.g06.httpserver.exception.InvalidInputDomain
 import pt.isel.ps.g06.httpserver.exception.InvalidInputException
@@ -77,7 +72,7 @@ class MealSubmissionTest {
 
             //Assert SubmissionContract VOTABLE, REPORTABLE contracts on meal submission
             asserts.assertSubmissionContract(it,
-                    submissionIds = listOf(insertedMealDto.submission_id),
+                    submissionIds = listOf(insertedMealDto.submission_id.toInt()),
                     expectedContracts = expectedMealContracts
             )
             asserts.assertSubmissionContractInsertCount(it, expectedMealContracts.size)
@@ -105,7 +100,7 @@ class MealSubmissionTest {
             //Assert MealCuisine insertions
             asserts.assertMealCuisines(it,
                     expectedCuisineIds = expectedCuisines.map { it.submission_id },
-                    resultSubmissionId = insertedMealDto.submission_id
+                    resultSubmissionId = insertedMealDto.submission_id.toInt()
             )
             asserts.assertMealCuisinesInsertCount(it, expectedCuisines.size)
 
@@ -168,7 +163,7 @@ class MealSubmissionTest {
 
             //Assert SubmissionContract VOTABLE, REPORTABLE contracts on meal submission
             asserts.assertSubmissionContract(it,
-                    submissionIds = listOf(insertedMealDto.submission_id),
+                    submissionIds = listOf(insertedMealDto.submission_id.toInt()),
                     expectedContracts = expectedMealContracts
             )
             asserts.assertSubmissionContractInsertCount(it, expectedMealContracts.size)
@@ -195,7 +190,7 @@ class MealSubmissionTest {
             //Assert MealCuisine insertions
             asserts.assertMealCuisines(it,
                     expectedCuisineIds = expectedCuisines.map { it.submission_id },
-                    resultSubmissionId = insertedMealDto.submission_id
+                    resultSubmissionId = insertedMealDto.submission_id.toInt()
             )
             asserts.assertMealCuisinesInsertCount(it, expectedCuisines.size)
 
@@ -236,7 +231,7 @@ class MealSubmissionTest {
                     ((expectedSubmissionId + 1)..(expectedSubmissionId + expectedIngredientCount))
                             .toList()
             val expectedIngredients = expectedIngredientSubmissionIds
-                    .map { Ingredient("Test Ingredient$it", "-$it", expectedFoodApiType) }
+                    .map { Ingredient("Test Ingredient$it", "-$it") }
 
             val insertedMealDto = mealRepo.insert(
                     expectedSubmitterId,
@@ -265,7 +260,7 @@ class MealSubmissionTest {
 
             //Assert SubmissionContract VOTABLE, REPORTABLE contracts on meal submission
             asserts.assertSubmissionContract(it,
-                    submissionIds = listOf(insertedMealDto.submission_id),
+                    submissionIds = listOf(insertedMealDto.submission_id.toInt()),
                     expectedContracts = expectedMealContracts
             )
             //Assert SubmissionContract API contracts on meal submission
@@ -305,7 +300,7 @@ class MealSubmissionTest {
             //Assert MealCuisine insertions
             asserts.assertMealCuisines(it,
                     expectedCuisineIds = expectedCuisines.map { it.submission_id },
-                    resultSubmissionId = insertedMealDto.submission_id
+                    resultSubmissionId = insertedMealDto.submission_id.toInt()
             )
             asserts.assertMealCuisinesInsertCount(it, expectedCuisines.size)
 

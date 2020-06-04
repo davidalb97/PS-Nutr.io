@@ -13,8 +13,7 @@ data class TestIngredient(
     fun toModel(): Ingredient {
         return Ingredient(
                 name,
-                apiId,
-                foodApi.apiType
+                apiId
         )
     }
 }

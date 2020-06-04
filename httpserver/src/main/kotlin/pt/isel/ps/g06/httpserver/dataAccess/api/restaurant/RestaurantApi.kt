@@ -31,7 +31,4 @@ abstract class RestaurantApi(
     abstract fun handleRestaurantInfoResponse(responseFuture: CompletableFuture<HttpResponse<String>>): CompletableFuture<RestaurantDto?>
 
     abstract fun handleNearbyRestaurantsResponse(responseFuture: CompletableFuture<HttpResponse<String>>): CompletableFuture<Collection<RestaurantDto>>
-
-    abstract fun buildGetRequest(uri: URI): HttpRequest
-    abstract fun handleNearbyRestaurantsResponse(response: HttpResponse<String>): Collection<RestaurantDto>
 }
