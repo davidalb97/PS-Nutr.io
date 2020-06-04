@@ -10,7 +10,7 @@ interface ApiCuisineDao {
     companion object {
         const val table = "ApiCuisine"
         const val submissionId = "submission_id"
-        const val cuisineId = "cuisine_id"
+        const val cuisineId = "cuisine_submission_id"
     }
 
     @SqlQuery("SELECT * FROM $table")
