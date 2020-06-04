@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cuisinesList"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <SearchView
+        android:id="@+id/search"
+        android:layout_width="match_parent"
+        android:background="@drawable/searchview_background"
+        android:layout_marginTop="10dp"
+        android:layout_height="50dp"
+        android:queryHint="@string/hint_cuisine_search"
+        android:layoutDirection="rtl">
+    </SearchView>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:visibility="invisible">
+    </ProgressBar>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/itemList"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/search"
+        tools:listitem="@layout/profile_submission_card">
+    </androidx.recyclerview.widget.RecyclerView>
+
+</RelativeLayout>

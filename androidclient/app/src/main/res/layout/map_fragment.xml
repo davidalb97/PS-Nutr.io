@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:mapbox="http://schemas.android.com/apk/res-auto">
+
+    <com.mapbox.mapboxsdk.maps.MapView
+        android:id="@+id/mapBoxView"
+        android:layout_width="match_parent"
+        android:layout_height="350dp"
+        mapbox:mapbox_cameraZoom="12">
+    </com.mapbox.mapboxsdk.maps.MapView>
+
+    <include
+        android:id="@+id/restaurant_location_list"
+        android:layout_below="@+id/mapBoxView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        layout="@layout/restaurant_list"/>
+
+
+</RelativeLayout>

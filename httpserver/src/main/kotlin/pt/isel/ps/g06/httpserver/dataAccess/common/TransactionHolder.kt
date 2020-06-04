@@ -5,7 +5,7 @@ import org.jdbi.v3.core.Jdbi
 
 class TransactionHolder(private val jdbi: Jdbi) {
 
-    fun <R> inTransaction(func: (Handle) -> R) {
-        jdbi.inTransaction<R, Exception>(func)
+    fun <R> inTransaction(func: (Handle) -> R): R {
+        return jdbi.inTransaction<R, Exception>(func)
     }
 }

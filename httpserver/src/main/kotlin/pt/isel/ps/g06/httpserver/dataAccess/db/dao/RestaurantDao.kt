@@ -3,6 +3,7 @@ package pt.isel.ps.g06.httpserver.dataAccess.db.dao
 import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbRestaurantDto
+import java.util.stream.Stream
 
 interface RestaurantDao {
 
@@ -21,7 +22,7 @@ interface RestaurantDao {
             "false" +
             ") <= :radius"
     )
-    fun getByCoordinates(@Bind latitude: Float, @Bind longitude: Float, @Bind radius: Int): List<DbRestaurantDto>
+    fun getByCoordinates(@Bind latitude: Float, @Bind longitude: Float, @Bind radius: Int): Collection<DbRestaurantDto>
 
     @SqlQuery("SELECT * FROM $table WHERE $id = :submissionId")
     fun getById(@Bind submissionId: Int): DbRestaurantDto?

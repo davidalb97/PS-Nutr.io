@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/profile_name_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginLeft="30dp"
+        android:text="@string/profile_name_label"
+        android:textColor="@android:color/background_dark"
+        android:textSize="24sp"
+        android:layout_gravity="center">
+    </TextView>
+
+    <EditText
+        android:id="@+id/profile_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:layout_gravity="center"
+        android:hint="@string/add_profile_name_hint" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginLeft="30dp"
+        android:text="@string/define_the_profile_time_period"
+        android:textColor="@android:color/background_dark"
+        android:textSize="24sp"
+        android:layout_gravity="center">
+    </TextView>
+
+    <RelativeLayout
+        android:id="@+id/time_pickers_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:gravity="center">
+
+        <RelativeLayout
+            android:id="@+id/start_time_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="40dp">
+            <Button
+                android:id="@+id/start_time_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Start time">
+            </Button>
+
+            <TextView
+                android:id="@+id/start_time_user"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/start_time_label">
+            </TextView>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/end_time_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/start_time_layout">
+            <Button
+                android:id="@+id/end_time_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:text="End time">
+            </Button>
+
+            <TextView
+                android:id="@+id/end_time_user"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/end_time_label">
+            </TextView>
+
+        </RelativeLayout>
+
+
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginLeft="30dp"
+        android:text="@string/glucose_objective"
+        android:textColor="@android:color/background_dark"
+        android:textSize="18sp"
+        android:layout_gravity="center">
+    </TextView>
+
+    <EditText
+        android:id="@+id/glucose_objective"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:hint="@string/glucose_object_hint">
+    </EditText>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginLeft="30dp"
+        android:text="@string/how_much_glucose_is_reduced_by_an_unit_of_insulin"
+        android:textColor="@android:color/background_dark"
+        android:textSize="14sp"
+        android:layout_gravity="center">
+    </TextView>
+
+    <EditText
+        android:id="@+id/glucose_amount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:hint="@string/glucose_amount_hint">
+    </EditText>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginLeft="30dp"
+        android:gravity="center"
+        android:text="@string/how_many_carbohydrates_are_lowered_by_1_insulin_dose"
+        android:textColor="@android:color/background_dark"
+        android:textSize="14sp"
+        android:layout_gravity="center">
+    </TextView>
+
+    <EditText
+        android:id="@+id/carbo_amount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:hint="@string/carbohydrate_amount">
+    </EditText>
+
+    <Button
+        android:id="@+id/create_profile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:layout_gravity="center"
+        android:text="@string/create_button">
+    </Button>
+
+</LinearLayout>
