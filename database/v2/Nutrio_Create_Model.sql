@@ -163,7 +163,6 @@ CREATE TABLE MealIngredient(
 	FOREIGN KEY(ingredient_submission_id) REFERENCES Ingredient(submission_id)
 );
 
--- Add to doc
 CREATE TABLE RestaurantCuisine(
 	restaurant_submission_id integer,
 	cuisine_submission_id integer,
@@ -172,7 +171,6 @@ CREATE TABLE RestaurantCuisine(
 	FOREIGN KEY(cuisine_submission_id) REFERENCES Cuisine(submission_id)
 );
 
--- Add to doc
 CREATE TABLE MealCuisine(
 	meal_submission_id integer,
 	cuisine_submission_id integer,

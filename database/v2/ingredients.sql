@@ -1,5 +1,6 @@
 --List of hardcoded ingredients
 
+AddIngredient('rice', 10);
 SELECT AddIngredient('green peas', 8);
 SELECT AddIngredient('broad beans', 7);
 SELECT AddIngredient('chickpea', 17);
@@ -18,6 +19,20 @@ SELECT AddIngredient('loaf of bread', 55);
 SELECT AddIngredient('corn starch', 90);
 SELECT AddIngredient('whole wheat flour', 65);
 SELECT AddIngredient('wheat flour (type-55)', 74);
+
+--Common food like rice, potato and pasta
+SELECT AddIngredient('rice, cooked', 65);
+SELECT AddIngredient('potato, roasted', 24);
+SELECT AddIngredient('potato, boiled', 19);
+SELECT AddIngredient('potato, mashed', 17);
+SELECT AddIngredient('sweet potato, roasted', 28);
+SELECT AddIngredient('sweet potato, boiled', 28);
+SELECT AddIngredient('french fries', 28);
+
+SELECT AddIngredient('', );
+
+
+
 
 --Delete function
 DROP FUNCTION IF EXISTS AddIngredient(varchar, integer);
