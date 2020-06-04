@@ -37,7 +37,7 @@ interface MealIngredientDao {
 
     @SqlQuery("DELETE FROM $table" +
             " WHERE $mealId = :submissionId" +
-            " AND $ingredientId in <deleteIngredientIds> RETURNING *")
+            " AND $ingredientId in (<deleteIngredientIds>) RETURNING *")
     fun deleteAllByMealIdAndIngredientIds(
             @Bind submissionId: Int,
             @BindList deleteIngredientIds: List<Int>

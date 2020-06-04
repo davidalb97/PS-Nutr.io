@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+    <PreferenceCategory app:title="Theme">
+
+        <SwitchPreferenceCompat
+            app:defaultValue="false"
+            app:key="notification_enabled"
+            app:summaryOff="Light mode is on"
+            app:summaryOn="Dark mode is on"
+            app:title="Dark mode" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="Data usage">
+
+        <SwitchPreferenceCompat
+            app:defaultValue="false"
+            app:key="notification_enabled"
+            app:summary="Data saving mode"
+            app:title="Mobile data mode" />
+
+    </PreferenceCategory>
+</PreferenceScreen>

@@ -8,7 +8,6 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbSubmissionDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.RestaurantDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.input.RestaurantInput
 import pt.isel.ps.g06.httpserver.model.Restaurant
-import java.util.concurrent.CompletableFuture
 
 private const val MAX_RADIUS = 1000
 
@@ -18,6 +17,8 @@ class RestaurantService(
         private val dbRestaurantRepository: RestaurantDbRepository,
         private val restaurantApiMapper: RestaurantApiMapper,
         private val restaurantResponseMapper: RestaurantResponseMapper
+        /*,
+        private val transactionHolder: TransactionHolder*/
 ) {
 
     fun getNearbyRestaurants(
@@ -26,21 +27,39 @@ class RestaurantService(
             name: String?,
             radius: Int?,
             apiType: String?
-    ): Set<Restaurant> {
+    ): Collection<Restaurant> {
         val chosenRadius = if (radius != null && radius <= MAX_RADIUS) radius else MAX_RADIUS
         val type = RestaurantApiType.getOrDefault(apiType)
         val restaurantApi = restaurantApiMapper.getRestaurantApi(type)
 
-        val apiRestaurants = CompletableFuture
-                .supplyAsync { restaurantApi.searchNearbyRestaurants(latitude, longitude, chosenRadius, name) }
-                .thenApply { it.map(restaurantResponseMapper::mapTo) }
+        //Get API restaurants
+        val apiRestaurants =
+                restaurantApi.searchNearbyRestaurants(latitude, longitude, chosenRadius, name)
+                        .thenApply {
+                            it.map(restaurantResponseMapper::mapTo)
+                        }
 
-        val dbRestaurants = dbRestaurantRepository
+        return dbRestaurantRepository
                 .getAllByCoordinates(latitude, longitude, chosenRadius)
                 .map(restaurantResponseMapper::mapTo)
+                .let { filterRedundantApiRestaurants(it, apiRestaurants.get()) }
 
-        //TODO Handle CompletableFuture exception
-        return filterRedundantApiRestaurants(dbRestaurants, apiRestaurants.get())
+        //Keeps an open transaction while we iterate the DB response Stream
+//        return transactionHolder.inTransaction {
+//
+//            //Get db restaurants
+//            dbRestaurantRepository
+//                    .getAllByCoordinates(latitude, longitude, chosenRadius)
+//                    //Must close database resources even when database row iteration fails
+//                    .use {
+//                        //Convert to sequence & map
+//                        val mapped = it.asSequence()
+//                                .map(restaurantResponseMapper::mapTo)
+//
+//                        //Return all restaurants
+//                        return@inTransaction filterRedundantApiRestaurants(mapped, apiRestaurants.get())
+//                    }
+//        }
     }
 
     /**
@@ -62,7 +81,7 @@ class RestaurantService(
         val restaurant = id
                 .toIntOrNull()
                 ?.let { dbRestaurantRepository.getById(it) }
-                ?: restaurantApi.getRestaurantInfo(id)
+                ?: restaurantApi.getRestaurantInfo(id).get()
 
         return restaurant?.let(restaurantResponseMapper::mapTo)
     }
@@ -78,18 +97,27 @@ class RestaurantService(
         )
     }
 
-    private fun filterRedundantApiRestaurants(dbRestaurants: Collection<Restaurant>, apiRestaurants: Collection<Restaurant>): Set<Restaurant> {
-        val result = dbRestaurants.toMutableSet()
+    private fun filterRedundantApiRestaurants(dbRestaurants: Collection<Restaurant>, apiRestaurants: Collection<Restaurant>): Collection<Restaurant> {
+        //Join db restaurants with filtered api restaurants
+        return dbRestaurants.union(
+                //Filter api restaurants that already exist in db
+                apiRestaurants.filter { apiRestaurant ->
+                    //Db does not contain a restaurant with the api identifier
+                    dbRestaurants.none { dbRestaurant -> apiRestaurant.identifier == dbRestaurant.identifier }
+                }
+        )
 
-        apiRestaurants.forEach {
-            if (!dbContainsRestaurant(result, it)) {
-                result.add(it)
-            }
-        }
-        return result
+//        val result = dbRestaurants.toMutableSet()
+//
+//        apiRestaurants.forEach {
+//            if (!dbContainsRestaurant(result, it)) {
+//                result.add(it)
+//            }
+//        }
+//        return result
     }
 
-    private fun dbContainsRestaurant(dbRestaurants: Collection<Restaurant>, restaurant: Restaurant): Boolean {
-        return dbRestaurants.any { dbRestaurant -> restaurant.identifier == dbRestaurant.identifier }
-    }
+//    private fun dbContainsRestaurant(dbRestaurants: Collection<Restaurant>, restaurant: Restaurant): Boolean {
+//        return dbRestaurants.any { dbRestaurant -> restaurant.identifier == dbRestaurant.identifier }
+//    }
 }

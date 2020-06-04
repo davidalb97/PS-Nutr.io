@@ -66,6 +66,12 @@ class Constants(val jdbi: Jdbi) {
     val submissionContractDtos = jdbi.open().attach(SubmissionContractDao::class.java)
             .getAll()
 
+    val restaurantMealDtos = jdbi.open().attach(RestaurantMealDao::class.java)
+            .getAll()
+
+    val portionDtos = jdbi.open().attach(PortionDao::class.java)
+            .getAll()
+
     val firstFoodApi = submitterDtos.filter {
         it.submitter_type == SubmitterType.API.toString()
     }.first { submitter ->

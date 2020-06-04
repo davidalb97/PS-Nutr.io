@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+xmlns:android="http://schemas.android.com/apk/res/android"
+android:layout_width="match_parent"
+android:layout_height="match_parent">
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:id="@+id/restaurant_general_details"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/restaurant_detail_image"
+                android:layout_width="175dp"
+                android:layout_height="175dp"
+                android:layout_margin="20dp">
+            </ImageView>
+
+            <TextView
+                android:id="@+id/meal_detail_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/restaurant_detail_image"
+                android:layout_marginTop="20dp"
+                android:text="@string/meal_example"
+                android:textStyle="bold"
+                android:textColor="@android:color/background_dark"
+                android:textSize="26sp">
+            </TextView>
+
+            <TextView
+                android:id="@+id/meal_detail_info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/restaurant_detail_image"
+                android:layout_below="@+id/meal_detail_title"
+                android:layout_marginTop="20dp"
+                android:text="@string/meal_detail_info"
+                android:textStyle="bold"
+                android:textColor="@android:color/background_dark"
+                android:textSize="20sp">
+            </TextView>
+
+        </RelativeLayout>
+
+        <RelativeLayout>
+            <TextView
+                android:id="@+id/vote_this_meal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:text="@string/vote_this_meal"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/background_dark">
+            </TextView>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:gravity="center"
+            android:layout_marginTop="10dp">
+
+            <Button
+                android:id="@+id/upvote"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="25dp"
+                android:text="@string/upvote"
+                android:textColor="@color/cardview_light_background"
+                android:background="@drawable/rect_material_button_shape">
+            </Button>
+
+            <Button
+                android:id="@+id/downvote"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@+id/upvote"
+                android:text="@string/upvote"
+                android:textColor="@color/cardview_light_background"
+                android:background="@drawable/rect_material_button_shape">
+            </Button>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_marginTop="10dp">
+
+            <ImageButton
+                android:id="@+id/insulin_add_button"
+                android:background="@drawable/material_button_shape"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:src="@drawable/ic_add"
+                android:layout_marginStart="20dp">
+            </ImageButton>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:text="@string/add_meal_to_calc"
+                android:textSize="18sp"
+                android:textColor="@android:color/background_dark"
+                android:layout_toEndOf="@+id/insulin_add_button"
+                android:gravity="center"
+                android:layout_centerVertical="true">
+            </TextView>
+
+        </RelativeLayout>
+
+        <!--Graph layout-->
+        <RelativeLayout>
+
+        </RelativeLayout>
+
+        <RelativeLayout>
+
+            <TextView
+                android:id="@+id/quantity_to_submit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginStart="20dp"
+                android:text="@string/quantity_to_submit"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/background_dark">
+            </TextView>
+
+            <SeekBar
+                android:id="@+id/quantity_slider"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginTop="10dp"
+                android:max="100"
+                android:progress="50"
+                android:layout_below="@+id/quantity_to_submit">
+            </SeekBar>
+
+            <Button
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/quantity_slider"
+                android:layout_marginTop="10dp"
+                android:layout_centerHorizontal="true"
+                android:text="Submit quantity"
+                android:textColor="@color/cardview_light_background"
+                android:background="@drawable/rect_material_button_shape">
+            </Button>
+
+        </RelativeLayout>
+
+    </TableLayout>
+
+</ScrollView>
