@@ -12,6 +12,7 @@ interface MealIngredientDao {
         const val table = "MealIngredient"
         const val mealId = "meal_submission_id"
         const val ingredientId = "ingredient_submission_id"
+        const val amount = "amount"
     }
 
     @SqlQuery("SELECT * FROM $table")
@@ -23,12 +24,15 @@ interface MealIngredientDao {
     @SqlQuery("SELECT * FROM $table WHERE $ingredientId = :ingredientId")
     fun getAllByIngredientId(@Bind ingredientId: Int): List<DbMealIngredientDto>
 
+    @SqlQuery("SELECT * FROM $table WHERE $amount = :mealAmount")
+    fun getAllByAmount(@Bind mealAmount: Int): List<DbMealIngredientDto>
+
     @SqlQuery("INSERT INTO $table($mealId, $ingredientId)" +
             " VALUES(:mealId, :ingredientId) RETURNING *")
     fun insert(@Bind mealId: Int, @Bind ingredientId: Int): DbMealIngredientDto
 
-    @SqlQuery("INSERT INTO $table($mealId, $ingredientId) values <mealIngredientParams> RETURNING *")
-    fun insertAll(@BindBeanList(propertyNames = [mealId, ingredientId])
+    @SqlQuery("INSERT INTO $table($mealId, $ingredientId, $amount) values <mealIngredientParams> RETURNING *")
+    fun insertAll(@BindBeanList(propertyNames = [mealId, ingredientId, amount])
                   mealIngredientParams: List<MealIngredientParam>
     ): List<DbMealIngredientDto>
 
@@ -45,4 +49,8 @@ interface MealIngredientDao {
 }
 
 //Variable names must match sql columns
-data class MealIngredientParam(val meal_submission_id: Int, val ingredient_submission_id: Int)
+data class MealIngredientParam(
+        val meal_submission_id: Int,
+        val ingredient_submission_id: Int,
+        val meal_amount: Int
+)

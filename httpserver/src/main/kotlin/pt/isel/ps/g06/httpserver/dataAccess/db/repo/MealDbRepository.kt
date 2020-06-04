@@ -266,10 +266,10 @@ class MealDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo(jdbi)
             insertAllIngredientContracts(handle, insertedIngredientSubmissionIds)
 
             //Insert new ingredients
-            insertAllIngredients(handle, insertedIngredientSubmissionIds, missingIngredients.map { it.name })
+            //insertAllIngredients(handle, insertedIngredientSubmissionIds, missingIngredients.map { it.name })
 
             //Insert all new Submission - ApiSubmission associations
-            insertAllIngredientApiSubmission(handle, insertedIngredientSubmissionIds, missingIngredients.map { it.id })
+            //insertAllIngredientApiSubmission(handle, insertedIngredientSubmissionIds, missingIngredients.map { it.id })
         }
 
         //Insert all new ingredient - meal associations
@@ -306,12 +306,12 @@ class MealDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo(jdbi)
         if(newIngredientSubmissionIds.isNotEmpty()) {
             handle.attach(MealIngredientDao::class.java)
                     .insertAll(newIngredientSubmissionIds.map {
-                        MealIngredientParam(mealSubmissionId, it)
+                        MealIngredientParam(mealSubmissionId, it, 100) // TODO
                     })
         }
     }
 
-    private fun insertAllIngredients(handle: Handle, submissionIds: List<Int>, ingredientNames: List<String>) {
+    /*private fun insertAllIngredients(handle: Handle, submissionIds: List<Int>, ingredientNames: List<String>) {
         //Insert all new ingredients
         handle.attach(IngredientDao::class.java).insertAll(
                 //Zip ingredient submission ids with ingredient name list
@@ -328,7 +328,7 @@ class MealDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo(jdbi)
                     ApiSubmissionParam(submissionId, apiId)
                 }
         )
-    }
+    }*/
 
     private fun updateCuisines(handle: Handle, submissionId: Int, cuisineNames: Collection<String>) {
         if (cuisineNames.isEmpty()) {
