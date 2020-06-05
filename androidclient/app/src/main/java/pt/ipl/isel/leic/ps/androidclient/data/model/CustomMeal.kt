@@ -4,26 +4,34 @@ import android.os.Parcel
 import android.os.Parcelable
 
 data class CustomMeal(
+    val dbId: Long = 0,
     val name: String,
-    val mealQuantity: Int,
-    val glucoseAmount: Int,
-    val carboAmount: Int,
-    val ingredients: Iterable<Ingredient>
+    val carbs: Int,
+    val amount: Int,
+    val unit: String,
+    val imageUrl: String?,
+    val ingredients: List<Ingredient>
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
-        parcel.readString()!!,
-        parcel.readInt(),
-        parcel.readInt(),
-        parcel.readInt(),
-        TODO("ingredients")
-    ) {
-    }
+        dbId = parcel.readLong(),
+        name = parcel.readString()!!,
+        carbs = parcel.readInt(),
+        amount = parcel.readInt(),
+        unit = parcel.readString()!!,
+        imageUrl = parcel.readString(),
+        ingredients = ArrayList<Ingredient>().also {
+            parcel.readList(it as List<Ingredient>, Ingredient::class.java.classLoader)
+        }
+    )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeLong(dbId)
         parcel.writeString(name)
-        parcel.writeInt(mealQuantity)
-        parcel.writeInt(glucoseAmount)
-        parcel.writeInt(carboAmount)
+        parcel.writeInt(carbs)
+        parcel.writeInt(amount)
+        parcel.writeString(unit)
+        parcel.writeString(imageUrl)
+        parcel.writeList(ingredients)
     }
 
     override fun describeContents(): Int {

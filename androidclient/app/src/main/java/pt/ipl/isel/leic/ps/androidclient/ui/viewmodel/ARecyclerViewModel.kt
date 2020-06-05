@@ -2,54 +2,31 @@ package pt.ipl.isel.leic.ps.androidclient.ui.viewmodel
 
 import android.os.Parcelable
 import androidx.lifecycle.*
+import pt.ipl.isel.leic.ps.androidclient.ui.util.LiveDataHandler
 
 /**
  * A generic View Model for Recycler Lists
  */
 abstract class ARecyclerViewModel<T> : ViewModel(), Parcelable {
 
-    var mediatorLiveData: MediatorLiveData<List<T>> = MediatorLiveData()
-    private var liveData: LiveData<List<T>>? = null
-    val items: List<T> get() = mediatorLiveData.value ?: emptyList()
-    private var preList: ArrayList<T> = ArrayList()
-
-    lateinit var onSuccess: (List<T>) -> Unit
-    lateinit var onError: (Exception) -> Unit
-
     /**
      * The parameters contains the pairs for the uri path and/or the query string
      */
     var parameters: HashMap<String, String> = hashMapOf()
     var skip = 0
+    var count = 0
 
-    /**
-     * Sets/updates a Recycler List with a passed item list
-     */
-    fun updateList(items: List<T>) {
-        preList.addAll(items)
-        mediatorLiveData.value = preList
-    }
+    lateinit var onError: (Throwable) -> Unit
+
+    protected val liveDataHandler = LiveDataHandler<T>()
+    val items: List<T> get() = liveDataHandler.mapped
 
     /**
      * Observes the LiveData, given a LifeCycleOwner and a MutableList
      */
     fun observe(owner: LifecycleOwner, observer: (List<T>) -> Unit) {
-        mediatorLiveData.observe(owner, Observer {
-            observer(it)
-        })
+        liveDataHandler.observe(owner, observer)
     }
 
-    /**
-     * Adds more items to the existing ones inside the Recycler List
-     */
-    fun updateListFromLiveData() {
-        if (liveData != null)
-            mediatorLiveData.removeSource(liveData!!)
-        liveData = fetchLiveData()
-        mediatorLiveData.addSource(liveData!!) {
-            mediatorLiveData.value = it
-        }
-    }
-
-    abstract fun fetchLiveData(): LiveData<List<T>>
+    abstract fun update()
 }

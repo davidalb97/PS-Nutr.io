@@ -44,10 +44,11 @@ class CuisinesRecyclerFragment : ARequestRecyclerListFragment<Cuisine, CuisineRe
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initRecyclerList(view)
-        setCallbackFunctions()
+        setErrorFunction()
         list.adapter = adapter
         list.layoutManager = LinearLayoutManager(this.requireContext())
         startObserver()
+
         //startScrollListener()
     }
 
@@ -58,16 +59,16 @@ class CuisinesRecyclerFragment : ARequestRecyclerListFragment<Cuisine, CuisineRe
             var minimumListSize = 1
 
             override fun loadMore() {
-                minimumListSize = viewModel.mediatorLiveData.value!!.size + 1
+                minimumListSize = viewModel.items.size + 1
                 if (!isLoading && progressBar.visibility == View.INVISIBLE) {
                     startLoading()
-                    viewModel.updateListFromLiveData()
+                    viewModel.update()
                     stopLoading()
                 }
             }
 
             override fun shouldGetMore(): Boolean =
-                !isLoading && minimumListSize < viewModel.mediatorLiveData.value!!.size
+                !isLoading && minimumListSize < viewModel.items.size
         })
     }
 }

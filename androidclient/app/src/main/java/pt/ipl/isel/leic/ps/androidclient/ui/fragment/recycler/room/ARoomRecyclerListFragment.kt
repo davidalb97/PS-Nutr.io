@@ -17,15 +17,4 @@ abstract class ARoomRecyclerListFragment<M : Any, VM : ARecyclerViewModel<M>>
             view.findViewById(R.id.itemList) as RecyclerView
         list.setHasFixedSize(true)
     }
-
-    override fun startObserver() {
-        viewModel.observe(this) {
-            list.adapter?.notifyDataSetChanged()
-            if (viewModel.mediatorLiveData.value!!.isEmpty()) {
-                noItemsLabel.visibility = View.VISIBLE
-            } else {
-                noItemsLabel.visibility = View.INVISIBLE
-            }
-        }
-    }
 }

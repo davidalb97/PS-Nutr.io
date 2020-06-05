@@ -5,7 +5,7 @@ import pt.ipl.isel.leic.ps.androidclient.data.api.Method
 import pt.ipl.isel.leic.ps.androidclient.data.api.RequestParser
 import pt.ipl.isel.leic.ps.androidclient.data.api.URI_BASE
 import pt.ipl.isel.leic.ps.androidclient.data.api.UriBuilder
-import pt.ipl.isel.leic.ps.androidclient.data.api.dto.ApiRestaurantDto
+import pt.ipl.isel.leic.ps.androidclient.data.api.dto.InputRestaurantDto
 
 const val LATITUDE_VAR = ":latitude"
 const val LONGITUDE_VAR = ":longitude"
@@ -30,7 +30,7 @@ private const val RESTAURANT_MEAL_REPORT =
 private const val RESTAURANT_MEAL_VOTE =
     "$RESTAURANT_MEAL/vote"
 
-val RESTAURANT_DTO = ApiRestaurantDto::class.java
+val RESTAURANT_DTO = InputRestaurantDto::class.java
 
 
 class RestaurantDataSource(
@@ -44,7 +44,7 @@ class RestaurantDataSource(
      * ----------------------------- GETs -----------------------------
      */
     fun getById(
-        success: (ApiRestaurantDto) -> Unit,
+        success: (InputRestaurantDto) -> Unit,
         error: (VolleyError) -> Unit,
         uriParameters: HashMap<String, String>?,
         count: Int,
@@ -67,7 +67,7 @@ class RestaurantDataSource(
     }
 
     fun getNearby(
-        success: (Array<ApiRestaurantDto>) -> Unit,
+        success: (Array<InputRestaurantDto>) -> Unit,
         error: (VolleyError) -> Unit,
         uriParameters: HashMap<String, String>?,
         count: Int,
@@ -81,7 +81,7 @@ class RestaurantDataSource(
         requestParser.requestAndRespond(
             Method.GET,
             uri,
-            Array<ApiRestaurantDto>::class.java,
+            Array<InputRestaurantDto>::class.java,
             success,
             error
         )

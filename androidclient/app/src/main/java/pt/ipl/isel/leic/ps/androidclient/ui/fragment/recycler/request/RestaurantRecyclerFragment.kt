@@ -5,12 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SearchView
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.Restaurant
 import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.RestaurantRecyclerAdapter
-import pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler.ARecyclerListFragment
 import pt.ipl.isel.leic.ps.androidclient.ui.listener.ScrollListener
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.RestaurantRecyclerVMProviderFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.RestaurantRecyclerViewModel
@@ -50,8 +50,8 @@ class RestaurantRecyclerFragment :
         super.onViewCreated(view, savedInstanceState)
 
         initRecyclerList(view)
-        setCallbackFunctions()
-        viewModel.getNearbyRestaurants()
+        setErrorFunction()
+        viewModel.update()
         list.adapter = adapter
         list.layoutManager = LinearLayoutManager(this.requireContext())
         startObserver()
@@ -78,16 +78,16 @@ class RestaurantRecyclerFragment :
             var minimumListSize = 1
 
             override fun loadMore() {
-                minimumListSize = viewModel.mediatorLiveData.value!!.size + 1
+                minimumListSize = viewModel.items.size + 1
                 if (!isLoading && progressBar.visibility == View.INVISIBLE) {
                     startLoading()
-                    viewModel.updateListFromLiveData()
+                    viewModel.update()
                     stopLoading()
                 }
             }
 
             override fun shouldGetMore(): Boolean =
-                !isLoading && minimumListSize < viewModel.mediatorLiveData.value!!.size
+                !isLoading && minimumListSize < viewModel.items.size
         })
     }
 }

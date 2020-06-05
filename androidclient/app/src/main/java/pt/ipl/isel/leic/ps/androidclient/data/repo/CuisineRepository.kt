@@ -7,7 +7,7 @@ class CuisineRepository(private val dataSource: CuisineDataSource) {
 
     fun getCuisines(
         success: (List<Cuisine>) -> Unit,
-        error: () -> Unit,
+        error: (Throwable) -> Unit,
         uriParameters: HashMap<String, String>?,
         count: Int,
         skip: Int

@@ -6,8 +6,14 @@ import com.android.volley.RequestQueue
 import com.android.volley.Response
 import com.android.volley.VolleyError
 import com.fasterxml.jackson.databind.ObjectMapper
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.withContext
 import pt.ipl.isel.leic.ps.androidclient.TAG
-import pt.ipl.isel.leic.ps.androidclient.data.util.AsyncWorker
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+import kotlin.coroutines.suspendCoroutine
 
 const val ADDRESS = "10.0.2.2" // Loopback for the host machine
 const val PORT = "8080"
@@ -62,6 +68,45 @@ class RequestParser(
         }
     }
 
+    suspend fun <Dto> coroutineRequestAndParse(
+        method: Method,
+        urlStr: String,
+        dtoClass: Class<Dto>,
+        onError: (Exception) -> Unit,
+        reqPayload: Any? = null
+    ): Dto? {
+        return withContext(Dispatchers.IO) {
+            try {
+                val rsp = coroutineRequest(method, urlStr, reqPayload)
+                return@withContext jsonMapper.readValue(rsp, dtoClass)
+            } catch (e: Exception) {
+                onError(e)
+                return@withContext null
+            }
+        }
+    }
+
+    suspend fun coroutineRequest(
+        method: Method,
+        urlStr: String,
+        reqPayload: Any? = null
+    ) = suspendCoroutine<String> { continuation ->
+        //Request payload serialization async worker
+        //Passed payload to String
+        val payloadStr = jsonMapper.writeValueAsString(reqPayload)
+
+        //Custom string request that will allow a string payload
+        val jsonRequest =
+            BodyStringRequest(
+                method.value,
+                urlStr,
+                payloadStr,
+                Response.Listener { continuation.resume(it) },
+                Response.ErrorListener { continuation.resumeWithException(it) }
+            )
+        requestQueue.add(jsonRequest)
+    }
+
     /**
      * Makes an asynchronous request with an optional payload
      */
@@ -75,22 +120,19 @@ class RequestParser(
         Log.v(TAG, urlStr)
 
         //Request payload serialization async worker
-        AsyncWorker<Unit, Unit> {
+        //Passed payload to String
+        val payloadStr = jsonMapper.writeValueAsString(reqPayload)
 
-            //Passed payload to String
-            val payloadStr = jsonMapper.writeValueAsString(reqPayload)
-
-            //Custom string request that will allow a string payload
-            val jsonRequest =
-                BodyStringRequest(
-                    method.value,
-                    urlStr,
-                    payloadStr,
-                    Response.Listener { responseConsumer(it!!) },
-                    Response.ErrorListener { onError(it) }
-                )
-            requestQueue.add(jsonRequest)
-        }.execute()
+        //Custom string request that will allow a string payload
+        val jsonRequest =
+            BodyStringRequest(
+                method.value,
+                urlStr,
+                payloadStr,
+                Response.Listener { responseConsumer(it!!) },
+                Response.ErrorListener { onError(it) }
+            )
+        requestQueue.add(jsonRequest)
     }
 
     /**

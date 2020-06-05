@@ -4,18 +4,36 @@ import android.os.Parcel
 import android.os.Parcelable
 
 data class Ingredient(
-    val id: String?,
-    val name: String?
+    val dbId: Long = 0,
+    val dbMealId: Long = 0,
+    val submissionId: Int,
+    val name: String,
+    val carbs: Int,
+    val amount: Int,
+    val unit: String,
+    val imageUrl: String?
 ): Parcelable {
+
     constructor(parcel: Parcel) : this(
-        parcel.readString(),
-        parcel.readString()
-    ) {
-    }
+        dbId = parcel.readLong(),
+        dbMealId = parcel.readLong(),
+        submissionId = parcel.readInt(),
+        name = parcel.readString()!!,
+        carbs = parcel.readInt(),
+        amount = parcel.readInt(),
+        unit = parcel.readString()!!,
+        imageUrl = parcel.readString()
+    )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(id)
+        parcel.writeLong(dbId)
+        parcel.writeLong(dbMealId)
+        parcel.writeInt(submissionId)
         parcel.writeString(name)
+        parcel.writeInt(carbs)
+        parcel.writeInt(amount)
+        parcel.writeString(unit)
+        parcel.writeString(imageUrl)
     }
 
     override fun describeContents(): Int {

@@ -8,16 +8,16 @@ import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import pt.ipl.isel.leic.ps.androidclient.R
-import pt.ipl.isel.leic.ps.androidclient.data.db.entity.DbInsulinProfile
+import pt.ipl.isel.leic.ps.androidclient.data.model.InsulinProfile
 import pt.ipl.isel.leic.ps.androidclient.data.util.AsyncWorker
 
 class InsulinProfileRecyclerViewHolder(
     view: ViewGroup,
     ctx: Context
-) : ARecyclerViewHolder<DbInsulinProfile>(view, ctx),
-    IDeletable<DbInsulinProfile> {
+) : ARecyclerViewHolder<InsulinProfile>(view, ctx),
+    IDeletable<InsulinProfile> {
 
-    override lateinit var onDelete: (DbInsulinProfile) -> AsyncWorker<Unit, Unit>
+    override lateinit var onDelete: (InsulinProfile) -> AsyncWorker<Unit, Unit>
 
     private val profileName: TextView =
         view.findViewById(R.id.insulin_profile_name)
@@ -34,7 +34,7 @@ class InsulinProfileRecyclerViewHolder(
     override var deleteButton: ImageButton =
         view.findViewById(R.id.delete_item_button)
 
-    override fun bindTo(item: DbInsulinProfile) {
+    override fun bindTo(item: InsulinProfile) {
         super.bindTo(item)
         setupTextFields()
         setupListeners()

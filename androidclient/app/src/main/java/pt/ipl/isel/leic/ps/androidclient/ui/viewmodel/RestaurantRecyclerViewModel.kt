@@ -24,23 +24,15 @@ class RestaurantRecyclerViewModel : ARecyclerViewModel<Restaurant>() {
         )
     }*/
 
-    fun getNearbyRestaurants() {
-        val successFunction: (List<Restaurant>) -> Unit = {
-            updateList(it.toList())
-            onSuccess(it.toList())
-        }
+    override fun update() {
         restaurantRepository.getNearbyRestaurants(
-            successFunction,
+            liveDataHandler::add,
             onError,
             parameters,
             COUNT,
             skip
         )
     }
-
-    override fun fetchLiveData(): LiveData<List<Restaurant>> =
-        TODO()
-
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         TODO()

@@ -3,7 +3,6 @@ package pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler
 import android.content.Context
 import android.view.ViewGroup
 import pt.ipl.isel.leic.ps.androidclient.R
-import pt.ipl.isel.leic.ps.androidclient.data.db.entity.DbCustomMeal
 import pt.ipl.isel.leic.ps.androidclient.data.model.CustomMeal
 import pt.ipl.isel.leic.ps.androidclient.ui.viewholder.CustomMealRecyclerViewHolder
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.CustomMealRecyclerViewModel

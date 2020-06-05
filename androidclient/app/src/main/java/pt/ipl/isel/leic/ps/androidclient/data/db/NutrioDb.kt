@@ -3,21 +3,25 @@ package pt.ipl.isel.leic.ps.androidclient.data.db
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import pt.ipl.isel.leic.ps.androidclient.ROOM_DB_VERSION
-import pt.ipl.isel.leic.ps.androidclient.data.db.dao.InsulinProfileDao
-import pt.ipl.isel.leic.ps.androidclient.data.db.dao.CustomMealDao
-import pt.ipl.isel.leic.ps.androidclient.data.db.dao.FavoriteMealDao
-import pt.ipl.isel.leic.ps.androidclient.data.db.dao.IngredientDao
+import pt.ipl.isel.leic.ps.androidclient.data.db.dao.*
 import pt.ipl.isel.leic.ps.androidclient.data.db.entity.*
+import pt.ipl.isel.leic.ps.androidclient.data.db.junction.DbApiMealJunction
+import pt.ipl.isel.leic.ps.androidclient.data.db.junction.DbCustomMealJunction
+import pt.ipl.isel.leic.ps.androidclient.data.db.junction.DbFavoriteMealJunction
 
 @Database(
     entities =
     [
         //Restaurant::class,
-        DbCustomMeal::class,
-        DbFavoriteMeal::class,
-        DbIngredient::class,
+        DbApiMealEntity::class,
+        DbApiMealJunction::class,
+        DbCustomMealEntity::class,
+        DbCustomMealJunction::class,
+        DbFavoriteMealEntity::class,
+        DbFavoriteMealJunction::class,
+        DbIngredientEntity::class,
         //Cuisine::class,
-        DbInsulinProfile::class
+        InsulinProfileEntity::class
     ],
     version = ROOM_DB_VERSION
 )
@@ -25,9 +29,11 @@ abstract class NutrioDb : RoomDatabase() {
 
     //abstract fun restaurantDao(): RestaurantDao
 
-    abstract fun CustomMealDao(): CustomMealDao
+    abstract fun customMealDao(): CustomMealDao
 
-    abstract fun FavoriteMealDao(): FavoriteMealDao
+    abstract fun favoriteMealDao(): FavoriteMealDao
+
+    abstract fun apiMealDao(): ApiMealDao
 
     abstract fun ingredientDao(): IngredientDao
 

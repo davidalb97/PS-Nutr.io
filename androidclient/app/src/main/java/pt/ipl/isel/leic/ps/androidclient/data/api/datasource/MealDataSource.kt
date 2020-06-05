@@ -1,8 +1,11 @@
 package pt.ipl.isel.leic.ps.androidclient.data.api.datasource
 
+import com.android.volley.VolleyError
 import pt.ipl.isel.leic.ps.androidclient.data.api.MEAL
 import pt.ipl.isel.leic.ps.androidclient.data.api.RequestParser
 import pt.ipl.isel.leic.ps.androidclient.data.api.URI_BASE
+import pt.ipl.isel.leic.ps.androidclient.data.api.dto.InputMealDto
+import pt.ipl.isel.leic.ps.androidclient.data.model.ApiMeal
 
 const val MEAL_ID_URI =
     "$URI_BASE/$MEAL/:id"
@@ -14,6 +17,17 @@ const val MEAL_ID_URI =
 class MealDataSource(
     private val requestParser: RequestParser
 ) {
+
+    fun getAllByRestaurantIdentifier(
+        identifier: Int,
+        success: (List<InputMealDto>) -> Unit,
+        error: (VolleyError) -> Unit,
+        uriParameters: HashMap<String, String>?,
+        count: Int,
+        skip: Int
+    ) {
+        TODO()
+    }
 
     /**
      * ----------------------------- GETs -----------------------------

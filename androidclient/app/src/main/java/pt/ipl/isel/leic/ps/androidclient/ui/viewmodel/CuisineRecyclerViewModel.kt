@@ -13,12 +13,9 @@ class CuisineRecyclerViewModel() : ARecyclerViewModel<Cuisine>() {
     constructor(parcel: Parcel) : this() {
     }
 
-    fun getCuisines(
-        onSuccess : (List<Cuisine>) -> Unit,
-        onError : () -> Unit
-    ) {
+    override fun update() {
         cuisineRepository.getCuisines(
-            onSuccess,
+            liveDataHandler::set,
             onError,
             parameters,
             COUNT,
@@ -26,19 +23,15 @@ class CuisineRecyclerViewModel() : ARecyclerViewModel<Cuisine>() {
         )
     }
 
-
-    override fun fetchLiveData(): LiveData<List<Cuisine>> {
-        TODO("Not yet implemented")
-    }
-
     override fun writeToParcel(dest: Parcel?, flags: Int) {
         TODO("Not yet implemented")
     }
+
     override fun describeContents(): Int {
         TODO("Not yet implemented")
     }
-
     companion object CREATOR : Parcelable.Creator<CuisineRecyclerViewModel> {
+
         override fun createFromParcel(parcel: Parcel): CuisineRecyclerViewModel {
             return CuisineRecyclerViewModel(parcel)
         }

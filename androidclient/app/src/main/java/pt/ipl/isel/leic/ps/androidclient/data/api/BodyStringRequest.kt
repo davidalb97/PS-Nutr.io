@@ -19,7 +19,7 @@ class BodyStringRequest : StringRequest {
         method: Int,
         url: String?,
         reqPayload: String?,
-        listener: Response.Listener<String?>?,
+        listener: Response.Listener<String>?,
         errorListener: Response.ErrorListener?
     ) : super(method, url, listener, errorListener) {
         this.reqPayload = reqPayload

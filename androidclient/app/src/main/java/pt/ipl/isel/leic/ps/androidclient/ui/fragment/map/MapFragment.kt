@@ -1,6 +1,8 @@
 package pt.ipl.isel.leic.ps.androidclient.ui.fragment.map
 
+import android.Manifest
 import android.annotation.SuppressLint
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Looper.getMainLooper
 import android.view.LayoutInflater
@@ -8,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.SearchView
 import android.widget.Toast
+import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.mapbox.android.core.location.*
@@ -86,7 +89,7 @@ class MapFragment
         mapView?.getMapAsync(this);
 
         initRecyclerList(view)
-        setCallbackFunctions()
+        setErrorFunction()
         list.adapter = adapter
         list.layoutManager = LinearLayoutManager(this.requireContext())
         startObserver()
@@ -113,16 +116,16 @@ class MapFragment
             var minimumListSize = 1
 
             override fun loadMore() {
-                minimumListSize = viewModel.mediatorLiveData.value!!.size + 1
+                minimumListSize = viewModel.items.size + 1
                 if (!isLoading && progressBar.visibility == View.INVISIBLE) {
                     startLoading()
-                    viewModel.updateListFromLiveData()
+                    viewModel.update()
                     stopLoading()
                 }
             }
 
             override fun shouldGetMore(): Boolean =
-                !isLoading && minimumListSize < viewModel.mediatorLiveData.value!!.size
+                !isLoading && minimumListSize < viewModel.items.size
         })
     }
 
@@ -189,6 +192,23 @@ class MapFragment
             locationComponent.activateLocationComponent(locationComponentActivationOptions)
 
             // Enable to make component visible
+            if (ActivityCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                return
+            }
             locationComponent.isLocationComponentEnabled = true
 
             // Set the component's camera mode
@@ -260,7 +280,7 @@ class MapFragment
                         .forceLocationUpdate(result.lastLocation)
                 }
 
-                viewModel.getNearbyRestaurants()
+                viewModel.update()
             }
 
             override fun onFailure(exception: java.lang.Exception) {

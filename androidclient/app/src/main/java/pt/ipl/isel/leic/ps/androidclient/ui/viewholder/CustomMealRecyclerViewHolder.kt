@@ -49,13 +49,14 @@ class CustomMealRecyclerViewHolder(
         customMealName.text = item.name
         customMealQuantity.text =
             resources.getString(R.string.meal_quantity_card) +
-                    " ${item.mealQuantity}"
-        customMealGlucose.text =
-            resources.getString(R.string.glucose_amount_card) +
-                    " ${item.glucoseAmount}"
+                    " ${item.amount}"
+        TODO("Missing glucose, is it necessary?")
+//        customMealGlucose.text =
+//            resources.getString(R.string.glucose_amount_card) +
+//                    " ${item.}"
         customMealCarbs.text =
             resources.getString(R.string.carbohydrates_amount_card) +
-                    " ${item.carboAmount}"
+                    " ${item.carbs}"
     }
 
     private fun setupListeners() {

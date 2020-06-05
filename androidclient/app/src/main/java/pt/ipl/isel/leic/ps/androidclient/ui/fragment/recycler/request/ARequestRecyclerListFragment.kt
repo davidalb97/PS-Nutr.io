@@ -30,30 +30,17 @@ abstract class ARequestRecyclerListFragment<M : Any, VM : ARecyclerViewModel<M>>
 
     }
 
-    override fun startObserver() {
-        viewModel.observe(this) {
-            list.adapter?.notifyDataSetChanged()
-            if (viewModel.mediatorLiveData.value!!.isEmpty()) {
-                Toast.makeText(
-                    this.requireContext(),
-                    R.string.no_result_found,
-                    Toast.LENGTH_LONG
-                ).show()
-            }
-            this.progressBar.visibility = View.INVISIBLE
-        }
-    }
-
     override fun successFunction(list: List<M>) {
         if (list.isEmpty() && this.isAdded)
             Toast.makeText(
                 activityApp, R.string.no_result_found,
                 Toast.LENGTH_LONG
             ).show()
+        this.progressBar.visibility = View.INVISIBLE
         Log.v(TAG, "running on the thread : ${Thread.currentThread().name}")
     }
 
-    override fun errorFunction(exception: Exception) {
+    override fun errorFunction(exception: Throwable) {
         if (this.isAdded) {
             if (!hasInternetConnection(activityApp as NutrioApp)) {
                 Toast.makeText(

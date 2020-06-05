@@ -11,7 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import pt.ipl.isel.leic.ps.androidclient.R
-import pt.ipl.isel.leic.ps.androidclient.data.db.entity.DbInsulinProfile
+import pt.ipl.isel.leic.ps.androidclient.data.model.InsulinProfile
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.InsulinProfilesVMProviderFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.InsulinProfilesRecyclerViewModel
 import java.time.LocalTime
@@ -66,7 +66,7 @@ class AddProfileFragment : Fragment() {
         }
 
         // Get all profiles before the new insertion
-        viewModel.updateListFromLiveData()
+        viewModel.update()
 
         createButton.setOnClickListener {
             // Checks if any field is blank
@@ -90,8 +90,7 @@ class AddProfileFragment : Fragment() {
             }
 
             // Creates profile if everything is ok until here
-            val profile =
-                DbInsulinProfile(
+            val profile = InsulinProfile(
                     profileName.text.toString(),
                     startTimeUser.text.toString(),
                     endTimeUser.text.toString(),
@@ -124,7 +123,7 @@ class AddProfileFragment : Fragment() {
      */
     @SuppressLint("NewApi")
     private fun profileTimesValidation(
-        profileDb: DbInsulinProfile,
+        profileDb: InsulinProfile,
         cb: (Boolean) -> Unit
     ) {
         val parsedStartTime = LocalTime.parse(profileDb.startTime)
@@ -141,9 +140,9 @@ class AddProfileFragment : Fragment() {
         }
 
         // Checks if it is not overlapping other time periods
-        val insulinProfiles = viewModel.mediatorLiveData.value
+        val insulinProfiles = viewModel.items
         var isValid = true
-        if (insulinProfiles!!.isNotEmpty()) {
+        if (insulinProfiles.isNotEmpty()) {
             insulinProfiles.forEach { savedProfile ->
                 val parsedSavedStartTime =
                     LocalTime.parse(savedProfile.startTime)

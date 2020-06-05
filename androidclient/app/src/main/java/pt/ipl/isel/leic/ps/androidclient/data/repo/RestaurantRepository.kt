@@ -2,8 +2,8 @@ package pt.ipl.isel.leic.ps.androidclient.data.repo
 
 import com.android.volley.VolleyError
 import pt.ipl.isel.leic.ps.androidclient.data.api.datasource.RestaurantDataSource
-import pt.ipl.isel.leic.ps.androidclient.data.api.dto.ApiRestaurantDto
-import pt.ipl.isel.leic.ps.androidclient.data.api.mapper.ApiRestaurantMapper
+import pt.ipl.isel.leic.ps.androidclient.data.api.dto.InputRestaurantDto
+import pt.ipl.isel.leic.ps.androidclient.data.api.mapper.*
 import pt.ipl.isel.leic.ps.androidclient.data.model.Restaurant
 
 /**
@@ -12,10 +12,12 @@ import pt.ipl.isel.leic.ps.androidclient.data.model.Restaurant
  */
 class RestaurantRepository(private val dataSource: RestaurantDataSource) {
 
-    val apiMapper = ApiRestaurantMapper()
+    val apiIngredientMapper = InputIngredientMapper()
+    val apiMealMapper = InputMealMapper(apiIngredientMapper)
+    val apiRestaurantMapper = InputRestaurantMapper(apiMealMapper)
 
     fun getRestaurantById(
-        success: (ApiRestaurantDto) -> Unit,
+        success: (InputRestaurantDto) -> Unit,
         error: (VolleyError) -> Unit,
         uriParameters: HashMap<String, String>?,
         count: Int,
@@ -31,14 +33,14 @@ class RestaurantRepository(private val dataSource: RestaurantDataSource) {
     }
 
     fun getNearbyRestaurants(
-        success: (Array<ApiRestaurantDto>) -> Unit,
+        success: (List<Restaurant>) -> Unit,
         error: (VolleyError) -> Unit,
         uriParameters: HashMap<String, String>?,
         count: Int,
         skip: Int
     ) {
         dataSource.getNearby(
-            success,
+            { restaurantDtos -> success(apiRestaurantMapper.mapToListModel(restaurantDtos)) },
             error,
             uriParameters,
             count,

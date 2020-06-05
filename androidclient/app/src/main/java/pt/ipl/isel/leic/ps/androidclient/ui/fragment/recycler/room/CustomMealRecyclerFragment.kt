@@ -9,13 +9,14 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import pt.ipl.isel.leic.ps.androidclient.R
-import pt.ipl.isel.leic.ps.androidclient.data.db.entity.DbCustomMeal
+import pt.ipl.isel.leic.ps.androidclient.data.model.CustomMeal
 import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.CustomMealRecyclerAdapter
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.tab.CALCULATOR_BUNDLE_FLAG
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.CustomMealRecyclerVMProviderFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.CustomMealRecyclerViewModel
 
-class CustomMealRecyclerFragment : ARoomRecyclerListFragment<DbCustomMeal, CustomMealRecyclerViewModel>() {
+class CustomMealRecyclerFragment :
+    ARoomRecyclerListFragment<CustomMeal, CustomMealRecyclerViewModel>() {
 
     private val isCalculatorMode: Boolean by lazy {
         this.requireArguments().getBoolean(CALCULATOR_BUNDLE_FLAG)
@@ -51,11 +52,11 @@ class CustomMealRecyclerFragment : ARoomRecyclerListFragment<DbCustomMeal, Custo
         val addButton = view.findViewById<ImageButton>(R.id.add_custom_meal)
         addButton.visibility = View.INVISIBLE
         initRecyclerList(view)
-        setCallbackFunctions()
+        setErrorFunction()
         list.adapter = adapter
         list.layoutManager = LinearLayoutManager(this.requireContext())
         startObserver()
-        viewModel.updateListFromLiveData()
+        viewModel.update()
         if (!isCalculatorMode) {
             addButton.visibility = View.VISIBLE
             addButton.setOnClickListener {
@@ -68,4 +69,8 @@ class CustomMealRecyclerFragment : ARoomRecyclerListFragment<DbCustomMeal, Custo
         TODO("Not yet implemented")
     }
 
+    override fun successFunction(list: List<CustomMeal>) {
+        noItemsLabel.visibility = if (list.isEmpty()) View.VISIBLE
+        else View.INVISIBLE
+    }
 }

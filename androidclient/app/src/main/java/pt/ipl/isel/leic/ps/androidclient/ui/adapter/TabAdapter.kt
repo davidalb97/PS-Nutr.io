@@ -7,7 +7,10 @@ import androidx.fragment.app.FragmentPagerAdapter
 /**
  * A "Tab" Adapter to be used by multiple fragments that use a ViewPager
  */
-class TabAdapter(fragment: FragmentManager) : FragmentPagerAdapter(fragment) {
+class TabAdapter(fragment: FragmentManager) : FragmentPagerAdapter(
+    fragment,
+    FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT
+) {
 
     private val fragmentList: MutableList<Fragment> = ArrayList()
     private val titleList: MutableList<String> = ArrayList()

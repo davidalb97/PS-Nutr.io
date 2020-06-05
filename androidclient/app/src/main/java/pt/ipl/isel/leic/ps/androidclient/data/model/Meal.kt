@@ -3,31 +3,32 @@ package pt.ipl.isel.leic.ps.androidclient.data.model
 import android.os.Parcel
 import android.os.Parcelable
 
-// TODO - add ingredients
 data class Meal(
-    val identifier: String?,
-    val name: String?,
+    val name: String,
+    val carbs: Int,
+    val amount: Int,
+    val unit: String,
     val imageUrl: String?,
-    val glucoseAmount: Int,
-    val carbsAmount: Int,
-    val ingredients: Iterable<Ingredient>
-): Parcelable {
+    val ingredients: List<Ingredient>
+) : Parcelable {
     constructor(parcel: Parcel) : this(
-        parcel.readString(),
-        parcel.readString(),
-        parcel.readString(),
-        parcel.readInt(),
-        parcel.readInt(),
-        TODO("ingredients")
-    ) {
-    }
+        name = parcel.readString()!!,
+        carbs = parcel.readInt(),
+        amount = parcel.readInt(),
+        unit = parcel.readString()!!,
+        imageUrl = parcel.readString(),
+        ingredients = ArrayList<Ingredient>().also {
+            parcel.readList(it as List<Ingredient>, Ingredient::class.java.classLoader)
+        }
+    )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(identifier)
         parcel.writeString(name)
+        parcel.writeInt(carbs)
+        parcel.writeInt(amount)
+        parcel.writeString(unit)
         parcel.writeString(imageUrl)
-        parcel.writeInt(glucoseAmount)
-        parcel.writeInt(carbsAmount)
+        parcel.writeList(ingredients)
     }
 
     override fun describeContents(): Int {

@@ -9,13 +9,13 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import pt.ipl.isel.leic.ps.androidclient.R
-import pt.ipl.isel.leic.ps.androidclient.data.db.entity.DbInsulinProfile
+import pt.ipl.isel.leic.ps.androidclient.data.model.InsulinProfile
 import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.InsulinProfileRecyclerAdapter
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.InsulinProfilesVMProviderFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.InsulinProfilesRecyclerViewModel
 
 class InsulinProfilesRecyclerFragment :
-    ARoomRecyclerListFragment<DbInsulinProfile, InsulinProfilesRecyclerViewModel>() {
+    ARoomRecyclerListFragment<InsulinProfile, InsulinProfilesRecyclerViewModel>() {
 
     private val adapter: InsulinProfileRecyclerAdapter by lazy {
         InsulinProfileRecyclerAdapter(
@@ -27,7 +27,8 @@ class InsulinProfilesRecyclerFragment :
     private fun buildViewModel(savedInstanceState: Bundle?) {
         val rootActivity = this.requireActivity()
         val factory = InsulinProfilesVMProviderFactory(savedInstanceState, rootActivity.intent)
-        viewModel = ViewModelProvider(rootActivity, factory)[InsulinProfilesRecyclerViewModel::class.java]
+        viewModel =
+            ViewModelProvider(rootActivity, factory)[InsulinProfilesRecyclerViewModel::class.java]
     }
 
     override fun onCreateView(
@@ -44,11 +45,14 @@ class InsulinProfilesRecyclerFragment :
         noItemsLabel =
             view.findViewById(R.id.no_insulin_profiles)
         initRecyclerList(view)
-        setCallbackFunctions()
+        setErrorFunction()
         list.adapter = adapter
         list.layoutManager = LinearLayoutManager(this.requireContext())
+
         startObserver()
-        viewModel.updateListFromLiveData()
+
+        viewModel.update()
+
         // Retrieve button to add an insulin profile
         val addButton =
             view.findViewById<ImageButton>(R.id.add_profile)
@@ -61,5 +65,11 @@ class InsulinProfilesRecyclerFragment :
 
     override fun startScrollListener() {
         TODO("Not yet implemented")
+    }
+
+    override fun successFunction(list: List<InsulinProfile>) {
+        super.successFunction(list)
+        noItemsLabel.visibility = if (list.isEmpty()) View.VISIBLE
+        else View.INVISIBLE
     }
 }

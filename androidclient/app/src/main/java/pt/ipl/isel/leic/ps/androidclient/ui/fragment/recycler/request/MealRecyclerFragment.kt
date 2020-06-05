@@ -7,15 +7,14 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import pt.ipl.isel.leic.ps.androidclient.R
-import pt.ipl.isel.leic.ps.androidclient.data.model.Meal
+import pt.ipl.isel.leic.ps.androidclient.data.model.ApiMeal
 import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.MealRecyclerAdapter
-import pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler.ARecyclerListFragment
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.tab.CALCULATOR_BUNDLE_FLAG
 import pt.ipl.isel.leic.ps.androidclient.ui.listener.ScrollListener
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.MealRecyclerVMProviderFactory
-import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.MealRecyclerViewModel
+import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.ApiMealRecyclerViewModel
 
-class MealRecyclerFragment() : ARequestRecyclerListFragment<Meal, MealRecyclerViewModel>() {
+class MealRecyclerFragment : ARequestRecyclerListFragment<ApiMeal, ApiMealRecyclerViewModel>() {
 
     private val isCalculatorMode: Boolean by lazy {
         this.requireArguments().getBoolean(CALCULATOR_BUNDLE_FLAG)
@@ -23,7 +22,7 @@ class MealRecyclerFragment() : ARequestRecyclerListFragment<Meal, MealRecyclerVi
 
     private val adapter: MealRecyclerAdapter by lazy {
         MealRecyclerAdapter(
-            viewModel as MealRecyclerViewModel,
+            viewModel,
             this.requireContext()
         )
     }
@@ -36,7 +35,7 @@ class MealRecyclerFragment() : ARequestRecyclerListFragment<Meal, MealRecyclerVi
     private fun buildViewModel(savedInstanceState: Bundle?) {
         val rootActivity = this.requireActivity()
         val factory = MealRecyclerVMProviderFactory(savedInstanceState, rootActivity.intent)
-        viewModel = ViewModelProvider(rootActivity, factory)[MealRecyclerViewModel::class.java]
+        viewModel = ViewModelProvider(rootActivity, factory)[ApiMealRecyclerViewModel::class.java]
     }
 
     override fun onCreateView(
@@ -50,7 +49,7 @@ class MealRecyclerFragment() : ARequestRecyclerListFragment<Meal, MealRecyclerVi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initRecyclerList(view)
-        setCallbackFunctions()
+        setErrorFunction()
         list.adapter = adapter
         list.layoutManager = LinearLayoutManager(this.requireContext())
         startObserver()
@@ -64,16 +63,16 @@ class MealRecyclerFragment() : ARequestRecyclerListFragment<Meal, MealRecyclerVi
             var minimumListSize = 1
 
             override fun loadMore() {
-                minimumListSize = viewModel.mediatorLiveData.value!!.size + 1
+                minimumListSize = viewModel.items.size + 1
                 if (!isLoading && progressBar.visibility == View.INVISIBLE) {
                     startLoading()
-                    viewModel.updateListFromLiveData()
+                    viewModel.update()
                     stopLoading()
                 }
             }
 
             override fun shouldGetMore(): Boolean =
-                !isLoading && minimumListSize < viewModel.mediatorLiveData.value!!.size
+                !isLoading && minimumListSize < viewModel.items.size
         })
     }
 }
