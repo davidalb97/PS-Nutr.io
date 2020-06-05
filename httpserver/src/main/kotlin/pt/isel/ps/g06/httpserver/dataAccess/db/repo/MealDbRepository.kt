@@ -11,7 +11,9 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType.INGREDIENT
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType.MEAL
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmitterType
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.*
-import pt.isel.ps.g06.httpserver.dataAccess.db.dto.*
+import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbApiSubmissionDto
+import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbMealCuisineDto
+import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbMealDto
 import pt.isel.ps.g06.httpserver.exception.InvalidInputDomain
 import pt.isel.ps.g06.httpserver.exception.InvalidInputException
 import pt.isel.ps.g06.httpserver.model.Ingredient
@@ -64,6 +66,7 @@ class MealDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo(jdbi)
             submitterId: Int,
             mealName: String,
             apiId: String? = null,
+            carbs: Int? = null,
             cuisineNames: List<String> = emptyList(),
             ingredients: List<Ingredient> = emptyList(),
             foodApi: FoodApiType
@@ -89,10 +92,9 @@ class MealDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo(jdbi)
             val submissionSubmitterDao = it.attach(SubmissionSubmitterDao::class.java)
             submissionSubmitterDao.insert(mealSubmissionId, submitterId)
             submissionSubmitterDao.insert(mealSubmissionId, apiSubmitterId)
-
-            //Insert Meal
+            
             val mealDto = it.attach(mealDaoClass)
-                    .insert(mealSubmissionId, mealName)
+                    .insert(mealSubmissionId, mealName, carbs)
 
             //Insert all MealCuisine associations
             insertMealCuisines(it, mealSubmissionId, cuisineNames)
@@ -191,7 +193,7 @@ class MealDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo(jdbi)
             requireFromUser(submissionId, isolationLevel)
 
             // Update meal name
-            it.attach(MealDao::class.java).update(submissionId, name)
+            it.attach(MealDao::class.java).updateName(submissionId, name)
 
             // Update cuisines
             updateCuisines(it, submissionId, cuisineNames)
@@ -303,7 +305,7 @@ class MealDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo(jdbi)
         val newIngredientSubmissionIds = ingredientSubmissionIds.filter {
             !existingMealIngredientIds.contains(it)
         }
-        if(newIngredientSubmissionIds.isNotEmpty()) {
+        if (newIngredientSubmissionIds.isNotEmpty()) {
             handle.attach(MealIngredientDao::class.java)
                     .insertAll(newIngredientSubmissionIds.map {
                         MealIngredientParam(mealSubmissionId, it, 100) // TODO

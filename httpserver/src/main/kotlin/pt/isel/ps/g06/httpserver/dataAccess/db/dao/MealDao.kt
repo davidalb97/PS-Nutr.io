@@ -36,6 +36,7 @@ interface MealDao {
         const val table = "Meal"
         const val name = "meal_name"
         const val id = "submission_id"
+        const val carbs = "carbs"
     }
 
     @SqlQuery("SELECT * FROM $table")
@@ -46,6 +47,9 @@ interface MealDao {
 
     @SqlQuery("SELECT * FROM $table WHERE $name = :mealName")
     fun getByName(@Bind mealName: String): DbMealDto?
+
+    @SqlQuery("SELECT * FROM $table WHERE $carbs = :carbs")
+    fun getByName(@Bind carbs: Int): DbMealDto?
 
     @SqlQuery("SELECT DISTINCT $table.$id, $table.$name" +
             " FROM $table" +
@@ -77,12 +81,15 @@ interface MealDao {
             @BindList apiIds: Collection<String>
     ): Collection<DbMealDto>
 
-    @SqlQuery("INSERT INTO $table($id, $name) VALUES(:submissionId, :mealName) RETURNING *")
-    fun insert(@Bind submissionId: Int, @Bind mealName: String): DbMealDto
+    @SqlQuery("INSERT INTO $table($id, $name, $carbs) VALUES(:submissionId, :mealName, :carbs) RETURNING *")
+    fun insert(@Bind submissionId: Int, @Bind mealName: String, @Bind carbs: Int?): DbMealDto
 
     @SqlQuery("DELETE FROM $table WHERE $id = :submissionId RETURNING *")
     fun delete(@Bind submissionId: Int): DbMealDto
 
     @SqlQuery("UPDATE $table SET $name = :new_name WHERE $id = :submissionId RETURNING *")
-    fun update(@Bind submissionId: Int, new_name: String): DbMealDto
+    fun updateName(@Bind submissionId: Int, new_name: String): DbMealDto
+
+    @SqlQuery("UPDATE $table SET $carbs = :carbs WHERE $id = :submissionId RETURNING *")
+    fun updateCarbs(@Bind submissionId: Int, carbs: Int): DbMealDto
 }

@@ -128,6 +128,7 @@ class MealSubmissionTest {
             val expectedSubmitterId = const.userDtos.first().submitter_id
             val expectedMealName = "Debug meal"
             val expectedMealApiId = null
+            val expectedMealCarbs = null
             val expectedCuisines = const.cuisineDtos.take(4)
             val expectedApiSubmitter = const.firstFoodApi
             val expectedFoodApiType = FoodApiType.valueOf(expectedApiSubmitter.submitter_name)
@@ -140,6 +141,7 @@ class MealSubmissionTest {
                     expectedSubmitterId,
                     expectedMealName,
                     expectedMealApiId,
+                    expectedMealCarbs,
                     expectedCuisines.map { it.cuisine_name },
                     expectedIngredients.map(TestIngredient::toModel),
                     expectedFoodApiType
@@ -223,6 +225,7 @@ class MealSubmissionTest {
             val expectedMealName = "Debug meal"
             val expectedMealApiId = null
             val expectedCuisines = const.cuisineDtos.take(4)
+            val expectedMealCarbs = null
             val expectedApiSubmitter = const.firstFoodApi
             val expectedFoodApiType = FoodApiType.valueOf(expectedApiSubmitter.submitter_name)
             val expectedSubmissionId = const.nextSubmissionId
@@ -231,12 +234,13 @@ class MealSubmissionTest {
                     ((expectedSubmissionId + 1)..(expectedSubmissionId + expectedIngredientCount))
                             .toList()
             val expectedIngredients = expectedIngredientSubmissionIds
-                    .map { Ingredient("Test Ingredient$it", "-$it") }
+                    .map { Ingredient("Test Ingredient$it", "-$it", it) } // TODO: change 3rd arg
 
             val insertedMealDto = mealRepo.insert(
                     expectedSubmitterId,
                     expectedMealName,
                     expectedMealApiId,
+                    expectedMealCarbs,
                     expectedCuisines.map { it.cuisine_name },
                     expectedIngredients,
                     expectedFoodApiType
