@@ -5,7 +5,7 @@ const val RESTAURANT_ID_VALUE = "restaurantId"
 
 //Restaurants
 const val RESTAURANTS = "/restaurant"
-const val RESTAURANT = "/{$RESTAURANT_ID_VALUE}"
+const val RESTAURANT = "$RESTAURANTS/{$RESTAURANT_ID_VALUE}"
 const val RESTAURANT_REPORT = "$RESTAURANT/report"
 const val RESTAURANT_VOTE = "$RESTAURANT/vote"
 const val RESTAURANT_MEALS = "$RESTAURANT/meal"

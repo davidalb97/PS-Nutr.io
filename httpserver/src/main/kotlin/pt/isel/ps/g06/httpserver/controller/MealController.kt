@@ -18,19 +18,6 @@ import pt.isel.ps.g06.httpserver.service.MealService
 @RequestMapping(produces = [MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_PROBLEM_JSON_VALUE])
 class MealController(private val mealService: MealService) {
 
-    @GetMapping(MEALS, consumes = [MediaType.ALL_VALUE])
-    fun searchMeals(
-            @RequestParam name: String,
-            @RequestParam cuisines: Collection<String>?,
-            @RequestParam apiType: String?
-    ): ResponseEntity<Collection<SimplifiedMealOutput>> {
-        val meals = mealService.searchMeals(name, cuisines, apiType)
-
-        return ResponseEntity
-                .ok()
-                .body(meals.map { toSimplifiedMealOutput(it) })
-    }
-
     @GetMapping(MEAL)
     fun getMealInformation(
             @PathVariable(MEAL_ID_VALUE) mealId: String,

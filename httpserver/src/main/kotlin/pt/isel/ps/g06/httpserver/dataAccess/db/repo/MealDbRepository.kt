@@ -22,6 +22,7 @@ import pt.isel.ps.g06.httpserver.springConfig.dto.DbEditableDto
 private val isolationLevel = TransactionIsolationLevel.SERIALIZABLE
 private val mealDaoClass = MealDao::class.java
 private val mealCuisineDaoClass = MealCuisineDao::class.java
+private val restaurantMealDaoClass = RestaurantMealDao::class.java
 
 @Repository
 class MealDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo(jdbi) {
@@ -38,6 +39,11 @@ class MealDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo(jdbi)
         }
     }
 
+    fun getAllMealsFromRestaurant(restaurantId: Int): Collection<DbMealDto> {
+        return jdbi.inTransaction<Collection<DbMealDto>, Exception>(isolationLevel) {
+            return@inTransaction it.attach(mealDaoClass).getAllByRestaurantId(restaurantId)
+        }
+    }
 
     fun getAllByCuisineApiIds(foodApiType: FoodApiType, cuisineApiIds: Collection<String>): Collection<DbMealDto> {
         return jdbi.inTransaction<Collection<DbMealDto>, Exception>(isolationLevel) {
@@ -92,7 +98,7 @@ class MealDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo(jdbi)
             val submissionSubmitterDao = it.attach(SubmissionSubmitterDao::class.java)
             submissionSubmitterDao.insert(mealSubmissionId, submitterId)
             submissionSubmitterDao.insert(mealSubmissionId, apiSubmitterId)
-            
+
             val mealDto = it.attach(mealDaoClass)
                     .insert(mealSubmissionId, mealName, carbs)
 

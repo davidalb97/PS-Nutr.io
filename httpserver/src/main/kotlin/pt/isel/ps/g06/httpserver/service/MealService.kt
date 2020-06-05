@@ -7,7 +7,6 @@ import pt.isel.ps.g06.httpserver.dataAccess.api.food.mapper.FoodApiMapper
 import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.food.MealResponseMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.MealDbRepository
 import pt.isel.ps.g06.httpserver.model.Meal
-import pt.isel.ps.g06.httpserver.util.log
 
 @Service
 class MealService(
@@ -15,22 +14,6 @@ class MealService(
         private val mealResponseMapper: MealResponseMapper,
         private val mealDbRepository: MealDbRepository
 ) {
-
-    fun searchMeals(name: String, cuisines: Collection<String>?, apiType: String?): Collection<Meal> {
-        val type = FoodApiType.getOrDefault(apiType)
-        val foodApi = foodApiMapper.getFoodApi(type)
-
-        return foodApi
-                .searchMeals(name = name, cuisines = cuisines)
-                .exceptionally { exception ->
-                    log(exception)
-                    return@exceptionally emptyList()
-                }
-                .thenApply { mealDtos ->
-                    mealDtos.map(mealResponseMapper::mapTo)
-                }
-                .get()
-    }
 
     fun getMeal(mealId: String, apiType: String?): Meal? {
         val type = FoodApiType.getOrDefault(apiType)
@@ -45,6 +28,12 @@ class MealService(
                 ?: foodApi.getMealInfo(mealId).get()
 
         return meal?.let(mealResponseMapper::mapTo)
+    }
+
+    fun getAllMealsFromRestaurant(restaurantId: Int): Collection<Meal>? {
+        return mealDbRepository
+                .getAllMealsFromRestaurant(restaurantId)
+                .map { mealResponseMapper.mapTo(it) }
     }
 
 
