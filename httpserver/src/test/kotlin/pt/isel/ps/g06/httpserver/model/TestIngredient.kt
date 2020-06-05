@@ -10,11 +10,12 @@ data class TestIngredient(
         val foodApi: TestFoodApi
 ) {
 
+    // TODO: change because of carbs
     fun toModel(): Ingredient {
         return Ingredient(
                 name,
                 apiId,
-                foodApi.apiType
+                null
         )
     }
 }

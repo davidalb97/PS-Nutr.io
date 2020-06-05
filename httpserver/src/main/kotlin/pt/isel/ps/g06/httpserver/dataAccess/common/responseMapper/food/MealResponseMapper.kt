@@ -64,7 +64,7 @@ class SpoonacularResponseMapper(private val spoonacularFoodApi: SpoonacularFoodA
                         .firstOrNull { it.title.equals(CARBOHYDRATES, true) }
                         ?.amount,
                 //TODO Add proper ingredient mapper
-                ingredients = dto.extendedIngredients.map { Ingredient(it.name, it.id) }.stream()
+                ingredients = dto.extendedIngredients.map { Ingredient(it.name, it.id, null) }.stream()
         )
     }
 

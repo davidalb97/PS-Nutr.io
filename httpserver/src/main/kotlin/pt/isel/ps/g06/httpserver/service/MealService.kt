@@ -7,6 +7,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.api.food.mapper.FoodApiMapper
 import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.food.MealResponseMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.MealDbRepository
 import pt.isel.ps.g06.httpserver.model.Meal
+import pt.isel.ps.g06.httpserver.util.log
 
 @Service
 class MealService(
@@ -21,7 +22,13 @@ class MealService(
 
         return foodApi
                 .searchMeals(name = name, cuisines = cuisines)
-                .handle(this::handleSearchResult)
+                .exceptionally { exception ->
+                    log(exception)
+                    return@exceptionally emptyList()
+                }
+                .thenApply { mealDtos ->
+                    mealDtos.map(mealResponseMapper::mapTo)
+                }
                 .get()
     }
 

@@ -20,21 +20,23 @@ interface IngredientDao {
 
     companion object {
         const val table = "Ingredient"
-        const val name = "ingredient_name"
         const val id = "submission_id"
+        const val name = "ingredient_name"
+        const val carbs = "carbs"
     }
 
     @SqlQuery("SELECT * FROM $table")
     fun getAll(): List<DbIngredientDto>
 
-    @SqlQuery("SELECT $table.$id, $table.$name" +
+    @SqlQuery("SELECT $table.$id, $table.$name, $table.$carbs" +
             " FROM $table" +
             " INNER JOIN $SS_table" +
-            " ON $SS_table.$SS_submissionId = $table.$id" +
+            " ON $SS_table.$SS_submissionId = $table.$id" /*+
             " INNER JOIN $AS_table" +
             " ON $AS_table.$AS_submissionId = $table.$id" +
-            " WHERE $SS_table.$SS_submitterId = :submitterId"
+            " WHERE $SS_table.$SS_submitterId = :submitterId"*/
     )
+
     fun getAllBySubmitterId(submitterId: Int): List<DbIngredientDto>
 
     @SqlQuery("SELECT * FROM $table WHERE $name = :ingredientName")
@@ -43,14 +45,18 @@ interface IngredientDao {
     @SqlQuery("SELECT * FROM $table WHERE $id in (<submissionIds>)")
     fun getAllByIds(@BindList submissionIds: List<Int>): List<DbIngredientDto>
 
-    @SqlQuery("INSERT INTO $table($id, $name) VALUES(:submissionId, :ingredientName) RETURNING *")
-    fun insert(@Bind submissionId: Int, ingredientName: String): DbIngredientDto
+    @SqlQuery("SELECT * FROM $table WHERE $carbs = :carbs")
+    fun getAllByCarbs(@Bind carbs: Int) : List<DbIngredientDto>
 
-    @SqlQuery("INSERT INTO $table($id, $name) values <ingredientParams> RETURNING *")
-    fun insertAll(@BindBeanList(propertyNames = [id, name])
+    @SqlQuery("INSERT INTO $table($id, $name, $carbs) values <ingredientParams> RETURNING *")
+    fun insertAll(@BindBeanList(propertyNames = [id, name, carbs])
                   ingredientParams: List<IngredientParam>
     ): List<DbIngredientDto>
 }
 
 //Variable names must match sql columns!!!
-data class IngredientParam(val submission_id: Int, val ingredient_name: String)
+data class IngredientParam(
+        val submission_id: Int,
+        val ingredient_name: String,
+        val carbs: Int
+)

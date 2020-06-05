@@ -11,7 +11,7 @@ interface RestaurantCuisineDao {
     companion object {
         const val table = "RestaurantCuisine"
         const val id = "restaurant_submission_id"
-        const val cuisineId = "cuisine_id"
+        const val cuisineId = "cuisine_submission_id"
     }
 
     @SqlQuery("SELECT * FROM $table")
@@ -36,7 +36,7 @@ interface RestaurantCuisineDao {
 
     @SqlQuery("DELETE FROM $table" +
             " WHERE $id = :submission_id" +
-            " AND $cuisineId in <cuisineIds> RETURNING *")
+            " AND $cuisineId in (<cuisineIds>) RETURNING *")
     fun deleteAllByRestaurantIdAndCuisineIds(
             @Bind restaurantSubmissionId: Int,
             @BindList cuisineIds: List<Int>

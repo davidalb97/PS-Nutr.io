@@ -81,6 +81,26 @@ fun bypassSubmissionEditLock(handle: Handle, submissionId: Int) {
     ).map(SubmissionMapper()).first()
 }
 
+fun getFirstTestMealWithCuisinesAndRestaurantPortions(const: Constants, fromApi: Boolean): TestMeal {
+    return const.meals.first {
+        //Has ingredients (not from API)
+        !fromApi && it.ingredients.isNotEmpty()
+                //Has no ingredients (from API)
+                || fromApi && it.ingredients.isEmpty()
+                //Has cuisines
+                && it.cuisines.isNotEmpty()
+                //The meal is present in a restaurant and has portions
+                && const.restaurantMealDtos.any { restaurantMealDto ->
+            //The meal is present in a restaurant
+            restaurantMealDto.meal_submission_id == it.submissionId
+                    //The restaurant meal has portions
+                    && const.portionDtos.any { portionDto ->
+                portionDto.restaurant_meal_submission_id == restaurantMealDto.submission_id
+            }
+        }
+    }
+}
+
 /*
 fun getDtosFromIngredientNames(
         handle: Handle,
@@ -150,10 +170,10 @@ fun getTestCuisinesByMealId(handle: Handle, submissionId: Int, testApi: TestFood
             .map { cuisineDto ->
                 val cuisineSubmissionIds =
                         handle.attach(ApiCuisineDao::class.java)
-                                .getAllByCuisineId(cuisineDto.cuisine_id)
+                                .getAllByCuisineId(cuisineDto.submission_id)
                                 .map { it.submission_id }
                 TestCuisine(
-                        cuisineDto.cuisine_id,
+                        cuisineDto.submission_id,
                         cuisineDto.cuisine_name,
                         testApi,
                         //Api submissions from cuisine ids
