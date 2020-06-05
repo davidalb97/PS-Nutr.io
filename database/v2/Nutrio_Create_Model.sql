@@ -125,7 +125,7 @@ CREATE TABLE ApiCuisine(
 
 CREATE TABLE Meal(
 	submission_id integer PRIMARY KEY,
-	meal_name varchar(30) NOT NULL,
+	meal_name varchar(50) NOT NULL,
 	carbs integer NOT NULL,
 	quantity integer NOT NULL,
 	FOREIGN KEY(submission_id) REFERENCES Submission(submission_id)
@@ -150,7 +150,7 @@ CREATE TABLE Portion(
 
 CREATE TABLE Ingredient(
 	submission_id integer,
-	ingredient_name varchar(30) NOT NULL,
+	ingredient_name varchar(50) NOT NULL,
 	carbs integer NOT NULL,
 	quantity integer NOT NULL,
 	PRIMARY KEY(submission_id),
@@ -160,7 +160,7 @@ CREATE TABLE Ingredient(
 CREATE TABLE MealIngredient(
 	meal_submission_id integer,
 	ingredient_submission_id integer,
-	amount integer,
+	amount integer NOT NULL,
 	PRIMARY KEY(meal_submission_id, ingredient_submission_id),
 	FOREIGN KEY(meal_submission_id) REFERENCES Meal(submission_id),
 	FOREIGN KEY(ingredient_submission_id) REFERENCES Ingredient(submission_id)

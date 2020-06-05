@@ -330,19 +330,19 @@ BEGIN
 		(restaurantFromLocationId,	'First rest from user coords', 0.0, 0.0),
 		(restaurantFromApiId,		'Second rest from api', 1.0, 1.0);
 
-		INSERT INTO Meal(submission_id, meal_name) VALUES
+		INSERT INTO Meal(submission_id, meal_name, carbs, quantity) VALUES
 		(mealFromIngredientsId,		'First meal from ingr', 10, 100),
 		(mealFromApiId,				'Second meal from api', 10, 100);
 
-		INSERT INTO Ingredient(submission_id, ingredient_name) VALUES
-		(mealIngredient1Id, 'açucar', 100),
-		(mealIngredient2Id, 'sal', 0),
-		(mealIngredient3Id, 'azeite', 0);
+		INSERT INTO Ingredient(submission_id, ingredient_name, carbs, quantity) VALUES
+		(mealIngredient1Id, 'açucar', 100, 100),
+		(mealIngredient2Id, 'sal', 0, 100),
+		(mealIngredient3Id, 'azeite', 0, 100);
 
-		INSERT INTO MealIngredient(meal_submission_id, ingredient_submission_id) VALUES
-		(mealFromIngredientsId, mealIngredient1Id),
-		(mealFromIngredientsId, mealIngredient2Id),
-		(mealFromIngredientsId, mealIngredient3Id);
+		INSERT INTO MealIngredient(meal_submission_id, ingredient_submission_id, amount) VALUES
+		(mealFromIngredientsId, mealIngredient1Id, 1),
+		(mealFromIngredientsId, mealIngredient2Id, 1),
+		(mealFromIngredientsId, mealIngredient3Id, 1);
 
 		INSERT INTO RestaurantMeal(submission_id, restaurant_submission_id, meal_submission_id) VALUES
 		(restaurantMealWithLocationWithIngredients, 	restaurantFromLocationId,	mealFromIngredientsId),
