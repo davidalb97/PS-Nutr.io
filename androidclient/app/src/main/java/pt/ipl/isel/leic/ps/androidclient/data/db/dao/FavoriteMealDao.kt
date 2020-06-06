@@ -2,9 +2,7 @@ package pt.ipl.isel.leic.ps.androidclient.data.db.dao
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import pt.ipl.isel.leic.ps.androidclient.data.db.entity.DbCustomMealEntity
 import pt.ipl.isel.leic.ps.androidclient.data.db.entity.DbFavoriteMealEntity
-import pt.ipl.isel.leic.ps.androidclient.data.db.relation.DbCustomMealRelation
 import pt.ipl.isel.leic.ps.androidclient.data.db.relation.DbFavoriteMealRelation
 
 private const val TABLE = DbFavoriteMealEntity.tableName
@@ -19,21 +17,21 @@ interface FavoriteMealDao {
 
     @Transaction
     @Update
-    fun update(vararg dbFavoriteMeal: DbFavoriteMealRelation)
+    fun update(dbFavoriteMeal: DbFavoriteMealEntity)
 
     @Transaction
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(vararg dbFavoriteMeal: DbFavoriteMealRelation)
+    fun insert(dbFavoriteMeal: DbFavoriteMealEntity)
 
     @Transaction
     @Query("SELECT * FROM $TABLE where $PRIMARY_KEY = :key")
-    fun get(key: Long): DbFavoriteMealRelation
+    fun get(key: Long): DbFavoriteMealEntity
 
     @Transaction
     @Query("SELECT * FROM $TABLE where name = :name")
-    fun getAllByName(name: String): DbFavoriteMealRelation
+    fun getAllByName(name: String): LiveData<List<DbFavoriteMealRelation>>
 
     @Transaction
     @Delete
-    fun delete(dbFavoriteMeal: DbFavoriteMealRelation)
+    fun delete(dbFavoriteMeal: DbFavoriteMealEntity)
 }

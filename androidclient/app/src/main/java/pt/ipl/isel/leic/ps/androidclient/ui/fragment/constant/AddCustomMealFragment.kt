@@ -56,17 +56,14 @@ class AddCustomMealFragment : Fragment() {
 
             if (!anyFieldBlank) {
 
-                val customMeal = CustomMeal(
-                        name = customMealName.text.toString(),
-                        carbs = customMealCarbsAmount.text.toString().toInt(),
-                        amount = customMealPortion.text.toString().toInt(),
-                        unit = TODO("Missing unit logic!"),
-                        imageUrl = null,//TODO("Missing imageUrl logic!"),
-                        ingredients = TODO("Missing ingredient logic!")
-                    )
-
-                viewModel.addCustomMeal(customMeal)
-                    .execute()
+                /*viewModel.addCustomMeal(CustomMeal(
+                    customMealName.text.toString(),
+                    customMealCarbsAmount.text.toString().toInt(),
+                    customMealPortion.text.toString().toInt(),
+                    null,
+                    null,
+                    null
+                ).execute()*/
             }
         }
     }

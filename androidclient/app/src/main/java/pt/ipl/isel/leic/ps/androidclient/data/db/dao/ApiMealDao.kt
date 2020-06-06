@@ -9,25 +9,25 @@ private const val TABLE = DbApiMealEntity.tableName
 private const val PRIMARY_KEY = DbApiMealEntity.primaryKeyName
 
 @Dao
-interface ApiMealDao {
+interface ApiMealDao<T> {
 
     @Transaction
     @Query("SELECT * FROM $TABLE")
-    fun getAll(): LiveData<List<DbApiMealRelation>>
+    fun getAll(): LiveData<List<T>>
 
     @Transaction
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(vararg dbCustomMealRelation: DbApiMealRelation)
+    fun insert(vararg dbCustomMealRelation: T)
 
     @Transaction
     @Query("SELECT * FROM $TABLE where $PRIMARY_KEY = :submissionId")
-    fun get(submissionId: String?): DbApiMealRelation
+    fun get(submissionId: String?): T
 
     @Transaction
     @Query("SELECT * FROM $TABLE where name = :name")
-    fun getAllByName(name: String): DbApiMealRelation
+    fun getAllByName(name: String): T
 
     @Transaction
     @Delete
-    fun delete(dbCustomMealRelation: DbApiMealRelation)
+    fun delete(dbCustomMealRelation: T)
 }

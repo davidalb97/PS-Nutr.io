@@ -29,22 +29,22 @@ class MealRepository(private val dataSource: MealDataSource) {
     fun getAllCustomMeals(): LiveData<List<DbCustomMealRelation>> = roomDb.customMealDao().getAll()
 
     fun insertCustomMeal(customMeal: CustomMeal) = AsyncWorker<Unit, Unit> {
-        roomDb.customMealDao().insert(dbCustomMealMapper.mapToRelation(customMeal))
+        roomDb.customMealDao().insert(dbCustomMealMapper.mapToEntity(customMeal))
     }
 
     fun deleteCustomMeal(customMeal: CustomMeal) = AsyncWorker<Unit, Unit> {
-        roomDb.customMealDao().delete(dbCustomMealMapper.mapToRelation(customMeal))
+        roomDb.customMealDao().delete(dbCustomMealMapper.mapToEntity(customMeal))
     }
 
     fun getAllFavoriteMeals(): LiveData<List<DbFavoriteMealRelation>> =
         roomDb.favoriteMealDao().getAll()
 
     fun insertFavoriteMeal(favoriteMeal: FavoriteMeal) = AsyncWorker<Unit, Unit> {
-        roomDb.favoriteMealDao().insert(dbFavoriteMealMapper.mapToRelation(favoriteMeal))
+        roomDb.favoriteMealDao().insert(dbFavoriteMealMapper.mapToEntity(favoriteMeal))
     }
 
     fun deleteFavoriteMeal(favoriteMeal: FavoriteMeal) = AsyncWorker<Unit, Unit> {
-        roomDb.favoriteMealDao().delete(dbFavoriteMealMapper.mapToRelation(favoriteMeal))
+        roomDb.favoriteMealDao().delete(dbFavoriteMealMapper.mapToEntity(favoriteMeal))
     }
 
     fun getAllApiMealsByRestaurant(
@@ -64,7 +64,7 @@ class MealRepository(private val dataSource: MealDataSource) {
             skip
         )
     }
-
+/*
     fun insertFavoriteMeal(apiMeal: ApiMeal) = AsyncWorker<Unit, Unit> {
         roomDb.apiMealDao().insert(dbApiMealMapper.mapToRelation(apiMeal))
     }
@@ -72,6 +72,6 @@ class MealRepository(private val dataSource: MealDataSource) {
 
     fun deleteFavoriteMeal(apiMeal: ApiMeal) = AsyncWorker<Unit, Unit> {
         roomDb.apiMealDao().delete(dbApiMealMapper.mapToRelation(apiMeal))
-    }
+    }*/
 
 }

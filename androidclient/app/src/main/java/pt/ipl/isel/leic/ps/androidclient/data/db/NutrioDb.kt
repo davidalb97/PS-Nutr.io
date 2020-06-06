@@ -33,7 +33,7 @@ abstract class NutrioDb : RoomDatabase() {
 
     abstract fun favoriteMealDao(): FavoriteMealDao
 
-    abstract fun apiMealDao(): ApiMealDao
+
 
     abstract fun ingredientDao(): IngredientDao
 
