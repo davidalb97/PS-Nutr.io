@@ -6,6 +6,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.api.food.dto.MealDto
 import pt.isel.ps.g06.httpserver.dataAccess.api.food.mapper.FoodApiMapper
 import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.food.MealResponseMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.MealDbRepository
+import pt.isel.ps.g06.httpserver.dataAccess.input.IngredientInput
 import pt.isel.ps.g06.httpserver.model.Meal
 import pt.isel.ps.g06.httpserver.util.log
 
@@ -47,6 +48,9 @@ class MealService(
         return meal?.let(mealResponseMapper::mapTo)
     }
 
+    fun createMeal(name: String, ingredients: Collection<IngredientInput>, cuisines: Collection<String>): Meal {
+        TODO("Not yet implemented")
+    }
 
     private fun handleSearchResult(meals: Collection<MealDto>?, exception: Throwable?): Collection<Meal> {
         if (exception != null) {

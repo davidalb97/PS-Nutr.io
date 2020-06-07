@@ -97,6 +97,10 @@ class RestaurantService(
         )
     }
 
+    fun addRestaurantMeal(mealId: String, apiSubmitter: Int, restaurantApiId: String?, submissionId: Int?) {
+        TODO("Not yet implemented")
+    }
+
     private fun filterRedundantApiRestaurants(dbRestaurants: Collection<Restaurant>, apiRestaurants: Collection<Restaurant>): Collection<Restaurant> {
         //Join db restaurants with filtered api restaurants
         return dbRestaurants.union(
@@ -116,7 +120,6 @@ class RestaurantService(
 //        }
 //        return result
     }
-
 //    private fun dbContainsRestaurant(dbRestaurants: Collection<Restaurant>, restaurant: Restaurant): Boolean {
 //        return dbRestaurants.any { dbRestaurant -> restaurant.identifier == dbRestaurant.identifier }
 //    }

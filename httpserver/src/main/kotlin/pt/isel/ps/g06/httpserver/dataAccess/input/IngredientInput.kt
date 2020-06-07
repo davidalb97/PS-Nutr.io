@@ -1,10 +1,10 @@
 package pt.isel.ps.g06.httpserver.dataAccess.input
 
-import javax.validation.constraints.NotBlank
+import javax.validation.constraints.NotNull
 
 data class IngredientInput(
-        @field:NotBlank(message = "Ingredient name must not be empty!")
-        val name: String?,
-        @field:NotBlank(message = "Ingredient identifier must not be empty!")
-        val identifier: String?
+        @field:NotNull(message = "Ingredient identifier must not be empty!")
+        val identifier: Int?,
+        @field:NotNull(message = "An ingredient quantity must be given!")
+        val quantity: Int?
 )
