@@ -27,6 +27,13 @@ class RestaurantMealDbRepository(jdbi: Jdbi) : BaseDbRepo(jdbi) {
         }
     }
 
+    fun getAllMealsFromRestaurant(restaurantId: Int): Collection<DbRestaurantMealDto>? {
+        return jdbi.inTransaction<Collection<DbRestaurantMealDto>, Exception>(isolationLevel) {
+            return@inTransaction it.attach(restaurantMealDao)
+                    .getAllByRestaurantId(restaurantId)
+        }
+    }
+
     fun insert(
             submitterId: Int,
             mealId: Int,

@@ -5,6 +5,10 @@ import org.jdbi.v3.sqlobject.customizer.BindList
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbMealDto
 
+//Restaurant table constants
+private const val RM_table = RestaurantMealDao.table
+private const val RM_mealId = RestaurantMealDao.mealId
+
 //Cuisine table constants
 private const val C_table = CuisineDao.table
 private const val C_name = CuisineDao.name
@@ -50,6 +54,12 @@ interface MealDao {
 
     @SqlQuery("SELECT * FROM $table WHERE $carbs = :carbs")
     fun getByName(@Bind carbs: Int): DbMealDto?
+
+    @SqlQuery("SELECT * FROM $table " +
+            "INNER JOIN $RM_table " +
+            "ON $table.id = $RM_table.$RM_mealId"
+    )
+    fun getAllByRestaurantId(@Bind restaurantId: Int): Collection<DbMealDto>
 
     @SqlQuery("SELECT DISTINCT $table.$id, $table.$name" +
             " FROM $table" +

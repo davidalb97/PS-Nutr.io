@@ -3,6 +3,10 @@ package pt.isel.ps.g06.httpserver.controller
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
 import pt.isel.ps.g06.httpserver.common.*
+import pt.isel.ps.g06.httpserver.dataAccess.model.SimplifiedMealOutputModel
+import pt.isel.ps.g06.httpserver.dataAccess.model.toSimplifiedMeal
+import pt.isel.ps.g06.httpserver.model.Meal
+import pt.isel.ps.g06.httpserver.service.MealService
 
 @Suppress("MVCPathVariableInspection")
 @RestController
@@ -10,7 +14,12 @@ import pt.isel.ps.g06.httpserver.common.*
         produces = [MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_PROBLEM_JSON_VALUE],
         consumes = [MediaType.APPLICATION_JSON_VALUE]
 )
-class RestaurantMealsController {
+class RestaurantMealsController(private val mealService: MealService) {
+
+    @GetMapping(RESTAURANT_MEALS)
+    fun getMealsFromRestaurant(@PathVariable(RESTAURANT_ID_VALUE) id: Int): Collection<SimplifiedMealOutputModel>? =
+            mealService.getAllMealsFromRestaurant(id)?.map { toSimplifiedMeal(it) }
+
 
     @PostMapping(RESTAURANT_MEALS)
     fun addRestaurantMeal(@PathVariable(RESTAURANT_ID_VALUE) id: String, @RequestBody meal: String) {
