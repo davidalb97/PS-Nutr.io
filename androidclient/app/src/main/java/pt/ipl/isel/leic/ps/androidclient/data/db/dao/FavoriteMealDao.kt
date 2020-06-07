@@ -9,29 +9,17 @@ private const val TABLE = DbFavoriteMealEntity.tableName
 private const val PRIMARY_KEY = DbFavoriteMealEntity.primaryKeyName
 
 @Dao
-interface FavoriteMealDao {
+abstract class FavoriteMealDao: BaseMealDao<DbFavoriteMealEntity>() {
 
     @Transaction
     @Query("SELECT * FROM $TABLE")
-    fun getAll(): LiveData<List<DbFavoriteMealRelation>>
-
-    @Transaction
-    @Update
-    fun update(dbFavoriteMeal: DbFavoriteMealEntity)
-
-    @Transaction
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(dbFavoriteMeal: DbFavoriteMealEntity)
+    abstract fun getAll(): LiveData<List<DbFavoriteMealRelation>>
 
     @Transaction
     @Query("SELECT * FROM $TABLE where $PRIMARY_KEY = :key")
-    fun get(key: Long): DbFavoriteMealEntity
+    abstract fun get(key: Long): DbFavoriteMealRelation
 
     @Transaction
     @Query("SELECT * FROM $TABLE where name = :name")
-    fun getAllByName(name: String): LiveData<List<DbFavoriteMealRelation>>
-
-    @Transaction
-    @Delete
-    fun delete(dbFavoriteMeal: DbFavoriteMealEntity)
+    abstract fun getAllByName(name: String): LiveData<List<DbFavoriteMealRelation>>
 }

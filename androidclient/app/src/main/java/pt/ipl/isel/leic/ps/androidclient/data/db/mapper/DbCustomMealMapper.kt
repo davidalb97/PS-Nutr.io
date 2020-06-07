@@ -30,13 +30,5 @@ class DbCustomMealMapper(private val dbIngredientMapper: DbIngredientMapper) {
         dto.entity.primaryKey = model.dbId
     }
 
-    fun mapToEntity(model: CustomMeal) = DbCustomMealEntity(
-        name = model.name,
-        carbs = model.carbs,
-        amount = model.amount,
-        unit = model.unit,
-        imageUrl = model.imageUrl
-    )
-
     fun mapToListModel(relations: List<DbCustomMealRelation>) = relations.map(this::mapToModel)
 }
