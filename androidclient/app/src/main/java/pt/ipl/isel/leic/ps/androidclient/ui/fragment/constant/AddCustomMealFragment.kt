@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Spinner
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import pt.ipl.isel.leic.ps.androidclient.R
@@ -40,8 +41,9 @@ class AddCustomMealFragment : Fragment() {
 
         val customMealName = view.findViewById<EditText>(R.id.meal_name)
         val customMealPortion = view.findViewById<EditText>(R.id.meal_portion_quantity)
-        val customMealGlucoseAmount = view.findViewById<EditText>(R.id.glucose_amount)
+        val customMealUnitSpinner = view.findViewById<Spinner>(R.id.custom_meal_units_spinner)
         val customMealCarbsAmount = view.findViewById<EditText>(R.id.carbs_amount)
+        val customImageUrl = view.findViewById<EditText>(R.id.custom_meal_image_url)
         val createButton = view.findViewById<Button>(R.id.create_custom_meal_button)
 
 
@@ -50,20 +52,21 @@ class AddCustomMealFragment : Fragment() {
                 listOf(
                     customMealName,
                     customMealPortion,
-                    customMealGlucoseAmount,
                     customMealCarbsAmount
                 ).any { it.text.isBlank() }
 
             if (!anyFieldBlank) {
 
-                /*viewModel.addCustomMeal(CustomMeal(
-                    customMealName.text.toString(),
-                    customMealCarbsAmount.text.toString().toInt(),
-                    customMealPortion.text.toString().toInt(),
-                    null,
-                    null,
-                    null
-                ).execute()*/
+                viewModel.addCustomMeal(
+                    CustomMeal(
+                        name = customMealName.text.toString(),
+                        carbs = customMealCarbsAmount.text.toString().toInt(),
+                        amount = customMealPortion.text.toString().toInt(),
+                        unit = customMealUnitSpinner.selectedItem.toString(),
+                        imageUrl = customImageUrl.text?.toString(),
+                        ingredients = emptyList()
+                    )
+                ).execute()
             }
         }
     }

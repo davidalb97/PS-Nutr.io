@@ -36,18 +36,10 @@
             android:textSize="15sp" />
 
         <TextView
-            android:id="@+id/custom_meal_glucose_amount"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/custom_meal_quantity"
-            android:text="@string/glucose_amount_card"
-            android:textSize="15sp" />
-
-        <TextView
             android:id="@+id/custom_meal_carbs_amount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/custom_meal_glucose_amount"
+            android:layout_below="@+id/custom_meal_quantity"
             android:text="@string/carbohydrates_amount_card"
             android:textSize="15sp" />
 

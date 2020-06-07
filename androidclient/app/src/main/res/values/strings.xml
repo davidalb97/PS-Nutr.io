@@ -101,7 +101,7 @@
     <string name="calculate">Calculate</string>
     <string name="you_don_t_have_any_saved_meals_at_the_moment">You don\'t have any saved meals at the moment</string>
     <string name="meal_name">Meal name</string>
-    <string name="glucose_amount">Glucose amount</string>
+    <string name="custom_meal_unit">Unit</string>
     <string name="glucose_amount_card">Glucose amount:</string>
     <string name="meal_carbohydrates_amount">Meal carbohydrates amount</string>
     <string name="meal_glucose_amount">Meal glucose amount</string>
@@ -110,7 +110,12 @@
     <string name="add_the_meal_name">Add the meal name</string>
     <string name="add_ingredients">Add ingredients</string>
     <string name="portion_quantity">Portion quantity</string>
-    <string name="meal_quantity_card">Meal quantity:</string>
-    <string name="carbohydrates_amount_card">Carbohydrates amount:</string>
+    <string name="meal_quantity_card">Meal quantity: %1$d %2$s</string>
+    <string name="carbohydrates_amount_card">Carbohydrates amount: %1$d</string>
     <string name="tab_your_meals">Your meals</string>
+    <string name="custom_meal_image_url_txt">Image url</string>
+    <string name="custom_meal_url_txt_hint">www.example.com (Optional)</string>
+    <string-array name="custom_meal_unit_spinner_array">
+        <item>grams</item>
+    </string-array>
 </resources>
