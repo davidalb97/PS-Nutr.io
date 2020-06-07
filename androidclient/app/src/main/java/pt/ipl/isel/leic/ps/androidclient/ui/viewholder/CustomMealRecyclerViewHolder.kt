@@ -68,12 +68,12 @@ class CustomMealRecyclerViewHolder(
             deleteButton.setOnClickListener {
                 onDelete(this.item)
                     .setOnPostExecute {
+                        this.bindingAdapter?.notifyItemRemoved(layoutPosition)
                         Toast.makeText(
                             ctx,
                             ctx.getString(R.string.DialogAlert_deleted), Toast.LENGTH_SHORT
                         ).show()
                         setButtonsVisibility(false)
-                        this.bindingAdapter?.notifyItemRemoved(layoutPosition)
                     }.execute()
             }
 
