@@ -8,9 +8,9 @@ data class Restaurant(
     val name: String,
     val latitude: Float,
     val longitude: Float,
-    val votes: Votes,
-    val cuisines: List<String>,
-    val meals: List<ApiMeal>
+    val votes: Votes?,
+    val cuisines: List<String>?,
+    val meals: List<ApiMeal>?
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         id = parcel.readInt(),

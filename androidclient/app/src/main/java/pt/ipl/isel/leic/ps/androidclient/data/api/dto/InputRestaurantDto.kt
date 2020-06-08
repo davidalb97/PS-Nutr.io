@@ -5,7 +5,7 @@ data class InputRestaurantDto (
     val name: String,
     val latitude: Float,
     val longitude: Float,
-    val votes: InputVotesDto,
-    val cuisines: List<String>,
-    val inputMealDtos: Iterable<InputMealDto>
+    val votes: InputVotesDto?,
+    val cuisines: List<String>?,
+    val inputMealDtos: Iterable<InputMealDto>?
 )

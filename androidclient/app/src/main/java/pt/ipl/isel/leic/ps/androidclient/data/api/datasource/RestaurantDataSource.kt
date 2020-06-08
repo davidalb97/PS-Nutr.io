@@ -12,7 +12,7 @@ const val LONGITUDE_VAR = ":longitude"
 
 private const val RESTAURANT = "restaurant"
 private const val RESTAURANT_ID_URI =
-    "$URI_BASE/$RESTAURANT?latitude=38.736946&longitude=-9.142685"
+    "$URI_BASE/$RESTAURANT?latitude=:latitude&longitude=:longitude"
 private const val RESTAURANT_LOCATION =
     "$URI_BASE/$RESTAURANT?latitude=$LATITUDE_VAR&longitude=$LONGITUDE_VAR"
 private const val RESTAURANT_REPORT =
@@ -34,11 +34,9 @@ val RESTAURANT_DTO = InputRestaurantDto::class.java
 
 
 class RestaurantDataSource(
-    private val requestParser: RequestParser
+    private val requestParser: RequestParser,
+    private val uriBuilder: UriBuilder
 ) {
-
-    private val uriBuilder =
-        UriBuilder()
 
     /**
      * ----------------------------- GETs -----------------------------
@@ -51,19 +49,17 @@ class RestaurantDataSource(
         skip: Int
     ) {
         var uri =
-            RESTAURANT_ID_URI
+            RESTAURANT
 
         uri = uriBuilder.buildUri(uri, uriParameters)
 
-        /*requestParser.asyncRequest(
+        requestParser.requestAndRespond(
             Method.GET,
             uri,
-            RestaurantDto::class.java,
-            restaurantMapper::map,
+            InputRestaurantDto::class.java,
             success,
-            error,
-            null
-        )*/
+            error
+        )
     }
 
     fun getNearby(

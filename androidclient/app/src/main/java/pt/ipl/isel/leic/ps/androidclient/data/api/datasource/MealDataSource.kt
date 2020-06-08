@@ -1,21 +1,18 @@
 package pt.ipl.isel.leic.ps.androidclient.data.api.datasource
 
 import com.android.volley.VolleyError
-import pt.ipl.isel.leic.ps.androidclient.data.api.MEAL
-import pt.ipl.isel.leic.ps.androidclient.data.api.RequestParser
-import pt.ipl.isel.leic.ps.androidclient.data.api.URI_BASE
+import pt.ipl.isel.leic.ps.androidclient.data.api.*
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.InputMealDto
-import pt.ipl.isel.leic.ps.androidclient.data.model.ApiMeal
 
 const val MEAL_ID_URI =
     "$URI_BASE/$MEAL/:id"
 
 
-//val MEALS_DTO = MealsDto::class.java
-//val MEAL_DTO = MealDto::class.java
+val MEAL_DTO = InputMealDto::class.java
 
 class MealDataSource(
-    private val requestParser: RequestParser
+    private val requestParser: RequestParser,
+    private val uriBuilder: UriBuilder
 ) {
 
     fun getAllByRestaurantIdentifier(
@@ -32,26 +29,25 @@ class MealDataSource(
     /**
      * ----------------------------- GETs -----------------------------
      */
-    /*fun getById(
-        success: (Meal) -> Unit,
+    fun getByName(
+        success: (InputMealDto) -> Unit,
         error: (VolleyError) -> Unit,
-        uriParameters: HashMap<String, HashMap<String, String>>?,
+        uriParameters: HashMap<String, String>?,
         count: Int,
         skip: Int
     ) {
         var uri = MEAL_ID_URI
 
-        uri = requester.buildUri(uri, uriParameters)
+        uri = uriBuilder.buildUri(uri, uriParameters)
 
-        requester.httpServerRequest(
+        requestParser.requestAndRespond(
             Method.GET,
             uri,
             MEAL_DTO,
             success,
-            error,
-            null
+            error
         )
-    }*/
+    }
 
     /**
      * ----------------------------- POSTs -----------------------------

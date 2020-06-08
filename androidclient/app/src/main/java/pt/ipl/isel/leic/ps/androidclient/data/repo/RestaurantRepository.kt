@@ -2,29 +2,30 @@ package pt.ipl.isel.leic.ps.androidclient.data.repo
 
 import com.android.volley.VolleyError
 import pt.ipl.isel.leic.ps.androidclient.data.api.datasource.RestaurantDataSource
-import pt.ipl.isel.leic.ps.androidclient.data.api.dto.InputRestaurantDto
-import pt.ipl.isel.leic.ps.androidclient.data.api.mapper.*
+import pt.ipl.isel.leic.ps.androidclient.data.api.mapper.InputIngredientMapper
+import pt.ipl.isel.leic.ps.androidclient.data.api.mapper.InputMealMapper
+import pt.ipl.isel.leic.ps.androidclient.data.api.mapper.InputRestaurantMapper
 import pt.ipl.isel.leic.ps.androidclient.data.model.Restaurant
 
 /**
- * The repository that displays to the view models all the available methods
- * to request the HTTP server.
+ * The repository that maps every restaurant dto to its respective model
+ * and sends it to the application's upper layers: view models and fragments.
  */
 class RestaurantRepository(private val dataSource: RestaurantDataSource) {
 
-    val apiIngredientMapper = InputIngredientMapper()
-    val apiMealMapper = InputMealMapper(apiIngredientMapper)
-    val apiRestaurantMapper = InputRestaurantMapper(apiMealMapper)
+    private val apiIngredientMapper = InputIngredientMapper()
+    private val apiMealMapper = InputMealMapper(apiIngredientMapper)
+    private val apiRestaurantMapper = InputRestaurantMapper(apiMealMapper)
 
     fun getRestaurantById(
-        success: (InputRestaurantDto) -> Unit,
+        success: (Restaurant) -> Unit,
         error: (VolleyError) -> Unit,
         uriParameters: HashMap<String, String>?,
         count: Int,
         skip: Int
     ) {
         dataSource.getById(
-            success,
+            { restaurantDto -> success(apiRestaurantMapper.mapToModel(restaurantDto)) },
             error,
             uriParameters,
             count,
