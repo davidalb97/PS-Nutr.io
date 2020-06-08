@@ -7,6 +7,8 @@ import pt.isel.ps.g06.httpserver.dataAccess.api.food.dto.MealDto
 import pt.isel.ps.g06.httpserver.dataAccess.api.food.dto.spoonacular.SpoonacularDetailedMealDto
 import pt.isel.ps.g06.httpserver.dataAccess.api.food.dto.spoonacular.SpoonacularMealDto
 import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.ResponseMapper
+import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbMealDto
+import pt.isel.ps.g06.httpserver.dataAccess.db.repo.MealDbRepository
 import pt.isel.ps.g06.httpserver.model.Ingredient
 import pt.isel.ps.g06.httpserver.model.Meal
 import pt.isel.ps.g06.httpserver.model.MealInfo
@@ -20,12 +22,14 @@ private const val CARBOHYDRATES = "Carbohydrates"
 
 @Component
 class MealResponseMapper(
-        private val spoonacularResponseMapper: SpoonacularResponseMapper
+        private val spoonacularResponseMapper: SpoonacularResponseMapper,
+        private val dbMealResponseMapper: DbMealResponseMapper
 ) : ResponseMapper<MealDto, Meal> {
     override fun mapTo(dto: MealDto): Meal {
         return when (dto) {
             is SpoonacularMealDto -> spoonacularResponseMapper.mapTo(dto)
             is SpoonacularDetailedMealDto -> spoonacularResponseMapper.mapDetailedInfo(dto)
+            is DbMealDto -> dbMealResponseMapper.mapTo(dto)
             else -> {
                 log("ERROR: Unregistered mapper for MealDto of type '${dto.javaClass.typeName}'!")
                 //TODO Should a handler listen to this exception?
@@ -35,6 +39,32 @@ class MealResponseMapper(
     }
 }
 
+@Component
+class DbMealResponseMapper(
+        val mealDbRepository: MealDbRepository
+) : ResponseMapper<DbMealDto, Meal> {
+    override fun mapTo(dto: DbMealDto): Meal =
+            Meal(
+                    identifier = dto.submission_id,
+                    name = dto.meal_name,
+                    image = null, // TODO
+                    info = lazy {
+                        MealInfo(
+                                carbohydrates = null, // TODO
+                                ingredients = mealDbRepository
+                                        .getIngredientByMealId(dto.submission_id)
+                                        .stream()
+                                        .map { dto ->
+                                            Ingredient(
+                                                    name = dto.ingredient_name,
+                                                    id = dto.submission_id.toString(),
+                                                    carbs = dto.carbs
+                                            )
+                                        }
+                        )
+                    }
+            )
+}
 
 @Component
 class SpoonacularResponseMapper(private val spoonacularFoodApi: SpoonacularFoodApi) : ResponseMapper<SpoonacularMealDto, Meal> {

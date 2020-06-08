@@ -12,12 +12,15 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType.MEAL
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmitterType
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.*
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbApiSubmissionDto
+import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbIngredientDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbMealCuisineDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbMealDto
 import pt.isel.ps.g06.httpserver.exception.InvalidInputDomain
 import pt.isel.ps.g06.httpserver.exception.InvalidInputException
 import pt.isel.ps.g06.httpserver.model.Ingredient
 import pt.isel.ps.g06.httpserver.springConfig.dto.DbEditableDto
+import java.text.CollationElementIterator
+import java.util.stream.Stream
 
 private val isolationLevel = TransactionIsolationLevel.SERIALIZABLE
 private val mealDaoClass = MealDao::class.java
@@ -60,6 +63,14 @@ class MealDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo(jdbi)
         return jdbi.inTransaction<Collection<DbMealDto>, Exception>(isolationLevel) {
             return@inTransaction it.attach(MealDao::class.java)
                     .getAllByCuisineNames(cuisineNames)
+        }
+    }
+
+    fun getIngredientByMealId(submissionId: String): Collection<DbIngredientDto> {
+        return jdbi.inTransaction<Collection<DbIngredientDto>, Exception>(isolationLevel) {
+            return@inTransaction it
+                    .attach(IngredientDao::class.java)
+                    .getAllByMealId(submissionId)
         }
     }
 

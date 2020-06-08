@@ -8,6 +8,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbMealDto
 //Restaurant table constants
 private const val RM_table = RestaurantMealDao.table
 private const val RM_mealId = RestaurantMealDao.mealId
+private const val RM_restaurantId = RestaurantMealDao.restaurantId
 
 //Cuisine table constants
 private const val C_table = CuisineDao.table
@@ -55,9 +56,10 @@ interface MealDao {
     @SqlQuery("SELECT * FROM $table WHERE $carbs = :carbs")
     fun getByName(@Bind carbs: Int): DbMealDto?
 
-    @SqlQuery("SELECT * FROM $table " +
+    @SqlQuery("SELECT $table.$id, $table.$name FROM $table " +
             "INNER JOIN $RM_table " +
-            "ON $table.id = $RM_table.$RM_mealId"
+            "ON $table.$id = $RM_table.$RM_mealId " +
+            "WHERE $RM_table.$RM_restaurantId = :restaurantId"
     )
     fun getAllByRestaurantId(@Bind restaurantId: Int): Collection<DbMealDto>
 
