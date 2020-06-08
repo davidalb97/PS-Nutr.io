@@ -1,7 +1,6 @@
 package pt.ipl.isel.leic.ps.androidclient.data.db.relation
 
 import androidx.room.*
-import pt.ipl.isel.leic.ps.androidclient.data.db.entity.DbCustomMealEntity
 import pt.ipl.isel.leic.ps.androidclient.data.db.entity.DbFavoriteMealEntity
 import pt.ipl.isel.leic.ps.androidclient.data.db.entity.DbIngredientEntity
 
@@ -12,7 +11,7 @@ data class DbFavoriteMealRelation(
         entityColumn = DbIngredientEntity.mealKeyName
     )
     val ingredients: List<DbIngredientEntity>
-): IMealRelation<DbFavoriteMealEntity> {
+): IDbMealRelation<DbFavoriteMealEntity> {
 
     override fun fetchIngredients() = ingredients
 

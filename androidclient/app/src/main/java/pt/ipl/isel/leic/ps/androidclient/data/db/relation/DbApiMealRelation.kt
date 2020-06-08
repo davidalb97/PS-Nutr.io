@@ -12,7 +12,7 @@ data class DbApiMealRelation(
         entityColumn = DbIngredientEntity.mealKeyName
     )
     val ingredients: List<DbIngredientEntity>
-): IMealRelation<DbApiMealEntity> {
+): IDbMealRelation<DbApiMealEntity> {
 
     override fun fetchIngredients() = ingredients
 

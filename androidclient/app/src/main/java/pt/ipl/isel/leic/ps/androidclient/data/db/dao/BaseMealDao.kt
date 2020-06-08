@@ -2,14 +2,14 @@ package pt.ipl.isel.leic.ps.androidclient.data.db.dao
 
 import androidx.room.*
 import pt.ipl.isel.leic.ps.androidclient.data.db.entity.DbIngredientEntity
-import pt.ipl.isel.leic.ps.androidclient.data.db.relation.IMealRelation
+import pt.ipl.isel.leic.ps.androidclient.data.db.relation.IDbMealRelation
 
 @Dao
 abstract class BaseMealDao<MealEntity> {
 
     @Transaction
     @Insert
-    fun insert(relation: IMealRelation<MealEntity>) {
+    fun insert(relation: IDbMealRelation<MealEntity>) {
         insertMeal(relation.fetchMeal())
         insertIngredients(relation.fetchIngredients())
     }
@@ -28,7 +28,7 @@ abstract class BaseMealDao<MealEntity> {
 
     @Transaction
     @Delete
-    fun delete(relation: IMealRelation<MealEntity>) {
+    fun delete(relation: IDbMealRelation<MealEntity>) {
         deleteMeal(relation.fetchMeal())
         deleteIngredients(relation.fetchIngredients())
     }
