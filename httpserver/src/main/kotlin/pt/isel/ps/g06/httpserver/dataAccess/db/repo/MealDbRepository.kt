@@ -57,17 +57,6 @@ class MealDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo(jdbi)
         }
     }
 
-    fun getAllByCuisineApiIds(foodApiType: FoodApiType, cuisineApiIds: Collection<String>): Collection<DbMealDto> {
-        return jdbi.inTransaction<Collection<DbMealDto>, Exception>(isolationLevel) {
-            val apiSubmitterId = it.attach(SubmitterDao::class.java)
-                    .getAllByType(SubmitterType.API.toString())
-                    .first { it.submitter_name == foodApiType.toString() }
-                    .submitter_id
-            return@inTransaction it.attach(MealDao::class.java)
-                    .getAllByApiSubmitterAndCuisineApiIds(apiSubmitterId, cuisineApiIds)
-        }
-    }
-
     fun getAllByCuisineNames(cuisineNames: Collection<String>): Collection<DbMealDto> {
         return jdbi.inTransaction<Collection<DbMealDto>, Exception>(isolationLevel) {
             return@inTransaction it.attach(MealDao::class.java)
