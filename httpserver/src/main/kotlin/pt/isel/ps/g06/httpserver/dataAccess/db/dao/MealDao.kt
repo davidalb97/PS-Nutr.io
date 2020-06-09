@@ -69,9 +69,9 @@ interface MealDao {
             " ON $table.$id = $MC_table.$MC_mealId" +
             " INNER JOIN $C_table" +
             " ON $MC_table.$MC_cuisineId = $C_table.$C_cuisineId" +
-            " WHERE $C_table.$C_name IN (<mealNames>)"
+            " WHERE $C_table.$C_name IN (<cuisineNames>)"
     )
-    fun getAllByCuisineNames(@BindList mealNames: Collection<String>): Collection<DbMealDto>
+    fun getAllByCuisineNames(@BindList cuisineNames: Collection<String>): Collection<DbMealDto>
 
     @SqlQuery("SELECT $table.$id, $table.$name" +
             " FROM $C_table" +

@@ -19,13 +19,12 @@ import pt.isel.ps.g06.httpserver.exception.InvalidInputDomain
 import pt.isel.ps.g06.httpserver.exception.InvalidInputException
 import pt.isel.ps.g06.httpserver.model.Ingredient
 import pt.isel.ps.g06.httpserver.springConfig.dto.DbEditableDto
-import java.text.CollationElementIterator
-import java.util.stream.Stream
 
 private val isolationLevel = TransactionIsolationLevel.SERIALIZABLE
 private val mealDaoClass = MealDao::class.java
 private val mealCuisineDaoClass = MealCuisineDao::class.java
 private val restaurantMealDaoClass = RestaurantMealDao::class.java
+private val cuisineDao = CuisineDao::class.java
 
 @Repository
 class MealDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo(jdbi) {
@@ -44,7 +43,17 @@ class MealDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo(jdbi)
 
     fun getAllMealsFromRestaurant(restaurantId: Int): Collection<DbMealDto> {
         return jdbi.inTransaction<Collection<DbMealDto>, Exception>(isolationLevel) {
-            return@inTransaction it.attach(mealDaoClass).getAllByRestaurantId(restaurantId)
+            // 1. Get restaurant meals
+            val restaurantMeals = it.attach(mealDaoClass).getAllByRestaurantId(restaurantId)
+
+            // 2. Get meals from the restaurant cuisines
+            val restaurantsCuisines = it.attach(cuisineDao).getByRestaurantId(restaurantId)
+            val cuisineMeals = it.attach(mealDaoClass).getAllByCuisineNames(restaurantsCuisines.map { dbCuisineDto ->
+                dbCuisineDto.cuisine_name
+            })
+
+            restaurantMeals.plus(cuisineMeals).distinctBy { dbMealDto -> dbMealDto.submission_id }
+
         }
     }
 
