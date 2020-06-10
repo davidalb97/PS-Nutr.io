@@ -5,12 +5,21 @@ import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.food.MealRespo
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.MealDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.input.IngredientInput
 import pt.isel.ps.g06.httpserver.model.Meal
+import pt.isel.ps.g06.httpserver.model.Votes
 
 @Service
 class MealService(
         private val mealResponseMapper: MealResponseMapper,
         private val mealDbRepository: MealDbRepository
 ) {
+
+    fun getAllMealsFromRestaurant(restaurantId: Int): Collection<Meal>? {
+        return mealDbRepository
+                .getAllMealsFromRestaurant(restaurantId)
+                //TODO mapTo Meal
+                .map { Meal(1, "Placeholder", emptySequence(), 10, votes = Votes(10, 10)) }
+//                .map { mealResponseMapper.mapTo(it) }
+    }
 
     fun getMeal(mealId: Int): Meal? {
         return mealDbRepository.getById(mealId)?.let(mealResponseMapper::mapTo)
@@ -31,12 +40,8 @@ class MealService(
                 quantity = quantity
         )
 
-        return mealResponseMapper.mapTo(createdMeal)
-    }
-
-    fun getAllMealsFromRestaurant(restaurantId: Int): Collection<Meal>? {
-        return mealDbRepository
-                .getAllMealsFromRestaurant(restaurantId)
-                .map { mealResponseMapper.mapTo(it) }
+        //TODO mapTo Meal
+        return Meal(1, "Placeholder", emptySequence(), 10, votes = Votes(10, 10))
+//        return mealResponseMapper.mapTo(createdMeal)
     }
 }

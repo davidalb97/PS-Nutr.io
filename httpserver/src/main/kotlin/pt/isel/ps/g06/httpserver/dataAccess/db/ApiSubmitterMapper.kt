@@ -14,7 +14,7 @@ data class ApiSubmitterMapper(
     @Bean
     protected fun createMap(): Map<Int, RestaurantApiType> {
         val submitters = submitterDbRepository
-                .getApiSubmitters()
+                .getApiSubmittersByName(RestaurantApiType.values().map { it.toString() })
                 .associate(this::buildSubmitterPair)
 
         if (submitters.size != RestaurantApiType.values().size) {
@@ -30,6 +30,7 @@ data class ApiSubmitterMapper(
     fun getSubmitter(type: RestaurantApiType) = apiSubmitters.filterValues { it == type }.keys.firstOrNull()
 
     private fun buildSubmitterPair(submitter: DbSubmitterDto): Pair<Int, RestaurantApiType> {
+        //TODO If null then bam
         return Pair(submitter.submitter_id, RestaurantApiType.getOrDefault(submitter.submitter_name))
     }
 }

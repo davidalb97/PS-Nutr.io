@@ -1,11 +1,9 @@
 DO $$ 
 --Test variables declaration:
 DECLARE
-	submitter_id_api_spoonacular INTEGER := 1;
-	submitter_name_api_spoonacular varchar(20) := 'Spoonacular';
-	submitter_id_api_zomato INTEGER := 2;
+	submitter_id_api_zomato INTEGER := 1;
 	submitter_name_api_zomato varchar(20) := 'Zomato';
-	submitter_id_api_here INTEGER := 3;
+	submitter_id_api_here INTEGER := 2;
 	submitter_name_api_here varchar(20) := 'Here';
 	cuisineNames varchar[] := ARRAY[
 		'African',--10
@@ -212,13 +210,12 @@ DECLARE
 BEGIN 
 	
 	INSERT INTO Submitter(submitter_name, submitter_type) VALUES
-	(submitter_name_api_spoonacular, 'API'),
 	(submitter_name_api_zomato, 'API'),
 	(submitter_name_api_here, 'API');
 
 	INSERT INTO Api(submitter_id, api_token) VALUES
-	(submitter_id_api_spoonacular, '123'),
-	(submitter_id_api_zomato, '456');
+	(submitter_id_api_zomato, '456'),
+	(submitter_id_api_here, 'here:123');
 	
 	--Insert hardcoded cuisines
 	FOR cuisineIdx in 1 .. array_length(cuisineNames, 1)
@@ -252,17 +249,12 @@ BEGIN
 		mealIngredient1Id INTEGER := firstTestSubmissionId + 1;
 		mealIngredient2Id INTEGER := firstTestSubmissionId + 2;
 		mealIngredient3Id INTEGER := firstTestSubmissionId + 3;
-		mealFromApiId INTEGER := firstTestSubmissionId + 4;
-		restaurantFromLocationId INTEGER := firstTestSubmissionId + 5;
-		restaurantFromApiId INTEGER := firstTestSubmissionId + 6;
-		restaurantMealWithLocationWithIngredients INTEGER := firstTestSubmissionId + 7;
-		restaurantMealWithLocationWithoutIngredients INTEGER := firstTestSubmissionId + 8;
-		restaurantMealWithApiWithIngredients INTEGER := firstTestSubmissionId + 9;
-		restaurantMealWithApiWithoutIngredients INTEGER := firstTestSubmissionId + 10;
-		portionRestaurantMealWithLocationWithIngredients INTEGER := firstTestSubmissionId + 11;
-		portionRestaurantMealWithLocationWithoutIngredients INTEGER := firstTestSubmissionId + 12;
-		portionRestaurantMealWithApiWithIngredients INTEGER := firstTestSubmissionId + 13;
-		portionRestaurantMealWithApiWithoutIngredients INTEGER := firstTestSubmissionId + 14;
+		restaurantFromLocationId INTEGER := firstTestSubmissionId + 4;
+		restaurantFromApiId INTEGER := firstTestSubmissionId + 5;
+		restaurantMealWithLocationWithIngredients INTEGER := firstTestSubmissionId + 6;
+		restaurantMealWithApiWithIngredients INTEGER := firstTestSubmissionId + 7;
+		portionRestaurantMealWithLocationWithIngredients INTEGER := firstTestSubmissionId + 8;
+		portionRestaurantMealWithApiWithIngredients INTEGER := firstTestSubmissionId + 9;
 	BEGIN
 		--Test values insertion:
 		INSERT INTO Submitter(submitter_name, submitter_type) VALUES
@@ -273,77 +265,50 @@ BEGIN
 		
 		INSERT INTO Submission(submission_type) VALUES
 		('Meal'),--First user meal from ingredients
-		('Ingredient'),--First user meal ingredients from food api
-		('Ingredient'),--First user meal ingredients from food api
-		('Ingredient'),--First user meal ingredients from food api
-		('Meal'),--Second user meal from food api
+		('Ingredient'),
+		('Ingredient'),
+		('Ingredient'),
 		('Restaurant'),--First restaurant from user location
 		('Restaurant'),--Second restaurant from restaurant api
 		('RestaurantMeal'),--Restaurant from user location + Meal from ingredients
-		('RestaurantMeal'),--Rrestaurant from user location + Meal from api
 		('RestaurantMeal'),--Restaurant from restaurant api + Meal from ingredients
-		('RestaurantMeal'),--Restaurant from restaurant api + Meal from api
 		('Portion'),--Restaurant from user location + Meal from ingredients
-		('Portion'),--Rrestaurant from user location + Meal from api
-		('Portion'),--Restaurant from restaurant api + Meal from ingredients
-		('Portion');--Restaurant from restaurant api + Meal from api
+		('Portion');--Restaurant from restaurant api + Meal from ingredients
 
 		INSERT INTO ApiSubmission(submission_id, apiId) VALUES
-		(mealIngredient1Id, 	'0'),--First user meal ingredients from food api
-		(mealIngredient2Id, 	'1'),--First user meal ingredients from food api
-		(mealIngredient3Id, 	'2'),--First user meal ingredients from food api
-		(mealFromApiId,			'3'),--Second user meal from food api
 		(restaurantFromApiId,	'4');--Second restaurant from restaurant api
 
 		INSERT INTO SubmissionSubmitter(submission_id, submitter_id) VALUES
 		(mealFromIngredientsId,									submitter_id_user_admin),
-		(mealFromIngredientsId,									submitter_id_api_spoonacular),
-		(mealIngredient1Id,										submitter_id_api_spoonacular),
-		(mealIngredient2Id,										submitter_id_api_spoonacular),
-		(mealIngredient3Id,										submitter_id_api_spoonacular),
-		(mealFromApiId,											submitter_id_user_admin),--(user)
-		(mealFromApiId,											submitter_id_api_spoonacular),--(api)
 		(restaurantFromLocationId,								submitter_id_user_admin),
-		(restaurantFromApiId,									submitter_id_user_admin),--(user)
 		(restaurantFromApiId,									submitter_id_api_zomato),--(api)
 		(restaurantMealWithLocationWithIngredients,				submitter_id_user_admin),
-		(restaurantMealWithLocationWithoutIngredients,			submitter_id_user_admin),
 		(restaurantMealWithApiWithIngredients,					submitter_id_user_admin),
-		(restaurantMealWithApiWithoutIngredients,				submitter_id_user_admin),
 		(portionRestaurantMealWithLocationWithIngredients,		submitter_id_user_admin),
-		(portionRestaurantMealWithLocationWithoutIngredients,	submitter_id_user_admin),
-		(portionRestaurantMealWithApiWithIngredients,			submitter_id_user_admin),
-		(portionRestaurantMealWithApiWithoutIngredients,		submitter_id_user_admin);
+		(portionRestaurantMealWithApiWithIngredients,			submitter_id_user_admin);
 		
 		INSERT INTO Votes(submission_id, positive_count, negative_count) VALUES
 		(restaurantFromLocationId, 20, 20),
 		(restaurantFromApiId, 45, 36),
 		(restaurantMealWithLocationWithIngredients, 10, 23),
-		(restaurantMealWithLocationWithoutIngredients, 443, 1276),
-		(restaurantMealWithApiWithIngredients, 1235, 643),
-		(restaurantMealWithApiWithoutIngredients, 13423, 12563);
+		(restaurantMealWithApiWithIngredients, 1235, 643);
 		
 		INSERT INTO UserVote(submission_id, vote_submitter_id, vote) VALUES
 		(restaurantMealWithLocationWithIngredients,		submitter_id_user_admin, false),
-		(restaurantMealWithLocationWithoutIngredients,	submitter_id_user_admin, true),
 		(restaurantMealWithApiWithIngredients,			submitter_id_user_admin, true),
-		(restaurantMealWithApiWithoutIngredients,		submitter_id_user_admin, false),
 		(restaurantFromLocationId,						submitter_id_user_admin, false),
 		(restaurantFromApiId,							submitter_id_user_admin, true);
 
 		INSERT INTO Report(submission_id, submitter_id, description) VALUES
 		(restaurantMealWithLocationWithIngredients,		submitter_id_user_admin, 'Debug description 1'),
-		(restaurantMealWithLocationWithoutIngredients,	submitter_id_user_admin, 'Debug description 2'),
-		(restaurantMealWithApiWithIngredients,			submitter_id_user_admin, 'Debug description 3'),
-		(restaurantMealWithApiWithoutIngredients,		submitter_id_user_admin, 'Debug description 4');
+		(restaurantMealWithApiWithIngredients,			submitter_id_user_admin, 'Debug description 3');
 
 		INSERT INTO Restaurant(submission_id, restaurant_name, latitude, longitude) VALUES
 		(restaurantFromLocationId,	'First rest from user coords', 0.0, 0.0),
 		(restaurantFromApiId,		'Second rest from api', 1.0, 1.0);
 
 		INSERT INTO Meal(submission_id, meal_name, carbs, quantity) VALUES
-		(mealFromIngredientsId,		'First meal from ingr', 10, 100),
-		(mealFromApiId,				'Second meal from api', 10, 100);
+		(mealFromIngredientsId,		'First meal from ingr', 10, 100);
 
 		INSERT INTO Ingredient(submission_id, ingredient_name, carbs, quantity) VALUES
 		(mealIngredient1Id, 'açucar', 100, 100),
@@ -357,21 +322,15 @@ BEGIN
 
 		INSERT INTO RestaurantMeal(submission_id, restaurant_submission_id, meal_submission_id) VALUES
 		(restaurantMealWithLocationWithIngredients, 	restaurantFromLocationId,	mealFromIngredientsId),
-		(restaurantMealWithLocationWithoutIngredients,	restaurantFromLocationId,	mealFromApiId),
-		(restaurantMealWithApiWithIngredients,			restaurantFromApiId,		mealFromIngredientsId),
-		(restaurantMealWithApiWithoutIngredients,		restaurantFromApiId,		mealFromApiId);
+		(restaurantMealWithApiWithIngredients,			restaurantFromApiId,		mealFromIngredientsId);
 		
 		INSERT INTO Favorite(submission_id, submitter_id) VALUES
 		(restaurantMealWithLocationWithIngredients,		submitter_id_user_admin),
-		(restaurantMealWithLocationWithoutIngredients,	submitter_id_user_admin),
-		(restaurantMealWithApiWithIngredients,			submitter_id_user_admin),
-		(restaurantMealWithApiWithoutIngredients,		submitter_id_user_admin);
+		(restaurantMealWithApiWithIngredients,			submitter_id_user_admin);
 		
 		INSERT INTO Portion(submission_id, restaurant_meal_submission_id, quantity) VALUES
 		(portionRestaurantMealWithLocationWithIngredients,		restaurantMealWithLocationWithIngredients, 100),
-		(portionRestaurantMealWithLocationWithoutIngredients,	restaurantMealWithLocationWithoutIngredients, 200),
-		(portionRestaurantMealWithApiWithIngredients,			restaurantMealWithApiWithIngredients, 300),
-		(portionRestaurantMealWithApiWithoutIngredients,		restaurantMealWithApiWithoutIngredients, 400);
+		(portionRestaurantMealWithApiWithIngredients,			restaurantMealWithApiWithIngredients, 300);
 
 		INSERT INTO SubmissionContract(submission_id, submission_contract) VALUES
 		(mealFromIngredientsId,							'API'),
@@ -379,8 +338,6 @@ BEGIN
 		(mealIngredient1Id,								'API'),
 		(mealIngredient2Id, 							'API'),
 		(mealIngredient3Id,								'API'),
-		(mealFromApiId,									'API'),
-		(mealFromApiId,									'Favorable'),
 		(restaurantFromLocationId,						'Votable'),
 		(restaurantFromLocationId,						'Reportable'),
 		(restaurantFromLocationId,						'Favorable'),
@@ -390,22 +347,15 @@ BEGIN
 		(restaurantMealWithLocationWithIngredients, 	'Votable'),
 		(restaurantMealWithLocationWithIngredients, 	'Reportable'),
 		(restaurantMealWithLocationWithIngredients, 	'Favorable'),
-		(restaurantMealWithLocationWithoutIngredients, 	'Votable'),
-		(restaurantMealWithLocationWithoutIngredients, 	'Reportable'),
-		(restaurantMealWithLocationWithoutIngredients, 	'Favorable'),
 		(restaurantMealWithApiWithIngredients,			'Votable'),
 		(restaurantMealWithApiWithIngredients,			'Reportable'),
-		(restaurantMealWithApiWithIngredients,			'Favorable'),
-		(restaurantMealWithApiWithoutIngredients,		'Votable'),
-		(restaurantMealWithApiWithoutIngredients,		'Reportable'),
-		(restaurantMealWithApiWithoutIngredients,		'Favorable');
+		(restaurantMealWithApiWithIngredients,			'Favorable');
 
 		INSERT INTO RestaurantCuisine(restaurant_submission_id, cuisine_submission_id) VALUES
 		(restaurantFromLocationId,	1),--(1 = African)
 		(restaurantFromApiId,		2);--(2 = Alentejana)
 
 		INSERT INTO MealCuisine(meal_submission_id, cuisine_submission_id) VALUES
-		(mealFromIngredientsId,	1),--(1 = African)
-		(mealFromApiId,			2);--(2 = Alentejana)
+		(mealFromIngredientsId,	1);--(1 = African)
 	END;
 END $$;

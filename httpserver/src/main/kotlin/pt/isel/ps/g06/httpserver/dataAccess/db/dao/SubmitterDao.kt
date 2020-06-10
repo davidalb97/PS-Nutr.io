@@ -1,6 +1,7 @@
 package pt.isel.ps.g06.httpserver.dataAccess.db.dao
 
 import org.jdbi.v3.sqlobject.customizer.Bind
+import org.jdbi.v3.sqlobject.customizer.BindList
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbSubmitterDto
 
@@ -8,6 +9,8 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbSubmitterDto
 private const val SS_table = SubmissionSubmitterDao.table
 private const val SS_submissionId = SubmissionSubmitterDao.submissionId
 private const val SS_submitterId = SubmissionSubmitterDao.submitterId
+
+private const val API = "API"
 
 interface SubmitterDao {
 
@@ -25,7 +28,10 @@ interface SubmitterDao {
     fun getById(@Bind submitterId: Int): DbSubmitterDto?
 
     @SqlQuery("SELECT * FROM $table WHERE $type = :submitterType")
-    fun getAllByType(submitterType: String): List<DbSubmitterDto>
+    fun getAllByType(@Bind submitterType: String): Collection<DbSubmitterDto>
+
+    @SqlQuery("SELECT * FROM $table WHERE $type = '$API' AND submitter_name IN (<names>)")
+    fun getApiSubmittersByName(@BindList names: Collection<String>): Collection<DbSubmitterDto>
 
     @SqlQuery("SELECT $table.$id, $table.$name, $table.$type" +
             " FROM $table" +

@@ -7,11 +7,9 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbSubmitterDto
 
 @Repository
 class SubmitterDbRepository(private val jdbi: Jdbi) {
-    fun getApiSubmitters(): Collection<DbSubmitterDto> {
+    fun getApiSubmittersByName(names: Collection<String>): Collection<DbSubmitterDto> {
         return jdbi.inTransaction<Collection<DbSubmitterDto>, Exception> {
-            //TODO 1. Hardcoded string needs to be replaced by enum
-            //TODO 2. Type should not be API, but Restaurant API instead.
-            return@inTransaction it.attach(SubmitterDao::class.java).getAllByType("API")
+            return@inTransaction it.attach(SubmitterDao::class.java).getApiSubmittersByName(names)
         }
     }
 }
