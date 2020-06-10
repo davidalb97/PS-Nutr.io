@@ -75,7 +75,11 @@ class RestaurantMealDbRepository(jdbi: Jdbi) : BaseDbRepo(jdbi) {
             // Delete all portions associated with this RestaurantMeal
             it.attach(PortionDao::class.java).getAllByRestaurantMealId(submissionId)
 
+            // Delete restaurant meal association
             it.attach(restaurantMealDao).deleteById(submissionId)
+
+            // Removes submission, submitter association, contracts & it's tables
+            super.removeSubmission(submissionId, submitterId, RESTAURANT_MEAL, contracts, isolationLevel)
         }
     }
 }

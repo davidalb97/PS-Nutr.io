@@ -121,9 +121,6 @@ class MealDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo(jdbi)
             // Check if the submitter is the creator of this meal
             requireSubmissionSubmitter(submissionId, submitterId, isolationLevel)
 
-            // Check if the submission is a Meal
-            requireSubmission(submissionId, MEAL, isolationLevel)
-
             // Check if the submission is modifiable
             requireEditable(submissionId, config.`edit-timeout-minutes`!!, isolationLevel)
 
@@ -142,25 +139,8 @@ class MealDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo(jdbi)
             // Delete meal
             it.attach(mealDaoClass).delete(submissionId)
 
-            // Delete all submitters from this submission (API and User)
-            it.attach(SubmissionSubmitterDao::class.java).deleteAllBySubmissionId(submissionId)
-
-            // Delete all submission contracts
-            it.attach(SubmissionContractDao::class.java).deleteAllById(submissionId)
-
-            // Delete all user reports
-            it.attach(ReportDao::class.java).deleteAllBySubmissionId(submissionId)
-
-            // Delete all user votes
-            it.attach(VoteDao::class.java).deleteAllById(submissionId)
-
-            // Delete api submission relation
-            if (isFromApi(submissionId)) {
-                it.attach(ApiSubmissionDao::class.java).deleteById(submissionId)
-            }
-
-            // Delete submission
-            it.attach(SubmissionDao::class.java).delete(submissionId)
+            // Removes submission, submitter association, contracts & it's tables
+            super.removeSubmission(submissionId, submitterId, MEAL, contracts, isolationLevel)
         }
     }
 

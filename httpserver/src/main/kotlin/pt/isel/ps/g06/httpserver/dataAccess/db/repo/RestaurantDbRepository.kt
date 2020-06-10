@@ -95,9 +95,6 @@ class RestaurantDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo
             // Check if the submitter is the creator of this restaurant
             requireSubmissionSubmitter(submissionId, submitterId, isolationLevel)
 
-            // Check if the submission is a Restaurant
-            requireSubmission(submissionId, RESTAURANT, isolationLevel)
-
             // Check if the submission is modifiable
             requireEditable(submissionId, config.`edit-timeout-minutes`!!, isolationLevel)
 
@@ -110,30 +107,11 @@ class RestaurantDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo
             // Delete all RestaurantCuisine associations
             it.attach(RestaurantCuisineDao::class.java).deleteAllByRestaurantId(submissionId)
 
-            // Delete all submission contracts
-            it.attach(SubmissionContractDao::class.java).deleteAllById(submissionId)
-
-            // Delete all user votes
-            it.attach(VoteDao::class.java).deleteAllById(submissionId)
-
-            if (!isFromApi(submissionId)) {
-                // Delete all user reports
-                it.attach(ReportDao::class.java).deleteAllBySubmissionId(submissionId)
-                // Delete api submission relation
-                it.attach(ApiSubmissionDao::class.java).deleteById(submissionId)
-            }
-
             // Delete restaurant
             it.attach(restaurantDaoClass).delete(submissionId)
 
-            // Delete submission-submitter association
-            it.attach(SubmissionSubmitterDao::class.java).deleteAllBySubmissionId(submissionId)
-
-            // Delete SubmissionContract
-            it.attach(SubmissionContractDao::class.java).deleteAllById(submissionId)
-
-            // Delete submission from Submission Table
-            it.attach(SubmissionDao::class.java).delete(submissionId)
+            // Removes submission, submitter association, contracts & it's tables
+            super.removeSubmission(submissionId, submitterId, RESTAURANT, contracts, isolationLevel)
         }
     }
 
