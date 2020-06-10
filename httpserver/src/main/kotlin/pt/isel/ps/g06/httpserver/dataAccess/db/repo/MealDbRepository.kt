@@ -18,7 +18,6 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbIngredientDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbMealCuisineDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbMealDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.info.DbMealInfoDto
-import pt.isel.ps.g06.httpserver.dataAccess.model.Ingredient
 import pt.isel.ps.g06.httpserver.exception.InvalidInputDomain
 import pt.isel.ps.g06.httpserver.exception.InvalidInputException
 import pt.isel.ps.g06.httpserver.model.Ingredient
@@ -46,7 +45,7 @@ class MealDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo(jdbi)
             return@inTransaction it.attach(MealInfoDao::class.java).getByName(mealName)
         }
     }
-dsad
+
     fun getAllByCuisineApiIds(foodApiType: FoodApiType, cuisineApiIds: Collection<String>): Collection<DbMealInfoDto> {
         return jdbi.inTransaction<Collection<DbMealInfoDto>, Exception>(isolationLevel) {
             val apiSubmitterId = it.attach(SubmitterDao::class.java)
@@ -57,7 +56,7 @@ dsad
                     .getAllByApiSubmitterAndCuisineApiIds(apiSubmitterId, cuisineApiIds)
         }
     }
-asd
+
     fun getAllMealsFromRestaurant(restaurantId: Int): Collection<DbMealDto> {
         return jdbi.inTransaction<Collection<DbMealDto>, Exception>(isolationLevel) {
             // 1. Get restaurant meals
@@ -80,7 +79,7 @@ asd
                     .getAllByCuisineNames(cuisineNames)
         }
     }
-sadasd
+
     fun getIngredientByMealId(submissionId: String): Collection<DbIngredientDto> {
         return jdbi.inTransaction<Collection<DbIngredientDto>, Exception>(isolationLevel) {
             return@inTransaction it
@@ -238,7 +237,7 @@ sadasd
     }
 
     private fun deleteMissingIngredientsFromMeal(it: Handle, submissionId: Int, apiSubmitterId: Int, ingredients: List<Ingredient>) {
-        val ingredientApiIds = ingredients.map { it.id sdasdasd}
+        val ingredientApiIds = ingredients.map { it.id }
         val deleteIngredientIds = getExistingIngredients(it, apiSubmitterId, ingredients)
                 .filter { !ingredientApiIds.contains(it.apiId) }
                 .map { it.submission_id }
@@ -263,7 +262,7 @@ sadasd
                 .map { it.apiId }
 
         val missingIngredients = ingredients
-                .filter { !existingIngredientApiIds.contains(it.id) wwerwrq}
+                .filter { !existingIngredientApiIds.contains(it.id) }
 
         val existingIngredientIds = existingApiIngredientDtos.map { it.submission_id }
                 .toMutableList()
@@ -321,7 +320,7 @@ sadasd
         if (newIngredientSubmissionIds.isNotEmpty()) {
             handle.attach(MealIngredientDao::class.java)
                     .insertAll(newIngredientSubmissionIds.map {
-                        MealIngredientParam(mealSubmissionId, it, carbs) // TODO
+                        MealIngredientParam(mealSubmissionId, it, TODO())
                     })
         }
     }

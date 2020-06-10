@@ -12,6 +12,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.repo.MealDbRepository
 import pt.isel.ps.g06.httpserver.model.Ingredient
 import pt.isel.ps.g06.httpserver.model.Meal
 import pt.isel.ps.g06.httpserver.model.MealInfo
+import pt.isel.ps.g06.httpserver.model.Votes
 import pt.isel.ps.g06.httpserver.util.log
 import java.net.URI
 
@@ -45,14 +46,15 @@ class DbMealResponseMapper(
 ) : ResponseMapper<DbMealDto, Meal> {
     override fun mapTo(dto: DbMealDto): Meal =
             Meal(
-                    identifier = dto.submission_id,
+                    identifier = "${dto.submission_id}",
                     name = dto.meal_name,
+                    votes = Votes(0,0),
                     image = null, // TODO
                     info = lazy {
                         MealInfo(
                                 carbohydrates = null, // TODO
                                 ingredients = mealDbRepository
-                                        .getIngredientByMealId(dto.submission_id)
+                                        .getIngredientByMealId("$dto.submission_id")
                                         .stream()
                                         .map { dto ->
                                             Ingredient(
@@ -73,7 +75,8 @@ class SpoonacularResponseMapper(private val spoonacularFoodApi: SpoonacularFoodA
                 identifier = dto.id,
                 name = dto.name,
                 image = buildImageURI(dto.id),
-                info = lazy { fetchMealInfo(dto.id) }
+                info = lazy { fetchMealInfo(dto.id) },
+                votes = Votes(0, 0)
         )
     }
 
@@ -82,7 +85,8 @@ class SpoonacularResponseMapper(private val spoonacularFoodApi: SpoonacularFoodA
                 identifier = dto.id,
                 name = dto.name,
                 image = buildImageURI(dto.id),
-                info = lazy { buildMealInfo(dto) }
+                info = lazy { buildMealInfo(dto) },
+                votes = Votes(0, 0)
         )
     }
 
