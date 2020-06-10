@@ -26,7 +26,7 @@ interface RestaurantDao {
 
     @SqlQuery("SELECT * FROM $table WHERE " +
             "ST_Distance(" +
-            "ST_MakePoint($table.latitude, $table.longitude)::geography," +
+            "ST_MakePoint($table.$latitude, $table.$longitude)::geography," +
             "ST_MakePoint(:latitude, :longitude)::geography, " +
             "false" +
             ") <= :radius"

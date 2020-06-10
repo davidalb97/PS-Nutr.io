@@ -7,6 +7,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.RestaurantApiType
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmitterType
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.*
+import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbMealDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbSubmitterDto
 import pt.isel.ps.g06.httpserver.model.TestFoodApi
 import pt.isel.ps.g06.httpserver.model.TestIngredient
@@ -129,9 +130,9 @@ class Constants(val jdbi: Jdbi) {
     }
 
     val meals: List<TestMeal> = jdbi.open().let { it ->
-        val mealTable = MealDao.table
-        val mealId = MealDao.id
-        val mealName = MealDao.name
+        val M_table = MealDao.table
+        val M_id = MealDao.id
+        val M_name = MealDao.name
         val AS_table = ApiSubmissionDao.table
         val AS_submissionId = ApiSubmissionDao.submissionId
         val AS_apiId = ApiSubmissionDao.apiId
@@ -147,12 +148,12 @@ class Constants(val jdbi: Jdbi) {
         val SS_submissionId = SubmissionSubmitterDao.submissionId
         val SS_submitterId = SubmissionSubmitterDao.submitterId
         it.createQuery(
-                "SELECT $mealTable.$mealId, $mealTable.$mealName, $AS_table.$AS_apiId, $ST_table.$ST_name, $SS_table.$SS_submitterId, $SN_table.$SN_date" +
+                "SELECT $M_table.$M_id, $M_table.$M_name, $AS_table.$AS_apiId, $ST_table.$ST_name, $SS_table.$SS_submitterId, $SN_table.$SN_date" +
                         " FROM Meal" +
                         " FULL OUTER JOIN $AS_table" +
-                        " ON $mealTable.$mealId = $AS_table.$AS_submissionId" +
+                        " ON $M_table.$M_id = $AS_table.$AS_submissionId" +
                         " INNER JOIN $SS_table" +
-                        " ON $mealTable.$mealId = $SS_table.$SS_submissionId" +
+                        " ON $M_table.$M_id = $SS_table.$SS_submissionId" +
                         " INNER JOIN $ST_table" +
                         " ON $SS_table.$SS_submitterId = $ST_table.$ST_id" +
                         " INNER JOIN $SN_table" +
@@ -160,25 +161,27 @@ class Constants(val jdbi: Jdbi) {
                         " WHERE $ST_table.$ST_type = '${SubmitterType.User}'" +
                         " AND $SN_table.$SN_type = '${SubmissionType.MEAL}'"
         ).map { rs, _ ->
-            val submissionId = rs.getInt(mealId)
+            val submissionId = rs.getInt(M_id)
             val ingredientIds = mealIngredienteDtos
                     .filter { it.meal_submission_id == submissionId }
                     .map { it.ingredient_submission_id }
-            val ingredients = ingredients
-                    .filter { ingredientIds.contains(it.submissionId) }
-            val apiSubmitterId = getTestFoodApiByMealId(it, submissionId)!!
-//            val cuisineDtos = mealCuisineDtos.filter { it.meal_submission_id == submissionId }
-//                    .map { it.cuisine_name }
-            val cuisines = getTestCuisinesByMealId(it, submissionId, apiSubmitterId)
+
+            val testFoodApi = getTestFoodApiByMealId(it, submissionId)!!
+            val mealName = rs.getString(M_name)
+            val mealDto = DbMealDto(
+                    submission_id = submissionId,
+                    meal_name = mealName
+            )
             TestMeal(
-                    rs.getString(mealName),
-                    rs.getInt(SS_submitterId),
-                    submissionId,
-                    rs.getString(AS_apiId),
-                    apiSubmitterId,
-                    parsePostgresql(rs.getString(SN_date)),
-                    ingredients,
-                    cuisines
+                    mealName = mealName,
+                    submitterId = rs.getInt(SS_submitterId),
+                    submissionId = submissionId,
+                    foodApiId = rs.getString(AS_apiId),
+                    foodApi = testFoodApi,
+                    date = parsePostgresql(rs.getString(SN_date)),
+                    ingredients = ingredients.filter { ingredientIds.contains(it.submissionId) },
+                    cuisines = getTestCuisinesByMealId(it, submissionId, testFoodApi),
+                    restaurantMeals = getAllTestRestaurantMeals(it, mealDto)
             )
         }.list()
     }

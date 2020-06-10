@@ -3,6 +3,7 @@ package pt.isel.ps.g06.httpserver.dataAccess.db.repo
 import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.transaction.TransactionIsolationLevel
 import org.springframework.stereotype.Repository
+import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionContractType.*
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType.*
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.PortionDao
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.RestaurantMealDao
@@ -17,6 +18,8 @@ private val restaurantMealDao = RestaurantMealDao::class.java
 
 @Repository
 class RestaurantMealDbRepository(jdbi: Jdbi) : BaseDbRepo(jdbi) {
+
+    private val contracts = listOf(REPORTABLE, VOTABLE, FAVORABLE)
 
     fun getByRestaurantMealId(restaurantMealId: Int): DbRestaurantMealDto? {
         return jdbi.inTransaction<DbRestaurantMealDto, Exception>(isolationLevel) {
@@ -85,7 +88,11 @@ class RestaurantMealDbRepository(jdbi: Jdbi) : BaseDbRepo(jdbi) {
             // Delete all portions associated with this RestaurantMeal
             it.attach(PortionDao::class.java).getAllByRestaurantMealId(submissionId)
 
+            // Delete restaurant meal association
             it.attach(restaurantMealDao).deleteById(submissionId)
+
+            // Removes submission, submitter association, contracts & it's tables
+            super.removeSubmission(submissionId, submitterId, RESTAURANT_MEAL, contracts, isolationLevel)
         }
     }
 }

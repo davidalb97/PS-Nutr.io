@@ -7,11 +7,12 @@ import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.dto.here.HereResultIt
 import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.ResponseMapper
 import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.food.MealResponseMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.ApiSubmitterMapper
-import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbRestaurantDto
+import pt.isel.ps.g06.httpserver.dataAccess.db.dto.info.DbRestaurantInfoDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.CuisineDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.MealDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.RestaurantDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.model.RestaurantDto
+import pt.isel.ps.g06.httpserver.model.Votes
 import pt.isel.ps.g06.httpserver.model.Meal
 import pt.isel.ps.g06.httpserver.model.Restaurant
 import pt.isel.ps.g06.httpserver.model.RestaurantIdentifier
@@ -28,7 +29,7 @@ class RestaurantResponseMapper(
         return when (dto) {
             is HereResultItem -> hereResponseMapper.mapTo(dto)
             is ZomatoRestaurantDto -> zomatoResponseMapper.mapTo(dto)
-            is DbRestaurantDto -> dbResponseMapper.mapTo(dto)
+            is DbRestaurantInfoDto -> dbResponseMapper.mapTo(dto)
             else -> {
                 log("ERROR: Unregistered mapper for RestaurantDto of type '${dto.javaClass.typeName}'!")
                 //TODO Should a handler listen to this exception?
@@ -66,7 +67,9 @@ class HereResponseMapper(
                     cuisineIds
                             ?.let { id -> mealRepository.getAllByCuisineNames(id).map(mealResponseMapper::mapTo) }
                             ?: emptyList()
-                }
+                },
+                //There are no votes if it's not inserted on db yet
+                votes = Votes(0, 0)
         )
     }
 }
@@ -94,7 +97,9 @@ class ZomatoResponseMapper(
                     mealRepository
                             .getAllByCuisineNames(cuisines.value)
                             .map(mealResponseMapper::mapTo)
-                }
+                },
+                //There are no votes if it's not inserted on db yet
+                votes = Votes(0, 0)
         )
     }
 }
@@ -102,9 +107,9 @@ class ZomatoResponseMapper(
 @Component
 class DbRestaurantResponseMapper(
         private val restaurantRepository: RestaurantDbRepository
-) : ResponseMapper<DbRestaurantDto, Restaurant> {
+) : ResponseMapper<DbRestaurantInfoDto, Restaurant> {
 
-    override fun mapTo(dto: DbRestaurantDto): Restaurant {
+    override fun mapTo(dto: DbRestaurantInfoDto): Restaurant {
         val cuisines = lazy {
             restaurantRepository
                     .getRestaurantCuisines(dto.submission_id)
@@ -122,8 +127,12 @@ class DbRestaurantResponseMapper(
                 latitude = dto.latitude,
                 longitude = dto.longitude,
                 cuisines = cuisines,
-                meals = lazy { emptyList<Meal>() }
+                meals = lazy { emptyList<Meal>() },
                 //TODO - Handle obtaining meals for Database restaurant: Should it only get from DB? Also from API?
+                votes = Votes(
+                        dto.positiveVotes,
+                        dto.negativeVotes
+                )
         )
     }
 }

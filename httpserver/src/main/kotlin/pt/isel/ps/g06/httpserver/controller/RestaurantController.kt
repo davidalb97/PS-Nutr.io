@@ -45,7 +45,8 @@ class RestaurantController(
             longitude: Float?,
             name: String?,
             radius: Int?,
-            apiType: String?
+            apiType: String?,
+            userId: Int
     ): Collection<SimplifiedRestaurantOutputModel> {
         if (latitude == null || longitude == null) {
             throw InvalidInputException(InvalidInputDomain.SEARCH_RESTAURANT, INVALID_RESTAURANT_SEARCH)
@@ -56,7 +57,8 @@ class RestaurantController(
                 longitude = longitude,
                 name = name,
                 radius = radius,
-                apiType = apiType
+                apiType = apiType,
+                userId = userId
         )
 
         return nearbyRestaurants.map { toSimplifiedRestaurant(it) }

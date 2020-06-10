@@ -3,13 +3,15 @@ DROP TABLE IF EXISTS MealCuisine CASCADE;
 DROP TABLE IF EXISTS RestaurantCuisine CASCADE;
 DROP TABLE IF EXISTS MealIngredient CASCADE;
 DROP TABLE IF EXISTS Portion CASCADE;
+DROP TABLE IF EXISTS Favorite CASCADE;
 DROP TABLE IF EXISTS RestaurantMeal CASCADE;
 DROP TABLE IF EXISTS Ingredient CASCADE;
 DROP TABLE IF EXISTS Meal CASCADE;
 DROP TABLE IF EXISTS ApiCuisine CASCADE;
 DROP TABLE IF EXISTS Cuisine CASCADE;
 DROP TABLE IF EXISTS Restaurant CASCADE;
-DROP TABLE IF EXISTS Vote CASCADE;
+DROP TABLE IF EXISTS Votes CASCADE;
+DROP TABLE IF EXISTS UserVote CASCADE;
 DROP TABLE IF EXISTS Report CASCADE;
 DROP TABLE IF EXISTS SubmissionContract CASCADE;
 DROP TABLE IF EXISTS SubmissionSubmitter CASCADE;
@@ -94,7 +96,14 @@ CREATE TABLE Report(
 	FOREIGN KEY(submitter_id) REFERENCES Submitter(submitter_id)
 );
 
-CREATE TABLE Vote(
+CREATE TABLE Votes(
+	submission_id integer PRIMARY KEY,
+	positive_count integer,
+	negative_count integer,
+	FOREIGN KEY(submission_id) REFERENCES Submission(submission_id)
+);
+
+CREATE TABLE UserVote(
 	submission_id integer,
 	vote_submitter_id integer,
 	vote boolean NOT NULL,
@@ -138,6 +147,14 @@ CREATE TABLE RestaurantMeal(
 	UNIQUE(meal_submission_id, restaurant_submission_id),
 	FOREIGN KEY(restaurant_submission_id) REFERENCES Restaurant(submission_id),
 	FOREIGN KEY(meal_submission_id) REFERENCES Meal(submission_id)
+);
+
+CREATE TABLE Favorite(
+	submission_id integer,
+	submitter_id integer,
+	PRIMARY KEY(submission_id, submitter_id),
+	FOREIGN KEY(submission_id) REFERENCES Submission(submission_id),
+	FOREIGN KEY(submitter_id) REFERENCES Submitter(submitter_id)
 );
 
 CREATE TABLE Portion(

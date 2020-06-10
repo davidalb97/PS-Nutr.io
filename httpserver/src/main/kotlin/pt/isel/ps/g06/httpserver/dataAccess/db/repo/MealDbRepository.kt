@@ -9,8 +9,11 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionContractType.FAVORABLE
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType.INGREDIENT
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType.MEAL
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.*
+import pt.isel.ps.g06.httpserver.dataAccess.db.dao.info.MealInfoDao
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.*
+import pt.isel.ps.g06.httpserver.dataAccess.db.dto.info.DbMealInfoDto
 import pt.isel.ps.g06.httpserver.dataAccess.input.IngredientInput
+import pt.isel.ps.g06.httpserver.dataAccess.model.Ingredient
 import pt.isel.ps.g06.httpserver.exception.InvalidInputDomain
 import pt.isel.ps.g06.httpserver.exception.InvalidInputException
 import pt.isel.ps.g06.httpserver.model.Ingredient
@@ -24,15 +27,17 @@ private val restaurantMealDaoClass = RestaurantMealDao::class.java
 @Repository
 class MealDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo(jdbi) {
 
-    fun getById(submissionId: Int): DbMealDto? {
-        return jdbi.inTransaction<DbMealDto, Exception>(isolationLevel) {
-            return@inTransaction it.attach(mealDaoClass).getById(submissionId)
+    val contracts = listOf(API, FAVORABLE)
+
+    fun getById(submissionId: Int): DbMealInfoDto? {
+        return jdbi.inTransaction<DbMealInfoDto, Exception>(isolationLevel) {
+            return@inTransaction it.attach(MealInfoDao::class.java).getById(submissionId)
         }
     }
 
-    fun getByName(mealName: String): DbMealDto? {
-        return jdbi.inTransaction<DbMealDto, Exception>(isolationLevel) {
-            return@inTransaction it.attach(mealDaoClass).getByName(mealName)
+    fun getByName(mealName: String): DbMealInfoDto? {
+        return jdbi.inTransaction<DbMealInfoDto, Exception>(isolationLevel) {
+            return@inTransaction it.attach(MealInfoDao::class.java).getByName(mealName)
         }
     }
 
@@ -53,9 +58,9 @@ class MealDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo(jdbi)
 //        }
 //    }
 
-    fun getAllByCuisineNames(cuisineNames: Collection<String>): Collection<DbMealDto> {
-        return jdbi.inTransaction<Collection<DbMealDto>, Exception>(isolationLevel) {
-            return@inTransaction it.attach(MealDao::class.java)
+    fun getAllByCuisineNames(cuisineNames: Collection<String>): Collection<DbMealInfoDto> {
+        return jdbi.inTransaction<Collection<DbMealInfoDto>, Exception>(isolationLevel) {
+            return@inTransaction it.attach(MealInfoDao::class.java)
                     .getAllByCuisineNames(cuisineNames)
         }
     }
@@ -149,9 +154,6 @@ class MealDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo(jdbi)
             // Check if the submitter is the creator of this meal
             requireSubmissionSubmitter(submissionId, submitterId, isolationLevel)
 
-            // Check if the submission is a Meal
-            requireSubmission(submissionId, MEAL, isolationLevel)
-
             // Check if the submission is modifiable
             requireEditable(submissionId, config.`edit-timeout-minutes`!!, isolationLevel)
 
@@ -170,25 +172,8 @@ class MealDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo(jdbi)
             // Delete meal
             it.attach(mealDaoClass).delete(submissionId)
 
-            // Delete all submitters from this submission (API and User)
-            it.attach(SubmissionSubmitterDao::class.java).deleteAllBySubmissionId(submissionId)
-
-            // Delete all submission contracts
-            it.attach(SubmissionContractDao::class.java).deleteAllById(submissionId)
-
-            // Delete all user reports
-            it.attach(ReportDao::class.java).deleteAllBySubmissionId(submissionId)
-
-            // Delete all user votes
-            it.attach(VoteDao::class.java).deleteAllById(submissionId)
-
-            // Delete api submission relation
-            if (isFromApi(submissionId)) {
-                it.attach(ApiSubmissionDao::class.java).deleteById(submissionId)
-            }
-
-            // Delete submission
-            it.attach(SubmissionDao::class.java).delete(submissionId)
+            // Removes submission, submitter association, contracts & it's tables
+            super.removeSubmission(submissionId, submitterId, MEAL, contracts, isolationLevel)
         }
     }
 
@@ -404,8 +389,10 @@ class MealDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo(jdbi)
         val restaurantMealIds = handle.attach(RestaurantMealDao::class.java)
                 .getAllByMealId(submissionId)
                 .map { it.submission_id }
+
         //Delete all portions with the restaurant meal ids
-        handle.attach(PortionDao::class.java).deleteAllByRestaurantMealIds(restaurantMealIds)
+        if(restaurantMealIds.isNotEmpty())
+            handle.attach(PortionDao::class.java).deleteAllByRestaurantMealIds(restaurantMealIds)
     }
 
     private fun getCarbsForInputQuantity(dbIngredientDto: DbIngredientDto, ingredientInput: IngredientInput): Float {

@@ -1,6 +1,5 @@
 package pt.isel.ps.g06.httpserver.dataAccess.db.repo
 
-import org.jdbi.v3.core.Handle
 import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.transaction.TransactionIsolationLevel
 import org.jdbi.v3.core.transaction.TransactionIsolationLevel.SERIALIZABLE
@@ -72,8 +71,8 @@ class BaseDbRepo constructor(internal val jdbi: Jdbi) {
         jdbi.inTransaction<Unit, InvalidInputException>(defaultIsolation) {
 
             // Check if this submitter already voted this submission
-            val hasVote = it.attach(VoteDao::class.java)
-                    .getUserVoteById(submissionId, submitterId)
+            val hasVote = it.attach(UserVoteDao::class.java)
+                    .getVoteByIds(submissionId, submitterId)
                     .let { it != null }
             if (hasVote)
                 throw InvalidInputException(InvalidInputDomain.VOTE,
@@ -94,8 +93,8 @@ class BaseDbRepo constructor(internal val jdbi: Jdbi) {
         jdbi.inTransaction<Unit, InvalidInputException>(defaultIsolation) {
 
             // Check if this submitter already voted this submission
-            it.attach(VoteDao::class.java)
-                    .getUserVoteById(submissionId, submitterId)
+            it.attach(UserVoteDao::class.java)
+                    .getVoteByIds(submissionId, submitterId)
                     ?: throw InvalidInputException(InvalidInputDomain.VOTE,
                             "The submitter id \"$submitterId\" not not vote on" +
                                     " submission id \"$submissionId\"."
@@ -148,7 +147,7 @@ class BaseDbRepo constructor(internal val jdbi: Jdbi) {
             val currentTime = OffsetDateTime.now(Clock.systemDefaultZone())
             val seconds = Duration.between(creationDate, currentTime).seconds
 
-            if(seconds > timeout.seconds) {
+            if (seconds > timeout.seconds) {
                 throw InvalidInputException(InvalidInputDomain.TIMEOUT,
                         "Submission update timed out!"
                 )
@@ -156,19 +155,19 @@ class BaseDbRepo constructor(internal val jdbi: Jdbi) {
         }
     }
 
-    protected fun requireFromUser(submissionId: Int, isolationLevel: TransactionIsolationLevel) {
-        if(isFromApi(submissionId, isolationLevel)) {
+    protected fun requireFromUser(submissionId: Int, isolationLevel: TransactionIsolationLevel = SERIALIZABLE) {
+        if (isFromApi(submissionId, isolationLevel)) {
             throw InvalidInputException(InvalidInputDomain.API,
                     "The submission id \"$submissionId\" is not an API submission."
             )
         }
     }
 
-    protected fun getCuisinesByNames(cuisineNames: Collection<String>, isolationLevel: TransactionIsolationLevel): Collection<DbCuisineDto> {
+    protected fun getCuisinesByNames(cuisineNames: Collection<String>, isolationLevel: TransactionIsolationLevel = SERIALIZABLE): Collection<DbCuisineDto> {
         return jdbi.inTransaction<Collection<DbCuisineDto>, Exception>(isolationLevel) {
             val cuisineDtos = it.attach(CuisineDao::class.java)
                     .getAllByNames(cuisineNames)
-            if(cuisineDtos.size != cuisineNames.size) {
+            if (cuisineDtos.size != cuisineNames.size) {
                 val invalidCuisines = cuisineNames.filter { name ->
                     cuisineDtos.none { it.cuisine_name == name }
                 }
@@ -177,6 +176,56 @@ class BaseDbRepo constructor(internal val jdbi: Jdbi) {
                 )
             }
             return@inTransaction cuisineDtos
+        }
+    }
+
+    /**
+     * Removes submission, submitter association, contracts & it's tables
+     */
+    protected fun removeSubmission(
+            submissionId: Int,
+            submitterId: Int,
+            type: SubmissionType,
+            contracts: Collection<SubmissionContractType>,
+            isolationLevel: TransactionIsolationLevel = SERIALIZABLE
+    ) {
+        return jdbi.inTransaction<Unit, InvalidInputException>(isolationLevel) {
+
+            // Check if the submission is of the specified type
+            requireSubmission(submissionId, type, isolationLevel)
+
+            if (contracts.isNotEmpty()) {
+                // Delete all submission contracts
+                it.attach(SubmissionContractDao::class.java).deleteAllBySubmissionId(submissionId)
+            }
+
+            if (contracts.contains(SubmissionContractType.REPORTABLE)) {
+                // Delete all user reports
+                it.attach(ReportDao::class.java).deleteAllBySubmissionId(submissionId)
+            }
+
+            if (contracts.contains(SubmissionContractType.VOTABLE)) {
+                // Delete all user votes
+                it.attach(UserVoteDao::class.java).deleteAllById(submissionId)
+                // Delete vote counter
+                it.attach(VotableDao::class.java).deleteById(submissionId)
+            }
+
+            if (contracts.contains(SubmissionContractType.API) && isFromApi(submissionId)) {
+                // Delete api submission relation
+                it.attach(ApiSubmissionDao::class.java).deleteById(submissionId)
+            }
+
+            if(contracts.contains(SubmissionContractType.FAVORABLE)) {
+                // Delete all favorites
+                it.attach(FavoriteDao::class.java).deleteAllBySubmissionId(submissionId)
+            }
+
+            // Delete submission - submitter association
+            it.attach(SubmissionSubmitterDao::class.java).deleteAllBySubmissionId(submissionId)
+
+            // Delete submission
+            it.attach(SubmissionDao::class.java).delete(submissionId)
         }
     }
 }

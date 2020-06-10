@@ -27,7 +27,8 @@ class RestaurantService(
             longitude: Float,
             name: String?,
             radius: Int?,
-            apiType: String?
+            apiType: String?,
+            userId: Int
     ): Collection<Restaurant> {
         val chosenRadius = if (radius != null && radius <= MAX_RADIUS) radius else MAX_RADIUS
         val type = RestaurantApiType.getOrDefault(apiType)
@@ -41,7 +42,7 @@ class RestaurantService(
                         }
 
         return dbRestaurantRepository
-                .getAllByCoordinates(latitude, longitude, chosenRadius)
+                .getAllByCoordinates(latitude, longitude, chosenRadius, userId)
                 .map(restaurantResponseMapper::mapTo)
                 .let { filterRedundantApiRestaurants(it, apiRestaurants.get()) }
 
@@ -69,7 +70,7 @@ class RestaurantService(
      * Current search algorithm will first query the Database for any restaurant and if none was found,
      * search the preferred Restaurant API (Zomato, Here, etc.)
      */
-    fun getRestaurant(submitterId: Int, submissionId: Int?, apiId: String?): Restaurant? {
+    fun getRestaurant(submitterId: Int, submissionId: Int?, apiId: String?, userId: Int): Restaurant? {
         val restaurant = when {
             submissionId != null -> searchRestaurantSubmission(submissionId)
 

@@ -7,5 +7,6 @@ data class Meal(
         val name: String,
         val ingredients: Sequence<MealIngredient>,
         val carbs: Int,
-        val image: URI? = null
+        val image: URI? = null,
+        val votes: Votes
 )
