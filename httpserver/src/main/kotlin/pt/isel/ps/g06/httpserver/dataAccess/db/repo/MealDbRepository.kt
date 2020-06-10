@@ -360,7 +360,9 @@ class MealDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo(jdbi)
         val restaurantMealIds = handle.attach(RestaurantMealDao::class.java)
                 .getAllByMealId(submissionId)
                 .map { it.submission_id }
+
         //Delete all portions with the restaurant meal ids
-        handle.attach(PortionDao::class.java).deleteAllByRestaurantMealIds(restaurantMealIds)
+        if(restaurantMealIds.isNotEmpty())
+            handle.attach(PortionDao::class.java).deleteAllByRestaurantMealIds(restaurantMealIds)
     }
 }
