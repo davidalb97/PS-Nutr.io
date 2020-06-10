@@ -15,7 +15,9 @@ import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.dto.here.HereResultIt
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.mapper.RestaurantApiMapper
 import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.restaurant.RestaurantResponseMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbRestaurantDto
+import pt.isel.ps.g06.httpserver.dataAccess.db.dto.info.DbRestaurantInfoDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.RestaurantDbRepository
+import pt.isel.ps.g06.httpserver.model.Votes
 import pt.isel.ps.g06.httpserver.db.Constants
 import pt.isel.ps.g06.httpserver.db.RepoAsserts
 import pt.isel.ps.g06.httpserver.model.Restaurant
@@ -54,7 +56,7 @@ class RestaurantServiceTests {
 
         val db = mock(RestaurantDbRepository::class.java)
         `when`(db.getAllByCoordinates(anyFloat(), anyFloat(), anyInt()))
-                .thenReturn((1..expectedDbRestaurants.size).map { mock(DbRestaurantDto::class.java) })
+                .thenReturn((1..expectedDbRestaurants.size).map { mock(DbRestaurantInfoDto::class.java) })
 
         val zomatoApi = mock(ZomatoRestaurantApi::class.java)
         `when`(zomatoApi.searchNearbyRestaurants(anyFloat(), anyFloat(), anyInt(), anyString()))
@@ -71,7 +73,7 @@ class RestaurantServiceTests {
         //Mock restaurant mapper that maps each dto type
         val restaurantMapper = mock(RestaurantResponseMapper::class.java)
         //Db dto mapper
-        `when`(restaurantMapper.mapTo(anyNonNull<DbRestaurantDto>()))
+        `when`(restaurantMapper.mapTo(anyNonNull<DbRestaurantInfoDto>()))
                 .thenReturn(totalExpectedDbRestaurants[0], *totalExpectedDbRestaurants.drop(1).toTypedArray())
         //Api Zomato dto mapper
         `when`(restaurantMapper.mapTo(anyNonNull<ZomatoRestaurantDto>()))
@@ -92,12 +94,13 @@ class RestaurantServiceTests {
     private fun mockMappedRestaurant(from: Int, to: Int, namePrefix: String): List<Restaurant> {
         return (from..to).map {
             Restaurant(
-                    "Test-$it",
-                    "$namePrefix-Test-$it",
-                    0.0F + it,
-                    0.0F + it,
-                    lazyOf(emptyList()),
-                    lazyOf(emptyList())
+                    identifier = "Test-$it",
+                    name = "$namePrefix-Test-$it",
+                    latitude = 0.0F + it,
+                    longitude = 0.0F + it,
+                    cuisines = lazyOf(emptyList()),
+                    meals = lazyOf(emptyList()),
+                    votes = Votes(it, it)
             )
         }
     }

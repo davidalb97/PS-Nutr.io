@@ -3,7 +3,6 @@ package pt.isel.ps.g06.httpserver.dataAccess.db.dao
 import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbRestaurantDto
-import java.util.stream.Stream
 
 interface RestaurantDao {
 
@@ -17,7 +16,7 @@ interface RestaurantDao {
 
     @SqlQuery("SELECT * FROM $table WHERE " +
             "ST_Distance(" +
-            "ST_MakePoint($table.latitude, $table.longitude)::geography," +
+            "ST_MakePoint($table.$latitude, $table.$longitude)::geography," +
             "ST_MakePoint(:latitude, :longitude)::geography, " +
             "false" +
             ") <= :radius"

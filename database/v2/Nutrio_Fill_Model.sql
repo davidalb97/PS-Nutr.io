@@ -315,16 +315,27 @@ BEGIN
 		(portionRestaurantMealWithApiWithIngredients,			submitter_id_user_admin),
 		(portionRestaurantMealWithApiWithoutIngredients,		submitter_id_user_admin);
 		
-		INSERT INTO Vote(submission_id, vote_submitter_id, vote) VALUES
-		(mealFromIngredientsId,		submitter_id_user_admin, true),
-		(mealFromApiId,				submitter_id_user_admin, true),
-		(restaurantFromLocationId,	submitter_id_user_admin, false),
-		(restaurantFromApiId,		submitter_id_user_admin, true);
+		INSERT INTO Votes(submission_id, positive_count, negative_count) VALUES
+		(restaurantFromLocationId, 20, 20),
+		(restaurantFromApiId, 45, 36),
+		(restaurantMealWithLocationWithIngredients, 10, 23),
+		(restaurantMealWithLocationWithoutIngredients, 443, 1276),
+		(restaurantMealWithApiWithIngredients, 1235, 643),
+		(restaurantMealWithApiWithoutIngredients, 13423, 12563);
+		
+		INSERT INTO UserVote(submission_id, vote_submitter_id, vote) VALUES
+		(restaurantMealWithLocationWithIngredients,		submitter_id_user_admin, false),
+		(restaurantMealWithLocationWithoutIngredients,	submitter_id_user_admin, true),
+		(restaurantMealWithApiWithIngredients,			submitter_id_user_admin, true),
+		(restaurantMealWithApiWithoutIngredients,		submitter_id_user_admin, false),
+		(restaurantFromLocationId,						submitter_id_user_admin, false),
+		(restaurantFromApiId,							submitter_id_user_admin, true);
 
 		INSERT INTO Report(submission_id, submitter_id, description) VALUES
-		(mealFromIngredientsId,		submitter_id_user_admin, 'Debug description 1'),
-		(mealFromApiId,				submitter_id_user_admin, 'Debug description 2'),
-		(restaurantFromLocationId,	submitter_id_user_admin, 'Debug description 3');
+		(restaurantMealWithLocationWithIngredients,		submitter_id_user_admin, 'Debug description 1'),
+		(restaurantMealWithLocationWithoutIngredients,	submitter_id_user_admin, 'Debug description 2'),
+		(restaurantMealWithApiWithIngredients,			submitter_id_user_admin, 'Debug description 3'),
+		(restaurantMealWithApiWithoutIngredients,		submitter_id_user_admin, 'Debug description 4');
 
 		INSERT INTO Restaurant(submission_id, restaurant_name, latitude, longitude) VALUES
 		(restaurantFromLocationId,	'First rest from user coords', 0.0, 0.0),
@@ -349,6 +360,12 @@ BEGIN
 		(restaurantMealWithLocationWithoutIngredients,	restaurantFromLocationId,	mealFromApiId),
 		(restaurantMealWithApiWithIngredients,			restaurantFromApiId,		mealFromIngredientsId),
 		(restaurantMealWithApiWithoutIngredients,		restaurantFromApiId,		mealFromApiId);
+		
+		INSERT INTO Favorite(submission_id, submitter_id) VALUES
+		(restaurantMealWithLocationWithIngredients,		submitter_id_user_admin),
+		(restaurantMealWithLocationWithoutIngredients,	submitter_id_user_admin),
+		(restaurantMealWithApiWithIngredients,			submitter_id_user_admin),
+		(restaurantMealWithApiWithoutIngredients,		submitter_id_user_admin);
 		
 		INSERT INTO Portion(submission_id, restaurant_meal_submission_id, quantity) VALUES
 		(portionRestaurantMealWithLocationWithIngredients,		restaurantMealWithLocationWithIngredients, 100),

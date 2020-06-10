@@ -2,10 +2,9 @@ package pt.isel.ps.g06.httpserver.dataAccess.db.dao
 
 import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.statement.SqlQuery
-import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbVoteDto
-import pt.isel.ps.g06.httpserver.dataAccess.model.Votes
+import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbUserVoteDto
 
-interface VoteDao {
+interface UserVoteDao {
 
     companion object {
         const val table = "Vote"
@@ -14,36 +13,32 @@ interface VoteDao {
         const val vote = "vote"
     }
 
-    @SqlQuery("SELECT" +
-            " Count(case when $vote = true then 1 end)," +
-            " Count(case when $vote = false then 1 end)" +
-            " FROM $table" +
-            " WHERE $submissionId = :submissionId")
-    fun getVotes(@Bind submissionId: Int): Votes?
-
     @SqlQuery("SELECT $vote" +
             " FROM $table" +
             " WHERE $submissionId = :submissionId" +
             " AND $voterSubmitterId = :voteSubmitterId"
     )
-    fun getUserVoteById(@Bind submissionId: Int, voteSubmitterId: Int): Boolean?
+    fun getVoteByIds(@Bind submissionId: Int, voteSubmitterId: Int): Boolean?
+
+    @SqlQuery("SELECT * FROM $table WHERE $submissionId = :submissionId")
+    fun getAllById(@Bind submissionId: Int): List<DbUserVoteDto>
 
     @SqlQuery("INSERT INTO $table($submissionId, $voterSubmitterId, $vote)" +
             " VALUES(:voteSubmissionId, :voteSubmitterId, :vote) RETURNING *")
-    fun insert(@Bind voteSubmissionId: Int, voterSubmitterId: Int, vote: Boolean): DbVoteDto
+    fun insert(@Bind voteSubmissionId: Int, voterSubmitterId: Int, vote: Boolean): DbUserVoteDto
 
     @SqlQuery("UPDATE $table" +
             " SET $vote = :vote" +
             " WHERE $submissionId =" +
             " :submissionId, $voterSubmitterId = :voteSubmitterId RETURNING *"
     )
-    fun update(@Bind submissionId: Int, voteSubmitterId: Int, vote: Boolean): DbVoteDto
+    fun update(@Bind submissionId: Int, voteSubmitterId: Int, vote: Boolean): DbUserVoteDto
 
     @SqlQuery("DELETE FROM $table" +
             " WHERE $submissionId = :submissionId" +
             " AND $voterSubmitterId = :voteSubmitterId RETURNING *")
-    fun delete(@Bind submissionId: Int, voteSubmitterId: Int): DbVoteDto
+    fun delete(@Bind submissionId: Int, voteSubmitterId: Int): DbUserVoteDto
 
     @SqlQuery("DELETE FROM $table WHERE $submissionId = :submissionId RETURNING *")
-    fun deleteAllById(submissionId: Int): List<DbVoteDto>
+    fun deleteAllById(submissionId: Int): List<DbUserVoteDto>
 }

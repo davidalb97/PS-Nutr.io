@@ -8,8 +8,8 @@ import org.junit.jupiter.api.TestMethodOrder
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import pt.isel.ps.g06.httpserver.dataAccess.api.food.FoodApiType
-import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionContractType
-import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionContractType.*
+import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionContractType.API
+import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionContractType.FAVORABLE
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.MealDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.model.Ingredient
@@ -486,7 +486,11 @@ class MealSubmissionTest {
     @Test
     fun `should update user meal with new name & ingredients preserving old values`() {
         jdbi.inSandbox(const) {
-            val existingMeal = const.meals.first { it.ingredients.isNotEmpty() && it.cuisines.isNotEmpty() }
+            val existingMeal = const.meals.first {
+                it.ingredients.isNotEmpty() &&
+                        it.cuisines.isNotEmpty() &&
+                        it.restaurantMeals.isNotEmpty()
+            }
             val expectedName = "TestNewMealName"
             val newIngredientCount = 3
             val newIngredientIds =
@@ -842,19 +846,13 @@ class MealSubmissionTest {
     }
 
     @Test
-    fun `should delete user meal with ingredients, cuisines and portions`() {
+    fun `should delete user meal with ingredients, cuisines, restaurants and portions`() {
         jdbi.inSandbox(const) {
-
             val existingMeal = getFirstTestMealWithCuisinesAndRestaurantPortions(const, false)
             val expectedIngredientIds = existingMeal.ingredients.map { it.submissionId }
             val expectedMealContracts = listOf(API, FAVORABLE)
             val expectedIngredientContracts = listOf(API)
-            val expectedRestaurantMealDtos = const.restaurantMealDtos.filter {
-                it.meal_submission_id == existingMeal.submissionId
-            }
-            val expectedPortionDtos = const.portionDtos.filter { portionDto ->
-                expectedRestaurantMealDtos.any { portionDto.restaurant_meal_submission_id == it.submission_id }
-            }
+            val expectedPortionDtos = existingMeal.restaurantMeals.flatMap { it.portions }
 
             //Bypass time restriction
             bypassSubmissionEditLock(it, existingMeal.submissionId)
@@ -969,21 +967,21 @@ class MealSubmissionTest {
 
             //Assert RestaurantMeal existence
             asserts.assertRestaurantMeal(it,
-                    expectedRestaurantMealIds = expectedRestaurantMealDtos.map { it.submission_id },
-                    expectedRestaurantAndMealIds = expectedRestaurantMealDtos.map {
-                        Pair(it.restaurant_submission_id, it.meal_submission_id)
+                    expectedRestaurantMealIds = existingMeal.restaurantMeals.map { it.submissionId },
+                    expectedRestaurantAndMealIds = existingMeal.restaurantMeals.map {
+                        Pair(it.restaurantDto.submission_id, it.mealDto.submission_id)
                     },
                     isDeleted = true
             )
             //Assert MealIngredient insert count
-            asserts.assertRestaurantMealInsertCount(it, expectedRestaurantMealDtos.size * (-1))
+            asserts.assertRestaurantMealInsertCount(it, existingMeal.restaurantMeals.size * (-1))
         }
     }
 
     @Test
-    fun `should delete api meal with cuisines`() {
+    fun `should delete api meal with cuisines, restaurants and portions`() {
         jdbi.inSandbox(const) {
-            val existingMeal = const.meals.first { it.ingredients.isEmpty() && it.cuisines.isNotEmpty() }
+            val existingMeal = getFirstTestMealWithCuisinesAndRestaurantPortions(const, true)
             val expectedMealContracts = listOf(FAVORABLE, API)
 
             //Bypass time restriction
@@ -1038,6 +1036,17 @@ class MealSubmissionTest {
                     isDeleted = true
             )
             asserts.assertMealCuisinesInsertCount(it, existingMeal.cuisines.size * (-1))
+
+            //Assert RestaurantMeal existence
+            asserts.assertRestaurantMeal(it,
+                    expectedRestaurantMealIds = existingMeal.restaurantMeals.map { it.submissionId },
+                    expectedRestaurantAndMealIds = existingMeal.restaurantMeals.map {
+                        Pair(it.restaurantDto.submission_id, it.mealDto.submission_id)
+                    },
+                    isDeleted = true
+            )
+            //Assert RestaurantMeal insert count
+            asserts.assertRestaurantMealInsertCount(it, existingMeal.restaurantMeals.size * (-1))
         }
     }
 
