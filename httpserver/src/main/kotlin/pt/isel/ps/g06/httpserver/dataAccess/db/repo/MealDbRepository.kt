@@ -13,7 +13,6 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.dao.info.MealInfoDao
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.*
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.info.DbMealInfoDto
 import pt.isel.ps.g06.httpserver.dataAccess.input.IngredientInput
-import pt.isel.ps.g06.httpserver.dataAccess.model.Ingredient
 import pt.isel.ps.g06.httpserver.exception.InvalidInputDomain
 import pt.isel.ps.g06.httpserver.exception.InvalidInputException
 import pt.isel.ps.g06.httpserver.model.Ingredient

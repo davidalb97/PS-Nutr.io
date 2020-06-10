@@ -26,7 +26,7 @@ class RestaurantDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo
 
     fun getBySubmissionId(id: Int, userId: Int): DbRestaurantInfoDto? {
         return jdbi.inTransaction<DbRestaurantInfoDto, Exception>(isolationLevel) {
-            return@inTransaction it.attach(RestaurantInfoDao::class.java).getBySubmissionId(id, userId)
+            return@inTransaction it.attach(RestaurantInfoDao::class.java).getById(id, userId)
         }
     }
 
@@ -87,12 +87,6 @@ class RestaurantDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo
 
             //Insert all RestaurantCuisine associations
             insertRestaurantCuisines(it, submissionId, cuisineNames)
-
-            val contracts = this.contracts.toMutableList()
-            if (apiId != null) {
-                insertApiRestaurant(it, submissionId, apiId)
-                contracts.remove(VOTABLE)
-            } else contracts.remove(API)
 
             //Insert contracts (VOTABLE,  API if there is an apiId, REPORTABLE if it doesn't)
             it

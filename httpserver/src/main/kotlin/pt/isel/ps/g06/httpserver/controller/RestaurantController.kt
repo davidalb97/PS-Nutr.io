@@ -66,12 +66,14 @@ class RestaurantController(
 
     @GetMapping(RESTAURANT, consumes = [MediaType.ALL_VALUE])
     fun getRestaurantInformation(@PathVariable(RESTAURANT_ID_VALUE) id: String): ResponseEntity<Restaurant> {
+        val userId = 10     //TODO For when there's authentication
         val (submitterId, submissionId, apiId) = restaurantIdentifierBuilder.extractIdentifiers(id)
 
         val restaurant = restaurantService.getRestaurant(
                 submitterId = submitterId,
                 submissionId = submissionId,
-                apiId = apiId
+                apiId = apiId,
+                userId = userId
         ) ?: throw RestaurantNotFoundException()
 
         return ResponseEntity.ok().body(restaurant)
@@ -102,13 +104,14 @@ class RestaurantController(
             @PathVariable(RESTAURANT_ID_VALUE) id: String,
             @Valid @RequestBody restaurantMeal: RestaurantMealInput
     ): ResponseEntity<Void> {
-        val userSubmitter = 1 //TODO
+        val userId = 10  //TODO For when there's authentication
         val (submitterId, submissionId, apiId) = restaurantIdentifierBuilder.extractIdentifiers(id)
 
         var restaurant = restaurantService.getRestaurant(
                 submitterId = submitterId,
                 submissionId = submissionId,
-                apiId = apiId
+                apiId = apiId,
+                userId = userId
         ) ?: throw RestaurantNotFoundException()
 
         val meal = mealService.getMeal(restaurantMeal.mealId!!) ?: throw MealNotFoundException()
@@ -124,7 +127,7 @@ class RestaurantController(
             )
         }
 
-        val restaurantMealId = restaurantService.addRestaurantMeal(restaurant, meal, userSubmitter)
+        val restaurantMealId = restaurantService.addRestaurantMeal(restaurant, meal, userId)
 
         return ResponseEntity
                 .created(UriComponentsBuilder

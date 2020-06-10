@@ -70,9 +70,9 @@ class RestaurantService(
      * Current search algorithm will first query the Database for any restaurant and if none was found,
      * search the preferred Restaurant API (Zomato, Here, etc.)
      */
-    fun getRestaurant(submitterId: Int, submissionId: Int?, apiId: String?, userId: Int): Restaurant? {
+    fun getRestaurant(submitterId: Int, userId: Int, submissionId: Int?, apiId: String?): Restaurant? {
         val restaurant = when {
-            submissionId != null -> searchRestaurantSubmission(submissionId)
+            submissionId != null -> searchRestaurantSubmission(submissionId, userId)
 
             apiId != null -> {
                 val apiType = apiSubmitterMapper
@@ -155,7 +155,7 @@ class RestaurantService(
                 ?: restaurantApi.getRestaurantInfo(apiId).get()
     }
 
-    private fun searchRestaurantSubmission(submissionId: Int): RestaurantDto? {
-        return dbRestaurantRepository.getBySubmissionId(submissionId)
+    private fun searchRestaurantSubmission(submissionId: Int, userId: Int): RestaurantDto? {
+        return dbRestaurantRepository.getBySubmissionId(submissionId, userId)
     }
 }

@@ -16,7 +16,10 @@ class MealResponseMapper : ResponseMapper<DbMealInfoDto, Meal> {
                 votes = Votes(
                         positive = dto.positiveVotes,
                         negative = dto.negativeVotes
-                )
+                ),
+                //TODO Meal info
+                ingredients = emptySequence(),
+                carbs = 10
         )
     }
 }
