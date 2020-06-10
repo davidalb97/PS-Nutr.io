@@ -4,23 +4,22 @@ import org.springframework.stereotype.Service
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.RestaurantApiType
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.mapper.RestaurantApiMapper
 import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.restaurant.RestaurantResponseMapper
+import pt.isel.ps.g06.httpserver.dataAccess.db.ApiSubmitterMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.RestaurantDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.RestaurantMealDbRepository
-import pt.isel.ps.g06.httpserver.dataAccess.model.RestaurantApiId
+import pt.isel.ps.g06.httpserver.dataAccess.model.RestaurantDto
 import pt.isel.ps.g06.httpserver.model.Meal
 import pt.isel.ps.g06.httpserver.model.Restaurant
 
 private const val MAX_RADIUS = 1000
-
 
 @Service
 class RestaurantService(
         private val dbRestaurantRepository: RestaurantDbRepository,
         private val dbRestaurantMealRepository: RestaurantMealDbRepository,
         private val restaurantApiMapper: RestaurantApiMapper,
-        private val restaurantResponseMapper: RestaurantResponseMapper
-        /*,
-        private val transactionHolder: TransactionHolder*/
+        private val restaurantResponseMapper: RestaurantResponseMapper,
+        private val apiSubmitterMapper: ApiSubmitterMapper
 ) {
 
     fun getNearbyRestaurants(
@@ -69,42 +68,51 @@ class RestaurantService(
      *
      * Current search algorithm will first query the Database for any restaurant and if none was found,
      * search the preferred Restaurant API (Zomato, Here, etc.)
-     *
-     * @param apiType describes which api to search the Restaurant. See [RestaurantApiType] for possible types.
-     * Defaults to [RestaurantApiType.Here]
      */
-    fun getRestaurant(id: String, apiType: String? = null): Restaurant? {
-        val type = RestaurantApiType.getOrDefault(apiType)
-        val restaurantApi = restaurantApiMapper.getRestaurantApi(type)
+    fun getRestaurant(submitterId: Int, submissionId: Int?, apiId: String?): Restaurant? {
+        val restaurant = when {
+            submissionId != null -> searchRestaurantSubmission(submissionId)
 
-        //If 'id' cannot be converted to Integer, then don't search in database.
-        //This is a specification that happens because all restaurants are submissions, and as such,
-        //their unique identifier is always an auto-incremented integer
-        val restaurant = id
-                .toIntOrNull()
-                ?.let { dbRestaurantRepository.getById(it) }
-                ?: restaurantApi.getRestaurantInfo(id).get()
+            apiId != null -> {
+                val apiType = apiSubmitterMapper
+                        .getApiSubmitter(submitterId)
+                        ?: throw IllegalStateException()
+                //TODO Better exception
+
+                searchApiRestaurant(submitterId, apiId, apiType)
+            }
+
+            else -> throw IllegalStateException()
+            //TODO Better exception
+        }
 
         return restaurant?.let(restaurantResponseMapper::mapTo)
     }
 
-    //Map<id, source>
-    //submitter=API, id=10
-    //if(is in map)-> API, check API Restaurant
-    //else -> check user submissionID
-
+    /**
+     * Creates a restaurant on the Database, where the submitter can either be an API or a user.
+     * @param apiId not null determines if submitter is an API; else User.
+     *
+     * @return the created [Restaurant].
+     */
     fun createRestaurant(
             submitterId: Int,
+            apiId: String? = null,
             restaurantName: String,
-            apiId: RestaurantApiId? = null,
             cuisines: Collection<String>,
             latitude: Float,
             longitude: Float
     ): Restaurant {
+        if (apiId != null) {
+            //Verify is given submitterId belongs to an API
+            //TODO Proper exception for "No such API" 400 user error
+            apiSubmitterMapper.getApiSubmitter(submitterId) ?: throw IllegalStateException()
+        }
+
         val createdRestaurant = dbRestaurantRepository.insert(
                 submitterId = submitterId,
-                restaurantName = restaurantName,
                 apiId = apiId,
+                restaurantName = restaurantName,
                 cuisineNames = cuisines,
                 latitude = latitude,
                 longitude = longitude
@@ -113,25 +121,15 @@ class RestaurantService(
         return restaurantResponseMapper.mapTo(createdRestaurant)
     }
 
-    fun addRestaurantMeal(submitterId: Int, meal: Meal, apiSubmitter: Int, restaurantApiId: String?, submissionId: Int?) {
-        val restaurantSubmissionId: Int = submissionId ?: getRestaurant(restaurantApiId!!)?.let { restaurant ->
-            createRestaurant(
-                    submitterId = submitterId,
-                    restaurantName = restaurant.name,
-                    apiId = RestaurantApiId(restaurantApiId, RestaurantApiType.Here),   //TODO Restaurant Type
-                    cuisines = restaurant.cuisines.value,
-                    latitude = restaurant.latitude,
-                    longitude = restaurant.longitude
-            )
-        }?.identifier?.toInt()  //TODO What an anti-pattern here
-        //TODO Better exception
-        ?: throw NoSuchElementException()
 
-        dbRestaurantMealRepository.insert(
+    fun addRestaurantMeal(restaurant: Restaurant, meal: Meal, submitterId: Int): Int {
+        val (submission_id) = dbRestaurantMealRepository.insert(
                 submitterId = submitterId,
                 mealId = meal.identifier,
-                restaurantId = restaurantSubmissionId
+                restaurantId = restaurant.identifier.toInt() //TODO When model changes
         )
+
+        return submission_id
     }
 
     private fun filterRedundantApiRestaurants(dbRestaurants: Collection<Restaurant>, apiRestaurants: Collection<Restaurant>): Collection<Restaurant> {
@@ -143,17 +141,18 @@ class RestaurantService(
                     dbRestaurants.none { dbRestaurant -> apiRestaurant.identifier == dbRestaurant.identifier }
                 }
         )
-
-//        val result = dbRestaurants.toMutableSet()
-//
-//        apiRestaurants.forEach {
-//            if (!dbContainsRestaurant(result, it)) {
-//                result.add(it)
-//            }
-//        }
-//        return result
     }
-//    private fun dbContainsRestaurant(dbRestaurants: Collection<Restaurant>, restaurant: Restaurant): Boolean {
-//        return dbRestaurants.any { dbRestaurant -> restaurant.identifier == dbRestaurant.identifier }
-//    }
+
+    private fun searchApiRestaurant(apiSubmitterId: Int, apiId: String, apiType: RestaurantApiType): RestaurantDto? {
+        val restaurantApi = restaurantApiMapper.getRestaurantApi(apiType)
+
+        //TODO Exception handle on CompletableFuture
+        return dbRestaurantRepository
+                .getApiRestaurant(apiSubmitterId, apiId)
+                ?: restaurantApi.getRestaurantInfo(apiId).get()
+    }
+
+    private fun searchRestaurantSubmission(submissionId: Int): RestaurantDto? {
+        return dbRestaurantRepository.getBySubmissionId(submissionId)
+    }
 }

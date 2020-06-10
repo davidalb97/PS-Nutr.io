@@ -3,6 +3,7 @@ package pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.restaurant
 import org.springframework.stereotype.Component
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.dto.ZomatoRestaurantDto
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.dto.here.HereResultItem
+import pt.isel.ps.g06.httpserver.dataAccess.common.SubmissionSource
 import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.ResponseMapper
 import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.food.MealResponseMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbRestaurantDto
@@ -59,7 +60,8 @@ class HereResponseMapper(
                     cuisineIds
                             ?.let { id -> mealRepository.getAllByCuisineNames(id).map(mealResponseMapper::mapTo) }
                             ?: emptyList()
-                }
+                },
+                source = SubmissionSource.API
         )
     }
 }
@@ -83,7 +85,8 @@ class ZomatoResponseMapper(
                     mealRepository
                             .getAllByCuisineNames(cuisines.value)
                             .map(mealResponseMapper::mapTo)
-                }
+                },
+                source = SubmissionSource.API
         )
     }
 }
@@ -106,7 +109,8 @@ class DbRestaurantResponseMapper(
                 latitude = dto.latitude,
                 longitude = dto.longitude,
                 cuisines = cuisines,
-                meals = lazy { emptyList<Meal>() }
+                meals = lazy { emptyList<Meal>() },
+                source = SubmissionSource.DATABASE
                 //TODO - Handle obtaining meals for Database restaurant: Should it only get from DB? Also from API?
         )
     }

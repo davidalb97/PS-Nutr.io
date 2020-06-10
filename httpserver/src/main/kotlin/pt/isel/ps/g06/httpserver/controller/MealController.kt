@@ -41,16 +41,6 @@ class MealController(private val mealService: MealService, private val restauran
                 submitterId = submitter
         )
 
-        if (meal.isRestaurantMeal()) {
-            restaurantService.addRestaurantMeal(
-                    submitterId = submitter,
-                    meal = createdMeal,
-                    apiSubmitter = meal.restaurantApiSubmitterId!!,
-                    restaurantApiId = meal.restaurantApiId,
-                    submissionId = meal.restaurantSubmissionId
-            )
-        }
-
         return ResponseEntity.created(
                 UriComponentsBuilder
                         .fromUriString(MEAL)

@@ -9,10 +9,10 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.repo.SubmitterDbRepository
 @Repository
 data class ApiSubmitterMapper(
         private val submitterDbRepository: SubmitterDbRepository,
-        val apiSubmitters: Map<Int, RestaurantApiType>
+        private val apiSubmitters: Map<Int, RestaurantApiType>
 ) {
     @Bean
-    fun createMap(): Map<Int, RestaurantApiType> {
+    protected fun createMap(): Map<Int, RestaurantApiType> {
         val submitters = submitterDbRepository
                 .getApiSubmitters()
                 .associate(this::buildSubmitterPair)
@@ -24,6 +24,8 @@ data class ApiSubmitterMapper(
 
         return submitters
     }
+
+    fun getApiSubmitter(id: Int): RestaurantApiType? = apiSubmitters[id]
 
     private fun buildSubmitterPair(submitter: DbSubmitterDto): Pair<Int, RestaurantApiType> {
         return Pair(submitter.submitter_id, RestaurantApiType.getOrDefault(submitter.submitter_name))

@@ -3,16 +3,21 @@ package pt.isel.ps.g06.httpserver.controller
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.util.UriComponentsBuilder
 import pt.isel.ps.g06.httpserver.common.*
+import pt.isel.ps.g06.httpserver.common.exception.MealNotFoundException
 import pt.isel.ps.g06.httpserver.common.exception.RestaurantNotFoundException
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.RestaurantApiType
+import pt.isel.ps.g06.httpserver.dataAccess.common.SubmissionSource
 import pt.isel.ps.g06.httpserver.dataAccess.input.RestaurantInput
+import pt.isel.ps.g06.httpserver.dataAccess.input.RestaurantMealInput
 import pt.isel.ps.g06.httpserver.dataAccess.input.VoteInput
 import pt.isel.ps.g06.httpserver.dataAccess.model.SimplifiedRestaurantOutputModel
 import pt.isel.ps.g06.httpserver.dataAccess.model.toSimplifiedRestaurant
 import pt.isel.ps.g06.httpserver.exception.InvalidInputDomain
 import pt.isel.ps.g06.httpserver.exception.InvalidInputException
 import pt.isel.ps.g06.httpserver.model.Restaurant
+import pt.isel.ps.g06.httpserver.service.MealService
 import pt.isel.ps.g06.httpserver.service.RestaurantService
 import javax.validation.Valid
 
@@ -21,7 +26,11 @@ private const val INVALID_RESTAURANT_SEARCH = "To search nearby restaurants, a g
 @Suppress("MVCPathVariableInspection") //False positive for IntelliJ
 @RestController
 @RequestMapping(RESTAURANTS, produces = [MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_PROBLEM_JSON_VALUE])
-class RestaurantController(private val restaurantService: RestaurantService) {
+class RestaurantController(
+        private val restaurantService: RestaurantService,
+        private val mealService: MealService,
+        private val restaurantIdentifierBuilder: RestaurantIdentifierBuilder
+) {
     /**
      * Allows to search for Restaurants from both an API (see [RestaurantApiType] for supported APIs) and
      * from a database around geolocation,
@@ -55,8 +64,16 @@ class RestaurantController(private val restaurantService: RestaurantService) {
     }
 
     @GetMapping(RESTAURANT, consumes = [MediaType.ALL_VALUE])
-    fun getRestaurantInformation(@PathVariable(RESTAURANT_ID_VALUE) id: String, @RequestParam api: String?): Restaurant {
-        return restaurantService.getRestaurant(id, api) ?: throw RestaurantNotFoundException()
+    fun getRestaurantInformation(@PathVariable(RESTAURANT_ID_VALUE) id: String): ResponseEntity<Restaurant> {
+        val (submitterId, submissionId, apiId) = restaurantIdentifierBuilder.extractIdentifiers(id)
+
+        val restaurant = restaurantService.getRestaurant(
+                submitterId = submitterId,
+                submissionId = submissionId,
+                apiId = apiId
+        ) ?: throw RestaurantNotFoundException()
+
+        return ResponseEntity.ok().body(restaurant)
     }
 
     @PostMapping(consumes = [MediaType.APPLICATION_JSON_VALUE])
@@ -67,6 +84,43 @@ class RestaurantController(private val restaurantService: RestaurantService) {
                 .ok()
 //                .created(URI("$RESTAURANTS/${createdRestaurant.submission_id}"))
                 .build()
+    }
+
+    @PostMapping(RESTAURANT_MEALS, consumes = [MediaType.APPLICATION_JSON_VALUE])
+    fun addRestaurantMeal(
+            @PathVariable(RESTAURANT_ID_VALUE) id: String,
+            @Valid @RequestBody restaurantMeal: RestaurantMealInput
+    ): ResponseEntity<Void> {
+        val userSubmitter = 1 //TODO
+        val (submitterId, submissionId, apiId) = restaurantIdentifierBuilder.extractIdentifiers(id)
+
+        var restaurant = restaurantService.getRestaurant(
+                submitterId = submitterId,
+                submissionId = submissionId,
+                apiId = apiId
+        ) ?: throw RestaurantNotFoundException()
+
+        val meal = mealService.getMeal(restaurantMeal.mealId!!) ?: throw MealNotFoundException()
+
+        if (restaurant.source != SubmissionSource.DATABASE) {
+            restaurant = restaurantService.createRestaurant(
+                    submitterId = submitterId,
+                    apiId = apiId,
+                    restaurantName = restaurant.name,
+                    cuisines = restaurant.cuisines.value,
+                    latitude = restaurant.latitude,
+                    longitude = restaurant.longitude
+            )
+        }
+
+        val restaurantMealId = restaurantService.addRestaurantMeal(restaurant, meal, userSubmitter)
+
+        return ResponseEntity
+                .created(UriComponentsBuilder
+                        .fromUriString(RESTAURANT_MEAL)
+                        .buildAndExpand(restaurantMealId)
+                        .toUri()
+                ).build()
     }
 
     @DeleteMapping(RESTAURANT, consumes = [MediaType.APPLICATION_JSON_VALUE])

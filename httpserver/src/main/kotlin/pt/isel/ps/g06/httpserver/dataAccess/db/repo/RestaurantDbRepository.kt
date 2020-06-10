@@ -11,7 +11,6 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.dao.*
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbCuisineDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbRestaurantCuisineDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbRestaurantDto
-import pt.isel.ps.g06.httpserver.dataAccess.model.RestaurantApiId
 import pt.isel.ps.g06.httpserver.exception.InvalidInputException
 import pt.isel.ps.g06.httpserver.springConfig.dto.DbEditableDto
 
@@ -21,9 +20,15 @@ private val restaurantDaoClass = RestaurantDao::class.java
 @Repository
 class RestaurantDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo(jdbi) {
 
-    fun getById(id: Int): DbRestaurantDto? {
+    fun getBySubmissionId(id: Int): DbRestaurantDto? {
         return jdbi.inTransaction<DbRestaurantDto, Exception>(isolationLevel) {
-            return@inTransaction it.attach(restaurantDaoClass).getById(id)
+            return@inTransaction it.attach(restaurantDaoClass).getBySubmissionId(id)
+        }
+    }
+
+    fun getApiRestaurant(apiSubmitterId: Int, apiId: String): DbRestaurantDto? {
+        return jdbi.inTransaction<DbRestaurantDto, Exception>(isolationLevel) {
+            return@inTransaction it.attach(restaurantDaoClass).getApiRestaurant(apiSubmitterId, apiId)
         }
     }
 
@@ -46,7 +51,7 @@ class RestaurantDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo
     fun insert(
             submitterId: Int,
             restaurantName: String,
-            apiId: RestaurantApiId? = null,
+            apiId: String? = null,
             cuisineNames: Collection<String> = emptyList(),
             latitude: Float,
             longitude: Float
@@ -65,7 +70,7 @@ class RestaurantDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo
 
             val contracts = mutableListOf(REPORTABLE, FAVORABLE)
             if (apiId != null) {
-                it.attach(ApiSubmissionDao::class.java).insert(submissionId, apiId.id)
+                it.attach(ApiSubmissionDao::class.java).insert(submissionId, apiId)
                 contracts.add(API)
             } else {
                 contracts.add(VOTABLE)
