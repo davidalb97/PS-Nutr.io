@@ -19,7 +19,7 @@ interface SubmissionSubmitterDao {
     @SqlQuery("SELECT * FROM $table WHERE $submissionId = :submissionId")
     fun getAllBySubmissionId(submissionId: Int): List<DbSubmissionSubmitterDto>
 
-    @SqlQuery("SELECT * FROM $table WHERE $submitterId = :submitter_id")
+    @SqlQuery("SELECT * FROM $table WHERE $submitterId = :submitterId")
     fun getAllBySubmitterId(submitterId: Int): List<DbSubmissionSubmitterDto>
 
     @SqlQuery("INSERT INTO $table($submissionId, $submitterId)" +
