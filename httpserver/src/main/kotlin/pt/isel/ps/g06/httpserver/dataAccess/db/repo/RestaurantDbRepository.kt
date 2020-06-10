@@ -4,16 +4,16 @@ import org.jdbi.v3.core.Handle
 import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.transaction.TransactionIsolationLevel
 import org.springframework.stereotype.Repository
-import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionContractType
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionContractType.*
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType.RESTAURANT
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.*
-import pt.isel.ps.g06.httpserver.dataAccess.db.dto.*
+import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbCuisineDto
+import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbRestaurantCuisineDto
+import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbRestaurantDto
 import pt.isel.ps.g06.httpserver.dataAccess.model.RestaurantApiId
 import pt.isel.ps.g06.httpserver.exception.InvalidInputException
 import pt.isel.ps.g06.httpserver.springConfig.dto.DbEditableDto
-import java.util.stream.Stream
 
 private val isolationLevel = TransactionIsolationLevel.SERIALIZABLE
 private val restaurantDaoClass = RestaurantDao::class.java
@@ -50,36 +50,41 @@ class RestaurantDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo
             cuisineNames: Collection<String> = emptyList(),
             latitude: Float,
             longitude: Float
-    ): DbSubmissionDto {
-        return jdbi.inTransaction<DbSubmissionDto, Exception>(isolationLevel) {
-
+    ): DbRestaurantDto {
+        return jdbi.inTransaction<DbRestaurantDto, Exception>(isolationLevel) {
             //Insert Submission
-            val submissionDto = it.attach(SubmissionDao::class.java)
+            val submissionId = it
+                    .attach(SubmissionDao::class.java)
                     .insert(RESTAURANT.toString())
-            val submissionId = submissionDto.submission_id
+                    .submission_id
+
+            val submissionSubmitterDao = it.attach(SubmissionSubmitterDao::class.java)
 
             //Insert SubmissionSubmitter
-            it.attach(SubmissionSubmitterDao::class.java)
-                    .insert(submissionId, submitterId)
+            submissionSubmitterDao.insert(submissionId, submitterId)
+
+            val contracts = mutableListOf(REPORTABLE, FAVORABLE)
+            if (apiId != null) {
+                it.attach(ApiSubmissionDao::class.java).insert(submissionId, apiId.id)
+                contracts.add(API)
+            } else {
+                contracts.add(VOTABLE)
+            }
 
             //Insert Restaurant
-            it.attach(RestaurantDao::class.java)
+            val restaurant = it
+                    .attach(RestaurantDao::class.java)
                     .insert(submissionId, restaurantName, latitude, longitude)
 
             //Insert all RestaurantCuisine associations
             insertRestaurantCuisines(it, submissionId, cuisineNames)
 
-            val contracts = mutableListOf(REPORTABLE, FAVORABLE)
-            if (apiId != null) {
-                insertApiRestaurant(it, submissionId, apiId)
-                contracts.add(API)
-            } else contracts.add(VOTABLE)
-
             //Insert contracts (VOTABLE,  API if there is an apiId, REPORTABLE if it doesn't)
-            it.attach(SubmissionContractDao::class.java)
+            it
+                    .attach(SubmissionContractDao::class.java)
                     .insertAll(contracts.map { SubmissionContractParam(submissionId, it.toString()) })
 
-            return@inTransaction submissionDto
+            return@inTransaction restaurant
         }
     }
 
@@ -166,23 +171,12 @@ class RestaurantDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo
     }
 
     private fun insertRestaurantCuisines(it: Handle, submissionId: Int, cuisineNames: Collection<String>) {
-        val cuisineIds = getCuisinesByNames(cuisineNames, isolationLevel)
-                .map { it.submission_id }
-        it.attach(RestaurantCuisineDao::class.java)
+        if (cuisineNames.isEmpty()) return
+
+        val cuisineIds = getCuisinesByNames(cuisineNames, isolationLevel).map { it.submission_id }
+        it
+                .attach(RestaurantCuisineDao::class.java)
                 .insertAll(cuisineIds.map { DbRestaurantCuisineDto(submissionId, it) })
-    }
-
-    private fun insertApiRestaurant(handle: Handle, submissionId: Int, apiId: RestaurantApiId) {
-        //Get api submitterId, abort if failed
-        val apiDao = handle.attach(ApiDao::class.java)
-        val apiSubmitterId = apiDao.getByName(apiId.apiType.toString())!!.submitter_id
-
-        //Insert SubmissionSubmitter for the new Api submitter
-        handle.attach(SubmissionSubmitterDao::class.java).insert(submissionId, apiSubmitterId)
-
-        //Insert ApiSubmission
-        handle.attach(ApiSubmissionDao::class.java)
-                .insert(submissionId, apiId.id)
     }
 
     private fun updateCuisines(handle: Handle, submissionId: Int, cuisineNames: Collection<String>) {

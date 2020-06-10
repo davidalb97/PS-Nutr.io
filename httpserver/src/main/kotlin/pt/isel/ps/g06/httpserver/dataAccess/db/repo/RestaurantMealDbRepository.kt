@@ -2,8 +2,12 @@ package pt.isel.ps.g06.httpserver.dataAccess.db.repo
 
 import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.transaction.TransactionIsolationLevel
+import org.springframework.stereotype.Repository
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType.*
-import pt.isel.ps.g06.httpserver.dataAccess.db.dao.*
+import pt.isel.ps.g06.httpserver.dataAccess.db.dao.PortionDao
+import pt.isel.ps.g06.httpserver.dataAccess.db.dao.RestaurantMealDao
+import pt.isel.ps.g06.httpserver.dataAccess.db.dao.SubmissionDao
+import pt.isel.ps.g06.httpserver.dataAccess.db.dao.SubmissionSubmitterDao
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbRestaurantMealDto
 import pt.isel.ps.g06.httpserver.exception.InvalidInputDomain
 import pt.isel.ps.g06.httpserver.exception.InvalidInputException
@@ -11,6 +15,7 @@ import pt.isel.ps.g06.httpserver.exception.InvalidInputException
 private val isolationLevel = TransactionIsolationLevel.SERIALIZABLE
 private val restaurantMealDao = RestaurantMealDao::class.java
 
+@Repository
 class RestaurantMealDbRepository(jdbi: Jdbi) : BaseDbRepo(jdbi) {
 
     fun getByRestaurantMealId(restaurantMealId: Int): DbRestaurantMealDto? {
@@ -37,11 +42,9 @@ class RestaurantMealDbRepository(jdbi: Jdbi) : BaseDbRepo(jdbi) {
     fun insert(
             submitterId: Int,
             mealId: Int,
-            restaurantId: Int,
-            quantity: Int
+            restaurantId: Int
     ): DbRestaurantMealDto {
         return jdbi.inTransaction<DbRestaurantMealDto, Exception>(isolationLevel) {
-
             // Check if the mealId is from a Meal
             requireSubmission(mealId, MEAL, isolationLevel)
 

@@ -43,7 +43,7 @@ interface IngredientDao {
     fun getAllByName(@Bind ingredientName: String): List<DbIngredientDto>
 
     @SqlQuery("SELECT * FROM $table WHERE $id in (<submissionIds>)")
-    fun getAllByIds(@BindList submissionIds: List<Int>): List<DbIngredientDto>
+    fun getAllByIds(@BindList submissionIds: Collection<Int>): Collection<DbIngredientDto>
 
     @SqlQuery("SELECT * FROM $table WHERE $carbs = :carbs")
     fun getAllByCarbs(@Bind carbs: Int) : List<DbIngredientDto>

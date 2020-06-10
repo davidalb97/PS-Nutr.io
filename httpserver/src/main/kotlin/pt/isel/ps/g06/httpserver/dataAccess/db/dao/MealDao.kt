@@ -41,6 +41,7 @@ interface MealDao {
         const val name = "meal_name"
         const val id = "submission_id"
         const val carbs = "carbs"
+        const val quantity = "quantity"
     }
 
     @SqlQuery("SELECT * FROM $table")
@@ -91,8 +92,8 @@ interface MealDao {
             @BindList apiIds: Collection<String>
     ): Collection<DbMealDto>
 
-    @SqlQuery("INSERT INTO $table($id, $name, $carbs) VALUES(:submissionId, :mealName, :carbs) RETURNING *")
-    fun insert(@Bind submissionId: Int, @Bind mealName: String, @Bind carbs: Int?): DbMealDto
+    @SqlQuery("INSERT INTO $table($id, $name, $carbs, $quantity) VALUES(:submissionId, :mealName, :carbs, :quantity) RETURNING *")
+    fun insert(@Bind submissionId: Int, @Bind mealName: String, @Bind carbs: Int, @Bind quantity: Int): DbMealDto
 
     @SqlQuery("DELETE FROM $table WHERE $id = :submissionId RETURNING *")
     fun delete(@Bind submissionId: Int): DbMealDto

@@ -339,7 +339,7 @@ BEGIN
 		(mealIngredient2Id, 'sal', 0, 100),
 		(mealIngredient3Id, 'azeite', 0, 100);
 
-		INSERT INTO MealIngredient(meal_submission_id, ingredient_submission_id, amount) VALUES
+		INSERT INTO MealIngredient(meal_submission_id, ingredient_submission_id, quantity) VALUES
 		(mealFromIngredientsId, mealIngredient1Id, 1),
 		(mealFromIngredientsId, mealIngredient2Id, 1),
 		(mealFromIngredientsId, mealIngredient3Id, 1);

@@ -12,7 +12,7 @@ interface MealIngredientDao {
         const val table = "MealIngredient"
         const val mealId = "meal_submission_id"
         const val ingredientId = "ingredient_submission_id"
-        const val amount = "amount"
+        const val quantity = "quantity"
     }
 
     @SqlQuery("SELECT * FROM $table")
@@ -24,16 +24,17 @@ interface MealIngredientDao {
     @SqlQuery("SELECT * FROM $table WHERE $ingredientId = :ingredientId")
     fun getAllByIngredientId(@Bind ingredientId: Int): List<DbMealIngredientDto>
 
-    @SqlQuery("SELECT * FROM $table WHERE $amount = :mealAmount")
+    @SqlQuery("SELECT * FROM $table WHERE $quantity = :mealAmount")
     fun getAllByAmount(@Bind mealAmount: Int): List<DbMealIngredientDto>
 
     @SqlQuery("INSERT INTO $table($mealId, $ingredientId)" +
             " VALUES(:mealId, :ingredientId) RETURNING *")
     fun insert(@Bind mealId: Int, @Bind ingredientId: Int): DbMealIngredientDto
 
-    @SqlQuery("INSERT INTO $table($mealId, $ingredientId, $amount) values <mealIngredientParams> RETURNING *")
-    fun insertAll(@BindBeanList(propertyNames = [mealId, ingredientId, amount])
-                  mealIngredientParams: List<MealIngredientParam>
+    @SqlQuery("INSERT INTO $table($mealId, $ingredientId, $quantity) values <mealIngredientParams> RETURNING *")
+    //TODO Check if this breaks or not using DbMealIngredientDto. If it does, use MealIngredientParam instead.
+    fun insertAll(@BindBeanList(propertyNames = [mealId, ingredientId, quantity])
+                  mealIngredientParams: Collection<DbMealIngredientDto>
     ): List<DbMealIngredientDto>
 
     @SqlQuery("DELETE FROM $table WHERE $mealId = :submissionId RETURNING *")
@@ -52,5 +53,5 @@ interface MealIngredientDao {
 data class MealIngredientParam(
         val meal_submission_id: Int,
         val ingredient_submission_id: Int,
-        val meal_amount: Int
+        val quantity: Int
 )

@@ -9,8 +9,6 @@ import pt.isel.ps.g06.httpserver.common.MEALS
 import pt.isel.ps.g06.httpserver.common.MEAL_ID_VALUE
 import pt.isel.ps.g06.httpserver.common.MEAL_VOTE
 import pt.isel.ps.g06.httpserver.common.exception.MealNotFoundException
-import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.output.SimplifiedMealOutput
-import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.output.toSimplifiedMealOutput
 import pt.isel.ps.g06.httpserver.dataAccess.input.MealInput
 import pt.isel.ps.g06.httpserver.model.Meal
 import pt.isel.ps.g06.httpserver.service.MealService
@@ -23,29 +21,33 @@ import javax.validation.Valid
 class MealController(private val mealService: MealService, private val restaurantService: RestaurantService) {
 
     @GetMapping(MEAL)
-    fun getMealInformation(
-            @PathVariable(MEAL_ID_VALUE) mealId: String,
-            @RequestParam apiType: String?
-    ): ResponseEntity<Meal> {
-        val meal = mealService.getMeal(mealId, apiType)
-        return meal?.let { ResponseEntity.ok().body(it) } ?: throw MealNotFoundException()
+    fun getMealInformation(@PathVariable(MEAL_ID_VALUE) mealId: Int): ResponseEntity<Meal> {
+        return mealService.getMeal(mealId)
+                ?.let { ResponseEntity.ok().body(it) }
+                ?: throw MealNotFoundException()
     }
 
     @PostMapping(MEALS)
-    fun createMeal(@Valid meal: MealInput): ResponseEntity<Void> {
+    fun createMeal(@Valid @RequestBody meal: MealInput): ResponseEntity<Void> {
+        //TODO When there's authentication and users
+        val submitter = 1
+
         //Due to validators we are sure fields are never null
         val createdMeal = mealService.createMeal(
                 name = meal.name!!,
                 ingredients = meal.ingredients!!,
-                cuisines = meal.cuisines!!
+                cuisines = meal.cuisines!!,
+                quantity = meal.quantity!!,
+                submitterId = submitter
         )
 
         if (meal.isRestaurantMeal()) {
             restaurantService.addRestaurantMeal(
-                    mealId = createdMeal.identifier,
+                    submitterId = submitter,
+                    meal = createdMeal,
                     apiSubmitter = meal.restaurantApiSubmitterId!!,
                     restaurantApiId = meal.restaurantApiId,
-                    submissionId = meal.submissionId
+                    submissionId = meal.restaurantSubmissionId
             )
         }
 

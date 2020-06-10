@@ -4,7 +4,7 @@ import pt.isel.ps.g06.httpserver.model.Meal
 import java.net.URI
 
 class SimplifiedMealOutputModel(
-        val identifier: String,
+        val identifier: Int,
         val name: String,
         val image: URI?
 )

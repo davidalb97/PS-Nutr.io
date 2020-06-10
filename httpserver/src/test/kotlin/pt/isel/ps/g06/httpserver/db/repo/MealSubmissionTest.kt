@@ -59,7 +59,7 @@ class MealSubmissionTest {
                     submitterId = expectedSubmitterId,
                     mealName = expectedMealName,
                     apiId = expectedMealApiId,
-                    cuisineNames = expectedCuisines.map { it.cuisine_name },
+                    cuisines = expectedCuisines.map { it.cuisine_name },
                     foodApi = expectedFoodApiType
             )
 
@@ -313,7 +313,7 @@ class MealSubmissionTest {
                     expectedApiSubmissionIds = expectedIngredientSubmissionIds,
                     apiSubmitterId = expectedApiSubmitter.submitter_id,
                     submissionType = SubmissionType.INGREDIENT,
-                    apiIds = expectedIngredients.map { it.id }
+                    apiIds = expectedIngredients.map { it.identifier }
             )
             asserts.assertApiSubmissionInsertCount(it, expectedIngredientCount)
 
@@ -353,7 +353,7 @@ class MealSubmissionTest {
                         submitterId = expectedSubmitterId,
                         mealName = expectedMealName,
                         apiId = expectedMealApiId,
-                        cuisineNames = invalidCuisines.toList(),
+                        cuisines = invalidCuisines.toList(),
                         foodApi = expectedFoodApiType
                 )
             }

@@ -4,9 +4,10 @@ import org.springframework.stereotype.Service
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.RestaurantApiType
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.mapper.RestaurantApiMapper
 import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.restaurant.RestaurantResponseMapper
-import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbSubmissionDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.RestaurantDbRepository
-import pt.isel.ps.g06.httpserver.dataAccess.input.RestaurantInput
+import pt.isel.ps.g06.httpserver.dataAccess.db.repo.RestaurantMealDbRepository
+import pt.isel.ps.g06.httpserver.dataAccess.model.RestaurantApiId
+import pt.isel.ps.g06.httpserver.model.Meal
 import pt.isel.ps.g06.httpserver.model.Restaurant
 
 private const val MAX_RADIUS = 1000
@@ -15,6 +16,7 @@ private const val MAX_RADIUS = 1000
 @Service
 class RestaurantService(
         private val dbRestaurantRepository: RestaurantDbRepository,
+        private val dbRestaurantMealRepository: RestaurantMealDbRepository,
         private val restaurantApiMapper: RestaurantApiMapper,
         private val restaurantResponseMapper: RestaurantResponseMapper
         /*,
@@ -71,7 +73,7 @@ class RestaurantService(
      * @param apiType describes which api to search the Restaurant. See [RestaurantApiType] for possible types.
      * Defaults to [RestaurantApiType.Here]
      */
-    fun getRestaurant(id: String, apiType: String?): Restaurant? {
+    fun getRestaurant(id: String, apiType: String? = null): Restaurant? {
         val type = RestaurantApiType.getOrDefault(apiType)
         val restaurantApi = restaurantApiMapper.getRestaurantApi(type)
 
@@ -86,19 +88,50 @@ class RestaurantService(
         return restaurant?.let(restaurantResponseMapper::mapTo)
     }
 
-    fun createRestaurant(restaurant: RestaurantInput): DbSubmissionDto {
-        return dbRestaurantRepository.insert(
-                submitterId = restaurant.submitterId!!,
-                restaurantName = restaurant.name!!,
-                apiId = null,
-                cuisineNames = restaurant.cuisines!!,
-                latitude = restaurant.latitude!!,
-                longitude = restaurant.longitude!!
+    //Map<id, source>
+    //submitter=API, id=10
+    //if(is in map)-> API, check API Restaurant
+    //else -> check user submissionID
+
+    fun createRestaurant(
+            submitterId: Int,
+            restaurantName: String,
+            apiId: RestaurantApiId? = null,
+            cuisines: Collection<String>,
+            latitude: Float,
+            longitude: Float
+    ): Restaurant {
+        val createdRestaurant = dbRestaurantRepository.insert(
+                submitterId = submitterId,
+                restaurantName = restaurantName,
+                apiId = apiId,
+                cuisineNames = cuisines,
+                latitude = latitude,
+                longitude = longitude
         )
+
+        return restaurantResponseMapper.mapTo(createdRestaurant)
     }
 
-    fun addRestaurantMeal(mealId: String, apiSubmitter: Int, restaurantApiId: String?, submissionId: Int?) {
-        TODO("Not yet implemented")
+    fun addRestaurantMeal(submitterId: Int, meal: Meal, apiSubmitter: Int, restaurantApiId: String?, submissionId: Int?) {
+        val restaurantSubmissionId: Int = submissionId ?: getRestaurant(restaurantApiId!!)?.let { restaurant ->
+            createRestaurant(
+                    submitterId = submitterId,
+                    restaurantName = restaurant.name,
+                    apiId = RestaurantApiId(restaurantApiId, RestaurantApiType.Here),   //TODO Restaurant Type
+                    cuisines = restaurant.cuisines.value,
+                    latitude = restaurant.latitude,
+                    longitude = restaurant.longitude
+            )
+        }?.identifier?.toInt()  //TODO What an anti-pattern here
+        //TODO Better exception
+        ?: throw NoSuchElementException()
+
+        dbRestaurantMealRepository.insert(
+                submitterId = submitterId,
+                mealId = meal.identifier,
+                restaurantId = restaurantSubmissionId
+        )
     }
 
     private fun filterRedundantApiRestaurants(dbRestaurants: Collection<Restaurant>, apiRestaurants: Collection<Restaurant>): Collection<Restaurant> {

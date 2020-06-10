@@ -4,16 +4,13 @@ import org.jdbi.v3.core.Handle
 import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.transaction.TransactionIsolationLevel
 import org.springframework.stereotype.Repository
-import pt.isel.ps.g06.httpserver.dataAccess.api.food.FoodApiType
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionContractType.API
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionContractType.FAVORABLE
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType.INGREDIENT
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType.MEAL
-import pt.isel.ps.g06.httpserver.dataAccess.db.SubmitterType
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.*
-import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbApiSubmissionDto
-import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbMealCuisineDto
-import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbMealDto
+import pt.isel.ps.g06.httpserver.dataAccess.db.dto.*
+import pt.isel.ps.g06.httpserver.dataAccess.input.IngredientInput
 import pt.isel.ps.g06.httpserver.exception.InvalidInputDomain
 import pt.isel.ps.g06.httpserver.exception.InvalidInputException
 import pt.isel.ps.g06.httpserver.model.Ingredient
@@ -45,16 +42,16 @@ class MealDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo(jdbi)
         }
     }
 
-    fun getAllByCuisineApiIds(foodApiType: FoodApiType, cuisineApiIds: Collection<String>): Collection<DbMealDto> {
-        return jdbi.inTransaction<Collection<DbMealDto>, Exception>(isolationLevel) {
-            val apiSubmitterId = it.attach(SubmitterDao::class.java)
-                    .getAllByType(SubmitterType.API.toString())
-                    .first { it.submitter_name == foodApiType.toString() }
-                    .submitter_id
-            return@inTransaction it.attach(MealDao::class.java)
-                    .getAllByApiSubmitterAndCuisineApiIds(apiSubmitterId, cuisineApiIds)
-        }
-    }
+//    fun getAllByCuisineApiIds(foodApiType: FoodApiType, cuisineApiIds: Collection<String>): Collection<DbMealDto> {
+//        return jdbi.inTransaction<Collection<DbMealDto>, Exception>(isolationLevel) {
+//            val apiSubmitterId = it.attach(SubmitterDao::class.java)
+//                    .getAllByType(SubmitterType.API.toString())
+//                    .first { it.submitter_name == foodApiType.toString() }
+//                    .submitter_id
+//            return@inTransaction it.attach(MealDao::class.java)
+//                    .getAllByApiSubmitterAndCuisineApiIds(apiSubmitterId, cuisineApiIds)
+//        }
+//    }
 
     fun getAllByCuisineNames(cuisineNames: Collection<String>): Collection<DbMealDto> {
         return jdbi.inTransaction<Collection<DbMealDto>, Exception>(isolationLevel) {
@@ -71,45 +68,70 @@ class MealDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo(jdbi)
     fun insert(
             submitterId: Int,
             mealName: String,
-            apiId: String? = null,
-            carbs: Int? = null,
-            cuisineNames: List<String> = emptyList(),
-            ingredients: List<Ingredient> = emptyList(),
-            foodApi: FoodApiType
+            quantity: Int,
+            cuisines: Collection<String>,
+            ingredients: Collection<IngredientInput>
     ): DbMealDto {
+        if (cuisines.isEmpty()) {
+            throw InvalidInputException(InvalidInputDomain.CUISINE, "A meal must have at least a cuisine!")
+        }
+
+        if (ingredients.isEmpty()) {
+            throw InvalidInputException(InvalidInputDomain.INGREDIENT, "A meal must have at least one ingredient!")
+        }
+
         return jdbi.inTransaction<DbMealDto, Exception>(isolationLevel) {
+            //Validate given ingredients to see if they are all in the database
+            val databaseIngredients = it
+                    .attach(IngredientDao::class.java)
+                    .getAllByIds(ingredients.map { ingredient -> ingredient.identifier!! })
+
+            if (databaseIngredients.size != ingredients.size) {
+                throw InvalidInputException(
+                        InvalidInputDomain.INGREDIENT,
+                        "Not all ingredients belong to the database!"
+                )
+            }
 
             //Insert submission
             val mealSubmissionId = it.attach(SubmissionDao::class.java)
                     .insert(MEAL.toString())
                     .submission_id
 
-            //Insert contracts (FAVORABLE and API if there is an apiId)
+            //Insert contract FAVORABLE
             it.attach(SubmissionContractDao::class.java)
-                    .insertAll(mutableListOf(FAVORABLE, API)
-                            .map { SubmissionContractParam(mealSubmissionId, it.toString()) }
-                    )
+                    .insertAll(mutableListOf(FAVORABLE).map {
+                        SubmissionContractParam(mealSubmissionId, it.toString())
+                    })
 
-            //Get API submitter id
-            val apiSubmitterId = it.attach(ApiDao::class.java)
-                    .getByName(foodApi.toString())!!.submitter_id
+            //Insert SubmissionSubmitter associations for user
+            it.attach(SubmissionSubmitterDao::class.java).insert(mealSubmissionId, submitterId)
 
-            //Insert SubmissionSubmitter associations for user and Api
-            val submissionSubmitterDao = it.attach(SubmissionSubmitterDao::class.java)
-            submissionSubmitterDao.insert(mealSubmissionId, submitterId)
-            submissionSubmitterDao.insert(mealSubmissionId, apiSubmitterId)
 
-            val mealDto = it.attach(mealDaoClass)
-                    .insert(mealSubmissionId, mealName, carbs)
+            //Calculate meal carbs from adding each ingredient carb for given input quantity
+            val carbs = databaseIngredients
+                    .zip(ingredients, this::getCarbsForInputQuantity)
+                    .sum()
+                    .toInt()
+
+            //Insert Meal
+            val mealDto = it
+                    .attach(mealDaoClass)
+                    .insert(mealSubmissionId, mealName, carbs, quantity)
 
             //Insert all MealCuisine associations
-            insertMealCuisines(it, mealSubmissionId, cuisineNames)
+            insertMealCuisines(it, mealSubmissionId, cuisines)
 
-            //Insert apiId in ApiSubmission for the meal
-            if (apiId != null)
-                it.attach(ApiSubmissionDao::class.java).insert(mealSubmissionId, apiId)
-            //Insert meal's API ingredients
-            else insertMealIngredients(it, mealSubmissionId, apiSubmitterId, ingredients)
+            //Insert meal's ingredients
+            it.attach(MealIngredientDao::class.java).insertAll(ingredients.map { ingredientInput ->
+                DbMealIngredientDto(
+                        //TODO Avoid nulls here
+                        //We know fields are not null due to validation checks
+                        meal_submission_id = mealSubmissionId,
+                        ingredient_submission_id = ingredientInput.identifier!!,
+                        quantity = ingredientInput.quantity!!
+                )
+            })
 
             return@inTransaction mealDto
         }
@@ -210,18 +232,13 @@ class MealDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo(jdbi)
     }
 
     private fun insertMealCuisines(it: Handle, submissionId: Int, cuisineNames: Collection<String>) {
-        if (cuisineNames.isEmpty()) {
-            throw InvalidInputException(InvalidInputDomain.CUISINE, "A meal must have at least a cuisine!")
-        }
-
-        val cuisineIds = getCuisinesByNames(cuisineNames, isolationLevel)
-                .map { it.submission_id }
-        it.attach(MealCuisineDao::class.java)
-                .insertAll(cuisineIds.map { DbMealCuisineDto(submissionId, it) })
+        if (cuisineNames.isEmpty()) return
+        //TODO Probably can be made better with one single insert (without needing to check for cuisine Ids)
+        val cuisineIds = getCuisinesByNames(cuisineNames, isolationLevel).map { it.submission_id }
+        it.attach(MealCuisineDao::class.java).insertAll(cuisineIds.map { DbMealCuisineDto(submissionId, it) })
     }
 
     private fun updateIngredients(it: Handle, submissionId: Int, ingredients: List<Ingredient>) {
-
         val apiSubmitterId = it.attach(ApiDao::class.java)
                 .getSubmitterBySubmissionId(submissionId)!!.submitter_id
 
@@ -231,7 +248,7 @@ class MealDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo(jdbi)
     }
 
     private fun deleteMissingIngredientsFromMeal(it: Handle, submissionId: Int, apiSubmitterId: Int, ingredients: List<Ingredient>) {
-        val ingredientApiIds = ingredients.map { it.id }
+        val ingredientApiIds = ingredients.map { it.identifier }
         val deleteIngredientIds = getExistingIngredients(it, apiSubmitterId, ingredients)
                 .filter { !ingredientApiIds.contains(it.apiId) }
                 .map { it.submission_id }
@@ -256,7 +273,7 @@ class MealDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo(jdbi)
                 .map { it.apiId }
 
         val missingIngredients = ingredients
-                .filter { !existingIngredientApiIds.contains(it.id) }
+                .filter { !existingIngredientApiIds.contains(it.identifier) }
 
         val existingIngredientIds = existingApiIngredientDtos.map { it.submission_id }
                 .toMutableList()
@@ -312,10 +329,11 @@ class MealDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo(jdbi)
             !existingMealIngredientIds.contains(it)
         }
         if (newIngredientSubmissionIds.isNotEmpty()) {
-            handle.attach(MealIngredientDao::class.java)
-                    .insertAll(newIngredientSubmissionIds.map {
-                        MealIngredientParam(mealSubmissionId, it, 100) // TODO
-                    })
+            //TODO
+//            handle.attach(MealIngredientDao::class.java)
+//                    .insertAll(newIngredientSubmissionIds.map {
+//                        MealIngredientParam(mealSubmissionId, it, 100) // TODO
+//                    })
         }
     }
 
@@ -375,7 +393,7 @@ class MealDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo(jdbi)
             ingredients: Collection<Ingredient>
     ): Collection<DbApiSubmissionDto> {
         //Get already inserted ingredient dtos
-        val ingredientApiIds = ingredients.map { it.id }
+        val ingredientApiIds = ingredients.map { it.identifier }
         return handle.attach(ApiSubmissionDao::class.java)
                 // Api ingredient api dtos already present on this meal
                 .getAllBySubmitterIdSubmissionTypeAndApiIds(apiSubmitterId, INGREDIENT.toString(), ingredientApiIds)
@@ -388,5 +406,9 @@ class MealDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo(jdbi)
                 .map { it.submission_id }
         //Delete all portions with the restaurant meal ids
         handle.attach(PortionDao::class.java).deleteAllByRestaurantMealIds(restaurantMealIds)
+    }
+
+    private fun getCarbsForInputQuantity(dbIngredientDto: DbIngredientDto, ingredientInput: IngredientInput): Float {
+        return (ingredientInput.quantity!!.times(dbIngredientDto.carbs).toFloat()).div(dbIngredientDto.quantity)
     }
 }
