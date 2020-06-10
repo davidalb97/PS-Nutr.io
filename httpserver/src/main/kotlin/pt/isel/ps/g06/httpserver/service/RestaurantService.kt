@@ -26,7 +26,8 @@ class RestaurantService(
             longitude: Float,
             name: String?,
             radius: Int?,
-            apiType: String?
+            apiType: String?,
+            userId: Int
     ): Collection<Restaurant> {
         val chosenRadius = if (radius != null && radius <= MAX_RADIUS) radius else MAX_RADIUS
         val type = RestaurantApiType.getOrDefault(apiType)
@@ -40,7 +41,7 @@ class RestaurantService(
                         }
 
         return dbRestaurantRepository
-                .getAllByCoordinates(latitude, longitude, chosenRadius)
+                .getAllByCoordinates(latitude, longitude, chosenRadius, userId)
                 .map(restaurantResponseMapper::mapTo)
                 .let { filterRedundantApiRestaurants(it, apiRestaurants.get()) }
 
@@ -71,7 +72,7 @@ class RestaurantService(
      * @param apiType describes which api to search the Restaurant. See [RestaurantApiType] for possible types.
      * Defaults to [RestaurantApiType.Here]
      */
-    fun getRestaurant(id: String, apiType: String?): Restaurant? {
+    fun getRestaurant(id: String, apiType: String?, userId: Int): Restaurant? {
         val type = RestaurantApiType.getOrDefault(apiType)
         val restaurantApi = restaurantApiMapper.getRestaurantApi(type)
 
@@ -80,7 +81,7 @@ class RestaurantService(
         //their unique identifier is always an auto-incremented integer
         val restaurant = id
                 .toIntOrNull()
-                ?.let { dbRestaurantRepository.getById(it) }
+                ?.let { dbRestaurantRepository.getById(it, userId) }
                 ?: restaurantApi.getRestaurantInfo(id).get()
 
         return restaurant?.let(restaurantResponseMapper::mapTo)

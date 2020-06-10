@@ -55,7 +55,7 @@ class RestaurantServiceTests {
         val totalExpectedHereApiRestaurants = callList.flatMap { expectedHereApiRestaurants }
 
         val db = mock(RestaurantDbRepository::class.java)
-        `when`(db.getAllByCoordinates(anyFloat(), anyFloat(), anyInt()))
+        `when`(db.getAllByCoordinates(anyFloat(), anyFloat(), anyInt(), anyInt()))
                 .thenReturn((1..expectedDbRestaurants.size).map { mock(DbRestaurantInfoDto::class.java) })
 
         val zomatoApi = mock(ZomatoRestaurantApi::class.java)
@@ -122,7 +122,8 @@ class RestaurantServiceTests {
                 anyFloat(),
                 anyString(),
                 anyInt(),
-                RestaurantApiType.Zomato.toString()
+                RestaurantApiType.Zomato.toString(),
+                anyInt()
         )
         //Should only contain db restaurants
         Assertions.assertTrue(restaurants.containsAll(expectedDbRestaurants))
@@ -133,7 +134,8 @@ class RestaurantServiceTests {
                 anyFloat(),
                 anyString(),
                 anyInt(),
-                RestaurantApiType.Here.toString()
+                RestaurantApiType.Here.toString(),
+                anyInt()
         )
         //Should only contain db restaurants
         Assertions.assertTrue(restaurants.containsAll(expectedDbRestaurants))
@@ -157,7 +159,8 @@ class RestaurantServiceTests {
                 anyFloat(),
                 anyString(),
                 anyInt(),
-                RestaurantApiType.Zomato.toString()
+                RestaurantApiType.Zomato.toString(),
+                anyInt()
         )
         //Should only contain db restaurants
         Assertions.assertTrue(restaurants.containsAll(expectedDbRestaurants))
@@ -168,7 +171,8 @@ class RestaurantServiceTests {
                 anyFloat(),
                 anyString(),
                 anyInt(),
-                RestaurantApiType.Here.toString()
+                RestaurantApiType.Here.toString(),
+                anyInt()
         )
         //Should only contain db restaurants
         Assertions.assertTrue(restaurants.containsAll(expectedDbRestaurants))

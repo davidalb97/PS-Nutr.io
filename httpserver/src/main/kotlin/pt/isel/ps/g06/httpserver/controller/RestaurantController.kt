@@ -37,7 +37,8 @@ class RestaurantController(private val restaurantService: RestaurantService) {
             longitude: Float?,
             name: String?,
             radius: Int?,
-            apiType: String?
+            apiType: String?,
+            userId: Int
     ): Collection<SimplifiedRestaurantOutputModel> {
         if (latitude == null || longitude == null) {
             throw InvalidInputException(InvalidInputDomain.SEARCH_RESTAURANT, INVALID_RESTAURANT_SEARCH)
@@ -48,7 +49,8 @@ class RestaurantController(private val restaurantService: RestaurantService) {
                 longitude = longitude,
                 name = name,
                 radius = radius,
-                apiType = apiType
+                apiType = apiType,
+                userId = userId
         )
 
         return nearbyRestaurants.map { toSimplifiedRestaurant(it) }
@@ -56,7 +58,8 @@ class RestaurantController(private val restaurantService: RestaurantService) {
 
     @GetMapping(RESTAURANT, consumes = [MediaType.ALL_VALUE])
     fun getRestaurantInformation(@PathVariable(RESTAURANT_ID_VALUE) id: String, @RequestParam api: String?): Restaurant {
-        return restaurantService.getRestaurant(id, api) ?: throw RestaurantNotFoundException()
+        val userId: Int = TODO("userId must be fetched")
+        return restaurantService.getRestaurant(id, api, userId) ?: throw RestaurantNotFoundException()
     }
 
     @PostMapping(consumes = [MediaType.APPLICATION_JSON_VALUE])

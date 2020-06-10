@@ -23,9 +23,9 @@ class RestaurantDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo
 
     private val contracts = listOf(REPORTABLE, FAVORABLE, API, VOTABLE)
 
-    fun getById(id: Int): DbRestaurantInfoDto? {
+    fun getById(id: Int, userId: Int): DbRestaurantInfoDto? {
         return jdbi.inTransaction<DbRestaurantInfoDto, Exception>(isolationLevel) {
-            return@inTransaction it.attach(RestaurantInfoDao::class.java).getById(id)
+            return@inTransaction it.attach(RestaurantInfoDao::class.java).getById(id, userId)
         }
     }
 
@@ -35,9 +35,9 @@ class RestaurantDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo
         }
     }
 
-    fun getAllByCoordinates(latitude: Float, longitude: Float, radius: Int): Collection<DbRestaurantInfoDto> {
+    fun getAllByCoordinates(latitude: Float, longitude: Float, radius: Int, userId: Int): Collection<DbRestaurantInfoDto> {
         return jdbi.inTransaction<Collection<DbRestaurantInfoDto>, Exception>(isolationLevel) {
-            return@inTransaction it.attach(RestaurantInfoDao::class.java).getByCoordinates(latitude, longitude, radius)
+            return@inTransaction it.attach(RestaurantInfoDao::class.java).getByCoordinates(latitude, longitude, radius, userId)
         }
     }
 
