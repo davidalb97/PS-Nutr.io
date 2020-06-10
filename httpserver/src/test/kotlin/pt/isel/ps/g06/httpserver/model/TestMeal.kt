@@ -9,6 +9,7 @@ data class TestMeal(
         val foodApiId: String?,
         val foodApi: TestFoodApi,
         val date: OffsetDateTime,
-        val ingredients: List<TestIngredient> = emptyList(),
-        val cuisines: List<TestCuisine> = emptyList()
+        val ingredients: Collection<TestIngredient> = emptyList(),
+        val cuisines: Collection<TestCuisine> = emptyList(),
+        val restaurantMeals: Collection<TestRestaurantMeal> = emptyList()
 )

@@ -7,6 +7,9 @@ import org.jdbi.v3.core.transaction.TransactionIsolationLevel
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmitterType
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.*
+import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbMealDto
+import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbRestaurantDto
+import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbVotesDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.mapper.SubmissionMapper
 import pt.isel.ps.g06.httpserver.model.*
 
@@ -82,21 +85,16 @@ fun bypassSubmissionEditLock(handle: Handle, submissionId: Int) {
 }
 
 fun getFirstTestMealWithCuisinesAndRestaurantPortions(const: Constants, fromApi: Boolean): TestMeal {
-    return const.meals.first {
+    return const.meals.first { testMeal ->
         //Has ingredients (not from API)
-        !fromApi && it.ingredients.isNotEmpty()
+        (!fromApi && testMeal.ingredients.isNotEmpty()
                 //Has no ingredients (from API)
-                || fromApi && it.ingredients.isEmpty()
+                || fromApi && testMeal.ingredients.isEmpty())
                 //Has cuisines
-                && it.cuisines.isNotEmpty()
+                && testMeal.cuisines.isNotEmpty()
                 //The meal is present in a restaurant and has portions
-                && const.restaurantMealDtos.any { restaurantMealDto ->
-            //The meal is present in a restaurant
-            restaurantMealDto.meal_submission_id == it.submissionId
-                    //The restaurant meal has portions
-                    && const.portionDtos.any { portionDto ->
-                portionDto.restaurant_meal_submission_id == restaurantMealDto.submission_id
-            }
+                && testMeal.restaurantMeals.any { testRestaurantMeal ->
+            testRestaurantMeal.portions.isNotEmpty()
         }
     }
 }
@@ -183,6 +181,33 @@ fun getTestCuisinesByMealId(handle: Handle, submissionId: Int, testApi: TestFood
                 )
             }
 }
+
+fun getAllTestRestaurantMeals(handle: Handle, mealDto: DbMealDto? = null, restaurantDto: DbRestaurantDto? = null): Collection<TestRestaurantMeal> {
+    val restaurantMealDao = handle.attach(RestaurantMealDao::class.java)
+
+    val restaurantMeals = when {
+        mealDto != null -> restaurantMealDao.getAllByMealId(mealDto.submission_id)
+        restaurantDto != null -> restaurantMealDao.getAllByRestaurantId(restaurantDto.submission_id)
+        else -> throw UnsupportedOperationException("")
+    }
+
+    val userVoteDao = handle.attach(UserVoteDao::class.java)
+    val votableDao = handle.attach(VotableDao::class.java)
+    val restaurantDao = handle.attach(RestaurantDao::class.java)
+    val mealDao = handle.attach(MealDao::class.java)
+    val portionDao = handle.attach(PortionDao::class.java)
+    return restaurantMeals.map { restaurantMealDto ->
+        TestRestaurantMeal(
+                submissionId = restaurantMealDto.submission_id,
+                mealDto = mealDto ?: mealDao.getById(restaurantMealDto.meal_submission_id)!!,
+                restaurantDto = restaurantDto ?: restaurantDao.getById(restaurantMealDto.restaurant_submission_id)!!,
+                portions = portionDao.getAllByRestaurantMealId(restaurantMealDto.submission_id),
+                userVotes = userVoteDao.getAllById(restaurantMealDto.submission_id),
+                votes = votableDao.getById(restaurantMealDto.submission_id) ?: DbVotesDto(0, 0)
+        )
+    }
+}
+
 /*
 fun MealDto.mapToTest(handle: Handle): TestMeal {
     val mealIngredientIds = handle.attach(MealIngredientDao::class.java)

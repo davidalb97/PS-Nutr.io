@@ -29,7 +29,7 @@ interface SubmissionContractDao {
     ): List<DbSubmissionContractDto>
 
     @SqlQuery("DELETE FROM $table WHERE $id = :submissionId RETURNING *")
-    fun deleteAllById(submissionId: Int): List<DbSubmissionContractDto>
+    fun deleteAllBySubmissionId(submissionId: Int): List<DbSubmissionContractDto>
 }
 
 //Variable names must match sql columns

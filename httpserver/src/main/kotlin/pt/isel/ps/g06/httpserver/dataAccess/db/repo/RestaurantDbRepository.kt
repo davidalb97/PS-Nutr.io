@@ -4,16 +4,16 @@ import org.jdbi.v3.core.Handle
 import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.transaction.TransactionIsolationLevel
 import org.springframework.stereotype.Repository
-import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionContractType
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionContractType.*
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType.RESTAURANT
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.*
+import pt.isel.ps.g06.httpserver.dataAccess.db.dao.info.RestaurantInfoDao
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.*
+import pt.isel.ps.g06.httpserver.dataAccess.db.dto.info.DbRestaurantInfoDto
 import pt.isel.ps.g06.httpserver.dataAccess.model.RestaurantApiId
 import pt.isel.ps.g06.httpserver.exception.InvalidInputException
 import pt.isel.ps.g06.httpserver.springConfig.dto.DbEditableDto
-import java.util.stream.Stream
 
 private val isolationLevel = TransactionIsolationLevel.SERIALIZABLE
 private val restaurantDaoClass = RestaurantDao::class.java
@@ -21,9 +21,11 @@ private val restaurantDaoClass = RestaurantDao::class.java
 @Repository
 class RestaurantDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo(jdbi) {
 
-    fun getById(id: Int): DbRestaurantDto? {
-        return jdbi.inTransaction<DbRestaurantDto, Exception>(isolationLevel) {
-            return@inTransaction it.attach(restaurantDaoClass).getById(id)
+    private val contracts = listOf(REPORTABLE, FAVORABLE, API, VOTABLE)
+
+    fun getById(id: Int): DbRestaurantInfoDto? {
+        return jdbi.inTransaction<DbRestaurantInfoDto, Exception>(isolationLevel) {
+            return@inTransaction it.attach(RestaurantInfoDao::class.java).getById(id)
         }
     }
 
@@ -33,9 +35,9 @@ class RestaurantDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo
         }
     }
 
-    fun getAllByCoordinates(latitude: Float, longitude: Float, radius: Int): Collection<DbRestaurantDto> {
-        return jdbi.inTransaction<Collection<DbRestaurantDto>, Exception>(isolationLevel) {
-            return@inTransaction it.attach(restaurantDaoClass).getByCoordinates(latitude, longitude, radius)
+    fun getAllByCoordinates(latitude: Float, longitude: Float, radius: Int): Collection<DbRestaurantInfoDto> {
+        return jdbi.inTransaction<Collection<DbRestaurantInfoDto>, Exception>(isolationLevel) {
+            return@inTransaction it.attach(RestaurantInfoDao::class.java).getByCoordinates(latitude, longitude, radius)
         }
     }
 
@@ -69,11 +71,11 @@ class RestaurantDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo
             //Insert all RestaurantCuisine associations
             insertRestaurantCuisines(it, submissionId, cuisineNames)
 
-            val contracts = mutableListOf(REPORTABLE, FAVORABLE)
+            val contracts = this.contracts.toMutableList()
             if (apiId != null) {
                 insertApiRestaurant(it, submissionId, apiId)
-                contracts.add(API)
-            } else contracts.add(VOTABLE)
+                contracts.remove(VOTABLE)
+            } else contracts.remove(API)
 
             //Insert contracts (VOTABLE,  API if there is an apiId, REPORTABLE if it doesn't)
             it.attach(SubmissionContractDao::class.java)
@@ -95,9 +97,6 @@ class RestaurantDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo
             // Check if the submitter is the creator of this restaurant
             requireSubmissionSubmitter(submissionId, submitterId, isolationLevel)
 
-            // Check if the submission is a Restaurant
-            requireSubmission(submissionId, RESTAURANT, isolationLevel)
-
             // Check if the submission is modifiable
             requireEditable(submissionId, config.`edit-timeout-minutes`!!, isolationLevel)
 
@@ -110,30 +109,11 @@ class RestaurantDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo
             // Delete all RestaurantCuisine associations
             it.attach(RestaurantCuisineDao::class.java).deleteAllByRestaurantId(submissionId)
 
-            // Delete all submission contracts
-            it.attach(SubmissionContractDao::class.java).deleteAllById(submissionId)
-
-            // Delete all user votes
-            it.attach(VoteDao::class.java).deleteAllById(submissionId)
-
-            if (!isFromApi(submissionId)) {
-                // Delete all user reports
-                it.attach(ReportDao::class.java).deleteAllBySubmissionId(submissionId)
-                // Delete api submission relation
-                it.attach(ApiSubmissionDao::class.java).deleteById(submissionId)
-            }
-
             // Delete restaurant
             it.attach(restaurantDaoClass).delete(submissionId)
 
-            // Delete submission-submitter association
-            it.attach(SubmissionSubmitterDao::class.java).deleteAllBySubmissionId(submissionId)
-
-            // Delete SubmissionContract
-            it.attach(SubmissionContractDao::class.java).deleteAllById(submissionId)
-
-            // Delete submission from Submission Table
-            it.attach(SubmissionDao::class.java).delete(submissionId)
+            // Removes submission, submitter association, contracts & it's tables
+            super.removeSubmission(submissionId, submitterId, RESTAURANT, contracts, isolationLevel)
         }
     }
 
