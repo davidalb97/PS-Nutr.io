@@ -221,6 +221,9 @@ class BaseDbRepo constructor(internal val jdbi: Jdbi) {
                 it.attach(FavoriteDao::class.java).deleteAllBySubmissionId(submissionId)
             }
 
+            // Delete submission - submitter association
+            it.attach(SubmissionSubmitterDao::class.java).deleteAllBySubmissionId(submissionId)
+
             // Delete submission
             it.attach(SubmissionDao::class.java).delete(submissionId)
         }
