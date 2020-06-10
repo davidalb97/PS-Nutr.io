@@ -25,7 +25,9 @@ data class ApiSubmitterMapper(
         return submitters
     }
 
-    fun getApiSubmitter(id: Int): RestaurantApiType? = apiSubmitters[id]
+    fun getApiType(id: Int): RestaurantApiType? = apiSubmitters[id]
+
+    fun getSubmitter(type: RestaurantApiType) = apiSubmitters.filterValues { it == type }.keys.firstOrNull()
 
     private fun buildSubmitterPair(submitter: DbSubmitterDto): Pair<Int, RestaurantApiType> {
         return Pair(submitter.submitter_id, RestaurantApiType.getOrDefault(submitter.submitter_name))

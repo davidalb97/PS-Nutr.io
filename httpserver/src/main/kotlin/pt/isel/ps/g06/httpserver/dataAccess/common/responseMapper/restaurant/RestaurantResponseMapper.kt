@@ -1,11 +1,12 @@
 package pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.restaurant
 
 import org.springframework.stereotype.Component
+import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.RestaurantApiType
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.dto.ZomatoRestaurantDto
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.dto.here.HereResultItem
-import pt.isel.ps.g06.httpserver.dataAccess.common.SubmissionSource
 import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.ResponseMapper
 import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.food.MealResponseMapper
+import pt.isel.ps.g06.httpserver.dataAccess.db.ApiSubmitterMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbRestaurantDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.CuisineDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.MealDbRepository
@@ -13,6 +14,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.repo.RestaurantDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.model.RestaurantDto
 import pt.isel.ps.g06.httpserver.model.Meal
 import pt.isel.ps.g06.httpserver.model.Restaurant
+import pt.isel.ps.g06.httpserver.model.RestaurantIdentifier
 import pt.isel.ps.g06.httpserver.util.log
 
 @Component
@@ -40,14 +42,18 @@ class RestaurantResponseMapper(
 class HereResponseMapper(
         private val cuisineDbRepository: CuisineDbRepository,
         private val mealRepository: MealDbRepository,
-        private val mealResponseMapper: MealResponseMapper
+        private val mealResponseMapper: MealResponseMapper,
+        private val apiSubmitterMapper: ApiSubmitterMapper
 ) : ResponseMapper<HereResultItem, Restaurant> {
 
     override fun mapTo(dto: HereResultItem): Restaurant {
         val cuisineIds = dto.foodTypes?.map { it.id }
 
         return Restaurant(
-                identifier = dto.id,
+                identifier = RestaurantIdentifier(
+                        submitterId = apiSubmitterMapper.getSubmitter(RestaurantApiType.Here)!!,
+                        apiId = dto.id
+                ),
                 name = dto.name,
                 latitude = dto.latitude,
                 longitude = dto.longitude,
@@ -60,8 +66,7 @@ class HereResponseMapper(
                     cuisineIds
                             ?.let { id -> mealRepository.getAllByCuisineNames(id).map(mealResponseMapper::mapTo) }
                             ?: emptyList()
-                },
-                source = SubmissionSource.API
+                }
         )
     }
 }
@@ -69,14 +74,18 @@ class HereResponseMapper(
 @Component
 class ZomatoResponseMapper(
         private val mealRepository: MealDbRepository,
-        private val mealResponseMapper: MealResponseMapper
+        private val mealResponseMapper: MealResponseMapper,
+        private val apiSubmitterMapper: ApiSubmitterMapper
 ) : ResponseMapper<ZomatoRestaurantDto, Restaurant> {
 
     override fun mapTo(dto: ZomatoRestaurantDto): Restaurant {
         val cuisines = lazy { dto.cuisines.split(",") }
 
         return Restaurant(
-                identifier = dto.id,
+                identifier = RestaurantIdentifier(
+                        submitterId = apiSubmitterMapper.getSubmitter(RestaurantApiType.Zomato)!!,
+                        apiId = dto.id
+                ),
                 name = dto.name,
                 latitude = dto.latitude,
                 longitude = dto.longitude,
@@ -85,8 +94,7 @@ class ZomatoResponseMapper(
                     mealRepository
                             .getAllByCuisineNames(cuisines.value)
                             .map(mealResponseMapper::mapTo)
-                },
-                source = SubmissionSource.API
+                }
         )
     }
 }
@@ -104,13 +112,17 @@ class DbRestaurantResponseMapper(
         }
 
         return Restaurant(
-                identifier = dto.id,
+                identifier = RestaurantIdentifier(
+                        //TODO When david finishes dto info
+                        submitterId = 1,
+                        submissionId = null,
+                        apiId = null
+                ),
                 name = dto.name,
                 latitude = dto.latitude,
                 longitude = dto.longitude,
                 cuisines = cuisines,
-                meals = lazy { emptyList<Meal>() },
-                source = SubmissionSource.DATABASE
+                meals = lazy { emptyList<Meal>() }
                 //TODO - Handle obtaining meals for Database restaurant: Should it only get from DB? Also from API?
         )
     }

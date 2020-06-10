@@ -75,7 +75,7 @@ class RestaurantService(
 
             apiId != null -> {
                 val apiType = apiSubmitterMapper
-                        .getApiSubmitter(submitterId)
+                        .getApiType(submitterId)
                         ?: throw IllegalStateException()
                 //TODO Better exception
 
@@ -106,7 +106,7 @@ class RestaurantService(
         if (apiId != null) {
             //Verify is given submitterId belongs to an API
             //TODO Proper exception for "No such API" 400 user error
-            apiSubmitterMapper.getApiSubmitter(submitterId) ?: throw IllegalStateException()
+            apiSubmitterMapper.getApiType(submitterId) ?: throw IllegalStateException()
         }
 
         val createdRestaurant = dbRestaurantRepository.insert(
@@ -123,10 +123,12 @@ class RestaurantService(
 
 
     fun addRestaurantMeal(restaurant: Restaurant, meal: Meal, submitterId: Int): Int {
+        if (!restaurant.isPresentInDatabase()) throw IllegalStateException()
+
         val (submission_id) = dbRestaurantMealRepository.insert(
                 submitterId = submitterId,
                 mealId = meal.identifier,
-                restaurantId = restaurant.identifier.toInt() //TODO When model changes
+                restaurantId = restaurant.identifier.submissionId!!
         )
 
         return submission_id

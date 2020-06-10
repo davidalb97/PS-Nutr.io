@@ -1,6 +1,7 @@
 package pt.isel.ps.g06.httpserver.dataAccess.input
 
 import javax.validation.constraints.NotBlank
+import javax.validation.constraints.NotEmpty
 import javax.validation.constraints.NotNull
 
 class RestaurantInput(
@@ -10,6 +11,6 @@ class RestaurantInput(
         val latitude: Float?,
         @field:NotNull(message = "A longitude must be given!")
         val longitude: Float?,
-        val cuisines: Collection<String>?,
-        val submitterId: Int?
+        @field:NotEmpty(message = "At least one cuisine must be given!")
+        val cuisines: Collection<String>?
 )

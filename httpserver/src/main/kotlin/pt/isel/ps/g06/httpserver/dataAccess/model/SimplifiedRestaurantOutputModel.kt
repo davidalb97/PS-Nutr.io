@@ -12,7 +12,7 @@ data class SimplifiedRestaurantOutputModel(
 
 fun toSimplifiedRestaurant(restaurant: Restaurant): SimplifiedRestaurantOutputModel {
     return SimplifiedRestaurantOutputModel(
-            identifier = restaurant.identifier,
+            identifier = restaurant.identifier.toString(),
             name = restaurant.name,
             latitude = restaurant.latitude,
             longitude = restaurant.longitude

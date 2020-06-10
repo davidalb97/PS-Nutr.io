@@ -1,21 +1,15 @@
 package pt.isel.ps.g06.httpserver.common
 
 import org.springframework.stereotype.Component
+import pt.isel.ps.g06.httpserver.model.RestaurantIdentifier
 
 private const val ID_SEPARATOR = ";"
 private const val NUMBER_OF_IDS = 3
 
 @Component
 class RestaurantIdentifierBuilder {
-    fun buildRestaurantId(identifiers: RestaurantIdentifiers): String {
-        return StringBuilder(identifiers.submitterId)
-                .append(identifiers.submitterId)
-                .append(identifiers.apiId)
-                .toString()
-    }
-
     //TODO Better exception: MalformedInput/MalformedIdentifier whenever exception is thrown
-    fun extractIdentifiers(restaurantId: String): RestaurantIdentifiers {
+    fun extractIdentifiers(restaurantId: String): RestaurantIdentifier {
         val values = restaurantId.split(ID_SEPARATOR, limit = NUMBER_OF_IDS)
 
         if (values.size != NUMBER_OF_IDS) {
@@ -29,7 +23,7 @@ class RestaurantIdentifierBuilder {
 
         val apiId = if (values[2].isBlank()) null else values[2]
 
-        return RestaurantIdentifiers(
+        return RestaurantIdentifier(
                 submitterId = submitterId,
                 submissionId = submissionId,
                 apiId = apiId
@@ -37,4 +31,3 @@ class RestaurantIdentifierBuilder {
     }
 }
 
-data class RestaurantIdentifiers(val submitterId: Int, val submissionId: Int?, val apiId: String?)
