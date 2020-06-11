@@ -6,6 +6,7 @@ import pt.isel.ps.g06.httpserver.model.Votes
 class DbRestaurantInfoDto(
         val restaurantItem: DbRestaurantItemDto,
         val cuisines: Collection<String>,
+        val suggestedMeals: Collection<DbMealItemDto>,
         val restaurantMeals: Collection<DbRestaurantMealItemDto>
 ) : RestaurantInfoDto(
         id = "${restaurantItem.restaurant.submission_id}",

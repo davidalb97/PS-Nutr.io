@@ -2,6 +2,7 @@ package pt.isel.ps.g06.httpserver.dataAccess.model
 
 import pt.isel.ps.g06.httpserver.model.RestaurantItem
 import pt.isel.ps.g06.httpserver.model.Votes
+import java.time.OffsetDateTime
 
 open class RestaurantInfoDto(
         id: String,
@@ -10,7 +11,8 @@ open class RestaurantInfoDto(
         longitude: Float,
         votes: Votes,
         userVote: Boolean?,
-        isFavorite: Boolean
+        isFavorite: Boolean?,
+        creationDate: OffsetDateTime
 ): RestaurantItemDto(
         id = id,
         name = name,
@@ -18,5 +20,6 @@ open class RestaurantInfoDto(
         longitude = longitude,
         votes = votes,
         userVote = userVote,
-        isFavorite = isFavorite
+        isFavorite = isFavorite,
+        creationDate = creationDate
 )

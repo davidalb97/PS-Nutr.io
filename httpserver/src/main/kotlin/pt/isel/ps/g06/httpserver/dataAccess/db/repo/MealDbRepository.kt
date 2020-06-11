@@ -14,6 +14,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.dao.*
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbApiSubmissionDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbMealCuisineDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbMealDto
+import pt.isel.ps.g06.httpserver.dataAccess.db.dto.info.DbIngredientInfoDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.info.DbMealInfoDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.info.DbMealIngredientInfoDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.info.DbMealItemDto
@@ -31,41 +32,53 @@ class MealDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo(jdbi)
 
     val contracts = listOf(API, FAVORABLE)
 
-    private fun getMealItem(handle: Handle, mealDto: DbMealDto, userId: Int): DbMealItemDto {
-        val isFavorite = handle.attach(FavoriteDao::class.java).getByIds(mealDto.submission_id, userId)
+    private fun getFavorite(handle: Handle, submissionId: Int, userId: Int?): Boolean? {
+        return userId?.let { handle.attach(FavoriteDao::class.java).getByIds(submissionId, userId)
                 ?.let { true } ?: false
+        }
+    }
+
+    private fun getMealItem(handle: Handle, mealDto: DbMealDto, userId: Int?): DbMealItemDto {
         return DbMealItemDto(
                 meal = mealDto,
                 image = null,
-                isFavorite = isFavorite
+                isFavorite = getFavorite(handle, mealDto.submission_id, userId)
         )
     }
 
-    fun getInfoById(submissionId: Int, userId: Int): DbMealInfoDto? {
-        return jdbi.inTransaction<DbMealInfoDto, Exception>(isolationLevel) {
-            val mealDto = it.attach(MealDao::class.java).getById(submissionId)
+    private fun getMealIngredients(handle: Handle, mealDto: DbMealDto, userId: Int?): Collection<DbMealIngredientInfoDto> {
+        val mealIngredientDtos = handle.attach(IngredientDao::class.java)
+                .getAllByMealId(mealDto.submission_id)
+                .sortedBy { it.submission_id }
+        val ingredientDtos = handle.attach(MealIngredientDao::class.java)
+                .getAllByMealId(mealDto.submission_id)
+                .sortedBy { it.ingredient_submission_id }
+        return mealIngredientDtos.zip(ingredientDtos) { ingredient, mealIngredient ->
+            DbMealIngredientInfoDto(
+                    //TODO replace carbs/amount/unit with real values from mealIngredient (unused)
+                    ingredient = DbIngredientInfoDto(
+                            name = ingredient.ingredient_name,
+                            submissionId = ingredient.submission_id,
+                            image = null,
+                            isFavorite = getFavorite(handle, ingredient.submission_id, userId)
+                    ),
+                    carbs = 100,
+                    amount = 100
+            )
+        }
+    }
+
+    fun getInfoById(submissionId: Int, userId: Int?): DbMealInfoDto? {
+        return jdbi.inTransaction<DbMealInfoDto, Exception>(isolationLevel) { handle ->
+            val mealDto = handle.attach(MealDao::class.java).getById(submissionId)
                     ?: return@inTransaction null
-            val cuisines = it.attach(CuisineDao::class.java).getByMealId(mealDto.submission_id).map {
+            val cuisines = handle.attach(CuisineDao::class.java).getByMealId(mealDto.submission_id).map {
                 it.cuisine_name
             }
-            val mealIngredientDtos = it.attach(IngredientDao::class.java)
-                    .getAllByMealId(mealDto.submission_id)
-                    .sortedBy { it.submission_id }
-            val ingredientDtos = it.attach(MealIngredientDao::class.java)
-                    .getAllByMealId(mealDto.submission_id)
-                    .sortedBy { it.ingredient_submission_id }
             return@inTransaction DbMealInfoDto(
-                    mealItem = getMealItem(it, mealDto, userId),
+                    mealItem = getMealItem(handle, mealDto, userId),
                     cuisines = cuisines,
-                    ingredients = mealIngredientDtos.zip(ingredientDtos) { ingredient, mealIngredient ->
-                        DbMealIngredientInfoDto(
-                                //TODO replace carbs/amount/unit with real values from mealIngredient (unused)
-                                ingredient = ingredient,
-                                carbs = 100,
-                                amount = 100,
-                                image = null
-                        )
-                    },
+                    ingredients = getMealIngredients(handle, mealDto, userId),
                     //TODO replace with correct dto values
                     carbs = 100,
                     amount = 100,
@@ -97,20 +110,13 @@ class MealDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo(jdbi)
     }
 
     //
-    fun getAllByCuisineNames(cuisineNames: Collection<String>, userId: Int): Collection<DbMealItemDto> {
+    fun getAllByCuisineNames(cuisineNames: Collection<String>, userId: Int?): Collection<DbMealItemDto> {
         return jdbi.inTransaction<Collection<DbMealItemDto>, Exception>(isolationLevel) { handle ->
+            if(cuisineNames.isEmpty())
+                return@inTransaction emptyList()
             return@inTransaction handle.attach(MealDao::class.java)
                     .getAllByCuisineNames(cuisineNames)
-                    .map { mealDto ->
-                        val isFavorite = handle.attach(FavoriteDao::class.java).getByIds(mealDto.submission_id, userId)?.let {
-                            true
-                        } ?: false
-                        DbMealItemDto(
-                                meal = mealDto,
-                                image = null,
-                                isFavorite = isFavorite
-                        )
-                    }
+                    .map { mealDto -> getMealItem(handle, mealDto, userId) }
         }
     }
 

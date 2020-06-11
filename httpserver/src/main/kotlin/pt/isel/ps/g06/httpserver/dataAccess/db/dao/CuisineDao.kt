@@ -57,7 +57,7 @@ interface CuisineDao {
             " ON $RC_table.$RC_cuisineId = $table.$id" +
             " WHERE $RC_table.$RC_restaurantId = :restaurantId"
     )
-    fun getByRestaurantId(@Bind restaurantId: Int): Collection<DbCuisineDto>
+    fun getAllByRestaurantId(@Bind restaurantId: Int): Collection<DbCuisineDto>
 
     @SqlQuery("SELECT * FROM $table WHERE $name in (<cuisineIds>)")
     fun getAllByNames(@BindList cuisineIds: Collection<String>): Collection<DbCuisineDto>

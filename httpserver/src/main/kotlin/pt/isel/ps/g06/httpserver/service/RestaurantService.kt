@@ -6,6 +6,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.mapper.RestaurantApiM
 import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.restaurant.RestaurantInfoResponseMapper
 import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.restaurant.RestaurantItemResponseMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbSubmissionDto
+import pt.isel.ps.g06.httpserver.dataAccess.db.repo.MealDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.RestaurantDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.RestaurantMealDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.input.RestaurantInput
@@ -19,6 +20,7 @@ private const val MAX_RADIUS = 1000
 class RestaurantService(
         private val dbRestaurantRepository: RestaurantDbRepository,
         private val dbRestaurantMealRepository: RestaurantMealDbRepository,
+        private val dbMealRepository: MealDbRepository,
         private val restaurantApiMapper: RestaurantApiMapper,
         private val restaurantInfoResponseMapper: RestaurantInfoResponseMapper,
         private val restaurantItemResponseMapper: RestaurantItemResponseMapper
@@ -32,7 +34,7 @@ class RestaurantService(
             name: String?,
             radius: Int?,
             apiType: String?,
-            userId: Int
+            userId: Int?
     ): Collection<RestaurantItem> {
         val chosenRadius = if (radius != null && radius <= MAX_RADIUS) radius else MAX_RADIUS
         val type = RestaurantApiType.getOrDefault(apiType)
@@ -42,12 +44,12 @@ class RestaurantService(
         val apiRestaurants =
                 restaurantApi.searchNearbyRestaurants(latitude, longitude, chosenRadius, name)
                         .thenApply {
-                            it.map{restaurantItemResponseMapper.mapTo(it, userId) }
+                            it.map{restaurantItemResponseMapper.mapTo(it) }
                         }
 
         return dbRestaurantRepository
                 .getAllByCoordinates(latitude, longitude, chosenRadius, userId)
-                .map{restaurantItemResponseMapper.mapTo(it, userId) }
+                .map{restaurantItemResponseMapper.mapTo(it) }
                 .let { filterRedundantApiRestaurants(it, apiRestaurants.get()) }
 
         //Keeps an open transaction while we iterate the DB response Stream
@@ -77,7 +79,7 @@ class RestaurantService(
      * @param apiType describes which api to search the Restaurant. See [RestaurantApiType] for possible types.
      * Defaults to [RestaurantApiType.Here]
      */
-    fun getRestaurant(id: String, apiType: String?, userId: Int): RestaurantInfo? {
+    fun getRestaurant(id: String, apiType: String?, userId: Int?): RestaurantInfo? {
         val type = RestaurantApiType.getOrDefault(apiType)
         val restaurantApi = restaurantApiMapper.getRestaurantApi(type)
 
@@ -89,7 +91,11 @@ class RestaurantService(
                 .toIntOrNull()
                 ?.let {
                     val restaurantMeals = dbRestaurantMealRepository.getItemsByRestaurantId(it, userId)
-                    dbRestaurantRepository.getInfoById(it, userId, restaurantMeals)
+                    val restaurantCuisines = dbRestaurantRepository.getRestaurantCuisines(it).map {
+                        it.cuisine_name
+                    }
+                    val suggestedMeals = dbMealRepository.getAllByCuisineNames(restaurantCuisines, userId)
+                    dbRestaurantRepository.getInfoById(it, userId, suggestedMeals, restaurantMeals)
                 }
                 ?: restaurantApi.getRestaurantInfo(id).get()
 

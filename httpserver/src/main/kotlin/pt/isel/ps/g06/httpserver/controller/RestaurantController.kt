@@ -12,7 +12,6 @@ import pt.isel.ps.g06.httpserver.dataAccess.model.SimplifiedRestaurantOutputMode
 import pt.isel.ps.g06.httpserver.dataAccess.model.toSimplifiedRestaurant
 import pt.isel.ps.g06.httpserver.exception.InvalidInputDomain
 import pt.isel.ps.g06.httpserver.exception.InvalidInputException
-import pt.isel.ps.g06.httpserver.model.RestaurantInfo
 import pt.isel.ps.g06.httpserver.service.RestaurantService
 import javax.validation.Valid
 
@@ -38,8 +37,9 @@ class RestaurantController(private val restaurantService: RestaurantService) {
             name: String?,
             radius: Int?,
             apiType: String?,
-            userId: Int
-    ): Collection<SimplifiedRestaurantOutputModel> {
+            userId: Int?
+    //TODO Use proper output models!
+    ): Collection<RestaurantItem> {
         if (latitude == null || longitude == null) {
             throw InvalidInputException(InvalidInputDomain.SEARCH_RESTAURANT, INVALID_RESTAURANT_SEARCH)
         }
@@ -53,12 +53,16 @@ class RestaurantController(private val restaurantService: RestaurantService) {
                 userId = userId
         )
 
-        return nearbyRestaurants.map { toSimplifiedRestaurant(it) }
+        //return nearbyRestaurants.map { toSimplifiedRestaurant(it) }
+        return nearbyRestaurants
     }
 
     @GetMapping(RESTAURANT, consumes = [MediaType.ALL_VALUE])
-    fun getRestaurantInformation(@PathVariable(RESTAURANT_ID_VALUE) id: String, @RequestParam api: String?): RestaurantInfo {
-        val userId: Int = TODO("userId must be fetched")
+    fun getRestaurantInformation(
+            @PathVariable(RESTAURANT_ID_VALUE) id: String,
+            @RequestParam api: String?,
+            @RequestParam userId: Int?
+    ): RestaurantInfo {
         return restaurantService.getRestaurant(id, api, userId) ?: throw RestaurantNotFoundException()
     }
 

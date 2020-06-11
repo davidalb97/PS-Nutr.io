@@ -10,7 +10,7 @@ open class DbRestaurantItemDto(
         val submitterId: Int,
         val apiId: String?,
         val image: String?,
-        isFavorite: Boolean,
+        isFavorite: Boolean?,
         val public: DbPublicDto
 ): RestaurantItemDto(
         id = "${restaurant.submission_id}",
