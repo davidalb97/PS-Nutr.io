@@ -1,6 +1,7 @@
 package pt.isel.ps.g06.httpserver.service
 
 import org.springframework.stereotype.Service
+import pt.isel.ps.g06.httpserver.common.exception.NoSuchApiException
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.RestaurantApiType
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.mapper.RestaurantApiMapper
 import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.restaurant.RestaurantResponseMapper
@@ -67,7 +68,7 @@ class RestaurantService(
     /**
      * Obtain more information for a Restaurant with given id.
      *
-     * Current search algorithm will first query the Database for any restaurant and if none was found,
+     * Search algorithm will first query the Database for any restaurant and if none was found,
      * search the preferred Restaurant API (Zomato, Here, etc.)
      */
     fun getRestaurant(submitterId: Int, userId: Int, submissionId: Int?, apiId: String?): Restaurant? {
@@ -77,14 +78,12 @@ class RestaurantService(
             apiId != null -> {
                 val apiType = apiSubmitterMapper
                         .getApiType(submitterId)
-                        ?: throw IllegalStateException()
-                //TODO Better exception
+                        ?: throw NoSuchApiException()
 
                 searchApiRestaurant(submitterId, apiId, apiType)
             }
 
-            else -> throw IllegalStateException()
-            //TODO Better exception
+            else -> null
         }
 
         return restaurant?.let(restaurantResponseMapper::mapTo)
@@ -106,8 +105,7 @@ class RestaurantService(
     ): Restaurant {
         if (apiId != null) {
             //Verify is given submitterId belongs to an API
-            //TODO Proper exception for "No such API" 400 user error
-            apiSubmitterMapper.getApiType(submitterId) ?: throw IllegalStateException()
+            apiSubmitterMapper.getApiType(submitterId) ?: throw NoSuchApiException()
         }
 
         val createdRestaurant = dbRestaurantRepository.insert(
