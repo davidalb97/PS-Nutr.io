@@ -8,10 +8,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionContractType.*
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType.RESTAURANT
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.*
-import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbCuisineDto
-import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbRestaurantCuisineDto
-import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbSubmissionDto
-import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbVotesDto
+import pt.isel.ps.g06.httpserver.dataAccess.db.dto.*
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.info.DbPublicDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.info.DbRestaurantInfoDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.info.DbRestaurantItemDto
@@ -28,32 +25,37 @@ class RestaurantDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo
 
     private val contracts = listOf(REPORTABLE, FAVORABLE, API, VOTABLE)
 
+    private fun getRestaurantItem(handle: Handle, restaurantDto: DbRestaurantDto, userId: Int): DbRestaurantItemDto {
+        val apiId = handle.attach(ApiSubmissionDao::class.java)
+                .getBySubmissionId(restaurantDto.submission_id)?.apiId
+        //TODO must only be one submitter per submission
+        val submitterId = handle.attach(SubmissionSubmitterDao::class.java)
+                .getAllBySubmissionId(restaurantDto.submission_id).first().submitter_id
+        val votesDtos = handle.attach(VotableDao::class.java).getById(restaurantDto.submission_id)
+                ?: DbVotesDto(0, 0)
+        val userVote = handle.attach(UserVoteDao::class.java).getVoteByIds(restaurantDto.submission_id, userId)
+        val isFavorite = handle.attach(FavoriteDao::class.java).getByIds(restaurantDto.submission_id, userId)
+                ?.let { true } ?: false
+        return DbRestaurantItemDto(
+                restaurant = restaurantDto,
+                submitterId = submitterId,
+                apiId = apiId,
+                image = null,
+                isFavorite = isFavorite,
+                public = DbPublicDto(
+                        votes = votesDtos,
+                        userVote = userVote
+                )
+        )
+    }
+
     fun getInfoById(id: Int, userId: Int, restaurantMeals: Collection<DbRestaurantMealItemDto>): DbRestaurantInfoDto? {
         return jdbi.inTransaction<DbRestaurantInfoDto, Exception>(isolationLevel) {
             val restaurantDto = it.attach(RestaurantDao::class.java).getById(id)
                     ?: return@inTransaction null
-            val apiId = it.attach(ApiSubmissionDao::class.java).getBySubmissionId(id)?.apiId
-
-            //TODO must only be one submitter per submission
-            val submitterId = it.attach(SubmissionSubmitterDao::class.java)
-                    .getAllBySubmissionId(id).first().submitter_id
-            val votesDtos = it.attach(VotableDao::class.java).getById(restaurantDto.submission_id)
-                    ?: DbVotesDto(0, 0)
-            val userVote = it.attach(UserVoteDao::class.java).getVoteByIds(restaurantDto.submission_id, userId)
-            val isFavorite = it.attach(FavoriteDao::class.java).getByIds(restaurantDto.submission_id, userId)
-                    ?.let { true } ?: false
+            val restaurantItem = getRestaurantItem(it, restaurantDto, userId)
             return@inTransaction DbRestaurantInfoDto(
-                    restaurantItem = DbRestaurantItemDto(
-                            restaurant = restaurantDto,
-                            submitterId = submitterId,
-                            apiId = apiId,
-                            image = null,
-                            isFavorite = isFavorite,
-                            public = DbPublicDto(
-                                    votes = votesDtos,
-                                    userVote = userVote
-                            )
-                    ),
+                    restaurantItem = restaurantItem,
                     cuisines = getRestaurantCuisines(id).map { it.cuisine_name },
                     restaurantMeals = restaurantMeals
             )
@@ -72,27 +74,7 @@ class RestaurantDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo
                     .getByCoordinates(latitude, longitude, radius)
             //return@inTransaction
             return@inTransaction restaurantDtos.map { restaurantDto ->
-                val apiId = it.attach(ApiSubmissionDao::class.java)
-                        .getBySubmissionId(restaurantDto.submission_id)?.apiId
-                //TODO must only be one submitter per submission
-                val submitterId = it.attach(SubmissionSubmitterDao::class.java)
-                        .getAllBySubmissionId(restaurantDto.submission_id).first().submitter_id
-                val votesDtos = it.attach(VotableDao::class.java).getById(restaurantDto.submission_id)
-                        ?: DbVotesDto(0, 0)
-                val userVote = it.attach(UserVoteDao::class.java).getVoteByIds(restaurantDto.submission_id, userId)
-                val isFavorite = it.attach(FavoriteDao::class.java).getByIds(restaurantDto.submission_id, userId)
-                        ?.let { true } ?: false
-                DbRestaurantItemDto(
-                        restaurant = restaurantDto,
-                        submitterId = submitterId,
-                        apiId = apiId,
-                        image = null,
-                        isFavorite = isFavorite,
-                        public = DbPublicDto(
-                                votes = votesDtos,
-                                userVote = userVote
-                        )
-                )
+                getRestaurantItem(it, restaurantDto, userId)
             }
         }
     }
