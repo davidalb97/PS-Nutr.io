@@ -9,9 +9,8 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionContractType.FAVORABLE
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType.INGREDIENT
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType.MEAL
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.*
-import pt.isel.ps.g06.httpserver.dataAccess.db.dao.info.MealInfoDao
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.*
-import pt.isel.ps.g06.httpserver.dataAccess.db.dto.info.DbMealInfoDto
+import pt.isel.ps.g06.httpserver.dataAccess.db.dto.info.DbMealItemDto
 import pt.isel.ps.g06.httpserver.dataAccess.input.IngredientInput
 import pt.isel.ps.g06.httpserver.exception.InvalidInputDomain
 import pt.isel.ps.g06.httpserver.exception.InvalidInputException
@@ -28,21 +27,28 @@ class MealDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo(jdbi)
 
     val contracts = listOf(API, FAVORABLE)
 
-    fun getById(submissionId: Int): DbMealInfoDto? {
-        return jdbi.inTransaction<DbMealInfoDto, Exception>(isolationLevel) {
-            return@inTransaction it.attach(MealInfoDao::class.java).getById(submissionId)
-        }
-    }
+//    fun getById(submissionId: Int, userId: Int): DbRestaurantMealItemDto? {
+//        return jdbi.inTransaction<DbRestaurantMealItemDto, Exception>(isolationLevel) {
+//
+//            }//it.attach(MealInfoDao::class.java).getById(submissionId)
+//        }
+//    }
 
-    fun getByName(mealName: String): DbMealInfoDto? {
-        return jdbi.inTransaction<DbMealInfoDto, Exception>(isolationLevel) {
-            return@inTransaction it.attach(MealInfoDao::class.java).getByName(mealName)
-        }
-    }
-
-    fun getAllRestaurantMeals(restaurantId: Int): Collection<DbMealDto> {
+    //    fun getByName(mealName: String, userId: Int): DbRestaurantMealItemDto? {
+//        return jdbi.inTransaction<DbRestaurantMealItemDto, Exception>(isolationLevel) {
+//
+//            return@inTransaction it.attach(MealInfoDao::class.java).getByName(mealName)
+//        }
+//    }
+//
+    fun getAllByCuisineApiIds(foodApiType: FoodApiType, cuisineApiIds: Collection<String>): Collection<DbMealDto> {
         return jdbi.inTransaction<Collection<DbMealDto>, Exception>(isolationLevel) {
-            return@inTransaction it.attach(mealDaoClass).getAllByRestaurantId(restaurantId)
+            val apiSubmitterId = it.attach(SubmitterDao::class.java)
+                    .getAllByType(SubmitterType.API.toString())
+                    .first { it.submitter_name == foodApiType.toString() }
+                    .submitter_id
+            return@inTransaction it.attach(MealDao::class.java)
+                    .getAllByApiSubmitterAndCuisineApiIds(apiSubmitterId, cuisineApiIds)
         }
     }
 
@@ -63,10 +69,21 @@ class MealDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo(jdbi)
 //        }
 //    }
 
-    fun getAllByCuisineNames(cuisineNames: Collection<String>): Collection<DbMealInfoDto> {
-        return jdbi.inTransaction<Collection<DbMealInfoDto>, Exception>(isolationLevel) {
-            return@inTransaction it.attach(MealInfoDao::class.java)
+    //
+    fun getAllByCuisineNames(cuisineNames: Collection<String>, userId: Int): Collection<DbMealItemDto> {
+        return jdbi.inTransaction<Collection<DbMealItemDto>, Exception>(isolationLevel) { handle ->
+            return@inTransaction handle.attach(MealDao::class.java)
                     .getAllByCuisineNames(cuisineNames)
+                    .map { mealDto ->
+                        val isFavorite = handle.attach(FavoriteDao::class.java).getByIds(mealDto.submission_id, userId)?.let {
+                            true
+                        } ?: false
+                        DbMealItemDto(
+                                meal = mealDto,
+                                image = null,
+                                isFavorite = isFavorite
+                        )
+                    }
         }
     }
 

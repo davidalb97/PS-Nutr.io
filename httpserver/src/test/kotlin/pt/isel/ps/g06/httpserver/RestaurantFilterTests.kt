@@ -1,8 +1,6 @@
 package pt.isel.ps.g06.httpserver
 
-import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
-import pt.isel.ps.g06.httpserver.model.Restaurant
 
 class RestaurantFilterTests {
 

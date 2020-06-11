@@ -58,7 +58,7 @@ interface MealDao {
     fun getById(@Bind submissionId: Int): DbMealDto?
 
     @SqlQuery("SELECT * FROM $table WHERE $name = :mealName")
-    fun getByName(@Bind mealName: String): DbMealDto?
+    fun getByName(@Bind mealName: String): List<DbMealDto>
 
     @SqlQuery("SELECT * FROM $table WHERE $carbs = :carbs")
     fun getByName(@Bind carbs: Int): DbMealDto?

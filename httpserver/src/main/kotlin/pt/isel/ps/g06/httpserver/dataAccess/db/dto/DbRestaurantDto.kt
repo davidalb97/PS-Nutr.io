@@ -1,15 +1,10 @@
 package pt.isel.ps.g06.httpserver.dataAccess.db.dto
 
-import pt.isel.ps.g06.httpserver.dataAccess.model.RestaurantDto
+import pt.isel.ps.g06.httpserver.dataAccess.model.RestaurantItemDto
 
-class DbRestaurantDto(
+open class DbRestaurantDto(
         val submission_id: Int,
-        restaurant_name: String,
-        latitude: Float,
-        longitude: Float
-) : RestaurantDto(
-        submission_id.toString(),
-        restaurant_name,
-        latitude,
-        longitude
+        val restaurant_name: String,
+        val latitude: Float,
+        val longitude: Float
 )

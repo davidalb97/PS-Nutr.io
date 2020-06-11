@@ -9,7 +9,8 @@ import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.dto.here.HereResultIt
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.exception.HereBadGatewayException
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.exception.HereBadRequestException
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.uri.HereUriBuilder
-import pt.isel.ps.g06.httpserver.dataAccess.model.RestaurantDto
+import pt.isel.ps.g06.httpserver.dataAccess.model.RestaurantInfoDto
+import pt.isel.ps.g06.httpserver.dataAccess.model.RestaurantItemDto
 import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
@@ -22,7 +23,7 @@ class HereRestaurantApi(
         uriBuilder: HereUriBuilder,
         responseMapper: ObjectMapper
 ) : RestaurantApi(httpClient, uriBuilder, responseMapper) {
-    override fun handleRestaurantInfoResponse(responseFuture: CompletableFuture<HttpResponse<String>>): CompletableFuture<RestaurantDto?> {
+    override fun handleRestaurantInfoResponse(responseFuture: CompletableFuture<HttpResponse<String>>): CompletableFuture<RestaurantInfoDto?> {
         return responseFuture.thenApply { response ->
             val body = response.body()
 
@@ -37,7 +38,7 @@ class HereRestaurantApi(
 
     }
 
-    override fun handleNearbyRestaurantsResponse(responseFuture: CompletableFuture<HttpResponse<String>>): CompletableFuture<Collection<RestaurantDto>> {
+    override fun handleNearbyRestaurantsResponse(responseFuture: CompletableFuture<HttpResponse<String>>): CompletableFuture<Collection<RestaurantItemDto>> {
         return responseFuture.thenApply { response ->
             val body = response.body()
 
@@ -57,11 +58,11 @@ class HereRestaurantApi(
                 .build()
     }
 
-    private fun mapToRestaurantDto(body: String?): RestaurantDto? {
+    private fun mapToRestaurantDto(body: String?): RestaurantInfoDto? {
         return responseMapper.readValue(body, HereResultItem::class.java)
     }
 
-    private fun mapToNearbyRestaurants(body: String?): Collection<RestaurantDto> {
+    private fun mapToNearbyRestaurants(body: String?): Collection<RestaurantItemDto> {
         return responseMapper.readValue(body, HereResultContainer::class.java).items
     }
 

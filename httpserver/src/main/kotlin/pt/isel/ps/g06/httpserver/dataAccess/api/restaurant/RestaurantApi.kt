@@ -5,6 +5,11 @@ import org.springframework.stereotype.Repository
 import pt.isel.ps.g06.httpserver.dataAccess.api.common.BaseApiRequester
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.uri.RestaurantUri
 import pt.isel.ps.g06.httpserver.dataAccess.model.RestaurantDto
+import pt.isel.ps.g06.httpserver.dataAccess.model.RestaurantInfoDto
+import pt.isel.ps.g06.httpserver.dataAccess.model.RestaurantItemDto
+import pt.isel.ps.g06.httpserver.model.RestaurantInfo
+import pt.isel.ps.g06.httpserver.model.RestaurantItem
+import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpResponse
 import java.util.concurrent.CompletableFuture
@@ -16,19 +21,19 @@ abstract class RestaurantApi(
         responseMapper: ObjectMapper
 ) : BaseApiRequester(httpClient, responseMapper) {
 
-    fun getRestaurantInfo(id: String): CompletableFuture<RestaurantDto?> {
+    fun getRestaurantInfo(id: String): CompletableFuture<RestaurantInfoDto?> {
         val uri = restaurantUri.getRestaurantInfo(id)
         val response = httpClient.sendAsync(buildGetRequest(uri), HttpResponse.BodyHandlers.ofString())
         return handleRestaurantInfoResponse(response)
     }
 
-    fun searchNearbyRestaurants(latitude: Float, longitude: Float, radiusMeters: Int, name: String?): CompletableFuture<Collection<RestaurantDto>> {
+    fun searchNearbyRestaurants(latitude: Float, longitude: Float, radiusMeters: Int, name: String?): CompletableFuture<Collection<RestaurantItemDto>> {
         val uri = restaurantUri.nearbyRestaurants(latitude, longitude, radiusMeters, name)
         val response = httpClient.sendAsync(buildGetRequest(uri), HttpResponse.BodyHandlers.ofString())
         return handleNearbyRestaurantsResponse(response)
     }
 
-    abstract fun handleRestaurantInfoResponse(responseFuture: CompletableFuture<HttpResponse<String>>): CompletableFuture<RestaurantDto?>
+    abstract fun handleRestaurantInfoResponse(responseFuture: CompletableFuture<HttpResponse<String>>): CompletableFuture<RestaurantInfoDto?>
 
-    abstract fun handleNearbyRestaurantsResponse(responseFuture: CompletableFuture<HttpResponse<String>>): CompletableFuture<Collection<RestaurantDto>>
+    abstract fun handleNearbyRestaurantsResponse(responseFuture: CompletableFuture<HttpResponse<String>>): CompletableFuture<Collection<RestaurantItemDto>>
 }

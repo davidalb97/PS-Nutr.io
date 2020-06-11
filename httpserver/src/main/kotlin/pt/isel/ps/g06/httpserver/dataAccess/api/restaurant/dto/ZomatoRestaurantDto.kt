@@ -1,6 +1,8 @@
 package pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.dto
 
-import pt.isel.ps.g06.httpserver.dataAccess.model.RestaurantDto
+import pt.isel.ps.g06.httpserver.dataAccess.model.RestaurantInfoDto
+import pt.isel.ps.g06.httpserver.dataAccess.model.RestaurantItemDto
+import pt.isel.ps.g06.httpserver.model.Votes
 
 data class RestaurantSearchResultDtoMapper(val restaurants: Array<RestaurantContainerDto>) {
     override fun equals(other: Any?): Boolean {
@@ -26,11 +28,17 @@ class ZomatoRestaurantDto(
         name: String,
         val cuisines: String,
         location: Location
-) : RestaurantDto(
+) : RestaurantInfoDto(
         id,
         name,
         location.latitude,
-        location.longitude
+        location.longitude,
+        //There are no votes if it's not inserted on db yet
+        votes = Votes(0, 0),
+        //User has not voted yet if not inserted
+        userVote = null,
+        //User has not favored yet if not inserted
+        isFavorite = false
 )
 
 data class Location(val address: String, val locality: String, val city: String, val city_id: Int, val latitude: Float, val longitude: Float)

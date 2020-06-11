@@ -4,6 +4,7 @@ import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.customizer.BindBeanList
 import org.jdbi.v3.sqlobject.customizer.BindList
 import org.jdbi.v3.sqlobject.statement.SqlQuery
+import pt.isel.ps.g06.httpserver.dataAccess.api.food.dto.IngredientDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbIngredientDto
 
 //SubmissionSubmitter constants
@@ -15,6 +16,11 @@ private const val SS_submitterId = SubmissionSubmitterDao.submitterId
 private const val AS_table = ApiSubmissionDao.table
 private const val AS_submissionId = ApiSubmissionDao.submissionId
 private const val AS_apiId = ApiSubmissionDao.apiId
+
+//ApiSubmission constants
+private const val MI_table = MealIngredientDao.table
+private const val MI_ingredientId = MealIngredientDao.ingredientId
+private const val MI_mealId = MealIngredientDao.mealId
 
 interface IngredientDao {
 
@@ -52,6 +58,14 @@ interface IngredientDao {
     fun insertAll(@BindBeanList(propertyNames = [id, name, carbs])
                   ingredientParams: List<IngredientParam>
     ): List<DbIngredientDto>
+
+    @SqlQuery("SELECT $table.$id, $table.$name" +
+            " FROM $table" +
+            " INNER JOIN $MI_table" +
+            " ON $MI_table.$MI_ingredientId = $table.$id" +
+            " WHERE $MI_table.$MI_mealId = :mealId"
+    )
+    fun getAllByMealId(mealId: Int): Collection<DbIngredientDto>
 }
 
 //Variable names must match sql columns!!!
