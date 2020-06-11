@@ -21,3 +21,6 @@ const val MEAL_VOTE = "$MEAL/vote"
 
 //Cuisines
 const val CUISINES = "/cuisines"
+
+//Ingredients
+const val INGREDIENTS = "/ingredients"

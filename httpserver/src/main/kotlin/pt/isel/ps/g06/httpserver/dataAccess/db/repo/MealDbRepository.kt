@@ -46,6 +46,12 @@ class MealDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo(jdbi)
         }
     }
 
+    fun getIngredients(skip: Int?, limit: Int? = null): Collection<DbMealDto> {
+        return jdbi.inTransaction<Collection<DbMealDto>, Exception>(isolationLevel) {
+            return@inTransaction it.attach(mealDaoClass).getIngredients(skip ?: 0, limit)
+        }
+    }
+
 //    fun getAllByCuisineApiIds(foodApiType: FoodApiType, cuisineApiIds: Collection<String>): Collection<DbMealDto> {
 //        return jdbi.inTransaction<Collection<DbMealDto>, Exception>(isolationLevel) {
 //            val apiSubmitterId = it.attach(SubmitterDao::class.java)
@@ -390,7 +396,7 @@ class MealDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo(jdbi)
                 .map { it.submission_id }
 
         //Delete all portions with the restaurant meal ids
-        if(restaurantMealIds.isNotEmpty())
+        if (restaurantMealIds.isNotEmpty())
             handle.attach(PortionDao::class.java).deleteAllByRestaurantMealIds(restaurantMealIds)
     }
 

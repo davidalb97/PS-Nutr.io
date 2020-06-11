@@ -35,6 +35,12 @@ private const val MC_table = MealCuisineDao.table
 private const val MC_mealId = MealCuisineDao.mealId
 private const val MC_cuisineId = MealCuisineDao.cuisineId
 
+//Submission constants
+private const val S_table = SubmissionDao.table
+private const val S_submission_id = SubmissionDao.id
+private const val S_submission_type = SubmissionDao.type
+private const val INGREDIENT_TYPE = "Ingredient"
+
 interface MealDao {
 
     companion object {
@@ -106,4 +112,15 @@ interface MealDao {
 
     @SqlQuery("UPDATE $table SET $carbs = :carbs WHERE $id = :submissionId RETURNING *")
     fun updateCarbs(@Bind submissionId: Int, carbs: Int): DbMealDto
+
+    @SqlQuery("SELECT $table.$id, $table.$name, $table.$carbs, $table.$quantity " +
+            "FROM $table " +
+            "INNER JOIN $S_table " +
+            "ON $S_table.$S_submission_id = $table.$id " +
+            "WHERE $S_table.$S_submission_type = '$INGREDIENT_TYPE' " +
+            "ORDER BY $table.$name ASC " +
+            "LIMIT :limit " +
+            "OFFSET :skip"
+    )
+    fun getIngredients(skip: Int = 0, limit: Int? = null): Collection<DbMealDto>?
 }

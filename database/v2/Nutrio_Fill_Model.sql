@@ -310,7 +310,8 @@ BEGIN
 		INSERT INTO Meal(submission_id, meal_name, carbs, quantity) VALUES
 		(mealFromIngredientsId,		'First meal from ingr', 10, 100);
 
-		INSERT INTO Ingredient(submission_id, ingredient_name, carbs, quantity) VALUES
+		--Ingredients
+		INSERT INTO Meal(submission_id, meal_name, carbs, quantity) VALUES
 		(mealIngredient1Id, 'açucar', 100, 100),
 		(mealIngredient2Id, 'sal', 0, 100),
 		(mealIngredient3Id, 'azeite', 0, 100);

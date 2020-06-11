@@ -5,7 +5,6 @@ DROP TABLE IF EXISTS MealIngredient CASCADE;
 DROP TABLE IF EXISTS Portion CASCADE;
 DROP TABLE IF EXISTS Favorite CASCADE;
 DROP TABLE IF EXISTS RestaurantMeal CASCADE;
-DROP TABLE IF EXISTS Ingredient CASCADE;
 DROP TABLE IF EXISTS Meal CASCADE;
 DROP TABLE IF EXISTS ApiCuisine CASCADE;
 DROP TABLE IF EXISTS Cuisine CASCADE;
@@ -21,6 +20,7 @@ DROP TABLE IF EXISTS Submission CASCADE;
 DROP TABLE IF EXISTS Api CASCADE;
 DROP TABLE IF EXISTS _User CASCADE;
 DROP TABLE IF EXISTS Submitter CASCADE;
+DROP FUNCTION IF EXISTS AddFood;
 --DROP SEQUENCE submitter_submitter_id_seq CASCADE;
 CREATE EXTENSION IF NOT EXISTS postgis;
 ALTER EXTENSION postgis UPDATE;
@@ -165,22 +165,13 @@ CREATE TABLE Portion(
 	FOREIGN KEY(restaurant_meal_submission_id) REFERENCES RestaurantMeal(submission_id)
 );
 
-CREATE TABLE Ingredient(
-	submission_id integer,
-	ingredient_name varchar(50) NOT NULL,
-	carbs integer NOT NULL,
-	quantity integer NOT NULL,
-	PRIMARY KEY(submission_id),
-	FOREIGN KEY(submission_id) REFERENCES Submission(submission_id)
-);
-
 CREATE TABLE MealIngredient(
 	meal_submission_id integer,
 	ingredient_submission_id integer,
 	quantity integer NOT NULL,
 	PRIMARY KEY(meal_submission_id, ingredient_submission_id),
 	FOREIGN KEY(meal_submission_id) REFERENCES Meal(submission_id),
-	FOREIGN KEY(ingredient_submission_id) REFERENCES Ingredient(submission_id)
+	FOREIGN KEY(ingredient_submission_id) REFERENCES Meal(submission_id)
 );
 
 CREATE TABLE RestaurantCuisine(
@@ -198,3 +189,20 @@ CREATE TABLE MealCuisine(
 	FOREIGN KEY(meal_submission_id) REFERENCES Meal(submission_id),
 	FOREIGN KEY(cuisine_submission_id) REFERENCES Cuisine(submission_id)
 );
+
+---------
+CREATE OR REPLACE FUNCTION AddFood(_type varchar,name varchar, carbs integer, quantity integer) 
+RETURNS void
+AS $$ 
+	BEGIN 
+		INSERT INTO Submission(submission_type) VALUES (_type);
+		
+		DECLARE 
+			submissionId INTEGER := lastval();
+		BEGIN
+			INSERT INTO Meal(submission_id, meal_name, carbs, quantity) VALUES (submissionId, name, carbs, quantity);
+			--Make Food favorable
+			INSERT INTO SubmissionContract(submission_id, submission_contract) VALUES (submissionId, 'Favorable');
+		END;
+	END;
+$$ LANGUAGE plpgsql;

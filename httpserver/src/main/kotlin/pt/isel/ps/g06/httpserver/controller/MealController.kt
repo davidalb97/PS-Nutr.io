@@ -12,13 +12,12 @@ import pt.isel.ps.g06.httpserver.common.exception.MealNotFoundException
 import pt.isel.ps.g06.httpserver.dataAccess.input.MealInput
 import pt.isel.ps.g06.httpserver.model.Meal
 import pt.isel.ps.g06.httpserver.service.MealService
-import pt.isel.ps.g06.httpserver.service.RestaurantService
 import javax.validation.Valid
 
 @Suppress("MVCPathVariableInspection")
 @RestController
 @RequestMapping(produces = [MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_PROBLEM_JSON_VALUE])
-class MealController(private val mealService: MealService, private val restaurantService: RestaurantService) {
+class MealController(private val mealService: MealService) {
 
     @GetMapping(MEAL)
     fun getMealInformation(@PathVariable(MEAL_ID_VALUE) mealId: Int): ResponseEntity<Meal> {
