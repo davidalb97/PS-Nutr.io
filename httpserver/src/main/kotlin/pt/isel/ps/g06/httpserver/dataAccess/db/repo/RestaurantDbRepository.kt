@@ -8,19 +8,14 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionContractType.*
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType.RESTAURANT
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.*
-import pt.isel.ps.g06.httpserver.dataAccess.db.dao.info.RestaurantInfoDao
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbCuisineDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbRestaurantCuisineDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbRestaurantDto
-import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbCuisineDto
-import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbRestaurantCuisineDto
-import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbSubmissionDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbVotesDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.info.DbPublicDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.info.DbRestaurantInfoDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.info.DbRestaurantItemDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.info.DbRestaurantMealItemDto
-import pt.isel.ps.g06.httpserver.dataAccess.model.RestaurantApiId
 import pt.isel.ps.g06.httpserver.exception.InvalidInputException
 import pt.isel.ps.g06.httpserver.springConfig.dto.DbEditableDto
 
@@ -34,7 +29,7 @@ class RestaurantDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo
 
     fun getInfoById(id: Int, userId: Int, restaurantMeals: Collection<DbRestaurantMealItemDto>): DbRestaurantInfoDto? {
         return jdbi.inTransaction<DbRestaurantInfoDto, Exception>(isolationLevel) {
-            val restaurantDto = it.attach(RestaurantDao::class.java).getById(id)
+            val restaurantDto = it.attach(RestaurantDao::class.java).getBySubmissionId(id)
                     ?: return@inTransaction null
             val apiId = it.attach(ApiSubmissionDao::class.java).getBySubmissionId(id)?.apiId
 

@@ -1,30 +1,32 @@
 package pt.isel.ps.g06.httpserver.service
 
 import org.springframework.stereotype.Service
-import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.food.MealResponseMapper
+import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.food.RestaurantMealItemResponseMapper
+import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.restaurant.MealInfoResponseMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.MealDbRepository
+import pt.isel.ps.g06.httpserver.dataAccess.db.repo.RestaurantMealDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.input.IngredientInput
-import pt.isel.ps.g06.httpserver.model.Meal
-import pt.isel.ps.g06.httpserver.model.Votes
+import pt.isel.ps.g06.httpserver.model.MealInfo
+import pt.isel.ps.g06.httpserver.model.RestaurantMealItem
 
 @Service
 class MealService(
-        private val mealResponseMapper: MealResponseMapper,
-        private val mealDbRepository: MealDbRepository
+        private val mealDbRepository: MealDbRepository,
+        private val restaurantMealDbRepository: RestaurantMealDbRepository,
+        private val restaurantMealItemResponseMapper: RestaurantMealItemResponseMapper,
+        private val mealInfoResponseMapper: MealInfoResponseMapper
 ) {
 
-    fun getAllMealsFromRestaurant(restaurantId: Int): Collection<Meal> {
-        return mealDbRepository
-                .getAllRestaurantMeals(restaurantId)
-                //TODO mapTo Meal
-                .map { Meal(1, "Placeholder", emptySequence(), 10, votes = Votes(10, 10)) }
-//                .map { mealResponseMapper.mapTo(it) }
+    fun getAllMealsFromRestaurant(restaurantId: Int, userId: Int): Collection<RestaurantMealItem> {
+        return restaurantMealDbRepository
+                .getRestaurantMeals(restaurantId, userId)
+                .map(restaurantMealItemResponseMapper::mapTo)
     }
 
-    fun getMeal(mealId: Int): Meal? {
+    fun getMeal(mealId: Int, userId: Int): MealInfo? {
         return mealDbRepository
-                .getById(mealId)
-                ?.let(mealResponseMapper::mapTo)
+                .getById(mealId, userId)
+                ?.let(mealInfoResponseMapper::mapTo)
     }
 
     fun createMeal(
@@ -33,7 +35,7 @@ class MealService(
             quantity: Int,
             ingredients: Collection<IngredientInput>,
             cuisines: Collection<String>
-    ): Meal {
+    ): MealInfo {
         val createdMeal = mealDbRepository.insert(
                 submitterId = submitterId,
                 mealName = name,
@@ -43,7 +45,16 @@ class MealService(
         )
 
         //TODO mapTo Meal
-        return Meal(1, "Placeholder", emptySequence(), 10, votes = Votes(10, 10))
-//        return mealResponseMapper.mapTo(createdMeal)
+        return MealInfo(
+                1,
+                "Placeholder",
+                false,
+                "",
+                100,
+                100,
+                "g",
+                emptyList(),
+                emptyList()
+        )
     }
 }

@@ -4,15 +4,13 @@ import org.jdbi.v3.core.Handle
 import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.transaction.TransactionIsolationLevel
 import org.springframework.stereotype.Repository
-import pt.isel.ps.g06.httpserver.dataAccess.api.food.dto.IngredientDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionContractType.*
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType.*
+import pt.isel.ps.g06.httpserver.dataAccess.db.dao.*
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.PortionDao
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.RestaurantMealDao
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.SubmissionDao
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.SubmissionSubmitterDao
-import pt.isel.ps.g06.httpserver.dataAccess.db.dao.*
-import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbIngredientDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbMealDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbRestaurantMealDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbVotesDto
@@ -68,7 +66,7 @@ class RestaurantMealDbRepository(jdbi: Jdbi) : BaseDbRepo(jdbi) {
         }
     }
 
-    fun getItemsByRestaurantId(restaurantId: Int, userId: Int): Collection<DbRestaurantMealItemDto> {
+    fun getRestaurantMeals(restaurantId: Int, userId: Int): Collection<DbRestaurantMealItemDto> {
         return jdbi.inTransaction<Collection<DbRestaurantMealItemDto>, Exception>(isolationLevel) {
             val restaurantMealDtos = it.attach(RestaurantMealDao::class.java)
                     .getAllByRestaurantId(restaurantId)
@@ -155,13 +153,6 @@ class RestaurantMealDbRepository(jdbi: Jdbi) : BaseDbRepo(jdbi) {
                     .getByRestaurantAndMealId(restaurantId, mealId)
                     ?: return@inTransaction null
             return@inTransaction getInfoByRestaurantMealId(dto.submission_id, userId)
-        }
-    }
-
-    fun getAllMealsFromRestaurant(restaurantId: Int): Collection<DbRestaurantMealDto>? {
-        return jdbi.inTransaction<Collection<DbRestaurantMealDto>, Exception>(isolationLevel) {
-            return@inTransaction it.attach(restaurantMealDao)
-                    .getAllByRestaurantId(restaurantId)
         }
     }
 

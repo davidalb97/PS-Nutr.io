@@ -4,14 +4,8 @@ import org.springframework.stereotype.Component
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.dto.ZomatoRestaurantDto
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.dto.here.HereResultItem
 import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.UserResponseMapper
-import pt.isel.ps.g06.httpserver.dataAccess.db.dto.info.DbRestaurantInfoDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.info.DbRestaurantItemDto
-import pt.isel.ps.g06.httpserver.dataAccess.db.repo.CuisineDbRepository
-import pt.isel.ps.g06.httpserver.dataAccess.db.repo.MealDbRepository
-import pt.isel.ps.g06.httpserver.dataAccess.db.repo.RestaurantDbRepository
-import pt.isel.ps.g06.httpserver.dataAccess.db.repo.RestaurantMealDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.model.RestaurantItemDto
-import pt.isel.ps.g06.httpserver.model.RestaurantInfo
 import pt.isel.ps.g06.httpserver.model.RestaurantItem
 import pt.isel.ps.g06.httpserver.model.Votes
 import pt.isel.ps.g06.httpserver.util.log
@@ -39,15 +33,9 @@ class RestaurantItemResponseMapper(
 }
 
 @Component
-class HereRestaurantItemResponseMapper(
-        private val cuisineDbRepository: CuisineDbRepository,
-        private val mealRepository: MealDbRepository,
-        private val restaurantMealRepository: RestaurantMealDbRepository,
-        private val mealItemResponseMapper: MealItemResponseMapper
-) : UserResponseMapper<HereResultItem, RestaurantItem> {
+class HereRestaurantItemResponseMapper : UserResponseMapper<HereResultItem, RestaurantItem> {
 
     override fun mapTo(dto: HereResultItem, userId: Int): RestaurantItem {
-
         return RestaurantItem(
                 //TODO format submitter/submissionId/apiId
                 identifier = dto.id,
@@ -67,13 +55,9 @@ class HereRestaurantItemResponseMapper(
 }
 
 @Component
-class ZomatoRestaurantItemResponseMapper(
-        private val mealRepository: MealDbRepository,
-        private val mealItemResponseMapper: MealItemResponseMapper
-) : UserResponseMapper<ZomatoRestaurantDto, RestaurantItem> {
+class ZomatoRestaurantItemResponseMapper : UserResponseMapper<ZomatoRestaurantDto, RestaurantItem> {
 
     override fun mapTo(dto: ZomatoRestaurantDto, userId: Int): RestaurantItem {
-
         return RestaurantItem(
                 //TODO format submitter/submissionId/apiId
                 identifier = dto.id,
@@ -93,12 +77,9 @@ class ZomatoRestaurantItemResponseMapper(
 }
 
 @Component
-class DbRestaurantItemResponseMapper(
-        private val restaurantRepository: RestaurantDbRepository
-) : UserResponseMapper<DbRestaurantItemDto, RestaurantItem> {
+class DbRestaurantItemResponseMapper : UserResponseMapper<DbRestaurantItemDto, RestaurantItem> {
 
     override fun mapTo(dto: DbRestaurantItemDto, userId: Int): RestaurantItem {
-
         return RestaurantItem(
                 //TODO format submitter/submissionId/apiId
                 identifier = "${dto.restaurant.submission_id}+${dto.submitterId}+${dto.apiId}",

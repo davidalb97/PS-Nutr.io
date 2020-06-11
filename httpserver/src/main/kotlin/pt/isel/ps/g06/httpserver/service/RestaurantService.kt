@@ -9,9 +9,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.restaurant.Res
 import pt.isel.ps.g06.httpserver.dataAccess.db.ApiSubmitterMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.RestaurantDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.RestaurantMealDbRepository
-import pt.isel.ps.g06.httpserver.dataAccess.db.repo.RestaurantMealDbRepository
-import pt.isel.ps.g06.httpserver.dataAccess.model.RestaurantDto
-import pt.isel.ps.g06.httpserver.model.Meal
+import pt.isel.ps.g06.httpserver.model.MealInfo
 import pt.isel.ps.g06.httpserver.model.RestaurantInfo
 import pt.isel.ps.g06.httpserver.model.RestaurantItem
 
@@ -23,7 +21,8 @@ class RestaurantService(
         private val dbRestaurantMealRepository: RestaurantMealDbRepository,
         private val restaurantApiMapper: RestaurantApiMapper,
         private val restaurantInfoResponseMapper: RestaurantInfoResponseMapper,
-        private val restaurantItemResponseMapper: RestaurantItemResponseMapper
+        private val restaurantItemResponseMapper: RestaurantItemResponseMapper,
+        private val apiSubmitterMapper: ApiSubmitterMapper
         /*,
         private val transactionHolder: TransactionHolder*/
 ) {
@@ -44,12 +43,12 @@ class RestaurantService(
         val apiRestaurants =
                 restaurantApi.searchNearbyRestaurants(latitude, longitude, chosenRadius, name)
                         .thenApply {
-                            it.map{restaurantItemResponseMapper.mapTo(it, userId) }
+                            it.map { restaurantItemResponseMapper.mapTo(it, userId) }
                         }
 
         return dbRestaurantRepository
                 .getAllByCoordinates(latitude, longitude, chosenRadius, userId)
-                .map{restaurantItemResponseMapper.mapTo(it, userId) }
+                .map { restaurantItemResponseMapper.mapTo(it, userId) }
                 .let { filterRedundantApiRestaurants(it, apiRestaurants.get()) }
 
         //Keeps an open transaction while we iterate the DB response Stream
@@ -100,7 +99,7 @@ class RestaurantService(
      * Creates a restaurant on the Database, where the submitter can either be an API or a user.
      * @param apiId not null determines if submitter is an API; else User.
      *
-     * @return the created [Restaurant].
+     * @return the Submission identifier of created Restaurant
      */
     fun createRestaurant(
             submitterId: Int,
@@ -109,7 +108,7 @@ class RestaurantService(
             cuisines: Collection<String>,
             latitude: Float,
             longitude: Float
-    ): Restaurant {
+    ): Int {
         if (apiId != null) {
             //Verify is given submitterId belongs to an API
             apiSubmitterMapper.getApiType(submitterId) ?: throw NoSuchApiException()
@@ -124,12 +123,12 @@ class RestaurantService(
                 longitude = longitude
         )
 
-        return restaurantResponseMapper.mapTo(createdRestaurant)
+        return createdRestaurant.submission_id
     }
 
 
-    fun addRestaurantMeal(restaurant: Restaurant, meal: Meal, submitterId: Int): Int {
-        if (!restaurant.isPresentInDatabase()) throw IllegalStateException()
+    fun addRestaurantMeal(restaurant: RestaurantInfo, meal: MealInfo, submitterId: Int): Int {
+        if (!restaurant.identifier.isPresentInDatabase()) throw IllegalStateException()
 
         val (submission_id) = dbRestaurantMealRepository.insert(
                 submitterId = submitterId,

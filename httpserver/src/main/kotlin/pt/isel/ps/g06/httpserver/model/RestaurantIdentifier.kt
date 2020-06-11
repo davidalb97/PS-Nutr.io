@@ -16,4 +16,8 @@ data class RestaurantIdentifier(
                 .append(apiId ?: "")
                 .toString()
     }
+
+    fun isPresentInDatabase(): Boolean {
+        return submissionId != null
+    }
 }

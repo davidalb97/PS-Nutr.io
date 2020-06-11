@@ -1,7 +1,7 @@
 package pt.isel.ps.g06.httpserver.model
 
 class RestaurantInfo(
-        identifier: String,
+        identifier: RestaurantIdentifier,
         name: String,
         latitude: Float,
         longitude: Float,

@@ -2,11 +2,11 @@ package pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.food
 
 import org.springframework.stereotype.Component
 import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.ResponseMapper
-import pt.isel.ps.g06.httpserver.dataAccess.db.dto.info.DbMealInfoDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.info.DbMealItemDto
-import pt.isel.ps.g06.httpserver.dataAccess.db.dto.info.DbRestaurantMealInfoDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.info.DbRestaurantMealItemDto
-import pt.isel.ps.g06.httpserver.model.*
+import pt.isel.ps.g06.httpserver.model.MealItem
+import pt.isel.ps.g06.httpserver.model.RestaurantMealItem
+import pt.isel.ps.g06.httpserver.model.Votes
 
 //DbRestaurantMealItemDto -> RestaurantMealItem
 @Component

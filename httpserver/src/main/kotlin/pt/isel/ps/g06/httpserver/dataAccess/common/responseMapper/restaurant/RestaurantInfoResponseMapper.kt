@@ -4,17 +4,15 @@ import org.springframework.stereotype.Component
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.dto.ZomatoRestaurantDto
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.dto.here.HereResultItem
 import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.UserResponseMapper
+import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.food.MealItemResponseMapper
+import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.food.RestaurantMealItemResponseMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.info.DbRestaurantInfoDto
-import pt.isel.ps.g06.httpserver.dataAccess.db.dto.info.DbRestaurantItemDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.CuisineDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.MealDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.RestaurantDbRepository
-import pt.isel.ps.g06.httpserver.dataAccess.db.repo.RestaurantMealDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.model.RestaurantInfoDto
-import pt.isel.ps.g06.httpserver.dataAccess.model.RestaurantItemDto
-import pt.isel.ps.g06.httpserver.model.Votes
 import pt.isel.ps.g06.httpserver.model.RestaurantInfo
-import pt.isel.ps.g06.httpserver.model.RestaurantItem
+import pt.isel.ps.g06.httpserver.model.Votes
 import pt.isel.ps.g06.httpserver.util.log
 
 @Component
@@ -42,7 +40,6 @@ class RestaurantInfoResponseMapper(
 class HereRestaurantInfoResponseMapper(
         private val cuisineDbRepository: CuisineDbRepository,
         private val mealRepository: MealDbRepository,
-        private val restaurantMealRepository: RestaurantMealDbRepository,
         private val mealItemResponseMapper: MealItemResponseMapper
 ) : UserResponseMapper<HereResultItem, RestaurantInfo> {
 
@@ -57,14 +54,16 @@ class HereRestaurantInfoResponseMapper(
                 longitude = dto.longitude,
                 cuisines = lazy {
                     cuisineIds
-                            ?.let { id -> cuisineDbRepository.getAllByNames(id)
-                                    .map { it.cuisine_name }
+                            ?.let { id ->
+                                cuisineDbRepository.getAllByNames(id)
+                                        .map { it.cuisine_name }
                             } ?: emptyList()
                 },
                 meals = lazy {
                     cuisineIds
-                            ?.let { id -> mealRepository.getAllByCuisineNames(id, userId)
-                                    .map { mealItemResponseMapper.mapTo(it)}
+                            ?.let { id ->
+                                mealRepository.getAllByCuisineNames(id, userId)
+                                        .map { mealItemResponseMapper.mapTo(it) }
                             } ?: emptyList()
                 },
                 //There are no votes if it's not inserted on db yet

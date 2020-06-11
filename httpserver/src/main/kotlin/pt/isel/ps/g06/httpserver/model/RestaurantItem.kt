@@ -1,7 +1,7 @@
 package pt.isel.ps.g06.httpserver.model
 
 open class RestaurantItem(
-        val identifier: String,
+        val identifier: RestaurantIdentifier,
         val name: String,
         val latitude: Float,
         val longitude: Float,

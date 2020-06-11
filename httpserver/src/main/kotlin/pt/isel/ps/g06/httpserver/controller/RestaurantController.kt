@@ -13,8 +13,6 @@ import pt.isel.ps.g06.httpserver.dataAccess.model.SimplifiedRestaurantOutputMode
 import pt.isel.ps.g06.httpserver.dataAccess.model.toSimplifiedRestaurant
 import pt.isel.ps.g06.httpserver.exception.InvalidInputDomain
 import pt.isel.ps.g06.httpserver.exception.InvalidInputException
-import pt.isel.ps.g06.httpserver.model.Restaurant
-import pt.isel.ps.g06.httpserver.service.MealService
 import pt.isel.ps.g06.httpserver.model.RestaurantInfo
 import pt.isel.ps.g06.httpserver.service.RestaurantService
 import javax.validation.Valid
@@ -26,7 +24,6 @@ private const val INVALID_RESTAURANT_SEARCH = "To search nearby restaurants, a g
 @RequestMapping(produces = [MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_PROBLEM_JSON_VALUE])
 class RestaurantController(
         private val restaurantService: RestaurantService,
-        private val mealService: MealService,
         private val restaurantIdentifierBuilder: RestaurantIdentifierBuilder
 ) {
     /**
@@ -64,7 +61,7 @@ class RestaurantController(
     }
 
     @GetMapping(RESTAURANT, consumes = [MediaType.ALL_VALUE])
-    fun getRestaurantInformation(@PathVariable(RESTAURANT_ID_VALUE) id: String): ResponseEntity<Restaurant> {
+    fun getRestaurantInformation(@PathVariable(RESTAURANT_ID_VALUE) id: String): ResponseEntity<RestaurantInfo> {
         val userId = 10     //TODO For when there's authentication
         val (submitterId, submissionId, apiId) = restaurantIdentifierBuilder.extractIdentifiers(id)
 
