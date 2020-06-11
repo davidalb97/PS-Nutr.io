@@ -68,7 +68,7 @@ class RequestParser(
         }
     }
 
-    suspend fun <Dto> coroutineRequestAndParse(
+    /*suspend fun <Dto> coroutineRequestAndParse(
         method: Method,
         urlStr: String,
         dtoClass: Class<Dto>,
@@ -84,9 +84,9 @@ class RequestParser(
                 return@withContext null
             }
         }
-    }
+    }*/
 
-    suspend fun coroutineRequest(
+    /*suspend fun coroutineRequest(
         method: Method,
         urlStr: String,
         reqPayload: Any? = null
@@ -105,7 +105,7 @@ class RequestParser(
                 Response.ErrorListener { continuation.resumeWithException(it) }
             )
         requestQueue.add(jsonRequest)
-    }
+    }*/
 
     /**
      * Makes an asynchronous request with an optional payload

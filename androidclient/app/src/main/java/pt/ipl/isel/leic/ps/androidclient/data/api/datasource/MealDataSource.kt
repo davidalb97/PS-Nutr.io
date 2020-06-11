@@ -4,32 +4,42 @@ import com.android.volley.VolleyError
 import pt.ipl.isel.leic.ps.androidclient.data.api.*
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.InputMealDto
 
-const val MEAL_ID_URI =
-    "$URI_BASE/$MEAL/:id"
-
+const val MEAL_URI = "$URI_BASE/$MEAL"
+const val MEAL_ID_URI = "$MEAL_URI/:id"
 
 val MEAL_DTO = InputMealDto::class.java
+val MEALS_DTO = Array<InputMealDto>::class.java
 
 class MealDataSource(
     private val requestParser: RequestParser,
     private val uriBuilder: UriBuilder
 ) {
 
-    fun getAllByRestaurantIdentifier(
-        identifier: Int,
-        success: (List<InputMealDto>) -> Unit,
+    fun getAllByRestaurantId(
+        id: Int,
+        success: (Array<InputMealDto>) -> Unit,
         error: (VolleyError) -> Unit,
         uriParameters: HashMap<String, String>?,
         count: Int,
         skip: Int
     ) {
-        TODO()
+        var uri = MEAL_ID_URI
+
+        uri = uriBuilder.buildUri(uri, uriParameters)
+
+        requestParser.requestAndRespond(
+            Method.GET,
+            uri,
+            MEALS_DTO,
+            success,
+            error
+        )
     }
 
     /**
      * ----------------------------- GETs -----------------------------
      */
-    fun getByName(
+    fun getById(
         success: (InputMealDto) -> Unit,
         error: (VolleyError) -> Unit,
         uriParameters: HashMap<String, String>?,
@@ -52,94 +62,97 @@ class MealDataSource(
     /**
      * ----------------------------- POSTs -----------------------------
      */
-    /*fun postMeal(
-        success: (List<Meal>) -> Unit,
+    fun postMeal(
+        success: (InputMealDto) -> Unit,
         error: (VolleyError) -> Unit,
-        uriParameters: HashMap<String, HashMap<String, String>>?,
+        uriParameters: HashMap<String, String>?,
         count: Int,
         skip: Int
     ) {
         var uri = MEAL_ID_URI
 
-        uri = requester.buildUri(uri, uriParameters)
+        uri = uriBuilder.buildUri(uri, uriParameters)
 
-        requester.httpServerRequest(
-            Method.GET,
+        requestParser.requestAndRespond(
+            Method.POST,
             uri,
-            MEALS_DTO,
+            MEAL_DTO,
             success,
             error,
-            null
-        )
-    }*/
+            {
 
-    /*fun postMealVote(
-        success: (List<Meal>) -> Unit,
+            }
+        )
+    }
+
+    fun postMealVote(
+        success: (InputMealDto) -> Unit,
         error: (VolleyError) -> Unit,
-        uriParameters: HashMap<String, HashMap<String, String>>?,
+        uriParameters: HashMap<String, String>?,
         count: Int,
         skip: Int
     ) {
         var uri = MEAL_ID_URI
 
-        uri = requester.buildUri(uri, uriParameters)
+        uri = uriBuilder.buildUri(uri, uriParameters)
 
-        requester.httpServerRequest(
-            Method.GET,
+        requestParser.requestAndRespond(
+            Method.POST,
             uri,
-            MEALS_DTO,
+            MEAL_DTO,
             success,
             error,
-            null
+            {
+
+            }
         )
-    }*/
+    }
 
     /**
      * ----------------------------- DELETEs ---------------------------
      */
-    /*fun deleteMeal(
-        success: (List<Meal>) -> Unit,
+    fun deleteMeal(
+        success: (InputMealDto) -> Unit,
         error: (VolleyError) -> Unit,
-        uriParameters: HashMap<String, HashMap<String, String>>?,
+        uriParameters: HashMap<String, String>?,
         count: Int,
         skip: Int
     ) {
         var uri = MEAL_ID_URI
 
-        uri = requester.buildUri(uri, uriParameters)
+        uri = uriBuilder.buildUri(uri, uriParameters)
 
-        requester.httpServerRequest(
-            Method.GET,
+        requestParser.requestAndRespond(
+            Method.DELETE,
             uri,
-            MEALS_DTO,
+            MEAL_DTO,
             success,
-            error,
-            null
+            error
         )
-    }*/
+    }
 
     /**
      * ----------------------------- PUTs ------------------------------
      */
 
-    /*fun updateMealVote(
-        success: (List<Meal>) -> Unit,
+    fun updateMealVote(
+        success: (InputMealDto) -> Unit,
         error: (VolleyError) -> Unit,
-        uriParameters: HashMap<String, HashMap<String, String>>?,
+        uriParameters: HashMap<String, String>?,
         count: Int,
         skip: Int
     ) {
         var uri = MEAL_ID_URI
 
-        uri = requester.buildUri(uri, uriParameters)
+        uri = uriBuilder.buildUri(uri, uriParameters)
 
-        requester.httpServerRequest(
-            Method.GET,
+        requestParser.requestAndRespond(
+            Method.PUT,
             uri,
-            MEALS_DTO,
+            MEAL_DTO,
             success,
             error,
-            null
+            { }
         )
-    }*/
+    }
 }

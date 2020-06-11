@@ -6,14 +6,12 @@ import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.roomDb
 import pt.ipl.isel.leic.ps.androidclient.data.api.datasource.MealDataSource
 import pt.ipl.isel.leic.ps.androidclient.data.api.mapper.InputIngredientMapper
 import pt.ipl.isel.leic.ps.androidclient.data.api.mapper.InputMealMapper
-import pt.ipl.isel.leic.ps.androidclient.data.db.entity.DbCustomMealEntity
 import pt.ipl.isel.leic.ps.androidclient.data.db.mapper.DbApiMealMapper
 import pt.ipl.isel.leic.ps.androidclient.data.db.mapper.DbCustomMealMapper
 import pt.ipl.isel.leic.ps.androidclient.data.db.mapper.DbFavoriteMealMapper
 import pt.ipl.isel.leic.ps.androidclient.data.db.mapper.DbIngredientMapper
 import pt.ipl.isel.leic.ps.androidclient.data.db.relation.DbCustomMealRelation
 import pt.ipl.isel.leic.ps.androidclient.data.db.relation.DbFavoriteMealRelation
-import pt.ipl.isel.leic.ps.androidclient.data.db.relation.IMealRelation
 import pt.ipl.isel.leic.ps.androidclient.data.model.ApiMeal
 import pt.ipl.isel.leic.ps.androidclient.data.model.CustomMeal
 import pt.ipl.isel.leic.ps.androidclient.data.model.FavoriteMeal
@@ -57,16 +55,16 @@ class MealRepository(private val dataSource: MealDataSource) {
         count: Int,
         skip: Int
     ) {
-        dataSource.getAllByRestaurantIdentifier(
+        dataSource.getAllByRestaurantId(
             restaurantIdentifier,
-            { dtos -> success(inputMealMapper.mapToListModel(dtos)) },
+            { dtos -> success(inputMealMapper.mapToListModel(dtos.toList())) },
             error,
             uriParameters,
             count,
             skip
         )
     }
-/*
+
     fun insertFavoriteMeal(apiMeal: ApiMeal) = AsyncWorker<Unit, Unit> {
         roomDb.apiMealDao().insert(dbApiMealMapper.mapToRelation(apiMeal))
     }
@@ -74,6 +72,5 @@ class MealRepository(private val dataSource: MealDataSource) {
 
     fun deleteFavoriteMeal(apiMeal: ApiMeal) = AsyncWorker<Unit, Unit> {
         roomDb.apiMealDao().delete(dbApiMealMapper.mapToRelation(apiMeal))
-    }*/
-
+    }
 }

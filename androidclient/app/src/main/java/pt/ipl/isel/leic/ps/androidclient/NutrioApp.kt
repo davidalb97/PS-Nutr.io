@@ -66,7 +66,7 @@ class NutrioApp : Application() {
         val mealRepository
                 by lazy { MealRepository(MealDataSource(requester, uriBuilder)) }
         val cuisineRepository
-                by lazy { CuisineRepository(CuisineDataSource(requester)) }
+                by lazy { CuisineRepository(CuisineDataSource(requester, uriBuilder)) }
         val insulinProfilesRepository
                 by lazy { InsulinProfileRepository() }
     }

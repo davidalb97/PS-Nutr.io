@@ -6,6 +6,7 @@ import pt.ipl.isel.leic.ps.androidclient.data.api.RequestParser
 import pt.ipl.isel.leic.ps.androidclient.data.api.URI_BASE
 import pt.ipl.isel.leic.ps.androidclient.data.api.UriBuilder
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.InputRestaurantDto
+import pt.ipl.isel.leic.ps.androidclient.data.model.Restaurant
 
 const val LATITUDE_VAR = ":latitude"
 const val LONGITUDE_VAR = ":longitude"
@@ -87,8 +88,8 @@ class RestaurantDataSource(
      * ----------------------------- POSTs -----------------------------
      */
 
-    /*fun postRestaurant(
-        success: (Restaurant) -> Unit,
+    fun postRestaurant(
+        success: (InputRestaurantDto) -> Unit,
         error: (VolleyError) -> Unit,
         uriParameters:  HashMap<String, String>?,
         count: Int,
@@ -97,20 +98,20 @@ class RestaurantDataSource(
         var uri =
             RESTAURANT_ID_URI
 
-        uri = requester.buildUri(uri, uriParameters)
+        uri = uriBuilder.buildUri(uri, uriParameters)
 
-        requester.httpServerRequest(
+        requestParser.requestAndRespond(
             Method.POST,
             uri,
             RESTAURANT_DTO,
             success,
             error,
-            null
+            {}
         )
-    }*/
+    }
 
-    /*fun postReport(
-        success: (Restaurant) -> Unit,
+    fun postReport(
+        success: (InputRestaurantDto) -> Unit,
         error: (VolleyError) -> Unit,
         uriParameters:  HashMap<String, String>?,
         count: Int,
@@ -119,9 +120,9 @@ class RestaurantDataSource(
         var uri =
             RESTAURANT_ID_URI
 
-        uri = requester.buildUri(uri, uriParameters)
+        uri = uriBuilder.buildUri(uri, uriParameters)
 
-        requester.httpServerRequest(
+        requestParser.requestAndRespond(
             Method.POST,
             uri,
             RESTAURANT_DTO,
@@ -129,10 +130,10 @@ class RestaurantDataSource(
             error,
             null
         )
-    }*/
+    }
 
-    /*fun postVote(
-        success: (Restaurant) -> Unit,
+    fun postVote(
+        success: (InputRestaurantDto) -> Unit,
         error: (VolleyError) -> Unit,
         uriParameters:  HashMap<String, String>?,
         count: Int,
@@ -141,23 +142,23 @@ class RestaurantDataSource(
         var uri =
             RESTAURANT_ID_URI
 
-        uri = requester.buildUri(uri, uriParameters)
+        uri = uriBuilder.buildUri(uri, uriParameters)
 
-        requester.httpServerRequest(
+        requestParser.requestAndRespond(
             Method.POST,
             uri,
             RESTAURANT_DTO,
             success,
             error,
-            null
+            {}
         )
-    }*/
+    }
 
     /**
      * ----------------------------- PUTs ------------------------------
      */
-    /*fun updateVote(
-        success: (Restaurant) -> Unit,
+    fun updateVote(
+        success: (InputRestaurantDto) -> Unit,
         error: (VolleyError) -> Unit,
         uriParameters:  HashMap<String, String>?,
         count: Int,
@@ -166,24 +167,24 @@ class RestaurantDataSource(
         var uri =
             RESTAURANT_ID_URI
 
-        uri = requester.buildUri(uri, uriParameters)
+        uri = uriBuilder.buildUri(uri, uriParameters)
 
-        requester.httpServerRequest(
+        requestParser.requestAndRespond(
             Method.PUT,
             uri,
             RESTAURANT_DTO,
             success,
             error,
-            null
+            {}
         )
-    }*/
+    }
 
     /**
      * ----------------------------- DELETEs ---------------------------
      */
 
-    /*fun deleteVote(
-        success: (Restaurant) -> Unit,
+    fun deleteVote(
+        success: (InputRestaurantDto) -> Unit,
         error: (VolleyError) -> Unit,
         uriParameters:  HashMap<String, String>?,
         count: Int,
@@ -192,16 +193,14 @@ class RestaurantDataSource(
         var uri =
             RESTAURANT_ID_URI
 
-        uri = requester.buildUri(uri, uriParameters)
+        uri = uriBuilder.buildUri(uri, uriParameters)
 
-        requester.httpServerRequest(
+        requestParser.requestAndRespond(
             Method.DELETE,
             uri,
             RESTAURANT_DTO,
             success,
-            error,
-            null
+            error
         )
-    }*/
-
+    }
 }

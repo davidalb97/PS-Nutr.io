@@ -1,51 +1,36 @@
 package pt.ipl.isel.leic.ps.androidclient.data.api.datasource
 
-import pt.ipl.isel.leic.ps.androidclient.data.api.CUISINES
-import pt.ipl.isel.leic.ps.androidclient.data.api.RequestParser
-import pt.ipl.isel.leic.ps.androidclient.data.api.URI_BASE
+import com.android.volley.VolleyError
+import pt.ipl.isel.leic.ps.androidclient.data.api.*
 
 private const val CUISINE_ID_URI =
     "$URI_BASE/$CUISINES/:name"
 
-//private val CUISINES_DTO = CuisinesIDto::class.java
-
 class CuisineDataSource(
-    private val requestParser: RequestParser
+    private val requestParser: RequestParser,
+    private val uriBuilder: UriBuilder
 ) {
 
     /**
      * ----------------------------- GETs -----------------------------
      */
-    /*fun getCuisines(
-        success: (List<Cuisine>) -> Unit,
+    fun getCuisines(
+        success: (Array<String>) -> Unit,
         error: (VolleyError) -> Unit,
-        uriParameters: HashMap<String, HashMap<String, String>>?,
+        uriParameters: HashMap<String, String>?,
         count: Int,
         skip: Int
     ) {
-        var uri =
-            CUISINE_ID_URI
+        var uri = CUISINE_ID_URI
 
-        uri = requester.buildUri(uri, uriParameters)
-        requester.httpServerRequest(
+        uri = uriBuilder.buildUri(uri, uriParameters)
+
+        requestParser.requestAndRespond(
             Method.GET,
             uri,
-            CuisinesIDto::class.java,
+            Array<String>::class.java,
             success,
-            error,
-            null
+            error
         )
-    }*/
-
-    /**
-     * ----------------------------- POSTs -----------------------------
-     */
-
-    /**
-     * ----------------------------- DELETEs ---------------------------
-     */
-
-    /**
-     * ----------------------------- PUTs ------------------------------
-     */
+    }
 }
