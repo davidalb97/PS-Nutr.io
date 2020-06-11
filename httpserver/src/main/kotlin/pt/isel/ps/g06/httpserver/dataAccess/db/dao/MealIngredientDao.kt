@@ -32,7 +32,6 @@ interface MealIngredientDao {
     fun insert(@Bind mealId: Int, @Bind ingredientId: Int): DbMealIngredientDto
 
     @SqlQuery("INSERT INTO $table($mealId, $ingredientId, $quantity) values <mealIngredientParams> RETURNING *")
-    //TODO Check if this breaks or not using DbMealIngredientDto. If it does, use MealIngredientParam instead.
     fun insertAll(@BindBeanList(propertyNames = [mealId, ingredientId, quantity])
                   mealIngredientParams: Collection<DbMealIngredientDto>
     ): List<DbMealIngredientDto>
@@ -48,10 +47,3 @@ interface MealIngredientDao {
             @BindList deleteIngredientIds: List<Int>
     ): List<DbMealIngredientDto>
 }
-
-//Variable names must match sql columns
-data class MealIngredientParam(
-        val meal_submission_id: Int,
-        val ingredient_submission_id: Int,
-        val quantity: Int
-)
