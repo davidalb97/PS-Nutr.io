@@ -5,11 +5,9 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.util.UriComponentsBuilder
 import pt.isel.ps.g06.httpserver.common.*
-import pt.isel.ps.g06.httpserver.common.exception.MealNotFoundException
 import pt.isel.ps.g06.httpserver.common.exception.RestaurantNotFoundException
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.RestaurantApiType
 import pt.isel.ps.g06.httpserver.dataAccess.input.RestaurantInput
-import pt.isel.ps.g06.httpserver.dataAccess.input.RestaurantMealInput
 import pt.isel.ps.g06.httpserver.dataAccess.input.VoteInput
 import pt.isel.ps.g06.httpserver.dataAccess.model.SimplifiedRestaurantOutputModel
 import pt.isel.ps.g06.httpserver.dataAccess.model.toSimplifiedRestaurant
@@ -24,7 +22,7 @@ private const val INVALID_RESTAURANT_SEARCH = "To search nearby restaurants, a g
 
 @Suppress("MVCPathVariableInspection") //False positive for IntelliJ
 @RestController
-@RequestMapping(RESTAURANTS, produces = [MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_PROBLEM_JSON_VALUE])
+@RequestMapping(produces = [MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_PROBLEM_JSON_VALUE])
 class RestaurantController(
         private val restaurantService: RestaurantService,
         private val mealService: MealService,
@@ -39,19 +37,19 @@ class RestaurantController(
      * @param radius optional, changes the search radius in a circle (meters).
      *  @param apiType allows the user to select which API to search from. See [RestaurantApiType].
      */
-    @GetMapping(consumes = [MediaType.ALL_VALUE])
+    @GetMapping(RESTAURANTS, consumes = [MediaType.ALL_VALUE])
     fun searchRestaurants(
             latitude: Float?,
             longitude: Float?,
             name: String?,
             radius: Int?,
-            apiType: String?,
-            userId: Int
+            apiType: String?
     ): Collection<SimplifiedRestaurantOutputModel> {
         if (latitude == null || longitude == null) {
             throw InvalidInputException(InvalidInputDomain.SEARCH_RESTAURANT, INVALID_RESTAURANT_SEARCH)
         }
 
+        val userId = 10 //TODO When authentication is done
         val nearbyRestaurants = restaurantService.getNearbyRestaurants(
                 latitude = latitude,
                 longitude = longitude,
@@ -79,7 +77,7 @@ class RestaurantController(
         return ResponseEntity.ok().body(restaurant)
     }
 
-    @PostMapping(consumes = [MediaType.APPLICATION_JSON_VALUE])
+    @PostMapping(RESTAURANTS, consumes = [MediaType.APPLICATION_JSON_VALUE])
     fun createRestaurant(@Valid @RequestBody restaurant: RestaurantInput): ResponseEntity<Void> {
         val submitterId = 10        //TODO For when there's authentication
 
@@ -95,44 +93,6 @@ class RestaurantController(
                 .created(UriComponentsBuilder
                         .fromUriString(RESTAURANT)
                         .buildAndExpand(createdRestaurant.identifier.toString())
-                        .toUri())
-                .build()
-    }
-
-    @PostMapping(RESTAURANT_MEALS, consumes = [MediaType.APPLICATION_JSON_VALUE])
-    fun addRestaurantMeal(
-            @PathVariable(RESTAURANT_ID_VALUE) id: String,
-            @Valid @RequestBody restaurantMeal: RestaurantMealInput
-    ): ResponseEntity<Void> {
-        val userId = 10  //TODO For when there's authentication
-        val (submitterId, submissionId, apiId) = restaurantIdentifierBuilder.extractIdentifiers(id)
-
-        var restaurant = restaurantService.getRestaurant(
-                submitterId = submitterId,
-                submissionId = submissionId,
-                apiId = apiId,
-                userId = userId
-        ) ?: throw RestaurantNotFoundException()
-
-        val meal = mealService.getMeal(restaurantMeal.mealId!!) ?: throw MealNotFoundException()
-
-        if (!restaurant.isPresentInDatabase()) {
-            restaurant = restaurantService.createRestaurant(
-                    submitterId = submitterId,
-                    apiId = apiId,
-                    restaurantName = restaurant.name,
-                    cuisines = restaurant.cuisines.value,
-                    latitude = restaurant.latitude,
-                    longitude = restaurant.longitude
-            )
-        }
-
-        val restaurantMealId = restaurantService.addRestaurantMeal(restaurant, meal, userId)
-
-        return ResponseEntity
-                .created(UriComponentsBuilder
-                        .fromUriString(RESTAURANT_MEAL)
-                        .buildAndExpand(restaurantMealId)
                         .toUri())
                 .build()
     }

@@ -12,10 +12,10 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.repo.CuisineDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.MealDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.RestaurantDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.model.RestaurantDto
-import pt.isel.ps.g06.httpserver.model.Votes
 import pt.isel.ps.g06.httpserver.model.Meal
 import pt.isel.ps.g06.httpserver.model.Restaurant
 import pt.isel.ps.g06.httpserver.model.RestaurantIdentifier
+import pt.isel.ps.g06.httpserver.model.Votes
 import pt.isel.ps.g06.httpserver.util.log
 
 @Component
@@ -130,8 +130,8 @@ class DbRestaurantResponseMapper(
                 meals = lazy { emptyList<Meal>() },
                 //TODO - Handle obtaining meals for Database restaurant: Should it only get from DB? Also from API?
                 votes = Votes(
-                        dto.positiveVotes,
-                        dto.negativeVotes
+                        dto.positive_count,
+                        dto.negative_count
                 )
         )
     }

@@ -1,18 +1,19 @@
 package pt.isel.ps.g06.httpserver.dataAccess.db
 
-import org.springframework.context.annotation.Bean
 import org.springframework.stereotype.Repository
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.RestaurantApiType
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbSubmitterDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.SubmitterDbRepository
+import javax.annotation.PostConstruct
 
 @Repository
 data class ApiSubmitterMapper(
-        private val submitterDbRepository: SubmitterDbRepository,
-        private val apiSubmitters: Map<Int, RestaurantApiType>
+        private val submitterDbRepository: SubmitterDbRepository
 ) {
-    @Bean
-    protected fun createMap(): Map<Int, RestaurantApiType> {
+    private lateinit var apiSubmitters: Map<Int, RestaurantApiType>
+
+    @PostConstruct
+    protected fun createMap() {
         val submitters = submitterDbRepository
                 .getApiSubmittersByName(RestaurantApiType.values().map { it.toString() })
                 .associate(this::buildSubmitterPair)
@@ -22,8 +23,9 @@ data class ApiSubmitterMapper(
             throw IllegalStateException()
         }
 
-        return submitters
+        apiSubmitters = submitters
     }
+
 
     fun getApiType(id: Int): RestaurantApiType? = apiSubmitters[id]
 

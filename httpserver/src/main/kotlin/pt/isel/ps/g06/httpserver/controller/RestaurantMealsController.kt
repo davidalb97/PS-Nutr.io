@@ -1,29 +1,86 @@
 package pt.isel.ps.g06.httpserver.controller
 
 import org.springframework.http.MediaType
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.util.UriComponentsBuilder
 import pt.isel.ps.g06.httpserver.common.*
+import pt.isel.ps.g06.httpserver.common.exception.MealNotFoundException
+import pt.isel.ps.g06.httpserver.common.exception.RestaurantNotFoundException
+import pt.isel.ps.g06.httpserver.dataAccess.input.RestaurantMealInput
 import pt.isel.ps.g06.httpserver.dataAccess.model.SimplifiedMealOutputModel
-import pt.isel.ps.g06.httpserver.dataAccess.model.toSimplifiedMeal
-import pt.isel.ps.g06.httpserver.model.Meal
 import pt.isel.ps.g06.httpserver.service.MealService
+import pt.isel.ps.g06.httpserver.service.RestaurantService
+import javax.validation.Valid
 
 @Suppress("MVCPathVariableInspection")
 @RestController
-@RequestMapping(
-        produces = [MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_PROBLEM_JSON_VALUE],
-        consumes = [MediaType.APPLICATION_JSON_VALUE]
-)
-class RestaurantMealsController(private val mealService: MealService) {
+@RequestMapping(produces = [MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_PROBLEM_JSON_VALUE])
+class RestaurantMealsController(
+        private val mealService: MealService,
+        private val restaurantService: RestaurantService,
+        private val restaurantIdentifierBuilder: RestaurantIdentifierBuilder
+) {
 
-    @GetMapping(RESTAURANT_MEALS)
-    fun getMealsFromRestaurant(@PathVariable(RESTAURANT_ID_VALUE) id: Int): Collection<SimplifiedMealOutputModel>? =
-            mealService.getAllMealsFromRestaurant(id)?.map { toSimplifiedMeal(it) }
+    @GetMapping(RESTAURANT_MEALS, consumes = [MediaType.ALL_VALUE])
+    fun getMealsFromRestaurant(
+            @PathVariable(RESTAURANT_ID_VALUE) restaurantId: String
+    ): ResponseEntity<Collection<SimplifiedMealOutputModel>> {
+//        val userId = 10
+//        val (submitterId, submissionId, apiId) = restaurantIdentifierBuilder.extractIdentifiers(restaurantId)
+//
+//
+//        val restaurant = restaurantService
+//                .getRestaurant(submitterId, userId, submissionId, apiId)
+//                ?: throw RestaurantNotFoundException()
+//
+//
+//        val meals = mealService
+//                .getAllMealsFromRestaurant(restaurantId)
+//                .map { toSimplifiedMeal(it) }
+
+        //TODO Merge with Miguel
+        return ResponseEntity.ok().body(emptyList())
+    }
 
 
-    @PostMapping(RESTAURANT_MEALS)
-    fun addRestaurantMeal(@PathVariable(RESTAURANT_ID_VALUE) id: String, @RequestBody meal: String) {
+    @PostMapping(RESTAURANT_MEALS, consumes = [MediaType.APPLICATION_JSON_VALUE])
+    fun addRestaurantMeal(
+            @PathVariable(RESTAURANT_ID_VALUE) id: String,
+            @Valid @RequestBody restaurantMeal: RestaurantMealInput
+    ): ResponseEntity<Void> {
+        val userId = 10  //TODO For when there's authentication
+        val (submitterId, submissionId, apiId) = restaurantIdentifierBuilder.extractIdentifiers(id)
 
+        var restaurant = restaurantService.getRestaurant(
+                submitterId = submitterId,
+                submissionId = submissionId,
+                apiId = apiId,
+                userId = userId
+        ) ?: throw RestaurantNotFoundException()
+
+        val meal = mealService.getMeal(restaurantMeal.mealId!!) ?: throw MealNotFoundException()
+
+        if (!restaurant.isPresentInDatabase()) {
+            restaurant = restaurantService.createRestaurant(
+                    submitterId = submitterId,
+                    apiId = apiId,
+                    restaurantName = restaurant.name,
+                    cuisines = restaurant.cuisines.value,
+                    latitude = restaurant.latitude,
+                    longitude = restaurant.longitude
+            )
+        }
+
+        //TODO Disable user adding hardcoded meals
+        val restaurantMealId = restaurantService.addRestaurantMeal(restaurant, meal, userId)
+
+        return ResponseEntity
+                .created(UriComponentsBuilder
+                        .fromUriString(RESTAURANT_MEAL)
+                        .buildAndExpand(restaurantMealId)
+                        .toUri())
+                .build()
     }
 
     @PostMapping(RESTAURANT_MEAL_PORTION)

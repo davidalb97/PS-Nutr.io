@@ -3,7 +3,7 @@ package pt.isel.ps.g06.httpserver.common
 import org.springframework.stereotype.Component
 import pt.isel.ps.g06.httpserver.model.RestaurantIdentifier
 
-private const val ID_SEPARATOR = ";"
+const val ID_SEPARATOR = "+"
 private const val NUMBER_OF_IDS = 3
 
 @Component

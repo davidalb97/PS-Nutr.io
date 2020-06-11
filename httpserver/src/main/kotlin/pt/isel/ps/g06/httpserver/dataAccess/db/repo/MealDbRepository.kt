@@ -40,7 +40,7 @@ class MealDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo(jdbi)
         }
     }
 
-    fun getAllMealsFromRestaurant(restaurantId: Int): Collection<DbMealDto> {
+    fun getAllRestaurantMeals(restaurantId: Int): Collection<DbMealDto> {
         return jdbi.inTransaction<Collection<DbMealDto>, Exception>(isolationLevel) {
             return@inTransaction it.attach(mealDaoClass).getAllByRestaurantId(restaurantId)
         }

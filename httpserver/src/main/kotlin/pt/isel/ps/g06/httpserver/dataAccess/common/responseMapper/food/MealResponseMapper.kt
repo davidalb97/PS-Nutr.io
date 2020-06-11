@@ -14,8 +14,8 @@ class MealResponseMapper : ResponseMapper<DbMealInfoDto, Meal> {
                 identifier = dto.submission_id,
                 name = dto.meal_name,
                 votes = Votes(
-                        positive = dto.positiveVotes,
-                        negative = dto.negativeVotes
+                        positive = dto.positive_count,
+                        negative = dto.negative_count
                 ),
                 //TODO Meal info
                 ingredients = emptySequence(),

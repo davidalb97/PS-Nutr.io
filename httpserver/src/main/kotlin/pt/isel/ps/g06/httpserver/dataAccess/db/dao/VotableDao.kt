@@ -7,7 +7,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbVotesDto
 interface VotableDao {
 
     companion object {
-        const val table = "Votable"
+        const val table = "Votes"
         const val id = "submission_id"
         const val positiveCount = "positive_count"
         const val negativeCount = "negative_count"

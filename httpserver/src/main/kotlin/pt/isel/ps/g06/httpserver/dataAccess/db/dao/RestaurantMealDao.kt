@@ -26,7 +26,7 @@ interface RestaurantMealDao {
     fun getAllByMealId(@Bind mealId: Int): List<DbRestaurantMealDto>
 
     @SqlQuery("SELECT * FROM $table WHERE $restaurantId = :restaurantId")
-    fun getAllByRestaurantId(@Bind restaurantId: Int): List<DbRestaurantMealDto>
+    fun getAllByRestaurantId(@Bind restaurantId: Int): Collection<DbRestaurantMealDto>
 
     @SqlQuery("INSERT INTO $table($id, $restaurantId, $mealId)" +
             " VALUES(:submissionId, :restaurantId, :mealId) RETURNING *")

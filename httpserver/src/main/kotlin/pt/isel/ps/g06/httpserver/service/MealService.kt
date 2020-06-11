@@ -13,16 +13,18 @@ class MealService(
         private val mealDbRepository: MealDbRepository
 ) {
 
-    fun getAllMealsFromRestaurant(restaurantId: Int): Collection<Meal>? {
+    fun getAllMealsFromRestaurant(restaurantId: Int): Collection<Meal> {
         return mealDbRepository
-                .getAllMealsFromRestaurant(restaurantId)
+                .getAllRestaurantMeals(restaurantId)
                 //TODO mapTo Meal
                 .map { Meal(1, "Placeholder", emptySequence(), 10, votes = Votes(10, 10)) }
 //                .map { mealResponseMapper.mapTo(it) }
     }
 
     fun getMeal(mealId: Int): Meal? {
-        return mealDbRepository.getById(mealId)?.let(mealResponseMapper::mapTo)
+        return mealDbRepository
+                .getById(mealId)
+                ?.let(mealResponseMapper::mapTo)
     }
 
     fun createMeal(

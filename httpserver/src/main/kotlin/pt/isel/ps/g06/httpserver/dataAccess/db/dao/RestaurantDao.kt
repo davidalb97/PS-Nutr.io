@@ -36,13 +36,13 @@ interface RestaurantDao {
     @SqlQuery("SELECT * FROM $table WHERE $id = :submissionId")
     fun getBySubmissionId(@Bind submissionId: Int): DbRestaurantDto?
 
-    @SqlQuery("SELECT $table.$id, $table.$name" +
-            "FROM $table" +
-            "INNER JOIN $SS_table" +
-            "ON $SS_table.$SS_submissionId = $table.$id" +
-            "INNER JOIN $AS_table" +
-            "ON $AS_table.$AS_submissionId = $table.$id" +
-            "WHERE $SS_table.$SS_submitterId = :apiSubmitterId" +
+    @SqlQuery("SELECT $table.$id, $table.$name, $table.$latitude, $table.$longitude " +
+            "FROM $table " +
+            "INNER JOIN $SS_table " +
+            "ON $SS_table.$SS_submissionId = $table.$id " +
+            "INNER JOIN $AS_table " +
+            "ON $AS_table.$AS_submissionId = $table.$id " +
+            "WHERE $SS_table.$SS_submitterId = :apiSubmitterId " +
             "AND $AS_table.$AS_apiId = :apiId"
     )
     fun getApiRestaurant(@Bind apiSubmitterId: Int, @Bind apiId: String): DbRestaurantDto?
