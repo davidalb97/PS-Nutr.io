@@ -1,11 +1,12 @@
 package pt.isel.ps.g06.httpserver.model
 
-class Restaurant(
+open class RestaurantItem(
         val identifier: String,
         val name: String,
         val latitude: Float,
         val longitude: Float,
-        val cuisines: Lazy<Collection<String>>,
-        val meals: Lazy<Collection<Meal>>,
-        val votes: Votes
+        val image: String?,
+        val votes: Votes,
+        val userVote: Boolean?,
+        val isFavorite: Boolean
 )

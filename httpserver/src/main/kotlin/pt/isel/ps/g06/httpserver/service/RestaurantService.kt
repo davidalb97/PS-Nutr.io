@@ -3,11 +3,14 @@ package pt.isel.ps.g06.httpserver.service
 import org.springframework.stereotype.Service
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.RestaurantApiType
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.mapper.RestaurantApiMapper
-import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.restaurant.RestaurantResponseMapper
+import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.restaurant.RestaurantInfoResponseMapper
+import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.restaurant.RestaurantItemResponseMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbSubmissionDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.RestaurantDbRepository
+import pt.isel.ps.g06.httpserver.dataAccess.db.repo.RestaurantMealDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.input.RestaurantInput
-import pt.isel.ps.g06.httpserver.model.Restaurant
+import pt.isel.ps.g06.httpserver.model.RestaurantInfo
+import pt.isel.ps.g06.httpserver.model.RestaurantItem
 
 private const val MAX_RADIUS = 1000
 
@@ -15,8 +18,10 @@ private const val MAX_RADIUS = 1000
 @Service
 class RestaurantService(
         private val dbRestaurantRepository: RestaurantDbRepository,
+        private val dbRestaurantMealRepository: RestaurantMealDbRepository,
         private val restaurantApiMapper: RestaurantApiMapper,
-        private val restaurantResponseMapper: RestaurantResponseMapper
+        private val restaurantInfoResponseMapper: RestaurantInfoResponseMapper,
+        private val restaurantItemResponseMapper: RestaurantItemResponseMapper
         /*,
         private val transactionHolder: TransactionHolder*/
 ) {
@@ -28,7 +33,7 @@ class RestaurantService(
             radius: Int?,
             apiType: String?,
             userId: Int
-    ): Collection<Restaurant> {
+    ): Collection<RestaurantItem> {
         val chosenRadius = if (radius != null && radius <= MAX_RADIUS) radius else MAX_RADIUS
         val type = RestaurantApiType.getOrDefault(apiType)
         val restaurantApi = restaurantApiMapper.getRestaurantApi(type)
@@ -37,12 +42,12 @@ class RestaurantService(
         val apiRestaurants =
                 restaurantApi.searchNearbyRestaurants(latitude, longitude, chosenRadius, name)
                         .thenApply {
-                            it.map(restaurantResponseMapper::mapTo)
+                            it.map{restaurantItemResponseMapper.mapTo(it, userId) }
                         }
 
         return dbRestaurantRepository
                 .getAllByCoordinates(latitude, longitude, chosenRadius, userId)
-                .map(restaurantResponseMapper::mapTo)
+                .map{restaurantItemResponseMapper.mapTo(it, userId) }
                 .let { filterRedundantApiRestaurants(it, apiRestaurants.get()) }
 
         //Keeps an open transaction while we iterate the DB response Stream
@@ -72,19 +77,25 @@ class RestaurantService(
      * @param apiType describes which api to search the Restaurant. See [RestaurantApiType] for possible types.
      * Defaults to [RestaurantApiType.Here]
      */
-    fun getRestaurant(id: String, apiType: String?, userId: Int): Restaurant? {
+    fun getRestaurant(id: String, apiType: String?, userId: Int): RestaurantInfo? {
         val type = RestaurantApiType.getOrDefault(apiType)
         val restaurantApi = restaurantApiMapper.getRestaurantApi(type)
 
         //If 'id' cannot be converted to Integer, then don't search in database.
         //This is a specification that happens because all restaurants are submissions, and as such,
         //their unique identifier is always an auto-incremented integer
+
         val restaurant = id
                 .toIntOrNull()
-                ?.let { dbRestaurantRepository.getById(it, userId) }
+                ?.let {
+                    val restaurantMeals = dbRestaurantMealRepository.getItemsByRestaurantId(it, userId)
+                    dbRestaurantRepository.getInfoById(it, userId, restaurantMeals)
+                }
                 ?: restaurantApi.getRestaurantInfo(id).get()
 
-        return restaurant?.let(restaurantResponseMapper::mapTo)
+        return restaurant?.let {
+            restaurantInfoResponseMapper.mapTo(it, userId)
+        }
     }
 
     fun createRestaurant(restaurant: RestaurantInput): DbSubmissionDto {
@@ -98,7 +109,7 @@ class RestaurantService(
         )
     }
 
-    private fun filterRedundantApiRestaurants(dbRestaurants: Collection<Restaurant>, apiRestaurants: Collection<Restaurant>): Collection<Restaurant> {
+    private fun filterRedundantApiRestaurants(dbRestaurants: Collection<RestaurantItem>, apiRestaurants: Collection<RestaurantItem>): Collection<RestaurantItem> {
         //Join db restaurants with filtered api restaurants
         return dbRestaurants.union(
                 //Filter api restaurants that already exist in db

@@ -1,7 +1,8 @@
 package pt.isel.ps.g06.httpserver.model
 
-data class Meal(
+open class MealItem(
         val identifier: Int,
         val name: String,
-        val votes: Votes
+        val isFavorite: Boolean,
+        val image: String?
 )

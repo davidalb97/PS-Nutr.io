@@ -12,7 +12,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.model.SimplifiedRestaurantOutputMode
 import pt.isel.ps.g06.httpserver.dataAccess.model.toSimplifiedRestaurant
 import pt.isel.ps.g06.httpserver.exception.InvalidInputDomain
 import pt.isel.ps.g06.httpserver.exception.InvalidInputException
-import pt.isel.ps.g06.httpserver.model.Restaurant
+import pt.isel.ps.g06.httpserver.model.RestaurantInfo
 import pt.isel.ps.g06.httpserver.service.RestaurantService
 import javax.validation.Valid
 
@@ -57,7 +57,7 @@ class RestaurantController(private val restaurantService: RestaurantService) {
     }
 
     @GetMapping(RESTAURANT, consumes = [MediaType.ALL_VALUE])
-    fun getRestaurantInformation(@PathVariable(RESTAURANT_ID_VALUE) id: String, @RequestParam api: String?): Restaurant {
+    fun getRestaurantInformation(@PathVariable(RESTAURANT_ID_VALUE) id: String, @RequestParam api: String?): RestaurantInfo {
         val userId: Int = TODO("userId must be fetched")
         return restaurantService.getRestaurant(id, api, userId) ?: throw RestaurantNotFoundException()
     }

@@ -1,21 +1,21 @@
 package pt.isel.ps.g06.httpserver.dataAccess.db.dto.info
 
-import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbVotesDto
-import pt.isel.ps.g06.httpserver.dataAccess.model.RestaurantDto
+import pt.isel.ps.g06.httpserver.dataAccess.model.RestaurantInfoDto
+import pt.isel.ps.g06.httpserver.model.Votes
 
 class DbRestaurantInfoDto(
-        val submitterId: Int,
-        val submission_id: Int,
-        val apiId: Int?,
-        restaurant_name: String,
-        latitude: Float,
-        longitude: Float,
-        val positiveVotes: Int,
-        val negativeVotes: Int,
-        val vote: Boolean?
-) : RestaurantDto(
-        submission_id.toString(),
-        restaurant_name,
-        latitude,
-        longitude
+        val restaurantItem: DbRestaurantItemDto,
+        val cuisines: Collection<String>,
+        val restaurantMeals: Collection<DbRestaurantMealItemDto>
+) : RestaurantInfoDto(
+        id = "${restaurantItem.restaurant.submission_id}",
+        name = restaurantItem.restaurant.restaurant_name,
+        latitude = restaurantItem.restaurant.latitude,
+        longitude = restaurantItem.restaurant.longitude,
+        votes = Votes(
+                positive = restaurantItem.public.votes.positive_count,
+                negative = restaurantItem.public.votes.negative_count
+        ),
+        userVote = restaurantItem.public.userVote,
+        isFavorite = restaurantItem.isFavorite
 )
