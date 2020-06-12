@@ -6,7 +6,6 @@ class MealInfo(
     val carbs: Int,
     val amount: Int,
     val unit: String,
-    val votes: Votes,
     val imageUrl: String?,
     val ingredients: Iterable<Ingredient>
 )

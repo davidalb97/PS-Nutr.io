@@ -12,7 +12,7 @@ class SimplifiedRestaurantInputMapper {
             latitude = dto.latitude,
             longitude = dto.longitude,
             votes = Votes(dto.votes!!.userHasVoted, dto.votes.positive, dto.votes.negative),
-            isFavorite = dto.isFavorite
+            isFavorite = if (dto.isFavorite!!) 1 else 0
     )
 
     fun mapToListModel(dtos: Iterable<SimplifiedRestaurantInput>) = dtos.map(::mapToModel)

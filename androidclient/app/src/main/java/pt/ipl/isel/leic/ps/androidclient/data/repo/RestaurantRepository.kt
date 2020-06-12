@@ -15,7 +15,7 @@ class RestaurantRepository(private val dataSource: RestaurantDataSource) {
 
     private val apiIngredientMapper = InputIngredientMapper()
     private val apiMealMapper = DetailedMealInputMapper(apiIngredientMapper)
-    private val apiRestaurantMapper = SimplifiedRestaurantInputMapper(apiMealMapper)
+    private val apiRestaurantMapper = SimplifiedRestaurantInputMapper()
 
     fun getRestaurantById(
         success: (Restaurant) -> Unit,

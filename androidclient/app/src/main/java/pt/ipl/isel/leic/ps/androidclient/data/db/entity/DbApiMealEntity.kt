@@ -10,12 +10,14 @@ import androidx.room.PrimaryKey
 )
 data class DbApiMealEntity(
     val submissionId: Int,
-    val positiveVotes: Int,
-    val negativeVotes: Int,
     val name: String,
+    val isFavorite: Byte,
+    /*val positiveVotes: Int,
+    val negativeVotes: Int,
+    val userHasVoted: Boolean,
     val carbs: Int,
     val amount: Int,
-    val unit: String,
+    val unit: String,*/
     val imageUrl: String?
 ) {
     companion object {

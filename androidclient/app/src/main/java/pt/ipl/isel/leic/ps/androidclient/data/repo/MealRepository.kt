@@ -6,6 +6,7 @@ import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.roomDb
 import pt.ipl.isel.leic.ps.androidclient.data.api.datasource.MealDataSource
 import pt.ipl.isel.leic.ps.androidclient.data.api.mapper.InputIngredientMapper
 import pt.ipl.isel.leic.ps.androidclient.data.api.mapper.DetailedMealInputMapper
+import pt.ipl.isel.leic.ps.androidclient.data.api.mapper.SimplifiedMealInputMapper
 import pt.ipl.isel.leic.ps.androidclient.data.db.mapper.DbApiMealMapper
 import pt.ipl.isel.leic.ps.androidclient.data.db.mapper.DbCustomMealMapper
 import pt.ipl.isel.leic.ps.androidclient.data.db.mapper.DbFavoriteMealMapper
@@ -24,7 +25,7 @@ class MealRepository(private val dataSource: MealDataSource) {
     val dbFavoriteMealMapper = DbFavoriteMealMapper(dbIngredientMapper)
     val dbApiMealMapper = DbApiMealMapper(dbIngredientMapper)
     val inputIngredientMapper = InputIngredientMapper()
-    val inputMealMapper = DetailedMealInputMapper(inputIngredientMapper)
+    val inputMealMapper = SimplifiedMealInputMapper()
 
     fun getAllCustomMeals(): LiveData<List<DbCustomMealRelation>> = roomDb.customMealDao().getAll()
 

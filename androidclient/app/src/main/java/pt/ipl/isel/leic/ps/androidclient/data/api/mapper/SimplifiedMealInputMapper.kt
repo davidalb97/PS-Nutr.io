@@ -6,11 +6,11 @@ import pt.ipl.isel.leic.ps.androidclient.data.model.Meal
 class SimplifiedMealInputMapper() {
     fun mapToModel(dto: SimplifiedMealInput) =
         Meal(
-            submissionId = dto.submission_id,
-            name = dto.meal_name,
-            votes = dto.votes,
-            isFavorite = dto.isFavorite,
-            imageUrl = dto.image,
+            dbId = 0,
+            submissionId = dto.id,
+            name = dto.name,
+            isFavorite = if (dto.isFavorite) 1 else 0,
+            imageUrl = dto.image.toString()
         )
 
     fun mapToListModel(dtos: Iterable<SimplifiedMealInput>) = dtos.map(::mapToModel)

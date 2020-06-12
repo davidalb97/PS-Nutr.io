@@ -1,9 +1,7 @@
 package pt.ipl.isel.leic.ps.androidclient.data.db.mapper
 
-import pt.ipl.isel.leic.ps.androidclient.data.db.entity.DbCustomMealEntity
 import pt.ipl.isel.leic.ps.androidclient.data.db.entity.DbFavoriteMealEntity
 import pt.ipl.isel.leic.ps.androidclient.data.db.relation.DbFavoriteMealRelation
-import pt.ipl.isel.leic.ps.androidclient.data.model.CustomMeal
 import pt.ipl.isel.leic.ps.androidclient.data.model.FavoriteMeal
 import pt.ipl.isel.leic.ps.androidclient.data.model.Votes
 
@@ -17,6 +15,7 @@ class DbFavoriteMealMapper(private val dbIngredientMapper: DbIngredientMapper) {
         amount = relation.entity.amount,
         unit = relation.entity.unit,
         votes = Votes(
+            relation.entity.userHasVoted,
             relation.entity.positiveVotes,
             relation.entity.negativeVotes
         ),
@@ -29,6 +28,7 @@ class DbFavoriteMealMapper(private val dbIngredientMapper: DbIngredientMapper) {
             submissionId = model.submissionId,
             positiveVotes = model.votes.positive,
             negativeVotes = model.votes.negative,
+            userHasVoted = model.votes.userHasVoted!!,
             name = model.name,
             carbs = model.carbs,
             amount = model.amount,

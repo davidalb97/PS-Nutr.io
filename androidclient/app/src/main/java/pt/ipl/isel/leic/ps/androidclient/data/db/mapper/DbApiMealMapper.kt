@@ -11,29 +11,16 @@ class DbApiMealMapper(private val dbIngredientMapper: DbIngredientMapper) {
         dbId = relation.entity.primaryKey,
         submissionId = relation.entity.submissionId,
         name = relation.entity.name,
-        carbs = relation.entity.carbs,
-        amount = relation.entity.amount,
-        unit = relation.entity.unit,
-        votes = Votes(
-            relation.entity.positiveVotes,
-            relation.entity.negativeVotes
-        ),
-        imageUrl = relation.entity.imageUrl,
-        ingredients = dbIngredientMapper.mapToListModel(relation.ingredients)
+        isFavorite = relation.entity.isFavorite,
+        imageUrl = relation.entity.imageUrl
     )
 
     fun mapToRelation(model: Meal) = DbApiMealRelation(
         entity = DbApiMealEntity(
             submissionId = model.submissionId,
-            positiveVotes = model.votes.positive,
-            negativeVotes = model.votes.negative,
-            name = model.name,
-            carbs = model.carbs,
-            amount = model.amount,
-            unit = model.unit,
+            isFavorite = model.isFavorite!!,
             imageUrl = model.imageUrl
         ),
-        ingredients = dbIngredientMapper.mapToListDto(model.ingredients)
     ).also { dto ->
         dto.entity.primaryKey = model.dbId
     }

@@ -9,7 +9,7 @@ data class Restaurant(
     val latitude: Float,
     val longitude: Float,
     val votes: Votes?,
-    val isFavorite: Boolean?
+    val isFavorite: Byte
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         id = parcel.readString()!!,
@@ -17,7 +17,7 @@ data class Restaurant(
         latitude = parcel.readFloat(),
         longitude = parcel.readFloat(),
         votes = parcel.readParcelable<Votes>(Votes::class.java.classLoader)!!,
-        isFavorite = parcel.readBoolean()
+        isFavorite = parcel.readByte()
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -27,7 +27,7 @@ data class Restaurant(
         parcel.writeValue(longitude)
         //Does not need to close resources, using flag 0
         parcel.writeParcelable(votes, 0)
-        parcel.writeBoolean(isFavorite)
+        parcel.writeByte(isFavorite)
     }
 
     override fun describeContents(): Int {

@@ -4,17 +4,17 @@ import android.os.Parcel
 import android.os.Parcelable
 
 data class Meal(
+    val dbId: Long,
     val submissionId: Int,
     val name: String,
-    val votes: Votes,
-    val isFavorite: Boolean?,
+    val isFavorite: Byte?,
     val imageUrl: String?
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
+        dbId = parcel.readLong(),
         submissionId = parcel.readInt(),
         name = parcel.readString()!!,
-        votes = parcel.readParcelable<Votes>(Votes::class.java.classLoader)!!,
-        isFavorite = parcel.readBoolean(),
+        isFavorite = parcel.readByte(),
         imageUrl = parcel.readString()
     )
 
@@ -22,7 +22,6 @@ data class Meal(
         parcel.writeInt(submissionId)
         parcel.writeString(name)
         //Does not need to close resources, using flag 0
-        parcel.writeParcelable(votes, 0)
         parcel.writeString(imageUrl)
     }
 

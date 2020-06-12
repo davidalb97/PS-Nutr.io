@@ -12,6 +12,7 @@ data class DbFavoriteMealEntity(
     val submissionId: Int,
     val positiveVotes: Int,
     val negativeVotes: Int,
+    val userHasVoted: Boolean,
     val name: String,
     val carbs: Int,
     val amount: Int,
