@@ -2,12 +2,12 @@ package pt.ipl.isel.leic.ps.androidclient.data.db.mapper
 
 import pt.ipl.isel.leic.ps.androidclient.data.db.entity.DbApiMealEntity
 import pt.ipl.isel.leic.ps.androidclient.data.db.relation.DbApiMealRelation
-import pt.ipl.isel.leic.ps.androidclient.data.model.ApiMeal
+import pt.ipl.isel.leic.ps.androidclient.data.model.Meal
 import pt.ipl.isel.leic.ps.androidclient.data.model.Votes
 
 class DbApiMealMapper(private val dbIngredientMapper: DbIngredientMapper) {
 
-    fun mapToModel(relation: DbApiMealRelation) = ApiMeal(
+    fun mapToModel(relation: DbApiMealRelation) = Meal(
         dbId = relation.entity.primaryKey,
         submissionId = relation.entity.submissionId,
         name = relation.entity.name,
@@ -22,7 +22,7 @@ class DbApiMealMapper(private val dbIngredientMapper: DbIngredientMapper) {
         ingredients = dbIngredientMapper.mapToListModel(relation.ingredients)
     )
 
-    fun mapToRelation(model: ApiMeal) = DbApiMealRelation(
+    fun mapToRelation(model: Meal) = DbApiMealRelation(
         entity = DbApiMealEntity(
             submissionId = model.submissionId,
             positiveVotes = model.votes.positive,

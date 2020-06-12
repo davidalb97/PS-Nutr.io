@@ -1,14 +1,17 @@
 package pt.ipl.isel.leic.ps.androidclient.data.model
 
+import android.annotation.SuppressLint
 import android.os.Parcel
 import android.os.Parcelable
 
 data class Votes(
+    val userHasVoted: Boolean?,
     val positive: Int,
     val negative: Int
 ) : Parcelable {
 
     constructor(parcel: Parcel) : this(
+        userHasVoted = parcel.readBoolean(),
         positive = parcel.readInt(),
         negative = parcel.readInt()
     )

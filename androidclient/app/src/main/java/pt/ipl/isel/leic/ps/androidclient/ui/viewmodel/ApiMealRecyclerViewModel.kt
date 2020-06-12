@@ -2,12 +2,10 @@ package pt.ipl.isel.leic.ps.androidclient.ui.viewmodel
 
 import android.os.Parcel
 import android.os.Parcelable
-import pt.ipl.isel.leic.ps.androidclient.NutrioApp
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.mealRepository
-import pt.ipl.isel.leic.ps.androidclient.data.db.NutrioDb
-import pt.ipl.isel.leic.ps.androidclient.data.model.ApiMeal
+import pt.ipl.isel.leic.ps.androidclient.data.model.Meal
 
-class ApiMealRecyclerViewModel(val restaurantIdentifier: Int) : ARecyclerViewModel<ApiMeal>() {
+class ApiMealRecyclerViewModel(val restaurantIdentifier: Int) : ARecyclerViewModel<Meal>() {
 
     constructor(parcel: Parcel) : this(
         parcel.readInt()

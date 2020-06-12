@@ -2,13 +2,11 @@ package pt.ipl.isel.leic.ps.androidclient.ui.viewholder
 
 import android.content.Context
 import android.os.Bundle
-import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
-import androidx.cardview.widget.CardView
 import androidx.navigation.findNavController
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.Restaurant

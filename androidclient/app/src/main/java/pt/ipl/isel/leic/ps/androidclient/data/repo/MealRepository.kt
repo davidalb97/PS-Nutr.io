@@ -5,14 +5,14 @@ import com.android.volley.VolleyError
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.roomDb
 import pt.ipl.isel.leic.ps.androidclient.data.api.datasource.MealDataSource
 import pt.ipl.isel.leic.ps.androidclient.data.api.mapper.InputIngredientMapper
-import pt.ipl.isel.leic.ps.androidclient.data.api.mapper.InputMealMapper
+import pt.ipl.isel.leic.ps.androidclient.data.api.mapper.DetailedMealInputMapper
 import pt.ipl.isel.leic.ps.androidclient.data.db.mapper.DbApiMealMapper
 import pt.ipl.isel.leic.ps.androidclient.data.db.mapper.DbCustomMealMapper
 import pt.ipl.isel.leic.ps.androidclient.data.db.mapper.DbFavoriteMealMapper
 import pt.ipl.isel.leic.ps.androidclient.data.db.mapper.DbIngredientMapper
 import pt.ipl.isel.leic.ps.androidclient.data.db.relation.DbCustomMealRelation
 import pt.ipl.isel.leic.ps.androidclient.data.db.relation.DbFavoriteMealRelation
-import pt.ipl.isel.leic.ps.androidclient.data.model.ApiMeal
+import pt.ipl.isel.leic.ps.androidclient.data.model.Meal
 import pt.ipl.isel.leic.ps.androidclient.data.model.CustomMeal
 import pt.ipl.isel.leic.ps.androidclient.data.model.FavoriteMeal
 import pt.ipl.isel.leic.ps.androidclient.data.util.AsyncWorker
@@ -24,7 +24,7 @@ class MealRepository(private val dataSource: MealDataSource) {
     val dbFavoriteMealMapper = DbFavoriteMealMapper(dbIngredientMapper)
     val dbApiMealMapper = DbApiMealMapper(dbIngredientMapper)
     val inputIngredientMapper = InputIngredientMapper()
-    val inputMealMapper = InputMealMapper(inputIngredientMapper)
+    val inputMealMapper = DetailedMealInputMapper(inputIngredientMapper)
 
     fun getAllCustomMeals(): LiveData<List<DbCustomMealRelation>> = roomDb.customMealDao().getAll()
 
@@ -49,7 +49,7 @@ class MealRepository(private val dataSource: MealDataSource) {
 
     fun getAllApiMealsByRestaurant(
         restaurantIdentifier: Int,
-        success: (List<ApiMeal>) -> Unit,
+        success: (List<Meal>) -> Unit,
         error: (VolleyError) -> Unit,
         uriParameters: HashMap<String, String>?,
         count: Int,
@@ -64,13 +64,13 @@ class MealRepository(private val dataSource: MealDataSource) {
             skip
         )
     }
-
-    fun insertFavoriteMeal(apiMeal: ApiMeal) = AsyncWorker<Unit, Unit> {
+    fun insertFavoriteMeal(apiMeal: Meal) = AsyncWorker<Unit, Unit> {
         roomDb.apiMealDao().insert(dbApiMealMapper.mapToRelation(apiMeal))
     }
 
 
-    fun deleteFavoriteMeal(apiMeal: ApiMeal) = AsyncWorker<Unit, Unit> {
+    fun deleteFavoriteMeal(apiMeal: Meal) = AsyncWorker<Unit, Unit> {
         roomDb.apiMealDao().delete(dbApiMealMapper.mapToRelation(apiMeal))
     }
+
 }

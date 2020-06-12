@@ -1,18 +1,16 @@
 package pt.ipl.isel.leic.ps.androidclient.ui.viewholder
 
 import android.content.Context
-import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import pt.ipl.isel.leic.ps.androidclient.R
-import pt.ipl.isel.leic.ps.androidclient.data.model.ApiMeal
 import pt.ipl.isel.leic.ps.androidclient.data.model.Meal
 
 // TODO: Create Cuisines
-class MealRecyclerViewHolder(view: ViewGroup, ctx: Context) : ARecyclerViewHolder<ApiMeal>(view, ctx) {
+class MealRecyclerViewHolder(view: ViewGroup, ctx: Context) : ARecyclerViewHolder<Meal>(view, ctx) {
     val mealImage = view.findViewById<ImageView>(R.id.restaurantImage)
     val mealName = view.findViewById<TextView>(R.id.restaurantName)
     //val restaurantCuisines = view.findViewById<TextView>(R.id.restaurantCuisines)
@@ -24,7 +22,7 @@ class MealRecyclerViewHolder(view: ViewGroup, ctx: Context) : ARecyclerViewHolde
     val favoriteButton = view.findViewById<ImageButton>(R.id.favorite)
     val optionsButton = view.findViewById<ImageButton>(R.id.options)
 
-    override fun bindTo(meal: ApiMeal) {
+    override fun bindTo(meal: Meal) {
         super.bindTo(meal)
 
         mealName.text = meal.name

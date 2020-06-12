@@ -6,14 +6,7 @@ import com.android.volley.RequestQueue
 import com.android.volley.Response
 import com.android.volley.VolleyError
 import com.fasterxml.jackson.databind.ObjectMapper
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.withContext
 import pt.ipl.isel.leic.ps.androidclient.TAG
-import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
-import kotlin.coroutines.suspendCoroutine
 
 const val ADDRESS = "10.0.2.2" // Loopback for the host machine
 const val PORT = "8080"
@@ -49,9 +42,7 @@ class RequestParser(
 ) {
 
     /**
-     * A all-in-one function: requests, parses string to Dto and
-     * maps the Dtos to the respective data model using the functions
-     * below.
+     * A all-in-one function: requests and parses the string response to Dto
      */
     fun <Dto> requestAndRespond(
         method: Method,
@@ -119,8 +110,7 @@ class RequestParser(
     ) {
         Log.v(TAG, urlStr)
 
-        //Request payload serialization async worker
-        //Passed payload to String
+        //Serialize request payload to String
         val payloadStr = jsonMapper.writeValueAsString(reqPayload)
 
         //Custom string request that will allow a string payload
@@ -129,8 +119,8 @@ class RequestParser(
                 method.value,
                 urlStr,
                 payloadStr,
-                Response.Listener { responseConsumer(it!!) },
-                Response.ErrorListener { onError(it) }
+                Response.Listener { stringResponse -> responseConsumer(stringResponse) },
+                Response.ErrorListener { error -> onError(error) }
             )
         requestQueue.add(jsonRequest)
     }

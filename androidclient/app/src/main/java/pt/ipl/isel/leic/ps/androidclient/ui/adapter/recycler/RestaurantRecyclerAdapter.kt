@@ -4,7 +4,6 @@ import android.content.Context
 import android.view.ViewGroup
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.Restaurant
-import pt.ipl.isel.leic.ps.androidclient.ui.viewholder.MealRecyclerViewHolder
 import pt.ipl.isel.leic.ps.androidclient.ui.viewholder.RestaurantRecyclerViewHolder
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.RestaurantRecyclerViewModel
 

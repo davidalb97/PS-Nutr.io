@@ -4,37 +4,30 @@ import android.os.Parcel
 import android.os.Parcelable
 
 data class Restaurant(
-    val id: Int,
+    val id: String,
     val name: String,
     val latitude: Float,
     val longitude: Float,
     val votes: Votes?,
-    val cuisines: List<String>?,
-    val meals: List<ApiMeal>?
+    val isFavorite: Boolean?
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
-        id = parcel.readInt(),
+        id = parcel.readString()!!,
         name = parcel.readString()!!,
         latitude = parcel.readFloat(),
         longitude = parcel.readFloat(),
         votes = parcel.readParcelable<Votes>(Votes::class.java.classLoader)!!,
-        cuisines = ArrayList<String>().also {
-            parcel.readList(it as List<String>, String::class.java.classLoader)
-        },
-        meals = ArrayList<ApiMeal>().also {
-            parcel.readList(it as List<ApiMeal>, Meal::class.java.classLoader)
-        }
+        isFavorite = parcel.readBoolean()
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeInt(id)
+        parcel.writeString(id)
         parcel.writeString(name)
         parcel.writeValue(latitude)
         parcel.writeValue(longitude)
         //Does not need to close resources, using flag 0
         parcel.writeParcelable(votes, 0)
-        parcel.writeList(cuisines)
-        parcel.writeList(meals)
+        parcel.writeBoolean(isFavorite)
     }
 
     override fun describeContents(): Int {
