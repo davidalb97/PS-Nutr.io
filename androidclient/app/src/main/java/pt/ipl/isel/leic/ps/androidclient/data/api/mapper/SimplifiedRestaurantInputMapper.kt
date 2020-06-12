@@ -4,7 +4,7 @@ import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.SimplifiedRestaurant
 import pt.ipl.isel.leic.ps.androidclient.data.model.Restaurant
 import pt.ipl.isel.leic.ps.androidclient.data.model.Votes
 
-class SimplifiedRestaurantInputMapper(private val inputMealMapper: DetailedMealInputMapper) {
+class SimplifiedRestaurantInputMapper {
 
     fun mapToModel(dto: SimplifiedRestaurantInput) = Restaurant(
             id = dto.id,

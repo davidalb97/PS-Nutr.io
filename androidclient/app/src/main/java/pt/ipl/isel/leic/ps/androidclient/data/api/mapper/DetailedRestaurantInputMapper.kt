@@ -18,12 +18,8 @@ class DetailedRestaurantInputMapper(
             isFavorite = dto.isFavorite,
             cuisines = dto.cuisines,
             creationDate = dto.creationDate,
-            meals = dto.meals.map {
-                simplifiedRestaurantMealInputMapper.mapToListModel(it)
-            },
-            suggestedMeals = dto.suggestedMeals.map {
-                simplifiedRestaurantMealInputMapper.mapToListModel(it)
-            }
+            meals = simplifiedRestaurantMealInputMapper.mapToListModel(dto.meals),
+            suggestedMeals = simplifiedRestaurantMealInputMapper.mapToListModel(dto.suggestedMeals)
         )
 
     fun mapToInput(model: RestaurantInfo) {

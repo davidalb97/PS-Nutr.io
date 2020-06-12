@@ -4,7 +4,7 @@ import android.os.Parcel
 import android.os.Parcelable
 import java.time.OffsetDateTime
 
-class RestaurantInfo(
+data class RestaurantInfo(
     val id: String,
     val name: String,
     val latitude: Float,
@@ -13,39 +13,34 @@ class RestaurantInfo(
     val isFavorite: Boolean?,
     val cuisines: Collection<String>,
     val creationDate: OffsetDateTime,
-    val meals: Collection<RestaurantMeal>,
-    val suggestedMeals: Collection<RestaurantMeal>
+    val meals: List<RestaurantMeal>,
+    val suggestedMeals: List<RestaurantMeal>
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
-        parcel.readInt(),
-        parcel.readString(),
-        parcel.readInt(),
-        parcel.readInt(),
-        parcel.readString(),
-        TODO("votes"),
-        parcel.readString(),
-        TODO("ingredients")
+        parcel.readString()!!,
+        parcel.readString()!!,
+        parcel.readFloat(),
+        parcel.readFloat(),
+        parcel.readParcelable(Votes::class.java.classLoader),
+        parcel.readValue(Boolean::class.java.classLoader) as? Boolean,
+        TODO("cuisines"),
+        TODO("creationDate"),
+        TODO("meals"),
+        TODO("suggestedMeals")
     ) {
     }
 
-    override fun writeToParcel(dest: Parcel?, flags: Int) {
-        TODO("Not yet implemented")
-    }
-
-    override fun equals(other: Any?): Boolean {
-        return super.equals(other)
-    }
-
-    override fun hashCode(): Int {
-        return super.hashCode()
-    }
-
-    override fun toString(): String {
-        return super.toString()
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(id)
+        parcel.writeString(name)
+        parcel.writeFloat(latitude)
+        parcel.writeFloat(longitude)
+        parcel.writeParcelable(votes, flags)
+        parcel.writeValue(isFavorite)
     }
 
     override fun describeContents(): Int {
-        TODO("Not yet implemented")
+        return 0
     }
 
     companion object CREATOR : Parcelable.Creator<RestaurantInfo> {
@@ -57,5 +52,4 @@ class RestaurantInfo(
             return arrayOfNulls(size)
         }
     }
-
 }

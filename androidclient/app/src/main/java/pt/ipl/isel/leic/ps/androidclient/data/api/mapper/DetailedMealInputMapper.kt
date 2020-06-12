@@ -8,7 +8,7 @@ import pt.ipl.isel.leic.ps.androidclient.data.model.Votes
 class DetailedMealInputMapper(private val inputIngredientMapper: InputIngredientMapper) {
 
     fun mapToModel(dto: DetailedMealInput) = MealInfo(
-        submissionId = dto.submissionId,
+        submissionId = dto.id,
         name = dto.name,
         carbs = dto.carbs,
         amount = dto.amount,

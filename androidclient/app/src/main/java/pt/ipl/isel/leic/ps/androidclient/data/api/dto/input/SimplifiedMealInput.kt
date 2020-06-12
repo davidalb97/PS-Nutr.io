@@ -1,8 +1,10 @@
 package pt.ipl.isel.leic.ps.androidclient.data.api.dto.input
 
-class SimplifiedMealInput(
-    val submission_id: Int,
-    val meal_name: String,
-    val carbs: Int,
-    val quantity: Int
+import java.net.URI
+
+open class SimplifiedMealInput(
+    var id: Int,
+    var name: String,
+    var image: URI?,
+    var isFavorite: Boolean
 )
