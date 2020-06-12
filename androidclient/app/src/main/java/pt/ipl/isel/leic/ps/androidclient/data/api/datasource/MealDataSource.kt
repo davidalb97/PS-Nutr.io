@@ -2,16 +2,18 @@ package pt.ipl.isel.leic.ps.androidclient.data.api.datasource
 
 import com.android.volley.VolleyError
 import pt.ipl.isel.leic.ps.androidclient.data.api.*
-import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.DetailedIngredientInputDto
-import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.DetailedMealInputDto
-import pt.ipl.isel.leic.ps.androidclient.data.api.dto.output.OutputMealDto
+import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.SimplifiedIngredientInput
+import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.SimplifiedMealInput
+import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.info.DetailedIngredientInput
+import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.info.DetailedMealInput
+import pt.ipl.isel.leic.ps.androidclient.data.api.dto.output.MealOutput
 
 const val MEAL_URI = "$URI_BASE/$MEAL"
 const val MEAL_ID_URI = "$MEAL_URI/:id"
 
-val INPUT_MEAL_DTO = DetailedMealInputDto::class.java
-val OUTPUT_MEAL_DTO = OutputMealDto::class.java
-val INPUT_MEALS_DTO = Array<DetailedMealInputDto>::class.java
+val INPUT_MEAL_DTO = DetailedMealInput::class.java
+val OUTPUT_MEAL_DTO = MealOutput::class.java
+val INPUT_MEALS_DTO = Array<SimplifiedMealInput>::class.java
 
 class MealDataSource(
     private val requestParser: RequestParser,
@@ -20,7 +22,7 @@ class MealDataSource(
 
     fun getAllByRestaurantId(
         id: Int,
-        success: (Array<DetailedMealInputDto>) -> Unit,
+        success: (Array<SimplifiedMealInput>) -> Unit,
         error: (VolleyError) -> Unit,
         uriParameters: HashMap<String, String>?,
         count: Int,
@@ -43,7 +45,7 @@ class MealDataSource(
      * ----------------------------- GETs -----------------------------
      */
     fun getById(
-        success: (DetailedMealInputDto) -> Unit,
+        success: (DetailedMealInput) -> Unit,
         error: (VolleyError) -> Unit,
         uriParameters: HashMap<String, String>?,
         count: Int,
@@ -64,10 +66,11 @@ class MealDataSource(
      * ----------------------------- POSTs -----------------------------
      */
     fun postMeal(
-        success: (OutputMealDto) -> Unit,
+        success: (MealOutput) -> Unit,
         error: (VolleyError) -> Unit,
         reqParameters: HashMap<String, String>?,
-        ingredients: Iterable<DetailedIngredientInputDto>,
+        ingredients: Iterable<SimplifiedIngredientInput>,
+        cuisines: Collection<String>,
         count: Int,
         skip: Int
     ) {
@@ -80,20 +83,18 @@ class MealDataSource(
             success,
             error,
             {
-                OutputMealDto(
+                MealOutput(
                     name = reqParameters!!["name"]!!,
-                    carbs = reqParameters["carbs"]?.toInt()!!,
-                    amount = reqParameters["amount"]?.toInt()!!,
-                    unit = reqParameters["unit"]!!,
-                    imageUrl = reqParameters["imageUrl"],
-                    ingredients = ingredients
+                    quantity = reqParameters["quantity"]?.toInt()!!,
+                    ingredients = ingredients,
+                    cuisines = cuisines
                 )
             }
         )
     }
 
     fun postMealVote(
-        success: (DetailedMealInputDto) -> Unit,
+        success: (DetailedMealInput) -> Unit,
         error: (VolleyError) -> Unit,
         reqParameters: HashMap<String, String>?,
         count: Int,
@@ -116,7 +117,7 @@ class MealDataSource(
      * ----------------------------- DELETEs ---------------------------
      */
     fun deleteMeal(
-        success: (DetailedMealInputDto) -> Unit,
+        success: (DetailedMealInput) -> Unit,
         error: (VolleyError) -> Unit,
         uriParameters: HashMap<String, String>?,
         count: Int,
@@ -138,7 +139,7 @@ class MealDataSource(
      */
 
     fun updateMealVote(
-        success: (DetailedMealInputDto) -> Unit,
+        success: (DetailedMealInput) -> Unit,
         error: (VolleyError) -> Unit,
         uriParameters: HashMap<String, String>?,
         count: Int,

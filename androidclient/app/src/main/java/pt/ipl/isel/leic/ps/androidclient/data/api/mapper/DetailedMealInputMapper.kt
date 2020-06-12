@@ -1,13 +1,13 @@
 package pt.ipl.isel.leic.ps.androidclient.data.api.mapper
 
-import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.DetailedMealInputDto
+import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.info.DetailedMealInput
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.VotesInputDto
-import pt.ipl.isel.leic.ps.androidclient.data.model.Meal
+import pt.ipl.isel.leic.ps.androidclient.data.model.MealInfo
 import pt.ipl.isel.leic.ps.androidclient.data.model.Votes
 
 class DetailedMealInputMapper(private val inputIngredientMapper: InputIngredientMapper) {
 
-    fun mapToModel(dto: DetailedMealInputDto) = Meal(
+    fun mapToModel(dto: DetailedMealInput) = MealInfo(
         submissionId = dto.submissionId,
         name = dto.name,
         carbs = dto.carbs,
@@ -22,8 +22,8 @@ class DetailedMealInputMapper(private val inputIngredientMapper: InputIngredient
         ingredients = inputIngredientMapper.mapToListModel(dto.ingredients)
     )
 
-    fun mapToInput(model: Meal) =
-        DetailedMealInputDto(
+    fun mapToInput(model: MealInfo) =
+        DetailedMealInput(
             submissionId = model.submissionId,
             name = model.name,
             carbs = model.carbs,
@@ -38,5 +38,5 @@ class DetailedMealInputMapper(private val inputIngredientMapper: InputIngredient
             ingredients = inputIngredientMapper.mapToListDto(model.ingredients)
         )
 
-    fun mapToListModel(dtos: Iterable<DetailedMealInputDto>) = dtos.map(::mapToModel)
+    fun mapToListModel(dtos: Iterable<DetailedMealInput>) = dtos.map(::mapToModel)
 }

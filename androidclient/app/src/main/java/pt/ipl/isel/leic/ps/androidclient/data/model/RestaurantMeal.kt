@@ -1,4 +1,5 @@
 package pt.ipl.isel.leic.ps.androidclient.data.model
 
-class RestaurantMeal {
-}
+class RestaurantMeal(
+    val id: String
+)

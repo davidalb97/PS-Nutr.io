@@ -5,7 +5,7 @@ import pt.ipl.isel.leic.ps.androidclient.data.api.Method
 import pt.ipl.isel.leic.ps.androidclient.data.api.RequestParser
 import pt.ipl.isel.leic.ps.androidclient.data.api.URI_BASE
 import pt.ipl.isel.leic.ps.androidclient.data.api.UriBuilder
-import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.SimplifiedRestaurantInputDto
+import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.SimplifiedRestaurantInput
 
 const val LATITUDE_VAR = ":latitude"
 const val LONGITUDE_VAR = ":longitude"
@@ -30,7 +30,7 @@ private const val RESTAURANT_MEAL_REPORT =
 private const val RESTAURANT_MEAL_VOTE =
     "$RESTAURANT_MEAL/vote"
 
-val RESTAURANT_DTO = SimplifiedRestaurantInputDto::class.java
+val RESTAURANT_DTO = SimplifiedRestaurantInput::class.java
 
 
 class RestaurantDataSource(
@@ -42,7 +42,7 @@ class RestaurantDataSource(
      * ----------------------------- GETs -----------------------------
      */
     fun getById(
-        success: (SimplifiedRestaurantInputDto) -> Unit,
+        success: (SimplifiedRestaurantInput) -> Unit,
         error: (VolleyError) -> Unit,
         uriParameters: HashMap<String, String>?,
         count: Int,
@@ -56,14 +56,14 @@ class RestaurantDataSource(
         requestParser.requestAndRespond(
             Method.GET,
             uri,
-            SimplifiedRestaurantInputDto::class.java,
+            SimplifiedRestaurantInput::class.java,
             success,
             error
         )
     }
 
     fun getNearby(
-        success: (Array<SimplifiedRestaurantInputDto>) -> Unit,
+        success: (Array<SimplifiedRestaurantInput>) -> Unit,
         error: (VolleyError) -> Unit,
         uriParameters: HashMap<String, String>?,
         count: Int,
@@ -77,7 +77,7 @@ class RestaurantDataSource(
         requestParser.requestAndRespond(
             Method.GET,
             uri,
-            Array<SimplifiedRestaurantInputDto>::class.java,
+            Array<SimplifiedRestaurantInput>::class.java,
             success,
             error
         )
@@ -88,7 +88,7 @@ class RestaurantDataSource(
      */
 
     fun postRestaurant(
-        success: (SimplifiedRestaurantInputDto) -> Unit,
+        success: (SimplifiedRestaurantInput) -> Unit,
         error: (VolleyError) -> Unit,
         uriParameters:  HashMap<String, String>?,
         count: Int,
@@ -110,7 +110,7 @@ class RestaurantDataSource(
     }
 
     fun postReport(
-        success: (SimplifiedRestaurantInputDto) -> Unit,
+        success: (SimplifiedRestaurantInput) -> Unit,
         error: (VolleyError) -> Unit,
         uriParameters:  HashMap<String, String>?,
         count: Int,
@@ -132,7 +132,7 @@ class RestaurantDataSource(
     }
 
     fun postVote(
-        success: (SimplifiedRestaurantInputDto) -> Unit,
+        success: (SimplifiedRestaurantInput) -> Unit,
         error: (VolleyError) -> Unit,
         uriParameters:  HashMap<String, String>?,
         count: Int,
@@ -157,7 +157,7 @@ class RestaurantDataSource(
      * ----------------------------- PUTs ------------------------------
      */
     fun updateVote(
-        success: (SimplifiedRestaurantInputDto) -> Unit,
+        success: (SimplifiedRestaurantInput) -> Unit,
         error: (VolleyError) -> Unit,
         uriParameters:  HashMap<String, String>?,
         count: Int,
@@ -183,7 +183,7 @@ class RestaurantDataSource(
      */
 
     fun deleteVote(
-        success: (SimplifiedRestaurantInputDto) -> Unit,
+        success: (SimplifiedRestaurantInput) -> Unit,
         error: (VolleyError) -> Unit,
         uriParameters:  HashMap<String, String>?,
         count: Int,

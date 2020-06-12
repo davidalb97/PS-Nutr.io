@@ -1,6 +1,6 @@
-package pt.ipl.isel.leic.ps.androidclient.data.api.dto.input
+package pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.info
 
-data class DetailedIngredientInputDto(
+data class DetailedIngredientInput(
     val submissionId: Int,
     val name: String,
     val carbs: Int,

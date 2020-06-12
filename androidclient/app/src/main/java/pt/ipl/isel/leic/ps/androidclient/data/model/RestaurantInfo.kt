@@ -13,8 +13,8 @@ class RestaurantInfo(
     val isFavorite: Boolean?,
     val cuisines: Collection<String>,
     val creationDate: OffsetDateTime,
-    val meals: Collection<MealInfo>,
-    val suggestedMeals: Collection<MealInfo>
+    val meals: Collection<RestaurantMeal>,
+    val suggestedMeals: Collection<RestaurantMeal>
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readInt(),

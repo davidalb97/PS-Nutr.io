@@ -1,11 +1,11 @@
 package pt.ipl.isel.leic.ps.androidclient.data.api.mapper
 
-import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.DetailedIngredientInputDto
+import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.info.DetailedIngredientInput
 import pt.ipl.isel.leic.ps.androidclient.data.model.Ingredient
 
 class InputIngredientMapper {
 
-    fun mapToModel(dto: DetailedIngredientInputDto) = Ingredient(
+    fun mapToModel(dto: DetailedIngredientInput) = Ingredient(
         submissionId = dto.submissionId,
         name = dto.name,
         carbs = dto.carbs,
@@ -14,10 +14,10 @@ class InputIngredientMapper {
         imageUrl = dto.imageUrl
     )
 
-    fun mapToListModel(dtos: Iterable<DetailedIngredientInputDto>) = dtos.map(::mapToModel)
+    fun mapToListModel(dtos: Iterable<DetailedIngredientInput>) = dtos.map(::mapToModel)
 
     fun mapToDto(model: Ingredient) =
-        DetailedIngredientInputDto(
+        DetailedIngredientInput(
             submissionId = model.submissionId,
             name = model.name,
             carbs = model.carbs,

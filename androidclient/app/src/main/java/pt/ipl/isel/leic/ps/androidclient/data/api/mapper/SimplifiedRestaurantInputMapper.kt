@@ -1,12 +1,12 @@
 package pt.ipl.isel.leic.ps.androidclient.data.api.mapper
 
-import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.SimplifiedRestaurantInputDto
+import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.SimplifiedRestaurantInput
 import pt.ipl.isel.leic.ps.androidclient.data.model.Restaurant
 import pt.ipl.isel.leic.ps.androidclient.data.model.Votes
 
 class SimplifiedRestaurantInputMapper(private val inputMealMapper: DetailedMealInputMapper) {
 
-    fun mapToModel(dto: SimplifiedRestaurantInputDto) = Restaurant(
+    fun mapToModel(dto: SimplifiedRestaurantInput) = Restaurant(
             id = dto.id,
             name = dto.name,
             latitude = dto.latitude,
@@ -15,7 +15,7 @@ class SimplifiedRestaurantInputMapper(private val inputMealMapper: DetailedMealI
             isFavorite = dto.isFavorite
     )
 
-    fun mapToListModel(dtos: Iterable<SimplifiedRestaurantInputDto>) = dtos.map(::mapToModel)
+    fun mapToListModel(dtos: Iterable<SimplifiedRestaurantInput>) = dtos.map(::mapToModel)
 
-    fun mapToListModel(dtos: Array<SimplifiedRestaurantInputDto>) = dtos.map(::mapToModel)
+    fun mapToListModel(dtos: Array<SimplifiedRestaurantInput>) = dtos.map(::mapToModel)
 }

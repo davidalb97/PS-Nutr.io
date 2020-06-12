@@ -1,6 +1,6 @@
 package pt.ipl.isel.leic.ps.androidclient.data.api.dto.input
 
-class SimplifiedUserInputDto(
+class SimplifiedUserInput(
     val id: Int,
     val name: Int
 )
