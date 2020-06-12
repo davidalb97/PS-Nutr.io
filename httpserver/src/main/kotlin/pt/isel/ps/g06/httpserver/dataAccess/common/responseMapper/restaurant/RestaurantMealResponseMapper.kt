@@ -1,11 +1,13 @@
 package pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.restaurant
 
+import org.springframework.stereotype.Component
 import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.ResponseMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbRestaurantMealDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.MealDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.PortionDbRepository
 import pt.isel.ps.g06.httpserver.model.RestaurantMeal
 
+@Component
 class DbRestaurantMealResponseMapper(
         private val dbPortionsMapper: DbRestaurantMealPortionsResponseMapper,
         private val dbVotesMapper: DbVotesResponseMapper,

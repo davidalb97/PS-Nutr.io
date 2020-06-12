@@ -1,10 +1,12 @@
 package pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.restaurant
 
+import org.springframework.stereotype.Component
 import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.ResponseMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbSubmitterDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.UserDbRepository
 import pt.isel.ps.g06.httpserver.model.Creator
 
+@Component
 class DbCreatorResponseMapper(
         private val dbUserRepo: UserDbRepository
 ): ResponseMapper<DbSubmitterDto, Creator> {
