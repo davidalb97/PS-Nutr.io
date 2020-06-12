@@ -12,6 +12,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.model.SimplifiedRestaurantOutputMode
 import pt.isel.ps.g06.httpserver.dataAccess.model.toSimplifiedRestaurant
 import pt.isel.ps.g06.httpserver.exception.InvalidInputDomain
 import pt.isel.ps.g06.httpserver.exception.InvalidInputException
+import pt.isel.ps.g06.httpserver.model.Restaurant
 import pt.isel.ps.g06.httpserver.service.RestaurantService
 import javax.validation.Valid
 
@@ -39,7 +40,7 @@ class RestaurantController(private val restaurantService: RestaurantService) {
             apiType: String?,
             userId: Int?
     //TODO Use proper output models!
-    ): Collection<RestaurantItem> {
+    ): Collection<Restaurant> {
         if (latitude == null || longitude == null) {
             throw InvalidInputException(InvalidInputDomain.SEARCH_RESTAURANT, INVALID_RESTAURANT_SEARCH)
         }
@@ -54,7 +55,7 @@ class RestaurantController(private val restaurantService: RestaurantService) {
         )
 
         //return nearbyRestaurants.map { toSimplifiedRestaurant(it) }
-        return nearbyRestaurants
+        return nearbyRestaurants.toList()
     }
 
     @GetMapping(RESTAURANT, consumes = [MediaType.ALL_VALUE])
@@ -62,7 +63,7 @@ class RestaurantController(private val restaurantService: RestaurantService) {
             @PathVariable(RESTAURANT_ID_VALUE) id: String,
             @RequestParam api: String?,
             @RequestParam userId: Int?
-    ): RestaurantInfo {
+    ): Restaurant {
         return restaurantService.getRestaurant(id, api, userId) ?: throw RestaurantNotFoundException()
     }
 

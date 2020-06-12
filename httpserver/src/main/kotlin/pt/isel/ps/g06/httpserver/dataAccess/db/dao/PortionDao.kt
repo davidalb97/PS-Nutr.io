@@ -7,6 +7,11 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbPortionDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbRestaurantCuisineDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbRestaurantMealDto
 
+//SubmissionSubmitter table constants
+private const val SS_table = SubmissionSubmitterDao.table
+private const val SS_submissionId = SubmissionSubmitterDao.submissionId
+private const val SS_submitterId = SubmissionSubmitterDao.submitterId
+
 interface PortionDao {
 
     companion object {
@@ -24,6 +29,15 @@ interface PortionDao {
 
     @SqlQuery("SELECT * FROM $table WHERE $restaurantMealId = :restaurantMealId")
     fun getAllByRestaurantMealId(@Bind restaurantMealId: Int): List<DbPortionDto>
+
+    @SqlQuery(
+            "SELECT $table.$id, $table.$restaurantMealId, $table.$quantity" +
+                    " FROM $table" +
+                    " INNER JOIN $SS_table" +
+                    " ON $SS_table.$SS_submissionId = $table.$id" +
+                    " WHERE $restaurantMealId = :restaurantMealId AND $SS_table.$SS_submitterId = :userId"
+    )
+    fun getByRestaurantMealIdAndUserId(@Bind restaurantMealId: Int, userId: Int): DbPortionDto?
 
     @SqlQuery("INSERT INTO $table($id, $restaurantMealId, $quantity)" +
             " VALUES(:submissionId, :restaurantMealId, :quantity) RETURNING *")

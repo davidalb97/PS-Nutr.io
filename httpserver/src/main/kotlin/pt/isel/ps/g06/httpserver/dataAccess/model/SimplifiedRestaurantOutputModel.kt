@@ -1,7 +1,6 @@
 package pt.isel.ps.g06.httpserver.dataAccess.model
 
-import pt.isel.ps.g06.httpserver.model.RestaurantInfo
-import pt.isel.ps.g06.httpserver.model.RestaurantItem
+import pt.isel.ps.g06.httpserver.model.Restaurant
 
 data class SimplifiedRestaurantOutputModel(
         val identifier: String,
@@ -11,9 +10,9 @@ data class SimplifiedRestaurantOutputModel(
 )
 
 
-fun toSimplifiedRestaurant(restaurant: RestaurantItem): SimplifiedRestaurantOutputModel {
+fun toSimplifiedRestaurant(restaurant: Restaurant): SimplifiedRestaurantOutputModel {
     return SimplifiedRestaurantOutputModel(
-            identifier = restaurant.identifier,
+            identifier = restaurant.identifier.value,
             name = restaurant.name,
             latitude = restaurant.latitude,
             longitude = restaurant.longitude

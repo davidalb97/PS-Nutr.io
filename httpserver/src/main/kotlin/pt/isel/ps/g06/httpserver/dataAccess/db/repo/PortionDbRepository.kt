@@ -13,7 +13,24 @@ private val portionDaoClass = PortionDao::class.java
 
 class PortionDbRepository(jdbi: Jdbi) : BaseDbRepo(jdbi) {
 
-    fun getByRestaurantMealId(restaurantMealId: Int): DbPortionDto? {
+    fun getAllByRestaurantMealId(restaurantMealId: Int): Sequence<DbPortionDto> {
+        val collection = lazy {
+            jdbi.inTransaction<Collection<DbPortionDto>, Exception>(isolationLevel) { handle ->
+                handle.attach(PortionDao::class.java)
+                        .getAllByRestaurantMealId(restaurantMealId)
+            }
+        }
+        return Sequence { collection.value.iterator() }
+    }
+
+    fun getUserPortion(restaurantMealId: Int, userId: Int): DbPortionDto? {
+        return jdbi.inTransaction<DbPortionDto, Exception>(isolationLevel) { handle ->
+            handle.attach(PortionDao::class.java)
+                    .getByRestaurantMealIdAndUserId(restaurantMealId, userId)
+        }
+    }
+
+    fun getById(restaurantMealId: Int): DbPortionDto? {
         return jdbi.inTransaction<DbPortionDto, Exception>(isolationLevel) {
             return@inTransaction it.attach(portionDaoClass).getById(restaurantMealId)
         }

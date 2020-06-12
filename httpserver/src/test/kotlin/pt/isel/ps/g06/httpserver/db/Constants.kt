@@ -170,7 +170,11 @@ class Constants(val jdbi: Jdbi) {
             val mealName = rs.getString(M_name)
             val mealDto = DbMealDto(
                     submission_id = submissionId,
-                    meal_name = mealName
+                    meal_name = mealName,
+                    //TODO read column data and update query
+                    carbs = TODO(),
+                    amount = TODO(),
+                    unit = TODO()
             )
             TestMeal(
                     mealName = mealName,
