@@ -18,5 +18,5 @@ interface ResponseMapper<T, R> {
  * @param R model object that is the result of mapping given dto
  */
 interface UserResponseMapper<T, R> {
-    fun mapTo(dto: T, userId: Int): R
+    fun mapTo(dto: T, userId: Int?): R
 }

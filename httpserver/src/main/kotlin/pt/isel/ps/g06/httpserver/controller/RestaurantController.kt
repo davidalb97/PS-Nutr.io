@@ -9,11 +9,12 @@ import pt.isel.ps.g06.httpserver.common.exception.RestaurantNotFoundException
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.RestaurantApiType
 import pt.isel.ps.g06.httpserver.dataAccess.input.RestaurantInput
 import pt.isel.ps.g06.httpserver.dataAccess.input.VoteInput
-import pt.isel.ps.g06.httpserver.dataAccess.model.SimplifiedRestaurantOutputModel
-import pt.isel.ps.g06.httpserver.dataAccess.model.toSimplifiedRestaurant
+import pt.isel.ps.g06.httpserver.dataAccess.output.DetailedRestaurantOutput
+import pt.isel.ps.g06.httpserver.dataAccess.output.SimplifiedRestaurantOutput
+import pt.isel.ps.g06.httpserver.dataAccess.output.toDetailedRestaurantOutput
+import pt.isel.ps.g06.httpserver.dataAccess.output.toSimplifiedRestaurantOutput
 import pt.isel.ps.g06.httpserver.exception.InvalidInputDomain
 import pt.isel.ps.g06.httpserver.exception.InvalidInputException
-import pt.isel.ps.g06.httpserver.model.RestaurantInfo
 import pt.isel.ps.g06.httpserver.service.RestaurantService
 import javax.validation.Valid
 
@@ -42,7 +43,7 @@ class RestaurantController(
             name: String?,
             radius: Int?,
             apiType: String?
-    ): Collection<SimplifiedRestaurantOutputModel> {
+    ): ResponseEntity<Collection<SimplifiedRestaurantOutput>> {
         if (latitude == null || longitude == null) {
             throw InvalidInputException(InvalidInputDomain.SEARCH_RESTAURANT, INVALID_RESTAURANT_SEARCH)
         }
@@ -57,11 +58,15 @@ class RestaurantController(
                 userId = userId
         )
 
-        return nearbyRestaurants.map { toSimplifiedRestaurant(it) }
+        return ResponseEntity
+                .ok()
+                .body(nearbyRestaurants.map { toSimplifiedRestaurantOutput(it) })
     }
 
     @GetMapping(RESTAURANT, consumes = [MediaType.ALL_VALUE])
-    fun getRestaurantInformation(@PathVariable(RESTAURANT_ID_VALUE) id: String): ResponseEntity<RestaurantInfo> {
+    fun getRestaurantInformation(
+            @PathVariable(RESTAURANT_ID_VALUE) id: String
+    ): ResponseEntity<DetailedRestaurantOutput> {
         val userId = 10     //TODO For when there's authentication
         val (submitterId, submissionId, apiId) = restaurantIdentifierBuilder.extractIdentifiers(id)
 
@@ -72,7 +77,9 @@ class RestaurantController(
                 userId = userId
         ) ?: throw RestaurantNotFoundException()
 
-        return ResponseEntity.ok().body(restaurant)
+        return ResponseEntity
+                .ok()
+                .body(toDetailedRestaurantOutput(restaurant))
     }
 
     @PostMapping(RESTAURANTS, consumes = [MediaType.APPLICATION_JSON_VALUE])

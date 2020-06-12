@@ -1,7 +1,6 @@
 package pt.isel.ps.g06.httpserver.dataAccess.output
 
-data class UserOutputDto(
+data class SimplifiedUserOutput(
         val id: Int,
-        val name: Int,
-        val image: String
+        val name: Int
 )

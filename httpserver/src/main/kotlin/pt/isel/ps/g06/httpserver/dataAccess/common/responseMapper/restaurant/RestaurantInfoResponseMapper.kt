@@ -12,6 +12,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.repo.MealDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.RestaurantDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.model.RestaurantInfoDto
 import pt.isel.ps.g06.httpserver.model.RestaurantInfo
+import pt.isel.ps.g06.httpserver.model.RestaurantMealItem
 import pt.isel.ps.g06.httpserver.model.Votes
 import pt.isel.ps.g06.httpserver.util.log
 
@@ -22,7 +23,7 @@ class RestaurantInfoResponseMapper(
         private val dbResponseMapper: DbRestaurantInfoResponseMapper
 ) : UserResponseMapper<RestaurantInfoDto, RestaurantInfo> {
 
-    override fun mapTo(dto: RestaurantInfoDto, userId: Int): RestaurantInfo {
+    override fun mapTo(dto: RestaurantInfoDto, userId: Int?): RestaurantInfo {
         return when (dto) {
             is HereResultItem -> hereResponseMapper.mapTo(dto, userId)
             is ZomatoRestaurantDto -> zomatoResponseMapper.mapTo(dto, userId)
@@ -39,11 +40,11 @@ class RestaurantInfoResponseMapper(
 @Component
 class HereRestaurantInfoResponseMapper(
         private val cuisineDbRepository: CuisineDbRepository,
-        private val mealRepository: MealDbRepository,
+        private val dbMealRepository: MealDbRepository,
         private val mealItemResponseMapper: MealItemResponseMapper
 ) : UserResponseMapper<HereResultItem, RestaurantInfo> {
 
-    override fun mapTo(dto: HereResultItem, userId: Int): RestaurantInfo {
+    override fun mapTo(dto: HereResultItem, userId: Int?): RestaurantInfo {
         val cuisineIds = dto.foodTypes?.map { it.id }
 
         return RestaurantInfo(
@@ -59,19 +60,20 @@ class HereRestaurantInfoResponseMapper(
                                         .map { it.cuisine_name }
                             } ?: emptyList()
                 },
-                meals = lazy {
+                suggestedMeals = lazy {
                     cuisineIds
                             ?.let { id ->
-                                mealRepository.getAllByCuisineNames(id, userId)
+                                dbMealRepository.getAllByCuisineNames(id, userId)
                                         .map { mealItemResponseMapper.mapTo(it) }
                             } ?: emptyList()
                 },
+                meals = lazy { emptyList<RestaurantMealItem>() },
                 //There are no votes if it's not inserted on db yet
                 votes = Votes(0, 0),
                 //User has not voted yet if not inserted
                 userVote = null,
                 //User has not favored yet if not inserted
-                isFavorite = false,
+                isFavorite = null,
                 //Here does not supply image
                 image = null
         )
@@ -80,11 +82,11 @@ class HereRestaurantInfoResponseMapper(
 
 @Component
 class ZomatoRestaurantInfoResponseMapper(
-        private val mealRepository: MealDbRepository,
+        private val dbMealRepository: MealDbRepository,
         private val mealItemResponseMapper: MealItemResponseMapper
 ) : UserResponseMapper<ZomatoRestaurantDto, RestaurantInfo> {
 
-    override fun mapTo(dto: ZomatoRestaurantDto, userId: Int): RestaurantInfo {
+    override fun mapTo(dto: ZomatoRestaurantDto, userId: Int?): RestaurantInfo {
         val cuisines = lazy { dto.cuisines.split(",") }
 
         return RestaurantInfo(
@@ -94,17 +96,18 @@ class ZomatoRestaurantInfoResponseMapper(
                 latitude = dto.latitude,
                 longitude = dto.longitude,
                 cuisines = cuisines,
-                meals = lazy {
-                    mealRepository
+                suggestedMeals = lazy {
+                    dbMealRepository
                             .getAllByCuisineNames(cuisines.value, userId)
                             .map(mealItemResponseMapper::mapTo)
                 },
+                meals = lazy { emptyList<RestaurantMealItem>() },
                 //There are no votes if it's not inserted on db yet
                 votes = Votes(0, 0),
                 //User has not voted yet if not inserted
                 userVote = null,
                 //User has not favored yet if not inserted
-                isFavorite = false,
+                isFavorite = null,
                 //Zomato does not supply image
                 image = null
         )
@@ -114,10 +117,11 @@ class ZomatoRestaurantInfoResponseMapper(
 @Component
 class DbRestaurantInfoResponseMapper(
         private val restaurantRepository: RestaurantDbRepository,
-        private val restaurantMealItemResponseMapper: RestaurantMealItemResponseMapper
+        private val restaurantMealItemResponseMapper: RestaurantMealItemResponseMapper,
+        private val mealItemResponseMapper: MealItemResponseMapper
 ) : UserResponseMapper<DbRestaurantInfoDto, RestaurantInfo> {
 
-    override fun mapTo(dto: DbRestaurantInfoDto, userId: Int): RestaurantInfo {
+    override fun mapTo(dto: DbRestaurantInfoDto, userId: Int?): RestaurantInfo {
         val cuisines = lazy {
             restaurantRepository
                     .getRestaurantCuisines(dto.restaurantItem.restaurant.submission_id)
@@ -134,6 +138,7 @@ class DbRestaurantInfoResponseMapper(
                 meals = lazy {
                     dto.restaurantMeals.map(restaurantMealItemResponseMapper::mapTo)
                 },
+                suggestedMeals = lazy { dto.suggestedMeals.map(mealItemResponseMapper::mapTo) },
                 //TODO - Handle obtaining meals for Database restaurant: Should it only get from DB? Also from API?
                 votes = dto.votes,
                 userVote = dto.userVote,

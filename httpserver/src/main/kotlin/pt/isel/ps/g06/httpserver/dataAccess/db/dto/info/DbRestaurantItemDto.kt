@@ -1,7 +1,6 @@
 package pt.isel.ps.g06.httpserver.dataAccess.db.dto.info
 
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbRestaurantDto
-import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbVotesDto
 import pt.isel.ps.g06.httpserver.dataAccess.model.RestaurantItemDto
 import pt.isel.ps.g06.httpserver.model.Votes
 
@@ -10,7 +9,7 @@ open class DbRestaurantItemDto(
         val submitterId: Int,
         val apiId: String?,
         val image: String?,
-        isFavorite: Boolean,
+        isFavorite: Boolean?,
         val public: DbPublicDto
 ): RestaurantItemDto(
         id = "${restaurant.submission_id}",
