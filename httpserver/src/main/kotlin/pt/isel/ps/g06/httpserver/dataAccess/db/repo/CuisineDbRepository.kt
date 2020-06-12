@@ -18,6 +18,14 @@ class CuisineDbRepository(jdbi: Jdbi) : BaseDbRepo(jdbi) {
         }
     }
 
+    fun getAll(skip: Int?, limit: Int?): Collection<DbCuisineDto> {
+        return jdbi.inTransaction<Collection<DbCuisineDto>, Exception>(isolationLevel) {
+            return@inTransaction it
+                    .attach(cuisineDaoClass)
+                    .getAll(skip ?: 0, limit)
+        }
+    }
+
     fun insert(name: String): DbCuisineDto {
         return jdbi.inTransaction<DbCuisineDto, Exception>(isolationLevel) {
             return@inTransaction it.attach(cuisineDaoClass).insert(name)

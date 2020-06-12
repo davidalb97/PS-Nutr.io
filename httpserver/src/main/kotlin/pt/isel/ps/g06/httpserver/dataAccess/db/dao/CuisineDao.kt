@@ -37,8 +37,11 @@ interface CuisineDao {
         const val id = "submission_id"
     }
 
-    @SqlQuery("SELECT * FROM $table")
-    fun getAll(): Collection<DbCuisineDto>
+    @SqlQuery("SELECT * FROM $table " +
+            "ORDER BY $table.$name ASC " +
+            "LIMIT :limit " +
+            "OFFSET :offset")
+    fun getAll(offset: Int = 0, limit: Int?): Collection<DbCuisineDto>
 
     @SqlQuery("SELECT * FROM $table WHERE $name = :name")
     fun getByName(@Bind name: String): Collection<DbCuisineDto>

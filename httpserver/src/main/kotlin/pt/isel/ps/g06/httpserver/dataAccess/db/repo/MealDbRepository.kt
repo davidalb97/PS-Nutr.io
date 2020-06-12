@@ -95,31 +95,7 @@ class MealDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo(jdbi)
         }
     }
 
-    fun getAllByCuisineApiIds(foodApiType: FoodApiType, cuisineApiIds: Collection<String>, userId: Int): Collection<DbMealItemDto> {
-        return jdbi.inTransaction<Collection<DbMealItemDto>, Exception>(isolationLevel) {
-            val apiSubmitterId = it.attach(SubmitterDao::class.java)
-                    .getAllByType(SubmitterType.API.toString())
-                    .first { it.submitter_name == foodApiType.toString() }
-                    .submitter_id
-            return@inTransaction it.attach(MealDao::class.java)
-                    .getAllByApiSubmitterAndCuisineApiIds(apiSubmitterId, cuisineApiIds).map { mealDto ->
-                        getMealItem(it, mealDto, userId)
-                    }
-        }
-    }
 
-//    fun getAllByCuisineApiIds(foodApiType: FoodApiType, cuisineApiIds: Collection<String>): Collection<DbMealDto> {
-//        return jdbi.inTransaction<Collection<DbMealDto>, Exception>(isolationLevel) {
-//            val apiSubmitterId = it.attach(SubmitterDao::class.java)
-//                    .getAllByType(SubmitterType.API.toString())
-//                    .first { it.submitter_name == foodApiType.toString() }
-//                    .submitter_id
-//            return@inTransaction it.attach(MealDao::class.java)
-//                    .getAllByApiSubmitterAndCuisineApiIds(apiSubmitterId, cuisineApiIds)
-//        }
-//    }
-
-    //
     fun getAllByCuisineNames(cuisineNames: Collection<String>, userId: Int?): Collection<DbMealItemDto> {
         return jdbi.inTransaction<Collection<DbMealItemDto>, Exception>(isolationLevel) { handle ->
             if (cuisineNames.isEmpty())
@@ -462,5 +438,11 @@ class MealDbRepository(jdbi: Jdbi, val config: DbEditableDto) : BaseDbRepo(jdbi)
 
     private fun getCarbsForInputQuantity(dbIngredientDto: DbIngredientDto, ingredientInput: IngredientInput): Float {
         return (ingredientInput.quantity!!.times(dbIngredientDto.carbs).toFloat()).div(dbIngredientDto.quantity)
+    }
+
+    fun getIngredients(skip: Int?, limit: Int?): Collection<DbMealDto> {
+        return jdbi.inTransaction<Collection<DbMealDto>, Exception>(isolationLevel) {
+            return@inTransaction it.attach(mealDaoClass).getIngredients(skip ?: 0, limit)
+        }
     }
 }

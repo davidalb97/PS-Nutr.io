@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import pt.isel.ps.g06.httpserver.common.CUISINES
 import pt.isel.ps.g06.httpserver.dataAccess.output.CuisinesOutput
+import pt.isel.ps.g06.httpserver.dataAccess.output.toSimplifiedCuisinesOutput
+import pt.isel.ps.g06.httpserver.service.CuisinesService
 
 @RestController
 @RequestMapping(
@@ -15,13 +17,17 @@ import pt.isel.ps.g06.httpserver.dataAccess.output.CuisinesOutput
         produces = [MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_PROBLEM_JSON_VALUE],
         consumes = [MediaType.APPLICATION_JSON_VALUE]
 )
-class CuisinesController(private val cuisinesService:) {
+class CuisinesController(private val cuisinesService: CuisinesService) {
 
     @GetMapping
     fun getCuisinesHandler(
             @RequestParam skip: Int?,
             @RequestParam count: Int?
     ): ResponseEntity<CuisinesOutput> {
+        val availableCuisines = cuisinesService.getAvailableCuisines(skip, count)
 
+        return ResponseEntity
+                .ok()
+                .body(toSimplifiedCuisinesOutput(availableCuisines))
     }
 }
