@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController
 import pt.isel.ps.g06.httpserver.common.CUISINES
 import pt.isel.ps.g06.httpserver.dataAccess.output.CuisinesOutput
 
+/*
 @RestController
 @RequestMapping(
         CUISINES,
@@ -17,6 +18,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.output.CuisinesOutput
 )
 class CuisinesController(private val cuisinesService:) {
 
+
     @GetMapping
     fun getCuisinesHandler(
             @RequestParam skip: Int?,
@@ -24,4 +26,6 @@ class CuisinesController(private val cuisinesService:) {
     ): ResponseEntity<CuisinesOutput> {
 
     }
+
 }
+*/

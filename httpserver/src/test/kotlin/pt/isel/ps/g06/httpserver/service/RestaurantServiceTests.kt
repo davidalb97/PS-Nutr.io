@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import org.jdbi.v3.core.Jdbi
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
+import org.mockito.Mock
 import org.mockito.Mockito.*
 import org.springframework.beans.factory.annotation.Autowired
 import pt.isel.ps.g06.httpserver.anyNonNull
@@ -14,6 +15,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.dto.ZomatoRestaurantD
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.dto.here.HereResultItem
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.mapper.RestaurantApiMapper
 import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.restaurant.RestaurantResponseMapper
+import pt.isel.ps.g06.httpserver.dataAccess.db.ApiSubmitterMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbRestaurantDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.RestaurantDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.RestaurantMealDbRepository
@@ -88,8 +90,10 @@ class RestaurantServiceTests {
 
         return RestaurantService(
                 restaurantDbRepository,
+                mock(RestaurantMealDbRepository::class.java),
                 restaurantApiRepo,
-                restaurantItemMapper
+                restaurantItemMapper,
+                mock(ApiSubmitterMapper::class.java)
         )
     }
 
@@ -99,13 +103,17 @@ class RestaurantServiceTests {
     private fun mockMappedRestaurant(from: Int, to: Int, namePrefix: String): List<Restaurant> {
         return (from..to).map { idx ->
             Restaurant(
-                    identifier = lazy { "Test-$idx" },
+                    identifier = lazy { RestaurantIdentifier(
+                            submitterId = idx,
+                            submissionId = idx,
+                            apiId = "Test-$idx"
+                    ) },
                     name = "$namePrefix-Test-$idx",
                     latitude = 0.0F + idx,
                     longitude = 0.0F + idx,
                     votes = Votes(idx, idx),
                     image = null,
-                    userVote = { idx % 2 == 0 },
+                    userVote = { if(idx % 2 == 0) VoteState.POSITIVE else VoteState.NEGATIVE },
                     isFavorite = { idx % 2 == 0 },
                     cuisines = emptySequence<Cuisine>(),
                     meals = emptySequence<RestaurantMeal>(),

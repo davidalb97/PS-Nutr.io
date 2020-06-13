@@ -5,20 +5,19 @@ import pt.isel.ps.g06.httpserver.common.exception.NoSuchApiException
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.RestaurantApiType
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.mapper.RestaurantApiMapper
 import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.restaurant.RestaurantResponseMapper
-import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbSubmissionDto
-import pt.isel.ps.g06.httpserver.dataAccess.db.repo.MealDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.RestaurantDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.RestaurantMealDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.ApiSubmitterMapper
 import pt.isel.ps.g06.httpserver.model.Restaurant
-import pt.isel.ps.g06.httpserver.dataAccess.input.RestaurantInput
-import pt.isel.ps.g06.httpserver.model.Restaurant
+import pt.isel.ps.g06.httpserver.dataAccess.model.RestaurantDto
+import pt.isel.ps.g06.httpserver.model.Meal
 
 private const val MAX_RADIUS = 1000
 
 @Service
 class RestaurantService(
         private val dbRestaurantRepository: RestaurantDbRepository,
+        private val dbRestaurantMealRepository: RestaurantMealDbRepository,
         private val restaurantApiMapper: RestaurantApiMapper,
         private val restaurantResponseMapper: RestaurantResponseMapper,
         private val apiSubmitterMapper: ApiSubmitterMapper
@@ -119,17 +118,17 @@ class RestaurantService(
                 longitude = longitude
         )
 
-        //TODO map to Restaurant
+        return restaurantResponseMapper.mapTo(createdRestaurant)
     }
 
 
-    fun addRestaurantMeal(restaurant: RestaurantInfo, meal: MealInfo, submitterId: Int): Int {
-        if (!restaurant.identifier.isPresentInDatabase()) throw IllegalStateException()
+    fun addRestaurantMeal(restaurant: Restaurant, meal: Meal, submitterId: Int): Int {
+        if (!restaurant.identifier.value.isPresentInDatabase()) throw IllegalStateException()
 
         val (submission_id) = dbRestaurantMealRepository.insert(
                 submitterId = submitterId,
                 mealId = meal.identifier,
-                restaurantId = restaurant.identifier.submissionId!!
+                restaurantId = restaurant.identifier.value.submissionId!!
         )
 
         return submission_id
@@ -150,12 +149,11 @@ class RestaurantService(
         val restaurantApi = restaurantApiMapper.getRestaurantApi(apiType)
 
         //TODO Exception handle on CompletableFuture
-        return dbRestaurantRepository
-                .getApiRestaurant(apiSubmitterId, apiId)
-                ?: restaurantApi.getById(apiId).get()
+        return dbRestaurantRepository.getApiRestaurant(apiSubmitterId, apiId)
+                ?: restaurantApi.getRestaurantInfo(apiId).get()
     }
 
     private fun searchRestaurantSubmission(submissionId: Int, userId: Int): RestaurantDto? {
-        return dbRestaurantRepository.getBySubmissionId(submissionId, userId)
+        return dbRestaurantRepository.getById(submissionId)
     }
 }

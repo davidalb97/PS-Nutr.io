@@ -12,8 +12,8 @@ data class Restaurant(
         val image: URI?,
         val isFavorite: (Int) -> Boolean,
         //TODO Use vote state!
-        val userVote: (Int) -> Boolean?,
-        val votes: Votes?,
+        val userVote: (Int) -> VoteState,
+        val votes: Votes,
         val creatorInfo: Lazy<Creator?>,
         val creationDate: Lazy<OffsetDateTime?>,
         val meals: Sequence<RestaurantMeal>,

@@ -6,6 +6,8 @@ import org.springframework.stereotype.Repository
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.SubmitterDao
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbSubmitterDto
 
+private val isolationLevel = TransactionIsolationLevel.SERIALIZABLE
+
 @Repository
 class SubmitterDbRepository(private val jdbi: Jdbi) {
     fun getApiSubmittersByName(names: Collection<String>): Collection<DbSubmitterDto> {

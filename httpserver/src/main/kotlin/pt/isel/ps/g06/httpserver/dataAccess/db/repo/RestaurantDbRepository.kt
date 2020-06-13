@@ -13,8 +13,6 @@ import pt.isel.ps.g06.httpserver.dataAccess.model.RestaurantApiId
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbCuisineDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbRestaurantCuisineDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbRestaurantDto
-import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbVotesDto
-import pt.isel.ps.g06.httpserver.dataAccess.db.dto.info.*
 import pt.isel.ps.g06.httpserver.exception.InvalidInputException
 import pt.isel.ps.g06.httpserver.springConfig.dto.DbEditableDto
 
@@ -39,9 +37,16 @@ class RestaurantDbRepository(jdbi: Jdbi, val config: DbEditableDto) : Submission
     fun getById(restaurantId: Int): DbRestaurantDto? {
         return jdbi.inTransaction<DbRestaurantDto, Exception>(isolationLevel) {
             return@inTransaction it.attach(RestaurantDao::class.java)
-                    .getById(restaurantId)
+                    .getBySubmissionId(restaurantId)
         }
     }
+
+    fun getApiRestaurant(apiSubmitterId: Int, apiId: String): DbRestaurantDto? {
+        return jdbi.inTransaction<DbRestaurantDto, Exception>(isolationLevel) {
+            return@inTransaction it.attach(restaurantDaoClass).getApiRestaurant(apiSubmitterId, apiId)
+        }
+    }
+
 
     /**
      * @throws InvalidInputException On invalid cuisines passed.

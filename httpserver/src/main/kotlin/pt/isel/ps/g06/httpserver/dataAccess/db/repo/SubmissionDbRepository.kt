@@ -12,6 +12,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbSubmitterDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbUserVoteDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbVotesDto
 import pt.isel.ps.g06.httpserver.exception.InvalidInputException
+import pt.isel.ps.g06.httpserver.model.VoteState
 import java.time.OffsetDateTime
 
 private val isolationLevel = TransactionIsolationLevel.SERIALIZABLE
@@ -33,7 +34,7 @@ class SubmissionDbRepository(jdbi: Jdbi): BaseDbRepo(jdbi) {
         }
     }
 
-    fun getApiSubmissionById(submissionId: Int): DbApiSubmissionDto {
+    fun getApiSubmissionById(submissionId: Int): DbApiSubmissionDto? {
         return jdbi.inTransaction<DbApiSubmissionDto, Exception>(isolationLevel) { handle ->
             return@inTransaction handle.attach(ApiSubmissionDao::class.java).getBySubmissionId(submissionId)
         }
@@ -48,9 +49,11 @@ class SubmissionDbRepository(jdbi: Jdbi): BaseDbRepo(jdbi) {
     fun getUserVote(
             submissionId: Int,
             userId: Int
-    ): Boolean? {
-        return jdbi.inTransaction<Boolean, Exception>(isolationLevel) { handle ->
-            return@inTransaction handle.attach(UserVoteDao::class.java).getVoteByIds(submissionId, userId)
+    ): VoteState {
+        return jdbi.inTransaction<VoteState, Exception>(isolationLevel) { handle ->
+            val vote = handle.attach(UserVoteDao::class.java).getVoteByIds(submissionId, userId)
+                    ?: return@inTransaction VoteState.NOT_VOTED
+            return@inTransaction if(vote) VoteState.POSITIVE else VoteState.NEGATIVE
         }
     }
 

@@ -12,13 +12,16 @@ open class SimplifiedRestaurantMealOutput(
         val image: URI?
 )
 
-fun toSimplifiedRestaurantMealOutput(restaurantMeal: RestaurantMeal): SimplifiedRestaurantMealOutput {
+fun toSimplifiedRestaurantMealOutput(restaurantMeal: RestaurantMeal, userId: Int?): SimplifiedRestaurantMealOutput {
     return SimplifiedRestaurantMealOutput(
             id = restaurantMeal.meal.identifier,
             name = restaurantMeal.meal.name,
-            //TODO Proper votes
-            votes = VotesOutput(VoteState.NOT_VOTED, 0, 0),
-            isFavorite = restaurantMeal.meal.isFavorite,
+            votes = VotesOutput(
+                    userVote = userId?.let { restaurantMeal.userVote(userId) } ?: VoteState.NOT_VOTED,
+                    positive = restaurantMeal.votes.positive,
+                    negative = restaurantMeal.votes.positive
+            ),
+            isFavorite = userId?.let { restaurantMeal.meal.isFavorite(userId) } ?: false,
             image = restaurantMeal.meal.image
     )
 }

@@ -4,8 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.stereotype.Repository
 import pt.isel.ps.g06.httpserver.dataAccess.api.common.BaseApiRequester
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.uri.RestaurantUri
-import pt.isel.ps.g06.httpserver.dataAccess.model.RestaurantInfoDto
-import pt.isel.ps.g06.httpserver.dataAccess.model.RestaurantItemDto
 import pt.isel.ps.g06.httpserver.dataAccess.model.RestaurantDto
 import java.net.URI
 import java.net.http.HttpClient

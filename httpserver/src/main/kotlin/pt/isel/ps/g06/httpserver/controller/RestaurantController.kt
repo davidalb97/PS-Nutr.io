@@ -15,7 +15,6 @@ import pt.isel.ps.g06.httpserver.dataAccess.output.toDetailedRestaurantOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.toSimplifiedRestaurantOutput
 import pt.isel.ps.g06.httpserver.exception.InvalidInputDomain
 import pt.isel.ps.g06.httpserver.exception.InvalidInputException
-import pt.isel.ps.g06.httpserver.model.Restaurant
 import pt.isel.ps.g06.httpserver.service.RestaurantService
 import javax.validation.Valid
 
@@ -61,7 +60,7 @@ class RestaurantController(
 
         return ResponseEntity
                 .ok()
-                .body(nearbyRestaurants.map { toSimplifiedRestaurantOutput(it) })
+                .body(nearbyRestaurants.map { toSimplifiedRestaurantOutput(it, userId) }.toList())
     }
 
     @GetMapping(RESTAURANT, consumes = [MediaType.ALL_VALUE])
@@ -80,7 +79,7 @@ class RestaurantController(
 
         return ResponseEntity
                 .ok()
-                .body(toDetailedRestaurantOutput(restaurant))
+                .body(toDetailedRestaurantOutput(restaurant, userId))
     }
 
     @PostMapping(RESTAURANTS, consumes = [MediaType.APPLICATION_JSON_VALUE])

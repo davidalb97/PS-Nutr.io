@@ -12,14 +12,17 @@ open class SimplifiedRestaurantOutput(
         val isFavorite: Boolean?
 )
 
-fun toSimplifiedRestaurantOutput(restaurant: Restaurant): SimplifiedRestaurantOutput {
+fun toSimplifiedRestaurantOutput(restaurant: Restaurant, userId: Int?): SimplifiedRestaurantOutput {
     return SimplifiedRestaurantOutput(
             id = restaurant.identifier.toString(),
             name = restaurant.name,
             latitude = restaurant.latitude,
             longitude = restaurant.longitude,
-            //TODO Proper votes
-            votes = VotesOutput(VoteState.NOT_VOTED, 0, 0),
-            isFavorite = restaurant.isFavorite
+            votes = VotesOutput(
+                    userVote = userId?.let { restaurant.userVote(userId) } ?: VoteState.NOT_VOTED,
+                    positive = restaurant.votes.positive,
+                    negative = restaurant.votes.positive
+            ),
+            isFavorite = userId?.let { restaurant.isFavorite(userId) } ?: false
     )
 }

@@ -2,6 +2,7 @@ package pt.isel.ps.g06.httpserver.dataAccess.output
 
 import pt.isel.ps.g06.httpserver.model.Restaurant
 import pt.isel.ps.g06.httpserver.model.VoteState
+import java.time.OffsetDateTime
 
 class DetailedRestaurantOutput(
         id: String,
@@ -11,7 +12,7 @@ class DetailedRestaurantOutput(
         votes: VotesOutput?,
         isFavorite: Boolean?,
         val cuisines: Collection<String>,
-//        val creationDate: OffsetDateTime, TODO
+        val creationDate: OffsetDateTime?,
         val meals: Collection<SimplifiedRestaurantMealOutput>,
         val suggestedMeals: Collection<SimplifiedRestaurantMealOutput>
 ) : SimplifiedRestaurantOutput(
@@ -23,18 +24,21 @@ class DetailedRestaurantOutput(
         isFavorite = isFavorite
 )
 
-fun toDetailedRestaurantOutput(restaurant: Restaurant): DetailedRestaurantOutput {
+fun toDetailedRestaurantOutput(restaurant: Restaurant, userId: Int?): DetailedRestaurantOutput {
     return DetailedRestaurantOutput(
             id = restaurant.identifier.toString(),
             name = restaurant.name,
             latitude = restaurant.latitude,
             longitude = restaurant.longitude,
-            //TODO Proper votes
-            votes = VotesOutput(VoteState.NOT_VOTED, 0, 0),
-            isFavorite = restaurant.isFavorite,
-            cuisines = restaurant.cuisines.toList(),
-            meals = restaurant.meals.toList().map { toSimplifiedRestaurantMealOutput(it) },
-            //TODO Proper mapping
-            suggestedMeals = emptyList()
+            votes = VotesOutput(
+                    userVote = userId?.let { restaurant.userVote(userId) } ?: VoteState.NOT_VOTED,
+                    positive = restaurant.votes.positive,
+                    negative = restaurant.votes.positive
+            ),
+            isFavorite = userId?.let { restaurant.isFavorite(userId) } ?: false,
+            cuisines = restaurant.cuisines.map { it.name }.toList(),
+            meals = restaurant.meals.toList().map { toSimplifiedRestaurantMealOutput(it, userId) },
+            suggestedMeals = restaurant.suggestedMeals.toList().map { toSimplifiedMealOutput(it, userId) },
+            creationDate = restaurant.creationDate.value
     )
 }
