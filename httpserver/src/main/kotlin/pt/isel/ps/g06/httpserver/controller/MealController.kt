@@ -10,7 +10,7 @@ import pt.isel.ps.g06.httpserver.common.MEAL_ID_VALUE
 import pt.isel.ps.g06.httpserver.common.MEAL_VOTE
 import pt.isel.ps.g06.httpserver.common.exception.MealNotFoundException
 import pt.isel.ps.g06.httpserver.dataAccess.input.MealInput
-import pt.isel.ps.g06.httpserver.model.MealInfo
+import pt.isel.ps.g06.httpserver.model.Meal
 import pt.isel.ps.g06.httpserver.service.MealService
 import javax.validation.Valid
 
@@ -20,7 +20,7 @@ import javax.validation.Valid
 class MealController(private val mealService: MealService) {
 
     @GetMapping(MEAL)
-    fun getMealInformation(@PathVariable(MEAL_ID_VALUE) mealId: Int): ResponseEntity<MealInfo> {
+    fun getMealInformation(@PathVariable(MEAL_ID_VALUE) mealId: Int): ResponseEntity<Meal> {
         val userId = 10 //When there's authentication
 
         return mealService.getMeal(mealId, userId)

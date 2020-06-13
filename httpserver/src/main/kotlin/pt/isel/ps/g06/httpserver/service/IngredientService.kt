@@ -7,8 +7,9 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.repo.MealDbRepository
 class IngredientService(private val mealDbRepository: MealDbRepository) {
     fun getIngredients(skip: Int?, limit: Int?) {
         //TODO When David finishes output model and mapper
-        mealDbRepository
-                .getIngredients(skip, limit)
+        /*mealDbRepository.getIngredients(skip, limit)
                 .forEach { println(it.meal_name) }
+
+         */
     }
 }

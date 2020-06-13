@@ -2,7 +2,6 @@ package pt.isel.ps.g06.httpserver.db
 
 import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.transaction.TransactionIsolationLevel
-import pt.isel.ps.g06.httpserver.dataAccess.api.food.FoodApiType
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.RestaurantApiType
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmitterType
@@ -76,7 +75,8 @@ class Constants(val jdbi: Jdbi) {
     val firstFoodApi = submitterDtos.filter {
         it.submitter_type == SubmitterType.API.toString()
     }.first { submitter ->
-        FoodApiType.values().any { it.toString() == submitter.submitter_name }
+        TODO()
+        //FoodApiType.values().any { it.toString() == submitter.submitter_name }
     }.let { submitterDto ->
         DbSubmitterDto(submitterDto.submitter_id, submitterDto.submitter_name, SubmitterType.API.toString())
     }
@@ -120,9 +120,10 @@ class Constants(val jdbi: Jdbi) {
             TestIngredient(rs.getString("ingredient_name"),
                     rs.getInt("submission_id"),
                     parsePostgresql(rs.getString(SN_date)),
-                    rs.getString("apiId"),
+                    //rs.getString("apiId"),
                     TestFoodApi(
-                            FoodApiType.valueOf(rs.getString("submitter_name")),
+                            TODO(),
+                            //FoodApiType.valueOf(rs.getString("submitter_name")),
                             rs.getInt("submitter_id")
                     )
             )
@@ -170,7 +171,11 @@ class Constants(val jdbi: Jdbi) {
             val mealName = rs.getString(M_name)
             val mealDto = DbMealDto(
                     submission_id = submissionId,
-                    meal_name = mealName
+                    meal_name = mealName,
+                    //TODO read column data and update query
+                    carbs = TODO(),
+                    quantity = TODO(),
+                    unit = TODO()
             )
             TestMeal(
                     mealName = mealName,

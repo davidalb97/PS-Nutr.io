@@ -8,7 +8,7 @@ import pt.isel.ps.g06.httpserver.common.*
 import pt.isel.ps.g06.httpserver.common.exception.MealNotFoundException
 import pt.isel.ps.g06.httpserver.common.exception.RestaurantNotFoundException
 import pt.isel.ps.g06.httpserver.dataAccess.input.RestaurantMealInput
-import pt.isel.ps.g06.httpserver.model.RestaurantMealItem
+import pt.isel.ps.g06.httpserver.model.RestaurantMeal
 import pt.isel.ps.g06.httpserver.service.MealService
 import pt.isel.ps.g06.httpserver.service.RestaurantService
 import javax.validation.Valid
@@ -25,7 +25,7 @@ class RestaurantMealsController(
     @GetMapping(RESTAURANT_MEALS, consumes = [MediaType.ALL_VALUE])
     fun getMealsFromRestaurant(
             @PathVariable(RESTAURANT_ID_VALUE) restaurantId: String
-    ): ResponseEntity<Collection<RestaurantMealItem>> {
+    ): ResponseEntity<Collection<RestaurantMeal>> {
 //        val userId = 10
 //        val (submitterId, submissionId, apiId) = restaurantIdentifierBuilder.extractIdentifiers(restaurantId)
 //
@@ -61,12 +61,12 @@ class RestaurantMealsController(
 
         val meal = mealService.getMeal(restaurantMeal.mealId!!, userId) ?: throw MealNotFoundException()
 
-        if (!restaurant.identifier.isPresentInDatabase()) {
+        if (!restaurant.identifier.value.isPresentInDatabase()) {
             restaurant = restaurantService.createRestaurant(
                     submitterId = submitterId,
                     apiId = apiId,
                     restaurantName = restaurant.name,
-                    cuisines = restaurant.cuisines.value,
+                    cuisines = restaurant.cuisines.map { it.name }.toList(),
                     latitude = restaurant.latitude,
                     longitude = restaurant.longitude
             )

@@ -60,7 +60,7 @@ class RestaurantController(
 
         return ResponseEntity
                 .ok()
-                .body(nearbyRestaurants.map { toSimplifiedRestaurantOutput(it) })
+                .body(nearbyRestaurants.map { toSimplifiedRestaurantOutput(it, userId) }.toList())
     }
 
     @GetMapping(RESTAURANT, consumes = [MediaType.ALL_VALUE])
@@ -79,7 +79,7 @@ class RestaurantController(
 
         return ResponseEntity
                 .ok()
-                .body(toDetailedRestaurantOutput(restaurant))
+                .body(toDetailedRestaurantOutput(restaurant, userId))
     }
 
     @PostMapping(RESTAURANTS, consumes = [MediaType.APPLICATION_JSON_VALUE])

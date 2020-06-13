@@ -200,7 +200,8 @@ fun getAllTestRestaurantMeals(handle: Handle, mealDto: DbMealDto? = null, restau
         TestRestaurantMeal(
                 submissionId = restaurantMealDto.submission_id,
                 mealDto = mealDto ?: mealDao.getById(restaurantMealDto.meal_submission_id)!!,
-                restaurantDto = restaurantDto ?: restaurantDao.getById(restaurantMealDto.restaurant_submission_id)!!,
+                restaurantDto = restaurantDto
+                        ?: restaurantDao.getBySubmissionId(restaurantMealDto.restaurant_submission_id)!!,
                 portions = portionDao.getAllByRestaurantMealId(restaurantMealDto.submission_id),
                 userVotes = userVoteDao.getAllById(restaurantMealDto.submission_id),
                 votes = votableDao.getById(restaurantMealDto.submission_id) ?: DbVotesDto(0, 0)

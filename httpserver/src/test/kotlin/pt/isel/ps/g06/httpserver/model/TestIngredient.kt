@@ -6,7 +6,6 @@ data class TestIngredient(
         val name: String,
         val submissionId: Int,
         val date: OffsetDateTime,
-        val apiId: String,
         val foodApi: TestFoodApi
 ) {
 
@@ -14,8 +13,9 @@ data class TestIngredient(
     fun toModel(): Ingredient {
         return Ingredient(
                 name,
-                apiId,
-                null
+                TODO(),
+                TODO()
         )
     }
+
 }
