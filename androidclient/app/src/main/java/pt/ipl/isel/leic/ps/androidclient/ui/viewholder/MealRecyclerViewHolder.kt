@@ -7,10 +7,10 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import pt.ipl.isel.leic.ps.androidclient.R
-import pt.ipl.isel.leic.ps.androidclient.data.model.Meal
+import pt.ipl.isel.leic.ps.androidclient.data.model.MealItem
 
 // TODO: Create Cuisines
-class MealRecyclerViewHolder(view: ViewGroup, ctx: Context) : ARecyclerViewHolder<Meal>(view, ctx) {
+class MealRecyclerViewHolder(view: ViewGroup, ctx: Context) : ARecyclerViewHolder<MealItem>(view, ctx) {
     val mealImage = view.findViewById<ImageView>(R.id.restaurantImage)
     val mealName = view.findViewById<TextView>(R.id.restaurantName)
     //val restaurantCuisines = view.findViewById<TextView>(R.id.restaurantCuisines)
@@ -22,7 +22,7 @@ class MealRecyclerViewHolder(view: ViewGroup, ctx: Context) : ARecyclerViewHolde
     val favoriteButton = view.findViewById<ImageButton>(R.id.favorite)
     val optionsButton = view.findViewById<ImageButton>(R.id.options)
 
-    override fun bindTo(meal: Meal) {
+    override fun bindTo(meal: MealItem) {
         super.bindTo(meal)
 
         mealName.text = meal.name

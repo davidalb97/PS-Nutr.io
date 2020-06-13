@@ -21,10 +21,11 @@ data class DbApiMealEntity(
     val imageUrl: String?
 ) {
     companion object {
+        const val DEFAULT_DB_ID: Long = 0
         const val tableName = "ApiMeal"
         const val primaryKeyName = "primaryKey"
     }
 
     @PrimaryKey(autoGenerate = true)
-    var primaryKey: Long = 0
+    var primaryKey: Long = DEFAULT_DB_ID
 }

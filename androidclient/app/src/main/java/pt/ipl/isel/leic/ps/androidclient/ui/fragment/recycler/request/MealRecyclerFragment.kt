@@ -7,14 +7,14 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import pt.ipl.isel.leic.ps.androidclient.R
-import pt.ipl.isel.leic.ps.androidclient.data.model.Meal
+import pt.ipl.isel.leic.ps.androidclient.data.model.MealItem
 import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.MealRecyclerAdapter
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.tab.CALCULATOR_BUNDLE_FLAG
 import pt.ipl.isel.leic.ps.androidclient.ui.listener.ScrollListener
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.MealRecyclerVMProviderFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.ApiMealRecyclerViewModel
 
-class MealRecyclerFragment : ARequestRecyclerListFragment<Meal, ApiMealRecyclerViewModel>() {
+class MealRecyclerFragment : ARequestRecyclerListFragment<MealItem, ApiMealRecyclerViewModel>() {
 
     private val isCalculatorMode: Boolean by lazy {
         this.requireArguments().getBoolean(CALCULATOR_BUNDLE_FLAG)

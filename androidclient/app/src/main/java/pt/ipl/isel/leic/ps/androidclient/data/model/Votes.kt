@@ -5,18 +5,19 @@ import android.os.Parcel
 import android.os.Parcelable
 
 data class Votes(
-    val userHasVoted: Boolean?,
+    val userHasVoted: VoteState,
     val positive: Int,
     val negative: Int
 ) : Parcelable {
 
     constructor(parcel: Parcel) : this(
-        userHasVoted = parcel.readBoolean(),
+        userHasVoted = VoteState.values()[parcel.readInt()],
         positive = parcel.readInt(),
         negative = parcel.readInt()
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeInt(userHasVoted.ordinal)
         parcel.writeInt(positive)
         parcel.writeInt(negative)
     }
