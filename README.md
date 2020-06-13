@@ -38,6 +38,7 @@ This section shows and explains how you should setup your work environment, so y
 - **Spring 2.2.6**
 
 - **JetBrains Intellij** IDE 2019.4.3
+- **PostgreSQL** - For database
 - **Android Studio**
 - **Visual Studio Code**, with the following extensions:
   - Microsoft Live Share - Editing the same files and projects alongside your peers
@@ -70,6 +71,7 @@ git reset --hard origin
 
 - Installs:
   - To use LaTeX workshop, you will need to install MiKTeX first and make sure that the path ```C:\Program Files\Git\usr\bin``` is added to the system variables (PATH), inside the environment variables, so it can use the perl.exe. 
+  - PostgreSQL requires PostGIS spatial extension to run our geolocation queries, installed by PostGreSQL's Stackbuilder application.
 - Development:
   - When opening and building, for the first time, a .tex document inside the LaTeX workshop you will need to accept the packages' installations that will pop up after the build. Those are the packages included in the document's header. They are needed for additional LaTeX functions and required for the file compilation.
 - Documentation:
