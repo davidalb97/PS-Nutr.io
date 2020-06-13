@@ -8,7 +8,7 @@ open class SimplifiedRestaurantMealOutput(
         val id: Int,
         val name: String,
         val votes: VotesOutput?,
-        val isFavorite: Boolean?,
+        val isFavorite: Boolean,
         val image: URI?
 )
 
@@ -18,7 +18,7 @@ fun toSimplifiedRestaurantMealOutput(restaurantMeal: RestaurantMeal): Simplified
             name = restaurantMeal.meal.name,
             //TODO Proper votes
             votes = VotesOutput(VoteState.NOT_VOTED, 0, 0),
-            isFavorite = restaurantMeal.meal.isFavorite,
+            isFavorite = restaurantMeal.meal.isFavorite ?: false,
             image = restaurantMeal.meal.image
     )
 }
