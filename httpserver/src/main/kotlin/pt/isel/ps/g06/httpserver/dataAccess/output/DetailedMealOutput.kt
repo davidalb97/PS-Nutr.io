@@ -6,7 +6,7 @@ import java.time.OffsetDateTime
 data class DetailedMealOutput(
         val id: Int,
         val name: String,
-        val image: URI?,
+        val imageUri: URI?,
         val isFavorite: Boolean,
         val creationDate: OffsetDateTime,
         val composedBy: MealComposition?,

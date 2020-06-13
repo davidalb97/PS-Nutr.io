@@ -8,13 +8,13 @@ open class SimplifiedRestaurantOutput(
         val name: String,
         val latitude: Float,
         val longitude: Float,
-        val votes: VotesOutput?,
-        val isFavorite: Boolean?
+        val votes: VotesOutput,
+        val isFavorite: Boolean
 )
 
-fun toSimplifiedRestaurantOutput(restaurant: Restaurant, userId: Int?): SimplifiedRestaurantOutput {
+fun toSimplifiedRestaurantOutput(restaurant: Restaurant, userId: Int? = null): SimplifiedRestaurantOutput {
     return SimplifiedRestaurantOutput(
-            id = restaurant.identifier.toString(),
+            id = restaurant.identifier.value.toString(),
             name = restaurant.name,
             latitude = restaurant.latitude,
             longitude = restaurant.longitude,

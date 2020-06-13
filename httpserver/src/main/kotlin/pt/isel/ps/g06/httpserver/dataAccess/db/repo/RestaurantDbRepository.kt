@@ -193,7 +193,7 @@ class RestaurantDbRepository(jdbi: Jdbi, val config: DbEditableDto) : Submission
     private fun deleteRestaurantPortions(handle: Handle, submissionId: Int) {
         //Get all restaurant meal ids
         val restaurantMealIds = handle.attach(RestaurantMealDao::class.java)
-                .getAllByRestaurantId(submissionId)
+                .getAllUserMealsByRestaurantId(submissionId)
                 .map { it.submission_id }
         //Delete all portions with the restaurant meal ids
         handle.attach(PortionDao::class.java).deleteAllByRestaurantMealIds(restaurantMealIds)

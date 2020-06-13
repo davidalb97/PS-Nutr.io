@@ -48,38 +48,34 @@ class RestaurantController(
             throw InvalidInputException(InvalidInputDomain.SEARCH_RESTAURANT, INVALID_RESTAURANT_SEARCH)
         }
 
-        val userId = 10 //TODO When authentication is done
         val nearbyRestaurants = restaurantService.getNearbyRestaurants(
                 latitude = latitude,
                 longitude = longitude,
                 name = name,
                 radius = radius,
-                apiType = apiType,
-                userId = userId
+                apiType = apiType
         )
 
         return ResponseEntity
                 .ok()
-                .body(nearbyRestaurants.map { toSimplifiedRestaurantOutput(it, userId) }.toList())
+                .body(nearbyRestaurants.map { toSimplifiedRestaurantOutput(it) }.toList())
     }
 
     @GetMapping(RESTAURANT, consumes = [MediaType.ALL_VALUE])
     fun getRestaurantInformation(
             @PathVariable(RESTAURANT_ID_VALUE) id: String
     ): ResponseEntity<DetailedRestaurantOutput> {
-        val userId = 10     //TODO For when there's authentication
         val (submitterId, submissionId, apiId) = restaurantIdentifierBuilder.extractIdentifiers(id)
 
         val restaurant = restaurantService.getRestaurant(
                 submitterId = submitterId,
                 submissionId = submissionId,
-                apiId = apiId,
-                userId = userId
+                apiId = apiId
         ) ?: throw RestaurantNotFoundException()
 
         return ResponseEntity
                 .ok()
-                .body(toDetailedRestaurantOutput(restaurant, userId))
+                .body(toDetailedRestaurantOutput(restaurant))
     }
 
     @PostMapping(RESTAURANTS, consumes = [MediaType.APPLICATION_JSON_VALUE])
@@ -129,9 +125,9 @@ class RestaurantController(
     fun deleteRestaurantVote(@PathVariable(RESTAURANT_ID_VALUE) id: String, vote: String) {
     }
 
-    @GetMapping(AVAILABLE_RESTAURANT_TYPES, consumes = [MediaType.ALL_VALUE])
-    fun getRestaurantTypes(): ResponseEntity<> {
-
-    }
-
+    //TODO
+//    @GetMapping(AVAILABLE_RESTAURANT_TYPES, consumes = [MediaType.ALL_VALUE])
+//    fun getRestaurantTypes(): ResponseEntity<> {
+//
+//    }
 }

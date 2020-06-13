@@ -18,16 +18,23 @@ private val restaurantMealDao = RestaurantMealDao::class.java
 
 @Repository
 class RestaurantMealDbRepository(jdbi: Jdbi) : SubmissionDbRepository(jdbi) {
-
     private val contracts = listOf(REPORTABLE, VOTABLE, FAVORABLE)
 
-    fun getAllMealsFromRestaurant(restaurantId: Int): Sequence<DbRestaurantMealDto> {
+    fun getAllUserMealsFromRestaurant(restaurantId: Int): Sequence<DbRestaurantMealDto> {
         val collection = lazy {
             jdbi.inTransaction<Collection<DbRestaurantMealDto>, Exception>(isolationLevel) { handle ->
-                handle.attach(RestaurantMealDao::class.java).getAllByRestaurantId(restaurantId)
+                handle.attach(restaurantMealDao).getAllUserMealsByRestaurantId(restaurantId)
             }
         }
         return Sequence { collection.value.iterator() }
+    }
+
+    fun getRestaurantMeal(restaurantId: Int, mealId: Int): DbRestaurantMealDto? {
+        return jdbi.inTransaction<DbRestaurantMealDto, Exception>(isolationLevel) {
+            return@inTransaction it
+                    .attach(restaurantMealDao)
+                    .getByRestaurantAndMealId(restaurantId, mealId)
+        }
     }
 
     fun insert(

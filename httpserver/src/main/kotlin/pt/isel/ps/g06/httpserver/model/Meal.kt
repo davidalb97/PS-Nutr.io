@@ -8,10 +8,11 @@ data class Meal(
         val identifier: Int,
         val name: String,
         val isFavorite: (Int) -> Boolean,
-        val image: URI?,
+        val imageUri: URI?,
         val nutritionalValues: NutritionalValues,
         val ingredients: Sequence<MealIngredient>,
         val cuisines: Sequence<Cuisine>,
         val creatorInfo: Lazy<Creator?>,
-        val creationDate: Lazy<OffsetDateTime?>
+        val creationDate: Lazy<OffsetDateTime?>,
+        val restaurantInfo: (RestaurantIdentifier) -> MealRestaurantInfo?
 )

@@ -4,6 +4,9 @@ import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbRestaurantMealDto
 
+private const val SS_table = SubmissionSubmitterDao.table
+private const val SS_submission_id = SubmissionSubmitterDao.submissionId
+
 interface RestaurantMealDao {
 
     companion object {
@@ -25,8 +28,12 @@ interface RestaurantMealDao {
     @SqlQuery("SELECT * FROM $table WHERE $mealId = :mealId")
     fun getAllByMealId(@Bind mealId: Int): List<DbRestaurantMealDto>
 
-    @SqlQuery("SELECT * FROM $table WHERE $restaurantId = :restaurantId")
-    fun getAllByRestaurantId(@Bind restaurantId: Int): Collection<DbRestaurantMealDto>
+    @SqlQuery("SELECT * " +
+            "FROM $table " +
+            "INNER JOIN $SS_table " +
+            "ON $table.$id = $SS_table.$SS_submission_id " +
+            "WHERE $table.$restaurantId = :restaurantId")
+    fun getAllUserMealsByRestaurantId(@Bind restaurantId: Int): Collection<DbRestaurantMealDto>
 
     @SqlQuery("INSERT INTO $table($id, $restaurantId, $mealId)" +
             " VALUES(:submissionId, :restaurantId, :mealId) RETURNING *")

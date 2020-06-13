@@ -28,8 +28,7 @@ class RestaurantService(
             longitude: Float,
             name: String?,
             radius: Int?,
-            apiType: String?,
-            userId: Int?
+            apiType: String?
     ): Sequence<Restaurant> {
         val chosenRadius = if (radius != null && radius <= MAX_RADIUS) radius else MAX_RADIUS
         val type = RestaurantApiType.getOrDefault(apiType)
@@ -70,9 +69,9 @@ class RestaurantService(
      * Search algorithm will first query the Database for any restaurant and if none was found,
      * search the preferred Restaurant API (Zomato, Here, etc.)
      */
-    fun getRestaurant(submitterId: Int, userId: Int, submissionId: Int?, apiId: String?): Restaurant? {
+    fun getRestaurant(submitterId: Int, submissionId: Int?, apiId: String?): Restaurant? {
         val restaurant = when {
-            submissionId != null -> searchRestaurantSubmission(submissionId, userId)
+            submissionId != null -> searchRestaurantSubmission(submissionId)
 
             apiId != null -> {
                 val apiType = apiSubmitterMapper
@@ -85,9 +84,7 @@ class RestaurantService(
             else -> null
         }
 
-        return restaurant?.let {
-            restaurantResponseMapper.mapTo(it)
-        }
+        return restaurant?.let { restaurantResponseMapper.mapTo(it) }
     }
 
     /**
@@ -149,11 +146,12 @@ class RestaurantService(
         val restaurantApi = restaurantApiMapper.getRestaurantApi(apiType)
 
         //TODO Exception handle on CompletableFuture
-        return dbRestaurantRepository.getApiRestaurant(apiSubmitterId, apiId)
+        return dbRestaurantRepository
+                .getApiRestaurant(apiSubmitterId, apiId)
                 ?: restaurantApi.getRestaurantInfo(apiId).get()
     }
 
-    private fun searchRestaurantSubmission(submissionId: Int, userId: Int): RestaurantDto? {
+    private fun searchRestaurantSubmission(submissionId: Int): RestaurantDto? {
         return dbRestaurantRepository.getById(submissionId)
     }
 }

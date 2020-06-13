@@ -15,9 +15,9 @@ class DetailedRestaurantMealOutput(
         val portions: Collection<Int>,
         val createdBy: SimplifiedUserOutput?
 ) : SimplifiedRestaurantMealOutput(
-        id = id,
+        mealIdentifier = id,
         name = name,
         votes = votes,
         isFavorite = isFavorite,
-        image = image
+        imageUri = image
 )

@@ -18,8 +18,6 @@ import pt.isel.ps.g06.httpserver.springConfig.dto.DbEditableDto
 
 private val isolationLevel = TransactionIsolationLevel.SERIALIZABLE
 private val mealDaoClass = MealDao::class.java
-private val mealCuisineDaoClass = MealCuisineDao::class.java
-private val restaurantMealDaoClass = RestaurantMealDao::class.java
 
 @Repository
 class MealDbRepository(jdbi: Jdbi, val config: DbEditableDto) : SubmissionDbRepository(jdbi) {
@@ -44,45 +42,62 @@ class MealDbRepository(jdbi: Jdbi, val config: DbEditableDto) : SubmissionDbRepo
         return jdbi.inTransaction<Sequence<DbIngredientDto>, Exception>(isolationLevel) { handle ->
             return@inTransaction handle.attach(IngredientDao::class.java)
                     .getAllByMealId(mealId).asSequence()
-            fun getAllByCuisineApiIds(apiSubmitterId: Int, cuisineApiIds: Sequence<String>): Sequence<DbMealDto> {
-                val collection = lazy {
-                    jdbi.inTransaction<Collection<DbMealDto>, Exception>(isolationLevel) {
-                        val cuisineApiIdsList = cuisineApiIds.toList()
-                        if (cuisineApiIdsList.isEmpty())
-                            return@inTransaction emptyList()
-//                val apiSubmitterId = it.attach(SubmitterDao::class.java)
-//                        .getAllByType(SubmitterType.API.toString())
-//                        .first { it.submitter_name == foodApiType.toString() }
-//                        .submitter_id
-                        return@inTransaction it.attach(MealDao::class.java)
-                                .getAllByApiSubmitterAndCuisineApiIds(apiSubmitterId, cuisineApiIdsList)
-                    }
-                }
-                return sequence { collection.value.iterator() }
-            }
+        }
+    }
 
-            fun getAllByCuisineNames(cuisineNames: Sequence<String>): Sequence<DbMealDto> {
-                val collection = lazy {
-                    jdbi.inTransaction<Collection<DbMealDto>, Exception>(isolationLevel) { handle ->
-                        //TODO change to cool name
-                        val cuisineNameList = cuisineNames.toList()
-                        if (cuisineNameList.isEmpty())
-                            return@inTransaction emptyList()
-                        return@inTransaction handle.attach(MealDao::class.java)
-                                .getAllByCuisineNames(cuisineNameList)
-                    }
-                }
-                return sequence { collection.value.iterator() }
-            }
+    fun getAllSuggestedMealsByCuisineApiIds(apiSubmitterId: Int, cuisineApiIds: Sequence<String>): Sequence<DbMealDto> {
+        val collection = lazy {
+            jdbi.inTransaction<Collection<DbMealDto>, Exception>(isolationLevel) {
+                val cuisineApiIdsList = cuisineApiIds.toList()
 
-            /**
-             * @throws InvalidInputException On invalid cuisines passed.
-             *                               (Annotation required for testing purposes)
-             */
-            @Throws(InvalidInputException::class)
-            fun insert(
-                    submitterId: Int,
-                    mealName: String,
+                if (cuisineApiIdsList.isEmpty()) return@inTransaction emptyList()
+
+                //TODO Return after debug
+                val allSuggestedByCuisineApiIds = it
+                        .attach(MealDao::class.java)
+                        .getAllSuggestedByCuisineApiIds(apiSubmitterId, cuisineApiIdsList)
+
+                allSuggestedByCuisineApiIds
+            }
+        }
+        return sequence { collection.value.iterator() }
+    }
+
+    //TODO Get all hardcoded, not user meals
+    fun getAllSuggestedMealsFromCuisineNames(cuisineNames: Sequence<String>): Sequence<DbMealDto> {
+        val collection = lazy {
+            jdbi.inTransaction<Collection<DbMealDto>, Exception>(isolationLevel) { handle ->
+                val cuisineNameList = cuisineNames.toList()
+
+                if (cuisineNameList.isEmpty()) return@inTransaction emptyList()
+
+                return@inTransaction handle
+                        .attach(MealDao::class.java)
+                        .getAllSuggestedByNames(cuisineNameList)
+            }
+        }
+        return sequence { collection.value.iterator() }
+    }
+
+    fun getAllUserMealsForRestaurant(restaurantId: Int): Sequence<DbMealDto> {
+        val collection = lazy {
+            jdbi.inTransaction<Collection<DbMealDto>, Exception>(isolationLevel) { handle ->
+                return@inTransaction handle
+                        .attach(MealDao::class.java)
+                        .getAllUserMealsByRestaurantId(restaurantId)
+            }
+        }
+        return Sequence { collection.value.iterator() }
+    }
+
+    /**
+     * @throws InvalidInputException On invalid cuisines passed.
+     *                               (Annotation required for testing purposes)
+     */
+    @Throws(InvalidInputException::class)
+    fun insert(
+            submitterId: Int,
+            mealName: String,
             quantity: Int,
             cuisines: Collection<String>,
             ingredients: Collection<IngredientInput>
@@ -412,11 +427,5 @@ class MealDbRepository(jdbi: Jdbi, val config: DbEditableDto) : SubmissionDbRepo
 
     private fun getCarbsForInputQuantity(dbIngredientDto: DbIngredientDto, ingredientInput: IngredientInput): Float {
         return (ingredientInput.quantity!!.times(dbIngredientDto.carbs).toFloat()).div(dbIngredientDto.amount)
-    }
-
-    fun getIngredients(skip: Int?, limit: Int?): Collection<DbMealDto> {
-        return jdbi.inTransaction<Collection<DbMealDto>, Exception>(isolationLevel) {
-            return@inTransaction it.attach(mealDaoClass).getIngredients(skip ?: 0, limit)
-        }
     }
 }

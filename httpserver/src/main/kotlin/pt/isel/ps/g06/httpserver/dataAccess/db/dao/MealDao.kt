@@ -7,6 +7,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbMealDto
 
 //Restaurant table constants
 private const val RM_table = RestaurantMealDao.table
+private const val RM_table_submissionId = RestaurantMealDao.id
 private const val RM_mealId = RestaurantMealDao.mealId
 private const val RM_restaurantId = RestaurantMealDao.restaurantId
 
@@ -49,6 +50,7 @@ interface MealDao {
         const val id = "submission_id"
         const val carbs = "carbs"
         const val quantity = "quantity"
+        const val unit = "unit"
     }
 
     @SqlQuery("SELECT * FROM $table")
@@ -71,19 +73,22 @@ interface MealDao {
     )
     fun getAllByRestaurantId(@Bind restaurantId: Int): Collection<DbMealDto>
 
-    @SqlQuery("SELECT DISTINCT $table.$id, $table.$name" +
+    @SqlQuery("SELECT DISTINCT ON ($table.$id) $table.$id, $table.$name, $table.$carbs, $table.$quantity, $table.$unit" +
             " FROM $table" +
             " INNER JOIN $MC_table" +
             " ON $table.$id = $MC_table.$MC_mealId" +
             " INNER JOIN $C_table" +
             " ON $MC_table.$MC_cuisineId = $C_table.$C_cuisineId" +
-            " WHERE $C_table.$C_name IN (<mealNames>)"
+            " LEFT JOIN $SS_table" +
+            " ON $SS_table.$SS_submissionId = $table.$id" +
+            " WHERE $SS_table.$SS_submissionId IS NULL" +
+            " AND $C_table.$C_name IN (<cuisineNames>)"
     )
-    fun getAllByCuisineNames(@BindList mealNames: Collection<String>): Collection<DbMealDto>
+    fun getAllSuggestedByNames(@BindList cuisineNames: Collection<String>): Collection<DbMealDto>
 
-    @SqlQuery("SELECT $table.$id, $table.$name" +
+    @SqlQuery("SELECT DISTINCT ON ($table.$id) $table.$id, $table.$name, $table.$carbs, $table.$quantity, $table.$unit" +
             " FROM $C_table" +
-            " INNER JOIN $AC_table " +
+            " INNER JOIN $AC_table" +
             " ON $C_table.$C_cuisineId = $AC_table.$AC_cuisineId" +
             " INNER JOIN $AS_table" +
             " ON $AS_table.$AS_submissionId = $AC_table.$AC_submissionId" +
@@ -96,7 +101,7 @@ interface MealDao {
             " WHERE $SS_table.$SS_submitterId = :submitterId" +
             " AND $AS_table.$AS_apiId IN (<apiIds>)"
     )
-    fun getAllByApiSubmitterAndCuisineApiIds(
+    fun getAllSuggestedByCuisineApiIds(
             @Bind submitterId: Int,
             @BindList apiIds: Collection<String>
     ): Collection<DbMealDto>
@@ -123,4 +128,13 @@ interface MealDao {
             "OFFSET :skip"
     )
     fun getIngredients(skip: Int = 0, limit: Int? = null): Collection<DbMealDto>?
+
+    @SqlQuery("SELECT $table.$id, $table.$name, $table.$carbs, $table.$quantity  " +
+            "FROM $table " +
+            "INNER JOIN $RM_table " +
+            "ON $RM_table.$RM_mealId = $table.$id " +
+            "INNER JOIN $SS_table " +
+            "ON $RM_table.$RM_table.$RM_table_submissionId = $SS_table.$SS_submissionId " +
+            "WHERE $RM_table_submissionId.$RM_restaurantId = :restaurantId")
+    fun getAllUserMealsByRestaurantId(@Bind restaurantId: Int): Collection<DbMealDto>
 }

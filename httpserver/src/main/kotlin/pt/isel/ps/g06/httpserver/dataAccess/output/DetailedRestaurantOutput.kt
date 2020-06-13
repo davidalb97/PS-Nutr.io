@@ -9,8 +9,8 @@ class DetailedRestaurantOutput(
         name: String,
         latitude: Float,
         longitude: Float,
-        votes: VotesOutput?,
-        isFavorite: Boolean?,
+        votes: VotesOutput,
+        isFavorite: Boolean,
         val cuisines: Collection<String>,
         val creationDate: OffsetDateTime?,
         val meals: Collection<SimplifiedRestaurantMealOutput>,
@@ -24,9 +24,9 @@ class DetailedRestaurantOutput(
         isFavorite = isFavorite
 )
 
-fun toDetailedRestaurantOutput(restaurant: Restaurant, userId: Int?): DetailedRestaurantOutput {
+fun toDetailedRestaurantOutput(restaurant: Restaurant, userId: Int? = null): DetailedRestaurantOutput {
     return DetailedRestaurantOutput(
-            id = restaurant.identifier.toString(),
+            id = restaurant.identifier.value.toString(),
             name = restaurant.name,
             latitude = restaurant.latitude,
             longitude = restaurant.longitude,
@@ -37,8 +37,16 @@ fun toDetailedRestaurantOutput(restaurant: Restaurant, userId: Int?): DetailedRe
             ),
             isFavorite = userId?.let { restaurant.isFavorite(userId) } ?: false,
             cuisines = restaurant.cuisines.map { it.name }.toList(),
-            meals = restaurant.meals.toList().map { toSimplifiedRestaurantMealOutput(it, userId) },
-            suggestedMeals = restaurant.suggestedMeals.toList().map { toSimplifiedMealOutput(it, userId) },
+
+            meals = restaurant.meals
+                    .map { toSimplifiedRestaurantMealOutput(restaurant.identifier.value, it, userId) }
+                    .toList(),
+
+            suggestedMeals = restaurant.suggestedMeals
+                    .map { toSimplifiedRestaurantMealOutput(restaurant.identifier.value, it, userId) }
+                    .onEach { println(it.name) }
+                    .toList(),
+
             creationDate = restaurant.creationDate.value
     )
 }

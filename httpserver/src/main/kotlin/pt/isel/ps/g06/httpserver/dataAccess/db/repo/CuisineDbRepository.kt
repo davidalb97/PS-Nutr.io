@@ -34,9 +34,14 @@ class CuisineDbRepository(jdbi: Jdbi) : BaseDbRepo(jdbi) {
 
     fun getByApiIds(apiSubmitterId: Int, cuisineIds: Sequence<String>): Sequence<DbCuisineDto> {
         val collection = lazy {
+            val cuisines = cuisineIds.toList()
+
+            if (cuisines.isEmpty()) return@lazy emptyList<DbCuisineDto>()
+
             jdbi.inTransaction<Collection<DbCuisineDto>, Exception>(isolationLevel) {
-                return@inTransaction it.attach(cuisineDaoClass)
-                        .getAllByApiSubmitterAndApiIds(apiSubmitterId, cuisineIds.toList())
+                return@inTransaction it
+                        .attach(cuisineDaoClass)
+                        .getAllByApiSubmitterAndApiIds(apiSubmitterId, cuisines)
             }
         }
         return Sequence { collection.value.iterator() }

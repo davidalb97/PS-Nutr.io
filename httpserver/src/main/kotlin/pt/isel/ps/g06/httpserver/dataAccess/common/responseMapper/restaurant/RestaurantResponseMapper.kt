@@ -36,7 +36,6 @@ class RestaurantResponseMapper(
 
 @Component
 class HereRestaurantResponseMapper(
-        private val cuisineDbRepository: CuisineDbRepository,
         private val dbMealRepository: MealDbRepository,
         private val apiSubmitterMapper: ApiSubmitterMapper,
         private val dbMealMapper: DbMealResponseMapper,
@@ -47,18 +46,13 @@ class HereRestaurantResponseMapper(
         val cuisineIds = dto.foodTypes?.map { it.id }?.asSequence() ?: emptySequence()
         val apiSubmitterId = apiSubmitterMapper.getSubmitter(RestaurantApiType.Here)!!
         return Restaurant(
-                //TODO format submitter/submissionId/apiId
-                identifier = lazy {
-                    RestaurantIdentifier(
-                            apiId = dto.id,
-                            submitterId = apiSubmitterId
-                    )
-                },
+                identifier = lazy { RestaurantIdentifier(apiId = dto.id, submitterId = apiSubmitterId) },
                 name = dto.name,
                 latitude = dto.latitude,
                 longitude = dto.longitude,
                 cuisines = hereCuisineMapper.mapTo(cuisineIds),
-                suggestedMeals = dbMealRepository.getAllByCuisineApiIds(apiSubmitterId, cuisineIds)
+                suggestedMeals = dbMealRepository
+                        .getAllSuggestedMealsByCuisineApiIds(apiSubmitterId, cuisineIds)
                         .map(dbMealMapper::mapTo),
                 meals = emptySequence(),
                 //There are no votes if it's not inserted on db yet
@@ -106,7 +100,7 @@ class ZomatoRestaurantResponseMapper(
                 latitude = dto.latitude,
                 longitude = dto.longitude,
                 cuisines = zomatoCuisineMapper.mapTo(cuisineNames),
-                suggestedMeals = dbMealRepository.getAllByCuisineNames(cuisineNames).map(mealMapper::mapTo),
+                suggestedMeals = dbMealRepository.getAllSuggestedMealsFromCuisineNames(cuisineNames).map(mealMapper::mapTo),
                 meals = emptySequence(),
                 //There are no votes if it's not inserted on db yet
                 votes = Votes(0, 0),
@@ -132,12 +126,10 @@ class ZomatoRestaurantResponseMapper(
 @Component
 class DbRestaurantResponseMapper(
         private val dbRestaurantRepository: RestaurantDbRepository,
-        private val dbRestaurantMealRepository: RestaurantMealDbRepository,
         private val dbMealRepository: MealDbRepository,
         private val dbCuisineRepository: CuisineDbRepository,
         private val dbFavoriteRepo: FavoriteDbRepository,
         private val dbSubmitterRepo: SubmitterDbRepository,
-        private val dbRestaurantMapper: DbRestaurantMealResponseMapper,
         private val dbMealMapper: DbMealResponseMapper,
         private val dbCuisineMapper: DbCuisineResponseMapper,
         private val dbVotesMapper: DbVotesResponseMapper,
@@ -145,10 +137,11 @@ class DbRestaurantResponseMapper(
 ) : ResponseMapper<DbRestaurantDto, Restaurant> {
 
     override fun mapTo(dto: DbRestaurantDto): Restaurant {
-        val cuisines = dbCuisineRepository.getAllByRestaurantId(dto.submission_id)
+        val cuisines = dbCuisineRepository
+                .getAllByRestaurantId(dto.submission_id)
                 .map(dbCuisineMapper::mapTo)
+
         return Restaurant(
-                //TODO format submitter/submissionId/apiId
                 identifier = lazy {
                     //A restaurant always has a submitter
                     val submitterId = dbRestaurantRepository.getSubmitterById(dto.submission_id)!!.submitter_id
@@ -163,10 +156,14 @@ class DbRestaurantResponseMapper(
                 latitude = dto.latitude,
                 longitude = dto.longitude,
                 cuisines = cuisines,
-                meals = dbRestaurantMealRepository.getAllMealsFromRestaurant(dto.submission_id)
-                        .map(dbRestaurantMapper::mapTo),
-                suggestedMeals = dbMealRepository.getAllByCuisineNames(cuisines.map { it.name })
+                meals = dbMealRepository
+                        .getAllUserMealsForRestaurant(dto.submission_id)
                         .map(dbMealMapper::mapTo),
+
+                suggestedMeals = dbMealRepository
+                        .getAllSuggestedMealsFromCuisineNames(cuisines.map { it.name })
+                        .map(dbMealMapper::mapTo),
+
                 votes = dbVotesMapper.mapTo(dbRestaurantRepository.getVotes(dto.submission_id)),
                 userVote = { userId -> dbRestaurantRepository.getUserVote(dto.submission_id, userId) },
                 isFavorite = { userId -> dbFavoriteRepo.getFavorite(dto.submission_id, userId) },

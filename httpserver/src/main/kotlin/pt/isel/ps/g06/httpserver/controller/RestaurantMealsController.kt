@@ -8,7 +8,8 @@ import pt.isel.ps.g06.httpserver.common.*
 import pt.isel.ps.g06.httpserver.common.exception.MealNotFoundException
 import pt.isel.ps.g06.httpserver.common.exception.RestaurantNotFoundException
 import pt.isel.ps.g06.httpserver.dataAccess.input.RestaurantMealInput
-import pt.isel.ps.g06.httpserver.model.RestaurantMeal
+import pt.isel.ps.g06.httpserver.dataAccess.output.RestaurantMealContainerOutput
+import pt.isel.ps.g06.httpserver.dataAccess.output.toRestaurantMealContainerOutput
 import pt.isel.ps.g06.httpserver.service.MealService
 import pt.isel.ps.g06.httpserver.service.RestaurantService
 import javax.validation.Valid
@@ -25,22 +26,16 @@ class RestaurantMealsController(
     @GetMapping(RESTAURANT_MEALS, consumes = [MediaType.ALL_VALUE])
     fun getMealsFromRestaurant(
             @PathVariable(RESTAURANT_ID_VALUE) restaurantId: String
-    ): ResponseEntity<Collection<RestaurantMeal>> {
-//        val userId = 10
-//        val (submitterId, submissionId, apiId) = restaurantIdentifierBuilder.extractIdentifiers(restaurantId)
-//
-//
-//        val restaurant = restaurantService
-//                .getRestaurant(submitterId, userId, submissionId, apiId)
-//                ?: throw RestaurantNotFoundException()
-//
-//
-//        val meals = mealService
-//                .getAllMealsFromRestaurant(restaurantId)
-//                .map { toSimplifiedMeal(it) }
+    ): ResponseEntity<RestaurantMealContainerOutput> {
+        val (submitterId, submissionId, apiId) = restaurantIdentifierBuilder.extractIdentifiers(restaurantId)
 
-        //TODO Merge with Miguel
-        return ResponseEntity.ok().body(emptyList())
+        val restaurant = restaurantService
+                .getRestaurant(submitterId, submissionId, apiId)
+                ?: throw RestaurantNotFoundException()
+
+        return ResponseEntity
+                .ok()
+                .body(toRestaurantMealContainerOutput(restaurant))
     }
 
 
@@ -55,8 +50,7 @@ class RestaurantMealsController(
         var restaurant = restaurantService.getRestaurant(
                 submitterId = submitterId,
                 submissionId = submissionId,
-                apiId = apiId,
-                userId = userId
+                apiId = apiId
         ) ?: throw RestaurantNotFoundException()
 
         val meal = mealService.getMeal(restaurantMeal.mealId!!, userId) ?: throw MealNotFoundException()
