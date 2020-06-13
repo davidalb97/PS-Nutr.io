@@ -73,7 +73,7 @@ class RestaurantRecyclerFragment :
 
     override fun startScrollListener() {
         list.addOnScrollListener(object :
-            ScrollListener(list.layoutManager as LinearLayoutManager, progressBar) {
+            ScrollListener(list.layoutManager as LinearLayoutManager, progressWheel) {
 
             var minimumListSize = 1
 

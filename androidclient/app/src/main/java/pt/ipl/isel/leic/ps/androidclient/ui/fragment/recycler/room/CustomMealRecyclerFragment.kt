@@ -70,6 +70,7 @@ class CustomMealRecyclerFragment :
     }
 
     override fun successFunction(list: List<CustomMeal>) {
+        progressWheel.visibility = View.INVISIBLE
         noItemsLabel.visibility = if (list.isEmpty()) View.VISIBLE else View.INVISIBLE
     }
 }

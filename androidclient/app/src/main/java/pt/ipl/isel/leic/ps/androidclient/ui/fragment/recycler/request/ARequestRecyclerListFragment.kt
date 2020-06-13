@@ -15,17 +15,17 @@ import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.ARecyclerViewModel
 abstract class ARequestRecyclerListFragment<M : Any, VM : ARecyclerViewModel<M>>
     : ARecyclerListFragment<M, VM>() {
 
-    lateinit var progressBar: ProgressBar
+    lateinit var progressWheel: ProgressBar
 
     override fun initRecyclerList(view: View) {
         this.list =
             view.findViewById(R.id.itemList) as RecyclerView
 
         // List progressBar
-        this.progressBar =
+        this.progressWheel =
             view.findViewById(R.id.progressBar) as ProgressBar
 
-        this.progressBar.visibility = View.VISIBLE
+        this.progressWheel.visibility = View.VISIBLE
 
 
     }
@@ -36,7 +36,7 @@ abstract class ARequestRecyclerListFragment<M : Any, VM : ARecyclerViewModel<M>>
                 activityApp, R.string.no_result_found,
                 Toast.LENGTH_LONG
             ).show()
-        this.progressBar.visibility = View.INVISIBLE
+        this.progressWheel.visibility = View.INVISIBLE
         Log.v(TAG, "running on the thread : ${Thread.currentThread().name}")
     }
 
@@ -52,7 +52,7 @@ abstract class ARequestRecyclerListFragment<M : Any, VM : ARecyclerViewModel<M>>
                     .show()
             }
         }
-        this.progressBar.visibility = View.INVISIBLE
+        this.progressWheel.visibility = View.INVISIBLE
         Log.v(TAG, exception.message, exception)
     }
 }

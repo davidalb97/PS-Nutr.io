@@ -69,7 +69,7 @@ class InsulinProfilesRecyclerFragment :
 
     override fun successFunction(list: List<InsulinProfile>) {
         super.successFunction(list)
-        noItemsLabel.visibility = if (list.isEmpty()) View.VISIBLE
-        else View.INVISIBLE
+        progressWheel.visibility = View.INVISIBLE
+        noItemsLabel.visibility = if (list.isEmpty()) View.VISIBLE else View.INVISIBLE
     }
 }
