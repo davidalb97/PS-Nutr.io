@@ -15,6 +15,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.output.toDetailedRestaurantOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.toSimplifiedRestaurantOutput
 import pt.isel.ps.g06.httpserver.exception.InvalidInputDomain
 import pt.isel.ps.g06.httpserver.exception.InvalidInputException
+import pt.isel.ps.g06.httpserver.model.Restaurant
 import pt.isel.ps.g06.httpserver.service.RestaurantService
 import javax.validation.Valid
 

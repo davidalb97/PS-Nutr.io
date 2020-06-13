@@ -1,8 +1,13 @@
 package pt.isel.ps.g06.httpserver.dataAccess.db.dto
 
-class DbMealDto(
+open class DbMealDto(
         val submission_id: Int,
         val meal_name: String,
-        val carbs: Int,
-        val quantity: Int
+        carbs: Int,
+        quantity: Int,
+        unit: String
+): DbNutritionalDto(
+        carbs = carbs,
+        amount = quantity,
+        unit = unit
 )

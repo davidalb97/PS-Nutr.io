@@ -17,6 +17,6 @@ interface ResponseMapper<T, R> {
  * @param T the Dto that will be mapped
  * @param R model object that is the result of mapping given dto
  */
-interface UserResponseMapper<T, R> {
-    fun mapTo(dto: T, userId: Int?): R
+interface BiResponseMapper<T1, T2, R> {
+    fun mapTo(dto: T1, userId: T2): R
 }
