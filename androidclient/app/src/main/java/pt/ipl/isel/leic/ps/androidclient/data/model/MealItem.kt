@@ -4,41 +4,30 @@ import android.os.Parcel
 import android.os.Parcelable
 import java.net.URI
 
-class MealInfo(
+data class MealItem(
     val dbId: Long,
     val submissionId: Int,
     val name: String,
-    val carbs: Int,
-    val amount: Int,
-    val unit: String,
-    val votes: Votes,
     val imageUrl: URI?,
-    val ingredients: List<MealInfo>
-): Parcelable {
-
+    val votes: Votes,
+    val isFavorite: Boolean
+) : Parcelable {
     constructor(parcel: Parcel) : this(
         dbId = parcel.readLong(),
         submissionId = parcel.readInt(),
         name = parcel.readString()!!,
-        carbs = parcel.readInt(),
-        amount = parcel.readInt(),
-        unit = parcel.readString()!!,
+        imageUrl = parcel.readString()?.let { URI.create(it) },
         votes = parcel.readParcelable(Votes::class.java.classLoader)!!,
-        imageUrl = parcel.readString()?.let { if(it.isNotEmpty()) URI.create(it) else null },
-        ingredients = ArrayList<MealInfo>().also {
-            parcel.readList(it as List<MealInfo>, MealInfo::class.java.classLoader)
-        }
+        isFavorite = parcel.readInt() != 0
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeLong(dbId)
         parcel.writeInt(submissionId)
         parcel.writeString(name)
-        parcel.writeInt(carbs)
-        parcel.writeInt(amount)
-        parcel.writeString(unit)
-        parcel.writeParcelable(votes, 0)
         parcel.writeString(imageUrl?.toString() ?: "")
-        parcel.writeList(ingredients)
+        parcel.writeParcelable(votes, 0)
+        parcel.writeInt(isFavorite.let { if (it) 1 else 0 })
     }
 
     override fun describeContents(): Int {

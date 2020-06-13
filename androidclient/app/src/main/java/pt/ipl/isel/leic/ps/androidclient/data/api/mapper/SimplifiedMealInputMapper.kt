@@ -1,17 +1,22 @@
 package pt.ipl.isel.leic.ps.androidclient.data.api.mapper
 
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.SimplifiedMealInput
-import pt.ipl.isel.leic.ps.androidclient.data.model.Meal
+import pt.ipl.isel.leic.ps.androidclient.data.model.MealItem
+import pt.ipl.isel.leic.ps.androidclient.data.model.Votes
+import java.net.URI
 
-class SimplifiedMealInputMapper() {
+class SimplifiedMealInputMapper {
     fun mapToModel(dto: SimplifiedMealInput) =
-        Meal(
+        MealItem(
             dbId = 0,
             submissionId = dto.id,
+            imageUrl = dto.image,
             name = dto.name,
-            isFavorite = if (dto.isFavorite) 1 else 0,
-            imageUrl = dto.image.toString()
-        )
+            votes = Votes(
+                userHasVoted = dto.
+            ),
+            isFavorite = dto.isFavorite
+    )
 
     fun mapToListModel(dtos: Iterable<SimplifiedMealInput>) = dtos.map(::mapToModel)
 

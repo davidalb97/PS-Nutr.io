@@ -13,7 +13,7 @@ class DetailedRestaurantInput(
     votes: VotesInputDto?,
     isFavorite: Boolean?,
     val cuisines: Collection<String>,
-    val creationDate: OffsetDateTime,
+    val creationDate: OffsetDateTime?,
     val meals: Collection<SimplifiedRestaurantMealInput>,
     val suggestedMeals: Collection<SimplifiedRestaurantMealInput>
 ) : SimplifiedRestaurantInput(

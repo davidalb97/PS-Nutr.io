@@ -5,7 +5,6 @@ import com.android.volley.VolleyError
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.roomDb
 import pt.ipl.isel.leic.ps.androidclient.data.api.datasource.MealDataSource
 import pt.ipl.isel.leic.ps.androidclient.data.api.mapper.InputIngredientMapper
-import pt.ipl.isel.leic.ps.androidclient.data.api.mapper.DetailedMealInputMapper
 import pt.ipl.isel.leic.ps.androidclient.data.api.mapper.SimplifiedMealInputMapper
 import pt.ipl.isel.leic.ps.androidclient.data.db.mapper.DbApiMealMapper
 import pt.ipl.isel.leic.ps.androidclient.data.db.mapper.DbCustomMealMapper
@@ -13,7 +12,7 @@ import pt.ipl.isel.leic.ps.androidclient.data.db.mapper.DbFavoriteMealMapper
 import pt.ipl.isel.leic.ps.androidclient.data.db.mapper.DbIngredientMapper
 import pt.ipl.isel.leic.ps.androidclient.data.db.relation.DbCustomMealRelation
 import pt.ipl.isel.leic.ps.androidclient.data.db.relation.DbFavoriteMealRelation
-import pt.ipl.isel.leic.ps.androidclient.data.model.Meal
+import pt.ipl.isel.leic.ps.androidclient.data.model.MealItem
 import pt.ipl.isel.leic.ps.androidclient.data.model.CustomMeal
 import pt.ipl.isel.leic.ps.androidclient.data.model.FavoriteMeal
 import pt.ipl.isel.leic.ps.androidclient.data.util.AsyncWorker
@@ -50,7 +49,7 @@ class MealRepository(private val dataSource: MealDataSource) {
 
     fun getAllApiMealsByRestaurant(
         restaurantIdentifier: Int,
-        success: (List<Meal>) -> Unit,
+        success: (List<MealItem>) -> Unit,
         error: (VolleyError) -> Unit,
         uriParameters: HashMap<String, String>?,
         count: Int,
@@ -65,12 +64,12 @@ class MealRepository(private val dataSource: MealDataSource) {
             skip
         )
     }
-    fun insertFavoriteMeal(apiMeal: Meal) = AsyncWorker<Unit, Unit> {
+    fun insertFavoriteMeal(apiMeal: MealItem) = AsyncWorker<Unit, Unit> {
         roomDb.apiMealDao().insert(dbApiMealMapper.mapToRelation(apiMeal))
     }
 
 
-    fun deleteFavoriteMeal(apiMeal: Meal) = AsyncWorker<Unit, Unit> {
+    fun deleteFavoriteMeal(apiMeal: MealItem) = AsyncWorker<Unit, Unit> {
         roomDb.apiMealDao().delete(dbApiMealMapper.mapToRelation(apiMeal))
     }
 
