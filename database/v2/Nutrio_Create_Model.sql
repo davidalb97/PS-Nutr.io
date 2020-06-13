@@ -137,6 +137,7 @@ CREATE TABLE Meal(
 	meal_name varchar(50) NOT NULL,
 	carbs integer NOT NULL,
 	quantity integer NOT NULL,
+	unit varchar(10) CHECK(unit = 'gr'),
 	FOREIGN KEY(submission_id) REFERENCES Submission(submission_id)
 );
 
@@ -200,7 +201,7 @@ AS $$
 		DECLARE 
 			submissionId INTEGER := lastval();
 		BEGIN
-			INSERT INTO Meal(submission_id, meal_name, carbs, quantity) VALUES (submissionId, name, carbs, quantity);
+			INSERT INTO Meal(submission_id, meal_name, carbs, quantity, unit) VALUES (submissionId, name, carbs, quantity, 'gr');
 			--Make Food favorable
 			INSERT INTO SubmissionContract(submission_id, submission_contract) VALUES (submissionId, 'Favorable');
 		END;

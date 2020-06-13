@@ -238,126 +238,30 @@ BEGIN
 				INSERT INTO ApiCuisine(submission_id, cuisine_submission_id) VALUES (lastval(), last_cuisine_submission_id);
 			END LOOP;
 		END;
-	END LOOP;
-	
-	--Test variables declaration:
-	DECLARE
-		submitter_id_user_admin INTEGER := currval(pg_get_serial_sequence('Submitter', 'submitter_id')) + 1;
-		submitter_name_user_admin varchar(20) := 'Admin';
-		firstTestSubmissionId INTEGER := lastval() + 1;
-		mealFromIngredientsId INTEGER := firstTestSubmissionId;
-		mealIngredient1Id INTEGER := firstTestSubmissionId + 1;
-		mealIngredient2Id INTEGER := firstTestSubmissionId + 2;
-		mealIngredient3Id INTEGER := firstTestSubmissionId + 3;
-		restaurantFromLocationId INTEGER := firstTestSubmissionId + 4;
-		restaurantFromApiId INTEGER := firstTestSubmissionId + 5;
-		restaurantMealWithLocationWithIngredients INTEGER := firstTestSubmissionId + 6;
-		restaurantMealWithApiWithIngredients INTEGER := firstTestSubmissionId + 7;
-		portionRestaurantMealWithLocationWithIngredients INTEGER := firstTestSubmissionId + 8;
-		portionRestaurantMealWithApiWithIngredients INTEGER := firstTestSubmissionId + 9;
-	BEGIN
-		--Test values insertion:
-		INSERT INTO Submitter(submitter_name, submitter_type) VALUES
-		(submitter_name_user_admin, 'User');
-		
-		INSERT INTO _User(submitter_id, email, session_secret) VALUES
-		(submitter_id_user_admin, 'admin@gmail.com', '123456789');
-		
-		INSERT INTO Submission(submission_type) VALUES
-		('Meal'),--First user meal from ingredients
-		('Ingredient'),
-		('Ingredient'),
-		('Ingredient'),
-		('Restaurant'),--First restaurant from user location
-		('Restaurant'),--Second restaurant from restaurant api
-		('RestaurantMeal'),--Restaurant from user location + Meal from ingredients
-		('RestaurantMeal'),--Restaurant from restaurant api + Meal from ingredients
-		('Portion'),--Restaurant from user location + Meal from ingredients
-		('Portion');--Restaurant from restaurant api + Meal from ingredients
-
-		INSERT INTO ApiSubmission(submission_id, apiId) VALUES
-		(restaurantFromApiId,	'4');--Second restaurant from restaurant api
-
-		INSERT INTO SubmissionSubmitter(submission_id, submitter_id) VALUES
-		(mealFromIngredientsId,									submitter_id_user_admin),
-		(restaurantFromLocationId,								submitter_id_user_admin),
-		(restaurantFromApiId,									submitter_id_api_zomato),--(api)
-		(restaurantMealWithLocationWithIngredients,				submitter_id_user_admin),
-		(restaurantMealWithApiWithIngredients,					submitter_id_user_admin),
-		(portionRestaurantMealWithLocationWithIngredients,		submitter_id_user_admin),
-		(portionRestaurantMealWithApiWithIngredients,			submitter_id_user_admin);
-		
-		INSERT INTO Votes(submission_id, positive_count, negative_count) VALUES
-		(restaurantFromLocationId, 20, 20),
-		(restaurantFromApiId, 45, 36),
-		(restaurantMealWithLocationWithIngredients, 10, 23),
-		(restaurantMealWithApiWithIngredients, 1235, 643);
-		
-		INSERT INTO UserVote(submission_id, vote_submitter_id, vote) VALUES
-		(restaurantMealWithLocationWithIngredients,		submitter_id_user_admin, false),
-		(restaurantMealWithApiWithIngredients,			submitter_id_user_admin, true),
-		(restaurantFromLocationId,						submitter_id_user_admin, false),
-		(restaurantFromApiId,							submitter_id_user_admin, true);
-
-		INSERT INTO Report(submission_id, submitter_id, description) VALUES
-		(restaurantMealWithLocationWithIngredients,		submitter_id_user_admin, 'Debug description 1'),
-		(restaurantMealWithApiWithIngredients,			submitter_id_user_admin, 'Debug description 3');
-
-		
-		INSERT INTO Restaurant(submission_id, restaurant_name, latitude, longitude) VALUES
-		(restaurantFromLocationId,	'First rest from user coords', 0.0, 0.0),
-		(restaurantFromApiId,		'Second rest from api', 1.0, 1.0);
-
-		INSERT INTO Meal(submission_id, meal_name, carbs, quantity, unit) VALUES
-		(mealFromIngredientsId,		'First meal from ingr', 10, 100, 'gr');
-
-		--Ingredients
-		INSERT INTO Meal(submission_id, meal_name, carbs, quantity, unit) VALUES
-		(mealIngredient1Id, 'açucar', 100, 100, 'gr'),
-		(mealIngredient2Id, 'sal', 0, 100, 'gr'),
-		(mealIngredient3Id, 'azeite', 0, 100, 'gr');
-
-		INSERT INTO MealIngredient(meal_submission_id, ingredient_submission_id, quantity) VALUES
-		(mealFromIngredientsId, mealIngredient1Id, 1),
-		(mealFromIngredientsId, mealIngredient2Id, 1),
-		(mealFromIngredientsId, mealIngredient3Id, 1);
-
-		INSERT INTO RestaurantMeal(submission_id, restaurant_submission_id, meal_submission_id) VALUES
-		(restaurantMealWithLocationWithIngredients, 	restaurantFromLocationId,	mealFromIngredientsId),
-		(restaurantMealWithApiWithIngredients,			restaurantFromApiId,		mealFromIngredientsId);
-		
-		INSERT INTO Favorite(submission_id, submitter_id) VALUES
-		(restaurantMealWithLocationWithIngredients,		submitter_id_user_admin),
-		(restaurantMealWithApiWithIngredients,			submitter_id_user_admin);
-		
-		INSERT INTO Portion(submission_id, restaurant_meal_submission_id, quantity) VALUES
-		(portionRestaurantMealWithLocationWithIngredients,		restaurantMealWithLocationWithIngredients, 100),
-		(portionRestaurantMealWithApiWithIngredients,			restaurantMealWithApiWithIngredients, 300);
-
-		INSERT INTO SubmissionContract(submission_id, submission_contract) VALUES
-		(mealFromIngredientsId,							'API'),
-		(mealFromIngredientsId,							'Favorable'),
-		(mealIngredient1Id,								'API'),
-		(mealIngredient2Id, 							'API'),
-		(mealIngredient3Id,								'API'),
-		(restaurantFromLocationId,						'Votable'),
-		(restaurantFromLocationId,						'Reportable'),
-		(restaurantFromLocationId,						'Favorable'),
-		(restaurantFromApiId,							'Votable'),
-		(restaurantFromApiId,							'API'),
-		(restaurantFromApiId,							'Favorable'),
-		(restaurantMealWithLocationWithIngredients, 	'Votable'),
-		(restaurantMealWithLocationWithIngredients, 	'Reportable'),
-		(restaurantMealWithLocationWithIngredients, 	'Favorable'),
-		(restaurantMealWithApiWithIngredients,			'Votable'),
-		(restaurantMealWithApiWithIngredients,			'Reportable'),
-		(restaurantMealWithApiWithIngredients,			'Favorable');
-
-		INSERT INTO RestaurantCuisine(restaurant_submission_id, cuisine_submission_id) VALUES
-		(restaurantFromLocationId,	1),--(1 = African)
-		(restaurantFromApiId,		2);--(2 = Alentejana)
-
-		INSERT INTO MealCuisine(meal_submission_id, cuisine_submission_id) VALUES
-		(mealFromIngredientsId,	1);--(1 = African)
-	END;
+	END LOOP;	
 END $$;
+
+CREATE OR REPLACE FUNCTION AddCuisineToFood(foodName varchar, cuisines varchar[]) 
+RETURNS void
+AS $$ 
+	BEGIN 
+		DECLARE 
+			food_id integer;
+			cuisineName varchar;
+		BEGIN
+			
+			SELECT Meal.submission_id INTO food_id FROM Meal WHERE Meal.meal_name = foodName;
+		
+			FOREACH cuisineName IN ARRAY cuisines 
+			LOOP
+				DECLARE
+					cuisine_id integer;
+				BEGIN 
+					SELECT Cuisine.submission_id INTO cuisine_id FROM Cuisine WHERE Cuisine.cuisine_name = cuisineName;
+					INSERT INTO MealCuisine(meal_submission_id, cuisine_submission_id) VALUES (food_id, cuisine_id);
+				END;
+			END LOOP;
+		END;
+	
+	END;
+$$ LANGUAGE plpgsql;

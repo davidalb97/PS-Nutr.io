@@ -17,9 +17,9 @@ SELECT AddFood('Meal', 'Pitta falafel', 60, 200);
 SELECT AddFood('Meal', 'Duck rice', 22, 200);
 SELECT AddFood('Meal', 'Codfish à brás', 24, 300);
 SELECT AddFood('Meal', 'Codfish with cream', 21, 150);
-SELECT AddFood('Meal', 'codfish and chickpea salad', 18, 100);
+SELECT AddFood('Meal', 'Codfish and chickpea salad', 18, 100);
 SELECT AddFood('Meal', 'Pastel bacalhau', 4, 25);
-SELECT AddFood('Meal', 'Portuguese fish stew', 50, 250);
+SELECT AddFood('Meal', 'Caldeirada', 50, 250);
 SELECT AddFood('Meal', 'Shepperds pie', 12, 120);				--Empadão de carne
 
 --Italian
@@ -29,7 +29,6 @@ SELECT AddFood('Meal', 'Gnocchi', 34, 100);
 
 --Japanese and chinese
 SELECT AddFood('Meal', 'Sashimi', 9, 34);
-SELECT AddFood('Meal', 'California roll', 6, 24);
 SELECT AddFood('Meal', 'California roll', 6, 24);
 SELECT AddFood('Meal', 'Yangzhou fried rice (chow chow)', 6, 24);
 SELECT AddFood('Meal', 'Beef chow mein', 40, 275);

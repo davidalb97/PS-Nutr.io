@@ -7,7 +7,7 @@ AS $$
 		DECLARE 
 			submissionId INTEGER := lastval();
 		BEGIN
-			INSERT INTO Meal(submission_id, meal_name, carbs, quantity) VALUES (submissionId, name, carbs, quantity);
+			INSERT INTO Meal(submission_id, meal_name, carbs, quantity, unit) VALUES (submissionId, name, carbs, quantity, 'gr');
 			--Make Food favorable
 			INSERT INTO SubmissionContract(submission_id, submission_contract) VALUES (submissionId, 'Favorable');
 		END;
