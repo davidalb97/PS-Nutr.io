@@ -70,7 +70,10 @@ git reset --hard origin
 
 - Installs:
   - To use LaTeX workshop, you will need to install MiKTeX first and make sure that the path ```C:\Program Files\Git\usr\bin``` is added to the system variables (PATH), inside the environment variables, so it can use the perl.exe.
-  - PostgreSQL requires PostGIS spatial extension to run our geolocation queries, installed by PostGreSQL's Stackbuilder application.
+  - PostgreSQL:
+    - PostgreSQL requires PostGIS spatial extension to run our geolocation queries, installed by PostGreSQL's Stackbuilder application.
+    - Httpserver's db connection requires a PostgreSQL. Connection is made using PS_POSTGRES_DB, PS_POSTGRES_USER and PS_POSTGRES_PASSWORD enviroment variables using localhost:5432 (configurable on httpserver/src/main/resources/application.properties)
+    - Database model creation (1_Nutrio_Create_Model.sql) and fill (2_Nutrio_Fill_Model.sql) scripts must be executed on that order.
 - Development:
   - When opening and building, for the first time, a .tex document inside the LaTeX workshop you will need to accept the packages' installations that will pop up after the build. Those are the packages included in the document's header. They are needed for additional LaTeX functions and required for the file compilation.
 - Documentation:
