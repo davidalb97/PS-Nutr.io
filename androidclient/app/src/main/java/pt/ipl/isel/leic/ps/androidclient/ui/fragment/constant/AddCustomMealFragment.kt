@@ -87,7 +87,7 @@ class AddCustomMealFragment : Fragment() {
                         isSuggested = false
                     )
                 ).setOnPostExecute {
-                    view.findNavController().navigate(R.id.nav_tab_your_meals)
+                    parentFragmentManager.popBackStack()
                 }.execute()
             }
         }
