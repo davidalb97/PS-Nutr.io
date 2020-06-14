@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.InsulinProfile
+import pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler.room.InsulinProfilesRecyclerFragment
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.InsulinProfilesVMProviderFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.InsulinProfilesRecyclerViewModel
 import java.time.LocalTime
@@ -110,8 +111,8 @@ class AddProfileFragment : Fragment() {
                 } else {
                     viewModel
                         .addInsulinProfile(profile)
+                        .setOnPostExecute { parentFragmentManager.popBackStack() }
                         .execute()
-                    view.findNavController().navigate(R.id.nav_profile)
                 }
             }
         }

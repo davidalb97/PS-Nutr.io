@@ -7,6 +7,8 @@ import pt.ipl.isel.leic.ps.androidclient.data.api.URI_BASE
 import pt.ipl.isel.leic.ps.androidclient.data.api.UriBuilder
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.SimplifiedRestaurantInput
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.info.DetailedRestaurantInput
+import pt.ipl.isel.leic.ps.androidclient.data.api.dto.output.RestaurantMealOutput
+import pt.ipl.isel.leic.ps.androidclient.data.api.dto.output.RestaurantOutput
 
 const val LATITUDE_VAR = ":latitude"
 const val LONGITUDE_VAR = ":longitude"
@@ -31,7 +33,8 @@ private const val RESTAURANT_MEAL_REPORT =
 private const val RESTAURANT_MEAL_VOTE =
     "$RESTAURANT_MEAL/vote"
 
-val RESTAURANT_DTO = SimplifiedRestaurantInput::class.java
+val SIMPLE_RESTAURANT_INPUT_DTO = SimplifiedRestaurantInput::class.java
+val RESTAURANT_OUTPUT_DTO = RestaurantOutput::class.java
 
 
 class RestaurantDataSource(
@@ -89,7 +92,7 @@ class RestaurantDataSource(
      */
 
     fun postRestaurant(
-        success: (SimplifiedRestaurantInput) -> Unit,
+        success: (RestaurantOutput) -> Unit,
         error: (VolleyError) -> Unit,
         uriParameters:  HashMap<String, String>?,
         count: Int,
@@ -103,7 +106,7 @@ class RestaurantDataSource(
         requestParser.requestAndRespond(
             Method.POST,
             uri,
-            RESTAURANT_DTO,
+            RESTAURANT_OUTPUT_DTO,
             success,
             error,
             {}
@@ -111,7 +114,7 @@ class RestaurantDataSource(
     }
 
     fun postReport(
-        success: (SimplifiedRestaurantInput) -> Unit,
+        success: (RestaurantOutput) -> Unit,
         error: (VolleyError) -> Unit,
         uriParameters:  HashMap<String, String>?,
         count: Int,
@@ -125,7 +128,7 @@ class RestaurantDataSource(
         requestParser.requestAndRespond(
             Method.POST,
             uri,
-            RESTAURANT_DTO,
+            RESTAURANT_OUTPUT_DTO,
             success,
             error,
             null
@@ -147,7 +150,7 @@ class RestaurantDataSource(
         requestParser.requestAndRespond(
             Method.POST,
             uri,
-            RESTAURANT_DTO,
+            SIMPLE_RESTAURANT_INPUT_DTO,
             success,
             error,
             {}
@@ -172,7 +175,7 @@ class RestaurantDataSource(
         requestParser.requestAndRespond(
             Method.PUT,
             uri,
-            RESTAURANT_DTO,
+            SIMPLE_RESTAURANT_INPUT_DTO,
             success,
             error,
             {}
@@ -198,7 +201,7 @@ class RestaurantDataSource(
         requestParser.requestAndRespond(
             Method.DELETE,
             uri,
-            RESTAURANT_DTO,
+            SIMPLE_RESTAURANT_INPUT_DTO,
             success,
             error
         )
