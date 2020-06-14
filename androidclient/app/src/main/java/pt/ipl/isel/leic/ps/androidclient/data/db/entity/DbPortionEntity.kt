@@ -11,7 +11,7 @@ open class DbPortionEntity(
 ) {
     companion object {
         const val DEFAULT_DB_ID: Long = 0
-        const val tableName = "Cuisine"
+        const val tableName = "Portion"
         const val primaryKeyName = "primaryKey"
         const val mealKeyName = "mealKey"
     }
