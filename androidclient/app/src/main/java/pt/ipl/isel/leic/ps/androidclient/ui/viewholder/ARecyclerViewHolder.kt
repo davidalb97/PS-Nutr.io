@@ -15,6 +15,7 @@ abstract class ARecyclerViewHolder<T : Parcelable>(
 ) : RecyclerView.ViewHolder(view) {
 
     lateinit var item: T
+    var isCalculatorMode: Boolean = false
 
     open fun bindTo(item: T) {
         this.item = item

@@ -10,6 +10,9 @@ class FavoriteMealRecyclerViewModel() : ARecyclerViewModel<MealItem>() {
     constructor(parcel: Parcel) : this() {
     }
 
+    fun deleteItem(favoriteMeal: MealItem) =
+        mealRepository.deleteItem(favoriteMeal)
+
     override fun writeToParcel(dest: Parcel?, flags: Int) {
         TODO("Not yet implemented")
     }

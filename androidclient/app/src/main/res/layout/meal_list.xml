@@ -24,6 +24,21 @@
         android:visibility="invisible">
     </ProgressBar>
 
+    <TextView
+        android:id="@+id/no_favorite_meals"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:gravity="center"
+        android:layout_marginRight="50dp"
+        android:layout_marginLeft="50dp"
+        android:text="You favorite meals"
+        android:textSize="26sp"
+        android:visibility="invisible">
+    </TextView>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/itemList"
         android:layout_width="match_parent"

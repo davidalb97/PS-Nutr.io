@@ -1,6 +1,5 @@
 package pt.ipl.isel.leic.ps.androidclient.ui.viewholder
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.view.View
@@ -14,7 +13,7 @@ import pt.ipl.isel.leic.ps.androidclient.data.model.MealItem
 import pt.ipl.isel.leic.ps.androidclient.data.util.AsyncWorker
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.BUNDLED_MEAL_TAG
 
-class CustomMealRecyclerViewHolder(
+class FavoriteMealRecyclerViewHolder(
     view: ViewGroup,
     ctx: Context
 ) : ARecyclerViewHolder<MealItem>(view, ctx),
@@ -23,9 +22,9 @@ class CustomMealRecyclerViewHolder(
 
     override lateinit var onDelete: (MealItem) -> AsyncWorker<Unit, Unit>
 
-    private val customMealName: TextView = view.findViewById(R.id.custom_meal_name)
-    private val customMealQuantity: TextView = view.findViewById(R.id.custom_meal_quantity)
-    private val customMealCarbs: TextView = view.findViewById(R.id.custom_meal_carbs_amount)
+    private val favoriteMealName: TextView = view.findViewById(R.id.custom_meal_name)
+    private val favoriteMealQuantity: TextView = view.findViewById(R.id.custom_meal_quantity)
+    private val favoriteMealCarbs: TextView = view.findViewById(R.id.custom_meal_carbs_amount)
     override var deleteButton: ImageButton = view.findViewById(R.id.delete_item_button)
     override var calculatorButton: ImageButton = view.findViewById(R.id.add_custom_meal_to_calc)
 
@@ -37,13 +36,13 @@ class CustomMealRecyclerViewHolder(
 
     private fun setupViewHolderElements() {
         val resources = ctx.resources
-        customMealName.text = item.name
-        customMealQuantity.text = String.format(resources.getString(
+        favoriteMealName.text = item.name
+        favoriteMealQuantity.text = String.format(resources.getString(
             R.string.meal_quantity_card),
             item.amount,
             item.unit
         )
-        customMealCarbs.text = String.format(resources.getString(
+        favoriteMealCarbs.text = String.format(resources.getString(
             R.string.carbohydrates_amount_card),
             item.carbs
         )
