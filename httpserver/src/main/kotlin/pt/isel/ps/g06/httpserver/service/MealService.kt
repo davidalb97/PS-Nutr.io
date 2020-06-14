@@ -13,7 +13,7 @@ class MealService(
 //        private val dbRestaurantMealResponseMapper: DbRestaurantMealResponseMapper,
         private val dbMealResponseMapper: DbMealResponseMapper
 ) {
-    fun getMeal(mealId: Int, userId: Int): Meal? {
+    fun getMeal(mealId: Int): Meal? {
         return dbMealRepo
                 .getById(mealId)
                 ?.let(dbMealResponseMapper::mapTo)

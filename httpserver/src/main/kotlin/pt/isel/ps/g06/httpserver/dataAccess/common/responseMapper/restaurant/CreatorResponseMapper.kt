@@ -13,6 +13,7 @@ class DbCreatorResponseMapper(
     override fun mapTo(dto: DbSubmitterDto): Creator {
         val userDto = dbUserRepo.getBySubmitterId(dto.submitter_id)
         return Creator(
+                identifier = dto.submitter_id,
                 name = dto.submitter_name,
                 creationDate = userDto?.creation_date,
                 //TODO support user image from db!

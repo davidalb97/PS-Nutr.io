@@ -21,9 +21,7 @@ class MealController(private val mealService: MealService) {
 
     @GetMapping(MEAL)
     fun getMealInformation(@PathVariable(MEAL_ID_VALUE) mealId: Int): ResponseEntity<Meal> {
-        val userId = 10 //When there's authentication
-
-        return mealService.getMeal(mealId, userId)
+        return mealService.getMeal(mealId)
                 ?.let { ResponseEntity.ok().body(it) }
                 ?: throw MealNotFoundException()
     }

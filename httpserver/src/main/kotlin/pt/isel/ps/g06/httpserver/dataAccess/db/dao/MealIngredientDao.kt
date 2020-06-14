@@ -6,6 +6,14 @@ import org.jdbi.v3.sqlobject.customizer.BindList
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbMealIngredientDto
 
+//Submission constants
+private const val S_table = SubmissionDao.table
+private const val S_submission_id = SubmissionDao.id
+private const val S_submission_type = SubmissionDao.type
+
+private const val INGREDIENT = "Ingredient"
+private const val MEAL = "Meal"
+
 interface MealIngredientDao {
 
     companion object {
@@ -18,14 +26,24 @@ interface MealIngredientDao {
     @SqlQuery("SELECT * FROM $table")
     fun getAll(): List<DbMealIngredientDto>
 
-    @SqlQuery("SELECT * FROM $table WHERE $mealId = :mealId")
-    fun getAllByMealId(@Bind mealId: Int): List<DbMealIngredientDto>
 
-    @SqlQuery("SELECT * FROM $table WHERE $ingredientId = :ingredientId")
-    fun getAllByIngredientId(@Bind ingredientId: Int): List<DbMealIngredientDto>
+    @SqlQuery("SELECT * " +
+            "FROM $table " +
+            "INNER JOIN $S_table " +
+            "ON $S_table.$S_submission_id = $table.$ingredientId " +
+            "WHERE $S_table.$S_submission_type = '$INGREDIENT' " +
+            "AND $table.$mealId = :mealId"
+    )
+    fun getMealIngredients(@Bind mealId: Int): Collection<DbMealIngredientDto>
 
-    @SqlQuery("SELECT * FROM $table WHERE $quantity = :mealAmount")
-    fun getAllByAmount(@Bind mealAmount: Int): List<DbMealIngredientDto>
+    @SqlQuery("SELECT * " +
+            "FROM $table " +
+            "INNER JOIN $S_table " +
+            "ON $S_table.$S_submission_id = $table.$ingredientId " +
+            "WHERE $S_table.$S_submission_type = '$MEAL' " +
+            "AND $table.$mealId = :mealId"
+    )
+    fun getMealComponents(@Bind mealId: Int): Collection<DbMealIngredientDto>
 
     @SqlQuery("INSERT INTO $table($mealId, $ingredientId)" +
             " VALUES(:mealId, :ingredientId) RETURNING *")

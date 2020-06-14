@@ -32,17 +32,29 @@ class MealDbRepository(jdbi: Jdbi, val config: DbEditableDto) : SubmissionDbRepo
     }
 
     fun getMealIngredients(mealId: Int): Sequence<DbMealIngredientDto> {
-        return jdbi.inTransaction<Sequence<DbMealIngredientDto>, Exception>(isolationLevel) { handle ->
-            return@inTransaction handle.attach(MealIngredientDao::class.java)
-                    .getAllByMealId(mealId).asSequence()
+        //TODO This is wrong, should get only ingredients and as DbMealDto
+        val ingredients = lazy {
+            jdbi.inTransaction<Collection<DbMealIngredientDto>, Exception>(isolationLevel) { handle ->
+                return@inTransaction handle
+                        .attach(MealIngredientDao::class.java)
+                        .getMealIngredients(mealId)
+            }
         }
+
+        return Sequence { ingredients.value.iterator() }
     }
 
-    fun getIngredients(mealId: Int): Sequence<DbIngredientDto> {
-        return jdbi.inTransaction<Sequence<DbIngredientDto>, Exception>(isolationLevel) { handle ->
-            return@inTransaction handle.attach(IngredientDao::class.java)
-                    .getAllByMealId(mealId).asSequence()
+    fun getMealComponents(mealId: Int): Sequence<DbMealIngredientDto> {
+        //TODO This is wrong, should get only ingredients and as DbMealDto
+        val ingredients = lazy {
+            jdbi.inTransaction<Collection<DbMealIngredientDto>, Exception>(isolationLevel) { handle ->
+                return@inTransaction handle
+                        .attach(MealIngredientDao::class.java)
+                        .getMealComponents(mealId)
+            }
         }
+
+        return Sequence { ingredients.value.iterator() }
     }
 
     fun getAllSuggestedMealsByCuisineApiIds(apiSubmitterId: Int, cuisineApiIds: Sequence<String>): Sequence<DbMealDto> {
@@ -52,15 +64,12 @@ class MealDbRepository(jdbi: Jdbi, val config: DbEditableDto) : SubmissionDbRepo
 
                 if (cuisineApiIdsList.isEmpty()) return@inTransaction emptyList()
 
-                //TODO Return after debug
-                val allSuggestedByCuisineApiIds = it
+                return@inTransaction it
                         .attach(MealDao::class.java)
                         .getAllSuggestedByCuisineApiIds(apiSubmitterId, cuisineApiIdsList)
-
-                allSuggestedByCuisineApiIds
             }
         }
-        return sequence { collection.value.iterator() }
+        return Sequence { collection.value.iterator() }
     }
 
     //TODO Get all hardcoded, not user meals
@@ -76,7 +85,7 @@ class MealDbRepository(jdbi: Jdbi, val config: DbEditableDto) : SubmissionDbRepo
                         .getAllSuggestedByNames(cuisineNameList)
             }
         }
-        return sequence { collection.value.iterator() }
+        return Sequence { collection.value.iterator() }
     }
 
     fun getAllUserMealsForRestaurant(restaurantId: Int): Sequence<DbMealDto> {
@@ -155,14 +164,10 @@ class MealDbRepository(jdbi: Jdbi, val config: DbEditableDto) : SubmissionDbRepo
             //Insert meal's ingredients
             it.attach(MealIngredientDao::class.java).insertAll(ingredients.map { ingredientInput ->
                 DbMealIngredientDto(
-                        //TODO Avoid nulls here
                         //We know fields are not null due to validation checks
                         meal_submission_id = mealSubmissionId,
                         ingredient_submission_id = ingredientInput.identifier!!,
-                        quantity = ingredientInput.quantity!!,
-                        //TODO Read DbMealIngredientDto.unit/carbs from db table!
-                        carbs = 100,
-                        unit = "grams"
+                        quantity = ingredientInput.quantity!!
                 )
             })
 
@@ -338,18 +343,19 @@ class MealDbRepository(jdbi: Jdbi, val config: DbEditableDto) : SubmissionDbRepo
     }
 
     private fun insertAllMealIngredient(handle: Handle, mealSubmissionId: Int, ingredientSubmissionIds: List<Int>) {
-        val existingMealIngredientIds = handle.attach(MealIngredientDao::class.java)
-                .getAllByMealId(mealSubmissionId).map { it.ingredient_submission_id }
-        val newIngredientSubmissionIds = ingredientSubmissionIds.filter {
-            !existingMealIngredientIds.contains(it)
-        }
-        if (newIngredientSubmissionIds.isNotEmpty()) {
-            //TODO Inser all meal ingredients!
-//            handle.attach(MealIngredientDao::class.java)
-//                    .insertAll(newIngredientSubmissionIds.map {
-//                        MealIngredientParam(mealSubmissionId, it, 100) // TODO
-//                    })
-        }
+        //TODO
+//        val existingMealIngredientIds = handle.attach(MealIngredientDao::class.java)
+//                .getMealIngredients(mealSubmissionId).map { it.ingredient_submission_id }
+//        val newIngredientSubmissionIds = ingredientSubmissionIds.filter {
+//            !existingMealIngredientIds.contains(it)
+//        }
+//        if (newIngredientSubmissionIds.isNotEmpty()) {
+//            //TODO Inser all meal ingredients!
+////            handle.attach(MealIngredientDao::class.java)
+////                    .insertAll(newIngredientSubmissionIds.map {
+////                        MealIngredientParam(mealSubmissionId, it, 100) // TODO
+////                    })
+//        }
     }
 
     /*private fun insertAllIngredients(handle: Handle, submissionIds: List<Int>, ingredientNames: List<String>) {
@@ -425,6 +431,7 @@ class MealDbRepository(jdbi: Jdbi, val config: DbEditableDto) : SubmissionDbRepo
             handle.attach(PortionDao::class.java).deleteAllByRestaurantMealIds(restaurantMealIds)
     }
 
+    //TODO Remove this and use 'carbsTool'
     private fun getCarbsForInputQuantity(dbIngredientDto: DbIngredientDto, ingredientInput: IngredientInput): Float {
         return (ingredientInput.quantity!!.times(dbIngredientDto.carbs).toFloat()).div(dbIngredientDto.amount)
     }

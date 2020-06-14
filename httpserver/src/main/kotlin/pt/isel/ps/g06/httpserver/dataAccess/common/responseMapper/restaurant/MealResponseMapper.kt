@@ -4,11 +4,13 @@ import org.springframework.stereotype.Component
 import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.ResponseMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbMealDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.*
+import pt.isel.ps.g06.httpserver.dataAccess.model.MealComposition
 import pt.isel.ps.g06.httpserver.model.Meal
 
 @Component
 class DbMealResponseMapper(
         private val ingredientMapper: DbMealIngredientResponseMapper,
+        private val mealComponentMapper: DbMealComponentResponseMapper,
         private val nutritionalMapper: DbNutritionalValuesResponseMapper,
         private val dbCreatorMapper: DbCreatorResponseMapper,
         private val dbCuisineMapper: DbCuisineResponseMapper,
@@ -25,9 +27,11 @@ class DbMealResponseMapper(
                 name = dto.meal_name,
                 isFavorite = { userId -> dbFavoriteRepo.getFavorite(dto.submission_id, userId) },
                 nutritionalValues = nutritionalMapper.mapTo(dto),
-                //TODO replace image with the one from db!
                 imageUri = null,
-                ingredients = ingredientMapper.mapTo(dto),
+                composedBy = MealComposition(
+                        meals = mealComponentMapper.mapTo(dto),
+                        ingredients = ingredientMapper.mapTo(dto)
+                ),
                 cuisines = dbCuisineRepo.getAllByMealId(dto.submission_id).map(dbCuisineMapper::mapTo),
                 creatorInfo = lazy {
                     dbSubmitterRepo.getBySubmissionId(dto.submission_id)?.let { userInfoDto ->

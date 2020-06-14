@@ -28,7 +28,7 @@ class RestaurantDbRepository(jdbi: Jdbi, val config: DbEditableDto) : Submission
                         .getByCoordinates(latitude, longitude, radius)
             }
         }
-        return sequence { collection.value.iterator() }
+        return Sequence { collection.value.iterator() }
     }
 
     fun getById(restaurantId: Int): DbRestaurantDto? {

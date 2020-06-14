@@ -44,7 +44,6 @@ fun toDetailedRestaurantOutput(restaurant: Restaurant, userId: Int? = null): Det
 
             suggestedMeals = restaurant.suggestedMeals
                     .map { toSimplifiedRestaurantMealOutput(restaurant.identifier.value, it, userId) }
-                    .onEach { println(it.name) }
                     .toList(),
 
             creationDate = restaurant.creationDate.value

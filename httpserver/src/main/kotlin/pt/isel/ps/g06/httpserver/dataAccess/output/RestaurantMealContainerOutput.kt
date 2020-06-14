@@ -16,7 +16,7 @@ fun toRestaurantMealContainerOutput(restaurant: Restaurant, userId: Int? = null)
                     .map { toSimplifiedRestaurantMealOutput(restaurant.identifier.value, it, userId) }
                     .toList(),
 
-            userMeals = restaurant.suggestedMeals
+            userMeals = restaurant.meals
                     .map { toSimplifiedRestaurantMealOutput(restaurant.identifier.value, it, userId) }
                     .toList()
     )

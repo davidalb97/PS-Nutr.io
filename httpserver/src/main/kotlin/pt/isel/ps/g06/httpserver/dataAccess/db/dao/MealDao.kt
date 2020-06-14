@@ -40,6 +40,10 @@ private const val MC_cuisineId = MealCuisineDao.cuisineId
 private const val S_table = SubmissionDao.table
 private const val S_submission_id = SubmissionDao.id
 private const val S_submission_type = SubmissionDao.type
+
+//Meal Ingredient constants
+private const val MI_table = MealIngredientDao.table
+
 private const val INGREDIENT_TYPE = "Ingredient"
 
 interface MealDao {

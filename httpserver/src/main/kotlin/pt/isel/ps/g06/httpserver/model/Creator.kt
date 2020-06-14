@@ -4,6 +4,7 @@ import java.net.URI
 import java.time.OffsetDateTime
 
 data class Creator(
+        val identifier: Int,
         val name: String,
         val creationDate: OffsetDateTime?,
         val image: URI?

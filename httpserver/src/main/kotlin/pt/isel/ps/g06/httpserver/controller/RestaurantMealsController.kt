@@ -8,7 +8,9 @@ import pt.isel.ps.g06.httpserver.common.*
 import pt.isel.ps.g06.httpserver.common.exception.MealNotFoundException
 import pt.isel.ps.g06.httpserver.common.exception.RestaurantNotFoundException
 import pt.isel.ps.g06.httpserver.dataAccess.input.RestaurantMealInput
+import pt.isel.ps.g06.httpserver.dataAccess.output.DetailedRestaurantMealOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.RestaurantMealContainerOutput
+import pt.isel.ps.g06.httpserver.dataAccess.output.toDetailedRestaurantMealOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.toRestaurantMealContainerOutput
 import pt.isel.ps.g06.httpserver.service.MealService
 import pt.isel.ps.g06.httpserver.service.RestaurantService
@@ -38,6 +40,20 @@ class RestaurantMealsController(
                 .body(toRestaurantMealContainerOutput(restaurant))
     }
 
+    @GetMapping(RESTAURANT_MEAL, consumes = [MediaType.ALL_VALUE])
+    fun getRestaurantMeal(
+            @PathVariable(RESTAURANT_ID_VALUE) restaurantId: String,
+            @PathVariable(MEAL_ID_VALUE) mealId: Int
+    ): ResponseEntity<DetailedRestaurantMealOutput> {
+        val restaurantIdentifier = restaurantIdentifierBuilder.extractIdentifiers(restaurantId)
+
+        val meal = mealService.getMeal(mealId) ?: throw MealNotFoundException()
+
+        return ResponseEntity
+                .ok()
+                .body(toDetailedRestaurantMealOutput(restaurantIdentifier, meal))
+    }
+
 
     @PostMapping(RESTAURANT_MEALS, consumes = [MediaType.APPLICATION_JSON_VALUE])
     fun addRestaurantMeal(
@@ -53,7 +69,7 @@ class RestaurantMealsController(
                 apiId = apiId
         ) ?: throw RestaurantNotFoundException()
 
-        val meal = mealService.getMeal(restaurantMeal.mealId!!, userId) ?: throw MealNotFoundException()
+        val meal = mealService.getMeal(restaurantMeal.mealId!!) ?: throw MealNotFoundException()
 
         if (!restaurant.identifier.value.isPresentInDatabase()) {
             restaurant = restaurantService.createRestaurant(

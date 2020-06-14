@@ -53,7 +53,8 @@ class HereRestaurantResponseMapper(
                 cuisines = hereCuisineMapper.mapTo(cuisineIds),
                 suggestedMeals = dbMealRepository
                         .getAllSuggestedMealsByCuisineApiIds(apiSubmitterId, cuisineIds)
-                        .map(dbMealMapper::mapTo),
+                        .map(dbMealMapper::mapTo)
+                        .asSequence(),
                 meals = emptySequence(),
                 //There are no votes if it's not inserted on db yet
                 votes = Votes(0, 0),
@@ -67,6 +68,7 @@ class HereRestaurantResponseMapper(
                 creationDate = lazy<OffsetDateTime?> { null },
                 creatorInfo = lazy {
                     Creator(
+                            identifier = apiSubmitterId,
                             name = RestaurantApiType.Here.toString(),
                             creationDate = null,
                             //TODO return const image for Zomato api icon
@@ -113,6 +115,7 @@ class ZomatoRestaurantResponseMapper(
                 creationDate = lazy<OffsetDateTime?> { null },
                 creatorInfo = lazy {
                     Creator(
+                            identifier = apiSubmitterId,
                             name = RestaurantApiType.Zomato.toString(),
                             creationDate = null,
                             //TODO return const image for Zomato api icon
