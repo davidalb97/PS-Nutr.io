@@ -2,8 +2,10 @@ package pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler
 
 import android.app.Application
 import android.view.View
+import androidx.annotation.IdRes
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
+import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.ARecyclerViewModel
 
 // Default pagination value
@@ -54,4 +56,9 @@ abstract class ARecyclerListFragment<T : Any, VM : ARecyclerViewModel<T>> : Frag
      */
     open fun errorFunction(exception: Throwable) {}
 
+    @IdRes
+    abstract fun getRecyclerId(): Int
+
+    @IdRes
+    abstract fun getProgressBarId(): Int
 }

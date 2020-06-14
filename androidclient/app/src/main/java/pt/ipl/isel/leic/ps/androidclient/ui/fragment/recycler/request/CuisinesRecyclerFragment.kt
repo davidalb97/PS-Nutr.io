@@ -71,4 +71,8 @@ class CuisinesRecyclerFragment : ARequestRecyclerListFragment<Cuisine, CuisineRe
                 !isLoading && minimumListSize < viewModel.items.size
         })
     }
+
+    override fun getRecyclerId() = R.id.itemList
+
+    override fun getProgressBarId() = R.id.progressBar
 }

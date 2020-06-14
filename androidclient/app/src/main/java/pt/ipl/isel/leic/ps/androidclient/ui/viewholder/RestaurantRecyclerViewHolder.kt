@@ -8,10 +8,13 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.RestaurantItem
+import pt.ipl.isel.leic.ps.androidclient.ui.provider.BUNDLE_RESTAURANT_INFO_ID
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.MEAL_LIST_RESTAURANT_ID
+import pt.ipl.isel.leic.ps.androidclient.ui.provider.RESTAURANT_LIST_VIEW_STATE
 
 class RestaurantRecyclerViewHolder(
     view: ViewGroup,
@@ -36,10 +39,8 @@ class RestaurantRecyclerViewHolder(
         restaurantName.text = item.name
 
         itemView.setOnClickListener {
-            val bundle = Bundle()
-            TODO("Must pass restaurant id to restaurant detail so it can get info by id on repo")
-//            bundle.put(, item)
-//            view.findNavController().navigate(R.id.nav_restaurant_detail, )
+            val bundle = bundleOf(Pair(BUNDLE_RESTAURANT_INFO_ID, item.id))
+            view.findNavController().navigate(R.id.nav_restaurant_detail, bundle)
         }
     }
 }

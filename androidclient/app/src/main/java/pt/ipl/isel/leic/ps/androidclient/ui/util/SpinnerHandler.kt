@@ -45,10 +45,10 @@ class SpinnerHandler(
                 id: Long
             ) {
                 val selectedItem = parent.getItemAtPosition(position) as String
-                log.logv("Selected: \"$selectedItem\"")
+                log.v("Selected: \"$selectedItem\"")
 
                 if(selectedItem != NO_FILTER) {
-                    log.logv("Selected filterId: \"$selectedItem\"")
+                    log.v("Selected filterId: \"$selectedItem\"")
 
                     arrayAdapter.remove(selectedItem)
                     spinner.setSelection(0)            //Forces first position to allow re-click after removal
@@ -70,7 +70,7 @@ class SpinnerHandler(
     }
 
     fun addFilterData(item: String) {
-        log.logv("Removed \"$item\" from Spinner's RecyclerView!")
+        log.v("Removed \"$item\" from Spinner's RecyclerView!")
         arrayAdapter.setNotifyOnChange(false)
         arrayAdapter.add(item)
         arrayAdapter.sort(String::compareTo)
@@ -82,7 +82,7 @@ class SpinnerHandler(
         arrayAdapter.setNotifyOnChange(false)
         item.forEach {
             arrayAdapter.remove(it)
-            log.logv("Removed \"$item\" from Spinner!")
+            log.v("Removed \"$item\" from Spinner!")
         }
         arrayAdapter.setNotifyOnChange(true)
         arrayAdapter.notifyDataSetChanged()

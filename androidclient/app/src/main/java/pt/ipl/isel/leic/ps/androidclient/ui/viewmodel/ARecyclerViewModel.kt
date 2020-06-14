@@ -1,6 +1,7 @@
 package pt.ipl.isel.leic.ps.androidclient.ui.viewmodel
 
 import android.os.Parcelable
+import androidx.annotation.IdRes
 import androidx.lifecycle.*
 import pt.ipl.isel.leic.ps.androidclient.ui.util.LiveDataHandler
 
@@ -21,6 +22,8 @@ abstract class ARecyclerViewModel<T> : ViewModel(), Parcelable {
     protected val liveDataHandler = LiveDataHandler<T>()
     val items: List<T> get() = liveDataHandler.mapped
 
+    abstract fun update()
+
     /**
      * Observes the LiveData, given a LifeCycleOwner and a MutableList
      */
@@ -28,5 +31,4 @@ abstract class ARecyclerViewModel<T> : ViewModel(), Parcelable {
         liveDataHandler.observe(owner, observer)
     }
 
-    abstract fun update()
 }

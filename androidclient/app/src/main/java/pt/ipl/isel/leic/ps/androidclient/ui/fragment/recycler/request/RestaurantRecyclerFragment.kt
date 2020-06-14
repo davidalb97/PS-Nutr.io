@@ -60,7 +60,7 @@ class RestaurantRecyclerFragment :
         searchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 if (query.isNullOrEmpty()) return false
-                viewModel.restaurantId = query //TODO: we should clear this later
+                viewModel.restaurantName = query //TODO: we should clear this later
                 //viewModel.getRestaurantById()
                 searchBar.clearFocus()
                 return true
@@ -90,4 +90,8 @@ class RestaurantRecyclerFragment :
                 !isLoading && minimumListSize < viewModel.items.size
         })
     }
+
+    override fun getRecyclerId() = R.id.itemList
+
+    override fun getProgressBarId() = R.id.progressBar
 }

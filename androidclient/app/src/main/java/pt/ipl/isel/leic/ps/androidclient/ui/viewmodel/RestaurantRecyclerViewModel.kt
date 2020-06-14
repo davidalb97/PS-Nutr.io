@@ -8,7 +8,7 @@ import pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler.COUNT
 
 class RestaurantRecyclerViewModel : ARecyclerViewModel<RestaurantItem>() {
 
-    lateinit var restaurantId: String
+    var restaurantName: String? = null
     var latitude: Double? = null
     var longitude: Double? = null
 

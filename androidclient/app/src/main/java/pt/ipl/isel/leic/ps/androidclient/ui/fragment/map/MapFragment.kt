@@ -293,4 +293,8 @@ class MapFragment
 
         }
     }
+
+    override fun getRecyclerId() = R.id.itemList
+
+    override fun getProgressBarId() = R.id.progressBar
 }

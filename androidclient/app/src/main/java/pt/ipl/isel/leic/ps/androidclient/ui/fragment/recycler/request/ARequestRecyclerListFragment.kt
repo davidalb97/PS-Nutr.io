@@ -18,16 +18,12 @@ abstract class ARequestRecyclerListFragment<M : Any, VM : ARecyclerViewModel<M>>
     lateinit var progressWheel: ProgressBar
 
     override fun initRecyclerList(view: View) {
-        this.list =
-            view.findViewById(R.id.itemList) as RecyclerView
+        this.list = view.findViewById(getRecyclerId())
 
         // List progressBar
-        this.progressWheel =
-            view.findViewById(R.id.progressBar) as ProgressBar
+        this.progressWheel = view.findViewById(getProgressBarId())
 
         this.progressWheel.visibility = View.VISIBLE
-
-
     }
 
     override fun successFunction(list: List<M>) {

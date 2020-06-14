@@ -14,7 +14,7 @@ import pt.ipl.isel.leic.ps.androidclient.ui.listener.ScrollListener
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.MealRecyclerVMProviderFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.MealRecyclerViewModel
 
-class MealRecyclerFragment : ARequestRecyclerListFragment<MealItem, MealRecyclerViewModel>() {
+open class MealRecyclerFragment : ARequestRecyclerListFragment<MealItem, MealRecyclerViewModel>() {
 
     private val isCalculatorMode: Boolean by lazy {
         this.requireArguments().getBoolean(CALCULATOR_BUNDLE_FLAG)
@@ -32,7 +32,7 @@ class MealRecyclerFragment : ARequestRecyclerListFragment<MealItem, MealRecycler
      * Initializes the view model, calling the respective
      * view model provider factory
      */
-    private fun buildViewModel(savedInstanceState: Bundle?) {
+    protected open fun buildViewModel(savedInstanceState: Bundle?) {
         val rootActivity = this.requireActivity()
         val factory = MealRecyclerVMProviderFactory(savedInstanceState, rootActivity.intent)
         viewModel = ViewModelProvider(rootActivity, factory)[MealRecyclerViewModel::class.java]
@@ -75,4 +75,8 @@ class MealRecyclerFragment : ARequestRecyclerListFragment<MealItem, MealRecycler
                 !isLoading && minimumListSize < viewModel.items.size
         })
     }
+
+    override fun getRecyclerId() = R.id.itemList
+
+    override fun getProgressBarId() = R.id.progressBar
 }

@@ -72,4 +72,8 @@ class InsulinProfilesRecyclerFragment :
         progressWheel.visibility = View.INVISIBLE
         noItemsLabel.visibility = if (list.isEmpty()) View.VISIBLE else View.INVISIBLE
     }
+
+    override fun getRecyclerId() = R.id.itemList
+
+    override fun getProgressBarId() = R.id.progressBar
 }

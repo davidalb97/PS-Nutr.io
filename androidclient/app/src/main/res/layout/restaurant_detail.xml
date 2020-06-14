@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <TableLayout
         android:layout_width="match_parent"
@@ -26,7 +26,6 @@
                 android:layout_height="wrap_content"
                 android:layout_toEndOf="@id/restaurant_detail_image"
                 android:layout_marginTop="20dp"
-                android:text="Hamburgaria do Bairro"
                 android:textStyle="bold"
                 android:textColor="@android:color/background_dark"
                 android:textSize="26sp">
@@ -86,6 +85,7 @@
         </RelativeLayout>
 
         <TextView
+            android:id="@+id/restaurant_meals_menu_txt"
             android:text="@string/menu"
             android:textColor="@android:color/background_dark"
             android:textSize="20sp"
@@ -95,9 +95,20 @@
 
         </TextView>
 
-        <GridView
-            android:numColumns="3">
-        </GridView>
+        <ProgressBar
+            android:id="@+id/restaurant_meals_progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminate="true"
+            android:visibility="invisible">
+        </ProgressBar>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/restaurant_meals_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:listitem="@layout/meal_card">
+        </androidx.recyclerview.widget.RecyclerView>
 
         <RelativeLayout
             android:gravity="center">

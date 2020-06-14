@@ -5,8 +5,8 @@ import android.os.Parcelable
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.mealRepository
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealItem
 
-class MealRecyclerViewModel(
-    val restaurantId: String? = null
+open class MealRecyclerViewModel(
+    open val restaurantId: String? = null
 ) : ARecyclerViewModel<MealItem>() {
 
     constructor(parcel: Parcel): this(
@@ -16,7 +16,7 @@ class MealRecyclerViewModel(
     override fun update() {
         if(restaurantId != null) {
             mealRepository.getRestaurantMealItems(
-                restaurantId = restaurantId,
+                restaurantId = restaurantId!!,
                 count = count,
                 skip = skip,
                 success = { liveDataHandler.set(it) },
