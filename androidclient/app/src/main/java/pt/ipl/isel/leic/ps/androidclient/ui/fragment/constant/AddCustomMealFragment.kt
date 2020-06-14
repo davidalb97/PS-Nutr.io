@@ -17,17 +17,24 @@ import pt.ipl.isel.leic.ps.androidclient.data.model.MealInfo
 import pt.ipl.isel.leic.ps.androidclient.data.util.TimestampWithTimeZone
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler.room.InsulinProfilesRecyclerFragment
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.CustomMealRecyclerVMProviderFactory
+import pt.ipl.isel.leic.ps.androidclient.ui.util.SpinnerHandler
+import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.CuisineRecyclerViewModel
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.CustomMealRecyclerViewModel
 
 class AddCustomMealFragment : Fragment() {
 
     lateinit var viewModel: CustomMealRecyclerViewModel
+    lateinit var cuisinesViewModel: CuisineRecyclerViewModel
+    private lateinit var ingredientsSpinnerHandler: SpinnerHandler
+    private lateinit var mealsSpinnerHandler: SpinnerHandler
+    private lateinit var cuisinesSpinnerHandler: SpinnerHandler
 
     private fun buildViewModel(savedInstanceState: Bundle?) {
         val rootActivity = this.requireActivity()
         val factory = CustomMealRecyclerVMProviderFactory(savedInstanceState, rootActivity.intent)
-        viewModel =
-            ViewModelProvider(rootActivity, factory)[CustomMealRecyclerViewModel::class.java]
+        viewModel = ViewModelProvider(rootActivity, factory)[
+                CustomMealRecyclerViewModel::class.java
+        ]
     }
 
     override fun onCreateView(
@@ -36,6 +43,18 @@ class AddCustomMealFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         buildViewModel(savedInstanceState)
+        cuisinesSpinnerHandler = SpinnerHandler(
+            requireActivity(),
+            R.id.custom_meal_cuisines_spinner
+        )
+        ingredientsSpinnerHandler = SpinnerHandler(
+            requireActivity(),
+            R.id.custom_meal_ingredients_spinner
+        )
+        mealsSpinnerHandler = SpinnerHandler(
+            requireActivity(),
+            R.id.custom_meal_meals_spinner
+        )
         return inflater.inflate(R.layout.add_custom_meal, container, false)
     }
 
@@ -50,7 +69,6 @@ class AddCustomMealFragment : Fragment() {
         val customImageUrl = view.findViewById<EditText>(R.id.custom_meal_image_url)
         val createButton = view.findViewById<Button>(R.id.create_custom_meal_button)
 
-
         createButton.setOnClickListener {
             val anyFieldBlank =
                 listOf(
@@ -61,7 +79,6 @@ class AddCustomMealFragment : Fragment() {
 
             if (!anyFieldBlank) {
 
-                val timeZoneWithTimeStamp: String = TimestampWithTimeZone.now().toString()
                 viewModel.addCustomMeal(
                     MealInfo(
                         dbId = DbMealInfoEntity.DEFAULT_DB_ID,
@@ -81,6 +98,7 @@ class AddCustomMealFragment : Fragment() {
                         mealComponents = emptyList(),
                         //TODO create meal with cuisines input from user
                         cuisines = emptyList(),
+                        //Custom meal does not have portions
                         portions = emptyList(),
                         isSuggested = false
                     )

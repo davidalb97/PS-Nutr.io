@@ -5,12 +5,12 @@ import android.view.ViewGroup
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealItem
 import pt.ipl.isel.leic.ps.androidclient.ui.viewholder.MealRecyclerViewHolder
-import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.ApiMealRecyclerViewModel
+import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.MealRecyclerViewModel
 
 class MealRecyclerAdapter(
-    model: ApiMealRecyclerViewModel,
+    model: MealRecyclerViewModel,
     ctx: Context
-) : ARecyclerAdapter<MealItem, ApiMealRecyclerViewModel, MealRecyclerViewHolder>(model, ctx) {
+) : ARecyclerAdapter<MealItem, MealRecyclerViewModel, MealRecyclerViewHolder>(model, ctx) {
 
     override fun getItemViewId(): Int = R.layout.meal_card
 

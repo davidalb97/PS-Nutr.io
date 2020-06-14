@@ -15,6 +15,7 @@ const val SKIP = "&skip="
 const val COUNT = "&count="
 
 const val MEAL = "meal"
+const val RESTAURANT = "restaurant"
 const val CUISINES = "cuisines"
 const val URI_END = "$SKIP=:skip$COUNT=:count"
 const val INGREDIENTS = "ingredients"

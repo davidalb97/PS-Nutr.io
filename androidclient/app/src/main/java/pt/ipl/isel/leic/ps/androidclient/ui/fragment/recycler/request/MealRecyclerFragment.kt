@@ -12,9 +12,9 @@ import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.MealRecyclerAdapter
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.tab.CALCULATOR_BUNDLE_FLAG
 import pt.ipl.isel.leic.ps.androidclient.ui.listener.ScrollListener
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.MealRecyclerVMProviderFactory
-import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.ApiMealRecyclerViewModel
+import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.MealRecyclerViewModel
 
-class MealRecyclerFragment : ARequestRecyclerListFragment<MealItem, ApiMealRecyclerViewModel>() {
+class MealRecyclerFragment : ARequestRecyclerListFragment<MealItem, MealRecyclerViewModel>() {
 
     private val isCalculatorMode: Boolean by lazy {
         this.requireArguments().getBoolean(CALCULATOR_BUNDLE_FLAG)
@@ -35,7 +35,7 @@ class MealRecyclerFragment : ARequestRecyclerListFragment<MealItem, ApiMealRecyc
     private fun buildViewModel(savedInstanceState: Bundle?) {
         val rootActivity = this.requireActivity()
         val factory = MealRecyclerVMProviderFactory(savedInstanceState, rootActivity.intent)
-        viewModel = ViewModelProvider(rootActivity, factory)[ApiMealRecyclerViewModel::class.java]
+        viewModel = ViewModelProvider(rootActivity, factory)[MealRecyclerViewModel::class.java]
     }
 
     override fun onCreateView(

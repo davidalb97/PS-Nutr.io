@@ -1,40 +1,35 @@
 package pt.ipl.isel.leic.ps.androidclient.data.api.datasource
 
 import com.android.volley.VolleyError
-import pt.ipl.isel.leic.ps.androidclient.data.api.Method
-import pt.ipl.isel.leic.ps.androidclient.data.api.RequestParser
-import pt.ipl.isel.leic.ps.androidclient.data.api.URI_BASE
-import pt.ipl.isel.leic.ps.androidclient.data.api.UriBuilder
+import pt.ipl.isel.leic.ps.androidclient.data.api.*
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.SimplifiedRestaurantInput
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.info.DetailedRestaurantInput
-import pt.ipl.isel.leic.ps.androidclient.data.api.dto.output.RestaurantMealOutput
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.output.RestaurantOutput
+import pt.ipl.isel.leic.ps.androidclient.data.model.Cuisine
 
-const val LATITUDE_VAR = ":latitude"
-const val LONGITUDE_VAR = ":longitude"
+private const val LATITUDE_PARAM = ":latitude"
+private const val LONGITUDE_PARAM = ":longitude"
+private const val RESTAURANT_ID_PARAM = ":restaurantId"
+private const val MEAL_ID_PARAM = ":mealId"
+private const val COUNT_PARAM = ":count"
+private const val SKIP_PARAM = ":skip"
 
-private const val RESTAURANT = "restaurant"
-private const val RESTAURANT_ID_URI =
-    "$URI_BASE/$RESTAURANT?latitude=:latitude&longitude=:longitude"
-private const val RESTAURANT_LOCATION =
-    "$URI_BASE/$RESTAURANT?latitude=$LATITUDE_VAR&longitude=$LONGITUDE_VAR"
-private const val RESTAURANT_REPORT =
-    "$RESTAURANT_ID_URI/report"
-private const val RESTAURANT_VOTE =
-    "$RESTAURANT_ID_URI/vote"
-private const val RESTAURANT_MEALS =
-    "$RESTAURANT_ID_URI/meal"
-private const val RESTAURANT_MEAL =
-    "$RESTAURANT_MEALS/:mealId"
-private const val RESTAURANT_MEAL_PORTION =
-    "$RESTAURANT_MEAL/portion"
-private const val RESTAURANT_MEAL_REPORT =
-    "$RESTAURANT_MEAL/report"
-private const val RESTAURANT_MEAL_VOTE =
-    "$RESTAURANT_MEAL/vote"
+private const val RESTAURANT_URI = "$URI_BASE/$RESTAURANT"
+private const val RESTAURANT_ID_URI = "$RESTAURANT_URI/$RESTAURANT_ID_PARAM"
+private const val RESTAURANT_LOCATION_URI = RESTAURANT_URI +
+        "?latitude=$LATITUDE_PARAM" +
+        "&longitude=$LONGITUDE_PARAM" +
+        "&skip=$SKIP_PARAM" +
+        "&count=$COUNT_PARAM"
+private const val RESTAURANT_REPORT_URI = "$RESTAURANT_ID_URI/report"
+private const val RESTAURANT_VOTE_URI = "$RESTAURANT_ID_URI/vote"
+private const val RESTAURANT_MEAL_URI = "$RESTAURANT_ID_URI/$MEAL"
+private const val RESTAURANT_MEAL_ID_URI = "$RESTAURANT_MEAL_URI/$MEAL_ID_PARAM"
+private const val RESTAURANT_MEAL_PORTION_URI = "$RESTAURANT_MEAL_ID_URI/portion"
+private const val RESTAURANT_MEAL_REPORT_URI = "$RESTAURANT_MEAL_ID_URI/report"
+private const val RESTAURANT_MEAL_VOTE_URI = "$RESTAURANT_MEAL_ID_URI/vote"
 
-val SIMPLE_RESTAURANT_INPUT_DTO = SimplifiedRestaurantInput::class.java
-val RESTAURANT_OUTPUT_DTO = RestaurantOutput::class.java
+val RESTAURANT_DTO = SimplifiedRestaurantInput::class.java
 
 
 class RestaurantDataSource(
@@ -45,17 +40,16 @@ class RestaurantDataSource(
     /**
      * ----------------------------- GETs -----------------------------
      */
-    fun getById(
+    fun getInfoById(
+        restaurantId: String,
         success: (DetailedRestaurantInput) -> Unit,
-        error: (VolleyError) -> Unit,
-        uriParameters: HashMap<String, String>?,
-        count: Int,
-        skip: Int
+        error: (VolleyError) -> Unit
     ) {
-        var uri =
-            RESTAURANT
-
-        uri = uriBuilder.buildUri(uri, uriParameters)
+        var uri = RESTAURANT_ID_URI
+        val params = hashMapOf(
+            Pair(RESTAURANT_ID_PARAM, restaurantId)
+        )
+        uri = uriBuilder.buildUri(uri, params)
 
         requestParser.requestAndRespond(
             Method.GET,
@@ -67,16 +61,21 @@ class RestaurantDataSource(
     }
 
     fun getNearby(
-        success: (Array<SimplifiedRestaurantInput>) -> Unit,
-        error: (VolleyError) -> Unit,
-        uriParameters: HashMap<String, String>?,
+        latitude: Double,
+        longitude: Double,
         count: Int,
-        skip: Int
+        skip: Int,
+        success: (Array<SimplifiedRestaurantInput>) -> Unit,
+        error: (VolleyError) -> Unit
     ) {
-        var uri =
-            RESTAURANT_LOCATION
-
-        uri = uriBuilder.buildUri(uri, uriParameters)
+        var uri = RESTAURANT_LOCATION_URI
+        val params = hashMapOf(
+            Pair(LATITUDE_PARAM, "$latitude"),
+            Pair(LONGITUDE_PARAM, "$longitude"),
+            Pair(SKIP_PARAM, "$skip"),
+            Pair(COUNT_PARAM, "$count")
+        )
+        uri = uriBuilder.buildUri(uri, params)
 
         requestParser.requestAndRespond(
             Method.GET,
@@ -92,33 +91,30 @@ class RestaurantDataSource(
      */
 
     fun postRestaurant(
-        success: (RestaurantOutput) -> Unit,
-        error: (VolleyError) -> Unit,
-        uriParameters:  HashMap<String, String>?,
-        count: Int,
-        skip: Int
+        name: String,
+        latitude: Double,
+        longitude: Double,
+        cuisines: Iterable<Cuisine>,
+        error: (VolleyError) -> Unit
     ) {
-        var uri =
-            RESTAURANT_ID_URI
-
-        uri = uriBuilder.buildUri(uri, uriParameters)
-
-        requestParser.requestAndRespond(
+        requestParser.request(
             Method.POST,
-            uri,
-            RESTAURANT_OUTPUT_DTO,
-            success,
+            RESTAURANT,
+            RestaurantOutput(
+                name = name,
+                latitude = latitude,
+                longitude = longitude,
+                cuisines = cuisines.map { it.name }
+                ),
             error,
-            {}
+            { }
         )
     }
 
     fun postReport(
-        success: (RestaurantOutput) -> Unit,
+        success: (SimplifiedRestaurantInput) -> Unit,
         error: (VolleyError) -> Unit,
-        uriParameters:  HashMap<String, String>?,
-        count: Int,
-        skip: Int
+        uriParameters:  HashMap<String, String>?
     ) {
         var uri =
             RESTAURANT_ID_URI
@@ -128,7 +124,7 @@ class RestaurantDataSource(
         requestParser.requestAndRespond(
             Method.POST,
             uri,
-            RESTAURANT_OUTPUT_DTO,
+            RESTAURANT_DTO,
             success,
             error,
             null
@@ -138,9 +134,7 @@ class RestaurantDataSource(
     fun postVote(
         success: (SimplifiedRestaurantInput) -> Unit,
         error: (VolleyError) -> Unit,
-        uriParameters:  HashMap<String, String>?,
-        count: Int,
-        skip: Int
+        uriParameters:  HashMap<String, String>?
     ) {
         var uri =
             RESTAURANT_ID_URI
@@ -150,7 +144,7 @@ class RestaurantDataSource(
         requestParser.requestAndRespond(
             Method.POST,
             uri,
-            SIMPLE_RESTAURANT_INPUT_DTO,
+            RESTAURANT_DTO,
             success,
             error,
             {}
@@ -163,9 +157,7 @@ class RestaurantDataSource(
     fun updateVote(
         success: (SimplifiedRestaurantInput) -> Unit,
         error: (VolleyError) -> Unit,
-        uriParameters:  HashMap<String, String>?,
-        count: Int,
-        skip: Int
+        uriParameters:  HashMap<String, String>?
     ) {
         var uri =
             RESTAURANT_ID_URI
@@ -175,7 +167,7 @@ class RestaurantDataSource(
         requestParser.requestAndRespond(
             Method.PUT,
             uri,
-            SIMPLE_RESTAURANT_INPUT_DTO,
+            RESTAURANT_DTO,
             success,
             error,
             {}
@@ -189,9 +181,7 @@ class RestaurantDataSource(
     fun deleteVote(
         success: (SimplifiedRestaurantInput) -> Unit,
         error: (VolleyError) -> Unit,
-        uriParameters:  HashMap<String, String>?,
-        count: Int,
-        skip: Int
+        uriParameters:  HashMap<String, String>?
     ) {
         var uri =
             RESTAURANT_ID_URI
@@ -201,7 +191,7 @@ class RestaurantDataSource(
         requestParser.requestAndRespond(
             Method.DELETE,
             uri,
-            SIMPLE_RESTAURANT_INPUT_DTO,
+            RESTAURANT_DTO,
             success,
             error
         )

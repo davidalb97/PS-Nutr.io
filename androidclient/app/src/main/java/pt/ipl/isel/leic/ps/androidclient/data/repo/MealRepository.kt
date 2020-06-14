@@ -7,6 +7,7 @@ import pt.ipl.isel.leic.ps.androidclient.data.api.datasource.MealDataSource
 import pt.ipl.isel.leic.ps.androidclient.data.api.mapper.*
 import pt.ipl.isel.leic.ps.androidclient.data.db.mapper.*
 import pt.ipl.isel.leic.ps.androidclient.data.db.relation.DbMealInfoRelation
+import pt.ipl.isel.leic.ps.androidclient.data.model.Cuisine
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealInfo
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealItem
 import pt.ipl.isel.leic.ps.androidclient.data.util.AsyncWorker
@@ -34,6 +35,9 @@ class MealRepository(private val dataSource: MealDataSource) {
         inputMealIngredientMapper = inputMealIngredientMapper,
         inputPortionMapper = inputPortionMapper
     )
+    val inputMealItemMapper = InputMealItemMapper(
+        inputVotesMapper = inputVotesMapper
+    )
 
     fun getAllMeals(): LiveData<List<DbMealInfoRelation>> = roomDb.mealInfoDao().getAll()
 
@@ -50,19 +54,52 @@ class MealRepository(private val dataSource: MealDataSource) {
     }
 
     fun getMealInfo(
+        mealId: Int,
         isSuggested: Boolean,
         success: (MealInfo) -> Unit,
-        error: (VolleyError) -> Unit,
-        uriParameters: HashMap<String, String>?,
-        count: Int,
-        skip: Int
+        error: (VolleyError) -> Unit
     ) {
-        dataSource.getById(
+        dataSource.getMealById(
+            mealId,
             { dtos -> success(inputMealInfoMapper.mapToModel(dtos, isSuggested)) },
-            error,
-            uriParameters,
-            count,
-            skip
+            error
+        )
+    }
+
+    fun getMealItems(
+        count: Int = 0,
+        skip: Int = 0,
+        cuisines: Collection<Cuisine>? = null,
+        success: (List<MealItem>) -> Unit,
+        error: (VolleyError) -> Unit
+    ) {
+        dataSource.getAll(
+            count = count,
+            skip = skip,
+            cuisines = cuisines,
+            success = {
+                //TODO assuming that no user filter is passed, all meals are suggested
+                success(inputMealItemMapper.mapToListModel(it, true))
+            },
+            error = error
+        )
+    }
+
+    fun getRestaurantMealItems(
+        restaurantId: String,
+        count: Int = 0,
+        skip: Int = 0,
+        success: (List<MealItem>) -> Unit,
+        error: (VolleyError) -> Unit
+    ) {
+        dataSource.getAllByRestaurantId(
+            restaurantId = restaurantId,
+            count = count,
+            skip = skip,
+            success = {
+                success(inputMealItemMapper.mapToListModel(it))
+            },
+            error = error
         )
     }
 }

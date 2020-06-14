@@ -46,6 +46,59 @@
         android:src="@drawable/ic_add">
     </ImageButton>
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:id="@+id/custom_meal_cuisines_list"
+        />
+
+    <Spinner
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/custom_meal_cuisines_spinner"
+        android:textSize="30sp"
+        android:inputType="text"
+        android:singleLine="true"
+        android:imeActionLabel="Done"
+        android:imeOptions="actionDone"
+        />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:id="@+id/custom_meal_ingredients_list"
+        />
+
+    <Spinner
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/custom_meal_ingredients_spinner"
+        android:textSize="30sp"
+        android:inputType="text"
+        android:singleLine="true"
+        android:imeActionLabel="Done"
+        android:imeOptions="actionDone"
+        />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:id="@+id/custom_meal_meals_list"
+        />
+
+    <Spinner
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/custom_meal_meals_spinner"
+        android:textSize="30sp"
+        android:inputType="text"
+        android:singleLine="true"
+        android:imeActionLabel="Done"
+        android:imeOptions="actionDone"
+        />
 
     <RelativeLayout
         android:layout_width="wrap_content"

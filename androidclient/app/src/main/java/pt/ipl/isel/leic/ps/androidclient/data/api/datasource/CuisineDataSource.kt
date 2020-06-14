@@ -2,9 +2,13 @@ package pt.ipl.isel.leic.ps.androidclient.data.api.datasource
 
 import com.android.volley.VolleyError
 import pt.ipl.isel.leic.ps.androidclient.data.api.*
+import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.CuisinesInput
 
-private const val CUISINE_ID_URI =
-    "$URI_BASE/$CUISINES/:name"
+private const val COUNT_PARAM = ":count"
+private const val SKIP_PARAM = ":skip"
+private const val CUISINE_URI = "$URI_BASE/$CUISINES" +
+    "?skip=$SKIP_PARAM" +
+    "&count=$COUNT_PARAM"
 
 class CuisineDataSource(
     private val requestParser: RequestParser,
@@ -15,20 +19,21 @@ class CuisineDataSource(
      * ----------------------------- GETs -----------------------------
      */
     fun getCuisines(
-        success: (Array<String>) -> Unit,
-        error: (VolleyError) -> Unit,
-        uriParameters: HashMap<String, String>?,
         count: Int,
-        skip: Int
+        skip: Int,
+        success: (CuisinesInput) -> Unit,
+        error: (VolleyError) -> Unit
     ) {
-        var uri = CUISINE_ID_URI
-
-        uri = uriBuilder.buildUri(uri, uriParameters)
-
+        var uri = CUISINE_URI
+        val params = hashMapOf(
+            Pair(SKIP_PARAM, "$skip"),
+            Pair(COUNT_PARAM, "$count")
+        )
+        uri = uriBuilder.buildUri(uri, params)
         requestParser.requestAndRespond(
             Method.GET,
             uri,
-            Array<String>::class.java,
+            CuisinesInput::class.java,
             success,
             error
         )

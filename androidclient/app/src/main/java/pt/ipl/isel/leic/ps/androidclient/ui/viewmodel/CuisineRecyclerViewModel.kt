@@ -15,11 +15,10 @@ class CuisineRecyclerViewModel() : ARecyclerViewModel<Cuisine>() {
 
     override fun update() {
         cuisineRepository.getCuisines(
+            count,
+            skip,
             liveDataHandler::set,
-            onError,
-            parameters,
-            COUNT,
-            skip
+            onError
         )
     }
 

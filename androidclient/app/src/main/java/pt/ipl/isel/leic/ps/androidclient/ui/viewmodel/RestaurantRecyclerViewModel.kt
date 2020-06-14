@@ -8,13 +8,18 @@ import pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler.COUNT
 
 class RestaurantRecyclerViewModel : ARecyclerViewModel<RestaurantItem>() {
 
+    lateinit var restaurantId: String
+    var latitude: Double? = null
+    var longitude: Double? = null
+
     override fun update() {
         restaurantRepository.getNearbyRestaurants(
+            latitude!!,
+            longitude!!,
+            count,
+            skip,
             liveDataHandler::add,
-            onError,
-            parameters,
-            COUNT,
-            skip
+            onError
         )
     }
 

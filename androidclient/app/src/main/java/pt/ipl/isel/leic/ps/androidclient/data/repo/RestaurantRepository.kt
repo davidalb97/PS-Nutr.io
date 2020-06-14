@@ -24,34 +24,32 @@ class RestaurantRepository(private val dataSource: RestaurantDataSource) {
     )
 
     fun getRestaurantInfoById(
+        restaurantId: String,
         success: (RestaurantInfo) -> Unit,
-        error: (VolleyError) -> Unit,
-        uriParameters: HashMap<String, String>?,
-        count: Int,
-        skip: Int
+        error: (VolleyError) -> Unit
     ) {
-        dataSource.getById(
+        dataSource.getInfoById(
+            restaurantId,
             { restaurantDto -> success(inputRestaurantInfoMapper.mapToModel(restaurantDto)) },
-            error,
-            uriParameters,
-            count,
-            skip
+            error
         )
     }
 
     fun getNearbyRestaurants(
-        success: (List<RestaurantItem>) -> Unit,
-        error: (VolleyError) -> Unit,
-        uriParameters: HashMap<String, String>?,
+        latitude: Double,
+        longitude: Double,
         count: Int,
-        skip: Int
+        skip: Int,
+        success: (List<RestaurantItem>) -> Unit,
+        error: (VolleyError) -> Unit
     ) {
         dataSource.getNearby(
-            { restaurantDtos -> success(inputRestaurantItemMapper.mapToListModel(restaurantDtos)) },
-            error,
-            uriParameters,
+            latitude,
+            longitude,
             count,
-            skip
+            skip,
+            { restaurantDtos -> success(inputRestaurantItemMapper.mapToListModel(restaurantDtos)) },
+            error
         )
     }
 }

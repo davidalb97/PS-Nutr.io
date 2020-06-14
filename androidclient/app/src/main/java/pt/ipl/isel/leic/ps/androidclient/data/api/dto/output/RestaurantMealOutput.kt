@@ -1,5 +1,5 @@
 package pt.ipl.isel.leic.ps.androidclient.data.api.dto.output
 
 class RestaurantMealOutput(
-    val mealId: Int?
+    val mealId: Int
 )
