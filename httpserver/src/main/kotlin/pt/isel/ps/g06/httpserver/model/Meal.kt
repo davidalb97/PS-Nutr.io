@@ -16,4 +16,8 @@ data class Meal(
         val creatorInfo: Lazy<Creator?>,
         val creationDate: Lazy<OffsetDateTime?>,
         val restaurantInfo: (RestaurantIdentifier) -> MealRestaurantInfo?
-)
+) {
+    fun isUserMeal(): Boolean {
+        return creatorInfo.value != null
+    }
+}

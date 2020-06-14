@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.util.UriComponentsBuilder
 import pt.isel.ps.g06.httpserver.common.*
+import pt.isel.ps.g06.httpserver.common.exception.ForbiddenMealInsertException
 import pt.isel.ps.g06.httpserver.common.exception.MealNotFoundException
 import pt.isel.ps.g06.httpserver.common.exception.RestaurantNotFoundException
 import pt.isel.ps.g06.httpserver.dataAccess.input.RestaurantMealInput
@@ -55,6 +56,15 @@ class RestaurantMealsController(
     }
 
 
+    /**
+     *  Adds an existing User created meal to an existing Restaurant, allowing other
+     *  users to see it, add portions, vote and report it.
+     *
+     *  Internally and as a side effect, if a Restaurant exists
+     *  but is not present in the database, it is first inserted into the database.
+     *
+     *  This logic does not change the client's behavior on accessing that restaurant.
+     */
     @PostMapping(RESTAURANT_MEALS, consumes = [MediaType.APPLICATION_JSON_VALUE])
     fun addRestaurantMeal(
             @PathVariable(RESTAURANT_ID_VALUE) id: String,
@@ -71,6 +81,10 @@ class RestaurantMealsController(
 
         val meal = mealService.getMeal(restaurantMeal.mealId!!) ?: throw MealNotFoundException()
 
+        if (!meal.isUserMeal()) {
+            throw ForbiddenMealInsertException("Only meals created by you can be inserted!")
+        }
+
         if (!restaurant.identifier.value.isPresentInDatabase()) {
             restaurant = restaurantService.createRestaurant(
                     submitterId = submitterId,
@@ -82,7 +96,6 @@ class RestaurantMealsController(
             )
         }
 
-        //TODO Disable user adding hardcoded meals
         val restaurantMealId = restaurantService.addRestaurantMeal(restaurant, meal, userId)
 
         return ResponseEntity

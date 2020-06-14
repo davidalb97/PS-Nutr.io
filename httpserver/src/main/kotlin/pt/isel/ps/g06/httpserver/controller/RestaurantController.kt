@@ -124,10 +124,4 @@ class RestaurantController(
     @DeleteMapping(RESTAURANT_VOTE, consumes = [MediaType.APPLICATION_JSON_VALUE])
     fun deleteRestaurantVote(@PathVariable(RESTAURANT_ID_VALUE) id: String, vote: String) {
     }
-
-    //TODO
-//    @GetMapping(AVAILABLE_RESTAURANT_TYPES, consumes = [MediaType.ALL_VALUE])
-//    fun getRestaurantTypes(): ResponseEntity<> {
-//
-//    }
 }
