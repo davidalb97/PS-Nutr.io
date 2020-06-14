@@ -30,7 +30,8 @@ class TimestampWithTimeZone(
             val timeZone = split[1]
             split = split[0].split(".")
             val millis = split[1]
-            split = split[0].split(":")
+            split = split[0].split(" ")
+            split = split[1].split(":")
             val hours = split[0]
             val minutes = split[1]
             val seconds = split[2]
@@ -62,5 +63,5 @@ class TimestampWithTimeZone(
         }
     }
 
-    override fun toString() = "$year-$month-$day $hours:$minutes$seconds.$millis+$timeZone"
+    override fun toString() = "$year-$month-$day $hours:$minutes:$seconds.$millis+$timeZone"
 }

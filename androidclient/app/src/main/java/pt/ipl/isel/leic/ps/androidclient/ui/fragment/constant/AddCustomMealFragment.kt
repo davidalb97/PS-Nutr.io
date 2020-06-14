@@ -62,6 +62,7 @@ class AddCustomMealFragment : Fragment() {
 
             if (!anyFieldBlank) {
 
+                val timeZoneWithTimeStamp: String = TimestampWithTimeZone.now().toString()
                 viewModel.addCustomMeal(
                     MealInfo(
                         dbId = DbMealInfoEntity.DEFAULT_DB_ID,
