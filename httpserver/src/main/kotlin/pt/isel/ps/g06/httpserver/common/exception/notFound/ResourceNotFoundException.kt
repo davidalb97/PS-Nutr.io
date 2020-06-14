@@ -1,6 +1,9 @@
 package pt.isel.ps.g06.httpserver.common.exception.notFound
 
 import org.springframework.http.HttpStatus
-import org.springframework.web.server.ResponseStatusException
+import pt.isel.ps.g06.httpserver.common.exception.BaseResponseStatusException
 
-open class ResourceNotFoundException(reason: String) : ResponseStatusException(HttpStatus.NOT_FOUND, reason)
+open class ResourceNotFoundException(detail: String) : BaseResponseStatusException(
+        status = HttpStatus.NOT_FOUND,
+        detail = detail
+)

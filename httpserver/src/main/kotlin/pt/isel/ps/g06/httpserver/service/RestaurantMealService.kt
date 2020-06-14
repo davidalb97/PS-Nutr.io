@@ -1,8 +1,8 @@
 package pt.isel.ps.g06.httpserver.service
 
 import org.springframework.stereotype.Service
-import pt.isel.ps.g06.httpserver.common.exception.clientError.ForbiddenInsertionException
-import pt.isel.ps.g06.httpserver.common.exception.clientError.NotYetVotedException
+import pt.isel.ps.g06.httpserver.common.exception.clientError.ForbiddenInsertionResponseStatusException
+import pt.isel.ps.g06.httpserver.common.exception.clientError.NotYetVotedResponseStatusException
 import pt.isel.ps.g06.httpserver.common.exception.notFound.RestaurantMealNotFound
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.PortionDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.RestaurantMealDbRepository
@@ -72,7 +72,7 @@ class RestaurantMealService(
         val restaurantMeal = getRestaurantMeal(restaurant, mealId)
 
         if (!restaurantMeal.isUserMeal()) {
-            throw ForbiddenInsertionException("Only restaurant meals created by users can be voted!")
+            throw ForbiddenInsertionResponseStatusException("Only restaurant meals created by users can be voted!")
         }
 
         val restaurantInfo = restaurantMeal
@@ -86,7 +86,7 @@ class RestaurantMealService(
         val restaurantMeal = getRestaurantMeal(restaurant, mealId)
 
         if (!restaurantMeal.isUserMeal()) {
-            throw ForbiddenInsertionException("Only restaurant meals created by users can be voted!")
+            throw ForbiddenInsertionResponseStatusException("Only restaurant meals created by users can be voted!")
         }
 
         val restaurantInfo = restaurantMeal
@@ -94,7 +94,7 @@ class RestaurantMealService(
                 ?: throw IllegalStateException("Expected RestaurantInfo for given RestaurantMeal, but none was found!")
 
         if (restaurantInfo.userVote(submitterId) == VoteState.NOT_VOTED) {
-            throw NotYetVotedException("You have not yet voted for this Restaurant Meal!")
+            throw NotYetVotedResponseStatusException("You have not yet voted for this Restaurant Meal!")
         }
 
         dbVoteRepository.delete(submitterId, restaurantInfo.restaurantMealIdentifier)

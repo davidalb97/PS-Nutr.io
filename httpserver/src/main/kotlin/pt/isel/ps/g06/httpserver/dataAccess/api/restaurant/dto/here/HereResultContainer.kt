@@ -14,8 +14,7 @@ class HereResultItem(
         name = title,
         latitude = position.lat,
         longitude = position.lng,
-        //Here does not support image
-        //TODO return restaurant image from Here result item
+        //Here does not support image for restaurants
         image = null
 )
 

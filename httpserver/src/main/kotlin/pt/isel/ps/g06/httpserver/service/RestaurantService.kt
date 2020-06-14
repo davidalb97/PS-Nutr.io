@@ -1,7 +1,7 @@
 package pt.isel.ps.g06.httpserver.service
 
 import org.springframework.stereotype.Service
-import pt.isel.ps.g06.httpserver.common.exception.NoSuchApiException
+import pt.isel.ps.g06.httpserver.common.exception.NoSuchApiResponseStatusException
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.RestaurantApiType
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.mapper.RestaurantApiMapper
 import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.restaurant.RestaurantResponseMapper
@@ -75,7 +75,7 @@ class RestaurantService(
             apiId != null -> {
                 val apiType = apiSubmitterMapper
                         .getApiType(submitterId)
-                        ?: throw NoSuchApiException()
+                        ?: throw NoSuchApiResponseStatusException()
 
                 searchApiRestaurant(submitterId, apiId, apiType)
             }
@@ -102,7 +102,7 @@ class RestaurantService(
     ): Restaurant {
         if (apiId != null) {
             //Verify is given submitterId belongs to an API
-            apiSubmitterMapper.getApiType(submitterId) ?: throw NoSuchApiException()
+            apiSubmitterMapper.getApiType(submitterId) ?: throw NoSuchApiResponseStatusException()
         }
 
         val createdRestaurant = dbRestaurantRepository.insert(

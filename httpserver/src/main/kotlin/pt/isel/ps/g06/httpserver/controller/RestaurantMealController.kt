@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.util.UriComponentsBuilder
 import pt.isel.ps.g06.httpserver.common.*
-import pt.isel.ps.g06.httpserver.common.exception.clientError.ForbiddenInsertionException
+import pt.isel.ps.g06.httpserver.common.exception.clientError.ForbiddenInsertionResponseStatusException
 import pt.isel.ps.g06.httpserver.common.exception.notFound.MealNotFoundException
 import pt.isel.ps.g06.httpserver.common.exception.notFound.RestaurantNotFoundException
 import pt.isel.ps.g06.httpserver.dataAccess.input.PortionInput
@@ -92,7 +92,7 @@ class RestaurantMealController(
 
         val meal = mealService.getMeal(restaurantMeal.mealId!!) ?: throw MealNotFoundException()
         if (!meal.isUserMeal()) {
-            throw ForbiddenInsertionException("Only meals created by you can be inserted!")
+            throw ForbiddenInsertionResponseStatusException("Only meals created by you can be inserted!")
         }
 
         val restaurantMealId = restaurantMealService.addRestaurantMeal(restaurant, meal, userId)
