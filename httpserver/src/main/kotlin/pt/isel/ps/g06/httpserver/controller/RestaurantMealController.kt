@@ -5,23 +5,26 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.util.UriComponentsBuilder
 import pt.isel.ps.g06.httpserver.common.*
-import pt.isel.ps.g06.httpserver.common.exception.ForbiddenMealInsertException
+import pt.isel.ps.g06.httpserver.common.exception.ForbiddenInsertionException
 import pt.isel.ps.g06.httpserver.common.exception.MealNotFoundException
 import pt.isel.ps.g06.httpserver.common.exception.RestaurantNotFoundException
+import pt.isel.ps.g06.httpserver.dataAccess.input.PortionInput
 import pt.isel.ps.g06.httpserver.dataAccess.input.RestaurantMealInput
 import pt.isel.ps.g06.httpserver.dataAccess.output.DetailedRestaurantMealOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.RestaurantMealContainerOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.toDetailedRestaurantMealOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.toRestaurantMealContainerOutput
 import pt.isel.ps.g06.httpserver.service.MealService
+import pt.isel.ps.g06.httpserver.service.RestaurantMealService
 import pt.isel.ps.g06.httpserver.service.RestaurantService
 import javax.validation.Valid
 
 @Suppress("MVCPathVariableInspection")
 @RestController
 @RequestMapping(produces = [MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_PROBLEM_JSON_VALUE])
-class RestaurantMealsController(
+class RestaurantMealController(
         private val mealService: MealService,
+        private val restaurantMealService: RestaurantMealService,
         private val restaurantService: RestaurantService,
         private val restaurantIdentifierBuilder: RestaurantIdentifierBuilder
 ) {
@@ -50,6 +53,8 @@ class RestaurantMealsController(
 
         val meal = mealService.getMeal(mealId) ?: throw MealNotFoundException()
 
+        //TODO If Restaurant Info is not present, throw not found (for user meals)
+        //TODO Check owner (if any) and then check if restaurant info is present
         return ResponseEntity
                 .ok()
                 .body(toDetailedRestaurantMealOutput(restaurantIdentifier, meal))
@@ -70,10 +75,10 @@ class RestaurantMealsController(
             @PathVariable(RESTAURANT_ID_VALUE) id: String,
             @Valid @RequestBody restaurantMeal: RestaurantMealInput
     ): ResponseEntity<Void> {
-        val userId = 10  //TODO For when there's authentication
+        val userId = 3  //TODO For when there's authentication
         val (submitterId, submissionId, apiId) = restaurantIdentifierBuilder.extractIdentifiers(id)
 
-        var restaurant = restaurantService.getRestaurant(
+        val restaurant = restaurantService.getRestaurant(
                 submitterId = submitterId,
                 submissionId = submissionId,
                 apiId = apiId
@@ -82,21 +87,10 @@ class RestaurantMealsController(
         val meal = mealService.getMeal(restaurantMeal.mealId!!) ?: throw MealNotFoundException()
 
         if (!meal.isUserMeal()) {
-            throw ForbiddenMealInsertException("Only meals created by you can be inserted!")
+            throw ForbiddenInsertionException("Only meals created by you can be inserted!")
         }
 
-        if (!restaurant.identifier.value.isPresentInDatabase()) {
-            restaurant = restaurantService.createRestaurant(
-                    submitterId = submitterId,
-                    apiId = apiId,
-                    restaurantName = restaurant.name,
-                    cuisines = restaurant.cuisines.map { it.name }.toList(),
-                    latitude = restaurant.latitude,
-                    longitude = restaurant.longitude
-            )
-        }
-
-        val restaurantMealId = restaurantService.addRestaurantMeal(restaurant, meal, userId)
+        val restaurantMealId = restaurantMealService.addRestaurantMeal(restaurant, meal, userId)
 
         return ResponseEntity
                 .created(UriComponentsBuilder
@@ -106,9 +100,31 @@ class RestaurantMealsController(
                 .build()
     }
 
-    @PostMapping(RESTAURANT_MEAL_PORTION)
-    fun addMealPortion(@PathVariable(RESTAURANT_ID_VALUE) id: String, @PathVariable(MEAL_ID_VALUE) mealId: String, @RequestBody portion: String) {
 
+    @PostMapping(RESTAURANT_MEAL_PORTION)
+    fun addMealPortion(
+            @PathVariable(RESTAURANT_ID_VALUE) restaurantId: String,
+            @PathVariable(MEAL_ID_VALUE) mealId: Int,
+            @Valid @RequestBody portion: PortionInput
+    ): ResponseEntity<Void> {
+//        //TODO When there's authentication
+        val submitterId = 3
+        val restaurantIdentifier = restaurantIdentifierBuilder.extractIdentifiers(restaurantId)
+
+        val restaurant = restaurantService
+                .getRestaurant(restaurantIdentifier.submitterId, restaurantIdentifier.submissionId, restaurantIdentifier.apiId)
+                ?: throw RestaurantNotFoundException()
+
+        val meal = mealService.getMeal(mealId) ?: throw MealNotFoundException()
+
+        restaurantMealService.addRestaurantMealPortion(
+                restaurant = restaurant,
+                meal = meal,
+                submitterId = submitterId,
+                quantity = portion.quantity!!
+        )
+
+        return ResponseEntity.ok().build()
     }
 
     @PostMapping(RESTAURANT_MEAL_REPORT)

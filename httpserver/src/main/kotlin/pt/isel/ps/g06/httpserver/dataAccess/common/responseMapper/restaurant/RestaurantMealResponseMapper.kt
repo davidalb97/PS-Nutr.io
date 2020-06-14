@@ -17,6 +17,7 @@ class DbRestaurantMealResponseMapper(
 
     override fun mapTo(dto: DbRestaurantMealDto): MealRestaurantInfo {
         return MealRestaurantInfo(
+                restaurantMealIdentifier = dto.submission_id,
                 votes = lazy { dbVotesMapper.mapTo(dbMealRepo.getVotes(dto.submission_id)) },
                 userVote = { userId -> dbMealRepo.getUserVote(dto.submission_id, userId) },
                 portions = dbPortionRepo.getAllByRestaurantMealId(dto.submission_id).map(dbPortionsMapper::mapTo),

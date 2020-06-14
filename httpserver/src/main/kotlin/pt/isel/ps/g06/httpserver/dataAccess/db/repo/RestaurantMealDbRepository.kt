@@ -38,7 +38,7 @@ class RestaurantMealDbRepository(jdbi: Jdbi) : SubmissionDbRepository(jdbi) {
     }
 
     fun insert(
-            submitterId: Int,
+            submitterId: Int?,
             mealId: Int,
             restaurantId: Int
     ): DbRestaurantMealDto {
@@ -52,17 +52,21 @@ class RestaurantMealDbRepository(jdbi: Jdbi) : SubmissionDbRepository(jdbi) {
             val restaurantMealDao = it.attach(restaurantMealDao)
             val existingRestaurantMeal = restaurantMealDao
                     .getByRestaurantAndMealId(restaurantId, mealId)
+
             if (existingRestaurantMeal != null) {
                 throw InvalidInputException(InvalidInputDomain.RESTAURANT_MEAL,
                         "The restaurant with id $restaurantId already has a meal with id $mealId!"
                 )
             }
 
-            val submissionId = it.attach(SubmissionDao::class.java)
+            val submissionId = it
+                    .attach(SubmissionDao::class.java)
                     .insert(RESTAURANT_MEAL.toString())
                     .submission_id
 
-            it.attach(SubmissionSubmitterDao::class.java).insert(submissionId, submitterId)
+            if (submitterId != null) {
+                it.attach(SubmissionSubmitterDao::class.java).insert(submissionId, submitterId)
+            }
 
             return@inTransaction restaurantMealDao.insert(submissionId, restaurantId, mealId)
         }

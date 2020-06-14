@@ -9,7 +9,6 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.ApiSubmitterMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.RestaurantDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.RestaurantMealDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.model.RestaurantDto
-import pt.isel.ps.g06.httpserver.model.Meal
 import pt.isel.ps.g06.httpserver.model.Restaurant
 
 private const val MAX_RADIUS = 1000
@@ -118,18 +117,6 @@ class RestaurantService(
         return restaurantResponseMapper.mapTo(createdRestaurant)
     }
 
-
-    fun addRestaurantMeal(restaurant: Restaurant, meal: Meal, submitterId: Int): Int {
-        if (!restaurant.identifier.value.isPresentInDatabase()) throw IllegalStateException()
-
-        val (submission_id) = dbRestaurantMealRepository.insert(
-                submitterId = submitterId,
-                mealId = meal.identifier,
-                restaurantId = restaurant.identifier.value.submissionId!!
-        )
-
-        return submission_id
-    }
 
     private fun filterRedundantApiRestaurants(dbRestaurants: Sequence<Restaurant>, apiRestaurants: Sequence<Restaurant>): Sequence<Restaurant> {
         //Join db restaurants with filtered api restaurants

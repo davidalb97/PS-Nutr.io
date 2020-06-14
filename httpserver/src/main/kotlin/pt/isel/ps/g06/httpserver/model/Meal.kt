@@ -20,4 +20,9 @@ data class Meal(
     fun isUserMeal(): Boolean {
         return creatorInfo.value != null
     }
+
+    fun isRestaurantMeal(restaurant: Restaurant): Boolean {
+        return if (isUserMeal()) creatorInfo.value != null
+        else restaurant.cuisines.toList().intersect(cuisines.toList()).isNotEmpty()
+    }
 }
