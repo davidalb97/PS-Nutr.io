@@ -3,22 +3,23 @@ package pt.ipl.isel.leic.ps.androidclient.ui.viewmodel
 import android.os.Parcel
 import android.os.Parcelable
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.mealRepository
-import pt.ipl.isel.leic.ps.androidclient.data.model.CustomMeal
+import pt.ipl.isel.leic.ps.androidclient.data.model.MealInfo
+import pt.ipl.isel.leic.ps.androidclient.data.model.MealItem
 
-class CustomMealRecyclerViewModel() : ARecyclerViewModel<CustomMeal>() {
+class CustomMealRecyclerViewModel() : ARecyclerViewModel<MealItem>() {
 
     constructor(parcel: Parcel) : this() {
     }
 
-    fun addCustomMeal(customMeal: CustomMeal) =
-        mealRepository.insertCustomMeal(customMeal)
+    fun addCustomMeal(customMeal: MealInfo) =
+        mealRepository.insert(customMeal)
 
-    fun deleteItem(customMeal: CustomMeal) =
-        mealRepository.deleteCustomMeal(customMeal)
+    fun deleteItem(customMeal: MealItem) =
+        mealRepository.deleteItem(customMeal)
 
     override fun update() {
-        this.liveDataHandler.set(mealRepository.getAllCustomMeals()) {
-            mealRepository.dbCustomMealMapper.mapToModel(it)
+        this.liveDataHandler.set(mealRepository.getAllMeals()) {
+            mealRepository.dbMealInfoMapper.mapToModel(it)
         }
     }
 

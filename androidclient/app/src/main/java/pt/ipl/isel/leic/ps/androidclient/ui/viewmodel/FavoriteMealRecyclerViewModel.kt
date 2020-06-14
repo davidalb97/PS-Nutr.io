@@ -3,9 +3,9 @@ package pt.ipl.isel.leic.ps.androidclient.ui.viewmodel
 import android.os.Parcel
 import android.os.Parcelable
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.mealRepository
-import pt.ipl.isel.leic.ps.androidclient.data.model.FavoriteMeal
+import pt.ipl.isel.leic.ps.androidclient.data.model.MealItem
 
-class FavoriteMealRecyclerViewModel() : ARecyclerViewModel<FavoriteMeal>() {
+class FavoriteMealRecyclerViewModel() : ARecyclerViewModel<MealItem>() {
 
     constructor(parcel: Parcel) : this() {
     }
@@ -29,8 +29,9 @@ class FavoriteMealRecyclerViewModel() : ARecyclerViewModel<FavoriteMeal>() {
     }
 
     override fun update() {
-        this.liveDataHandler.set(mealRepository.getAllFavoriteMeals()) {
-            mealRepository.dbFavoriteMealMapper.mapToModel(it)
+        //TODO filter by favorite FavoriteMealRecyclerViewModel.update()
+        this.liveDataHandler.set(mealRepository.getAllMeals()) {
+            mealRepository.dbMealInfoMapper.mapToModel(it)
         }
     }
 }

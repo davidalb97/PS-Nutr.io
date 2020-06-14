@@ -13,8 +13,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.db.InsulinCalculator
-import pt.ipl.isel.leic.ps.androidclient.data.model.CustomMeal
 import pt.ipl.isel.leic.ps.androidclient.data.model.InsulinProfile
+import pt.ipl.isel.leic.ps.androidclient.data.model.MealInfo
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.InsulinProfilesVMProviderFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.util.closeKeyboard
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.InsulinProfilesRecyclerViewModel
@@ -26,7 +26,7 @@ class CalculatorFragment : Fragment() {
 
     lateinit var viewModel: InsulinProfilesRecyclerViewModel
 
-    private var receivedMeal: CustomMeal? = null
+    private var receivedMeal: MealInfo? = null
     private var currentProfile: InsulinProfile? = null
     private val calculator = InsulinCalculator()
 

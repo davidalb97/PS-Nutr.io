@@ -6,25 +6,39 @@ import android.os.Parcelable
 import pt.ipl.isel.leic.ps.androidclient.data.util.*
 
 class MealInfo(
-    var dbId: Long,
-    val submissionId: Int,
-    val name: String,
-    val carbs: Int,
-    val amount: Int,
-    val unit: String,
-    val votes: Votes?,
-    val isFavorite: Boolean,
-    val imageUri: Uri?,
+    dbId: Long,
+    dbRestaurantId: Long,
+    submissionId: Int,
+    name: String,
+    override val carbs: Int,
+    override val amount: Int,
+    override val unit: String,
+    votes: Votes?,
+    isFavorite: Boolean,
+    imageUri: Uri?,
     val creationDate: TimestampWithTimeZone?,
     val ingredientComponents: List<MealIngredient>,
     val mealComponents: List<MealIngredient>,
     val cuisines: List<Cuisine>,
     val portions: List<Portion>,
-    val isSuggested: Boolean
-): Parcelable {
+    isSuggested: Boolean
+): MealItem(
+    dbId = dbId,
+    dbRestaurantId = dbRestaurantId,
+    submissionId = submissionId,
+    name = name,
+    carbs = carbs,
+    amount = amount,
+    unit = unit,
+    votes = votes,
+    isFavorite = isFavorite,
+    imageUri = imageUri,
+    isSuggested = isSuggested
+) {
 
     constructor(parcel: Parcel) : this(
         dbId = parcel.readLong(),
+        dbRestaurantId = parcel.readLong(),
         submissionId = parcel.readInt(),
         name = parcel.readString()!!,
         carbs = parcel.readInt(),
@@ -63,6 +77,9 @@ class MealInfo(
     }
 
     companion object CREATOR : Parcelable.Creator<MealItem> {
+
+        const val DEFAULT_SUBMISSION_ID: Int = -1
+
         override fun createFromParcel(parcel: Parcel): MealItem {
             return MealItem(parcel)
         }

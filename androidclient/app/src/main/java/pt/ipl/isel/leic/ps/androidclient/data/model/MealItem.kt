@@ -8,11 +8,14 @@ import pt.ipl.isel.leic.ps.androidclient.data.util.readUri
 import pt.ipl.isel.leic.ps.androidclient.data.util.writeBoolean
 import pt.ipl.isel.leic.ps.androidclient.data.util.writeUri
 
-data class MealItem(
+open class MealItem(
     var dbId: Long,
     var dbRestaurantId: Long,
     val submissionId: Int,
     val name: String,
+    open val carbs: Int?,
+    open val amount: Int?,
+    open val unit: String?,
     val imageUri: Uri?,
     val votes: Votes?,
     val isFavorite: Boolean,
@@ -23,6 +26,9 @@ data class MealItem(
         dbRestaurantId = parcel.readLong(),
         submissionId = parcel.readInt(),
         name = parcel.readString()!!,
+        carbs = parcel.readSerializable() as Int?,
+        amount = parcel.readSerializable() as Int?,
+        unit = parcel.readString(),
         imageUri = readUri(parcel),
         votes = parcel.readParcelable(Votes::class.java.classLoader),
         isFavorite = readBoolean(parcel),
@@ -34,6 +40,9 @@ data class MealItem(
         parcel.writeLong(dbRestaurantId)
         parcel.writeInt(submissionId)
         parcel.writeString(name)
+        parcel.writeSerializable(carbs)
+        parcel.writeSerializable(amount)
+        parcel.writeString(unit)
         writeUri(parcel, imageUri)
         parcel.writeParcelable(votes, flags)
         writeBoolean(parcel, isFavorite)

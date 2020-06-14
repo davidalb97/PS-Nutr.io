@@ -8,6 +8,7 @@ import pt.ipl.isel.leic.ps.androidclient.data.api.mapper.*
 import pt.ipl.isel.leic.ps.androidclient.data.db.mapper.*
 import pt.ipl.isel.leic.ps.androidclient.data.db.relation.DbMealInfoRelation
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealInfo
+import pt.ipl.isel.leic.ps.androidclient.data.model.MealItem
 import pt.ipl.isel.leic.ps.androidclient.data.util.AsyncWorker
 
 class MealRepository(private val dataSource: MealDataSource) {
@@ -22,6 +23,7 @@ class MealRepository(private val dataSource: MealDataSource) {
         dbCuisinesMapper,
         dbCortionMapper
     )
+    val dbMealItemMapper = DbMealItemMapper()
     val inputVotesMapper = InputVotesMapper()
     val inputCuisineMapper = InputCuisineMapper()
     val inputMealIngredientMapper = InputMealIngredientMapper()
@@ -33,14 +35,18 @@ class MealRepository(private val dataSource: MealDataSource) {
         inputPortionMapper = inputPortionMapper
     )
 
-    fun getAllCustomMeals(): LiveData<List<DbMealInfoRelation>> = roomDb.mealInfoDao().getAll()
+    fun getAllMeals(): LiveData<List<DbMealInfoRelation>> = roomDb.mealInfoDao().getAll()
 
-    fun insertMeal(meal: MealInfo) = AsyncWorker<Unit, Unit> {
+    fun insert(meal: MealInfo) = AsyncWorker<Unit, Unit> {
         roomDb.mealInfoDao().insert(dbMealInfoMapper.mapToRelation(meal))
     }
 
-    fun deleteMeal(meal: MealInfo) = AsyncWorker<Unit, Unit> {
+    fun delete(meal: MealInfo) = AsyncWorker<Unit, Unit> {
         roomDb.mealInfoDao().delete(dbMealInfoMapper.mapToRelation(meal))
+    }
+
+    fun deleteItem(mealItem: MealItem) = AsyncWorker<Unit, Unit> {
+        roomDb.mealItemDao().deleteItem(dbMealItemMapper.mapToEntity(mealItem))
     }
 
     fun getMealInfo(

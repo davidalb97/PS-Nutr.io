@@ -3,6 +3,7 @@ package pt.ipl.isel.leic.ps.androidclient.ui.viewmodel
 import android.os.Parcel
 import android.os.Parcelable
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.mealRepository
+import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.restaurantRepository
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealItem
 
 class ApiMealRecyclerViewModel(val restaurantIdentifier: Int) : ARecyclerViewModel<MealItem>() {
@@ -12,9 +13,11 @@ class ApiMealRecyclerViewModel(val restaurantIdentifier: Int) : ARecyclerViewMod
     )
 
     override fun update() {
-        mealRepository.getAllApiMealsByRestaurant(
-            restaurantIdentifier,
-            liveDataHandler::set,
+        //TODO Use restaurantIdentifier ctor param to pass to ApiMealRecyclerViewModel.update()
+        restaurantRepository.getRestaurantInfoById(
+            { restaurantInfo ->
+                liveDataHandler.set(restaurantInfo.meals.plus(restaurantInfo.suggestedMeals))
+            },
             onError,
             parameters,
             count,

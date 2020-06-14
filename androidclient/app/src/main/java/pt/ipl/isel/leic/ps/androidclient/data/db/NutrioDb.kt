@@ -30,5 +30,7 @@ abstract class NutrioDb : RoomDatabase() {
 
     abstract fun mealInfoDao(): MealInfoDao
 
+    abstract fun mealItemDao(): MealItemDao
+
     abstract fun insulinProfileDao(): InsulinProfileDao
 }

@@ -9,14 +9,14 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import pt.ipl.isel.leic.ps.androidclient.R
-import pt.ipl.isel.leic.ps.androidclient.data.model.CustomMeal
+import pt.ipl.isel.leic.ps.androidclient.data.model.MealItem
 import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.CustomMealRecyclerAdapter
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.tab.CALCULATOR_BUNDLE_FLAG
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.CustomMealRecyclerVMProviderFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.CustomMealRecyclerViewModel
 
 class CustomMealRecyclerFragment :
-    ARoomRecyclerListFragment<CustomMeal, CustomMealRecyclerViewModel>() {
+    ARoomRecyclerListFragment<MealItem, CustomMealRecyclerViewModel>() {
 
     private val isCalculatorMode: Boolean by lazy {
         this.requireArguments().getBoolean(CALCULATOR_BUNDLE_FLAG)
@@ -69,7 +69,7 @@ class CustomMealRecyclerFragment :
         TODO("Not yet implemented")
     }
 
-    override fun successFunction(list: List<CustomMeal>) {
+    override fun successFunction(list: List<MealItem>) {
         progressWheel.visibility = View.INVISIBLE
         noItemsLabel.visibility = if (list.isEmpty()) View.VISIBLE else View.INVISIBLE
     }

@@ -16,6 +16,7 @@ class InputMealInfoMapper(
 
     fun mapToModel(dto: DetailedMealInput, isSuggested: Boolean) = MealInfo(
         dbId = DbMealInfoEntity.DEFAULT_DB_ID,
+        dbRestaurantId = DbMealInfoEntity.DEFAULT_DB_ID,
         submissionId = dto.id,
         name = dto.name,
         carbs = dto.nutritionalInfo.carbs,

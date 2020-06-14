@@ -17,6 +17,7 @@ class DbMealInfoMapper(
 
     fun mapToModel(relation: DbMealInfoRelation) = MealInfo(
         dbId = relation.entity.primaryKey,
+        dbRestaurantId = DbMealInfoEntity.DEFAULT_DB_ID,
         submissionId = relation.entity.submissionId,
         name = relation.entity.name,
         carbs = relation.entity.carbs,

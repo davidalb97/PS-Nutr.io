@@ -1,14 +1,19 @@
 package pt.ipl.isel.leic.ps.androidclient.data.util
 
+import java.time.OffsetDateTime
+import java.time.ZoneId
+import java.time.ZonedDateTime
+import java.util.*
+
 //This class is a work around OffsetDateTime.parse requires API level 26
 class TimestampWithTimeZone(
-    val year: String,
-    val month: String,
-    val day: String,
-    val hours: String,
-    val minutes: String,
-    val seconds: String,
-    val millis: String,
+    val year: Int,
+    val month: Int,
+    val day: Int,
+    val hours: Int,
+    val minutes: Int,
+    val seconds: Int,
+    val millis: Int,
     val timeZone: String
 ) {
 
@@ -30,14 +35,29 @@ class TimestampWithTimeZone(
             val minutes = split[1]
             val seconds = split[2]
             return TimestampWithTimeZone(
-                year = year,
-                month = month,
-                day = day,
-                hours = hours,
-                minutes = minutes,
-                seconds = seconds,
-                millis = millis,
+                year = year.toInt(),
+                month = month.toInt(),
+                day = day.toInt(),
+                hours = hours.toInt(),
+                minutes = minutes.toInt(),
+                seconds = seconds.toInt(),
+                millis = millis.toInt(),
                 timeZone = timeZone
+            )
+        }
+
+        fun now(): TimestampWithTimeZone {
+
+            return TimestampWithTimeZone(
+                year = Calendar.getInstance().get(Calendar.YEAR),
+                month = Calendar.getInstance().get(Calendar.MONTH),
+                day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH),
+                hours = Calendar.getInstance().get(Calendar.HOUR_OF_DAY),
+                minutes = Calendar.getInstance().get(Calendar.MINUTE),
+                seconds = Calendar.getInstance().get(Calendar.SECOND),
+                millis = Calendar.getInstance().get(Calendar.MILLISECOND),
+                //TODO Get user's time zone to TimestampWithTimeZone ctor
+                timeZone = ""
             )
         }
     }

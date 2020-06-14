@@ -6,18 +6,16 @@ import pt.ipl.isel.leic.ps.androidclient.data.model.MealItem
 import pt.ipl.isel.leic.ps.androidclient.data.model.VoteState
 import pt.ipl.isel.leic.ps.androidclient.data.model.Votes
 
-class DbMealItemMapper(
-    private val componentIngredientMapper: DbComponentIngredientMapper,
-    private val componentMealMapper: DbComponentMealMapper,
-    private val cuisinesMapper: DbCuisineMapper,
-    private val portionMapper: DbPortionMapper
-) {
+class DbMealItemMapper {
 
     fun mapToModel(entity: DbMealItemEntity) = MealItem(
         dbId = entity.primaryKey,
         dbRestaurantId = entity.restaurantKey,
         submissionId = entity.submissionId,
         name = entity.name,
+        carbs = entity.carbs,
+        amount = entity.amount,
+        unit = entity.unit,
         votes = if(entity.hasVote) Votes(
             userHasVoted = VoteState.values()[entity.userVoteOrdinal!!],
             positive = entity.positiveVotes!!,
@@ -31,6 +29,9 @@ class DbMealItemMapper(
     fun mapToEntity(model: MealItem) = DbMealItemEntity(
         submissionId = model.submissionId,
         name = model.name,
+        carbs = model.carbs,
+        amount = model.amount,
+        unit = model.unit,
         isFavorite = model.isFavorite,
         imageUri = model.imageUri?.toString(),
         positiveVotes = model.votes?.positive,

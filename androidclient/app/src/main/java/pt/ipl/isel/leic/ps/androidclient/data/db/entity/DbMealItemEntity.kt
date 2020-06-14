@@ -8,6 +8,9 @@ import androidx.room.PrimaryKey
 open class DbMealItemEntity(
     val submissionId: Int,
     val name: String,
+    val carbs: Int?,
+    val amount: Int?,
+    val unit: String?,
     val imageUri: String?,
     val hasVote: Boolean,
     val positiveVotes: Int?,

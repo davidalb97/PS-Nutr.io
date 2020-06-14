@@ -1,6 +1,7 @@
 package pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant
 
 import android.annotation.SuppressLint
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,7 +12,11 @@ import android.widget.Spinner
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import pt.ipl.isel.leic.ps.androidclient.R
-import pt.ipl.isel.leic.ps.androidclient.data.model.CustomMeal
+import pt.ipl.isel.leic.ps.androidclient.data.db.entity.DbMealInfoEntity
+import pt.ipl.isel.leic.ps.androidclient.data.model.Cuisine
+import pt.ipl.isel.leic.ps.androidclient.data.model.MealInfo
+import pt.ipl.isel.leic.ps.androidclient.data.model.Portion
+import pt.ipl.isel.leic.ps.androidclient.data.util.TimestampWithTimeZone
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.CustomMealRecyclerVMProviderFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.CustomMealRecyclerViewModel
 
@@ -58,13 +63,26 @@ class AddCustomMealFragment : Fragment() {
             if (!anyFieldBlank) {
 
                 viewModel.addCustomMeal(
-                    CustomMeal(
+                    MealInfo(
+                        dbId = DbMealInfoEntity.DEFAULT_DB_ID,
+                        dbRestaurantId = DbMealInfoEntity.DEFAULT_DB_ID,
+                        submissionId = MealInfo.DEFAULT_SUBMISSION_ID,
                         name = customMealName.text.toString(),
                         carbs = customMealCarbsAmount.text.toString().toInt(),
                         amount = customMealPortion.text.toString().toInt(),
                         unit = customMealUnitSpinner.selectedItem.toString(),
-                        imageUrl = customImageUrl.text?.toString(),
-                        ingredients = emptyList()
+                        votes = null,
+                        isFavorite = false,
+                        imageUri = customImageUrl.text?.toString()?.let { Uri.parse(it) },
+                        creationDate = TimestampWithTimeZone.now(),
+                        //TODO create meal with ingredient input from user
+                        ingredientComponents = emptyList(),
+                        //TODO create meal with meals input from user
+                        mealComponents = emptyList(),
+                        //TODO create meal with cuisines input from user
+                        cuisines = emptyList(),
+                        portions = emptyList(),
+                        isSuggested = false
                     )
                 ).execute()
             }

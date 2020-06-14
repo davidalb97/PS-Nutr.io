@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.room.*
 import pt.ipl.isel.leic.ps.androidclient.data.db.entity.*
 import pt.ipl.isel.leic.ps.androidclient.data.db.relation.DbMealInfoRelation
-import pt.ipl.isel.leic.ps.androidclient.data.db.relation.IMealRelation
 
 private const val TABLE = DbMealInfoEntity.tableName
 private const val PRIMARY_KEY = DbMealInfoEntity.primaryKeyName
@@ -88,4 +87,6 @@ abstract class MealInfoDao {
 
     @Delete
     abstract fun deleteMeal(mealEntity: DbMealInfoEntity)
+
+
 }
