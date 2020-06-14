@@ -11,6 +11,7 @@ import android.widget.EditText
 import android.widget.Spinner
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.db.entity.DbMealInfoEntity
 import pt.ipl.isel.leic.ps.androidclient.data.model.Cuisine
@@ -85,7 +86,9 @@ class AddCustomMealFragment : Fragment() {
                         portions = emptyList(),
                         isSuggested = false
                     )
-                ).execute()
+                ).setOnPostExecute {
+                    view.findNavController().navigate(R.id.nav_tab_your_meals)
+                }.execute()
             }
         }
     }
