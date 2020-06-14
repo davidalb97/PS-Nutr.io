@@ -32,7 +32,6 @@ class MealDbRepository(jdbi: Jdbi, val config: DbEditableDto) : SubmissionDbRepo
     }
 
     fun getMealIngredients(mealId: Int): Sequence<DbMealIngredientDto> {
-        //TODO This is wrong, should get only ingredients and as DbMealDto
         val ingredients = lazy {
             jdbi.inTransaction<Collection<DbMealIngredientDto>, Exception>(isolationLevel) { handle ->
                 return@inTransaction handle
@@ -45,12 +44,23 @@ class MealDbRepository(jdbi: Jdbi, val config: DbEditableDto) : SubmissionDbRepo
     }
 
     fun getMealComponents(mealId: Int): Sequence<DbMealIngredientDto> {
-        //TODO This is wrong, should get only ingredients and as DbMealDto
         val ingredients = lazy {
             jdbi.inTransaction<Collection<DbMealIngredientDto>, Exception>(isolationLevel) { handle ->
                 return@inTransaction handle
                         .attach(MealIngredientDao::class.java)
                         .getMealComponents(mealId)
+            }
+        }
+
+        return Sequence { ingredients.value.iterator() }
+    }
+
+    fun getAllIngredients(skip: Int?, limit: Int?): Sequence<DbMealDto> {
+        val ingredients = lazy {
+            jdbi.inTransaction<Collection<DbMealDto>, Exception>(isolationLevel) { handle ->
+                return@inTransaction handle
+                        .attach(MealDao::class.java)
+                        .getAllIngredients(skip ?: 0, limit)
             }
         }
 

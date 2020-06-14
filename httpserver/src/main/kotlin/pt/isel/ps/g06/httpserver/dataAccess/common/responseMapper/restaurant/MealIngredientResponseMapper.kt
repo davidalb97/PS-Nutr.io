@@ -70,7 +70,7 @@ class DbMealComponentResponseMapper(
                                 }
                             },
                             creationDate = lazy { dbMealRepo.getCreationDate(dto.submission_id) },
-                            restaurantInfo = { restaurantIdentifier ->
+                            restaurantInfoSupplier = { restaurantIdentifier ->
                                 restaurantIdentifier.submissionId
                                         ?.let { id -> dbRestaurantMeal.getRestaurantMeal(id, dto.submission_id) }
                                         ?.let(restaurantMealResponseMapper::mapTo)
@@ -83,5 +83,22 @@ class DbMealComponentResponseMapper(
                     )
                 }
 
+    }
+}
+
+
+//TODO Replace this with first mapper
+@Component
+class DbIngredientResponseMapper(
+        private val dbFavoriteRepo: FavoriteDbRepository
+) : ResponseMapper<DbMealDto, MealIngredient> {
+    override fun mapTo(dto: DbMealDto): MealIngredient {
+        return MealIngredient(
+                identifier = dto.submission_id,
+                name = dto.meal_name,
+                isFavorite = { userId -> dbFavoriteRepo.getFavorite(dto.submission_id, userId) },
+                imageUri = null,
+                nutritionalValues = NutritionalValues(dto.carbs, dto.amount, dto.unit)
+        )
     }
 }

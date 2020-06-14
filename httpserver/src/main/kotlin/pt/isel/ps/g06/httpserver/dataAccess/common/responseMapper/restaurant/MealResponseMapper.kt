@@ -39,7 +39,7 @@ class DbMealResponseMapper(
                             ?.let { userInfoDto -> dbCreatorMapper.mapTo(userInfoDto) }
                 },
                 creationDate = lazy { dbMealRepo.getCreationDate(dto.submission_id) },
-                restaurantInfo = { restaurantIdentifier ->
+                restaurantInfoSupplier = { restaurantIdentifier ->
                     restaurantIdentifier.submissionId
                             ?.let { dbRestaurantMeal.getRestaurantMeal(it, dto.submission_id) }
                             ?.let(restaurantMealResponseMapper::mapTo)

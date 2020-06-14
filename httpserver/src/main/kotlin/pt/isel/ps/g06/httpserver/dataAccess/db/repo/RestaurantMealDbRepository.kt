@@ -5,13 +5,11 @@ import org.jdbi.v3.core.transaction.TransactionIsolationLevel
 import org.springframework.stereotype.Repository
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionContractType.*
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType.*
-import pt.isel.ps.g06.httpserver.dataAccess.db.dao.PortionDao
-import pt.isel.ps.g06.httpserver.dataAccess.db.dao.RestaurantMealDao
-import pt.isel.ps.g06.httpserver.dataAccess.db.dao.SubmissionDao
-import pt.isel.ps.g06.httpserver.dataAccess.db.dao.SubmissionSubmitterDao
+import pt.isel.ps.g06.httpserver.dataAccess.db.dao.*
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbRestaurantMealDto
 import pt.isel.ps.g06.httpserver.exception.InvalidInputDomain
 import pt.isel.ps.g06.httpserver.exception.InvalidInputException
+import java.util.*
 
 private val isolationLevel = TransactionIsolationLevel.SERIALIZABLE
 private val restaurantMealDao = RestaurantMealDao::class.java
@@ -50,6 +48,8 @@ class RestaurantMealDbRepository(jdbi: Jdbi) : SubmissionDbRepository(jdbi) {
             requireSubmission(restaurantId, RESTAURANT, isolationLevel)
 
             val restaurantMealDao = it.attach(restaurantMealDao)
+
+            //Check if restaurantMeal already exists
             val existingRestaurantMeal = restaurantMealDao
                     .getByRestaurantAndMealId(restaurantId, mealId)
 
@@ -64,9 +64,20 @@ class RestaurantMealDbRepository(jdbi: Jdbi) : SubmissionDbRepository(jdbi) {
                     .insert(RESTAURANT_MEAL.toString())
                     .submission_id
 
+            val contracts = EnumSet.of(FAVORABLE)
             if (submitterId != null) {
                 it.attach(SubmissionSubmitterDao::class.java).insert(submissionId, submitterId)
+                contracts.add(REPORTABLE)
+                contracts.add(VOTABLE)
             }
+
+            //Insert all needed contracts
+            it.attach(SubmissionContractDao::class.java).insertAll(contracts.map { contract ->
+                SubmissionContractParam(
+                        submissionId,
+                        contract.toString()
+                )
+            })
 
             return@inTransaction restaurantMealDao.insert(submissionId, restaurantId, mealId)
         }

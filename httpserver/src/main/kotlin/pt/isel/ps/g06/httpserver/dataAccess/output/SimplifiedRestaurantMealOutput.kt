@@ -32,7 +32,7 @@ fun toSimplifiedRestaurantMealOutput(
         meal: Meal,
         userId: Int? = null
 ): SimplifiedRestaurantMealOutput {
-    val votes = meal.restaurantInfo(restaurantIdentifier)?.let {
+    val votes = meal.restaurantInfoSupplier(restaurantIdentifier)?.let {
         toVotesOutput(
                 it.votes.value,
                 userId?.let { id -> it.userVote(id) } ?: VoteState.NOT_VOTED

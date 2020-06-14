@@ -2,17 +2,33 @@ package pt.isel.ps.g06.httpserver.service
 
 import org.springframework.stereotype.Service
 import pt.isel.ps.g06.httpserver.common.exception.ForbiddenInsertionException
+import pt.isel.ps.g06.httpserver.common.exception.notFound.RestaurantMealNotFound
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.PortionDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.RestaurantMealDbRepository
+import pt.isel.ps.g06.httpserver.dataAccess.db.repo.VoteDbRepository
 import pt.isel.ps.g06.httpserver.model.Meal
 import pt.isel.ps.g06.httpserver.model.Restaurant
 
 @Service
 class RestaurantMealService(
         private val restaurantService: RestaurantService,
+        private val mealService: MealService,
         private val dbRestaurantMealRepository: RestaurantMealDbRepository,
-        private val dbPortionRepository: PortionDbRepository
+        private val dbPortionRepository: PortionDbRepository,
+        private val dbVoteRepository: VoteDbRepository
 ) {
+    fun getRestaurantMeal(restaurant: Restaurant, mealId: Int): Meal {
+        val meal = mealService.getMeal(mealId) ?: throw RestaurantMealNotFound()
+
+        //Although the meal exists, it is not associated to given Restaurant
+        //Hence, it is not a RestaurantMeal
+        if (!meal.isRestaurantMeal(restaurant)) {
+            throw RestaurantMealNotFound()
+        }
+
+        return meal
+    }
+
     fun addRestaurantMeal(restaurant: Restaurant, meal: Meal, submitterId: Int? = null): Int {
         val databaseRestaurant = if (!restaurant.identifier.value.isPresentInDatabase()) {
             //Ensure that existing Restaurant exists in database before creating associations for it
@@ -36,12 +52,11 @@ class RestaurantMealService(
         return submission_id
     }
 
-    fun addRestaurantMealPortion(restaurant: Restaurant, meal: Meal, submitterId: Int, quantity: Int) {
-        if (!meal.isRestaurantMeal(restaurant)) {
-            throw ForbiddenInsertionException("Given Meal is not in this Restaurant!")
-        }
 
-        val restaurantInfo = meal.restaurantInfo(restaurant.identifier.value)
+    //TODO Add or alter
+    fun addRestaurantMealPortion(restaurant: Restaurant, mealId: Int, submitterId: Int, quantity: Int) {
+        val meal = getRestaurantMeal(restaurant, mealId)
+        val restaurantInfo = meal.restaurantInfoSupplier(restaurant.identifier.value)
 
         //If given meal is a suggested Meal, make a RestaurantMeal first before adding user portion
         val restaurantMealIdentifier = restaurantInfo
@@ -50,5 +65,20 @@ class RestaurantMealService(
 
         dbPortionRepository.insert(submitterId, restaurantMealIdentifier, quantity)
     }
+
+    fun alterRestaurantMealVote(restaurant: Restaurant, mealId: Int, submitterId: Int, vote: Boolean) {
+        val restaurantMeal = getRestaurantMeal(restaurant, mealId)
+
+        if (!restaurantMeal.isUserMeal()) {
+            throw ForbiddenInsertionException("Only restaurant meals created by users can be voted!")
+        }
+
+        val restaurantInfo = restaurantMeal
+                .restaurantInfoSupplier(restaurant.identifier.value)
+                ?: throw IllegalStateException("Expected RestaurantInfo for given RestaurantMeal, but none was found!")
+
+        dbVoteRepository.insertOrUpdate(submitterId, restaurantInfo.restaurantMealIdentifier, vote)
+    }
+
 }
 

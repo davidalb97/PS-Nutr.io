@@ -1,4 +1,4 @@
-package pt.isel.ps.g06.httpserver.common.exception
+package pt.isel.ps.g06.httpserver.common.exception.notFound
 
 import org.springframework.http.HttpStatus
 import org.springframework.web.server.ResponseStatusException

@@ -72,7 +72,7 @@ class BaseDbRepo constructor(internal val jdbi: Jdbi) {
 
             // Check if this submitter already voted this submission
             val hasVote = it.attach(UserVoteDao::class.java)
-                    .getVoteByIds(submissionId, submitterId)
+                    .getUserVoteForSubmission(submissionId, submitterId)
                     .let { it != null }
             if (hasVote)
                 throw InvalidInputException(InvalidInputDomain.VOTE,
@@ -94,7 +94,7 @@ class BaseDbRepo constructor(internal val jdbi: Jdbi) {
 
             // Check if this submitter already voted this submission
             it.attach(UserVoteDao::class.java)
-                    .getVoteByIds(submissionId, submitterId)
+                    .getUserVoteForSubmission(submissionId, submitterId)
                     ?: throw InvalidInputException(InvalidInputDomain.VOTE,
                             "The submitter id \"$submitterId\" not not vote on" +
                                     " submission id \"$submissionId\"."

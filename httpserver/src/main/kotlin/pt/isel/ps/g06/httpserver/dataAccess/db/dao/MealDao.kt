@@ -69,7 +69,7 @@ interface MealDao {
     @SqlQuery("SELECT * FROM $table WHERE $carbs = :carbs")
     fun getByName(@Bind carbs: Int): DbMealDto?
 
-    @SqlQuery("SELECT $table.$id, $table.$name, $table.$carbs, $table.$quantity " +
+    @SqlQuery("SELECT $table.$id, $table.$name, $table.$carbs, $table.$quantity, $table.$unit " +
             "FROM $table " +
             "INNER JOIN $RM_table " +
             "ON $table.$id = $RM_table.$RM_mealId " +
@@ -110,8 +110,17 @@ interface MealDao {
             @BindList apiIds: Collection<String>
     ): Collection<DbMealDto>
 
-    @SqlQuery("INSERT INTO $table($id, $name, $carbs, $quantity) VALUES(:submissionId, :mealName, :carbs, :quantity) RETURNING *")
-    fun insert(@Bind submissionId: Int, @Bind mealName: String, @Bind carbs: Int, @Bind quantity: Int): DbMealDto
+    @SqlQuery("INSERT INTO $table($id, $name, $carbs, $quantity, $unit) " +
+            "VALUES(:submissionId, :mealName, :carbs, :quantity, :unit) " +
+            "RETURNING *"
+    )
+    fun insert(
+            @Bind submissionId: Int,
+            @Bind mealName: String,
+            @Bind carbs: Int,
+            @Bind quantity: Int,
+            @Bind unit: String = "gr"
+    ): DbMealDto
 
     @SqlQuery("DELETE FROM $table WHERE $id = :submissionId RETURNING *")
     fun delete(@Bind submissionId: Int): DbMealDto
@@ -122,7 +131,7 @@ interface MealDao {
     @SqlQuery("UPDATE $table SET $carbs = :carbs WHERE $id = :submissionId RETURNING *")
     fun updateCarbs(@Bind submissionId: Int, carbs: Int): DbMealDto
 
-    @SqlQuery("SELECT $table.$id, $table.$name, $table.$carbs, $table.$quantity " +
+    @SqlQuery("SELECT $table.$id, $table.$name, $table.$carbs, $table.$quantity, $table.$unit " +
             "FROM $table " +
             "INNER JOIN $S_table " +
             "ON $S_table.$S_submission_id = $table.$id " +
@@ -131,14 +140,14 @@ interface MealDao {
             "LIMIT :limit " +
             "OFFSET :skip"
     )
-    fun getIngredients(skip: Int = 0, limit: Int? = null): Collection<DbMealDto>?
+    fun getAllIngredients(skip: Int = 0, limit: Int? = null): Collection<DbMealDto>?
 
-    @SqlQuery("SELECT $table.$id, $table.$name, $table.$carbs, $table.$quantity  " +
+    @SqlQuery("SELECT $table.$id, $table.$name, $table.$carbs, $table.$quantity, $table.$unit " +
             "FROM $table " +
             "INNER JOIN $RM_table " +
             "ON $RM_table.$RM_mealId = $table.$id " +
             "INNER JOIN $SS_table " +
-            "ON $RM_table.$RM_table.$RM_table_submissionId = $SS_table.$SS_submissionId " +
-            "WHERE $RM_table_submissionId.$RM_restaurantId = :restaurantId")
+            "ON $RM_table.$RM_table_submissionId = $SS_table.$SS_submissionId " +
+            "WHERE $RM_table.$RM_restaurantId = :restaurantId")
     fun getAllUserMealsByRestaurantId(@Bind restaurantId: Int): Collection<DbMealDto>
 }

@@ -211,11 +211,14 @@ BEGIN
 	
 	INSERT INTO Submitter(submitter_name, submitter_type) VALUES
 	(submitter_name_api_zomato, 'API'),
-	(submitter_name_api_here, 'API');
+	(submitter_name_api_here, 'API'),
+	('User', 'User');
 
 	INSERT INTO Api(submitter_id, api_token) VALUES
 	(submitter_id_api_zomato, '456'),
 	(submitter_id_api_here, 'here:123');
+	
+	INSERT INTO _User(submitter_id, email, session_secret) VALUES (3, 'user@email.com', '123');
 	
 	--Insert hardcoded cuisines
 	FOR cuisineIdx in 1 .. array_length(cuisineNames, 1)

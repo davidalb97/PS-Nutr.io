@@ -26,6 +26,8 @@ class MealService(
             ingredients: Collection<IngredientInput>,
             cuisines: Collection<String>
     ): Meal {
+        //Check if sum ingredient quantity is greater than meal quantity. If so, throw exception
+
         val createdMeal = dbMealRepo.insert(
                 submitterId = submitterId,
                 mealName = name,

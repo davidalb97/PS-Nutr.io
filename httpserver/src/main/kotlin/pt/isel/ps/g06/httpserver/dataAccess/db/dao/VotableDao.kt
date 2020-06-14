@@ -19,13 +19,14 @@ interface VotableDao {
     fun getById(@Bind submissionId: Int): DbVotesDto?
 
     @SqlQuery("INSERT INTO $table($id, $positiveCount, $negativeCount)" +
-            " VALUES($id, :positiveOffset, :negativeOffset) " +
+            " VALUES(:submissionId, :positiveOffset, :negativeOffset) " +
             " ON CONFLICT($id) DO" +
             " UPDATE SET" +
             " $positiveCount = $table.$positiveCount + :positiveOffset," +
             " $negativeCount = $table.$negativeCount + :negativeOffset" +
-            " RETURNING *")
-    fun incrementVotes(@Bind positiveOffset: Int, @Bind negativeOffset: Int): DbVotesDto
+            " RETURNING *"
+    )
+    fun incrementVotes(@Bind submissionId: Int, @Bind positiveOffset: Int, @Bind negativeOffset: Int): DbVotesDto
 
     @SqlQuery("DELETE FROM $table WHERE $id = :submissionId RETURNING *")
     fun deleteById(@Bind submissionId: Int): DbVotesDto?

@@ -26,7 +26,7 @@ class DetailedRestaurantMealOutput(
 )
 
 fun toDetailedRestaurantMealOutput(restaurant: RestaurantIdentifier, meal: Meal, userId: Int? = null): DetailedRestaurantMealOutput {
-    val restaurantMealInfo = meal.restaurantInfo(restaurant)
+    val restaurantMealInfo = meal.restaurantInfoSupplier(restaurant)
 
     val votes = restaurantMealInfo?.let {
         toVotesOutput(

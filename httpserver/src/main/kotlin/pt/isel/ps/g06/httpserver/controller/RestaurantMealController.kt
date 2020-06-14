@@ -6,10 +6,11 @@ import org.springframework.web.bind.annotation.*
 import org.springframework.web.util.UriComponentsBuilder
 import pt.isel.ps.g06.httpserver.common.*
 import pt.isel.ps.g06.httpserver.common.exception.ForbiddenInsertionException
-import pt.isel.ps.g06.httpserver.common.exception.MealNotFoundException
-import pt.isel.ps.g06.httpserver.common.exception.RestaurantNotFoundException
+import pt.isel.ps.g06.httpserver.common.exception.notFound.MealNotFoundException
+import pt.isel.ps.g06.httpserver.common.exception.notFound.RestaurantNotFoundException
 import pt.isel.ps.g06.httpserver.dataAccess.input.PortionInput
 import pt.isel.ps.g06.httpserver.dataAccess.input.RestaurantMealInput
+import pt.isel.ps.g06.httpserver.dataAccess.input.VoteInput
 import pt.isel.ps.g06.httpserver.dataAccess.output.DetailedRestaurantMealOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.RestaurantMealContainerOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.toDetailedRestaurantMealOutput
@@ -44,20 +45,25 @@ class RestaurantMealController(
                 .body(toRestaurantMealContainerOutput(restaurant))
     }
 
+
     @GetMapping(RESTAURANT_MEAL, consumes = [MediaType.ALL_VALUE])
     fun getRestaurantMeal(
             @PathVariable(RESTAURANT_ID_VALUE) restaurantId: String,
             @PathVariable(MEAL_ID_VALUE) mealId: Int
     ): ResponseEntity<DetailedRestaurantMealOutput> {
-        val restaurantIdentifier = restaurantIdentifierBuilder.extractIdentifiers(restaurantId)
+        val (submitterId, submissionId, apiId) = restaurantIdentifierBuilder.extractIdentifiers(restaurantId)
 
-        val meal = mealService.getMeal(mealId) ?: throw MealNotFoundException()
+        val restaurant = restaurantService.getRestaurant(
+                submitterId = submitterId,
+                submissionId = submissionId,
+                apiId = apiId
+        ) ?: throw RestaurantNotFoundException()
 
-        //TODO If Restaurant Info is not present, throw not found (for user meals)
-        //TODO Check owner (if any) and then check if restaurant info is present
+        val restaurantMeal = restaurantMealService.getRestaurantMeal(restaurant, mealId)
+
         return ResponseEntity
                 .ok()
-                .body(toDetailedRestaurantMealOutput(restaurantIdentifier, meal))
+                .body(toDetailedRestaurantMealOutput(restaurant.identifier.value, restaurantMeal))
     }
 
 
@@ -85,7 +91,6 @@ class RestaurantMealController(
         ) ?: throw RestaurantNotFoundException()
 
         val meal = mealService.getMeal(restaurantMeal.mealId!!) ?: throw MealNotFoundException()
-
         if (!meal.isUserMeal()) {
             throw ForbiddenInsertionException("Only meals created by you can be inserted!")
         }
@@ -95,7 +100,7 @@ class RestaurantMealController(
         return ResponseEntity
                 .created(UriComponentsBuilder
                         .fromUriString(RESTAURANT_MEAL)
-                        .buildAndExpand(restaurantMealId)
+                        .buildAndExpand(restaurant.identifier.value.toString(), restaurantMealId)
                         .toUri())
                 .build()
     }
@@ -107,43 +112,61 @@ class RestaurantMealController(
             @PathVariable(MEAL_ID_VALUE) mealId: Int,
             @Valid @RequestBody portion: PortionInput
     ): ResponseEntity<Void> {
-//        //TODO When there's authentication
-        val submitterId = 3
-        val restaurantIdentifier = restaurantIdentifierBuilder.extractIdentifiers(restaurantId)
+        //TODO When there's authentication
+        val userId = 3
+        val (submitterId, submissionId, apiId) = restaurantIdentifierBuilder.extractIdentifiers(restaurantId)
 
         val restaurant = restaurantService
-                .getRestaurant(restaurantIdentifier.submitterId, restaurantIdentifier.submissionId, restaurantIdentifier.apiId)
+                .getRestaurant(submitterId, submissionId, apiId)
                 ?: throw RestaurantNotFoundException()
-
-        val meal = mealService.getMeal(mealId) ?: throw MealNotFoundException()
 
         restaurantMealService.addRestaurantMealPortion(
                 restaurant = restaurant,
-                meal = meal,
-                submitterId = submitterId,
+                mealId = mealId,
+                submitterId = userId,
                 quantity = portion.quantity!!
         )
 
         return ResponseEntity.ok().build()
     }
 
-    @PostMapping(RESTAURANT_MEAL_REPORT)
-    fun addMealReport(@PathVariable(RESTAURANT_ID_VALUE) id: String, @PathVariable(MEAL_ID_VALUE) mealId: String, @RequestBody report: String) {
+    @PutMapping(RESTAURANT_MEAL_VOTE)
+    fun alterRestaurantMealVote(
+            @PathVariable(RESTAURANT_ID_VALUE) restaurantId: String,
+            @PathVariable(MEAL_ID_VALUE) mealId: Int,
+            @Valid @RequestBody userVote: VoteInput
+    ): ResponseEntity<Void> {
+        //TODO When there's authentication
+        val userId = 3
+        val (submitterId, submissionId, apiId) = restaurantIdentifierBuilder.extractIdentifiers(restaurantId)
+
+        val restaurant = restaurantService
+                .getRestaurant(submitterId, submissionId, apiId)
+                ?: throw RestaurantNotFoundException()
+
+        restaurantMealService.alterRestaurantMealVote(
+                restaurant = restaurant,
+                mealId = mealId,
+                submitterId = userId,
+                //Valid checks make sure user vote is not null
+                vote = userVote.vote!!
+        )
+
+        return ResponseEntity.ok().build()
+    }
+
+    //TODO Next
+    @DeleteMapping(RESTAURANT_MEAL_VOTE)
+    fun deleteMealVote(@PathVariable(RESTAURANT_ID_VALUE) id: String, @PathVariable(MEAL_ID_VALUE) mealId: String, @RequestBody vote: String) {
 
     }
 
-    @PostMapping(RESTAURANT_MEAL_VOTE)
-    fun addMealVote(@PathVariable(RESTAURANT_ID_VALUE) id: String, @PathVariable(MEAL_ID_VALUE) mealId: String, @RequestBody vote: String) {
-
+    @PostMapping(RESTAURANT_MEAL_REPORT)
+    fun addMealReport(@PathVariable(RESTAURANT_ID_VALUE) id: String, @PathVariable(MEAL_ID_VALUE) mealId: String, @RequestBody report: String) {
     }
 
     @PutMapping(RESTAURANT_MEAL_REPORT)
     fun updateMealReport(@PathVariable(RESTAURANT_ID_VALUE) id: String, @PathVariable(MEAL_ID_VALUE) mealId: String, @RequestBody portion: String) {
-
-    }
-
-    @PutMapping(RESTAURANT_MEAL_VOTE)
-    fun updateMealVote(@PathVariable(RESTAURANT_ID_VALUE) id: String, @PathVariable(MEAL_ID_VALUE) mealId: String, @RequestBody vote: String) {
 
     }
 
@@ -152,8 +175,5 @@ class RestaurantMealController(
 
     }
 
-    @DeleteMapping(RESTAURANT_MEAL_VOTE)
-    fun deleteMealVote(@PathVariable(RESTAURANT_ID_VALUE) id: String, @PathVariable(MEAL_ID_VALUE) mealId: String, @RequestBody vote: String) {
 
-    }
 }

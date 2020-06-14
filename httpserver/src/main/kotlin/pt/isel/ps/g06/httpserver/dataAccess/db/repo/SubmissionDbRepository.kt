@@ -49,9 +49,12 @@ class SubmissionDbRepository(jdbi: Jdbi) : BaseDbRepo(jdbi) {
             userId: Int
     ): VoteState {
         return jdbi.inTransaction<VoteState, Exception>(isolationLevel) { handle ->
-            val vote = handle.attach(UserVoteDao::class.java).getVoteByIds(submissionId, userId)
+            val dto = handle
+                    .attach(UserVoteDao::class.java)
+                    .getUserVoteForSubmission(submissionId, userId)
                     ?: return@inTransaction VoteState.NOT_VOTED
-            return@inTransaction if (vote) VoteState.POSITIVE else VoteState.NEGATIVE
+
+            return@inTransaction if (dto.vote) VoteState.POSITIVE else VoteState.NEGATIVE
         }
     }
 

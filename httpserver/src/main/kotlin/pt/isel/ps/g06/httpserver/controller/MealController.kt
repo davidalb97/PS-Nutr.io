@@ -8,9 +8,10 @@ import pt.isel.ps.g06.httpserver.common.MEAL
 import pt.isel.ps.g06.httpserver.common.MEALS
 import pt.isel.ps.g06.httpserver.common.MEAL_ID_VALUE
 import pt.isel.ps.g06.httpserver.common.MEAL_VOTE
-import pt.isel.ps.g06.httpserver.common.exception.MealNotFoundException
+import pt.isel.ps.g06.httpserver.common.exception.notFound.MealNotFoundException
 import pt.isel.ps.g06.httpserver.dataAccess.input.MealInput
-import pt.isel.ps.g06.httpserver.model.Meal
+import pt.isel.ps.g06.httpserver.dataAccess.output.DetailedMealOutput
+import pt.isel.ps.g06.httpserver.dataAccess.output.toDetailedMealOutput
 import pt.isel.ps.g06.httpserver.service.MealService
 import javax.validation.Valid
 
@@ -20,16 +21,18 @@ import javax.validation.Valid
 class MealController(private val mealService: MealService) {
 
     @GetMapping(MEAL)
-    fun getMealInformation(@PathVariable(MEAL_ID_VALUE) mealId: Int): ResponseEntity<Meal> {
-        return mealService.getMeal(mealId)
-                ?.let { ResponseEntity.ok().body(it) }
-                ?: throw MealNotFoundException()
+    fun getMealInformation(@PathVariable(MEAL_ID_VALUE) mealId: Int): ResponseEntity<DetailedMealOutput> {
+        val meal = mealService.getMeal(mealId) ?: throw MealNotFoundException()
+
+        return ResponseEntity
+                .ok()
+                .body(toDetailedMealOutput(meal))
     }
 
     @PostMapping(MEALS)
     fun createMeal(@Valid @RequestBody meal: MealInput): ResponseEntity<Void> {
         //TODO When there's authentication and users
-        val submitter = 1
+        val submitter = 3
 
         //Due to validators we are sure fields are never null
         val createdMeal = mealService.createMeal(
