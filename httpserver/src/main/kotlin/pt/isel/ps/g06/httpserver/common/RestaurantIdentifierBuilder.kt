@@ -1,7 +1,7 @@
 package pt.isel.ps.g06.httpserver.common
 
 import org.springframework.stereotype.Component
-import pt.isel.ps.g06.httpserver.common.exception.MalformedRestaurantIdentifierException
+import pt.isel.ps.g06.httpserver.common.exception.clientError.MalformedRestaurantIdentifierException
 import pt.isel.ps.g06.httpserver.model.RestaurantIdentifier
 
 const val ID_SEPARATOR = "+"

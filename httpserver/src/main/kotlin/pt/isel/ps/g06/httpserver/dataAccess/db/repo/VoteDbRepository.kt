@@ -3,6 +3,7 @@ package pt.isel.ps.g06.httpserver.dataAccess.db.repo
 import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.transaction.TransactionIsolationLevel
 import org.springframework.stereotype.Repository
+import pt.isel.ps.g06.httpserver.common.exception.clientError.NotYetVotedException
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionContractType.VOTABLE
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.UserVoteDao
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.VotableDao
@@ -68,19 +69,27 @@ class VoteDbRepository(jdbi: Jdbi) : BaseDbRepo(jdbi) {
 
     fun delete(
             submitterId: Int,
-            submission_id: Int
+            submissionId: Int
     ) {
         jdbi.inTransaction<Unit, Exception>(isolationLevel) {
-
             // Check if the submission exists and it is votable
-            requireContract(submission_id, VOTABLE, isolationLevel)
+            requireContract(submissionId, VOTABLE, isolationLevel)
 
             // Check if this submitter already voted this submission
-            requireVote(submission_id, submitterId, isolationLevel)
+            val userVote = it
+                    .attach(UserVoteDao::class.java)
+                    .getUserVoteForSubmission(submissionId, submitterId)
+                    ?: throw NotYetVotedException()
 
             // Remove the user's vote on that Submission
-            it.attach(voteDaoClass)
-                    .delete(submission_id, submitterId)
+            it.attach(voteDaoClass).delete(submissionId, submitterId)
+
+            //Update vote number count
+            it.attach(VotableDao::class.java).incrementVotes(
+                    submissionId = submissionId,
+                    positiveOffset = if (userVote.vote) -1 else 0,
+                    negativeOffset = if (userVote.vote) 0 else -1
+            )
         }
     }
 }

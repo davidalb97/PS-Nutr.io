@@ -45,6 +45,7 @@ private const val S_submission_type = SubmissionDao.type
 private const val MI_table = MealIngredientDao.table
 
 private const val INGREDIENT_TYPE = "Ingredient"
+private const val MEAL_TYPE = "Meal"
 
 interface MealDao {
 
@@ -77,7 +78,7 @@ interface MealDao {
     )
     fun getAllByRestaurantId(@Bind restaurantId: Int): Collection<DbMealDto>
 
-    @SqlQuery("SELECT DISTINCT ON ($table.$id) $table.$id, $table.$name, $table.$carbs, $table.$quantity, $table.$unit" +
+    @SqlQuery("SELECT $table.$id, $table.$name, $table.$carbs, $table.$quantity, $table.$unit" +
             " FROM $table" +
             " INNER JOIN $MC_table" +
             " ON $table.$id = $MC_table.$MC_mealId" +
@@ -86,11 +87,12 @@ interface MealDao {
             " LEFT JOIN $SS_table" +
             " ON $SS_table.$SS_submissionId = $table.$id" +
             " WHERE $SS_table.$SS_submissionId IS NULL" +
-            " AND $C_table.$C_name IN (<cuisineNames>)"
+            " AND $C_table.$C_name IN (<cuisineNames>)" +
+            " ORDER BY $table.$name ASC"
     )
     fun getAllSuggestedByNames(@BindList cuisineNames: Collection<String>): Collection<DbMealDto>
 
-    @SqlQuery("SELECT DISTINCT ON ($table.$id) $table.$id, $table.$name, $table.$carbs, $table.$quantity, $table.$unit" +
+    @SqlQuery("SELECT DISTINCT ON ($table.$name) $table.$id, $table.$name, $table.$carbs, $table.$quantity, $table.$unit" +
             " FROM $C_table" +
             " INNER JOIN $AC_table" +
             " ON $C_table.$C_cuisineId = $AC_table.$AC_cuisineId" +
@@ -103,12 +105,25 @@ interface MealDao {
             " INNER JOIN $table" +
             " ON $table.$id = $MC_table.$MC_mealId" +
             " WHERE $SS_table.$SS_submitterId = :submitterId" +
-            " AND $AS_table.$AS_apiId IN (<apiIds>)"
+            " AND $AS_table.$AS_apiId IN (<apiIds>)" +
+            " ORDER BY $table.$name ASC"
     )
     fun getAllSuggestedByCuisineApiIds(
             @Bind submitterId: Int,
             @BindList apiIds: Collection<String>
     ): Collection<DbMealDto>
+
+    @SqlQuery("SELECT $table.$id, $table.$name, $table.$carbs, $table.$quantity, $table.$unit" +
+            " FROM $table" +
+            " INNER JOIN $S_table" +
+            " ON $S_table.$S_submission_id = $table.$id" +
+            " LEFT JOIN $SS_table" +
+            " ON $SS_table.$SS_submissionId = $table.$id" +
+            " WHERE $SS_table.$SS_submissionId IS NULL" +
+            " AND $S_table.$S_submission_type = '$MEAL_TYPE'" +
+            " ORDER BY $table.$name ASC"
+    )
+    fun getAllSuggestedMeals(): Collection<DbMealDto>
 
     @SqlQuery("INSERT INTO $table($id, $name, $carbs, $quantity, $unit) " +
             "VALUES(:submissionId, :mealName, :carbs, :quantity, :unit) " +

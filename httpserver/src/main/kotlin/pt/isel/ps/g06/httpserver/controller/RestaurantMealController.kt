@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.util.UriComponentsBuilder
 import pt.isel.ps.g06.httpserver.common.*
-import pt.isel.ps.g06.httpserver.common.exception.ForbiddenInsertionException
+import pt.isel.ps.g06.httpserver.common.exception.clientError.ForbiddenInsertionException
 import pt.isel.ps.g06.httpserver.common.exception.notFound.MealNotFoundException
 import pt.isel.ps.g06.httpserver.common.exception.notFound.RestaurantNotFoundException
 import pt.isel.ps.g06.httpserver.dataAccess.input.PortionInput
@@ -155,10 +155,21 @@ class RestaurantMealController(
         return ResponseEntity.ok().build()
     }
 
-    //TODO Next
     @DeleteMapping(RESTAURANT_MEAL_VOTE)
-    fun deleteMealVote(@PathVariable(RESTAURANT_ID_VALUE) id: String, @PathVariable(MEAL_ID_VALUE) mealId: String, @RequestBody vote: String) {
+    fun deleteMealVote(
+            @PathVariable(RESTAURANT_ID_VALUE) restaurantId: String,
+            @PathVariable(MEAL_ID_VALUE) mealId: Int
+    ) {
+        //TODO When there's authentication
+        val userId = 3
 
+        val (submitterId, submissionId, apiId) = restaurantIdentifierBuilder.extractIdentifiers(restaurantId)
+
+        val restaurant = restaurantService
+                .getRestaurant(submitterId, submissionId, apiId)
+                ?: throw RestaurantNotFoundException()
+
+        restaurantMealService.deleteRestaurantMealVote(restaurant, mealId, userId)
     }
 
     @PostMapping(RESTAURANT_MEAL_REPORT)
@@ -174,6 +185,4 @@ class RestaurantMealController(
     fun deleteMealPortion(@PathVariable(RESTAURANT_ID_VALUE) id: String, @PathVariable(MEAL_ID_VALUE) mealId: String, @RequestBody portion: String) {
 
     }
-
-
 }

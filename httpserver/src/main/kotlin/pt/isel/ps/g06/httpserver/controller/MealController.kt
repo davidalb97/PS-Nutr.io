@@ -4,14 +4,14 @@ import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.util.UriComponentsBuilder
-import pt.isel.ps.g06.httpserver.common.MEAL
-import pt.isel.ps.g06.httpserver.common.MEALS
-import pt.isel.ps.g06.httpserver.common.MEAL_ID_VALUE
-import pt.isel.ps.g06.httpserver.common.MEAL_VOTE
+import pt.isel.ps.g06.httpserver.common.*
+import pt.isel.ps.g06.httpserver.common.exception.clientError.InvalidQueryParameter
 import pt.isel.ps.g06.httpserver.common.exception.notFound.MealNotFoundException
 import pt.isel.ps.g06.httpserver.dataAccess.input.MealInput
 import pt.isel.ps.g06.httpserver.dataAccess.output.DetailedMealOutput
+import pt.isel.ps.g06.httpserver.dataAccess.output.SimplifiedMealContainer
 import pt.isel.ps.g06.httpserver.dataAccess.output.toDetailedMealOutput
+import pt.isel.ps.g06.httpserver.dataAccess.output.toSimplifiedMealContainer
 import pt.isel.ps.g06.httpserver.service.MealService
 import javax.validation.Valid
 
@@ -27,6 +27,52 @@ class MealController(private val mealService: MealService) {
         return ResponseEntity
                 .ok()
                 .body(toDetailedMealOutput(meal))
+    }
+
+    /**
+     * Obtains all meals present in the database, filtered down by query parameters
+     *
+     * @param mealTypes filters by meal type. View [allowedMealTypes] to see possible values;
+     * Defaults to [suggested]
+     *
+     * @param cuisines filters obtained meals by specific cuisine(s).
+     * An empty collection will not filter any meal.
+     */
+    @GetMapping(MEALS)
+    fun getMeals(
+            @RequestParam mealTypes: Collection<String>?,
+            @RequestParam skip: Int?,
+            @RequestParam count: Int?,
+            @RequestParam cuisines: Collection<String>?
+    ): ResponseEntity<SimplifiedMealContainer> {
+        val types = if (mealTypes == null || mealTypes.isEmpty()) listOf(suggested)
+        else mealTypes
+
+        if (types.any { !allowedMealTypes.contains(it) }) {
+            //Make sure all type filters are allowed
+            throw InvalidQueryParameter("Invalid query parameter! Allowed ones are: $allowedMealTypes")
+        }
+
+        var meals = mealService.getSuggestedMeals()
+
+        if (cuisines != null && cuisines.isNotEmpty()) {
+            //Filter by user cuisines
+            meals = meals.filter {
+                it.cuisines.any { mealCuisines ->
+                    cuisines.any { cuisine -> mealCuisines.name.equals(cuisine, ignoreCase = true) }
+                }
+            }
+        }
+
+        //Perform final result reductions
+        meals = meals.drop(skip ?: 0)
+        if (count != null) {
+            meals = meals.take(count)
+        }
+
+        return ResponseEntity
+                .ok()
+                .body(toSimplifiedMealContainer(meals))
     }
 
     @PostMapping(MEALS)
@@ -53,13 +99,4 @@ class MealController(private val mealService: MealService) {
 
     @DeleteMapping(MEAL)
     fun deleteMeal(@PathVariable(MEAL_ID_VALUE) mealId: String) = ""
-
-    @PostMapping(MEAL_VOTE)
-    fun addMealVote(@PathVariable(MEAL_ID_VALUE) mealId: String, @RequestBody vote: String) = ""
-
-    @PutMapping(MEAL_VOTE)
-    fun updateMealVote(@PathVariable(MEAL_ID_VALUE) mealId: String, @RequestBody vote: String) = ""
-
-    @DeleteMapping(MEAL_VOTE)
-    fun deleteMealVote(@PathVariable(MEAL_ID_VALUE) mealId: String, @RequestParam vote: String) = ""
 }

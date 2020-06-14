@@ -28,18 +28,4 @@ class DbRestaurantMealResponseMapper(
                 }
         )
     }
-    //    override fun mapTo(dto: DbRestaurantMealDto): RestaurantMeal {
-//        return RestaurantMeal(
-//                //A restaurant meal always has a meal
-//                meal = dbMealMapper.mapTo(dbMealRepo.getById(dto.meal_submission_id)!!),
-//                votes = dbVotesMapper.mapTo(dbMealRepo.getVotes(dto.submission_id)),
-//                userVote = { userId -> dbMealRepo.getUserVote(dto.submission_id, userId) },
-//                portions = dbPortionRepo.getAllByRestaurantMealId(dto.submission_id).map(dbPortionsMapper::mapTo),
-//                userPortion = { userId ->
-//                    dbPortionRepo.getUserPortion(dto.submission_id, userId)?.let { portionDto ->
-//                        dbPortionsMapper.mapTo(portionDto)
-//                    }
-//                }
-//        )
-//    }
 }

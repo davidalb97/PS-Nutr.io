@@ -1,13 +1,15 @@
 package pt.isel.ps.g06.httpserver.service
 
 import org.springframework.stereotype.Service
-import pt.isel.ps.g06.httpserver.common.exception.ForbiddenInsertionException
+import pt.isel.ps.g06.httpserver.common.exception.clientError.ForbiddenInsertionException
+import pt.isel.ps.g06.httpserver.common.exception.clientError.NotYetVotedException
 import pt.isel.ps.g06.httpserver.common.exception.notFound.RestaurantMealNotFound
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.PortionDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.RestaurantMealDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.VoteDbRepository
 import pt.isel.ps.g06.httpserver.model.Meal
 import pt.isel.ps.g06.httpserver.model.Restaurant
+import pt.isel.ps.g06.httpserver.model.VoteState
 
 @Service
 class RestaurantMealService(
@@ -80,5 +82,22 @@ class RestaurantMealService(
         dbVoteRepository.insertOrUpdate(submitterId, restaurantInfo.restaurantMealIdentifier, vote)
     }
 
+    fun deleteRestaurantMealVote(restaurant: Restaurant, mealId: Int, submitterId: Int) {
+        val restaurantMeal = getRestaurantMeal(restaurant, mealId)
+
+        if (!restaurantMeal.isUserMeal()) {
+            throw ForbiddenInsertionException("Only restaurant meals created by users can be voted!")
+        }
+
+        val restaurantInfo = restaurantMeal
+                .restaurantInfoSupplier(restaurant.identifier.value)
+                ?: throw IllegalStateException("Expected RestaurantInfo for given RestaurantMeal, but none was found!")
+
+        if (restaurantInfo.userVote(submitterId) == VoteState.NOT_VOTED) {
+            throw NotYetVotedException("You have not yet voted for this Restaurant Meal!")
+        }
+
+        dbVoteRepository.delete(submitterId, restaurantInfo.restaurantMealIdentifier)
+    }
 }
 

@@ -82,7 +82,6 @@ class MealDbRepository(jdbi: Jdbi, val config: DbEditableDto) : SubmissionDbRepo
         return Sequence { collection.value.iterator() }
     }
 
-    //TODO Get all hardcoded, not user meals
     fun getAllSuggestedMealsFromCuisineNames(cuisineNames: Sequence<String>): Sequence<DbMealDto> {
         val collection = lazy {
             jdbi.inTransaction<Collection<DbMealDto>, Exception>(isolationLevel) { handle ->
@@ -93,6 +92,17 @@ class MealDbRepository(jdbi: Jdbi, val config: DbEditableDto) : SubmissionDbRepo
                 return@inTransaction handle
                         .attach(MealDao::class.java)
                         .getAllSuggestedByNames(cuisineNameList)
+            }
+        }
+        return Sequence { collection.value.iterator() }
+    }
+
+    fun getAllSuggestedMeals(): Sequence<DbMealDto> {
+        val collection = lazy {
+            jdbi.inTransaction<Collection<DbMealDto>, Exception>(isolationLevel) { handle ->
+                return@inTransaction handle
+                        .attach(MealDao::class.java)
+                        .getAllSuggestedMeals()
             }
         }
         return Sequence { collection.value.iterator() }

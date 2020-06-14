@@ -19,6 +19,12 @@ class MealService(
                 ?.let(dbMealResponseMapper::mapTo)
     }
 
+    fun getSuggestedMeals(): Sequence<Meal> {
+        return dbMealRepo
+                .getAllSuggestedMeals()
+                .map { dbMealResponseMapper.mapTo(it) }
+    }
+
     fun createMeal(
             submitterId: Int,
             name: String,

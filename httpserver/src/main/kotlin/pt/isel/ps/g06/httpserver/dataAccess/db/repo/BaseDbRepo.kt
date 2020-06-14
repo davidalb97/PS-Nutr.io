@@ -91,7 +91,6 @@ class BaseDbRepo constructor(internal val jdbi: Jdbi) {
             defaultIsolation: TransactionIsolationLevel = SERIALIZABLE
     ) {
         jdbi.inTransaction<Unit, InvalidInputException>(defaultIsolation) {
-
             // Check if this submitter already voted this submission
             it.attach(UserVoteDao::class.java)
                     .getUserVoteForSubmission(submissionId, submitterId)

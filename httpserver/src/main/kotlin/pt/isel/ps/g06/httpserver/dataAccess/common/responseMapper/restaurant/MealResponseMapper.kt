@@ -34,7 +34,7 @@ class DbMealResponseMapper(
                 ),
                 cuisines = dbCuisineRepo.getAllByMealId(dto.submission_id).map(dbCuisineMapper::mapTo),
                 creatorInfo = lazy {
-                    dbSubmitterRepo
+                   dbSubmitterRepo
                             .getBySubmissionId(dto.submission_id)
                             ?.let { userInfoDto -> dbCreatorMapper.mapTo(userInfoDto) }
                 },
