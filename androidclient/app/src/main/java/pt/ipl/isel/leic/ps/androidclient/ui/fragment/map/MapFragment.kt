@@ -244,7 +244,11 @@ class MapFragment
     }
 
     override fun onExplanationNeeded(permissionsToExplain: MutableList<String>?) {
-        TODO("Not yet implemented")
+        Toast.makeText(
+            activityApp,
+            R.string.user_location_permission_explanation,
+            Toast.LENGTH_LONG
+        ).show();
     }
 
     override fun onPermissionResult(granted: Boolean) {

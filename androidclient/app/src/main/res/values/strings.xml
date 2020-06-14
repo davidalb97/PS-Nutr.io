@@ -115,6 +115,7 @@
     <string name="tab_your_meals">Your meals</string>
     <string name="custom_meal_image_url_txt">Image url</string>
     <string name="custom_meal_url_txt_hint">www.example.com (Optional)</string>
+    <string name="user_location_permission_explanation">You need to turn on your device location</string>
     <string-array name="custom_meal_unit_spinner_array">
         <item>grams</item>
     </string-array>
