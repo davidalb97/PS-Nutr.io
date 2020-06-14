@@ -1,12 +1,11 @@
 package pt.ipl.isel.leic.ps.androidclient.data.api.dto.input
 
-import java.net.URI
+import android.net.Uri
 
 open class SimplifiedMealInput(
     val id: Int,
     val name: String,
-    val image: URI?,
+    val imageUri: Uri?,
     val votes: VotesInputDto?,
-    val isFavorite: Boolean,
-    val portions: Iterable<>
+    val isFavorite: Boolean
 )

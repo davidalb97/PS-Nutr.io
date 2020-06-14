@@ -9,27 +9,23 @@ import pt.ipl.isel.leic.ps.androidclient.data.db.entity.*
 @Database(
     entities =
     [
-        DbApiMealEntity::class,
-        DbCustomMealEntity::class,
-        DbFavoriteMealEntity::class,
-        DbIngredientEntity::class,
+        DbComponentIngredientEntity::class,
+        DbComponentMealEntity::class,
+        DbCuisineEntity::class,
+        DbMealInfoEntity::class,
+        DbMealItemEntity::class,
+        DbPortionEntity::class,
+        DbRestaurantInfoEntity::class,
+        DbRestaurantItemEntity::class,
         InsulinProfileEntity::class
     ],
     version = ROOM_DB_VERSION
 )
 abstract class NutrioDb : RoomDatabase() {
 
-    //abstract fun restaurantDao(): RestaurantDao
+    abstract fun restaurantInfoDao(): RestaurantInfoDao
 
-    abstract fun apiMealDao(): ApiMealDao
-
-    abstract fun customMealDao(): CustomMealDao
-
-    abstract fun favoriteMealDao(): FavoriteMealDao
-
-    abstract fun ingredientDao(): IngredientDao
-
-    //abstract fun cuisineDao(): CuisineDao
+    abstract fun mealInfoDao(): MealInfoDao
 
     abstract fun insulinProfileDao(): InsulinProfileDao
 }

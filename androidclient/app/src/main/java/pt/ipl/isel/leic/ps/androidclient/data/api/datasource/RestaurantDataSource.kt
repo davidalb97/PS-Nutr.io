@@ -6,6 +6,7 @@ import pt.ipl.isel.leic.ps.androidclient.data.api.RequestParser
 import pt.ipl.isel.leic.ps.androidclient.data.api.URI_BASE
 import pt.ipl.isel.leic.ps.androidclient.data.api.UriBuilder
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.SimplifiedRestaurantInput
+import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.info.DetailedRestaurantInput
 
 const val LATITUDE_VAR = ":latitude"
 const val LONGITUDE_VAR = ":longitude"
@@ -42,7 +43,7 @@ class RestaurantDataSource(
      * ----------------------------- GETs -----------------------------
      */
     fun getById(
-        success: (SimplifiedRestaurantInput) -> Unit,
+        success: (DetailedRestaurantInput) -> Unit,
         error: (VolleyError) -> Unit,
         uriParameters: HashMap<String, String>?,
         count: Int,
@@ -56,7 +57,7 @@ class RestaurantDataSource(
         requestParser.requestAndRespond(
             Method.GET,
             uri,
-            SimplifiedRestaurantInput::class.java,
+            DetailedRestaurantInput::class.java,
             success,
             error
         )

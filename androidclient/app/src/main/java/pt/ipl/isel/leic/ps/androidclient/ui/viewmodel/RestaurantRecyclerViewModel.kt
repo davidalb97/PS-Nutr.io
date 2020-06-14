@@ -3,10 +3,10 @@ package pt.ipl.isel.leic.ps.androidclient.ui.viewmodel
 import android.os.Parcel
 import android.os.Parcelable
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.restaurantRepository
-import pt.ipl.isel.leic.ps.androidclient.data.model.Restaurant
+import pt.ipl.isel.leic.ps.androidclient.data.model.RestaurantItem
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler.COUNT
 
-class RestaurantRecyclerViewModel : ARecyclerViewModel<Restaurant>() {
+class RestaurantRecyclerViewModel : ARecyclerViewModel<RestaurantItem>() {
 
     override fun update() {
         restaurantRepository.getNearbyRestaurants(

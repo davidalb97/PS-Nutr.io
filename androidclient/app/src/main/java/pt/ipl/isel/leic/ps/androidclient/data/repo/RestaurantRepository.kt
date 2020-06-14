@@ -2,10 +2,9 @@ package pt.ipl.isel.leic.ps.androidclient.data.repo
 
 import com.android.volley.VolleyError
 import pt.ipl.isel.leic.ps.androidclient.data.api.datasource.RestaurantDataSource
-import pt.ipl.isel.leic.ps.androidclient.data.api.mapper.InputIngredientMapper
-import pt.ipl.isel.leic.ps.androidclient.data.api.mapper.DetailedMealInputMapper
-import pt.ipl.isel.leic.ps.androidclient.data.api.mapper.SimplifiedRestaurantInputMapper
-import pt.ipl.isel.leic.ps.androidclient.data.model.Restaurant
+import pt.ipl.isel.leic.ps.androidclient.data.api.mapper.*
+import pt.ipl.isel.leic.ps.androidclient.data.model.RestaurantInfo
+import pt.ipl.isel.leic.ps.androidclient.data.model.RestaurantItem
 
 /**
  * The repository that maps every restaurant dto to its respective model
@@ -13,19 +12,26 @@ import pt.ipl.isel.leic.ps.androidclient.data.model.Restaurant
  */
 class RestaurantRepository(private val dataSource: RestaurantDataSource) {
 
-    private val apiIngredientMapper = InputIngredientMapper()
-    private val apiMealMapper = DetailedMealInputMapper(apiIngredientMapper)
-    private val apiRestaurantMapper = SimplifiedRestaurantInputMapper()
+    private val inputVotesMapper = InputVotesMapper()
+    private val inputRestaurantItemMapper = InputRestaurantItemMapper(
+        votesInputMapper = inputVotesMapper
+    )
+    private val inputMealInputMapper = InputMealItemMapper(inputVotesMapper)
+    private val inputCuisineInputMapper = InputCuisineMapper()
+    private val inputRestaurantInfoMapper = InputRestaurantInfoMapper(
+        mealInputMapper = inputMealInputMapper,
+        cuisineInputMapper = inputCuisineInputMapper
+    )
 
-    fun getRestaurantById(
-        success: (Restaurant) -> Unit,
+    fun getRestaurantInfoById(
+        success: (RestaurantInfo) -> Unit,
         error: (VolleyError) -> Unit,
         uriParameters: HashMap<String, String>?,
         count: Int,
         skip: Int
     ) {
         dataSource.getById(
-            { restaurantDto -> success(apiRestaurantMapper.mapToModel(restaurantDto)) },
+            { restaurantDto -> success(inputRestaurantInfoMapper.mapToModel(restaurantDto)) },
             error,
             uriParameters,
             count,
@@ -34,14 +40,14 @@ class RestaurantRepository(private val dataSource: RestaurantDataSource) {
     }
 
     fun getNearbyRestaurants(
-        success: (List<Restaurant>) -> Unit,
+        success: (List<RestaurantItem>) -> Unit,
         error: (VolleyError) -> Unit,
         uriParameters: HashMap<String, String>?,
         count: Int,
         skip: Int
     ) {
         dataSource.getNearby(
-            { restaurantDtos -> success(apiRestaurantMapper.mapToListModel(restaurantDtos)) },
+            { restaurantDtos -> success(inputRestaurantItemMapper.mapToListModel(restaurantDtos)) },
             error,
             uriParameters,
             count,

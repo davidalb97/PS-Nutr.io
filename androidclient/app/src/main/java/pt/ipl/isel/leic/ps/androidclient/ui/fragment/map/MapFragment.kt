@@ -27,7 +27,7 @@ import com.mapbox.mapboxsdk.maps.Style
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.api.datasource.LATITUDE_VAR
 import pt.ipl.isel.leic.ps.androidclient.data.api.datasource.LONGITUDE_VAR
-import pt.ipl.isel.leic.ps.androidclient.data.model.Restaurant
+import pt.ipl.isel.leic.ps.androidclient.data.model.RestaurantItem
 import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.RestaurantRecyclerAdapter
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler.request.ARequestRecyclerListFragment
 import pt.ipl.isel.leic.ps.androidclient.ui.listener.ScrollListener
@@ -36,7 +36,7 @@ import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.RestaurantRecyclerViewMode
 
 
 class MapFragment
-    : ARequestRecyclerListFragment<Restaurant, RestaurantRecyclerViewModel>(),
+    : ARequestRecyclerListFragment<RestaurantItem, RestaurantRecyclerViewModel>(),
     OnMapReadyCallback,
     PermissionsListener {
 

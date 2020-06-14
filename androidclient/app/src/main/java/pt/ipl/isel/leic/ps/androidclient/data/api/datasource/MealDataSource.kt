@@ -2,11 +2,10 @@ package pt.ipl.isel.leic.ps.androidclient.data.api.datasource
 
 import com.android.volley.VolleyError
 import pt.ipl.isel.leic.ps.androidclient.data.api.*
-import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.SimplifiedIngredientInput
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.SimplifiedMealInput
-import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.info.DetailedIngredientInput
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.info.DetailedMealInput
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.output.MealOutput
+import pt.ipl.isel.leic.ps.androidclient.data.model.MealIngredient
 
 const val MEAL_URI = "$URI_BASE/$MEAL"
 const val MEAL_ID_URI = "$MEAL_URI/:id"
@@ -20,6 +19,7 @@ class MealDataSource(
     private val uriBuilder: UriBuilder
 ) {
 
+    /*//Unused! can be obtained by get restaurant by id (RestaurantInfo has MealItems)
     fun getAllByRestaurantId(
         id: Int,
         success: (Array<SimplifiedMealInput>) -> Unit,
@@ -40,6 +40,7 @@ class MealDataSource(
             error
         )
     }
+    */
 
     /**
      * ----------------------------- GETs -----------------------------
@@ -52,7 +53,6 @@ class MealDataSource(
         skip: Int
     ) {
         var uri = MEAL_URI
-
         requestParser.requestAndRespond(
             Method.GET,
             uri,
@@ -69,7 +69,7 @@ class MealDataSource(
         success: (MealOutput) -> Unit,
         error: (VolleyError) -> Unit,
         reqParameters: HashMap<String, String>?,
-        ingredients: Iterable<SimplifiedIngredientInput>,
+        ingredients: Iterable<MealIngredient>,
         cuisines: Collection<String>,
         count: Int,
         skip: Int

@@ -8,14 +8,14 @@ import android.widget.SearchView
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import pt.ipl.isel.leic.ps.androidclient.R
-import pt.ipl.isel.leic.ps.androidclient.data.model.Restaurant
+import pt.ipl.isel.leic.ps.androidclient.data.model.RestaurantItem
 import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.RestaurantRecyclerAdapter
 import pt.ipl.isel.leic.ps.androidclient.ui.listener.ScrollListener
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.RestaurantRecyclerVMProviderFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.RestaurantRecyclerViewModel
 
 class RestaurantRecyclerFragment :
-    ARequestRecyclerListFragment<Restaurant, RestaurantRecyclerViewModel>() {
+    ARequestRecyclerListFragment<RestaurantItem, RestaurantRecyclerViewModel>() {
 
     private val adapter: RestaurantRecyclerAdapter by lazy {
         RestaurantRecyclerAdapter(

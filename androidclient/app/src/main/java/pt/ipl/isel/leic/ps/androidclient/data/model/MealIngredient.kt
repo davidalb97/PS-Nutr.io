@@ -4,60 +4,44 @@ import android.net.Uri
 import android.os.Parcel
 import android.os.Parcelable
 import pt.ipl.isel.leic.ps.androidclient.data.util.*
-import java.net.URI
-import java.time.OffsetDateTime
 
-class MealInfo(
+class MealIngredient(
     var dbId: Long,
+    var dbMealId: Long,
     val submissionId: Int,
     val name: String,
+    val imageUri: Uri?,
+    val isFavorite: Boolean,
     val carbs: Int,
     val amount: Int,
     val unit: String,
-    val votes: Votes?,
-    val isFavorite: Boolean,
-    val imageUri: Uri?,
-    val creationDate: OffsetDateTime?,
-    val ingredientComponents: List<MealIngredient>,
-    val mealComponents: List<MealIngredient>,
-    val cuisines: List<Cuisine>,
-    val portions: List<Portion>,
-    val isSuggested: Boolean
+    val isMeal: Boolean
 ): Parcelable {
 
     constructor(parcel: Parcel) : this(
         dbId = parcel.readLong(),
+        dbMealId = parcel.readLong(),
         submissionId = parcel.readInt(),
         name = parcel.readString()!!,
         carbs = parcel.readInt(),
         amount = parcel.readInt(),
         unit = parcel.readString()!!,
-        votes = parcel.readParcelable(Votes::class.java.classLoader),
         isFavorite = readBoolean(parcel),
         imageUri = readUri(parcel),
-        creationDate = readOffsetDateTime(parcel),
-        ingredientComponents = readList(parcel, MealIngredient::class),
-        mealComponents = readList(parcel, MealIngredient::class),
-        cuisines = readList(parcel, Cuisine::class),
-        portions = readList(parcel, Portion::class),
-        isSuggested = readBoolean(parcel)
+        isMeal = readBoolean(parcel)
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeLong(dbId)
+        parcel.writeLong(dbMealId)
         parcel.writeInt(submissionId)
         parcel.writeString(name)
         parcel.writeInt(carbs)
         parcel.writeInt(amount)
         parcel.writeString(unit)
-        parcel.writeParcelable(votes, flags)
         writeBoolean(parcel, isFavorite)
         writeUri(parcel, imageUri)
-        parcel.writeList(ingredientComponents)
-        parcel.writeList(mealComponents)
-        parcel.writeList(cuisines)
-        parcel.writeList(portions)
-        writeBoolean(parcel, isSuggested)
-        writeOffsetDateTime(parcel, creationDate)
+        writeBoolean(parcel, isMeal)
     }
 
     override fun describeContents(): Int {

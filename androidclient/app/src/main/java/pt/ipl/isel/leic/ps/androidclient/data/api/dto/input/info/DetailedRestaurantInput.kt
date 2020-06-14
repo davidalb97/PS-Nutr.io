@@ -1,7 +1,8 @@
 package pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.info
 
+import android.net.Uri
+import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.SimplifiedMealInput
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.SimplifiedRestaurantInput
-import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.SimplifiedRestaurantMealInput
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.VotesInputDto
 import java.time.OffsetDateTime
 
@@ -11,16 +12,18 @@ class DetailedRestaurantInput(
     latitude: Float,
     longitude: Float,
     votes: VotesInputDto?,
-    isFavorite: Boolean?,
+    isFavorite: Boolean,
+    imageUri: Uri?,
     val cuisines: Collection<String>,
     val creationDate: OffsetDateTime?,
-    val meals: Collection<SimplifiedRestaurantMealInput>,
-    val suggestedMeals: Collection<SimplifiedRestaurantMealInput>
+    val meals: Collection<SimplifiedMealInput>,
+    val suggestedMeals: Collection<SimplifiedMealInput>
 ) : SimplifiedRestaurantInput(
     id = id,
     name = name,
     latitude = latitude,
     longitude = longitude,
     votes = votes,
-    isFavorite = isFavorite
+    isFavorite = isFavorite,
+    imageUri = imageUri
 )

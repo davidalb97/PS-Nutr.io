@@ -1,7 +1,7 @@
 package pt.ipl.isel.leic.ps.androidclient.data.db.dao
 
 import androidx.room.*
-import pt.ipl.isel.leic.ps.androidclient.data.db.entity.DbIngredientEntity
+import pt.ipl.isel.leic.ps.androidclient.data.db.entity.DbComponentIngredientEntity
 import pt.ipl.isel.leic.ps.androidclient.data.db.relation.IMealRelation
 
 @Dao
@@ -15,13 +15,13 @@ abstract class BaseMealDao<MealEntity> {
     }
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract fun insertIngredients(ingredients: Iterable<DbIngredientEntity>)
+    abstract fun insertIngredients(ingredients: Iterable<DbComponentIngredientEntity>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract fun insertMeal(mealEntity: MealEntity)
 
     @Update
-    abstract fun updateIngredients(ingredients: Iterable<DbIngredientEntity>)
+    abstract fun updateIngredients(ingredients: Iterable<DbComponentIngredientEntity>)
 
     @Update
     abstract fun updateMeal(mealEntity: MealEntity)
@@ -34,7 +34,7 @@ abstract class BaseMealDao<MealEntity> {
     }
 
     @Delete
-    abstract fun deleteIngredients(ingredients: Iterable<DbIngredientEntity>)
+    abstract fun deleteIngredients(ingredients: Iterable<DbComponentIngredientEntity>)
 
     @Delete
     abstract fun deleteMeal(mealEntity: MealEntity)

@@ -9,12 +9,12 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.navigation.findNavController
 import pt.ipl.isel.leic.ps.androidclient.R
-import pt.ipl.isel.leic.ps.androidclient.data.model.Restaurant
+import pt.ipl.isel.leic.ps.androidclient.data.model.RestaurantItem
 
 class RestaurantRecyclerViewHolder(
     view: ViewGroup,
     ctx: Context
-) : ARecyclerViewHolder<Restaurant>(view, ctx) {
+) : ARecyclerViewHolder<RestaurantItem>(view, ctx) {
 
     val restaurantImage = view.findViewById<ImageView>(R.id.restaurantImage)
     val restaurantName = view.findViewById<TextView>(R.id.restaurantName)
@@ -28,7 +28,7 @@ class RestaurantRecyclerViewHolder(
     val optionsButton = view.findViewById<ImageButton>(R.id.options)
 
 
-    override fun bindTo(item: Restaurant) {
+    override fun bindTo(item: RestaurantItem) {
         super.bindTo(item)
         //restaurantImage.setImageResource(item.)
         restaurantName.text = item.name

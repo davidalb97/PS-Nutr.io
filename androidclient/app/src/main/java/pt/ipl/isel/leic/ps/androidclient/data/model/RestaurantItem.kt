@@ -8,48 +8,50 @@ import pt.ipl.isel.leic.ps.androidclient.data.util.readUri
 import pt.ipl.isel.leic.ps.androidclient.data.util.writeBoolean
 import pt.ipl.isel.leic.ps.androidclient.data.util.writeUri
 
-data class MealItem(
+data class RestaurantItem(
     var dbId: Long,
-    var dbRestaurantId: Long,
-    val submissionId: Int,
+    val id: String,
     val name: String,
-    val imageUri: Uri?,
+    val latitude: Float,
+    val longitude: Float,
     val votes: Votes?,
     val isFavorite: Boolean,
-    val isSuggested: Boolean
+    val imageUri: Uri?
 ) : Parcelable {
+
     constructor(parcel: Parcel) : this(
         dbId = parcel.readLong(),
-        dbRestaurantId = parcel.readLong(),
-        submissionId = parcel.readInt(),
+        id = parcel.readString()!!,
         name = parcel.readString()!!,
-        imageUri = readUri(parcel),
-        votes = parcel.readParcelable(Votes::class.java.classLoader),
+        latitude = parcel.readFloat(),
+        longitude = parcel.readFloat(),
+        votes = parcel.readParcelable<Votes>(Votes::class.java.classLoader),
         isFavorite = readBoolean(parcel),
-        isSuggested = readBoolean(parcel)
+        imageUri = readUri(parcel)
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeLong(dbId)
-        parcel.writeLong(dbRestaurantId)
-        parcel.writeInt(submissionId)
+        parcel.writeString(id)
         parcel.writeString(name)
-        writeUri(parcel, imageUri)
+        parcel.writeValue(latitude)
+        parcel.writeValue(longitude)
+        //Does not need to close resources, using flag 0
         parcel.writeParcelable(votes, flags)
         writeBoolean(parcel, isFavorite)
-        writeBoolean(parcel, isSuggested)
+        writeUri(parcel, imageUri)
     }
 
     override fun describeContents(): Int {
         return 0
     }
 
-    companion object CREATOR : Parcelable.Creator<MealItem> {
-        override fun createFromParcel(parcel: Parcel): MealItem {
-            return MealItem(parcel)
+    companion object CREATOR : Parcelable.Creator<RestaurantItem> {
+        override fun createFromParcel(parcel: Parcel): RestaurantItem {
+            return RestaurantItem(parcel)
         }
 
-        override fun newArray(size: Int): Array<MealItem?> {
+        override fun newArray(size: Int): Array<RestaurantItem?> {
             return arrayOfNulls(size)
         }
     }
