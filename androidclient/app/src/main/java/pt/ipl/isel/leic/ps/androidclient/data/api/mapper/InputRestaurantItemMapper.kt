@@ -17,7 +17,8 @@ class InputRestaurantItemMapper(
             latitude = dto.latitude,
             longitude = dto.longitude,
             votes = votesInputMapper.mapToModel(dto.votes),
-            isFavorite = dto.isFavorite
+            isFavorite = dto.isFavorite,
+            imageUri = dto.imageUri
     )
 
     fun mapToListModel(dtos: Iterable<SimplifiedRestaurantInput>) = dtos.map(::mapToModel)

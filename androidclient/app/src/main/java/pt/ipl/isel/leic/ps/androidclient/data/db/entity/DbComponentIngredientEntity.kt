@@ -15,6 +15,7 @@ class DbComponentIngredientEntity(
     val imageUri: String?
 ) {
     companion object {
+        const val DEFAULT_DB_ID: Long = 0
         const val tableName = "ComponentIngredient"
         const val primaryKeyName = "primaryKey"
         const val mealKeyName = "mealKey"
