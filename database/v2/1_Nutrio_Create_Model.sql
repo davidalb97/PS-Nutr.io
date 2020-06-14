@@ -72,7 +72,7 @@ CREATE TABLE SubmissionSubmitter(
 	submission_id integer,
 	submitter_id integer,
 	PRIMARY KEY(submission_id, submitter_id),
-	FOREIGN KEY(submission_id) REFERENCES Submission(submission_id),
+	FOREIGN KEY(submission_id) REFERENCES Submission(submission_id) ON DELETE CASCADE,
 	FOREIGN KEY(submitter_id) REFERENCES Submitter(submitter_id)
 );
 
@@ -84,7 +84,8 @@ CREATE TABLE SubmissionContract(
 		submission_contract = 'API' OR
 		submission_contract = 'Favorable'
 	),
-	PRIMARY KEY(submission_id, submission_contract)
+	PRIMARY KEY(submission_id, submission_contract),
+	FOREIGN KEY(submission_id) REFERENCES Submission(submission_id) ON DELETE CASCADE
 );
 
 CREATE TABLE Report(
@@ -92,7 +93,7 @@ CREATE TABLE Report(
 	submission_id integer,
 	description varchar(500) NOT NULL,
 	PRIMARY KEY(submitter_id, submission_id),
-	FOREIGN KEY(submission_id) REFERENCES Submission(submission_id),
+	FOREIGN KEY(submission_id) REFERENCES Submission(submission_id) ON DELETE CASCADE,
 	FOREIGN KEY(submitter_id) REFERENCES Submitter(submitter_id)
 );
 
@@ -100,7 +101,7 @@ CREATE TABLE Votes(
 	submission_id integer PRIMARY KEY,
 	positive_count integer,
 	negative_count integer,
-	FOREIGN KEY(submission_id) REFERENCES Submission(submission_id)
+	FOREIGN KEY(submission_id) REFERENCES Submission(submission_id) ON DELETE CASCADE
 );
 
 CREATE TABLE UserVote(
@@ -108,7 +109,7 @@ CREATE TABLE UserVote(
 	vote_submitter_id integer,
 	vote boolean NOT NULL,
 	PRIMARY KEY(submission_id, vote_submitter_id),
-	FOREIGN KEY(submission_id) REFERENCES Submission(submission_id),
+	FOREIGN KEY(submission_id) REFERENCES Submission(submission_id) ON DELETE CASCADE,
 	FOREIGN KEY(vote_submitter_id) REFERENCES Submitter(submitter_id)
 );
 
@@ -117,7 +118,7 @@ CREATE TABLE Restaurant(
 	restaurant_name varchar(30) NOT NULL,
 	latitude REAL,
 	longitude REAL,
-	FOREIGN KEY(submission_id) REFERENCES Submission(submission_id)
+	FOREIGN KEY(submission_id) REFERENCES Submission(submission_id) ON DELETE CASCADE
 );
 
 CREATE TABLE Cuisine(
@@ -138,7 +139,7 @@ CREATE TABLE Meal(
 	carbs integer NOT NULL,
 	quantity integer NOT NULL,
 	unit varchar(10) CHECK(unit = 'gr'),
-	FOREIGN KEY(submission_id) REFERENCES Submission(submission_id)
+	FOREIGN KEY(submission_id) REFERENCES Submission(submission_id) ON DELETE CASCADE
 );
 
 CREATE TABLE RestaurantMeal(
@@ -146,15 +147,15 @@ CREATE TABLE RestaurantMeal(
 	restaurant_submission_id integer,
 	meal_submission_id integer,
 	UNIQUE(meal_submission_id, restaurant_submission_id),
-	FOREIGN KEY(restaurant_submission_id) REFERENCES Restaurant(submission_id),
-	FOREIGN KEY(meal_submission_id) REFERENCES Meal(submission_id)
+	FOREIGN KEY(restaurant_submission_id) REFERENCES Restaurant(submission_id) ON DELETE CASCADE,
+	FOREIGN KEY(meal_submission_id) REFERENCES Meal(submission_id) ON DELETE CASCADE
 );
 
 CREATE TABLE Favorite(
 	submission_id integer,
 	submitter_id integer,
 	PRIMARY KEY(submission_id, submitter_id),
-	FOREIGN KEY(submission_id) REFERENCES Submission(submission_id),
+	FOREIGN KEY(submission_id) REFERENCES Submission(submission_id) ON DELETE CASCADE,
 	FOREIGN KEY(submitter_id) REFERENCES Submitter(submitter_id)
 );
 
@@ -162,8 +163,8 @@ CREATE TABLE Portion(
 	submission_id integer PRIMARY KEY,
 	restaurant_meal_submission_id integer,
 	quantity integer,
-	FOREIGN KEY(submission_id) REFERENCES Submission(submission_id),
-	FOREIGN KEY(restaurant_meal_submission_id) REFERENCES RestaurantMeal(submission_id)
+	FOREIGN KEY(submission_id) REFERENCES Submission(submission_id) ON DELETE CASCADE,
+	FOREIGN KEY(restaurant_meal_submission_id) REFERENCES RestaurantMeal(submission_id) ON DELETE CASCADE
 );
 
 CREATE TABLE MealIngredient(
@@ -171,7 +172,7 @@ CREATE TABLE MealIngredient(
 	ingredient_submission_id integer,
 	quantity integer NOT NULL,
 	PRIMARY KEY(meal_submission_id, ingredient_submission_id),
-	FOREIGN KEY(meal_submission_id) REFERENCES Meal(submission_id),
+	FOREIGN KEY(meal_submission_id) REFERENCES Meal(submission_id) ON DELETE CASCADE,
 	FOREIGN KEY(ingredient_submission_id) REFERENCES Meal(submission_id)
 );
 
@@ -179,7 +180,7 @@ CREATE TABLE RestaurantCuisine(
 	restaurant_submission_id integer,
 	cuisine_submission_id integer,
 	PRIMARY KEY(restaurant_submission_id, cuisine_submission_id),
-	FOREIGN KEY(restaurant_submission_id) REFERENCES Restaurant(submission_id),
+	FOREIGN KEY(restaurant_submission_id) REFERENCES Restaurant(submission_id) ON DELETE CASCADE,
 	FOREIGN KEY(cuisine_submission_id) REFERENCES Cuisine(submission_id)
 );
 
@@ -187,7 +188,7 @@ CREATE TABLE MealCuisine(
 	meal_submission_id integer,
 	cuisine_submission_id integer,
 	PRIMARY KEY(meal_submission_id, cuisine_submission_id),
-	FOREIGN KEY(meal_submission_id) REFERENCES Meal(submission_id),
+	FOREIGN KEY(meal_submission_id) REFERENCES Meal(submission_id) ON DELETE CASCADE,
 	FOREIGN KEY(cuisine_submission_id) REFERENCES Cuisine(submission_id)
 );
 

@@ -7,6 +7,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionContractType
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.*
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbApiSubmissionDto
+import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbSubmissionDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbSubmitterDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbVotesDto
 import pt.isel.ps.g06.httpserver.exception.InvalidInputException
@@ -104,6 +105,16 @@ class SubmissionDbRepository(jdbi: Jdbi) : BaseDbRepo(jdbi) {
             it.attach(SubmissionSubmitterDao::class.java).deleteAllBySubmissionId(submissionId)
 
             // Delete submission
+            it.attach(SubmissionDao::class.java).delete(submissionId)
+        }
+    }
+
+    /**
+     * Deletes given Submission from the database.
+     * This deletion is cascading, so **any other tuples depending on given submission will be affected!**
+     */
+    fun deleteSubmission(submissionId: Int): DbSubmissionDto {
+        return jdbi.inTransaction<DbSubmissionDto, Exception>(isolationLevel) {
             it.attach(SubmissionDao::class.java).delete(submissionId)
         }
     }

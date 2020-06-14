@@ -13,9 +13,17 @@ data class Restaurant(
         val isFavorite: (Int) -> Boolean,
         val userVote: (Int) -> VoteState,
         val votes: Votes,
-        val creatorInfo: Lazy<Creator?>,
+        val creatorInfo: Lazy<Creator>,
         val creationDate: Lazy<OffsetDateTime?>,
         val meals: Sequence<Meal>,
         val suggestedMeals: Sequence<Meal>,
         val cuisines: Sequence<Cuisine>
-)
+) {
+    /**
+     * Checks if given restaurant is present in the database or not.
+     * *This operation initializes [identifier] value.*
+     */
+    fun isPresentInDatabase(): Boolean {
+        return identifier.value.isPresentInDatabase()
+    }
+}

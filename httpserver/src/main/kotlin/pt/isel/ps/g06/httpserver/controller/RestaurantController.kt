@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.util.UriComponentsBuilder
 import pt.isel.ps.g06.httpserver.common.*
+import pt.isel.ps.g06.httpserver.common.exception.forbidden.NotSubmissionOwnerException
 import pt.isel.ps.g06.httpserver.common.exception.notFound.RestaurantNotFoundException
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.RestaurantApiType
 import pt.isel.ps.g06.httpserver.dataAccess.input.RestaurantInput
@@ -16,6 +17,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.output.toSimplifiedRestaurantOutput
 import pt.isel.ps.g06.httpserver.exception.InvalidInputDomain
 import pt.isel.ps.g06.httpserver.exception.InvalidInputException
 import pt.isel.ps.g06.httpserver.service.RestaurantService
+import pt.isel.ps.g06.httpserver.service.SubmissionService
 import javax.validation.Valid
 
 private const val INVALID_RESTAURANT_SEARCH = "To search nearby restaurants, a geolocation must be given!"
@@ -25,6 +27,7 @@ private const val INVALID_RESTAURANT_SEARCH = "To search nearby restaurants, a g
 @RequestMapping(produces = [MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_PROBLEM_JSON_VALUE])
 class RestaurantController(
         private val restaurantService: RestaurantService,
+        private val submissionService: SubmissionService,
         private val restaurantIdentifierBuilder: RestaurantIdentifierBuilder
 ) {
     /**
@@ -80,7 +83,7 @@ class RestaurantController(
 
     @PostMapping(RESTAURANTS, consumes = [MediaType.APPLICATION_JSON_VALUE])
     fun createRestaurant(@Valid @RequestBody restaurant: RestaurantInput): ResponseEntity<Void> {
-        val submitterId = 10        //TODO For when there's authentication
+        val submitterId = 3        //TODO For when there's authentication
 
         val createdRestaurant = restaurantService.createRestaurant(
                 submitterId = submitterId,
@@ -93,13 +96,30 @@ class RestaurantController(
         return ResponseEntity
                 .created(UriComponentsBuilder
                         .fromUriString(RESTAURANT)
-                        .buildAndExpand(createdRestaurant.identifier.toString())
+                        .buildAndExpand(createdRestaurant.identifier.value.toString())
                         .toUri())
                 .build()
     }
 
-    @DeleteMapping(RESTAURANT, consumes = [MediaType.APPLICATION_JSON_VALUE])
-    fun deleteRestaurant(@PathVariable(RESTAURANT_ID_VALUE) id: Int) {
+    @DeleteMapping(RESTAURANT, consumes = [MediaType.ALL_VALUE])
+    fun deleteRestaurant(@PathVariable(RESTAURANT_ID_VALUE) id: String): ResponseEntity<Void> {
+        //TODO Authentication
+        val userId = 3
+        val (submitterId, submissionId, apiId) = restaurantIdentifierBuilder.extractIdentifiers(id)
+
+        val restaurant = (restaurantService
+                .getRestaurant(submitterId, submissionId, apiId)
+                ?: throw RestaurantNotFoundException())
+
+
+        if (!restaurant.isPresentInDatabase() || restaurant.creatorInfo.value.identifier != userId) {
+            //If Restaurant is not in database, owner is an API
+            throw NotSubmissionOwnerException()
+        }
+
+        submissionService.deleteSubmission(restaurant.identifier.value.submissionId!!, userId)
+
+        return ResponseEntity.ok().build()
     }
 
     @PostMapping(RESTAURANT_REPORT, consumes = [MediaType.APPLICATION_JSON_VALUE])

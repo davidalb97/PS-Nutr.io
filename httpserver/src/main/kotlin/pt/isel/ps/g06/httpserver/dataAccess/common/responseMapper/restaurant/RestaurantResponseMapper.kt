@@ -173,9 +173,10 @@ class DbRestaurantResponseMapper(
                 image = dto.image,
                 creationDate = lazy { dbRestaurantRepository.getCreationDate(dto.submission_id) },
                 creatorInfo = lazy {
-                    dbSubmitterRepo.getBySubmissionId(dto.submission_id)?.let { userInfoDto ->
-                        dbCreatorMapper.mapTo(userInfoDto)
-                    }
+                    //Restaurants always have a submitter, even if it's from the API
+                    dbSubmitterRepo
+                            .getBySubmissionId(dto.submission_id)
+                            ?.let { userInfoDto -> dbCreatorMapper.mapTo(userInfoDto) }!!
                 }
         )
     }

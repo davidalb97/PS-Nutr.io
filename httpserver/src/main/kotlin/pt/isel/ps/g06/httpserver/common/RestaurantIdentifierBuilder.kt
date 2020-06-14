@@ -14,11 +14,9 @@ class RestaurantIdentifierBuilder {
 
         if (values.size != NUMBER_OF_IDS) {
             throw MalformedRestaurantIdentifierResponseStatusException(
-                    """
-                    Cannot extract all identifiers from given String!
-                    Required: $NUMBER_OF_IDS
-                    Found: ${values.size}
-                    """
+                    "Cannot extract all identifiers from given String!\n" +
+                            "Required: $NUMBER_OF_IDS\n" +
+                            "Found: ${values.size}"
             )
         }
 
