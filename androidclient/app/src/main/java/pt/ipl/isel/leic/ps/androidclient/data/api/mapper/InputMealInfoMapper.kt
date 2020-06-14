@@ -5,6 +5,7 @@ import pt.ipl.isel.leic.ps.androidclient.data.db.entity.DbMealInfoEntity
 import pt.ipl.isel.leic.ps.androidclient.data.model.Cuisine
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealInfo
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealIngredient
+import pt.ipl.isel.leic.ps.androidclient.data.util.TimestampWithTimeZone
 
 class InputMealInfoMapper(
     private val inputVotesMapper: InputVotesMapper,
@@ -23,7 +24,7 @@ class InputMealInfoMapper(
         votes = inputVotesMapper.mapToModel(dto.votes),
         isFavorite = dto.isFavorite,
         imageUri = dto.imageUri,
-        creationDate = dto.creationDate,
+        creationDate = TimestampWithTimeZone.parse(dto.creationDate.toString()),
         ingredientComponents = dto.composedBy?.let {
             inputMealIngredientMapper.mapToListModel(it.ingredients, false)
         } ?: emptyList(),

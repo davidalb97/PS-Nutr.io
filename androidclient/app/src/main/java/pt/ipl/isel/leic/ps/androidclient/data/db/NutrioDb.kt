@@ -2,7 +2,9 @@ package pt.ipl.isel.leic.ps.androidclient.data.db
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import pt.ipl.isel.leic.ps.androidclient.ROOM_DB_VERSION
+import pt.ipl.isel.leic.ps.androidclient.data.db.converter.TimestampWithTimeZoneConverter
 import pt.ipl.isel.leic.ps.androidclient.data.db.dao.*
 import pt.ipl.isel.leic.ps.androidclient.data.db.entity.*
 
@@ -21,6 +23,7 @@ import pt.ipl.isel.leic.ps.androidclient.data.db.entity.*
     ],
     version = ROOM_DB_VERSION
 )
+@TypeConverters(TimestampWithTimeZoneConverter::class)
 abstract class NutrioDb : RoomDatabase() {
 
     abstract fun restaurantInfoDao(): RestaurantInfoDao

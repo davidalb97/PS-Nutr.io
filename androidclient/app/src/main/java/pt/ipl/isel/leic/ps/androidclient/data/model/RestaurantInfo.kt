@@ -4,7 +4,6 @@ import android.net.Uri
 import android.os.Parcel
 import android.os.Parcelable
 import pt.ipl.isel.leic.ps.androidclient.data.util.*
-import java.time.OffsetDateTime
 
 data class RestaurantInfo(
     var dbId: Long,
@@ -12,7 +11,7 @@ data class RestaurantInfo(
     val name: String,
     val latitude: Float,
     val longitude: Float,
-    val creationDate: OffsetDateTime?,
+    val creationDate: TimestampWithTimeZone?,
     val votes: Votes?,
     val isFavorite: Boolean,
     val imageUri: Uri?,
@@ -27,7 +26,7 @@ data class RestaurantInfo(
         name = parcel.readString()!!,
         latitude = parcel.readFloat(),
         longitude = parcel.readFloat(),
-        creationDate = readOffsetDateTime(parcel),
+        creationDate = readTimestampWithTimeZone(parcel),
         votes = parcel.readParcelable(Votes::class.java.classLoader),
         isFavorite = parcel.readInt() != 0,
         imageUri = readUri(parcel),
@@ -42,7 +41,7 @@ data class RestaurantInfo(
         parcel.writeString(name)
         parcel.writeFloat(latitude)
         parcel.writeFloat(longitude)
-        writeOffsetDateTime(parcel, creationDate)
+        writeTimestampWithTimeZone(parcel, creationDate)
         parcel.writeParcelable(votes, flags)
         parcel.writeValue(isFavorite)
         writeUri(parcel, imageUri)

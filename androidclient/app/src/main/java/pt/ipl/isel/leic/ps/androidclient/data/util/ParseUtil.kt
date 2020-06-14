@@ -30,11 +30,10 @@ fun writeUri(parcel: Parcel, uri: Uri?) {
     return parcel.writeString(uri?.toString() ?: "")
 }
 
-fun readOffsetDateTime(parcel: Parcel): OffsetDateTime? {
-    //TODO Implement OffsetDateTime read operation
-    return null
+fun readTimestampWithTimeZone(parcel: Parcel): TimestampWithTimeZone? {
+    return TimestampWithTimeZone.parse(parcel.readString())
 }
 
-fun writeOffsetDateTime(parcel: Parcel, offsetDateTime: OffsetDateTime?) {
-    //TODO Implement OffsetDateTime write operation
+fun writeTimestampWithTimeZone(parcel: Parcel, offsetDateTime: TimestampWithTimeZone?) {
+    return parcel.writeString(offsetDateTime?.toString())
 }

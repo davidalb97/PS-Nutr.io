@@ -4,8 +4,6 @@ import android.net.Uri
 import android.os.Parcel
 import android.os.Parcelable
 import pt.ipl.isel.leic.ps.androidclient.data.util.*
-import java.net.URI
-import java.time.OffsetDateTime
 
 class MealInfo(
     var dbId: Long,
@@ -17,7 +15,7 @@ class MealInfo(
     val votes: Votes?,
     val isFavorite: Boolean,
     val imageUri: Uri?,
-    val creationDate: OffsetDateTime?,
+    val creationDate: TimestampWithTimeZone?,
     val ingredientComponents: List<MealIngredient>,
     val mealComponents: List<MealIngredient>,
     val cuisines: List<Cuisine>,
@@ -35,7 +33,7 @@ class MealInfo(
         votes = parcel.readParcelable(Votes::class.java.classLoader),
         isFavorite = readBoolean(parcel),
         imageUri = readUri(parcel),
-        creationDate = readOffsetDateTime(parcel),
+        creationDate = readTimestampWithTimeZone(parcel),
         ingredientComponents = readList(parcel, MealIngredient::class),
         mealComponents = readList(parcel, MealIngredient::class),
         cuisines = readList(parcel, Cuisine::class),
@@ -57,7 +55,7 @@ class MealInfo(
         parcel.writeList(cuisines)
         parcel.writeList(portions)
         writeBoolean(parcel, isSuggested)
-        writeOffsetDateTime(parcel, creationDate)
+        writeTimestampWithTimeZone(parcel, creationDate)
     }
 
     override fun describeContents(): Int {

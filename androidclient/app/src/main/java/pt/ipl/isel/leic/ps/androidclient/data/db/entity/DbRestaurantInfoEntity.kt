@@ -1,12 +1,8 @@
 package pt.ipl.isel.leic.ps.androidclient.data.db.entity
 
-import android.os.Parcel
-import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import pt.ipl.isel.leic.ps.androidclient.data.util.readList
-import pt.ipl.isel.leic.ps.androidclient.data.util.readOffsetDateTime
-import pt.ipl.isel.leic.ps.androidclient.data.util.writeOffsetDateTime
+import pt.ipl.isel.leic.ps.androidclient.data.util.TimestampWithTimeZone
 import java.time.OffsetDateTime
 
 @Entity(tableName = DbRestaurantInfoEntity.tableName)
@@ -21,7 +17,7 @@ data class DbRestaurantInfoEntity(
     val positiveVotes: Int?,
     val negativeVotes: Int?,
     val userVoteOrdinal: Int?,
-    val creationDate: OffsetDateTime?
+    val creationDate: TimestampWithTimeZone?
 ) {
 
     companion object {
