@@ -5,9 +5,7 @@ import org.springframework.stereotype.Repository
 import pt.isel.ps.g06.httpserver.dataAccess.api.common.BaseApiRequester
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.uri.RestaurantUri
 import pt.isel.ps.g06.httpserver.dataAccess.model.RestaurantDto
-import java.net.URI
 import java.net.http.HttpClient
-import java.net.http.HttpRequest
 import java.net.http.HttpResponse
 import java.util.concurrent.CompletableFuture
 
@@ -33,6 +31,4 @@ abstract class RestaurantApi(
     abstract fun handleRestaurantInfoResponse(responseFuture: CompletableFuture<HttpResponse<String>>): CompletableFuture<RestaurantDto?>
 
     abstract fun handleNearbyRestaurantsResponse(responseFuture: CompletableFuture<HttpResponse<String>>): CompletableFuture<Collection<RestaurantDto>>
-
-    abstract fun buildGetRequest(uri: URI): HttpRequest
 }

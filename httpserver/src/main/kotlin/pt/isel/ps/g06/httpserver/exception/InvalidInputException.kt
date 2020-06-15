@@ -11,6 +11,7 @@ class InvalidInputException(val domain: InvalidInputDomain, val detail: String) 
 enum class InvalidInputDomain(val domain: String) {
     AUTHENTICATION("authentication"),
     SUBMITTER("submitter"),
+    RESTAURANT("restaurant"),
     SUBMISSION("submission"),
     SUBMISSION_SUBMITTER("submission-submitter"),
     API("api"),
