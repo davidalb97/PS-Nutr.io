@@ -67,7 +67,7 @@ class MainActivity : AppCompatActivity() {
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
 
-    /* TODO
+/*    // TODO
     override fun onBackPressed() {
         log.v("Called onBackPressed()")
         val count = supportFragmentManager.backStackEntryCount
