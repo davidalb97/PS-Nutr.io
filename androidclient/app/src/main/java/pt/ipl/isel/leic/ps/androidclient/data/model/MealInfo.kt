@@ -9,6 +9,7 @@ class MealInfo(
     dbId: Long,
     dbRestaurantId: Long,
     submissionId: Int,
+    restaurantSubmissionId: String?,
     name: String,
     override val carbs: Int,
     override val amount: Int,
@@ -27,6 +28,7 @@ class MealInfo(
     dbId = dbId,
     dbRestaurantId = dbRestaurantId,
     submissionId = submissionId,
+    restaurantSubmissionId = restaurantSubmissionId,
     name = name,
     carbs = carbs,
     amount = amount,
@@ -42,6 +44,7 @@ class MealInfo(
         dbId = parcel.readLong(),
         dbRestaurantId = parcel.readLong(),
         submissionId = parcel.readInt(),
+        restaurantSubmissionId = parcel.readString(),
         name = parcel.readString()!!,
         carbs = parcel.readInt(),
         amount = parcel.readInt(),
@@ -59,7 +62,10 @@ class MealInfo(
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeLong(dbId)
+        parcel.writeLong(dbRestaurantId)
         parcel.writeInt(submissionId)
+        parcel.writeString(restaurantSubmissionId)
         parcel.writeString(name)
         parcel.writeInt(carbs)
         parcel.writeInt(amount)

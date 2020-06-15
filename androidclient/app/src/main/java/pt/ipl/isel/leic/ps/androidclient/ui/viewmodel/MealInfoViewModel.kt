@@ -3,6 +3,7 @@ package pt.ipl.isel.leic.ps.androidclient.ui.viewmodel
 import android.os.Parcel
 import android.os.Parcelable
 import androidx.lifecycle.LifecycleOwner
+import com.android.volley.VolleyError
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.mealRepository
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealInfo
 import pt.ipl.isel.leic.ps.androidclient.data.model.RestaurantInfo
@@ -68,16 +69,14 @@ class MealInfoViewModel : ARecyclerViewModel<MealInfo>() {
         return 0
     }
 
-    fun upVote() {
-        TODO("Not yet implemented")
-    }
-
-    fun downVote() {
-        TODO("Not yet implemented")
-    }
-
-    fun removeLastSource() {
-        liveDataHandler.removeLastSource()
+    fun setVote(vote: Boolean, success: () -> Unit, error: (VolleyError) -> Unit) {
+        mealRepository.putVote(
+            restaurantId = mealInfo!!.restaurantSubmissionId!!,
+            mealId = mealInfo!!.submissionId,
+            vote = vote,
+            success = success,
+            error = error
+        )
     }
 
     fun removeObservers(owner: LifecycleOwner) {

@@ -10,10 +10,11 @@ import pt.ipl.isel.leic.ps.androidclient.data.model.Source
 class InputMealItemMapper(
     private val inputVotesMapper: InputVotesMapper
 ) {
-    fun mapToModel(dto: SimplifiedMealInput) = MealItem(
+    fun mapToModel(dto: SimplifiedMealInput, restaurantId: String?) = MealItem(
             dbId = DbMealItemEntity.DEFAULT_DB_ID,
             dbRestaurantId = DbMealItemEntity.DEFAULT_DB_ID,
             submissionId = dto.mealIdentifier,
+            restaurantSubmissionId = restaurantId,
             //Nutritional info does not come in form of a MealItem,
             //this field is used for custom meal display
             carbs = null,
@@ -27,16 +28,16 @@ class InputMealItemMapper(
             source = Source.API
     )
 
-    fun mapToListModel(dtos: Iterable<SimplifiedMealInput>)
-            = dtos.map(this::mapToModel)
+    fun mapToListModel(dtos: Iterable<SimplifiedMealInput>, restaurantId: String?)
+            = dtos.map { mapToModel(it, restaurantId) }
 
-    fun mapToListModel(dtos: Array<SimplifiedMealInput>)
-            = dtos.map(this::mapToModel)
+    fun mapToListModel(dtos: Array<SimplifiedMealInput>, restaurantId: String?)
+            = dtos.map { mapToModel(it, restaurantId) }
 
-    fun mapToListModel(dto: SimplifiedMealsInput)
-            = mapToListModel(dto.meals)
+    fun mapToListModel(dto: SimplifiedMealsInput, restaurantId: String?)
+            = mapToListModel(dto.meals, restaurantId)
 
     fun mapToListModel(dto: SimplifiedRestaurantMealsInput)
-            = mapToListModel(dto.suggestedMeals)
-            .plus(mapToListModel(dto.userMeals))
+            = mapToListModel(dto.suggestedMeals, dto.restaurantIdentifier)
+            .plus(mapToListModel(dto.userMeals, dto.restaurantIdentifier))
 }

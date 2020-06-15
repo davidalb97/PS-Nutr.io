@@ -9,6 +9,7 @@ import java.time.OffsetDateTime
 @Entity(tableName = DbMealInfoEntity.tableName)
 open class DbMealInfoEntity(
     val submissionId: Int,
+    val restaurantSubmissionId: String?,
     val name: String,
     val carbs: Int,
     val amount: Int,

@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.bumptech.glide.Glide
@@ -79,14 +80,22 @@ class RestaurantDetailFragment : MealRecyclerFragment(){
         // Upvote
         restaurantUpvoteButton?.setOnClickListener { view ->
             restaurantRepository.putVote(restaurantInfo.id, true, {
-                //TODO change vote color
+                Toast.makeText(
+                    this.context,
+                    "Upvoted!",
+                    Toast.LENGTH_LONG
+                ).show()
             }, log::e)
         }
 
         // Downvote
         restaurantDownvoteButton?.setOnClickListener { view ->
             restaurantRepository.putVote(restaurantInfo.id, false, {
-                //TODO change vote color
+                Toast.makeText(
+                    this.context,
+                    "Downvoted!",
+                    Toast.LENGTH_LONG
+                ).show()
             },log::e)
         }
     }

@@ -97,16 +97,37 @@ class MealDetailFragment : IngredientsRecyclerFragment() {
 
             // Upvote
             mealUpvoteButton?.setOnClickListener { view ->
-                viewModelMealInfo.upVote()
+                viewModelMealInfo.setVote(
+                    vote = true,
+                    success = {
+                        Toast.makeText(
+                            this.context,
+                            "Upvoted!",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    },
+                    error = log::e
+                )
             }
 
             // Downvote
             mealDownvoteButton?.setOnClickListener { view ->
-                viewModelMealInfo.downVote()
+                viewModelMealInfo.setVote(
+                    vote = true,
+                    success = {
+                        Toast.makeText(
+                            this.context,
+                            "Downvoted!",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    },
+                    error = log::e
+                )
             }
         } else {
             mealAddIngredientImgBtn?.visibility = View.VISIBLE
             mealAddIngredientImgBtn?.setOnClickListener {
+
                 //TODO Navigate to fragment and select meals & ingredients to add to ingredient recycler
             }
         }

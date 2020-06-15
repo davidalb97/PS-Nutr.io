@@ -82,6 +82,7 @@ class AddCustomMealFragment : Fragment() {
                     MealInfo(
                         dbId = DbMealInfoEntity.DEFAULT_DB_ID,
                         dbRestaurantId = DbMealInfoEntity.DEFAULT_DB_ID,
+                        restaurantSubmissionId = null,
                         submissionId = MealInfo.DEFAULT_SUBMISSION_ID,
                         name = customMealName.text.toString(),
                         carbs = customMealCarbsAmount.text.toString().toInt(),

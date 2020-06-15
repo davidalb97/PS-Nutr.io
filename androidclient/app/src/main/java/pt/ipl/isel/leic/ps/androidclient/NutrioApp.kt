@@ -20,7 +20,7 @@ import pt.ipl.isel.leic.ps.androidclient.data.repo.*
 
 const val TAG = "Nutr.io App"
 const val ROOM_DB_NAME = "nutrio-db"
-const val ROOM_DB_VERSION = 18
+const val ROOM_DB_VERSION = 19
 
 /**
  * The application context.
