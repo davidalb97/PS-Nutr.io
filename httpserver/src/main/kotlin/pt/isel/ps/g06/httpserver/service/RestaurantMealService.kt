@@ -99,7 +99,7 @@ class RestaurantMealService(
         val restaurantMeal = getRestaurantMeal(restaurantId, mealId)
         val meal = restaurantMeal.meal
 
-        if (!meal.isUserMeal() || meal.creatorInfo.value!!.identifier != submitterId) {
+        if (!meal.isUserMeal() || meal.submitterInfo.value!!.identifier != submitterId) {
             throw NotSubmissionOwnerException()
         }
 

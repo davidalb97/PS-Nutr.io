@@ -1,15 +1,15 @@
 package pt.isel.ps.g06.httpserver.dataAccess.output.vote
 
-import pt.isel.ps.g06.httpserver.model.Creator
+import pt.isel.ps.g06.httpserver.model.Submitter
 
 data class SimplifiedUserOutput(
         val id: Int,
         val name: String
 )
 
-fun toSimplifiedUserOutput(creator: Creator): SimplifiedUserOutput {
+fun toSimplifiedUserOutput(submitter: Submitter): SimplifiedUserOutput {
     return SimplifiedUserOutput(
-            id = creator.identifier,
-            name = creator.name
+            id = submitter.identifier,
+            name = submitter.name
     )
 }

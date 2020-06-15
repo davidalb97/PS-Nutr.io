@@ -12,7 +12,7 @@ class DbMealResponseMapper(
         private val ingredientMapper: DbMealIngredientResponseMapper,
         private val mealComponentMapper: DbMealComponentResponseMapper,
         private val nutritionalMapper: DbNutritionalValuesResponseMapper,
-        private val dbCreatorMapper: DbCreatorResponseMapper,
+        private val dbSubmitterMapper: DbSubmitterResponseMapper,
         private val dbCuisineMapper: DbCuisineResponseMapper,
         private val dbMealRepo: MealDbRepository,
         private val dbRestaurantMeal: RestaurantMealDbRepository,
@@ -33,10 +33,10 @@ class DbMealResponseMapper(
                         ingredients = ingredientMapper.mapTo(dto)
                 ),
                 cuisines = dbCuisineRepo.getAllByMealId(dto.submission_id).map(dbCuisineMapper::mapTo),
-                creatorInfo = lazy {
-                   dbSubmitterRepo
-                            .getBySubmissionId(dto.submission_id)
-                            ?.let { userInfoDto -> dbCreatorMapper.mapTo(userInfoDto) }
+                submitterInfo = lazy {
+                    dbSubmitterRepo
+                            .getSubmitterForSubmission(dto.submission_id)
+                            ?.let { submitter -> dbSubmitterMapper.mapTo(submitter) }
                 },
                 creationDate = lazy { dbMealRepo.getCreationDate(dto.submission_id) },
                 restaurantInfoSupplier = { restaurantIdentifier ->

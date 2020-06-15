@@ -13,7 +13,7 @@ data class Meal(
         val nutritionalValues: NutritionalValues,
         val composedBy: MealComposition,
         val cuisines: Sequence<Cuisine>,
-        val creatorInfo: Lazy<Creator?>,
+        val submitterInfo: Lazy<Submitter?>,
         val creationDate: Lazy<OffsetDateTime?>,
         //TODO See usages and replace by restaurantInfo map function call
         val restaurantInfoSupplier: (RestaurantIdentifier) -> MealRestaurantInfo?,
@@ -24,10 +24,10 @@ data class Meal(
      * This also allows to know that given Meal **is not** a suggested Meal, if false, as suggested Meals
      * have no submitter/owner
      *
-     * *This operation initializes [creatorInfo] value.*
+     * *This operation initializes [submitterInfo] value.*
      */
     fun isUserMeal(): Boolean {
-        return creatorInfo.value != null
+        return submitterInfo.value != null
     }
 
     fun isRestaurantMeal(restaurant: Restaurant): Boolean {

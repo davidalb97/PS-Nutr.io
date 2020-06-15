@@ -16,7 +16,7 @@ class SubmitterDbRepository(private val jdbi: Jdbi) {
         }
     }
 
-    fun getBySubmissionId(submissionId: Int): DbSubmitterDto? {
+    fun getSubmitterForSubmission(submissionId: Int): DbSubmitterDto? {
         return jdbi.inTransaction<DbSubmitterDto?, Exception>(isolationLevel) { handle ->
             return@inTransaction handle
                     .attach(SubmitterDao::class.java)

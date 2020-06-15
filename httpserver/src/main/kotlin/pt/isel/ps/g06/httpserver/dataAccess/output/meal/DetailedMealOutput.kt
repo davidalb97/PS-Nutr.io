@@ -36,6 +36,6 @@ fun toDetailedMealOutput(meal: Meal, userId: Int? = null): DetailedMealOutput {
             creationDate = meal.creationDate.value,
             composedBy = toMealComposition(meal),
             nutritionalInfo = toNutritionalInfoOutput(meal.nutritionalValues),
-            createdBy = meal.creatorInfo.value?.let { toSimplifiedUserOutput(it) }
+            createdBy = meal.submitterInfo.value?.let { toSimplifiedUserOutput(it) }
     )
 }

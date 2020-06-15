@@ -13,7 +13,7 @@ data class Restaurant(
         val isFavorite: (Int) -> Boolean,
         val userVote: (Int) -> VoteState,
         val votes: Votes,
-        val creatorInfo: Lazy<Creator>,
+        val submitterInfo: Lazy<Submitter>,
         val creationDate: Lazy<OffsetDateTime?>,
         val meals: Sequence<Meal>,
         val suggestedMeals: Sequence<Meal>,

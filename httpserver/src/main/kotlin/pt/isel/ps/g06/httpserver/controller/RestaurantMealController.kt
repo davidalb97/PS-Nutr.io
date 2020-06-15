@@ -8,6 +8,7 @@ import pt.isel.ps.g06.httpserver.common.*
 import pt.isel.ps.g06.httpserver.common.exception.clientError.ForbiddenInsertionResponseStatusException
 import pt.isel.ps.g06.httpserver.common.exception.notFound.MealNotFoundException
 import pt.isel.ps.g06.httpserver.common.exception.notFound.RestaurantNotFoundException
+import pt.isel.ps.g06.httpserver.common.interceptor.ensureSubmitter
 import pt.isel.ps.g06.httpserver.dataAccess.input.PortionInput
 import pt.isel.ps.g06.httpserver.dataAccess.input.RestaurantMealInput
 import pt.isel.ps.g06.httpserver.dataAccess.input.VoteInput
@@ -18,6 +19,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.output.meal.toRestaurantMealContaine
 import pt.isel.ps.g06.httpserver.service.MealService
 import pt.isel.ps.g06.httpserver.service.RestaurantMealService
 import pt.isel.ps.g06.httpserver.service.RestaurantService
+import javax.servlet.http.HttpServletRequest
 import javax.validation.Valid
 
 @Suppress("MVCPathVariableInspection")
@@ -73,9 +75,10 @@ class RestaurantMealController(
     @PostMapping(RESTAURANT_MEALS, consumes = [MediaType.APPLICATION_JSON_VALUE])
     fun addRestaurantMeal(
             @PathVariable(RESTAURANT_ID_VALUE) id: String,
-            @Valid @RequestBody restaurantMeal: RestaurantMealInput
+            @Valid @RequestBody restaurantMeal: RestaurantMealInput,
+            request: HttpServletRequest
     ): ResponseEntity<Void> {
-        val userId = 3  //TODO For when there's authentication
+        val (submitterId) = request.ensureSubmitter()
         val restaurantIdentifier = restaurantIdentifierBuilder.extractIdentifiers(id)
 
         val restaurant = restaurantService
@@ -90,7 +93,7 @@ class RestaurantMealController(
             throw ForbiddenInsertionResponseStatusException("Only meals created by you can be inserted!")
         }
 
-        restaurantMealService.addRestaurantMeal(restaurantIdentifier, meal, userId)
+        restaurantMealService.addRestaurantMeal(restaurantIdentifier, meal, submitterId)
 
         return ResponseEntity
                 .created(UriComponentsBuilder
@@ -105,16 +108,16 @@ class RestaurantMealController(
     fun addMealPortion(
             @PathVariable(RESTAURANT_ID_VALUE) restaurantId: String,
             @PathVariable(MEAL_ID_VALUE) mealId: Int,
-            @Valid @RequestBody portion: PortionInput
+            @Valid @RequestBody portion: PortionInput,
+            request: HttpServletRequest
     ): ResponseEntity<Void> {
-        //TODO When there's authentication
-        val userId = 3
+        val (submitterId) = request.ensureSubmitter()
         val restaurantIdentifier = restaurantIdentifierBuilder.extractIdentifiers(restaurantId)
 
         restaurantMealService.addRestaurantMealPortion(
                 restaurantId = restaurantIdentifier,
                 mealId = mealId,
-                submitterId = userId,
+                submitterId = submitterId,
                 quantity = portion.quantity!!
         )
 
@@ -125,16 +128,16 @@ class RestaurantMealController(
     fun alterRestaurantMealVote(
             @PathVariable(RESTAURANT_ID_VALUE) restaurantId: String,
             @PathVariable(MEAL_ID_VALUE) mealId: Int,
-            @Valid @RequestBody userVote: VoteInput
+            @Valid @RequestBody userVote: VoteInput,
+            request: HttpServletRequest
     ): ResponseEntity<Void> {
-        //TODO When there's authentication
-        val userId = 3
+        val (submitterId) = request.ensureSubmitter()
         val restaurantIdentifier = restaurantIdentifierBuilder.extractIdentifiers(restaurantId)
 
         restaurantMealService.alterRestaurantMealVote(
                 restaurantId = restaurantIdentifier,
                 mealId = mealId,
-                submitterId = userId,
+                submitterId = submitterId,
                 //Valid checks make sure user vote is not null
                 vote = userVote.vote!!
         )
@@ -145,37 +148,39 @@ class RestaurantMealController(
     @DeleteMapping(RESTAURANT_MEAL_VOTE)
     fun deleteMealVote(
             @PathVariable(RESTAURANT_ID_VALUE) restaurantId: String,
-            @PathVariable(MEAL_ID_VALUE) mealId: Int
+            @PathVariable(MEAL_ID_VALUE) mealId: Int,
+            request: HttpServletRequest
     ) {
-        //TODO When there's authentication
-        val userId = 3
+        val (submitterId) = request.ensureSubmitter()
+
         val restaurantIdentifier = restaurantIdentifierBuilder.extractIdentifiers(restaurantId)
 
-        restaurantMealService.deleteRestaurantMealVote(restaurantIdentifier, mealId, userId)
+        restaurantMealService.deleteRestaurantMealVote(restaurantIdentifier, mealId, submitterId)
     }
 
     @DeleteMapping(RESTAURANT_MEAL_PORTION)
     fun deleteMealPortion(
             @PathVariable(RESTAURANT_ID_VALUE) restaurantId: String,
-            @PathVariable(MEAL_ID_VALUE) mealId: Int
+            @PathVariable(MEAL_ID_VALUE) mealId: Int,
+            request: HttpServletRequest
     ) {
-        //TODO When there's authentication
-        val userId = 3
+        val (submitterId) = request.ensureSubmitter()
+
         val restaurantIdentifier = restaurantIdentifierBuilder.extractIdentifiers(restaurantId)
 
-        restaurantMealService.deleteUserPortion(restaurantIdentifier, mealId, userId)
+        restaurantMealService.deleteUserPortion(restaurantIdentifier, mealId, submitterId)
     }
 
     @DeleteMapping(RESTAURANT_MEAL)
     fun deleteRestaurantMeal(
             @PathVariable(RESTAURANT_ID_VALUE) restaurantId: String,
-            @PathVariable(MEAL_ID_VALUE) mealId: Int
+            @PathVariable(MEAL_ID_VALUE) mealId: Int,
+            request: HttpServletRequest
     ): ResponseEntity<Void> {
-        //TODO When there's authentication
-        val userId = 3
+        val (submitterId) = request.ensureSubmitter()
         val restaurantIdentifier = restaurantIdentifierBuilder.extractIdentifiers(restaurantId)
 
-        restaurantMealService.deleteRestaurantMeal(restaurantIdentifier, mealId, userId)
+        restaurantMealService.deleteRestaurantMeal(restaurantIdentifier, mealId, submitterId)
 
         return ResponseEntity.ok().build()
     }

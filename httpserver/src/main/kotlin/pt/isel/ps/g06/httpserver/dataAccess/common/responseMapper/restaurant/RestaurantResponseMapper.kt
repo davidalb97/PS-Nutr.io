@@ -66,8 +66,8 @@ class HereRestaurantResponseMapper(
                 image = dto.image,
                 //Here api does not supply creation date
                 creationDate = lazy<OffsetDateTime?> { null },
-                creatorInfo = lazy {
-                    Creator(
+                submitterInfo = lazy {
+                    Submitter(
                             identifier = apiSubmitterId,
                             name = RestaurantApiType.Here.toString(),
                             creationDate = null,
@@ -113,8 +113,8 @@ class ZomatoRestaurantResponseMapper(
                 image = dto.image,
                 //Zomato api does not supply creation date
                 creationDate = lazy<OffsetDateTime?> { null },
-                creatorInfo = lazy {
-                    Creator(
+                submitterInfo = lazy {
+                    Submitter(
                             identifier = apiSubmitterId,
                             name = RestaurantApiType.Zomato.toString(),
                             creationDate = null,
@@ -136,7 +136,7 @@ class DbRestaurantResponseMapper(
         private val dbMealMapper: DbMealResponseMapper,
         private val dbCuisineMapper: DbCuisineResponseMapper,
         private val dbVotesMapper: DbVotesResponseMapper,
-        private val dbCreatorMapper: DbCreatorResponseMapper
+        private val dbSubmitterMapper: DbSubmitterResponseMapper
 ) : ResponseMapper<DbRestaurantDto, Restaurant> {
 
     override fun mapTo(dto: DbRestaurantDto): Restaurant {
@@ -172,11 +172,11 @@ class DbRestaurantResponseMapper(
                 isFavorite = { userId -> dbFavoriteRepo.getFavorite(dto.submission_id, userId) },
                 image = dto.image,
                 creationDate = lazy { dbRestaurantRepository.getCreationDate(dto.submission_id) },
-                creatorInfo = lazy {
+                submitterInfo = lazy {
                     //Restaurants always have a submitter, even if it's from the API
                     dbSubmitterRepo
-                            .getBySubmissionId(dto.submission_id)
-                            ?.let { userInfoDto -> dbCreatorMapper.mapTo(userInfoDto) }!!
+                            .getSubmitterForSubmission(dto.submission_id)
+                            ?.let { submitter -> dbSubmitterMapper.mapTo(submitter) }!!
                 }
         )
     }

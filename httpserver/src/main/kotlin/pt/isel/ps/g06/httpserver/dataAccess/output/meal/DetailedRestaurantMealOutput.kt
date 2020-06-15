@@ -53,7 +53,7 @@ fun toDetailedRestaurantMealOutput(restaurantMeal: RestaurantMeal, userId: Int? 
             creationDate = meal.creationDate.value,
             composedBy = toMealComposition(meal),
             nutritionalInfo = toNutritionalInfoOutput(meal.nutritionalValues),
-            createdBy = meal.creatorInfo.value?.let { toSimplifiedUserOutput(it) },
+            createdBy = meal.submitterInfo.value?.let { toSimplifiedUserOutput(it) },
             votes = votes,
             isSuggested = !meal.isUserMeal(),
             portions = restaurantMealInfo

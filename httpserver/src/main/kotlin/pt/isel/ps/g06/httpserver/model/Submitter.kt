@@ -3,7 +3,7 @@ package pt.isel.ps.g06.httpserver.model
 import java.net.URI
 import java.time.OffsetDateTime
 
-data class Creator(
+data class Submitter(
         val identifier: Int,
         val name: String,
         val creationDate: OffsetDateTime?,

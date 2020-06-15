@@ -7,6 +7,7 @@ import org.springframework.web.util.UriComponentsBuilder
 import pt.isel.ps.g06.httpserver.common.*
 import pt.isel.ps.g06.httpserver.common.exception.forbidden.NotSubmissionOwnerException
 import pt.isel.ps.g06.httpserver.common.exception.notFound.RestaurantNotFoundException
+import pt.isel.ps.g06.httpserver.common.interceptor.ensureSubmitter
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.RestaurantApiType
 import pt.isel.ps.g06.httpserver.dataAccess.input.RestaurantInput
 import pt.isel.ps.g06.httpserver.dataAccess.input.VoteInput
@@ -18,6 +19,7 @@ import pt.isel.ps.g06.httpserver.exception.InvalidInputDomain
 import pt.isel.ps.g06.httpserver.exception.InvalidInputException
 import pt.isel.ps.g06.httpserver.service.RestaurantService
 import pt.isel.ps.g06.httpserver.service.SubmissionService
+import javax.servlet.http.HttpServletRequest
 import javax.validation.Valid
 
 private const val INVALID_RESTAURANT_SEARCH = "To search nearby restaurants, a geolocation must be given!"
@@ -82,8 +84,8 @@ class RestaurantController(
     }
 
     @PostMapping(RESTAURANTS, consumes = [MediaType.APPLICATION_JSON_VALUE])
-    fun createRestaurant(@Valid @RequestBody restaurant: RestaurantInput): ResponseEntity<Void> {
-        val submitterId = 3        //TODO For when there's authentication
+    fun createRestaurant(@Valid @RequestBody restaurant: RestaurantInput, request: HttpServletRequest): ResponseEntity<Void> {
+        val (submitterId) = request.ensureSubmitter()
 
         val createdRestaurant = restaurantService.createRestaurant(
                 submitterId = submitterId,
@@ -102,23 +104,22 @@ class RestaurantController(
     }
 
     @DeleteMapping(RESTAURANT, consumes = [MediaType.ALL_VALUE])
-    fun deleteRestaurant(@PathVariable(RESTAURANT_ID_VALUE) id: String): ResponseEntity<Void> {
-        //TODO Authentication
-        val userId = 3
-        val (submitterId, submissionId, apiId) = restaurantIdentifierBuilder.extractIdentifiers(id)
+    fun deleteRestaurant(@PathVariable(RESTAURANT_ID_VALUE) id: String, request: HttpServletRequest): ResponseEntity<Void> {
+        val (submitterId) = request.ensureSubmitter()
+
+        val (restaurantId, submissionId, apiId) = restaurantIdentifierBuilder.extractIdentifiers(id)
 
         val restaurant = (restaurantService
-                .getRestaurant(submitterId, submissionId, apiId)
+                .getRestaurant(restaurantId, submissionId, apiId)
                 ?: throw RestaurantNotFoundException())
 
 
-        if (!restaurant.isPresentInDatabase() || restaurant.creatorInfo.value.identifier != userId) {
+        if (!restaurant.isPresentInDatabase() || restaurant.submitterInfo.value.identifier != submitterId) {
             //If Restaurant is not in database, owner is an API
             throw NotSubmissionOwnerException()
         }
 
-        submissionService.deleteSubmission(restaurant.identifier.value.submissionId!!, userId)
-
+        submissionService.deleteSubmission(restaurant.identifier.value.submissionId!!, submitterId)
         return ResponseEntity.ok().build()
     }
 

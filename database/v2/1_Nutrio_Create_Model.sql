@@ -29,6 +29,7 @@ SET TIMEZONE='Portugal';
 CREATE TABLE Submitter(
 	submitter_id serial PRIMARY KEY,
 	submitter_name varchar(20) NOT NULL,
+	creation_date timestamp with time zone default CURRENT_TIMESTAMP, -- Add to doc
 	submitter_type varchar(5) CHECK(submitter_type = 'User' OR submitter_type = 'API')	
 );
 
@@ -36,7 +37,6 @@ CREATE TABLE _User(
 	submitter_id integer,
 	email varchar(50),
 	session_secret varchar(256) NOT NULL, -- TODO: Check maximum length
-	creation_date timestamp with time zone default CURRENT_TIMESTAMP, -- Add to doc
 	PRIMARY KEY(submitter_id, email),
 	FOREIGN KEY(submitter_id) REFERENCES Submitter(submitter_id)
 );
