@@ -157,8 +157,7 @@ class RestaurantMealController(
     @DeleteMapping(RESTAURANT_MEAL_PORTION)
     fun deleteMealPortion(
             @PathVariable(RESTAURANT_ID_VALUE) restaurantId: String,
-            @PathVariable(MEAL_ID_VALUE) mealId: Int,
-            @RequestBody portion: String
+            @PathVariable(MEAL_ID_VALUE) mealId: Int
     ) {
         //TODO When there's authentication
         val userId = 3
