@@ -2,11 +2,14 @@
 % Chapter 3 - Results
 %
 \chapter{Results}
-
 This chapter shows what has been achieved and developed to this date.\\
 
-As previously written in the project's roadmap and in the last progress report, this project has already a
-HTTP server and an Android application that have most of the features that were planned by this date.
+Overall, every initial mandatory goal stated in the project's proposal was met, with two key exceptions: 
+a missing browser-based client and a missing authentication system. 
+This was due to an ambitious number of mandatory requirements and encountered difficulties mentioned previously in the progress report.\\
+
+However, the first optional objective was fulfilled. Meaning that a community based contribution system which
+allows users to create restaurants, meals and to vote on said submissions is present in the Beta phase.
 
 \section{Relational database}
 
@@ -35,9 +38,14 @@ Therefore each meal possesses nutritional information, which is essential to the
 'carbs' - meal's carbohydrates; and quantity - meal's quantity.\\
 
 \section{HTTP server}
+Given that some mandatory goals were not met, the server endpoints appendix 
+was changed [\nameref{app:endpoints_table}] in order to be consistent with said goals.\\
 
-TODO\\
-Some endpoints were changed [\nameref{app:endpoints_table}] in order to meet with the current server requirements.
+Seeing as user authentication was not implemented, but some endpoints require
+a submitter, a placeholder form of authentication was created which relies on query parameter
+'?submitter={submitterId}' being given.\\
+
+Every 'POST' or 'PUT' endpoint requires authentication.\\
 
 \section{Geolocation}
 
