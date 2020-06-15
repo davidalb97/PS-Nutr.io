@@ -1,5 +1,7 @@
 package pt.isel.ps.g06.httpserver.dataAccess.output.meal
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer
 import pt.isel.ps.g06.httpserver.dataAccess.output.NutritionalInfoOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.toNutritionalInfoOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.vote.SimplifiedUserOutput
@@ -22,6 +24,7 @@ class DetailedRestaurantMealOutput(
         val composedBy: MealCompositionOutput?,
         val nutritionalInfo: NutritionalInfoOutput,
         val portions: Collection<Int>,
+        @JsonSerialize(using = ToStringSerializer::class)
         val createdBy: SimplifiedUserOutput?
 ) : SimplifiedRestaurantMealOutput(
         mealIdentifier = mealIdentifier,

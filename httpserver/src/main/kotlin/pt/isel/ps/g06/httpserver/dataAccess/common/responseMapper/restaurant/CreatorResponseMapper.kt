@@ -5,8 +5,6 @@ import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.ResponseMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.ApiSubmitterMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbSubmitterDto
 import pt.isel.ps.g06.httpserver.model.Submitter
-import java.time.OffsetDateTime
-import java.time.ZoneId
 
 @Component
 class DbSubmitterResponseMapper(
@@ -17,7 +15,7 @@ class DbSubmitterResponseMapper(
                 identifier = dto.submitter_id,
                 name = dto.submitter_name,
                 isUser = apiSubmitterMapper.getApiType(dto.submitter_id) == null,
-                creationDate = OffsetDateTime.ofInstant(dto.creation_date.toInstant(), ZoneId.systemDefault()),
+                creationDate = dto.creation_date,
                 image = null
         )
     }

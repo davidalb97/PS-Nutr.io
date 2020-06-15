@@ -1,11 +1,11 @@
 package pt.isel.ps.g06.httpserver.dataAccess.db.dto
 
-import java.sql.Timestamp
+import java.time.OffsetDateTime
 
 class DbUserDto(
         submitter_id: Int,
         submitter_name: String,
-        creation_date: Timestamp,
+        creation_date: OffsetDateTime,
         val email: String,
         val session_secret: String
 ) : DbSubmitterDto(
