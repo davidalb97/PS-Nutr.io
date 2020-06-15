@@ -10,10 +10,10 @@ import pt.isel.ps.g06.httpserver.common.exception.notFound.RestaurantNotFoundExc
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.RestaurantApiType
 import pt.isel.ps.g06.httpserver.dataAccess.input.RestaurantInput
 import pt.isel.ps.g06.httpserver.dataAccess.input.VoteInput
-import pt.isel.ps.g06.httpserver.dataAccess.output.DetailedRestaurantOutput
-import pt.isel.ps.g06.httpserver.dataAccess.output.SimplifiedRestaurantOutput
-import pt.isel.ps.g06.httpserver.dataAccess.output.toDetailedRestaurantOutput
-import pt.isel.ps.g06.httpserver.dataAccess.output.toSimplifiedRestaurantOutput
+import pt.isel.ps.g06.httpserver.dataAccess.output.restaurant.DetailedRestaurantOutput
+import pt.isel.ps.g06.httpserver.dataAccess.output.restaurant.SimplifiedRestaurantOutput
+import pt.isel.ps.g06.httpserver.dataAccess.output.restaurant.toDetailedRestaurantOutput
+import pt.isel.ps.g06.httpserver.dataAccess.output.restaurant.toSimplifiedRestaurantOutput
 import pt.isel.ps.g06.httpserver.exception.InvalidInputDomain
 import pt.isel.ps.g06.httpserver.exception.InvalidInputException
 import pt.isel.ps.g06.httpserver.service.RestaurantService

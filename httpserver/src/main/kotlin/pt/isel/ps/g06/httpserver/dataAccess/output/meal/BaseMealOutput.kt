@@ -1,9 +1,9 @@
-package pt.isel.ps.g06.httpserver.dataAccess.output
+package pt.isel.ps.g06.httpserver.dataAccess.output.meal
 
 import pt.isel.ps.g06.httpserver.model.Meal
 import java.net.URI
 
-data class SimplifiedMealOutput(
+open class BaseMealOutput(
         val mealIdentifier: Int,
         val name: String,
         val isFavorite: Boolean,
@@ -11,8 +11,8 @@ data class SimplifiedMealOutput(
         val imageUri: URI?
 )
 
-fun toSimplifiedMealOutput(meal: Meal, userId: Int? = null): SimplifiedMealOutput {
-    return SimplifiedMealOutput(
+fun toBaseMealOutput(meal: Meal, userId: Int? = null): BaseMealOutput {
+    return BaseMealOutput(
             mealIdentifier = meal.identifier,
             name = meal.name,
             isFavorite = userId?.let { meal.isFavorite(userId) } ?: false,

@@ -1,18 +1,25 @@
-package pt.isel.ps.g06.httpserver.dataAccess.output
+package pt.isel.ps.g06.httpserver.dataAccess.output.meal
 
+import pt.isel.ps.g06.httpserver.dataAccess.output.vote.VotesOutput
+import pt.isel.ps.g06.httpserver.dataAccess.output.vote.toVotesOutput
 import pt.isel.ps.g06.httpserver.model.Meal
 import pt.isel.ps.g06.httpserver.model.RestaurantIdentifier
 import pt.isel.ps.g06.httpserver.model.VoteState
 import java.net.URI
 
-//TODO Better hierarchy because Simplified Meal output is equal (but without votes)
 open class SimplifiedRestaurantMealOutput(
-        val mealIdentifier: Int,
-        val name: String,
-        val votes: VotesOutput?,
-        val isFavorite: Boolean,
-        val isSuggested: Boolean,
-        val imageUri: URI?
+        mealIdentifier: Int,
+        name: String,
+        isFavorite: Boolean,
+        isSuggested: Boolean,
+        imageUri: URI?,
+        val votes: VotesOutput?
+) : BaseMealOutput(
+        mealIdentifier = mealIdentifier,
+        name = name,
+        isFavorite = isFavorite,
+        isSuggested = isSuggested,
+        imageUri = imageUri
 )
 
 

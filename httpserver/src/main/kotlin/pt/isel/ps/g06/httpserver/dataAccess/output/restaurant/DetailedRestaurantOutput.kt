@@ -1,5 +1,8 @@
-package pt.isel.ps.g06.httpserver.dataAccess.output
+package pt.isel.ps.g06.httpserver.dataAccess.output.restaurant
 
+import pt.isel.ps.g06.httpserver.dataAccess.output.meal.SimplifiedRestaurantMealOutput
+import pt.isel.ps.g06.httpserver.dataAccess.output.meal.toSimplifiedRestaurantMealOutput
+import pt.isel.ps.g06.httpserver.dataAccess.output.vote.VotesOutput
 import pt.isel.ps.g06.httpserver.model.Restaurant
 import pt.isel.ps.g06.httpserver.model.VoteState
 import java.time.OffsetDateTime

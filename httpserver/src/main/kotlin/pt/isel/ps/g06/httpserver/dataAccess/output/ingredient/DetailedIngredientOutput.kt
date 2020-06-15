@@ -1,5 +1,7 @@
-package pt.isel.ps.g06.httpserver.dataAccess.output
+package pt.isel.ps.g06.httpserver.dataAccess.output.ingredient
 
+import pt.isel.ps.g06.httpserver.dataAccess.output.NutritionalInfoOutput
+import pt.isel.ps.g06.httpserver.dataAccess.output.toNutritionalInfoOutput
 import pt.isel.ps.g06.httpserver.model.MealIngredient
 import java.net.URI
 

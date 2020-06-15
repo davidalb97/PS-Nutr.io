@@ -1,12 +1,18 @@
-package pt.isel.ps.g06.httpserver.dataAccess.output
+package pt.isel.ps.g06.httpserver.dataAccess.output.meal
 
+import pt.isel.ps.g06.httpserver.dataAccess.output.NutritionalInfoOutput
+import pt.isel.ps.g06.httpserver.dataAccess.output.toNutritionalInfoOutput
+import pt.isel.ps.g06.httpserver.dataAccess.output.vote.SimplifiedUserOutput
+import pt.isel.ps.g06.httpserver.dataAccess.output.vote.VotesOutput
+import pt.isel.ps.g06.httpserver.dataAccess.output.vote.toSimplifiedUserOutput
+import pt.isel.ps.g06.httpserver.dataAccess.output.vote.toVotesOutput
 import pt.isel.ps.g06.httpserver.model.RestaurantMeal
 import pt.isel.ps.g06.httpserver.model.VoteState
 import java.net.URI
 import java.time.OffsetDateTime
 
 class DetailedRestaurantMealOutput(
-        id: Int,
+        mealIdentifier: Int,
         name: String,
         imageUri: URI?,
         votes: VotesOutput?,
@@ -18,12 +24,12 @@ class DetailedRestaurantMealOutput(
         val portions: Collection<Int>,
         val createdBy: SimplifiedUserOutput?
 ) : SimplifiedRestaurantMealOutput(
-        mealIdentifier = id,
+        mealIdentifier = mealIdentifier,
         name = name,
-        votes = votes,
         isFavorite = isFavorite,
         imageUri = imageUri,
-        isSuggested = isSuggested
+        isSuggested = isSuggested,
+        votes = votes
 )
 
 fun toDetailedRestaurantMealOutput(restaurantMeal: RestaurantMeal, userId: Int? = null): DetailedRestaurantMealOutput {
@@ -40,7 +46,7 @@ fun toDetailedRestaurantMealOutput(restaurantMeal: RestaurantMeal, userId: Int? 
     }
 
     return DetailedRestaurantMealOutput(
-            id = meal.identifier,
+            mealIdentifier = meal.identifier,
             name = meal.name,
             imageUri = meal.imageUri,
             isFavorite = userId?.let { meal.isFavorite(userId) } ?: false,

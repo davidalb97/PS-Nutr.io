@@ -1,4 +1,4 @@
-package pt.isel.ps.g06.httpserver.dataAccess.output
+package pt.isel.ps.g06.httpserver.dataAccess.output.vote
 
 import pt.isel.ps.g06.httpserver.model.Creator
 
