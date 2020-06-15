@@ -9,12 +9,18 @@ class LiveDataHandler<M> {
 
     private val mediatorLiveData: MediatorLiveData<List<M>> = MediatorLiveData()
     val mapped: List<M> get() = mediatorLiveData.value ?: emptyList()
+    private val _monitor = Object()
+    private val prevLiveData: LiveData<*>? = null
 
+    private val sources = mutableListOf<LiveData<*>>()
     private fun <T> observeExternal(newLiveData: LiveData<List<T>>, mapper: (T) -> M, consumer: (List<M>) -> Unit) {
-        if (mapped.isNotEmpty())
-            mediatorLiveData.removeSource(newLiveData)
-        mediatorLiveData.addSource(newLiveData) { newList ->
-            consumer(newList.map(mapper))
+        synchronized(_monitor) {
+            if(prevLiveData != null) {
+                mediatorLiveData.removeSource(prevLiveData)
+            }
+            mediatorLiveData.addSource(newLiveData) { newList ->
+                consumer(newList.map(mapper))
+            }
         }
     }
 

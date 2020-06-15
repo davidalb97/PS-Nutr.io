@@ -10,7 +10,7 @@ import pt.ipl.isel.leic.ps.androidclient.data.model.MealItem
 import pt.ipl.isel.leic.ps.androidclient.data.model.RestaurantInfo
 
 class RestaurantInfoMealRecyclerViewModel(
-    override val restaurantId: String
+    restaurantId: String?
 ) : MealRecyclerViewModel(
     restaurantId
 ), Parcelable {
@@ -19,14 +19,14 @@ class RestaurantInfoMealRecyclerViewModel(
 
     fun fetchInfo(onSuccess: (RestaurantInfo) -> Unit, onError: (Throwable) -> Unit) {
         restaurantRepository.getRestaurantInfoById(
-            restaurantId,
+            restaurantId!!,
             onSuccess,
             onError
         )
     }
 
     override fun writeToParcel(dest: Parcel?, flags: Int) {
-        super.writeToParcel(dest, flags)
+        //super.writeToParcel(dest, flags)
     }
 
     override fun describeContents(): Int {

@@ -7,13 +7,14 @@ import pt.ipl.isel.leic.ps.androidclient.data.model.Cuisine
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealItem
 
 open class MealRecyclerViewModel(
-    open val restaurantId: String?
+    var restaurantId: String?
 ) : ARecyclerViewModel<MealItem>() {
 
     var cuisines = emptyList<Cuisine>()
 
     constructor(parcel: Parcel): this(
-        restaurantId = parcel.readString()
+        restaurantId = TODO()
+//        restaurantId = parcel.readString()
     )
 
     override fun update() {
@@ -37,7 +38,7 @@ open class MealRecyclerViewModel(
     }
 
     override fun writeToParcel(dest: Parcel?, flags: Int) {
-        dest?.writeString(restaurantId)
+//        dest?.writeString(restaurantId)
     }
 
     override fun describeContents(): Int {

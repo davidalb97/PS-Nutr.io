@@ -15,16 +15,19 @@ import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.db.InsulinCalculator
 import pt.ipl.isel.leic.ps.androidclient.data.model.InsulinProfile
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealInfo
-import pt.ipl.isel.leic.ps.androidclient.ui.provider.InsulinProfilesVMProviderFactory
+import pt.ipl.isel.leic.ps.androidclient.data.model.Source
+import pt.ipl.isel.leic.ps.androidclient.ui.provider.*
 import pt.ipl.isel.leic.ps.androidclient.ui.util.closeKeyboard
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.InsulinProfilesRecyclerViewModel
+import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.MealInfoViewModel
 import java.time.LocalTime
 
-const val BUNDLED_MEAL_TAG = "bundledMeal"
+const val BUNDLED_MEAL_INFO_TAG = "bundledMeal"
 
 class CalculatorFragment : Fragment() {
 
-    lateinit var viewModel: InsulinProfilesRecyclerViewModel
+    lateinit var viewModelProfiles: InsulinProfilesRecyclerViewModel
+    lateinit var viewModelMeal: MealInfoViewModel
 
     private var receivedMeal: MealInfo? = null
     private var currentProfile: InsulinProfile? = null
@@ -32,9 +35,23 @@ class CalculatorFragment : Fragment() {
 
     private fun buildViewModel(savedInstanceState: Bundle?) {
         val rootActivity = this.requireActivity()
-        val factory = InsulinProfilesVMProviderFactory(savedInstanceState, rootActivity.intent)
-        viewModel =
-            ViewModelProvider(rootActivity, factory)[InsulinProfilesRecyclerViewModel::class.java]
+        val factoryProfiles = InsulinProfilesVMProviderFactory(savedInstanceState, rootActivity.intent)
+        val factoryCalc = CalculatorVMProviderFactory(savedInstanceState, rootActivity.intent, arguments)
+        viewModelProfiles = ViewModelProvider(rootActivity, factoryProfiles)[InsulinProfilesRecyclerViewModel::class.java]
+        viewModelMeal = ViewModelProvider(rootActivity, factoryCalc)[MealInfoViewModel::class.java]
+
+        //Read passed info from bundle
+        viewModelMeal.mealInfo = arguments?.getParcelable<MealInfo>(BUNDLE_MEAL_INFO)
+        viewModelMeal.source = arguments?.getInt(BUNDLE_MEAL_SOURCE, -1)?.let {
+            if(it == -1) null else Source.values()[it]
+        }
+        viewModelMeal.submissionId = arguments?.getInt(BUNDLE_MEAL_SUBMISSION_ID, -1)?.let {
+            if(it == -1) null else it
+        }
+        viewModelMeal.dbId = arguments?.getLong(BUNDLE_MEAL_DB_ID, -1)?.let {
+            val check: Long = -1
+            if(it == check) null else it
+        }
     }
 
     override fun onCreateView(
@@ -61,9 +78,12 @@ class CalculatorFragment : Fragment() {
      */
     private fun searchForBundledMeal() {
         val bundle: Bundle? = this.arguments
-        if (bundle != null) {
-            receivedMeal = bundle.getParcelable(BUNDLED_MEAL_TAG)!!
-            addBundledMealHolder()
+        if (bundle != null) { // || viewModel.hasMeal()
+            viewModelMeal.observe(this) {
+                receivedMeal = it.first()
+                addBundledMealHolder()
+            }
+            viewModelMeal.update()
         }
     }
 
@@ -109,7 +129,7 @@ class CalculatorFragment : Fragment() {
             closeKeyboard(this.requireActivity())
             observeExistingInsulinProfiles()
             // Gets the profiles, unplugging the observer later
-            viewModel.update()
+            viewModelProfiles.update()
         }
     }
 
@@ -117,7 +137,7 @@ class CalculatorFragment : Fragment() {
      * Observes modifications in the LiveData
      */
     private fun observeExistingInsulinProfiles() {
-        viewModel.observe(this) { profilesList ->
+        viewModelProfiles.observe(this) { profilesList ->
             if (profilesList.isEmpty())
                 showNoExistingProfilesToast()
             else
@@ -172,7 +192,7 @@ class CalculatorFragment : Fragment() {
             .withNano(0)
             .withSecond(0)
 
-        val profiles = viewModel.items
+        val profiles = viewModelProfiles.items
         if (profiles.isEmpty()) {
             cb(null)
             Toast.makeText(
@@ -182,7 +202,7 @@ class CalculatorFragment : Fragment() {
             ).show()
             return
         }
-        viewModel.items.forEach { savedProfile ->
+        viewModelProfiles.items.forEach { savedProfile ->
             val parsedSavedStartTime =
                 LocalTime.parse(savedProfile.startTime)
             val parsedSavedEndTime =
@@ -231,6 +251,6 @@ class CalculatorFragment : Fragment() {
             selectedMealCard?.visibility = View.INVISIBLE
         }
         receivedMeal = null
-        this.arguments?.remove(BUNDLED_MEAL_TAG)
+        this.arguments?.remove(BUNDLED_MEAL_INFO_TAG)
     }
 }

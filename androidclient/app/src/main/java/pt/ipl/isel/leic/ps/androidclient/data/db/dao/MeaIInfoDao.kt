@@ -12,14 +12,17 @@ private const val SOURCE_ORDINAL = DbMealInfoEntity.sourceOrdinalName
 @Dao
 abstract class MealInfoDao {
 
+    @Transaction
+    @Query("SELECT * FROM $TABLE WHERE $PRIMARY_KEY = :dbId AND $SOURCE_ORDINAL = :sourceOrdinal")
+    abstract fun getByIdAndSource(dbId: Long, sourceOrdinal: Int): LiveData<List<DbMealInfoRelation>>
 
     @Transaction
     @Query("SELECT * FROM $TABLE WHERE $SOURCE_ORDINAL = :sourceOrdinal")
     abstract fun getAllBySource(sourceOrdinal: Int): LiveData<List<DbMealInfoRelation>>
 
     @Transaction
-    @Query("SELECT * FROM $TABLE where $PRIMARY_KEY = :submissionId")
-    abstract fun get(submissionId: String?): DbMealInfoRelation
+    @Query("SELECT * FROM $TABLE where $PRIMARY_KEY = :dbId")
+    abstract fun get(dbId: Long): DbMealInfoRelation
 
     @Transaction
     @Query("SELECT * FROM $TABLE where name = :name")

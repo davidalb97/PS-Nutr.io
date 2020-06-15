@@ -41,6 +41,9 @@ class MealRepository(private val dataSource: MealDataSource) {
         inputVotesMapper = inputVotesMapper
     )
 
+    fun getByIdAndSource(dbId: Long, source: Source)
+            = roomDb.mealInfoDao().getByIdAndSource(dbId, source.ordinal)
+
     fun getAllInfoBySource(source: Source): LiveData<List<DbMealInfoRelation>>
             = roomDb.mealInfoDao().getAllBySource(source.ordinal)
 
@@ -63,7 +66,7 @@ class MealRepository(private val dataSource: MealDataSource) {
         roomDb.mealItemDao().delete(dbMealItemMapper.mapToEntity(mealItem))
     }
 
-    fun getMealInfo(
+    fun getApiMealInfo(
         mealId: Int,
         success: (MealInfo) -> Unit,
         error: (VolleyError) -> Unit

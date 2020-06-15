@@ -5,7 +5,7 @@ import android.os.Parcelable
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.insulinProfilesRepository
 import pt.ipl.isel.leic.ps.androidclient.data.model.InsulinProfile
 
-class InsulinProfilesRecyclerViewModel() : ARecyclerViewModel<InsulinProfile>() {
+open class InsulinProfilesRecyclerViewModel() : ARecyclerViewModel<InsulinProfile>() {
 
     constructor(parcel: Parcel) : this()
 

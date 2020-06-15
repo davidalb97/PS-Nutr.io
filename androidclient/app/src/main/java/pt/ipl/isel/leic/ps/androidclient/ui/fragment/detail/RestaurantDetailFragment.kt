@@ -13,6 +13,8 @@ import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.restaurantRepositor
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.RestaurantInfo
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler.request.MealRecyclerFragment
+import pt.ipl.isel.leic.ps.androidclient.ui.provider.BUNDLE_RESTAURANT_INFO_ID
+import pt.ipl.isel.leic.ps.androidclient.ui.provider.CalculatorVMProviderFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.RestaurantInfoVMProviderFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.util.Logger
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.RestaurantInfoMealRecyclerViewModel
@@ -32,6 +34,7 @@ class RestaurantDetailFragment : MealRecyclerFragment(){
         val rootActivity = this.requireActivity()
         val factory = RestaurantInfoVMProviderFactory(savedInstanceState, rootActivity.intent, requireArguments())
         innerViewModel = ViewModelProvider(rootActivity, factory)[RestaurantInfoMealRecyclerViewModel::class.java]
+        innerViewModel.restaurantId = requireArguments().getString(BUNDLE_RESTAURANT_INFO_ID)!!
         viewModel = innerViewModel
         activityApp = requireActivity().application
     }

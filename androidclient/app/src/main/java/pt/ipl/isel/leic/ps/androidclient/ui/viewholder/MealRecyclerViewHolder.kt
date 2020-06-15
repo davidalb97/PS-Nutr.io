@@ -7,11 +7,12 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.navigation.findNavController
 import com.bumptech.glide.Glide
-import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.mealRepository
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealItem
 import pt.ipl.isel.leic.ps.androidclient.data.util.AsyncWorker
-import pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.BUNDLED_MEAL_TAG
+import pt.ipl.isel.leic.ps.androidclient.ui.provider.BUNDLE_MEAL_DB_ID
+import pt.ipl.isel.leic.ps.androidclient.ui.provider.BUNDLE_MEAL_SUBMISSION_ID
+import pt.ipl.isel.leic.ps.androidclient.ui.provider.BUNDLE_MEAL_SOURCE
 
 class MealRecyclerViewHolder(view: ViewGroup, ctx: Context) :
     ARecyclerViewHolder<MealItem>(view, ctx),
@@ -73,6 +74,10 @@ class MealRecyclerViewHolder(view: ViewGroup, ctx: Context) :
         setButtonsVisibility(false)
         if (isCalculatorMode) {
             sendToCalculator()
+        } else {
+            val bundle = Bundle()
+
+            view.findNavController().navigate(R.id.nav_meal_detail, bundle)
         }
     }
 
@@ -95,7 +100,9 @@ class MealRecyclerViewHolder(view: ViewGroup, ctx: Context) :
 
     private fun sendToCalculator() {
         val bundle = Bundle()
-        bundle.putParcelable(BUNDLED_MEAL_TAG, this.item)
+        bundle.putInt(BUNDLE_MEAL_SOURCE, this.item.source.ordinal)
+        bundle.putInt(BUNDLE_MEAL_SUBMISSION_ID, this.item.submissionId)
+        bundle.putLong(BUNDLE_MEAL_DB_ID, this.item.dbId)
         view.findNavController().navigate(R.id.nav_calculator, bundle)
     }
 }
