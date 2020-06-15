@@ -25,6 +25,7 @@ open class DbMealItemEntity(
         const val tableName = "MealItem"
         const val primaryKeyName = "primaryKey"
         const val restaurantKeyName = "restaurantKey"
+        const val sourceOrdinalName = "sourceOrdinal"
     }
 
     @PrimaryKey(autoGenerate = true)

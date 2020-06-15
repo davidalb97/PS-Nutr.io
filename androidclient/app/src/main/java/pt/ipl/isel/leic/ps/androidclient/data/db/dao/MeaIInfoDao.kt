@@ -7,13 +7,15 @@ import pt.ipl.isel.leic.ps.androidclient.data.db.relation.DbMealInfoRelation
 
 private const val TABLE = DbMealInfoEntity.tableName
 private const val PRIMARY_KEY = DbMealInfoEntity.primaryKeyName
+private const val SOURCE_ORDINAL = DbMealInfoEntity.sourceOrdinalName
 
 @Dao
 abstract class MealInfoDao {
 
+
     @Transaction
-    @Query("SELECT * FROM $TABLE")
-    abstract fun getAll(): LiveData<List<DbMealInfoRelation>>
+    @Query("SELECT * FROM $TABLE WHERE $SOURCE_ORDINAL = :sourceOrdinal")
+    abstract fun getAllBySource(sourceOrdinal: Int): LiveData<List<DbMealInfoRelation>>
 
     @Transaction
     @Query("SELECT * FROM $TABLE where $PRIMARY_KEY = :submissionId")

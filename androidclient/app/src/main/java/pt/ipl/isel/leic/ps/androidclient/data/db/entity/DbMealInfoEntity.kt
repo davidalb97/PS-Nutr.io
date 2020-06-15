@@ -27,6 +27,7 @@ open class DbMealInfoEntity(
         const val DEFAULT_DB_ID: Long = 0
         const val tableName = "MealInfo"
         const val primaryKeyName = "primaryKey"
+        const val sourceOrdinalName = "sourceOrdinal"
     }
 
     @PrimaryKey(autoGenerate = true)

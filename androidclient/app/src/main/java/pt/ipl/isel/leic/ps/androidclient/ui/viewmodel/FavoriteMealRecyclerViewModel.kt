@@ -4,6 +4,7 @@ import android.os.Parcel
 import android.os.Parcelable
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.mealRepository
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealItem
+import pt.ipl.isel.leic.ps.androidclient.data.model.Source
 
 class FavoriteMealRecyclerViewModel() : ARecyclerViewModel<MealItem>() {
 
@@ -33,7 +34,7 @@ class FavoriteMealRecyclerViewModel() : ARecyclerViewModel<MealItem>() {
 
     override fun update() {
         //TODO filter by favorite FavoriteMealRecyclerViewModel.update()
-        this.liveDataHandler.set(mealRepository.getAllMeals()) {
+        this.liveDataHandler.set(mealRepository.getAllInfoBySource(Source.FAVORITE)) {
             mealRepository.dbMealInfoMapper.mapToModel(it)
         }
     }

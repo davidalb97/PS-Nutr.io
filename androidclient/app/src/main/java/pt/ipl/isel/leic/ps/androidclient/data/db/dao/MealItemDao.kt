@@ -1,40 +1,27 @@
 package pt.ipl.isel.leic.ps.androidclient.data.db.dao
 
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Query
-import androidx.room.Transaction
+import androidx.lifecycle.LiveData
+import androidx.room.*
 import pt.ipl.isel.leic.ps.androidclient.data.db.entity.*
+import pt.ipl.isel.leic.ps.androidclient.data.db.relation.DbMealInfoRelation
+
+private const val TABLE = DbMealItemEntity.tableName
+private const val PRIMARY_KEY = DbMealItemEntity.primaryKeyName
+private const val SOURCE_ORDINAL = DbMealItemEntity.sourceOrdinalName
 
 @Dao
 abstract class MealItemDao {
 
-    @Transaction
-    @Delete
-    fun deleteItem(mealItem: DbMealItemEntity) {
-        deleteMeal(mealItem)
-        deleteComponentIngredientsByMealId(mealItem.primaryKey)
-        deleteComponentMealsByMealId(mealItem.primaryKey)
-        deleteCuisinesByMealId(mealItem.primaryKey)
-        deletePortionsByMealId(mealItem.primaryKey)
-    }
+    @Query("SELECT * FROM $TABLE WHERE $SOURCE_ORDINAL = :sourceOrdinal")
+    abstract fun getAllBySource(sourceOrdinal: Int): LiveData<List<DbMealItemEntity>>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    abstract fun insert(mealEntity: DbMealItemEntity)
 
     @Delete
-    abstract fun deleteMeal(mealEntity: DbMealItemEntity)
+    abstract fun delete(mealEntity: DbMealItemEntity)
 
-    @Query("DELETE FROM ${DbComponentMealEntity.tableName}" +
-            " WHERE ${DbComponentMealEntity.mealKeyName} = :mealId")
-    abstract fun deleteComponentMealsByMealId(mealId: Long)
-
-    @Query("DELETE FROM ${DbComponentIngredientEntity.tableName}" +
-            " WHERE ${DbComponentIngredientEntity.mealKeyName} = :mealId")
-    abstract fun deleteComponentIngredientsByMealId(mealId: Long)
-
-    @Query("DELETE FROM ${DbCuisineEntity.tableName}" +
-            " WHERE ${DbCuisineEntity.mealKeyName} = :mealId")
-    abstract fun deleteCuisinesByMealId(mealId: Long)
-
-    @Query("DELETE FROM ${DbPortionEntity.tableName}" +
-            " WHERE ${DbPortionEntity.mealKeyName} = :mealId")
-    abstract fun deletePortionsByMealId(mealId: Long)
+    @Query("DELETE FROM ${DbMealItemEntity.tableName}" +
+            " WHERE ${DbMealItemEntity.sourceOrdinalName} = :sourceOrdinal")
+    abstract fun deleteAllBySource(sourceOrdinal: Int)
 }

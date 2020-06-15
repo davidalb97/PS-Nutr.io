@@ -5,11 +5,13 @@ import com.android.volley.VolleyError
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.roomDb
 import pt.ipl.isel.leic.ps.androidclient.data.api.datasource.MealDataSource
 import pt.ipl.isel.leic.ps.androidclient.data.api.mapper.*
+import pt.ipl.isel.leic.ps.androidclient.data.db.entity.DbMealItemEntity
 import pt.ipl.isel.leic.ps.androidclient.data.db.mapper.*
 import pt.ipl.isel.leic.ps.androidclient.data.db.relation.DbMealInfoRelation
 import pt.ipl.isel.leic.ps.androidclient.data.model.Cuisine
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealInfo
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealItem
+import pt.ipl.isel.leic.ps.androidclient.data.model.Source
 import pt.ipl.isel.leic.ps.androidclient.data.util.AsyncWorker
 
 class MealRepository(private val dataSource: MealDataSource) {
@@ -39,22 +41,26 @@ class MealRepository(private val dataSource: MealDataSource) {
         inputVotesMapper = inputVotesMapper
     )
 
-    fun getAllMeals(): LiveData<List<DbMealInfoRelation>> = roomDb.mealInfoDao().getAll()
+    fun getAllInfoBySource(source: Source): LiveData<List<DbMealInfoRelation>>
+            = roomDb.mealInfoDao().getAllBySource(source.ordinal)
 
-    fun insert(meal: MealInfo) = AsyncWorker<Unit, Unit> {
+    fun getAllItemBySource(source: Source): LiveData<List<DbMealItemEntity>>
+            = roomDb.mealItemDao().getAllBySource(source.ordinal)
+
+    fun insertInfo(meal: MealInfo) = AsyncWorker<Unit, Unit> {
         roomDb.mealInfoDao().insert(dbMealInfoMapper.mapToRelation(meal))
     }
 
-    /*fun insert(meal: MealItem) = AsyncWorker<Unit, Unit> {
-        roomDb.mealItemDao().insert(dbMealInfoMapper(meal))
-    }*/
+    fun insertItem(meal: MealItem) = AsyncWorker<Unit, Unit> {
+        roomDb.mealItemDao().insert(dbMealItemMapper.mapToEntity(meal))
+    }
 
-    fun delete(meal: MealInfo) = AsyncWorker<Unit, Unit> {
+    fun deleteInfo(meal: MealInfo) = AsyncWorker<Unit, Unit> {
         roomDb.mealInfoDao().delete(dbMealInfoMapper.mapToRelation(meal))
     }
 
     fun deleteItem(mealItem: MealItem) = AsyncWorker<Unit, Unit> {
-        roomDb.mealItemDao().deleteItem(dbMealItemMapper.mapToEntity(mealItem))
+        roomDb.mealItemDao().delete(dbMealItemMapper.mapToEntity(mealItem))
     }
 
     fun getMealInfo(
