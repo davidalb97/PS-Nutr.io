@@ -20,45 +20,32 @@ android:layout_height="match_parent">
                 android:layout_margin="20dp">
             </ImageView>
 
-            <TextView
-                android:id="@+id/meal_detail_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toEndOf="@id/restaurant_detail_image"
-                android:layout_marginTop="20dp"
-                android:text="@string/meal_example"
-                android:textStyle="bold"
-                android:textColor="@android:color/background_dark"
-                android:textSize="26sp">
-            </TextView>
-
-            <TextView
-                android:id="@+id/meal_detail_info"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toEndOf="@id/restaurant_detail_image"
-                android:layout_below="@+id/meal_detail_title"
-                android:layout_marginTop="20dp"
-                android:text="@string/meal_detail_info"
-                android:textStyle="bold"
-                android:textColor="@android:color/background_dark"
-                android:textSize="20sp">
-            </TextView>
 
         </RelativeLayout>
 
-        <RelativeLayout>
-            <TextView
-                android:id="@+id/vote_this_meal"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:text="@string/vote_this_meal"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:textColor="@android:color/background_dark">
-            </TextView>
-        </RelativeLayout>
+        <TextView
+            android:id="@+id/meal_detail_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:gravity="center"
+            android:text="@string/meal_example"
+            android:textStyle="bold"
+            android:textColor="@android:color/background_dark"
+            android:textSize="26sp">
+        </TextView>
+
+        <TextView
+            android:id="@+id/vote_this_meal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:gravity="center"
+            android:text="@string/vote_this_meal"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/background_dark">
+        </TextView>
 
         <RelativeLayout
             android:gravity="center"
