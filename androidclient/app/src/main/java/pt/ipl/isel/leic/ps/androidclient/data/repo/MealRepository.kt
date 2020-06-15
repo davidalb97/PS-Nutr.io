@@ -63,6 +63,20 @@ class MealRepository(private val dataSource: MealDataSource) {
         roomDb.mealItemDao().delete(dbMealItemMapper.mapToEntity(mealItem))
     }
 
+    fun getApiRestaurantMealInfo(
+        restaurantId: String,
+        mealId: Int,
+        success: (MealInfo) -> Unit,
+        error: (VolleyError) -> Unit
+    ) {
+        dataSource.getRestaurantMealById(
+            restaurantId,
+            mealId,
+            { dtos -> success(inputMealInfoMapper.mapToModel(dtos, restaurantId)) },
+            error
+        )
+    }
+
     fun getApiMealInfo(
         mealId: Int,
         success: (MealInfo) -> Unit,

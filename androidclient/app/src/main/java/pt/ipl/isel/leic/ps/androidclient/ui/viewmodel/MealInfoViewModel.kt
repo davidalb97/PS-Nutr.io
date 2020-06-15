@@ -8,12 +8,14 @@ import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.mealRepository
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealInfo
 import pt.ipl.isel.leic.ps.androidclient.data.model.RestaurantInfo
 import pt.ipl.isel.leic.ps.androidclient.data.model.Source
+import java.lang.UnsupportedOperationException
 
 class MealInfoViewModel : ARecyclerViewModel<MealInfo>() {
 
     var mealInfo: MealInfo? = null
     var source: Source? = null
     var submissionId: Int? = null
+    var restaurantId: String? = null
     var dbId: Long? = null
 
 //    constructor(parcel: Parcel) : this(
@@ -33,15 +35,28 @@ class MealInfoViewModel : ARecyclerViewModel<MealInfo>() {
         } else if (source != null) {
             //TODO logic should be in repo!
             if (source == Source.API || source == Source.FAVORITE) {
-                mealRepository.getApiMealInfo(
-                    mealId = submissionId!!,
-                    success = {
-                        liveDataHandler.set(listOf(it.also {
-                            it.source = source!!
-                        }))
-                    },
-                    error = { throw it }
-                )
+                if(restaurantId != null) {
+                    mealRepository.getApiRestaurantMealInfo(
+                        restaurantId = requireRestaurantId(),
+                        mealId = requireSubmissionId(),
+                        success = {
+                            liveDataHandler.set(listOf(it.also {
+                                it.source = source!!
+                            }))
+                        },
+                        error = { throw it }
+                    )
+                } else {
+                    mealRepository.getApiMealInfo(
+                        mealId = submissionId!!,
+                        success = {
+                            liveDataHandler.set(listOf(it.also {
+                                it.source = source!!
+                            }))
+                        },
+                        error = { throw it }
+                    )
+                }
             } else {
                 liveDataHandler.set(
                     mealRepository.getByIdAndSource(
@@ -62,23 +77,34 @@ class MealInfoViewModel : ARecyclerViewModel<MealInfo>() {
 //        dest?.writeSerializable(dbId)
     }
 
-    fun hasMeal(): Boolean {
-        return mealInfo != null || source != null
-    }
-
-
     override fun describeContents(): Int {
         return 0
     }
 
     fun setVote(vote: Boolean, success: () -> Unit, error: (VolleyError) -> Unit) {
         mealRepository.putVote(
-            restaurantId = mealInfo!!.restaurantSubmissionId!!,
-            mealId = mealInfo!!.submissionId,
+            restaurantId = requireRestaurantId(),
+            mealId = requireSubmissionId(),
             vote = vote,
             success = success,
             error = error
         )
+    }
+
+    fun requireSubmissionId(): Int {
+        return when {
+            mealInfo?.submissionId != null -> mealInfo?.submissionId!!
+            submissionId != null -> submissionId!!
+            else -> throw UnsupportedOperationException()
+        }
+    }
+
+    fun requireRestaurantId(): String {
+        return when {
+            mealInfo?.restaurantSubmissionId != null -> mealInfo?.restaurantSubmissionId!!
+            restaurantId != null -> restaurantId!!
+            else -> throw UnsupportedOperationException()
+        }
     }
 
     fun removeObservers(owner: LifecycleOwner) {

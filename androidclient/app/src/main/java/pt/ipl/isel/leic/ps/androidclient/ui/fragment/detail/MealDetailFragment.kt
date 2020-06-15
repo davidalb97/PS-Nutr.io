@@ -37,6 +37,7 @@ class MealDetailFragment : IngredientsRecyclerFragment() {
         viewModelMealInfo.submissionId = arguments?.getInt(BUNDLE_MEAL_SUBMISSION_ID, -1)?.let {
             if(it == -1) null else it
         }
+        viewModelMealInfo.restaurantId = arguments?.getString(BUNDLE_MEAL_RESTAURANT_SUBMISSION_ID)
         viewModelMealInfo.dbId = arguments?.getLong(BUNDLE_MEAL_DB_ID, -1)?.let {
             val check: Long = -1
             if(it == check) null else it

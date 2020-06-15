@@ -15,6 +15,7 @@ import pt.ipl.isel.leic.ps.androidclient.data.model.MealItem
 import pt.ipl.isel.leic.ps.androidclient.data.util.AsyncWorker
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.BUNDLED_MEAL_INFO_TAG
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.BUNDLE_MEAL_DB_ID
+import pt.ipl.isel.leic.ps.androidclient.ui.provider.BUNDLE_MEAL_RESTAURANT_SUBMISSION_ID
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.BUNDLE_MEAL_SOURCE
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.BUNDLE_MEAL_SUBMISSION_ID
 
@@ -98,6 +99,7 @@ class FavoriteMealRecyclerViewHolder(
         val bundle = Bundle()
         bundle.putInt(BUNDLE_MEAL_SOURCE, this.item.source.ordinal)
         bundle.putInt(BUNDLE_MEAL_SUBMISSION_ID, this.item.submissionId)
+        bundle.putString(BUNDLE_MEAL_RESTAURANT_SUBMISSION_ID, this.item.restaurantSubmissionId)
         bundle.putLong(BUNDLE_MEAL_DB_ID, this.item.dbId)
         view.findNavController().navigate(R.id.nav_calculator, bundle)
     }
@@ -106,6 +108,7 @@ class FavoriteMealRecyclerViewHolder(
         val bundle = Bundle()
         bundle.putInt(BUNDLE_MEAL_SOURCE, this.item.source.ordinal)
         bundle.putInt(BUNDLE_MEAL_SUBMISSION_ID, this.item.submissionId)
+        bundle.putString(BUNDLE_MEAL_RESTAURANT_SUBMISSION_ID, this.item.restaurantSubmissionId)
         bundle.putLong(BUNDLE_MEAL_DB_ID, this.item.dbId)
         view.findNavController().navigate(R.id.nav_meal_detail, bundle)
     }
