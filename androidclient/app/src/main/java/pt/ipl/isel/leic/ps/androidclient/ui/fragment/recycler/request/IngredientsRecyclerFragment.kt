@@ -7,25 +7,24 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import pt.ipl.isel.leic.ps.androidclient.R
+import pt.ipl.isel.leic.ps.androidclient.data.model.MealIngredient
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealItem
 import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.MealRecyclerAdapter
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.tab.CALCULATOR_BUNDLE_FLAG
 import pt.ipl.isel.leic.ps.androidclient.ui.listener.ScrollListener
+import pt.ipl.isel.leic.ps.androidclient.ui.provider.BUNDLE_INGREDIENT_LIST
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.IngredientRecyclerVMProviderFactory
-import pt.ipl.isel.leic.ps.androidclient.ui.provider.MealRecyclerVMProviderFactory
+import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.IngredientRecyclerViewModel
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.MealRecyclerViewModel
 
-open class MealRecyclerFragment : ARequestRecyclerListFragment<MealItem, MealRecyclerViewModel>() {
+open class IngredientsRecyclerFragment
+    : ARequestRecyclerListFragment<MealItem, IngredientRecyclerViewModel>() {
 
-    private val isCalculatorMode: Boolean by lazy {
-        this.requireArguments().getBoolean(CALCULATOR_BUNDLE_FLAG)
-    }
-
-    private val adapter: MealRecyclerAdapter by lazy {
+    protected val adapter: MealRecyclerAdapter by lazy {
         MealRecyclerAdapter(
             viewModel,
             this.requireContext(),
-            isCalculatorMode
+            false
         )
     }
 
@@ -36,8 +35,14 @@ open class MealRecyclerFragment : ARequestRecyclerListFragment<MealItem, MealRec
      */
     protected open fun buildViewModel(savedInstanceState: Bundle?) {
         val rootActivity = this.requireActivity()
-        val factory = MealRecyclerVMProviderFactory(savedInstanceState, rootActivity.intent)
-        viewModel = ViewModelProvider(rootActivity, factory)[MealRecyclerViewModel::class.java]
+        val factory = IngredientRecyclerVMProviderFactory(savedInstanceState, rootActivity.intent)
+        viewModel = ViewModelProvider(rootActivity, factory)[IngredientRecyclerViewModel::class.java]
+        if(arguments != null) {
+            val ingredients = requireArguments().getParcelableArrayList<MealIngredient>(
+                BUNDLE_INGREDIENT_LIST
+            )
+            viewModel.ingredients = ingredients
+        }
         activityApp = requireActivity().application
     }
 
@@ -81,5 +86,5 @@ open class MealRecyclerFragment : ARequestRecyclerListFragment<MealItem, MealRec
 
     override fun getRecyclerId() = R.id.itemList
 
-    override fun getProgressBarId() = R.id.progressBar
+    override fun getProgressBarId() = R.id.meal_info_progress_bar
 }

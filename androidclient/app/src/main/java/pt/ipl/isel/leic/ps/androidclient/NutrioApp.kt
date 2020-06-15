@@ -12,6 +12,7 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import pt.ipl.isel.leic.ps.androidclient.data.api.RequestParser
 import pt.ipl.isel.leic.ps.androidclient.data.api.UriBuilder
 import pt.ipl.isel.leic.ps.androidclient.data.api.datasource.CuisineDataSource
+import pt.ipl.isel.leic.ps.androidclient.data.api.datasource.IngredientDataSource
 import pt.ipl.isel.leic.ps.androidclient.data.api.datasource.MealDataSource
 import pt.ipl.isel.leic.ps.androidclient.data.api.datasource.RestaurantDataSource
 import pt.ipl.isel.leic.ps.androidclient.data.db.NutrioDb
@@ -58,16 +59,18 @@ class NutrioApp : Application() {
         /**
          *  Repositories initialization
          */
-        val restaurantRepository
-                by lazy { RestaurantRepository(RestaurantDataSource(requester, uriBuilder)) }
-        val mealRepository
-                by lazy { MealRepository(MealDataSource(requester, uriBuilder)) }
-        val cuisineRepository
-                by lazy { CuisineRepository(CuisineDataSource(requester, uriBuilder)) }
-        val insulinProfilesRepository
-                by lazy { InsulinProfileRepository() }
-        val userRepository
-                by lazy { UserRepository() }
+        val restaurantRepository by lazy {
+            RestaurantRepository(RestaurantDataSource(requester, uriBuilder))
+        }
+        val mealRepository by lazy { MealRepository(MealDataSource(requester, uriBuilder)) }
+        val cuisineRepository by lazy {
+            CuisineRepository(CuisineDataSource(requester, uriBuilder))
+        }
+        val insulinProfilesRepository by lazy(::InsulinProfileRepository)
+        val userRepository by lazy(::UserRepository)
+        val ingredientRepository by lazy {
+            IngredientRepository(IngredientDataSource(requester, uriBuilder))
+        }
     }
 
     override fun onCreate() {

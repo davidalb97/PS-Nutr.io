@@ -127,6 +127,7 @@
     <string name="user_id_number">User id number</string>
     <string name="register">Register</string>
     <string name="sign_up">Register an account</string>
+    <string name="tab_meal_detail">Meal info</string>
     <string-array name="custom_meal_unit_spinner_array">
         <item>grams</item>
     </string-array>

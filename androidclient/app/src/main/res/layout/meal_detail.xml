@@ -245,8 +245,17 @@
                         android:layout_marginStart="20dp">
                     </ImageButton>
 
+                    <ProgressBar
+                        android:id="@+id/meal_info_progress_bar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:indeterminate="true"
+                        android:layout_centerInParent="true"
+                        android:visibility="invisible">
+                    </ProgressBar>
+
                     <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/meal_detail_ingredient_item_list"
+                        android:id="@+id/meal_info_ingredient_item_list"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         tools:listitem="@layout/meal_card"

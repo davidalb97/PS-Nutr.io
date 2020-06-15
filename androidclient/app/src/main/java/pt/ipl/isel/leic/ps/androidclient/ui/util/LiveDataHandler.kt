@@ -15,9 +15,7 @@ class LiveDataHandler<M> {
     private val sources = mutableListOf<LiveData<*>>()
     private fun <T> observeExternal(newLiveData: LiveData<List<T>>, mapper: (T) -> M, consumer: (List<M>) -> Unit) {
         synchronized(_monitor) {
-            if(prevLiveData != null) {
-                mediatorLiveData.removeSource(prevLiveData)
-            }
+            removeLastSource()
             mediatorLiveData.addSource(newLiveData) { newList ->
                 consumer(newList.map(mapper))
             }
@@ -53,5 +51,15 @@ class LiveDataHandler<M> {
         mediatorLiveData.observe(owner, Observer {
             observer(it)
         })
+    }
+
+    fun removeLastSource() {
+        if(prevLiveData != null) {
+            mediatorLiveData.removeSource(prevLiveData)
+        }
+    }
+
+    fun removeObservers(owner: LifecycleOwner) {
+        mediatorLiveData.removeObservers(owner)
     }
 }

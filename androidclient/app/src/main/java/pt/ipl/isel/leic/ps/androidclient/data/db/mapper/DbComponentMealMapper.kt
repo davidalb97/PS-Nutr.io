@@ -22,9 +22,9 @@ class DbComponentMealMapper {
     fun mapToEntity(model: MealIngredient) = DbComponentMealEntity(
         submissionId = model.submissionId,
         name = model.name,
-        carbs = model.carbs,
-        amount = model.amount,
-        unit = model.unit,
+        carbs = model.carbs!!,
+        amount = model.amount!!,
+        unit = model.unit!!,
         isFavorite = model.isFavorite,
         imageUri = model.imageUri?.toString()
     ).also { dto ->

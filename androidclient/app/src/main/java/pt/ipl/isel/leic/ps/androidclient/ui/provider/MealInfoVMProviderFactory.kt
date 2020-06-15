@@ -10,7 +10,7 @@ const val BUNDLE_MEAL_DB_ID = "BUNDLE_MEAL_DB_ID"
 const val BUNDLE_MEAL_SUBMISSION_ID = "BUNDLE_MEAL_DB_SUBMISSION_ID"
 const val BUNDLE_MEAL_SOURCE = "BUNDLE_MEAL_SOURCE_ORDINAL"
 
-class CalculatorVMProviderFactory(
+class MealInfoVMProviderFactory(
     savedInstanceState: Bundle?,
     intent: Intent,
     private val arguments: Bundle?

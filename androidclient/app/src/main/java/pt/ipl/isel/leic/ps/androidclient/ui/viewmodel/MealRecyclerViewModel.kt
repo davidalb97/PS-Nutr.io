@@ -6,19 +6,15 @@ import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.mealRepository
 import pt.ipl.isel.leic.ps.androidclient.data.model.Cuisine
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealItem
 
-open class MealRecyclerViewModel(
-    var restaurantId: String?
-) : ARecyclerViewModel<MealItem>() {
+open class MealRecyclerViewModel() : ARecyclerViewModel<MealItem>() {
 
+    var restaurantId: String? = null
     var cuisines = emptyList<Cuisine>()
 
-    fun addToFavorite(mealItem: MealItem) =
+    open fun addToFavorite(mealItem: MealItem) =
         mealRepository.insertItem(mealItem)
 
-    constructor(parcel: Parcel): this(
-        restaurantId = TODO()
-//        restaurantId = parcel.readString()
-    )
+    constructor(parcel: Parcel): this()
 
     override fun update() {
         if(restaurantId != null) {

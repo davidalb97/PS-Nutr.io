@@ -8,8 +8,7 @@ const val MEAL_LIST_VIEW_STATE: String = "MEAL_LIST_VIEW_STATE"
 
 class MealRecyclerVMProviderFactory(
     savedInstanceState: Bundle?,
-    intent: Intent,
-    private val arguments: Bundle
+    intent: Intent
 ) : AViewModelProviderFactory<MealRecyclerViewModel>(
     savedInstanceState,
     intent
@@ -19,7 +18,5 @@ class MealRecyclerVMProviderFactory(
     override fun getViewModelClass(): Class<MealRecyclerViewModel> =
         MealRecyclerViewModel::class.java
 
-    override fun newViewModel(): MealRecyclerViewModel = MealRecyclerViewModel(
-        arguments.getString(BUNDLE_RESTAURANT_INFO_ID)
-    )
+    override fun newViewModel(): MealRecyclerViewModel = MealRecyclerViewModel()
 }

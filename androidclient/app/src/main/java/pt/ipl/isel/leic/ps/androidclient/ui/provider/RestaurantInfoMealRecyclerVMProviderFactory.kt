@@ -21,7 +21,5 @@ class RestaurantInfoVMProviderFactory(
         RestaurantInfoMealRecyclerViewModel::class.java
 
     override fun newViewModel(): RestaurantInfoMealRecyclerViewModel =
-        RestaurantInfoMealRecyclerViewModel(
-            arguments.getString(BUNDLE_RESTAURANT_INFO_ID)!!
-        )
+        RestaurantInfoMealRecyclerViewModel()
 }

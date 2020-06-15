@@ -36,9 +36,9 @@ class CalculatorFragment : Fragment() {
     private fun buildViewModel(savedInstanceState: Bundle?) {
         val rootActivity = this.requireActivity()
         val factoryProfiles = InsulinProfilesVMProviderFactory(savedInstanceState, rootActivity.intent)
-        val factoryCalc = CalculatorVMProviderFactory(savedInstanceState, rootActivity.intent, arguments)
+        val factoryMealInfo = MealInfoVMProviderFactory(savedInstanceState, rootActivity.intent, arguments)
         viewModelProfiles = ViewModelProvider(rootActivity, factoryProfiles)[InsulinProfilesRecyclerViewModel::class.java]
-        viewModelMeal = ViewModelProvider(rootActivity, factoryCalc)[MealInfoViewModel::class.java]
+        viewModelMeal = ViewModelProvider(rootActivity, factoryMealInfo)[MealInfoViewModel::class.java]
 
         //Read passed info from bundle
         viewModelMeal.mealInfo = arguments?.getParcelable<MealInfo>(BUNDLE_MEAL_INFO)
@@ -79,9 +79,11 @@ class CalculatorFragment : Fragment() {
     private fun searchForBundledMeal() {
         val bundle: Bundle? = this.arguments
         if (bundle != null) { // || viewModel.hasMeal()
-            viewModelMeal.observe(this) {
+            val owner = this
+            viewModelMeal.observe(owner) {
                 receivedMeal = it.first()
                 addBundledMealHolder()
+                viewModelMeal.removeObservers(owner)
             }
             viewModelMeal.update()
         }
@@ -164,7 +166,9 @@ class CalculatorFragment : Fragment() {
     private fun getProfileAndCalculateResult() {
         val currentBloodGlucose =
             view?.findViewById<EditText>(R.id.user_blood_glucose)
-        getActualProfile { profile -> currentProfile = profile!! }
+        getActualProfile { profile ->
+            currentProfile = profile!!
+        }
         val result: Float
         if (receivedMeal != null && currentProfile != null) {
             result =

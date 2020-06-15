@@ -2,6 +2,7 @@ package pt.ipl.isel.leic.ps.androidclient.ui.viewmodel
 
 import android.os.Parcel
 import android.os.Parcelable
+import androidx.lifecycle.LifecycleOwner
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.mealRepository
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealInfo
 import pt.ipl.isel.leic.ps.androidclient.data.model.RestaurantInfo
@@ -73,6 +74,14 @@ class MealInfoViewModel : ARecyclerViewModel<MealInfo>() {
 
     fun downVote() {
         TODO("Not yet implemented")
+    }
+
+    fun removeLastSource() {
+        liveDataHandler.removeLastSource()
+    }
+
+    fun removeObservers(owner: LifecycleOwner) {
+        liveDataHandler.removeObservers(owner)
     }
 
     companion object CREATOR : Parcelable.Creator<RestaurantRecyclerViewModel> {

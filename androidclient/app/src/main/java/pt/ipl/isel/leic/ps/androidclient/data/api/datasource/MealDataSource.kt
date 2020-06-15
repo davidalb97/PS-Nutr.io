@@ -167,7 +167,7 @@ class MealDataSource(
                 ingredients.map {
                     IngredientOutput(
                         identifier = it.submissionId,
-                        quantity = it.amount
+                        quantity = it.amount!!
                     )
                 },
                 cuisines = cuisines.map { it.name }
