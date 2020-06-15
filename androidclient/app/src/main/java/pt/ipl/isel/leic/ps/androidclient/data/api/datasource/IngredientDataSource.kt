@@ -3,6 +3,8 @@ package pt.ipl.isel.leic.ps.androidclient.data.api.datasource
 import com.android.volley.VolleyError
 import pt.ipl.isel.leic.ps.androidclient.data.api.*
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.info.DetailedIngredientInput
+import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.info.DetailedIngredientsInput
+import pt.ipl.isel.leic.ps.androidclient.data.model.MealIngredient
 
 private const val COUNT_PARAM = ":count"
 private const val SKIP_PARAM = ":skip"
@@ -24,7 +26,7 @@ class IngredientDataSource(
     fun getIngredients(
         count: Int,
         skip: Int,
-        success: (Array<String>) -> Unit,
+        success: (DetailedIngredientsInput) -> Unit,
         error: (VolleyError) -> Unit
     ) {
         var uri = INGREDIENT_LIST_URI
@@ -36,7 +38,7 @@ class IngredientDataSource(
         requestParser.requestAndRespond(
             Method.GET,
             uri,
-            Array<String>::class.java,
+            DetailedIngredientsInput::class.java,
             success,
             error
         )

@@ -11,10 +11,12 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.navigation.NavigationView
+import pt.ipl.isel.leic.ps.androidclient.ui.util.Logger
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
+    private val log = Logger(MainActivity::class.java)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,4 +66,15 @@ class MainActivity : AppCompatActivity() {
         val navController = findNavController(R.id.nav_host_fragment)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
+
+/*    // TODO
+    override fun onBackPressed() {
+        log.v("Called onBackPressed()")
+        val count = supportFragmentManager.backStackEntryCount
+        if (count == 0) {
+            super.onBackPressed()
+        } else {
+            supportFragmentManager.popBackStack()
+        }
+    }*/
 }

@@ -205,7 +205,7 @@
                 android:id="@+id/meal_info_ingredients_rl"
                 android:gravity="center"
                 android:layout_marginTop="10dp"
-                android:visibility="visible"
+                android:visibility="gone"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:layout_below="@+id/meal_info_show_ingredients_btn"
@@ -223,7 +223,7 @@
                     android:layout_marginLeft="50dp"
                     android:text="@string/you_don_t_have_any_meal_ingredients"
                     android:textSize="26sp"
-                    android:visibility="visible"
+                    android:visibility="gone"
                     >
                 </TextView>
 
@@ -241,6 +241,7 @@
                         android:layout_width="60dp"
                         android:layout_height="60dp"
                         android:src="@drawable/ic_add"
+                        android:visibility="gone"
                         android:layout_marginStart="20dp">
                     </ImageButton>
 
