@@ -7,8 +7,10 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.navigation.findNavController
 import com.bumptech.glide.Glide
+import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.mealRepository
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealItem
+import pt.ipl.isel.leic.ps.androidclient.data.model.Source
 import pt.ipl.isel.leic.ps.androidclient.data.util.AsyncWorker
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.BUNDLE_MEAL_DB_ID
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.BUNDLE_MEAL_SUBMISSION_ID
@@ -17,7 +19,7 @@ import pt.ipl.isel.leic.ps.androidclient.ui.provider.BUNDLE_MEAL_SOURCE
 class MealRecyclerViewHolder(view: ViewGroup, ctx: Context) :
     ARecyclerViewHolder<MealItem>(view, ctx),
     IFavorable<MealItem>,
-    ICalculatable<MealItem>{
+    ICalculatable<MealItem> {
 
     val mealImage = view.findViewById<ImageView>(R.id.mealImage)
     val mealName = view.findViewById<TextView>(R.id.mealName)
@@ -55,16 +57,39 @@ class MealRecyclerViewHolder(view: ViewGroup, ctx: Context) :
             votesBar.progress = 0
             if (totalVotes > 0)
                 votesBar.progress =
-                    upvotes / (upvotes + downvotes) * 100
+                    upvotes / totalVotes * 100
             upvoteCounter.text = upvotes.toString()
             downvoteCounter.text = downvotes.toString()
         }
     }
 
     private fun setupListeners() {
-       /* favoriteButton.setOnClickListener {
-            view -> mealRepository.insert(item)
-        }*/ //TODO - add to favorite
+        favoriteButton.setOnClickListener {
+            val favoriteItem =
+                MealItem(
+                    dbId = item.dbId,
+                    dbRestaurantId = item.dbRestaurantId,
+                    submissionId = item.submissionId,
+                    name = item.name,
+                    carbs = item.carbs,
+                    amount = item.amount,
+                    unit = item.unit,
+                    votes = item.votes,
+                    isFavorite = item.isFavorite,
+                    imageUri = item.imageUri,
+                    isSuggested = item.isSuggested,
+                    source = Source.FAVORITE
+                )
+            onFavorite(favoriteItem)
+                .setOnPostExecute {
+                    Toast.makeText(
+                        ctx,
+                        "Added to favorites",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+                .execute()
+        }
 
         this.view.setOnClickListener(this)
         this.view.setOnLongClickListener(this)

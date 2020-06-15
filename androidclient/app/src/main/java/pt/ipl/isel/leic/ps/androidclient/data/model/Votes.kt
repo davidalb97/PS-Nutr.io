@@ -1,6 +1,5 @@
 package pt.ipl.isel.leic.ps.androidclient.data.model
 
-import android.annotation.SuppressLint
 import android.os.Parcel
 import android.os.Parcelable
 
