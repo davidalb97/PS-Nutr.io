@@ -1,11 +1,37 @@
 package pt.isel.ps.g06.httpserver.model
 
-class Restaurant(
-        val identifier: String,
+import pt.isel.ps.g06.httpserver.dataAccess.model.Cuisine
+import java.net.URI
+import java.time.OffsetDateTime
+
+data class Restaurant(
+        val identifier: Lazy<RestaurantIdentifier>,
         val name: String,
         val latitude: Float,
         val longitude: Float,
-        val cuisines: Lazy<Collection<String>>,
-        val meals: Lazy<Collection<Meal>>,
-        val votes: Votes
-)
+        val image: URI?,
+        val isFavorite: (Int) -> Boolean,
+        val userVote: (Int) -> VoteState,
+        val votes: Votes?,
+        val submitterInfo: Lazy<Submitter>,
+        val creationDate: Lazy<OffsetDateTime?>,
+        val meals: Sequence<Meal>,
+        val suggestedMeals: Sequence<Meal>,
+        val cuisines: Sequence<Cuisine>
+) {
+    /**
+     * Checks if given restaurant is present in the database or not.
+     * *This operation is stateful and initializes [identifier] value.*
+     */
+    fun isPresentInDatabase(): Boolean {
+        return identifier.value.isPresentInDatabase()
+    }
+
+    /**
+     * Checks if given restaurant was created by a user or not.
+     * *This operation is stateful and initializes [submitterInfo] value.*
+     */
+    fun isUserRestaurant(): Boolean {
+        return submitterInfo.value.isUser
+    }
+}

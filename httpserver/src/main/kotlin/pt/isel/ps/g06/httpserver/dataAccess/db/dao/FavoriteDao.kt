@@ -17,11 +17,14 @@ interface FavoriteDao {
     @SqlQuery("SELECT * FROM $table")
     fun getAll(): List<DbFavoriteDto>
 
+    @SqlQuery("SELECT * FROM $table WHERE $submissionId = :submissionId AND $submitterId = :userId")
+    fun getByIds(submissionId: Int, userId: Int): DbFavoriteDto?
+
     @SqlQuery("SELECT * FROM $table WHERE $submissionId = :submissionId")
     fun getAllBySubmissionId(submissionId: Int): List<DbFavoriteDto>
 
-    @SqlQuery("SELECT * FROM $table WHERE $submitterId = :submitterId")
-    fun getAllBySubmitterId(submitterId: Int): List<DbFavoriteDto>
+    @SqlQuery("SELECT * FROM $table WHERE $submitterId = :userId")
+    fun getAllBySubmitterId(userId: Int): List<DbFavoriteDto>
 
     @SqlQuery("INSERT INTO $table($submissionId, $submitterId)" +
             " VALUES(:submissionId, :submitterId) RETURNING *")

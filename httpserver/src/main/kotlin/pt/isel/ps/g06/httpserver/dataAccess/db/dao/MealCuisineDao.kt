@@ -28,18 +28,7 @@ interface MealCuisineDao {
     fun getAll(): List<DbMealCuisineDto>
 
     @SqlQuery("SELECT * FROM $table WHERE $mealId = :mealId")
-    fun getAllByMealId(@Bind mealId: Int): List<DbMealCuisineDto>
-
-    @SqlQuery("SELECT $table.$mealId, $table.$cuisineId" +
-            " FROM $table " +
-            " INNER JOIN $M_table " +
-            " ON $M_table.$M_id = $table.$mealId " +
-            " INNER JOIN $C_table " +
-            " ON $C_table.$C_cuisineId = $table.$cuisineId " +
-            " WHERE $C_table.$C_name IN (<cuisineNames>)")
-    fun getByCuisineNames(
-            @BindList cuisineNames: Collection<String>
-    ): Collection<DbMealCuisineDto>
+    fun getAllFromMealId(@Bind mealId: Int): List<DbMealCuisineDto>
 
     @SqlQuery("INSERT INTO $table($mealId, $cuisineId)" +
             " VALUES(:submissionId, :cuisineName) RETURNING *")

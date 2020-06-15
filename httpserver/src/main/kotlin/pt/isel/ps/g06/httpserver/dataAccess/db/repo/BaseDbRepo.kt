@@ -61,48 +61,6 @@ class BaseDbRepo constructor(internal val jdbi: Jdbi) {
     }
 
     /**
-     * @throws InvalidInputException If submission was voted by submitter or if submission does not exist.
-     */
-    protected fun requireNoVote(
-            submissionId: Int,
-            submitterId: Int,
-            defaultIsolation: TransactionIsolationLevel = SERIALIZABLE
-    ) {
-        jdbi.inTransaction<Unit, InvalidInputException>(defaultIsolation) {
-
-            // Check if this submitter already voted this submission
-            val hasVote = it.attach(UserVoteDao::class.java)
-                    .getVoteByIds(submissionId, submitterId)
-                    .let { it != null }
-            if (hasVote)
-                throw InvalidInputException(InvalidInputDomain.VOTE,
-                        "The submitter id \"$submitterId\" already voted on" +
-                                " submission id \"$submissionId\"."
-                )
-        }
-    }
-
-    /**
-     * @throws InvalidInputException If submission was not voted by submitter or if submission does not exist.
-     */
-    protected fun requireVote(
-            submissionId: Int,
-            submitterId: Int,
-            defaultIsolation: TransactionIsolationLevel = SERIALIZABLE
-    ) {
-        jdbi.inTransaction<Unit, InvalidInputException>(defaultIsolation) {
-
-            // Check if this submitter already voted this submission
-            it.attach(UserVoteDao::class.java)
-                    .getVoteByIds(submissionId, submitterId)
-                    ?: throw InvalidInputException(InvalidInputDomain.VOTE,
-                            "The submitter id \"$submitterId\" not not vote on" +
-                                    " submission id \"$submissionId\"."
-                    )
-        }
-    }
-
-    /**
      * @throws InvalidInputException If the submission does not meet the IS-A contract or
      * if the submission does not exist.
      */
@@ -123,17 +81,11 @@ class BaseDbRepo constructor(internal val jdbi: Jdbi) {
         }
     }
 
+
     protected fun isFromApi(submissionId: Int, defaultIsolation: TransactionIsolationLevel = SERIALIZABLE): Boolean {
         return jdbi.inTransaction<Boolean, Exception>(defaultIsolation) {
             return@inTransaction it.attach(ApiSubmissionDao::class.java)
                     .getBySubmissionId(submissionId) != null
-        }
-    }
-
-    protected fun isApi(submitterId: Int, defaultIsolation: TransactionIsolationLevel = SERIALIZABLE): Boolean {
-        return jdbi.inTransaction<Boolean, Exception>(defaultIsolation) {
-            return@inTransaction it.attach(ApiDao::class.java)
-                    .getById(submitterId) != null
         }
     }
 
@@ -176,56 +128,6 @@ class BaseDbRepo constructor(internal val jdbi: Jdbi) {
                 )
             }
             return@inTransaction cuisineDtos
-        }
-    }
-
-    /**
-     * Removes submission, submitter association, contracts & it's tables
-     */
-    protected fun removeSubmission(
-            submissionId: Int,
-            submitterId: Int,
-            type: SubmissionType,
-            contracts: Collection<SubmissionContractType>,
-            isolationLevel: TransactionIsolationLevel = SERIALIZABLE
-    ) {
-        return jdbi.inTransaction<Unit, InvalidInputException>(isolationLevel) {
-
-            // Check if the submission is of the specified type
-            requireSubmission(submissionId, type, isolationLevel)
-
-            if (contracts.isNotEmpty()) {
-                // Delete all submission contracts
-                it.attach(SubmissionContractDao::class.java).deleteAllBySubmissionId(submissionId)
-            }
-
-            if (contracts.contains(SubmissionContractType.REPORTABLE)) {
-                // Delete all user reports
-                it.attach(ReportDao::class.java).deleteAllBySubmissionId(submissionId)
-            }
-
-            if (contracts.contains(SubmissionContractType.VOTABLE)) {
-                // Delete all user votes
-                it.attach(UserVoteDao::class.java).deleteAllById(submissionId)
-                // Delete vote counter
-                it.attach(VotableDao::class.java).deleteById(submissionId)
-            }
-
-            if (contracts.contains(SubmissionContractType.API) && isFromApi(submissionId)) {
-                // Delete api submission relation
-                it.attach(ApiSubmissionDao::class.java).deleteById(submissionId)
-            }
-
-            if(contracts.contains(SubmissionContractType.FAVORABLE)) {
-                // Delete all favorites
-                it.attach(FavoriteDao::class.java).deleteAllBySubmissionId(submissionId)
-            }
-
-            // Delete submission - submitter association
-            it.attach(SubmissionSubmitterDao::class.java).deleteAllBySubmissionId(submissionId)
-
-            // Delete submission
-            it.attach(SubmissionDao::class.java).delete(submissionId)
         }
     }
 }

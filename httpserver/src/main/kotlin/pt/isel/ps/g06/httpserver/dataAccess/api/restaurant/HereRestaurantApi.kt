@@ -41,7 +41,7 @@ class HereRestaurantApi(
         return responseFuture.thenApply { response ->
             val body = response.body()
 
-            return@thenApply  when (response.statusCode()) {
+            return@thenApply when (response.statusCode()) {
                 HttpStatus.OK.value() -> mapToNearbyRestaurants(body)
                 HttpStatus.NOT_FOUND.value() -> emptyList()
                 HttpStatus.BAD_REQUEST.value() -> throw mapToBadRequest(body)

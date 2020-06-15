@@ -14,22 +14,14 @@ interface RestaurantCuisineDao {
         const val cuisineId = "cuisine_submission_id"
     }
 
-    @SqlQuery("SELECT * FROM $table")
-    fun getAll(): List<DbRestaurantCuisineDto>
-
     @SqlQuery("SELECT * FROM $table WHERE $id = :restaurantId")
-    fun getByRestaurantId(@Bind restaurantId: Int): List<DbRestaurantCuisineDto>
+    fun getAllForRestaurantId(@Bind restaurantId: Int): Collection<DbRestaurantCuisineDto>
 
-    @SqlQuery("INSERT INTO $table($id, $cuisineId)" +
-            " VALUES(:restaurantId, :cuisineId) RETURNING *")
-    fun insert(@Bind restaurantId: Int, @Bind cuisineId: Int): DbRestaurantCuisineDto
-
-    @SqlQuery("INSERT INTO $table($id, $cuisineId)" +
-            " values <restaurantCuisineDtos> RETURNING *"
-    )
-    fun insertAll(@BindBeanList(propertyNames = [id, cuisineId])
-                  restaurantCuisineDtos: List<DbRestaurantCuisineDto>
-    ): List<DbRestaurantCuisineDto>
+    @SqlQuery("INSERT INTO $table($id, $cuisineId) values <restaurantCuisineDtos> RETURNING *")
+    fun insertAll(
+            @BindBeanList(propertyNames = [id, cuisineId])
+            restaurantCuisineDtos: Collection<DbRestaurantCuisineDto>
+    ): Collection<DbRestaurantCuisineDto>
 
     @SqlQuery("DELETE FROM $table WHERE $id = :restaurantId RETURNING *")
     fun deleteAllByRestaurantId(@Bind restaurantId: Int): List<DbRestaurantCuisineDto>

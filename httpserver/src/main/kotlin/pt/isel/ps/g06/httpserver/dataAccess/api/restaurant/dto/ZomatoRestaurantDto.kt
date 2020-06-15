@@ -30,7 +30,10 @@ class ZomatoRestaurantDto(
         id,
         name,
         location.latitude,
-        location.longitude
+        location.longitude,
+        //Zomato does not support image
+        //TODO return restaurant image from Zomato result item
+        image = null
 )
 
 data class Location(val address: String, val locality: String, val city: String, val city_id: Int, val latitude: Float, val longitude: Float)

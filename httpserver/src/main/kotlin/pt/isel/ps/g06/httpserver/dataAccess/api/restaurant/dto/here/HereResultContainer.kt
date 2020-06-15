@@ -9,7 +9,14 @@ class HereResultItem(
         id: String,
         position: Location,
         val foodTypes: Collection<FoodTypes>?
-) : RestaurantDto(id, title, position.lat, position.lng)
+) : RestaurantDto(
+        id = id,
+        name = title,
+        latitude = position.lat,
+        longitude = position.lng,
+        //Here does not support image for restaurants
+        image = null
+)
 
 data class Location(val lat: Float, val lng: Float)
 

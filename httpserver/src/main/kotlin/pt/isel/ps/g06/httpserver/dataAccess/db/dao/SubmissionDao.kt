@@ -2,7 +2,6 @@ package pt.isel.ps.g06.httpserver.dataAccess.db.dao
 
 import org.jdbi.v3.sqlobject.config.RegisterRowMapper
 import org.jdbi.v3.sqlobject.customizer.Bind
-import org.jdbi.v3.sqlobject.customizer.BindBeanList
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbSubmissionDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.mapper.SubmissionMapper
@@ -17,19 +16,11 @@ interface SubmissionDao {
         const val date = "submission_date"
     }
 
-    @SqlQuery("SELECT * FROM $table")
-    fun getAll(): List<DbSubmissionDto>
-
     @SqlQuery("SELECT * FROM $table WHERE $id = :submissionId")
     fun getById(submissionId: Int): DbSubmissionDto?
 
     @SqlQuery("INSERT INTO $table($type) VALUES(:submission_type) RETURNING *")
     fun insert(@Bind submission_type: String): DbSubmissionDto
-
-    @SqlQuery("INSERT INTO $table($type) values <submissionParams> RETURNING *")
-    fun insertAll(@BindBeanList(propertyNames = [type])
-                  submissionParams: List<SubmissionParam>
-    ): List<DbSubmissionDto>
 
     @SqlQuery("DELETE FROM $table WHERE $id = :submissionId RETURNING *")
     fun delete(@Bind submissionId: Int): DbSubmissionDto
