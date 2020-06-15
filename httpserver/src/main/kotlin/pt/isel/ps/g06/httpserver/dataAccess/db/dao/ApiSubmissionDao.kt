@@ -1,7 +1,6 @@
 package pt.isel.ps.g06.httpserver.dataAccess.db.dao
 
 import org.jdbi.v3.sqlobject.customizer.Bind
-import org.jdbi.v3.sqlobject.customizer.BindBeanList
 import org.jdbi.v3.sqlobject.customizer.BindList
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbApiSubmissionDto
@@ -60,23 +59,10 @@ interface ApiSubmissionDao {
             @Bind submissionType: String
     ): List<DbApiSubmissionDto>
 
-    @SqlQuery("SELECT * FROM $table WHERE $submissionId in (<submissionIds>)")
-    fun getAllBySubmissionIds(
-            @BindList submissionIds: List<Int>
-    ): List<DbApiSubmissionDto>
-
-    @SqlQuery("SELECT * FROM $table WHERE $apiId = :apiId")
-    fun getAllByApiId(apiId: String): List<DbApiSubmissionDto>
-
     @SqlQuery("INSERT INTO $table($submissionId, $apiId)" +
             " VALUES(:submissionId, :apiId) RETURNING *")
     fun insert(@Bind submissionId: Int, apiId: String): DbApiSubmissionDto
 
-    @SqlQuery("INSERT INTO $table($submissionId, $apiId)" +
-            " values <apiSubmissionParams> RETURNING *")
-    fun insertAll(@BindBeanList(propertyNames = [submissionId, apiId])
-                  apiSubmissionParams: List<ApiSubmissionParam>
-    ): List<DbApiSubmissionDto>
 
     @SqlQuery("DELETE FROM $table WHERE $submissionId = :submissionId RETURNING *")
     fun deleteById(submissionId: Int): DbApiSubmissionDto

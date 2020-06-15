@@ -14,6 +14,7 @@ import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
 import java.net.http.HttpResponse
+import java.util.concurrent.CompletableFuture
 
 @Repository
 class HereRestaurantApi(
@@ -21,26 +22,31 @@ class HereRestaurantApi(
         uriBuilder: HereUriBuilder,
         responseMapper: ObjectMapper
 ) : RestaurantApi(httpClient, uriBuilder, responseMapper) {
-    override fun handleRestaurantInfoResponse(response: HttpResponse<String>): RestaurantDto? {
-        val body = response.body()
+    override fun handleRestaurantInfoResponse(responseFuture: CompletableFuture<HttpResponse<String>>): CompletableFuture<RestaurantDto?> {
+        return responseFuture.thenApply { response ->
+            val body = response.body()
 
-        return when (response.statusCode()) {
-            HttpStatus.OK.value() -> mapToRestaurantDto(body)
-            HttpStatus.BAD_REQUEST.value() -> null
-            HttpStatus.NOT_FOUND.value() -> null
+            return@thenApply when (response.statusCode()) {
+                HttpStatus.OK.value() -> mapToRestaurantDto(body)
+                HttpStatus.BAD_REQUEST.value() -> null
+                HttpStatus.NOT_FOUND.value() -> null
 //            HttpStatus.BAD_REQUEST.value() -> throw mapToBadRequest(body)
-            else -> throw mapToBadGateway(body)
+                else -> throw mapToBadGateway(body)
+            }
         }
+
     }
 
-    override fun handleNearbyRestaurantsResponse(response: HttpResponse<String>): Collection<RestaurantDto> {
-        val body = response.body()
+    override fun handleNearbyRestaurantsResponse(responseFuture: CompletableFuture<HttpResponse<String>>): CompletableFuture<Collection<RestaurantDto>> {
+        return responseFuture.thenApply { response ->
+            val body = response.body()
 
-        return when (response.statusCode()) {
-            HttpStatus.OK.value() -> mapToNearbyRestaurants(body)
-            HttpStatus.NOT_FOUND.value() -> emptyList()
-            HttpStatus.BAD_REQUEST.value() -> throw mapToBadRequest(body)
-            else -> throw mapToBadGateway(body)
+            return@thenApply when (response.statusCode()) {
+                HttpStatus.OK.value() -> mapToNearbyRestaurants(body)
+                HttpStatus.NOT_FOUND.value() -> emptyList()
+                HttpStatus.BAD_REQUEST.value() -> throw mapToBadRequest(body)
+                else -> throw mapToBadGateway(body)
+            }
         }
     }
 

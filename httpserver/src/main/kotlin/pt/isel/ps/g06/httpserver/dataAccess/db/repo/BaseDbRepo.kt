@@ -1,6 +1,5 @@
 package pt.isel.ps.g06.httpserver.dataAccess.db.repo
 
-import org.jdbi.v3.core.Handle
 import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.transaction.TransactionIsolationLevel
 import org.jdbi.v3.core.transaction.TransactionIsolationLevel.SERIALIZABLE
@@ -62,48 +61,6 @@ class BaseDbRepo constructor(internal val jdbi: Jdbi) {
     }
 
     /**
-     * @throws InvalidInputException If submission was voted by submitter or if submission does not exist.
-     */
-    protected fun requireNoVote(
-            submissionId: Int,
-            submitterId: Int,
-            defaultIsolation: TransactionIsolationLevel = SERIALIZABLE
-    ) {
-        jdbi.inTransaction<Unit, InvalidInputException>(defaultIsolation) {
-
-            // Check if this submitter already voted this submission
-            val hasVote = it.attach(VoteDao::class.java)
-                    .getUserVoteById(submissionId, submitterId)
-                    .let { it != null }
-            if (hasVote)
-                throw InvalidInputException(InvalidInputDomain.VOTE,
-                        "The submitter id \"$submitterId\" already voted on" +
-                                " submission id \"$submissionId\"."
-                )
-        }
-    }
-
-    /**
-     * @throws InvalidInputException If submission was not voted by submitter or if submission does not exist.
-     */
-    protected fun requireVote(
-            submissionId: Int,
-            submitterId: Int,
-            defaultIsolation: TransactionIsolationLevel = SERIALIZABLE
-    ) {
-        jdbi.inTransaction<Unit, InvalidInputException>(defaultIsolation) {
-
-            // Check if this submitter already voted this submission
-            it.attach(VoteDao::class.java)
-                    .getUserVoteById(submissionId, submitterId)
-                    ?: throw InvalidInputException(InvalidInputDomain.VOTE,
-                            "The submitter id \"$submitterId\" not not vote on" +
-                                    " submission id \"$submissionId\"."
-                    )
-        }
-    }
-
-    /**
      * @throws InvalidInputException If the submission does not meet the IS-A contract or
      * if the submission does not exist.
      */
@@ -124,17 +81,11 @@ class BaseDbRepo constructor(internal val jdbi: Jdbi) {
         }
     }
 
+
     protected fun isFromApi(submissionId: Int, defaultIsolation: TransactionIsolationLevel = SERIALIZABLE): Boolean {
         return jdbi.inTransaction<Boolean, Exception>(defaultIsolation) {
             return@inTransaction it.attach(ApiSubmissionDao::class.java)
                     .getBySubmissionId(submissionId) != null
-        }
-    }
-
-    protected fun isApi(submitterId: Int, defaultIsolation: TransactionIsolationLevel = SERIALIZABLE): Boolean {
-        return jdbi.inTransaction<Boolean, Exception>(defaultIsolation) {
-            return@inTransaction it.attach(ApiDao::class.java)
-                    .getById(submitterId) != null
         }
     }
 
@@ -148,7 +99,7 @@ class BaseDbRepo constructor(internal val jdbi: Jdbi) {
             val currentTime = OffsetDateTime.now(Clock.systemDefaultZone())
             val seconds = Duration.between(creationDate, currentTime).seconds
 
-            if(seconds > timeout.seconds) {
+            if (seconds > timeout.seconds) {
                 throw InvalidInputException(InvalidInputDomain.TIMEOUT,
                         "Submission update timed out!"
                 )
@@ -156,19 +107,19 @@ class BaseDbRepo constructor(internal val jdbi: Jdbi) {
         }
     }
 
-    protected fun requireFromUser(submissionId: Int, isolationLevel: TransactionIsolationLevel) {
-        if(isFromApi(submissionId, isolationLevel)) {
+    protected fun requireFromUser(submissionId: Int, isolationLevel: TransactionIsolationLevel = SERIALIZABLE) {
+        if (isFromApi(submissionId, isolationLevel)) {
             throw InvalidInputException(InvalidInputDomain.API,
                     "The submission id \"$submissionId\" is not an API submission."
             )
         }
     }
 
-    protected fun getCuisinesByNames(cuisineNames: Collection<String>, isolationLevel: TransactionIsolationLevel): Collection<DbCuisineDto> {
+    protected fun getCuisinesByNames(cuisineNames: Collection<String>, isolationLevel: TransactionIsolationLevel = SERIALIZABLE): Collection<DbCuisineDto> {
         return jdbi.inTransaction<Collection<DbCuisineDto>, Exception>(isolationLevel) {
             val cuisineDtos = it.attach(CuisineDao::class.java)
                     .getAllByNames(cuisineNames)
-            if(cuisineDtos.size != cuisineNames.size) {
+            if (cuisineDtos.size != cuisineNames.size) {
                 val invalidCuisines = cuisineNames.filter { name ->
                     cuisineDtos.none { it.cuisine_name == name }
                 }

@@ -1,7 +1,10 @@
 package pt.isel.ps.g06.httpserver.dataAccess.db.dto
 
-data class DbSubmitterDto(
+import java.time.OffsetDateTime
+
+open class DbSubmitterDto(
         val submitter_id: Int,
         val submitter_name: String,
+        val creation_date: OffsetDateTime,
         val submitter_type: String
 )

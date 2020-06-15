@@ -6,8 +6,11 @@ enum class RestaurantApiType {
 
     companion object {
         fun getOrDefault(type: String?, default: RestaurantApiType = Here): RestaurantApiType {
-            return if (type == null) default
-            else values().find { it.toString().equals(type, true) } ?: default
+            return values().find { it.toString().equals(type, true) } ?: default
+        }
+
+        fun getOrNull(type: String?): RestaurantApiType? {
+            return values().find { it.toString().equals(type, true) }
         }
     }
 }

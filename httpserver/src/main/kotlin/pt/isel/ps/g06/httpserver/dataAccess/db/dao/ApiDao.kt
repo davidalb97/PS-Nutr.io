@@ -4,11 +4,6 @@ import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbApiDto
 
-//Submitter table constants
-private const val submitterTable = SubmitterDao.table
-private const val submitterName = SubmitterDao.name
-private const val submitterId = SubmitterDao.id
-
 //SubmissionSubmitter table constants
 private const val SS_table = SubmissionSubmitterDao.table
 private const val SS_submissionId = SubmissionSubmitterDao.submissionId
@@ -35,16 +30,4 @@ interface ApiDao {
             " WHERE $SS_table.$SS_submissionId = :submissionId"
     )
     fun getSubmitterBySubmissionId(submissionId: Int): DbApiDto?
-
-    @SqlQuery("SELECT $submitterTable.$submitterId, $table.$apiToken" +
-            " FROM $submitterTable" +
-            " INNER JOIN $table" +
-            " ON $submitterTable.$submitterId = $table.$id" +
-            " WHERE $submitterName = :submitterName"
-    )
-    fun getByName(@Bind submitterName: String): DbApiDto?
-
-    @SqlQuery("INSERT INTO $table($id, $apiToken) " +
-            "VALUES(:submitterId, :apiToken) RETURNING *")
-    fun insert(@Bind submitterId: Int, @Bind apiToken: String): DbApiDto
 }

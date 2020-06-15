@@ -1,7 +1,6 @@
 package pt.isel.ps.g06.httpserver.dataAccess.db.dao
 
 import org.jdbi.v3.sqlobject.customizer.Bind
-import org.jdbi.v3.sqlobject.customizer.BindBeanList
 import org.jdbi.v3.sqlobject.customizer.BindList
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbCuisineDto
@@ -34,11 +33,14 @@ interface CuisineDao {
     companion object {
         const val table = "Cuisine"
         const val name = "cuisine_name"
-        const val id = "cuisine_id"
+        const val id = "submission_id"
     }
 
-    @SqlQuery("SELECT * FROM $table")
-    fun getAll(): Collection<DbCuisineDto>
+    @SqlQuery("SELECT * FROM $table " +
+            "ORDER BY $table.$name ASC " +
+            "LIMIT :limit " +
+            "OFFSET :offset")
+    fun getAll(offset: Int = 0, limit: Int?): Collection<DbCuisineDto>
 
     @SqlQuery("SELECT * FROM $table WHERE $name = :name")
     fun getByName(@Bind name: String): Collection<DbCuisineDto>
@@ -57,7 +59,7 @@ interface CuisineDao {
             " ON $RC_table.$RC_cuisineId = $table.$id" +
             " WHERE $RC_table.$RC_restaurantId = :restaurantId"
     )
-    fun getByRestaurantId(@Bind restaurantId: Int): Collection<DbCuisineDto>
+    fun getAllByRestaurantId(@Bind restaurantId: Int): Collection<DbCuisineDto>
 
     @SqlQuery("SELECT * FROM $table WHERE $name in (<cuisineIds>)")
     fun getAllByNames(@BindList cuisineIds: Collection<String>): Collection<DbCuisineDto>
@@ -80,15 +82,4 @@ interface CuisineDao {
             @Bind submitterId: Int,
             @BindList apiIds: Collection<String>
     ): Collection<DbCuisineDto>
-
-    @SqlQuery("INSERT INTO $table($name) VALUES(:name) RETURNING *")
-    fun insert(@Bind name: String): DbCuisineDto
-
-    @SqlQuery("INSERT INTO $table($name) values <cuisineParams> RETURNING *")
-    fun insertAll(@BindBeanList(propertyNames = [name])
-                  cuisineParams: Collection<CuisineParam>
-    ): Collection<DbCuisineDto>
 }
-
-//Variable names must match sql columns
-data class CuisineParam(val cuisine_name: String)
