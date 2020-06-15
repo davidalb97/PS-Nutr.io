@@ -1,6 +1,7 @@
 package pt.isel.ps.g06.httpserver.service
 
 import org.springframework.stereotype.Service
+import pt.isel.ps.g06.httpserver.common.exception.clientError.InvalidMealException
 import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.restaurant.DbMealResponseMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.MealDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.input.IngredientInput
@@ -32,7 +33,9 @@ class MealService(
             ingredients: Collection<IngredientInput>,
             cuisines: Collection<String>
     ): Meal {
-        //Check if sum ingredient quantity is greater than meal quantity. If so, throw exception
+        if (ingredients.sumBy { it.quantity!! } > quantity) {
+            throw InvalidMealException("The sum of ingredient quantity must be lower than meal quantity!")
+        }
 
         val createdMeal = dbMealRepo.insert(
                 submitterId = submitterId,

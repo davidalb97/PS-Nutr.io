@@ -9,8 +9,6 @@ private const val Submitter_id = SubmitterDao.id
 private const val Submitter_name = SubmitterDao.name
 private const val Submitter_date = SubmitterDao.date
 
-
-//@RegisterRowMapper(UserMapper::class)
 interface UserDao {
     companion object {
         const val table = "_User"
@@ -23,20 +21,8 @@ interface UserDao {
             "$Submitter_table.$Submitter_name, $table.$id, $table.$email, $table.$sessionSecret, $Submitter_table.$Submitter_date " +
             "FROM $table " +
             "INNER JOIN $Submitter_table " +
-            "ON $table.$id = $Submitter_table.$Submitter_id "
-    )
-    fun getAll(): List<DbUserDto>
-
-    @SqlQuery("SELECT " +
-            "$Submitter_table.$Submitter_name, $table.$id, $table.$email, $table.$sessionSecret, $Submitter_table.$Submitter_date " +
-            "FROM $table " +
-            "INNER JOIN $Submitter_table " +
             "ON $table.$id = $Submitter_table.$Submitter_id " +
             "WHERE $table.$id = :submitterId"
     )
     fun getById(@Bind submitterId: Int): DbUserDto?
-
-    @SqlQuery("INSERT INTO $table($id, $email, $sessionSecret) " +
-            "VALUES(:submitter_id, :email, :session_secret) RETURNING *")
-    fun insert(@Bind submitter_id: Int, @Bind email: String, @Bind sessionSecret: String): DbUserDto
 }

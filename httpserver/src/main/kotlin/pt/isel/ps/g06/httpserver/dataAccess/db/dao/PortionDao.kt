@@ -19,14 +19,8 @@ interface PortionDao {
         const val quantity = "quantity"
     }
 
-    @SqlQuery("SELECT * FROM $table")
-    fun getAll(): List<DbPortionDto>
-
-    @SqlQuery("SELECT * FROM $table WHERE $id = :submissionId")
-    fun getById(@Bind submissionId: Int): DbPortionDto?
-
     @SqlQuery("SELECT * FROM $table WHERE $restaurantMealId = :restaurantMealId")
-    fun getAllByRestaurantMealId(@Bind restaurantMealId: Int): List<DbPortionDto>
+    fun getAllForRestaurantMealId(@Bind restaurantMealId: Int): List<DbPortionDto>
 
     @SqlQuery(
             "SELECT $table.$id, $table.$restaurantMealId, $table.$quantity" +

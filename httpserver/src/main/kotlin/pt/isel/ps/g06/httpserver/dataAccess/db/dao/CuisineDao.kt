@@ -1,7 +1,6 @@
 package pt.isel.ps.g06.httpserver.dataAccess.db.dao
 
 import org.jdbi.v3.sqlobject.customizer.Bind
-import org.jdbi.v3.sqlobject.customizer.BindBeanList
 import org.jdbi.v3.sqlobject.customizer.BindList
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbCuisineDto
@@ -83,15 +82,4 @@ interface CuisineDao {
             @Bind submitterId: Int,
             @BindList apiIds: Collection<String>
     ): Collection<DbCuisineDto>
-
-    @SqlQuery("INSERT INTO $table($name) VALUES(:name) RETURNING *")
-    fun insert(@Bind name: String): DbCuisineDto
-
-    @SqlQuery("INSERT INTO $table($name) values <cuisineParams> RETURNING *")
-    fun insertAll(@BindBeanList(propertyNames = [name])
-                  cuisineParams: Collection<CuisineParam>
-    ): Collection<DbCuisineDto>
 }
-
-//Variable names must match sql columns
-data class CuisineParam(val cuisine_name: String)

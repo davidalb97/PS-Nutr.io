@@ -11,24 +11,11 @@ private val cuisineDaoClass = CuisineDao::class.java
 
 @Repository
 class CuisineDbRepository(jdbi: Jdbi) : BaseDbRepo(jdbi) {
-
-    fun getByName(name: String): Collection<DbCuisineDto> {
-        return jdbi.inTransaction<Collection<DbCuisineDto>, Exception>(isolationLevel) {
-            return@inTransaction it.attach(cuisineDaoClass).getByName(name)
-        }
-    }
-
     fun getAll(skip: Int?, limit: Int?): Collection<DbCuisineDto> {
         return jdbi.inTransaction<Collection<DbCuisineDto>, Exception>(isolationLevel) {
             return@inTransaction it
                     .attach(cuisineDaoClass)
                     .getAll(skip ?: 0, limit)
-        }
-    }
-
-    fun insert(name: String): DbCuisineDto {
-        return jdbi.inTransaction<DbCuisineDto, Exception>(isolationLevel) {
-            return@inTransaction it.attach(cuisineDaoClass).insert(name)
         }
     }
 

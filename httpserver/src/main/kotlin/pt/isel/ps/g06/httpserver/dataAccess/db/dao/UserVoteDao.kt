@@ -20,9 +20,6 @@ interface UserVoteDao {
     )
     fun getUserVoteForSubmission(@Bind submissionId: Int, @Bind voterSubmitterId: Int): DbUserVoteDto?
 
-    @SqlQuery("SELECT * FROM $table WHERE $submissionId = :submissionId")
-    fun getAllById(@Bind submissionId: Int): List<DbUserVoteDto>
-
     @SqlQuery("INSERT INTO $table($submissionId, $voterSubmitterId, $vote)" +
             " VALUES(:voteSubmissionId, :voterSubmitterId, :vote) RETURNING *")
     fun insert(@Bind voteSubmissionId: Int, @Bind voterSubmitterId: Int, @Bind vote: Boolean): DbUserVoteDto

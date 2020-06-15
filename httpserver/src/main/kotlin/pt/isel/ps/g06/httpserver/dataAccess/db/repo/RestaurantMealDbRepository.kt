@@ -16,17 +16,6 @@ private val restaurantMealDao = RestaurantMealDao::class.java
 
 @Repository
 class RestaurantMealDbRepository(jdbi: Jdbi) : SubmissionDbRepository(jdbi) {
-    private val contracts = listOf(REPORTABLE, VOTABLE, FAVORABLE)
-
-    fun getAllUserMealsFromRestaurant(restaurantId: Int): Sequence<DbRestaurantMealDto> {
-        val collection = lazy {
-            jdbi.inTransaction<Collection<DbRestaurantMealDto>, Exception>(isolationLevel) { handle ->
-                handle.attach(restaurantMealDao).getAllUserMealsByRestaurantId(restaurantId)
-            }
-        }
-        return Sequence { collection.value.iterator() }
-    }
-
     fun getRestaurantMeal(restaurantId: Int, mealId: Int): DbRestaurantMealDto? {
         return jdbi.inTransaction<DbRestaurantMealDto, Exception>(isolationLevel) {
             return@inTransaction it
@@ -80,29 +69,6 @@ class RestaurantMealDbRepository(jdbi: Jdbi) : SubmissionDbRepository(jdbi) {
             })
 
             return@inTransaction restaurantMealDao.insert(submissionId, restaurantId, mealId)
-        }
-    }
-
-    fun remove(
-            submitterId: Int,
-            submissionId: Int
-    ) {
-        return jdbi.inTransaction<Unit, Exception>(isolationLevel) {
-
-            // Check if the submissionId is from a RestaurantMeal
-            requireSubmission(submissionId, RESTAURANT_MEAL, isolationLevel)
-
-            // Check if the submitter is the submission owner
-            requireSubmissionSubmitter(submissionId, submitterId, isolationLevel)
-
-            // Delete all portions associated with this RestaurantMeal
-            it.attach(PortionDao::class.java).getAllByRestaurantMealId(submissionId)
-
-            // Delete restaurant meal association
-            it.attach(restaurantMealDao).deleteById(submissionId)
-
-            // Removes submission, submitter association, contracts & it's tables
-            super.removeSubmission(submissionId, submitterId, RESTAURANT_MEAL, contracts, isolationLevel)
         }
     }
 }

@@ -8,31 +8,13 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionContractType.VOTABLE
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.UserVoteDao
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.VotableDao
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbUserVoteDto
-import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbVotesDto
 
 private val isolationLevel = TransactionIsolationLevel.SERIALIZABLE
 private val voteDaoClass = UserVoteDao::class.java
 
 @Repository
 class VoteDbRepository(jdbi: Jdbi) : BaseDbRepo(jdbi) {
-
-    fun getVotesById(submissionId: Int): DbVotesDto? {
-        return jdbi.inTransaction<DbVotesDto, Exception>(isolationLevel) {
-            it.attach(VotableDao::class.java).getById(submissionId)
-        }
-    }
-
-//    fun getUserVoteById(submissionId: Int, submitterId: Int): Boolean? {
-//        return jdbi.inTransaction<Boolean, Exception>(isolationLevel) {
-//            it.attach(voteDaoClass).getUserVoteForSubmission(submissionId, submitterId)
-//        }
-//    }
-
-    fun insertOrUpdate(
-            voterId: Int,
-            submissionId: Int,
-            vote: Boolean
-    ): DbUserVoteDto {
+    fun insertOrUpdate(voterId: Int, submissionId: Int, vote: Boolean): DbUserVoteDto {
         return jdbi.inTransaction<DbUserVoteDto, Exception>(isolationLevel) {
             // Check if the submission exists and it is votable
             requireContract(submissionId, VOTABLE, isolationLevel)
@@ -67,10 +49,7 @@ class VoteDbRepository(jdbi: Jdbi) : BaseDbRepo(jdbi) {
         }
     }
 
-    fun delete(
-            submitterId: Int,
-            submissionId: Int
-    ) {
+    fun delete(submitterId: Int, submissionId: Int) {
         jdbi.inTransaction<Unit, Exception>(isolationLevel) {
             // Check if the submission exists and it is votable
             requireContract(submissionId, VOTABLE, isolationLevel)

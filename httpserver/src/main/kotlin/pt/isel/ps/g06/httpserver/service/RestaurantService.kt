@@ -11,6 +11,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.repo.RestaurantMealDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.model.RestaurantDto
 import pt.isel.ps.g06.httpserver.model.Restaurant
 import pt.isel.ps.g06.httpserver.model.RestaurantIdentifier
+import pt.isel.ps.g06.httpserver.util.log
 
 private const val MAX_RADIUS = 1000
 
@@ -142,10 +143,14 @@ class RestaurantService(
     private fun searchApiRestaurant(apiSubmitterId: Int, apiId: String, apiType: RestaurantApiType): RestaurantDto? {
         val restaurantApi = restaurantApiMapper.getRestaurantApi(apiType)
 
-        //TODO Exception handle on CompletableFuture
-        return dbRestaurantRepository
-                .getApiRestaurant(apiSubmitterId, apiId)
-                ?: restaurantApi.getRestaurantInfo(apiId).get()
+        return dbRestaurantRepository.getApiRestaurant(apiSubmitterId, apiId)
+                ?: restaurantApi
+                        .getRestaurantInfo(apiId)
+                        .exceptionally {
+                            log("Get Restaurant from API produced following exception: ${it.message}")
+                            null
+                        }
+                        .get()
     }
 
     private fun searchRestaurantSubmission(submissionId: Int): RestaurantDto? {

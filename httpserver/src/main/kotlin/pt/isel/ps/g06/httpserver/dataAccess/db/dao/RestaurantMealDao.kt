@@ -16,17 +16,8 @@ interface RestaurantMealDao {
         const val restaurantId = "restaurant_submission_id"
     }
 
-    @SqlQuery("SELECT * FROM $table")
-    fun getAll(): List<DbRestaurantMealDto>
-
-    @SqlQuery("SELECT * FROM $table WHERE $id = :submissionId")
-    fun getById(submissionId: Int): DbRestaurantMealDto?
-
     @SqlQuery("SELECT * FROM $table WHERE $restaurantId = :restaurantId AND $mealId = :mealId")
     fun getByRestaurantAndMealId(@Bind restaurantId: Int, @Bind mealId: Int): DbRestaurantMealDto?
-
-    @SqlQuery("SELECT * FROM $table WHERE $mealId = :mealId")
-    fun getAllByMealId(@Bind mealId: Int): List<DbRestaurantMealDto>
 
     @SqlQuery("SELECT * " +
             "FROM $table " +
@@ -42,8 +33,6 @@ interface RestaurantMealDao {
     @SqlQuery("DELETE FROM $table WHERE $restaurantId = :restaurantId RETURNING *")
     fun deleteAllByRestaurantId(@Bind restaurantId: Int): List<DbRestaurantMealDto>
 
-    @SqlQuery("DELETE FROM $table WHERE $mealId = :mealId RETURNING *")
-    fun deleteAllByMealId(@Bind mealId: Int): List<DbRestaurantMealDto>
 
     @SqlQuery("DELETE FROM $table WHERE $id = :submissionId RETURNING *")
     fun deleteById(@Bind submissionId: Int): DbRestaurantMealDto

@@ -73,7 +73,7 @@ class RestaurantMealController(
      *
      *  This logic does not change the client's behavior on accessing that restaurant.
      */
-    @PostMapping(RESTAURANT_MEALS, consumes = [MediaType.APPLICATION_JSON_VALUE])
+    @PutMapping(RESTAURANT_MEALS, consumes = [MediaType.APPLICATION_JSON_VALUE])
     fun addRestaurantMeal(
             @PathVariable(RESTAURANT_ID_VALUE) id: String,
             @Valid @RequestBody restaurantMeal: RestaurantMealInput,

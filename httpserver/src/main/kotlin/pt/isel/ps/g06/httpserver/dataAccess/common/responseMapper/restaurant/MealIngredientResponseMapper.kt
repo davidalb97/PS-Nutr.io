@@ -29,7 +29,7 @@ class DbMealIngredientResponseMapper(
                             nutritionalValues = NutritionalValues(
                                     carbs = calculateCarbsFromBase(ingredient.amount, ingredient.carbs, it.quantity).toInt(),
                                     amount = it.quantity,
-                                    unit = "gr"     //TODO From an enum
+                                    unit = "gr"
                             )
                     )
                 }

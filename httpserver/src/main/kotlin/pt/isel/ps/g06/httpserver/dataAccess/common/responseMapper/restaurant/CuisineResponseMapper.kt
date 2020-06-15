@@ -35,12 +35,11 @@ class HereCuisineResponseMapper(
         private val dbCuisineMapper: DbCuisineResponseMapper,
         private val apiSubmitterMapper: ApiSubmitterMapper
 ) : ResponseMapper<Sequence<String>, Sequence<Cuisine>> {
-    override fun mapTo(hereCuisines: Sequence<String>): Sequence<Cuisine> {
-        //TODO Add exception + logging here for no such API
+    override fun mapTo(dto: Sequence<String>): Sequence<Cuisine> {
         val apiSubmitterId = apiSubmitterMapper.getSubmitter(RestaurantApiType.Here)!!
 
         return dbCuisineRepo
-                .getByApiIds(apiSubmitterId, hereCuisines)
+                .getByApiIds(apiSubmitterId, dto)
                 .map(dbCuisineMapper::mapTo)
     }
 }

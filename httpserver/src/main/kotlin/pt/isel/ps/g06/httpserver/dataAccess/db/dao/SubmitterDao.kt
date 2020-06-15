@@ -22,15 +22,6 @@ interface SubmitterDao {
         const val date = "creation_date"
     }
 
-    @SqlQuery("SELECT * FROM $table")
-    fun getAll(): Collection<DbSubmitterDto>
-
-    @SqlQuery("SELECT * FROM $table WHERE $id = :submitterId")
-    fun getById(@Bind submitterId: Int): DbSubmitterDto?
-
-    @SqlQuery("SELECT * FROM $table WHERE $type = :submitterType")
-    fun getAllByType(@Bind submitterType: String): Collection<DbSubmitterDto>
-
     @SqlQuery("SELECT * FROM $table WHERE $type = '$API' AND submitter_name IN (<names>)")
     fun getApiSubmittersByName(@BindList names: Collection<String>): Collection<DbSubmitterDto>
 
@@ -40,8 +31,4 @@ interface SubmitterDao {
             " ON $table.$id = $SS_table.$SS_submitterId" +
             " WHERE $SS_table.$SS_submissionId = :submissionId")
     fun getSubmitterForSubmission(@Bind submissionId: Int): DbSubmitterDto?
-
-    @SqlQuery("INSERT INTO $table($name, $type) " +
-            "VALUES(:name, :type) RETURNING *")
-    fun insert(@Bind name: String, @Bind type: String): DbSubmitterDto
 }

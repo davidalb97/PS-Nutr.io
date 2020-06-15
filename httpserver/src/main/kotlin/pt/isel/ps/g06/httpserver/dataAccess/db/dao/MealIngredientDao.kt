@@ -23,10 +23,6 @@ interface MealIngredientDao {
         const val quantity = "quantity"
     }
 
-    @SqlQuery("SELECT * FROM $table")
-    fun getAll(): List<DbMealIngredientDto>
-
-
     @SqlQuery("SELECT * " +
             "FROM $table " +
             "INNER JOIN $S_table " +
@@ -45,23 +41,21 @@ interface MealIngredientDao {
     )
     fun getMealComponents(@Bind mealId: Int): Collection<DbMealIngredientDto>
 
-    @SqlQuery("INSERT INTO $table($mealId, $ingredientId)" +
-            " VALUES(:mealId, :ingredientId) RETURNING *")
-    fun insert(@Bind mealId: Int, @Bind ingredientId: Int): DbMealIngredientDto
 
     @SqlQuery("INSERT INTO $table($mealId, $ingredientId, $quantity) values <mealIngredientParams> RETURNING *")
-    fun insertAll(@BindBeanList(propertyNames = [mealId, ingredientId, quantity])
-                  mealIngredientParams: Collection<DbMealIngredientDto>
-    ): List<DbMealIngredientDto>
+    fun insertAll(
+            @BindBeanList(propertyNames = [mealId, ingredientId, quantity])
+            mealIngredientParams: Collection<DbMealIngredientDto>
+    ): Collection<DbMealIngredientDto>
 
     @SqlQuery("DELETE FROM $table WHERE $mealId = :submissionId RETURNING *")
-    fun deleteAllByMealId(submissionId: Int): List<DbMealIngredientDto>
+    fun deleteAllByMealId(submissionId: Int): Collection<DbMealIngredientDto>
 
     @SqlQuery("DELETE FROM $table" +
             " WHERE $mealId = :submissionId" +
             " AND $ingredientId in (<deleteIngredientIds>) RETURNING *")
     fun deleteAllByMealIdAndIngredientIds(
             @Bind submissionId: Int,
-            @BindList deleteIngredientIds: List<Int>
-    ): List<DbMealIngredientDto>
+            @BindList deleteIngredientIds: Collection<Int>
+    ): Collection<DbMealIngredientDto>
 }

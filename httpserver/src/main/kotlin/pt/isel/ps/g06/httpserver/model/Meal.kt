@@ -15,9 +15,8 @@ data class Meal(
         val cuisines: Sequence<Cuisine>,
         val submitterInfo: Lazy<Submitter?>,
         val creationDate: Lazy<OffsetDateTime?>,
-        //TODO See usages and replace by restaurantInfo map function call
-        val restaurantInfoSupplier: (RestaurantIdentifier) -> MealRestaurantInfo?,
-        val restaurantInfo: MutableMap<RestaurantIdentifier, MealRestaurantInfo?> = mutableMapOf()
+        private val restaurantInfoSupplier: (RestaurantIdentifier) -> MealRestaurantInfo?,
+        private val restaurantInfo: MutableMap<RestaurantIdentifier, MealRestaurantInfo?> = mutableMapOf()
 ) {
     /**
      * Checks if given Meal belongs to a User.
