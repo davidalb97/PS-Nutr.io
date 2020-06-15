@@ -17,7 +17,7 @@ class MealRecyclerAdapter(
         val item: MealItem = viewModel.items[position]
         holder.bindTo(item)
         holder.isCalculatorMode = isCalculatorMode
-        holder.onFavorite = { viewModel.addToFavorite(item) }
+        holder.onFavorite = { viewModel.addToFavorite(it) }
     }
 
     override fun getItemViewId(): Int = R.layout.meal_card

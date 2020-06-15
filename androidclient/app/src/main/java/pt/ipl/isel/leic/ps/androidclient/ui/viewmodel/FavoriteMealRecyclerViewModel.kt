@@ -12,13 +12,10 @@ class FavoriteMealRecyclerViewModel() : ARecyclerViewModel<MealItem>() {
     }
 
     override fun update() {
-        this.liveDataHandler.set(mealRepository.getAllInfoBySource(Source.FAVORITE)) {
-            mealRepository.dbMealInfoMapper.mapToModel(it)
+        this.liveDataHandler.set(mealRepository.getAllItemBySource(Source.FAVORITE)) {
+            mealRepository.dbMealItemMapper.mapToModel(it)
         }
     }
-
-    fun insertItem(favoriteMeal: MealItem) =
-        mealRepository.insertItem(favoriteMeal)
 
     fun deleteItem(favoriteMeal: MealItem) =
         mealRepository.deleteItem(favoriteMeal)
