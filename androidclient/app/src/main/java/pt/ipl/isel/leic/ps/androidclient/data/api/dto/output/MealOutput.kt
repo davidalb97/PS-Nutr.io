@@ -5,6 +5,6 @@ data class MealOutput(
     val name: String,
     val quantity: Int,
     val unit: String,
-    val ingredients: Collection<IngredientOutput>,
-    val cuisines: Collection<String>
+    val ingredients: Iterable<IngredientOutput>,
+    val cuisines: Iterable<String>
 )

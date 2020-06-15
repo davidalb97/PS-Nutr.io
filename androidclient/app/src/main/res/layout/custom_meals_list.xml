@@ -49,7 +49,7 @@
             android:gravity="center"
             android:layout_marginRight="50dp"
             android:layout_marginLeft="50dp"
-            android:text="You don't any saved meals"
+            android:text="@string/you_don_t_have_any_saved_meals"
             android:textSize="26sp"
             android:visibility="invisible">
         </TextView>

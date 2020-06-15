@@ -45,6 +45,10 @@ class MealRepository(private val dataSource: MealDataSource) {
         roomDb.mealInfoDao().insert(dbMealInfoMapper.mapToRelation(meal))
     }
 
+    /*fun insert(meal: MealItem) = AsyncWorker<Unit, Unit> {
+        roomDb.mealItemDao().insert(dbMealInfoMapper(meal))
+    }*/
+
     fun delete(meal: MealInfo) = AsyncWorker<Unit, Unit> {
         roomDb.mealInfoDao().delete(dbMealInfoMapper.mapToRelation(meal))
     }

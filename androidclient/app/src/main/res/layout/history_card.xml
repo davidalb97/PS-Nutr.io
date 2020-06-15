@@ -25,7 +25,7 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/restaurantCuisines"
+            android:id="@+id/mealCuisines"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/history_name"

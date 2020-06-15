@@ -25,7 +25,7 @@ class InputMealInfoMapper(
         votes = inputVotesMapper.mapToModel(dto.votes),
         isFavorite = dto.isFavorite,
         imageUri = dto.imageUri,
-        creationDate = TimestampWithTimeZone.parse(dto.creationDate.toString()),
+        creationDate = TimestampWithTimeZone.parse(dto.creationDate?.toString()),
         ingredientComponents = dto.composedBy?.let {
             inputMealIngredientMapper.mapToListModel(it.ingredients, false)
         } ?: emptyList(),

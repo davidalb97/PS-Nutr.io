@@ -6,6 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.navigation.findNavController
+import com.bumptech.glide.Glide
+import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.mealRepository
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealItem
 import pt.ipl.isel.leic.ps.androidclient.data.util.AsyncWorker
@@ -16,29 +18,55 @@ class MealRecyclerViewHolder(view: ViewGroup, ctx: Context) :
     IFavorable<MealItem>,
     ICalculatable<MealItem>{
 
-    val mealImage = view.findViewById<ImageView>(R.id.restaurantImage)
-    val mealName = view.findViewById<TextView>(R.id.restaurantName)
+    val mealImage = view.findViewById<ImageView>(R.id.mealImage)
+    val mealName = view.findViewById<TextView>(R.id.mealName)
     val votesBar = view.findViewById<ProgressBar>(R.id.progressBar)
     val upvoteCounter = view.findViewById<TextView>(R.id.upVoteCounter)
     val downvoteCounter = view.findViewById<TextView>(R.id.downVoteCounter)
     override var favoriteButton = view.findViewById<ImageButton>(R.id.favorite)
-    override var calculatorButton: ImageButton = view.findViewById(R.id.add_custom_meal_to_calc)
+    override var calculatorButton: ImageButton = view.findViewById(R.id.add_meal_to_calc)
     val optionsButton = view.findViewById<ImageButton>(R.id.options)
 
     override lateinit var onFavorite: (MealItem) -> AsyncWorker<Unit, Unit>
 
     override fun bindTo(item: MealItem) {
         super.bindTo(item)
+        setupViewHolderElements()
+        setupListeners()
+    }
+
+    private fun setupViewHolderElements() {
+
+        if (item.imageUri == null) {
+            mealImage.visibility = View.GONE
+        } else {
+            Glide.with(itemView)
+                .load(item.imageUri)
+                .into(mealImage)
+        }
+
         mealName.text = item.name
         val votes = item.votes
         if (votes != null) {
             val upvotes = votes.positive
             val downvotes = votes.negative
-            votesBar.progress =
-                upvotes / (upvotes + downvotes) * 100
+            val totalVotes = upvotes + downvotes
+            votesBar.progress = 0
+            if (totalVotes > 0)
+                votesBar.progress =
+                    upvotes / (upvotes + downvotes) * 100
             upvoteCounter.text = upvotes.toString()
             downvoteCounter.text = downvotes.toString()
         }
+    }
+
+    private fun setupListeners() {
+       /* favoriteButton.setOnClickListener {
+            view -> mealRepository.insert(item)
+        }*/ //TODO - add to favorite
+
+        this.view.setOnClickListener(this)
+        this.view.setOnLongClickListener(this)
     }
 
     override fun onClick(v: View?) {

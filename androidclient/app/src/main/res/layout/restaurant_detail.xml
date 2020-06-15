@@ -11,7 +11,8 @@
         <RelativeLayout
             android:id="@+id/restaurant_general_details"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:gravity="center">
 
             <ImageView
                 android:id="@+id/restaurant_detail_image"
@@ -20,38 +21,25 @@
                 android:layout_margin="20dp">
             </ImageView>
 
-            <TextView
-                android:id="@+id/meal_detail_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toEndOf="@id/restaurant_detail_image"
-                android:layout_marginTop="20dp"
-                android:textStyle="bold"
-                android:textColor="@android:color/background_dark"
-                android:textSize="26sp">
-            </TextView>
-
-            <TextView
-                android:id="@+id/meal_detail_info"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toEndOf="@id/restaurant_detail_image"
-                android:layout_below="@+id/meal_detail_title"
-                android:layout_marginTop="20dp"
-                android:text="@string/meal_detail_info"
-                android:textStyle="bold"
-                android:textColor="@android:color/background_dark"
-                android:textSize="20sp">
-            </TextView>
-
         </RelativeLayout>
 
-        <RelativeLayout>
+        <TextView
+            android:id="@+id/restaurant_detail_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:textColor="@android:color/background_dark"
+            android:textSize="26sp">
+        </TextView>
+
+        <RelativeLayout android:gravity="center">
             <TextView
                 android:id="@+id/vote_this_restaurant"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
                 android:text="@string/vote_this_restaurant"
                 android:textSize="20sp"
                 android:textStyle="bold"
@@ -86,13 +74,12 @@
 
         <TextView
             android:id="@+id/restaurant_meals_menu_txt"
+            android:gravity="center"
             android:text="@string/menu"
             android:textColor="@android:color/background_dark"
             android:textSize="20sp"
             android:textStyle="bold"
-            android:layout_marginStart="20dp"
             android:layout_marginTop="10dp">
-
         </TextView>
 
         <ProgressBar
@@ -103,25 +90,25 @@
             android:visibility="invisible">
         </ProgressBar>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/restaurant_meals_list"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:listitem="@layout/meal_card">
-        </androidx.recyclerview.widget.RecyclerView>
+        <TableLayout>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/restaurant_meals_list"
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
+                tools:listitem="@layout/meal_card">
+            </androidx.recyclerview.widget.RecyclerView>
 
-        <RelativeLayout
-            android:gravity="center">
             <Button
                 android:id="@+id/add_meal_button"
                 android:layout_width="250dp"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="15dp"
                 android:background="@drawable/rect_material_button_shape"
                 android:text="@string/submit_a_meal_to_this_menu"
                 android:textColor="@color/cardview_light_background">
             </Button>
-        </RelativeLayout>
-
+        </TableLayout>
     </TableLayout>
 
 </ScrollView>

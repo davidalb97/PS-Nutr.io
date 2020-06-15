@@ -5,31 +5,27 @@ import android.os.Parcelable
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.mealRepository
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealItem
 
-open class MealRecyclerViewModel(
-    open val restaurantId: String? = null
-) : ARecyclerViewModel<MealItem>() {
+open class MealRecyclerViewModel() : ARecyclerViewModel<MealItem>() {
 
-    constructor(parcel: Parcel): this(
-        restaurantId = parcel.readString()
-    )
+    lateinit var restaurantId: String
+
+    constructor(parcel: Parcel): this()
+
+    fun getSuggestedMeals() {
+        mealRepository.getMealItems(
+            success = { liveDataHandler.set(it) },
+            error = onError
+        )
+    }
 
     override fun update() {
-        if(restaurantId != null) {
-            mealRepository.getRestaurantMealItems(
-                restaurantId = restaurantId!!,
-                count = count,
-                skip = skip,
-                success = { liveDataHandler.set(it) },
-                error = onError
-            )
-        } else {
-            mealRepository.getMealItems(
-                count = count,
-                skip = skip,
-                success = { liveDataHandler.set(it) },
-                error = onError
-            )
-        }
+        mealRepository.getRestaurantMealItems(
+            restaurantId = restaurantId!!,
+            count = count,
+            skip = skip,
+            success = { liveDataHandler.set(it) },
+            error = onError
+        )
     }
 
     override fun writeToParcel(dest: Parcel?, flags: Int) {

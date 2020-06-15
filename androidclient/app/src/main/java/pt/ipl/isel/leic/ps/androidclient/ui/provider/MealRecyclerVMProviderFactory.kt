@@ -20,5 +20,5 @@ class MealRecyclerVMProviderFactory(
         MealRecyclerViewModel::class.java
 
     override fun newViewModel(): MealRecyclerViewModel =
-        MealRecyclerViewModel(savedInstanceState?.getString(MEAL_LIST_RESTAURANT_ID))
+        MealRecyclerViewModel()
 }

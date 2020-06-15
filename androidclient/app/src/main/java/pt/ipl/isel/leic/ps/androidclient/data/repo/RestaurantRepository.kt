@@ -3,6 +3,7 @@ package pt.ipl.isel.leic.ps.androidclient.data.repo
 import com.android.volley.VolleyError
 import pt.ipl.isel.leic.ps.androidclient.data.api.datasource.RestaurantDataSource
 import pt.ipl.isel.leic.ps.androidclient.data.api.mapper.*
+import pt.ipl.isel.leic.ps.androidclient.data.model.Cuisine
 import pt.ipl.isel.leic.ps.androidclient.data.model.RestaurantInfo
 import pt.ipl.isel.leic.ps.androidclient.data.model.RestaurantItem
 
@@ -52,4 +53,38 @@ class RestaurantRepository(private val dataSource: RestaurantDataSource) {
             error
         )
     }
+
+    fun postRestaurant(
+        name: String,
+        latitude: Double,
+        longitude: Double,
+        cuisines: Iterable<Cuisine>,
+        error: (VolleyError) -> Unit
+    ) {
+        dataSource.postRestaurant(
+            name,
+            latitude,
+            longitude,
+            cuisines,
+            error
+        )
+    }
+
+    fun postVote(
+        id: String,
+        vote: Boolean,
+        error: (VolleyError) -> Unit
+    ) = dataSource.postVote(id, vote, error)
+
+    fun updateVote(
+        id: String,
+        vote: Boolean,
+        error: (VolleyError) -> Unit
+    ) = dataSource.updateVote(id, vote, error)
+
+    fun deleteVote(
+        id: String,
+        vote: Boolean,
+        error: (VolleyError) -> Unit
+    ) = dataSource.deleteVote(id, error)
 }

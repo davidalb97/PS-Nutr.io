@@ -5,6 +5,7 @@ import pt.ipl.isel.leic.ps.androidclient.data.api.*
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.SimplifiedRestaurantInput
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.info.DetailedRestaurantInput
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.output.RestaurantOutput
+import pt.ipl.isel.leic.ps.androidclient.data.api.dto.output.VoteOutput
 import pt.ipl.isel.leic.ps.androidclient.data.model.Cuisine
 
 private const val LATITUDE_PARAM = ":latitude"
@@ -21,8 +22,8 @@ private const val RESTAURANT_LOCATION_URI = RESTAURANT_URI +
         "&longitude=$LONGITUDE_PARAM" +
         "&skip=$SKIP_PARAM" +
         "&count=$COUNT_PARAM"
-private const val RESTAURANT_REPORT_URI = "$RESTAURANT_ID_URI/report"
-private const val RESTAURANT_VOTE_URI = "$RESTAURANT_ID_URI/vote"
+private const val RESTAURANT_REPORT_URI = "$URI_BASE/report/$RESTAURANT_ID_PARAM"
+private const val RESTAURANT_VOTE_URI = "$URI_BASE/vote/$RESTAURANT_ID_PARAM"
 private const val RESTAURANT_MEAL_URI = "$RESTAURANT_ID_URI/$MEAL"
 private const val RESTAURANT_MEAL_ID_URI = "$RESTAURANT_MEAL_URI/$MEAL_ID_PARAM"
 private const val RESTAURANT_MEAL_PORTION_URI = "$RESTAURANT_MEAL_ID_URI/portion"
@@ -105,49 +106,55 @@ class RestaurantDataSource(
                 latitude = latitude,
                 longitude = longitude,
                 cuisines = cuisines.map { it.name }
-                ),
+            ),
             error,
             { }
         )
     }
 
     fun postReport(
-        success: (SimplifiedRestaurantInput) -> Unit,
-        error: (VolleyError) -> Unit,
-        uriParameters:  HashMap<String, String>?
+        id: String,
+        report: String,
+        error: (VolleyError) -> Unit
     ) {
-        var uri =
-            RESTAURANT_ID_URI
 
-        uri = uriBuilder.buildUri(uri, uriParameters)
+        val uri =
+            uriBuilder.buildUri(
+                RESTAURANT_REPORT_URI,
+                hashMapOf(Pair(RESTAURANT_ID_PARAM, id))
+            )
 
-        requestParser.requestAndRespond(
+        /*requestParser.request(
             Method.POST,
             uri,
-            RESTAURANT_DTO,
-            success,
+            RestaurantOutput(
+                name = name,
+                latitude = latitude,
+                longitude = longitude,
+                cuisines = cuisines.map { it.name }
+            ),
             error,
-            null
-        )
+            { }
+        )*/
     }
 
     fun postVote(
-        success: (SimplifiedRestaurantInput) -> Unit,
-        error: (VolleyError) -> Unit,
-        uriParameters:  HashMap<String, String>?
+        id: String,
+        vote: Boolean,
+        error: (VolleyError) -> Unit
     ) {
-        var uri =
-            RESTAURANT_ID_URI
+        val uri =
+            uriBuilder.buildUri(
+                RESTAURANT_VOTE_URI,
+                hashMapOf(Pair(RESTAURANT_ID_PARAM, id))
+            )
 
-        uri = uriBuilder.buildUri(uri, uriParameters)
-
-        requestParser.requestAndRespond(
+        requestParser.request(
             Method.POST,
             uri,
-            RESTAURANT_DTO,
-            success,
+            VoteOutput(value = vote),
             error,
-            {}
+            { }
         )
     }
 
@@ -155,22 +162,22 @@ class RestaurantDataSource(
      * ----------------------------- PUTs ------------------------------
      */
     fun updateVote(
-        success: (SimplifiedRestaurantInput) -> Unit,
-        error: (VolleyError) -> Unit,
-        uriParameters:  HashMap<String, String>?
+        id: String,
+        vote: Boolean,
+        error: (VolleyError) -> Unit
     ) {
-        var uri =
-            RESTAURANT_ID_URI
+        val uri =
+            uriBuilder.buildUri(
+                RESTAURANT_VOTE_URI,
+                hashMapOf(Pair(RESTAURANT_ID_PARAM, id))
+            )
 
-        uri = uriBuilder.buildUri(uri, uriParameters)
-
-        requestParser.requestAndRespond(
+        requestParser.request(
             Method.PUT,
             uri,
-            RESTAURANT_DTO,
-            success,
+            VoteOutput(value = vote),
             error,
-            {}
+            { }
         )
     }
 
@@ -179,21 +186,21 @@ class RestaurantDataSource(
      */
 
     fun deleteVote(
-        success: (SimplifiedRestaurantInput) -> Unit,
-        error: (VolleyError) -> Unit,
-        uriParameters:  HashMap<String, String>?
+        id: String,
+        error: (VolleyError) -> Unit
     ) {
-        var uri =
-            RESTAURANT_ID_URI
+        val uri =
+            uriBuilder.buildUri(
+                RESTAURANT_VOTE_URI,
+                hashMapOf(Pair(RESTAURANT_ID_PARAM, id))
+            )
 
-        uri = uriBuilder.buildUri(uri, uriParameters)
-
-        requestParser.requestAndRespond(
+        requestParser.request(
             Method.DELETE,
             uri,
-            RESTAURANT_DTO,
-            success,
-            error
+            null,
+            error,
+            { }
         )
     }
 }

@@ -23,7 +23,8 @@ open class MealRecyclerFragment : ARequestRecyclerListFragment<MealItem, MealRec
     private val adapter: MealRecyclerAdapter by lazy {
         MealRecyclerAdapter(
             viewModel,
-            this.requireContext()
+            this.requireContext(),
+            isCalculatorMode
         )
     }
 
@@ -36,6 +37,7 @@ open class MealRecyclerFragment : ARequestRecyclerListFragment<MealItem, MealRec
         val rootActivity = this.requireActivity()
         val factory = MealRecyclerVMProviderFactory(savedInstanceState, rootActivity.intent)
         viewModel = ViewModelProvider(rootActivity, factory)[MealRecyclerViewModel::class.java]
+        activityApp = requireActivity().application
     }
 
     override fun onCreateView(
@@ -53,7 +55,7 @@ open class MealRecyclerFragment : ARequestRecyclerListFragment<MealItem, MealRec
         list.adapter = adapter
         list.layoutManager = LinearLayoutManager(this.requireContext())
         startObserver()
-        //startScrollListener()
+        viewModel.getSuggestedMeals()
     }
 
     override fun startScrollListener() {

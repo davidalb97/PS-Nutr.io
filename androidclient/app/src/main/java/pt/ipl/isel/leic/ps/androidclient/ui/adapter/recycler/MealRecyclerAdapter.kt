@@ -9,8 +9,15 @@ import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.MealRecyclerViewModel
 
 class MealRecyclerAdapter(
     model: MealRecyclerViewModel,
-    ctx: Context
+    ctx: Context,
+    val isCalculatorMode: Boolean
 ) : ARecyclerAdapter<MealItem, MealRecyclerViewModel, MealRecyclerViewHolder>(model, ctx) {
+
+    override fun onBindViewHolder(holder: MealRecyclerViewHolder, position: Int) {
+        val item: MealItem = viewModel.items[position]
+        holder.bindTo(item)
+        holder.isCalculatorMode = isCalculatorMode
+    }
 
     override fun getItemViewId(): Int = R.layout.meal_card
 

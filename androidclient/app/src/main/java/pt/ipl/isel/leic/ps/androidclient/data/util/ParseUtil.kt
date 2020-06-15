@@ -31,7 +31,7 @@ fun writeUri(parcel: Parcel, uri: Uri?) {
 }
 
 fun readTimestampWithTimeZone(parcel: Parcel): TimestampWithTimeZone? {
-    return TimestampWithTimeZone.parse(parcel.readString())
+    return parcel.readString()?.let { TimestampWithTimeZone.parse(it) }
 }
 
 fun writeTimestampWithTimeZone(parcel: Parcel, offsetDateTime: TimestampWithTimeZone?) {

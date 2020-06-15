@@ -7,7 +7,7 @@ class InputVotesMapper {
 
     fun mapToModel(dto: VotesInputDto?): Votes? = dto?.let {
         Votes(
-            userHasVoted = dto.userHasVoted,
+            userHasVoted = dto.userVote,
             positive = dto.positive,
             negative = dto.negative
         )

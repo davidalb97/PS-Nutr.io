@@ -40,18 +40,6 @@ class AddCustomMealFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         buildViewModel(savedInstanceState)
-        cuisinesSpinnerHandler = SpinnerHandler(
-            requireActivity(),
-            R.id.custom_meal_cuisines_spinner
-        )
-        ingredientsSpinnerHandler = SpinnerHandler(
-            requireActivity(),
-            R.id.custom_meal_ingredients_spinner
-        )
-        mealsSpinnerHandler = SpinnerHandler(
-            requireActivity(),
-            R.id.custom_meal_meals_spinner
-        )
         return inflater.inflate(R.layout.add_custom_meal, container, false)
     }
 
@@ -65,6 +53,19 @@ class AddCustomMealFragment : Fragment() {
         val customMealCarbsAmount = view.findViewById<EditText>(R.id.carbs_amount)
         val customImageUrl = view.findViewById<EditText>(R.id.custom_meal_image_url)
         val createButton = view.findViewById<Button>(R.id.create_custom_meal_button)
+
+        cuisinesSpinnerHandler = SpinnerHandler(
+            requireActivity(),
+            R.id.custom_meal_cuisines_spinner
+        )
+        ingredientsSpinnerHandler = SpinnerHandler(
+            requireActivity(),
+            R.id.custom_meal_ingredients_spinner
+        )
+        mealsSpinnerHandler = SpinnerHandler(
+            requireActivity(),
+            R.id.custom_meal_meals_spinner
+        )
 
         createButton.setOnClickListener {
             val anyFieldBlank =

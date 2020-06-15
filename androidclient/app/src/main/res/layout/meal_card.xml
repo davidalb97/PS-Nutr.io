@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/restaurantCardView"
+    android:id="@+id/mealCardView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="4dp"
@@ -10,35 +10,86 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="130dp"
+        android:layout_height="wrap_content"
         android:layout_margin="4dp">
 
         <ImageView
-            android:id="@+id/restaurantImage"
+            android:id="@+id/mealImage"
             android:layout_width="130dp"
             android:layout_height="130dp"
             android:padding="2dp" />
 
         <TextView
-            android:id="@+id/restaurantName"
+            android:id="@+id/mealName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_marginTop="1dp"
-            android:layout_toEndOf="@+id/restaurantImage"
+            android:layout_toEndOf="@+id/mealImage"
             android:text="@string/item_name"
             android:textColor="@android:color/black"
             android:textSize="20sp"
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/restaurantCuisines"
+            android:id="@+id/mealCuisines"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/restaurantName"
-            android:layout_toEndOf="@+id/restaurantImage"
-            android:text="@string/item_cuisines"
+            android:layout_below="@+id/mealName"
+            android:layout_toEndOf="@+id/mealImage"
             android:textSize="15sp" />
+
+        <ImageButton
+            android:id="@+id/add_meal_to_calc"
+            android:background="@drawable/material_button_shape"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:src="@drawable/ic_calculate"
+            android:layout_marginEnd="10dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:visibility="invisible">
+        </ImageButton>
+
+        <ImageButton
+            android:id="@+id/delete_item_button"
+            android:background="@drawable/material_bin_button_background"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:src="@drawable/ic_delete"
+            android:layout_marginEnd="10dp"
+            android:layout_toStartOf="@+id/add_meal_to_calc"
+            android:layout_centerVertical="true"
+            android:visibility="invisible">
+        </ImageButton>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true">
+
+            <ImageButton
+                android:id="@+id/favorite"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginEnd="10dp"
+                android:src="@drawable/ic_star"
+                android:scaleType="centerCrop"
+                android:background="@android:color/transparent">
+            </ImageButton>
+
+            <ImageButton
+                android:id="@+id/options"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginEnd="5dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_three_dots"
+                android:background="@android:color/transparent">
+            </ImageButton>
+
+        </LinearLayout>
 
     </RelativeLayout>
 

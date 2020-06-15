@@ -19,7 +19,8 @@ import pt.ipl.isel.leic.ps.androidclient.data.db.entity.*
         DbPortionEntity::class,
         DbRestaurantInfoEntity::class,
         DbRestaurantItemEntity::class,
-        InsulinProfileEntity::class
+        InsulinProfileEntity::class,
+        DbCalculationHistoryEntity::class
     ],
     version = ROOM_DB_VERSION
 )
@@ -33,4 +34,6 @@ abstract class NutrioDb : RoomDatabase() {
     abstract fun mealItemDao(): MealItemDao
 
     abstract fun insulinProfileDao(): InsulinProfileDao
+
+    abstract fun calculationHistoryDao(): CalculationHistoryDao
 }

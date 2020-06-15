@@ -4,13 +4,21 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.ImageButton
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.lifecycle.ViewModelProvider
+import com.bumptech.glide.Glide
+import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.restaurantRepository
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealItem
 import pt.ipl.isel.leic.ps.androidclient.data.model.RestaurantInfo
+import pt.ipl.isel.leic.ps.androidclient.data.repo.RestaurantRepository
 import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.MealRecyclerAdapter
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler.request.ARequestRecyclerListFragment
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler.request.MealRecyclerFragment
+import pt.ipl.isel.leic.ps.androidclient.ui.provider.BUNDLE_RESTAURANT_INFO_ID
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.RestaurantInfoVMProviderFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.util.Logger
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.RestaurantInfoMealRecyclerViewModel
@@ -20,12 +28,13 @@ class RestaurantDetailFragment : MealRecyclerFragment(){
     private val logger = Logger(RestaurantDetailFragment::class)
     private lateinit var innerViewModel: RestaurantInfoMealRecyclerViewModel
 
+
     /**
      * ViewModel builder
      * Initializes the view model, calling the respective
      * view model provider factory
      */
-    protected override fun buildViewModel(savedInstanceState: Bundle?) {
+    override fun buildViewModel(savedInstanceState: Bundle?) {
         val rootActivity = this.requireActivity()
         val factory = RestaurantInfoVMProviderFactory(savedInstanceState, rootActivity.intent)
         innerViewModel = ViewModelProvider(rootActivity, factory)[RestaurantInfoMealRecyclerViewModel::class.java]
@@ -43,12 +52,46 @@ class RestaurantDetailFragment : MealRecyclerFragment(){
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        //TODO handle error
-        innerViewModel.fetchInfo(::setupRestaurantInfoView, logger::e)
+        val arguments = this.arguments
+
+        if (arguments != null) {
+            innerViewModel.restaurantId = arguments.get(BUNDLE_RESTAURANT_INFO_ID).toString()
+            innerViewModel.fetchInfo(::setupRestaurantInfoView, logger::e)
+        }
+
     }
 
     private fun setupRestaurantInfoView(restaurantInfo: RestaurantInfo) {
-        //TODO fill data on restaurant info
+        val restaurantMealImage =
+            view?.findViewById<ImageView>(R.id.restaurant_detail_image)
+        val restaurantMealTitle =
+            view?.findViewById<TextView>(R.id.restaurant_detail_title)
+        val restaurantUpvoteButton =
+            view?.findViewById<Button>(R.id.upvote)
+        val restaurantDownvoteButton =
+            view?.findViewById<Button>(R.id.downvote)
+        val restaurantAddMealButton =
+            view?.findViewById<Button>(R.id.upvote)
+
+        // Image loading
+        if (restaurantInfo.imageUri == null)
+            restaurantMealImage?.visibility = View.GONE
+        else
+            Glide.with(requireView())
+                .load(restaurantInfo.imageUri)
+                .into(restaurantMealImage!!)
+
+        restaurantMealTitle?.text = restaurantInfo.name
+
+        // Upvote
+        restaurantUpvoteButton?.setOnClickListener { view ->
+            restaurantRepository.postVote(restaurantInfo.id, true, {})
+        }
+
+        // Downvote
+        restaurantDownvoteButton?.setOnClickListener { view ->
+            restaurantRepository.postVote(restaurantInfo.id, false, {})
+        }
     }
 
     override fun getRecyclerId() = R.id.restaurant_meals_list

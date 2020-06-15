@@ -12,6 +12,14 @@ class RestaurantRecyclerViewModel : ARecyclerViewModel<RestaurantItem>() {
     var latitude: Double? = null
     var longitude: Double? = null
 
+    fun addRestaurantVote() {
+
+    }
+
+    fun deleteRestaurantVote() {
+
+    }
+
     override fun update() {
         restaurantRepository.getNearbyRestaurants(
             latitude!!,

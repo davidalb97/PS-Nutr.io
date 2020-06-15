@@ -1,6 +1,5 @@
 package pt.ipl.isel.leic.ps.androidclient.ui.viewholder
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.view.View
@@ -27,7 +26,7 @@ class CustomMealRecyclerViewHolder(
     private val customMealQuantity: TextView = view.findViewById(R.id.custom_meal_quantity)
     private val customMealCarbs: TextView = view.findViewById(R.id.custom_meal_carbs_amount)
     override var deleteButton: ImageButton = view.findViewById(R.id.delete_item_button)
-    override var calculatorButton: ImageButton = view.findViewById(R.id.add_custom_meal_to_calc)
+    override var calculatorButton: ImageButton = view.findViewById(R.id.add_meal_to_calc)
 
     override fun bindTo(item: MealItem) {
         super.bindTo(item)

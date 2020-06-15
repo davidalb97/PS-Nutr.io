@@ -1,226 +1,229 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:gravity="center"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/meal_name_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:layout_marginRight="30dp"
-        android:layout_marginLeft="30dp"
-        android:text="@string/meal_name"
-        android:textColor="@android:color/background_dark"
-        android:textSize="24sp"
-        android:layout_gravity="center">
-    </TextView>
-
-    <EditText
-        android:id="@+id/meal_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:layout_gravity="center"
-        android:hint="@string/add_the_meal_name" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:layout_marginRight="30dp"
-        android:layout_marginLeft="30dp"
-        android:text="@string/add_ingredients"
-        android:textColor="@android:color/background_dark"
-        android:textSize="24sp"
-        android:layout_gravity="center">
-    </TextView>
-
-    <ImageButton
-        android:id="@+id/add_profile"
-        android:background="@drawable/material_button_shape"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:src="@drawable/ic_add">
-    </ImageButton>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:id="@+id/custom_meal_cuisines_list"
-        />
-
-    <Spinner
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/custom_meal_cuisines_spinner"
-        android:textSize="30sp"
-        android:inputType="text"
-        android:singleLine="true"
-        android:imeActionLabel="Done"
-        android:imeOptions="actionDone"
-        />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:id="@+id/custom_meal_ingredients_list"
-        />
-
-    <Spinner
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/custom_meal_ingredients_spinner"
-        android:textSize="30sp"
-        android:inputType="text"
-        android:singleLine="true"
-        android:imeActionLabel="Done"
-        android:imeOptions="actionDone"
-        />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:id="@+id/custom_meal_meals_list"
-        />
-
-    <Spinner
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/custom_meal_meals_spinner"
-        android:textSize="30sp"
-        android:inputType="text"
-        android:singleLine="true"
-        android:imeActionLabel="Done"
-        android:imeOptions="actionDone"
-        />
-
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="30dp"
-        android:layout_marginLeft="30dp">
-
+    <LinearLayout
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
         <TextView
-            android:id="@+id/meal_total_quantity_label"
+            android:id="@+id/meal_name_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="10dp"
-            android:text="@string/the_meal_total_quantity"
+            android:layout_marginTop="15dp"
+            android:layout_marginRight="30dp"
+            android:layout_marginLeft="30dp"
+            android:text="@string/meal_name"
             android:textColor="@android:color/background_dark"
-            android:textSize="18sp"
-            android:layout_gravity="center"
-            android:layout_centerVertical="true">
+            android:textSize="24sp"
+            android:layout_gravity="center">
         </TextView>
 
         <EditText
-            android:id="@+id/meal_portion_quantity"
-            android:layout_toEndOf="@id/meal_total_quantity_label"
+            android:id="@+id/meal_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
             android:layout_gravity="center"
-            android:hint="@string/portion_quantity"
-            android:layout_centerVertical="true">
-        </EditText>
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="30dp"
-        android:layout_marginLeft="30dp">
+            android:hint="@string/add_the_meal_name" />
 
         <TextView
-            android:id="@+id/custom_meal_units_txt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="10dp"
-            android:text="@string/custom_meal_unit"
+            android:layout_marginTop="15dp"
+            android:layout_marginRight="30dp"
+            android:layout_marginLeft="30dp"
+            android:text="@string/add_ingredients"
             android:textColor="@android:color/background_dark"
-            android:textSize="18sp"
-            android:layout_centerVertical="true">
+            android:textSize="24sp"
+            android:layout_gravity="center">
         </TextView>
 
-        <Spinner
-            android:id="@+id/custom_meal_units_spinner"
+        <ImageButton
+            android:id="@+id/add_profile"
+            android:background="@drawable/material_button_shape"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:src="@drawable/ic_add">
+        </ImageButton>
+
+        <androidx.recyclerview.widget.RecyclerView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_toEndOf="@+id/custom_meal_units_txt"
-            android:layout_centerVertical="true"
-            android:entries="@array/custom_meal_unit_spinner_array"
+            android:orientation="horizontal"
+            android:id="@+id/custom_meal_cuisines_list"
             />
 
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="30dp"
-        android:layout_marginLeft="30dp">
-
-        <TextView
-            android:id="@+id/meal_carbs"
+        <Spinner
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="10dp"
-            android:text="@string/carbohydrates_amount"
-            android:textColor="@android:color/background_dark"
-            android:textSize="18sp"
-            android:layout_centerVertical="true">
-        </TextView>
+            android:id="@+id/custom_meal_cuisines_spinner"
+            android:textSize="30sp"
+            android:inputType="text"
+            android:singleLine="true"
+            android:imeActionLabel="Done"
+            android:imeOptions="actionDone"
+            />
 
-        <EditText
-            android:id="@+id/carbs_amount"
-            android:layout_toEndOf="@id/meal_carbs"
+        <androidx.recyclerview.widget.RecyclerView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:hint="@string/meal_carbohydrates_amount">
-        </EditText>
-    </RelativeLayout>
+            android:orientation="horizontal"
+            android:id="@+id/custom_meal_ingredients_list"
+            />
 
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="30dp"
-        android:layout_marginLeft="30dp">
-
-        <TextView
-            android:id="@+id/custom_meal_image_url_txt"
+        <Spinner
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="10dp"
-            android:text="@string/custom_meal_image_url_txt"
-            android:textColor="@android:color/background_dark"
-            android:textSize="18sp"
+            android:id="@+id/custom_meal_ingredients_spinner"
+            android:textSize="30sp"
+            android:inputType="text"
+            android:singleLine="true"
+            android:imeActionLabel="Done"
+            android:imeOptions="actionDone"
+            />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:id="@+id/custom_meal_meals_list"
+            />
+
+        <Spinner
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/custom_meal_meals_spinner"
+            android:textSize="30sp"
+            android:inputType="text"
+            android:singleLine="true"
+            android:imeActionLabel="Done"
+            android:imeOptions="actionDone"
+            />
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="30dp"
+            android:layout_marginLeft="30dp">
+
+            <TextView
+                android:id="@+id/meal_total_quantity_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="10dp"
+                android:text="@string/the_meal_total_quantity"
+                android:textColor="@android:color/background_dark"
+                android:textSize="18sp"
+                android:layout_gravity="center"
+                android:layout_centerVertical="true">
+            </TextView>
+
+            <EditText
+                android:id="@+id/meal_portion_quantity"
+                android:layout_toEndOf="@id/meal_total_quantity_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:hint="@string/portion_quantity"
+                android:layout_centerVertical="true">
+            </EditText>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="30dp"
+            android:layout_marginLeft="30dp">
+
+            <TextView
+                android:id="@+id/custom_meal_units_txt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="10dp"
+                android:text="@string/custom_meal_unit"
+                android:textColor="@android:color/background_dark"
+                android:textSize="18sp"
+                android:layout_centerVertical="true">
+            </TextView>
+
+            <Spinner
+                android:id="@+id/custom_meal_units_spinner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_toEndOf="@+id/custom_meal_units_txt"
+                android:layout_centerVertical="true"
+                android:entries="@array/custom_meal_unit_spinner_array"
+                />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="30dp"
+            android:layout_marginLeft="30dp">
+
+            <TextView
+                android:id="@+id/meal_carbs"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="10dp"
+                android:text="@string/carbohydrates_amount"
+                android:textColor="@android:color/background_dark"
+                android:textSize="18sp"
+                android:layout_centerVertical="true">
+            </TextView>
+
+            <EditText
+                android:id="@+id/carbs_amount"
+                android:layout_toEndOf="@id/meal_carbs"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:hint="@string/meal_carbohydrates_amount">
+            </EditText>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="30dp"
+            android:layout_marginLeft="30dp">
+
+            <TextView
+                android:id="@+id/custom_meal_image_url_txt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="10dp"
+                android:text="@string/custom_meal_image_url_txt"
+                android:textColor="@android:color/background_dark"
+                android:textSize="18sp"
+                android:layout_gravity="center"
+                android:layout_centerVertical="true">
+            </TextView>
+
+            <EditText
+                android:id="@+id/custom_meal_image_url"
+                android:layout_toEndOf="@id/custom_meal_image_url_txt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:hint="@string/custom_meal_url_txt_hint"
+                android:layout_centerVertical="true">
+            </EditText>
+        </RelativeLayout>
+
+        <Button
+            android:id="@+id/create_custom_meal_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
             android:layout_gravity="center"
-            android:layout_centerVertical="true">
-        </TextView>
-
-        <EditText
-            android:id="@+id/custom_meal_image_url"
-            android:layout_toEndOf="@id/custom_meal_image_url_txt"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:hint="@string/custom_meal_url_txt_hint"
-            android:layout_centerVertical="true">
-        </EditText>
-    </RelativeLayout>
-
-    <Button
-        android:id="@+id/create_custom_meal_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:layout_gravity="center"
-        android:text="@string/create_button">
-    </Button>
-
-</LinearLayout>
+            android:text="@string/create_button">
+        </Button>
+    </LinearLayout>
+</ScrollView>

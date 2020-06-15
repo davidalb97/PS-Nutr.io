@@ -5,9 +5,11 @@ import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.navigation.findNavController
+import com.bumptech.glide.Glide
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealItem
 import pt.ipl.isel.leic.ps.androidclient.data.util.AsyncWorker
@@ -22,11 +24,11 @@ class FavoriteMealRecyclerViewHolder(
 
     override lateinit var onDelete: (MealItem) -> AsyncWorker<Unit, Unit>
 
-    private val favoriteMealName: TextView = view.findViewById(R.id.custom_meal_name)
-    private val favoriteMealQuantity: TextView = view.findViewById(R.id.custom_meal_quantity)
-    private val favoriteMealCarbs: TextView = view.findViewById(R.id.custom_meal_carbs_amount)
+    private val favoriteMealImage: ImageView = view.findViewById(R.id.mealImage)
+    private val favoriteMealName: TextView = view.findViewById(R.id.mealName)
+    private val favoriteMealCuisines: TextView = view.findViewById(R.id.mealCuisines)
     override var deleteButton: ImageButton = view.findViewById(R.id.delete_item_button)
-    override var calculatorButton: ImageButton = view.findViewById(R.id.add_custom_meal_to_calc)
+    override var calculatorButton: ImageButton = view.findViewById(R.id.add_meal_to_calc)
 
     override fun bindTo(item: MealItem) {
         super.bindTo(item)
@@ -35,17 +37,14 @@ class FavoriteMealRecyclerViewHolder(
     }
 
     private fun setupViewHolderElements() {
-        val resources = ctx.resources
+        if (item.imageUri == null) {
+            favoriteMealImage.visibility = View.GONE
+        } else {
+            Glide.with(itemView)
+                .load(item.imageUri)
+                .into(favoriteMealImage)
+        }
         favoriteMealName.text = item.name
-        favoriteMealQuantity.text = String.format(resources.getString(
-            R.string.meal_quantity_card),
-            item.amount,
-            item.unit
-        )
-        favoriteMealCarbs.text = String.format(resources.getString(
-            R.string.carbohydrates_amount_card),
-            item.carbs
-        )
     }
 
     private fun setupListeners() {

@@ -1,8 +1,5 @@
 package pt.ipl.isel.leic.ps.androidclient.data.util
 
-import java.time.OffsetDateTime
-import java.time.ZoneId
-import java.time.ZonedDateTime
 import java.util.*
 
 //This class is a work around OffsetDateTime.parse requires API level 26
@@ -20,7 +17,7 @@ class TimestampWithTimeZone(
     companion object {
 
         fun parse(formatted: String?): TimestampWithTimeZone? {
-            if(formatted == null) return null
+            if (formatted.isNullOrEmpty()) return null
             var split = formatted.split(" ")
             val date = split[0].split("-")
             val year = date[0]
