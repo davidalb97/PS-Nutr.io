@@ -59,6 +59,8 @@ class FavoriteMealRecyclerViewHolder(
         setButtonsVisibility(false)
         if (isCalculatorMode) {
             sendToCalculator()
+        } else {
+            sendToMealDetail()
         }
     }
 
