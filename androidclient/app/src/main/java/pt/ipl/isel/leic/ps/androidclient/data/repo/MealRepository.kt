@@ -73,7 +73,7 @@ class MealRepository(private val dataSource: MealDataSource) {
     ) {
         dataSource.getMealById(
             mealId,
-            { dtos -> success(inputMealInfoMapper.mapToModel(dtos)) },
+            { dtos -> success(inputMealInfoMapper.mapToModel(dtos, null)) },
             error
         )
     }
@@ -91,7 +91,7 @@ class MealRepository(private val dataSource: MealDataSource) {
             cuisines = cuisines,
             success = {
                 //TODO assuming that no user filter is passed, all meals are suggested
-                success(inputMealItemMapper.mapToListModel(it))
+                success(inputMealItemMapper.mapToListModel(it, null))
             },
             error = error
         )
@@ -114,4 +114,12 @@ class MealRepository(private val dataSource: MealDataSource) {
             error = error
         )
     }
+
+    fun putVote(
+        restaurantId: String,
+        mealId: Int,
+        vote: Boolean,
+        success: () -> Unit,
+        error: (VolleyError) -> Unit
+    ) = dataSource.updateVote(restaurantId, mealId, vote, success, error)
 }

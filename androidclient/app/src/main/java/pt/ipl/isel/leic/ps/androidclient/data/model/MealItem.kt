@@ -11,8 +11,9 @@ import pt.ipl.isel.leic.ps.androidclient.data.util.writeUri
 open class MealItem(
     var dbId: Long,
     var dbRestaurantId: Long,
-    val submissionId: Int,
     val name: String,
+    val submissionId: Int,
+    val restaurantSubmissionId: String?,
     open val carbs: Int?,
     open val amount: Int?,
     open val unit: String?,
@@ -26,6 +27,7 @@ open class MealItem(
         dbId = parcel.readLong(),
         dbRestaurantId = parcel.readLong(),
         submissionId = parcel.readInt(),
+        restaurantSubmissionId = parcel.readString(),
         name = parcel.readString()!!,
         carbs = parcel.readSerializable() as Int?,
         amount = parcel.readSerializable() as Int?,
@@ -41,6 +43,7 @@ open class MealItem(
         parcel.writeLong(dbId)
         parcel.writeLong(dbRestaurantId)
         parcel.writeInt(submissionId)
+        parcel.writeString(restaurantSubmissionId)
         parcel.writeString(name)
         parcel.writeSerializable(carbs)
         parcel.writeSerializable(amount)

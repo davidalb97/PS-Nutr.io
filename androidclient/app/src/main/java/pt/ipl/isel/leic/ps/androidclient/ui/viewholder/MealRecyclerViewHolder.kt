@@ -70,6 +70,7 @@ class MealRecyclerViewHolder(view: ViewGroup, ctx: Context) :
                     dbId = item.dbId,
                     dbRestaurantId = item.dbRestaurantId,
                     submissionId = item.submissionId,
+                    restaurantSubmissionId = item.restaurantSubmissionId,
                     name = item.name,
                     carbs = item.carbs,
                     amount = item.amount,

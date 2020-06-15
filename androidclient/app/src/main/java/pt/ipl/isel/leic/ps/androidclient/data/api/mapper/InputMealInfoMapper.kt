@@ -13,10 +13,11 @@ class InputMealInfoMapper(
     private val inputPortionMapper: InputPortionMapper
 ) {
 
-    fun mapToModel(dto: DetailedMealInput) = MealInfo(
+    fun mapToModel(dto: DetailedMealInput, restaurantId: String?) = MealInfo(
         dbId = DbMealInfoEntity.DEFAULT_DB_ID,
         dbRestaurantId = DbMealInfoEntity.DEFAULT_DB_ID,
         submissionId = dto.mealIdentifier,
+        restaurantSubmissionId = restaurantId,
         name = dto.name,
         carbs = dto.nutritionalInfo.carbs,
         amount = dto.nutritionalInfo.amount,
@@ -37,6 +38,6 @@ class InputMealInfoMapper(
         source = Source.API
     )
 
-    fun mapToListModel(dtos: Iterable<DetailedMealInput>): List<MealInfo>
-            = dtos.map(this::mapToModel)
+    fun mapToListModel(dtos: Iterable<DetailedMealInput>, restaurantId: String?): List<MealInfo>
+            = dtos.map { mapToModel(it, restaurantId) }
 }

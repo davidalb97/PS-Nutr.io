@@ -7,6 +7,7 @@ import androidx.room.PrimaryKey
 @Entity(tableName = DbMealItemEntity.tableName)
 open class DbMealItemEntity(
     val submissionId: Int,
+    val restaurantSubmissionId: String?,
     val name: String,
     val carbs: Int?,
     val amount: Int?,

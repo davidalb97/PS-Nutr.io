@@ -16,6 +16,7 @@ class DbMealInfoMapper(
         dbId = relation.entity.primaryKey,
         dbRestaurantId = DbMealInfoEntity.DEFAULT_DB_ID,
         submissionId = relation.entity.submissionId,
+        restaurantSubmissionId = relation.entity.restaurantSubmissionId,
         name = relation.entity.name,
         carbs = relation.entity.carbs,
         amount = relation.entity.amount,
@@ -39,6 +40,7 @@ class DbMealInfoMapper(
     fun mapToRelation(model: MealInfo) = DbMealInfoRelation(
         entity = DbMealInfoEntity(
             submissionId = model.submissionId,
+            restaurantSubmissionId = model.restaurantSubmissionId,
             name = model.name,
             carbs = model.carbs,
             amount = model.amount,

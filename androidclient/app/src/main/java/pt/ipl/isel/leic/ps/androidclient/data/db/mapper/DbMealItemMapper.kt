@@ -13,6 +13,7 @@ class DbMealItemMapper {
         dbId = entity.primaryKey,
         dbRestaurantId = entity.restaurantKey,
         submissionId = entity.submissionId,
+        restaurantSubmissionId = entity.restaurantSubmissionId,
         name = entity.name,
         carbs = entity.carbs,
         amount = entity.amount,
@@ -30,6 +31,7 @@ class DbMealItemMapper {
 
     fun mapToEntity(model: MealItem) = DbMealItemEntity(
         submissionId = model.submissionId,
+        restaurantSubmissionId = model.restaurantSubmissionId,
         name = model.name,
         carbs = model.carbs,
         amount = model.amount,

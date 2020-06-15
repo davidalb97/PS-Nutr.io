@@ -24,6 +24,7 @@ class MealIngredient(
     dbId = dbId,
     dbRestaurantId = DbMealItemEntity.DEFAULT_DB_ID,
     submissionId = submissionId,
+    restaurantSubmissionId = null,
     name = name,
     imageUri = imageUri,
     votes = null,
