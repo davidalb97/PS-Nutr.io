@@ -34,7 +34,10 @@
             android:textSize="26sp">
         </TextView>
 
-        <RelativeLayout android:gravity="center">
+        <RelativeLayout android:gravity="center"
+            android:visibility="gone"
+            android:id="@+id/restaurant_info_votes_txt_rl"
+            >
             <TextView
                 android:id="@+id/vote_this_restaurant"
                 android:layout_width="wrap_content"
@@ -49,7 +52,10 @@
 
         <RelativeLayout
             android:gravity="center"
-            android:layout_marginTop="10dp">
+            android:layout_marginTop="10dp"
+            android:visibility="gone"
+            android:id="@+id/restaurant_info_votes_rl"
+            >
 
             <Button
                 android:id="@+id/upvote"

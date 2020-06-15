@@ -295,7 +295,7 @@ class MealDataSource(
         requestParser.request(
             Method.PUT,
             uri,
-            VoteOutput(value = vote),
+            VoteOutput(vote = vote),
             error,
             { success() }
         )

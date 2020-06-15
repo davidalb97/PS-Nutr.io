@@ -89,39 +89,39 @@ class MealDetailFragment : IngredientsRecyclerFragment() {
             //Show suggested txt
             if(receivedMeal.isSuggested) {
                 mealSuggestedRl?.visibility = View.VISIBLE
-            }
+            } else {
+                //Show votes
+                mealVotesRl?.visibility = View.VISIBLE
 
-            //Show votes
-            mealVotesRl?.visibility = View.VISIBLE
+                // Upvote
+                mealUpvoteButton?.setOnClickListener { view ->
+                    viewModelMealInfo.setVote(
+                        vote = true,
+                        success = {
+                            Toast.makeText(
+                                this.context,
+                                "Upvoted!",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        },
+                        error = log::e
+                    )
+                }
 
-            // Upvote
-            mealUpvoteButton?.setOnClickListener { view ->
-                viewModelMealInfo.setVote(
-                    vote = true,
-                    success = {
-                        Toast.makeText(
-                            this.context,
-                            "Upvoted!",
-                            Toast.LENGTH_LONG
-                        ).show()
-                    },
-                    error = log::e
-                )
-            }
-
-            // Downvote
-            mealDownvoteButton?.setOnClickListener { view ->
-                viewModelMealInfo.setVote(
-                    vote = true,
-                    success = {
-                        Toast.makeText(
-                            this.context,
-                            "Downvoted!",
-                            Toast.LENGTH_LONG
-                        ).show()
-                    },
-                    error = log::e
-                )
+                // Downvote
+                mealDownvoteButton?.setOnClickListener { view ->
+                    viewModelMealInfo.setVote(
+                        vote = true,
+                        success = {
+                            Toast.makeText(
+                                this.context,
+                                "Downvoted!",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        },
+                        error = log::e
+                    )
+                }
             }
         } else {
             mealAddIngredientImgBtn?.visibility = View.VISIBLE
@@ -141,6 +141,14 @@ class MealDetailFragment : IngredientsRecyclerFragment() {
             }
         }
     }
+
+//    private fun restaurantMealOperation(onAssociated: () -> Unit) {
+//        if(!receivedMeal!!.isSuggested) {
+//            onAssociated()
+//        } else {
+//            viewModelMealInfo.
+//        }
+//    }
 
     override fun getRecyclerId() = R.id.meal_info_ingredient_item_list
 

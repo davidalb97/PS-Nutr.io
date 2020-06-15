@@ -4,10 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.bumptech.glide.Glide
@@ -67,6 +64,9 @@ class RestaurantDetailFragment : MealRecyclerFragment(){
         val restaurantAddMealButton =
             view?.findViewById<Button>(R.id.upvote)
 
+        val votesTxtRl = view?.findViewById<RelativeLayout>(R.id.restaurant_info_votes_txt_rl)
+        val votesRl = view?.findViewById<RelativeLayout>(R.id.restaurant_info_votes_rl)
+
         // Image loading
         if (restaurantInfo.imageUri == null)
             restaurantMealImage?.visibility = View.GONE
@@ -77,26 +77,31 @@ class RestaurantDetailFragment : MealRecyclerFragment(){
 
         restaurantMealTitle?.text = restaurantInfo.name
 
-        // Upvote
-        restaurantUpvoteButton?.setOnClickListener { view ->
-            restaurantRepository.putVote(restaurantInfo.id, true, {
-                Toast.makeText(
-                    this.context,
-                    "Upvoted!",
-                    Toast.LENGTH_LONG
-                ).show()
-            }, log::e)
-        }
+        if(restaurantInfo.votes != null) {
+            votesTxtRl?.visibility = View.VISIBLE
+            votesRl?.visibility = View.VISIBLE
 
-        // Downvote
-        restaurantDownvoteButton?.setOnClickListener { view ->
-            restaurantRepository.putVote(restaurantInfo.id, false, {
-                Toast.makeText(
-                    this.context,
-                    "Downvoted!",
-                    Toast.LENGTH_LONG
-                ).show()
-            },log::e)
+            // Upvote
+            restaurantUpvoteButton?.setOnClickListener { view ->
+                restaurantRepository.putVote(restaurantInfo.id, true, {
+                    Toast.makeText(
+                        this.context,
+                        "Upvoted!",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }, log::e)
+            }
+
+            // Downvote
+            restaurantDownvoteButton?.setOnClickListener { view ->
+                restaurantRepository.putVote(restaurantInfo.id, false, {
+                    Toast.makeText(
+                        this.context,
+                        "Downvoted!",
+                        Toast.LENGTH_LONG
+                    ).show()
+                },log::e)
+            }
         }
     }
 
