@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModelProvider
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.db.entity.DbMealInfoEntity
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealInfo
+import pt.ipl.isel.leic.ps.androidclient.data.model.Source
 import pt.ipl.isel.leic.ps.androidclient.data.util.TimestampWithTimeZone
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.CustomMealRecyclerVMProviderFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.util.SpinnerHandler
@@ -98,7 +99,8 @@ class AddCustomMealFragment : Fragment() {
                         cuisines = emptyList(),
                         //Custom meal does not have portions
                         portions = emptyList(),
-                        isSuggested = false
+                        isSuggested = false,
+                        source = Source.CUSTOM
                     )
                 ).setOnPostExecute {
                     parentFragmentManager.popBackStack()

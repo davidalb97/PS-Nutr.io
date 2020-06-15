@@ -14,7 +14,8 @@ data class DbRestaurantItemEntity(
     val hasVote: Boolean,
     val positiveVotes: Int?,
     val negativeVotes: Int?,
-    val userVoteOrdinal: Int?
+    val userVoteOrdinal: Int?,
+    val sourceOrdinal: Int
 ) {
 
     companion object {

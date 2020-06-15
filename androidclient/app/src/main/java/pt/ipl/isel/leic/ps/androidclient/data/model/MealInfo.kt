@@ -21,7 +21,8 @@ class MealInfo(
     val mealComponents: List<MealIngredient>,
     val cuisines: List<Cuisine>,
     val portions: List<Portion>,
-    isSuggested: Boolean
+    isSuggested: Boolean,
+    source: Source
 ): MealItem(
     dbId = dbId,
     dbRestaurantId = dbRestaurantId,
@@ -33,7 +34,8 @@ class MealInfo(
     votes = votes,
     isFavorite = isFavorite,
     imageUri = imageUri,
-    isSuggested = isSuggested
+    isSuggested = isSuggested,
+    source = source
 ) {
 
     constructor(parcel: Parcel) : this(
@@ -52,7 +54,8 @@ class MealInfo(
         mealComponents = readList(parcel, MealIngredient::class),
         cuisines = readList(parcel, Cuisine::class),
         portions = readList(parcel, Portion::class),
-        isSuggested = readBoolean(parcel)
+        isSuggested = readBoolean(parcel),
+        source = Source.values()[parcel.readInt()]
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -64,12 +67,13 @@ class MealInfo(
         parcel.writeParcelable(votes, flags)
         writeBoolean(parcel, isFavorite)
         writeUri(parcel, imageUri)
+        writeTimestampWithTimeZone(parcel, creationDate)
         parcel.writeList(ingredientComponents)
         parcel.writeList(mealComponents)
         parcel.writeList(cuisines)
         parcel.writeList(portions)
         writeBoolean(parcel, isSuggested)
-        writeTimestampWithTimeZone(parcel, creationDate)
+        parcel.writeInt(source.ordinal)
     }
 
     override fun describeContents(): Int {

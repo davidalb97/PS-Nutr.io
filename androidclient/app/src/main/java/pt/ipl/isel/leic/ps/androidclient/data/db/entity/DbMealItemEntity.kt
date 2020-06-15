@@ -17,7 +17,8 @@ open class DbMealItemEntity(
     val negativeVotes: Int?,
     val userVoteOrdinal: Int?,
     val isFavorite: Boolean,
-    val isSuggested: Boolean
+    val isSuggested: Boolean,
+    val sourceOrdinal: Int
 ) {
     companion object {
         const val DEFAULT_DB_ID: Long = 0

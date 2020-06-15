@@ -16,7 +16,8 @@ data class RestaurantItem(
     val longitude: Float,
     val votes: Votes?,
     val isFavorite: Boolean,
-    val imageUri: Uri?
+    val imageUri: Uri?,
+    val source: Source
 ) : Parcelable {
 
     constructor(parcel: Parcel) : this(
@@ -27,7 +28,8 @@ data class RestaurantItem(
         longitude = parcel.readFloat(),
         votes = parcel.readParcelable<Votes>(Votes::class.java.classLoader),
         isFavorite = readBoolean(parcel),
-        imageUri = readUri(parcel)
+        imageUri = readUri(parcel),
+        source = Source.values()[parcel.readInt()]
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -40,6 +42,7 @@ data class RestaurantItem(
         parcel.writeParcelable(votes, flags)
         writeBoolean(parcel, isFavorite)
         writeUri(parcel, imageUri)
+        parcel.writeInt(source.ordinal)
     }
 
     override fun describeContents(): Int {

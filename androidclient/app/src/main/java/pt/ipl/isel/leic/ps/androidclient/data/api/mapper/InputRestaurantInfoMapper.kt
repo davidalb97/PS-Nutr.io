@@ -3,6 +3,7 @@ package pt.ipl.isel.leic.ps.androidclient.data.api.mapper
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.info.DetailedRestaurantInput
 import pt.ipl.isel.leic.ps.androidclient.data.db.entity.DbRestaurantInfoEntity
 import pt.ipl.isel.leic.ps.androidclient.data.model.RestaurantInfo
+import pt.ipl.isel.leic.ps.androidclient.data.model.Source
 import pt.ipl.isel.leic.ps.androidclient.data.model.Votes
 import pt.ipl.isel.leic.ps.androidclient.data.util.TimestampWithTimeZone
 
@@ -23,7 +24,8 @@ class InputRestaurantInfoMapper(
         cuisines = cuisineInputMapper.mapToListModel(dto.cuisines),
         meals = mealInputMapper.mapToListModel(dto.meals),
         suggestedMeals = mealInputMapper.mapToListModel(dto.suggestedMeals),
-        imageUri = dto.imageUri
+        imageUri = dto.imageUri,
+        source = Source.API
     )
 
     fun mapToListModel(dtos: Iterable<DetailedRestaurantInput>) = dtos.map(::mapToModel)

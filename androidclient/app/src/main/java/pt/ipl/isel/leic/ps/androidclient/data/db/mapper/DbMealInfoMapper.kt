@@ -3,10 +3,7 @@ package pt.ipl.isel.leic.ps.androidclient.data.db.mapper
 import android.net.Uri
 import pt.ipl.isel.leic.ps.androidclient.data.db.entity.DbMealInfoEntity
 import pt.ipl.isel.leic.ps.androidclient.data.db.relation.DbMealInfoRelation
-import pt.ipl.isel.leic.ps.androidclient.data.model.MealInfo
-import pt.ipl.isel.leic.ps.androidclient.data.model.MealItem
-import pt.ipl.isel.leic.ps.androidclient.data.model.VoteState
-import pt.ipl.isel.leic.ps.androidclient.data.model.Votes
+import pt.ipl.isel.leic.ps.androidclient.data.model.*
 
 class DbMealInfoMapper(
     private val componentIngredientMapper: DbComponentIngredientMapper,
@@ -35,7 +32,8 @@ class DbMealInfoMapper(
         ingredientComponents = componentIngredientMapper.mapToListModel(relation.componentIngredients),
         cuisines = cuisinesMapper.mapToListModel(relation.cuisines),
         portions = portionMapper.mapToListModel(relation.portions),
-        isSuggested = relation.entity.isSuggested
+        isSuggested = relation.entity.isSuggested,
+        source = Source.values()[relation.entity.sourceOrdinal]
     )
 
     fun mapToRelation(model: MealInfo) = DbMealInfoRelation(
@@ -52,7 +50,8 @@ class DbMealInfoMapper(
             userVoteOrdinal = model.votes?.userHasVoted?.ordinal,
             hasVote = model.votes != null,
             creationDate = model.creationDate,
-            isSuggested = model.isSuggested
+            isSuggested = model.isSuggested,
+            sourceOrdinal = model.source.ordinal
         ),
         componentMeals = componentMealMapper.mapToListEntity(model.mealComponents),
         componentIngredients = componentIngredientMapper.mapToListEntity(model.ingredientComponents),

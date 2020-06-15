@@ -17,7 +17,8 @@ data class DbRestaurantInfoEntity(
     val positiveVotes: Int?,
     val negativeVotes: Int?,
     val userVoteOrdinal: Int?,
-    val creationDate: TimestampWithTimeZone?
+    val creationDate: TimestampWithTimeZone?,
+    val sourceOrdinal: Int
 ) {
 
     companion object {

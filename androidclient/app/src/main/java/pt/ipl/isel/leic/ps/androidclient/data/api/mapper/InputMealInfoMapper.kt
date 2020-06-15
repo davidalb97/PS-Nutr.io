@@ -3,6 +3,7 @@ package pt.ipl.isel.leic.ps.androidclient.data.api.mapper
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.info.DetailedMealInput
 import pt.ipl.isel.leic.ps.androidclient.data.db.entity.DbMealInfoEntity
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealInfo
+import pt.ipl.isel.leic.ps.androidclient.data.model.Source
 import pt.ipl.isel.leic.ps.androidclient.data.util.TimestampWithTimeZone
 
 class InputMealInfoMapper(
@@ -32,7 +33,8 @@ class InputMealInfoMapper(
             inputMealIngredientMapper.mapToListModel(it.meals, true)
         } ?: emptyList(),
         cuisines = inputCuisineMapper.mapToListModel(dto.cuisines),
-        portions = inputPortionMapper.mapToListModel(dto.portions)
+        portions = inputPortionMapper.mapToListModel(dto.portions),
+        source = Source.API
     )
 
     fun mapToListModel(dtos: Iterable<DetailedMealInput>): List<MealInfo>

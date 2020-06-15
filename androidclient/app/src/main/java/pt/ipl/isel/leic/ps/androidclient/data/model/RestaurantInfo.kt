@@ -17,7 +17,8 @@ data class RestaurantInfo(
     val imageUri: Uri?,
     val cuisines: List<Cuisine>,
     val meals: List<MealItem>,
-    val suggestedMeals: List<MealItem>
+    val suggestedMeals: List<MealItem>,
+    val source: Source
 ) : Parcelable {
 
     constructor(parcel: Parcel) : this(
@@ -32,7 +33,8 @@ data class RestaurantInfo(
         imageUri = readUri(parcel),
         cuisines = readList(parcel, Cuisine::class),
         meals = readList(parcel, MealItem::class),
-        suggestedMeals = readList(parcel, MealItem::class)
+        suggestedMeals = readList(parcel, MealItem::class),
+        source = Source.values()[parcel.readInt()]
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -48,6 +50,7 @@ data class RestaurantInfo(
         parcel.writeList(cuisines)
         parcel.writeList(meals)
         parcel.writeList(suggestedMeals)
+        parcel.writeInt(source.ordinal)
     }
 
     override fun describeContents(): Int {

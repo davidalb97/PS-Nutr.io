@@ -3,6 +3,7 @@ package pt.ipl.isel.leic.ps.androidclient.data.db.mapper
 import android.net.Uri
 import pt.ipl.isel.leic.ps.androidclient.data.db.entity.DbMealItemEntity
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealItem
+import pt.ipl.isel.leic.ps.androidclient.data.model.Source
 import pt.ipl.isel.leic.ps.androidclient.data.model.VoteState
 import pt.ipl.isel.leic.ps.androidclient.data.model.Votes
 
@@ -23,7 +24,8 @@ class DbMealItemMapper {
         ) else null,
         isFavorite = entity.isFavorite,
         imageUri = entity.imageUri?.let { Uri.parse(it) },
-        isSuggested = entity.isSuggested
+        isSuggested = entity.isSuggested,
+        source = Source.values()[entity.sourceOrdinal]
     )
 
     fun mapToEntity(model: MealItem) = DbMealItemEntity(
@@ -38,7 +40,8 @@ class DbMealItemMapper {
         negativeVotes = model.votes?.negative,
         userVoteOrdinal = model.votes?.userHasVoted?.ordinal,
         hasVote = model.votes != null,
-        isSuggested = model.isSuggested
+        isSuggested = model.isSuggested,
+        sourceOrdinal = model.source.ordinal
     ).also { dto ->
         dto.primaryKey = model.dbId
         dto.restaurantKey = model.dbRestaurantId

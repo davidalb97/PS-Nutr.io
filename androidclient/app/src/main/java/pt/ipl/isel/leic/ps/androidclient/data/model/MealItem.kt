@@ -19,7 +19,8 @@ open class MealItem(
     val imageUri: Uri?,
     val votes: Votes?,
     val isFavorite: Boolean,
-    val isSuggested: Boolean
+    val isSuggested: Boolean,
+    val source: Source
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         dbId = parcel.readLong(),
@@ -32,7 +33,8 @@ open class MealItem(
         imageUri = readUri(parcel),
         votes = parcel.readParcelable(Votes::class.java.classLoader),
         isFavorite = readBoolean(parcel),
-        isSuggested = readBoolean(parcel)
+        isSuggested = readBoolean(parcel),
+        source = Source.values()[parcel.readInt()]
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -47,6 +49,7 @@ open class MealItem(
         parcel.writeParcelable(votes, flags)
         writeBoolean(parcel, isFavorite)
         writeBoolean(parcel, isSuggested)
+        parcel.writeInt(source.ordinal)
     }
 
     override fun describeContents(): Int {

@@ -5,6 +5,7 @@ import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.SimplifiedMealInput
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.SimplifiedMealsInput
 import pt.ipl.isel.leic.ps.androidclient.data.db.entity.DbMealItemEntity
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealItem
+import pt.ipl.isel.leic.ps.androidclient.data.model.Source
 
 class InputMealItemMapper(
     private val inputVotesMapper: InputVotesMapper
@@ -22,7 +23,8 @@ class InputMealItemMapper(
             name = dto.name,
             votes = inputVotesMapper.mapToModel(dto.votes),
             isFavorite = dto.isFavorite,
-            isSuggested = dto.isSuggested
+            isSuggested = dto.isSuggested,
+            source = Source.API
     )
 
     fun mapToListModel(dtos: Iterable<SimplifiedMealInput>)

@@ -30,7 +30,8 @@ class DbRestaurantInfoMapper(
             imageUri = Uri.parse(relation.entity.imageUri),
             cuisines = cuisinesMapper.mapToListModel(relation.cuisines),
             meals = meals.filter { !it.isSuggested },
-            suggestedMeals = meals.filter { it.isSuggested }
+            suggestedMeals = meals.filter { it.isSuggested },
+            source = Source.values()[relation.entity.sourceOrdinal]
         )
     }
 
@@ -46,7 +47,8 @@ class DbRestaurantInfoMapper(
             positiveVotes = model.votes?.positive,
             negativeVotes = model.votes?.negative,
             userVoteOrdinal = model.votes?.userHasVoted?.ordinal,
-            hasVote = model.votes != null
+            hasVote = model.votes != null,
+            sourceOrdinal = model.source.ordinal
         ).also { dto ->
             dto.primaryKey = model.dbId
         },
