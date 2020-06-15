@@ -36,17 +36,18 @@
     certified sources for Portugal. The results can be found in [\nameref{app:nutritional_sheet}].\\
 
     The group assumes that this inaccuracy is due to the fact that
-    mentioned API's\\ 
-    \subsection{HTTP server}
+    mentioned API's automatically calculate a recipe's carbohydrates
+    from it's ingredients without taking into consideration the cooking process, meaning, 
+    100g of raw rice does not have the same carbohydrates has 100g of cooked rice.\\
 
-    After the progress report, the group continued developing the HTTP server and completing the endpoints that were previously lacking. However
-    it was concluded that most APIs that were being used by the server didn't provide accurate nutritional information about meals and ingredients,
-    which would void the main objective of our platform.\\
-
-    As a result, the group had to drop some meal APIs and introduce generic and hardcoded meal information inside the database as a replace.\\
-
-    This information will be progressively tuned along with the users inputs when they, for example, associate a meal with a restaurant, leaving
-    their values about meals' quantities and portions.
+    Another assumption is that there is no international standard for nutritional values,
+    meaning that the same meal (and it's ingredients nutritional composition) 
+    can have different carbohydrates between Portugal and the United States of America.\\
+    
+    As a result, the group no longer relies on food API's and as such, inserts curated meals and ingredients 
+    in the project's database. 
+    This comes with the limitation that certain ingredients might have been missed,
+    meaning that a user might not be able to create their desired meals.
 
     \subsection{Android client}
 
