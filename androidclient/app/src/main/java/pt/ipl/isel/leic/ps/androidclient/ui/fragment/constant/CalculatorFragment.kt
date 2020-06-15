@@ -41,7 +41,7 @@ class CalculatorFragment : Fragment() {
         viewModelMeal = ViewModelProvider(rootActivity, factoryMealInfo)[MealInfoViewModel::class.java]
 
         //Read passed info from bundle
-        viewModelMeal.mealInfo = arguments?.getParcelable<MealInfo>(BUNDLE_MEAL_INFO)
+        viewModelMeal.mealInfo = arguments?.getParcelable(BUNDLE_MEAL_INFO)
         viewModelMeal.source = arguments?.getInt(BUNDLE_MEAL_SOURCE, -1)?.let {
             if(it == -1) null else Source.values()[it]
         }

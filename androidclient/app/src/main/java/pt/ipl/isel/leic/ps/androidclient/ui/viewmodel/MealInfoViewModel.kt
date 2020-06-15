@@ -35,10 +35,12 @@ class MealInfoViewModel : ARecyclerViewModel<MealInfo>() {
             if (source == Source.API || source == Source.FAVORITE) {
                 mealRepository.getApiMealInfo(
                     mealId = submissionId!!,
-                    success = { liveDataHandler.set(listOf(it.also {
-                        it.source = source!!
-                    })) },
-                    error = onError
+                    success = {
+                        liveDataHandler.set(listOf(it.also {
+                            it.source = source!!
+                        }))
+                    },
+                    error = { throw it }
                 )
             } else {
                 liveDataHandler.set(
