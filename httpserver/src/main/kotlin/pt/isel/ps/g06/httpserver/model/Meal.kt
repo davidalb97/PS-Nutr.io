@@ -19,6 +19,13 @@ data class Meal(
         val restaurantInfoSupplier: (RestaurantIdentifier) -> MealRestaurantInfo?,
         val restaurantInfo: MutableMap<RestaurantIdentifier, MealRestaurantInfo?> = mutableMapOf()
 ) {
+    /**
+     * Checks if given Meal belongs to a User.
+     * This also allows to know that given Meal **is not** a suggested Meal, if false, as suggested Meals
+     * have no submitter/owner
+     *
+     * *This operation initializes [creatorInfo] value.*
+     */
     fun isUserMeal(): Boolean {
         return creatorInfo.value != null
     }

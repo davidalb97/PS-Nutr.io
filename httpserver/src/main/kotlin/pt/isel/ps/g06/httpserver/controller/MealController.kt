@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*
 import org.springframework.web.util.UriComponentsBuilder
 import pt.isel.ps.g06.httpserver.common.*
 import pt.isel.ps.g06.httpserver.common.exception.clientError.InvalidQueryParameter
+import pt.isel.ps.g06.httpserver.common.exception.forbidden.NotSubmissionOwnerException
 import pt.isel.ps.g06.httpserver.common.exception.notFound.MealNotFoundException
 import pt.isel.ps.g06.httpserver.dataAccess.input.MealInput
 import pt.isel.ps.g06.httpserver.dataAccess.output.DetailedMealOutput
@@ -13,22 +14,16 @@ import pt.isel.ps.g06.httpserver.dataAccess.output.SimplifiedMealContainer
 import pt.isel.ps.g06.httpserver.dataAccess.output.toDetailedMealOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.toSimplifiedMealContainer
 import pt.isel.ps.g06.httpserver.service.MealService
+import pt.isel.ps.g06.httpserver.service.SubmissionService
 import javax.validation.Valid
 
 @Suppress("MVCPathVariableInspection")
 @RestController
 @RequestMapping(produces = [MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_PROBLEM_JSON_VALUE])
-class MealController(private val mealService: MealService) {
-
-    @GetMapping(MEAL)
-    fun getMealInformation(@PathVariable(MEAL_ID_VALUE) mealId: Int): ResponseEntity<DetailedMealOutput> {
-        val meal = mealService.getMeal(mealId) ?: throw MealNotFoundException()
-
-        return ResponseEntity
-                .ok()
-                .body(toDetailedMealOutput(meal))
-    }
-
+class MealController(
+        private val mealService: MealService,
+        private val submissionService: SubmissionService
+) {
     /**
      * Obtains all meals present in the database, filtered down by query parameters
      *
@@ -75,6 +70,16 @@ class MealController(private val mealService: MealService) {
                 .body(toSimplifiedMealContainer(meals))
     }
 
+
+    @GetMapping(MEAL)
+    fun getMealInformation(@PathVariable(MEAL_ID_VALUE) mealId: Int): ResponseEntity<DetailedMealOutput> {
+        val meal = mealService.getMeal(mealId) ?: throw MealNotFoundException()
+
+        return ResponseEntity
+                .ok()
+                .body(toDetailedMealOutput(meal))
+    }
+
     @PostMapping(MEALS)
     fun createMeal(@Valid @RequestBody meal: MealInput): ResponseEntity<Void> {
         //TODO When there's authentication and users
@@ -98,5 +103,15 @@ class MealController(private val mealService: MealService) {
     }
 
     @DeleteMapping(MEAL)
-    fun deleteMeal(@PathVariable(MEAL_ID_VALUE) mealId: String) = ""
+    fun deleteMeal(@PathVariable(MEAL_ID_VALUE) mealId: Int): ResponseEntity<Void> {
+        val userId = 3 //TODO authentication
+        val meal = mealService.getMeal(mealId) ?: throw MealNotFoundException()
+
+        if (!meal.isUserMeal() || meal.creatorInfo.value!!.identifier != userId) {
+            throw NotSubmissionOwnerException()
+        }
+
+        submissionService.deleteSubmission(meal.identifier, userId)
+        return ResponseEntity.ok().build()
+    }
 }

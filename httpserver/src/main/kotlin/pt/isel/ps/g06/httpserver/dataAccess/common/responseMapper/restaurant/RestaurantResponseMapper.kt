@@ -147,7 +147,7 @@ class DbRestaurantResponseMapper(
         return Restaurant(
                 identifier = lazy {
                     //A restaurant always has a submitter
-                    val submitterId = dbRestaurantRepository.getSubmitterById(dto.submission_id)!!.submitter_id
+                    val submitterId = dbRestaurantRepository.getSubmitterForSubmissionId(dto.submission_id)!!.submitter_id
                     val apiId = dbRestaurantRepository.getApiSubmissionById(dto.submission_id)?.apiId
                     RestaurantIdentifier(
                             submissionId = dto.submission_id,

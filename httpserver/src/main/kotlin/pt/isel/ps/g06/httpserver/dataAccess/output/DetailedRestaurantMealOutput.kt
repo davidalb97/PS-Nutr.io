@@ -1,7 +1,6 @@
 package pt.isel.ps.g06.httpserver.dataAccess.output
 
-import pt.isel.ps.g06.httpserver.model.Meal
-import pt.isel.ps.g06.httpserver.model.RestaurantIdentifier
+import pt.isel.ps.g06.httpserver.model.RestaurantMeal
 import pt.isel.ps.g06.httpserver.model.VoteState
 import java.net.URI
 import java.time.OffsetDateTime
@@ -25,8 +24,11 @@ class DetailedRestaurantMealOutput(
         imageUri = imageUri
 )
 
-fun toDetailedRestaurantMealOutput(restaurant: RestaurantIdentifier, meal: Meal, userId: Int? = null): DetailedRestaurantMealOutput {
-    val restaurantMealInfo = meal.restaurantInfoSupplier(restaurant)
+fun toDetailedRestaurantMealOutput(restaurantMeal: RestaurantMeal, userId: Int? = null): DetailedRestaurantMealOutput {
+    val meal = restaurantMeal.meal
+    val restaurant = restaurantMeal.restaurant
+
+    val restaurantMealInfo = meal.getMealRestaurantInfo(restaurant.identifier.value)
 
     val votes = restaurantMealInfo?.let {
         toVotesOutput(

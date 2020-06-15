@@ -22,7 +22,7 @@ interface SubmitterDao {
     }
 
     @SqlQuery("SELECT * FROM $table")
-    fun getAll(): List<DbSubmitterDto>
+    fun getAll(): Collection<DbSubmitterDto>
 
     @SqlQuery("SELECT * FROM $table WHERE $id = :submitterId")
     fun getById(@Bind submitterId: Int): DbSubmitterDto?
@@ -38,7 +38,7 @@ interface SubmitterDao {
             " INNER JOIN $SS_table" +
             " ON $table.$id = $SS_table.$SS_submitterId" +
             " WHERE $SS_table.$SS_submissionId = :submissionId")
-    fun getAllBySubmissionId(submissionId: Int): List<DbSubmitterDto>
+    fun getSubmitterForSubmission(@Bind submissionId: Int): DbSubmitterDto?
 
     @SqlQuery("INSERT INTO $table($name, $type) " +
             "VALUES(:name, :type) RETURNING *")

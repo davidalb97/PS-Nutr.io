@@ -14,7 +14,7 @@ class SubmissionService(private val submissionDbRepository: SubmissionDbReposito
      */
     fun deleteSubmission(submissionId: Int, userId: Int) {
         val submitter = submissionDbRepository
-                .getSubmitterById(submissionId)
+                .getSubmitterForSubmissionId(submissionId)
                 ?: throw SubmissionNotFoundException()
 
         if (submitter.submitter_id != userId) {

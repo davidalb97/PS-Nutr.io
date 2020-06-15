@@ -10,6 +10,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.repo.RestaurantDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.RestaurantMealDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.model.RestaurantDto
 import pt.isel.ps.g06.httpserver.model.Restaurant
+import pt.isel.ps.g06.httpserver.model.RestaurantIdentifier
 
 private const val MAX_RADIUS = 1000
 
@@ -85,6 +86,15 @@ class RestaurantService(
 
         return restaurant?.let { restaurantResponseMapper.mapTo(it) }
     }
+
+    fun getRestaurant(restaurantIdentifier: RestaurantIdentifier): Restaurant? {
+        return getRestaurant(
+                submitterId = restaurantIdentifier.submitterId,
+                submissionId = restaurantIdentifier.submissionId,
+                apiId = restaurantIdentifier.apiId
+        )
+    }
+
 
     /**
      * Creates a restaurant on the Database, where the submitter can either be an API or a user.
