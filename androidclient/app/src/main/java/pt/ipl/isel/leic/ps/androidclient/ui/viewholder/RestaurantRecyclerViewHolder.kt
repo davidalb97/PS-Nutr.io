@@ -4,10 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
-import android.widget.ImageView
-import android.widget.ProgressBar
-import android.widget.TextView
+import android.widget.*
 import androidx.navigation.findNavController
 import com.bumptech.glide.Glide
 import pt.ipl.isel.leic.ps.androidclient.R
@@ -29,6 +26,7 @@ class RestaurantRecyclerViewHolder(
     val dowvoteButton = view.findViewById<ImageButton>(R.id.downvote)
     val favoriteButton = view.findViewById<ImageButton>(R.id.favorite)
     val optionsButton = view.findViewById<ImageButton>(R.id.options)
+    val votesRl = view.findViewById<RelativeLayout>(R.id.restaurant_card_votes_rl)
 
 
     override fun bindTo(item: RestaurantItem) {
@@ -49,6 +47,7 @@ class RestaurantRecyclerViewHolder(
         restaurantName.text = item.name
         val votes = item.votes
         if (votes != null) {
+            votesRl.visibility = View.VISIBLE
             val upvotes = votes.positive
             val downvotes = votes.negative
             val totalVotes = upvotes + downvotes

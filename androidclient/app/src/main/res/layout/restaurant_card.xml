@@ -44,7 +44,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toEndOf="@+id/mealImage"
-            android:layout_below="@+id/mealCuisines">
+            android:layout_below="@+id/mealCuisines"
+            android:id="@+id/restaurant_card_votes_rl"
+            android:visibility="gone"
+            >
             <ProgressBar
                 android:id="@+id/votesBar"
                 style="?android:attr/progressBarStyleHorizontal"
