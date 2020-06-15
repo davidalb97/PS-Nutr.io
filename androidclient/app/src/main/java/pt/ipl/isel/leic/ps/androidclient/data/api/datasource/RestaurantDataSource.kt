@@ -7,6 +7,7 @@ import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.info.DetailedRestaur
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.output.RestaurantOutput
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.output.VoteOutput
 import pt.ipl.isel.leic.ps.androidclient.data.model.Cuisine
+import pt.ipl.isel.leic.ps.androidclient.data.repo.DEFAULT_DB_USER
 
 private const val LATITUDE_PARAM = ":latitude"
 private const val LONGITUDE_PARAM = ":longitude"
@@ -14,6 +15,7 @@ private const val RESTAURANT_ID_PARAM = ":restaurantId"
 private const val MEAL_ID_PARAM = ":mealId"
 private const val COUNT_PARAM = ":count"
 private const val SKIP_PARAM = ":skip"
+private const val SUBMITTER_QUERY = "?submitter"
 
 private const val RESTAURANT_URI = "$URI_BASE/$RESTAURANT"
 private const val RESTAURANT_ID_URI = "$RESTAURANT_URI/$RESTAURANT_ID_PARAM"
@@ -96,11 +98,16 @@ class RestaurantDataSource(
         latitude: Double,
         longitude: Double,
         cuisines: Iterable<Cuisine>,
-        error: (VolleyError) -> Unit
+        error: (VolleyError) -> Unit,
+        submitterId: Int = DEFAULT_DB_USER
+
     ) {
+
+        var uri = "$RESTAURANT$SUBMITTER_QUERY=$submitterId"
+
         requestParser.request(
             Method.POST,
-            RESTAURANT,
+            uri,
             RestaurantOutput(
                 name = name,
                 latitude = latitude,
@@ -115,12 +122,14 @@ class RestaurantDataSource(
     fun postReport(
         id: String,
         report: String,
-        error: (VolleyError) -> Unit
+        error: (VolleyError) -> Unit,
+        submitterId: Int = DEFAULT_DB_USER
     ) {
+        var uri = "$RESTAURANT_REPORT_URI$SUBMITTER_QUERY=$submitterId"
 
-        val uri =
+        uri =
             uriBuilder.buildUri(
-                RESTAURANT_REPORT_URI,
+                uri,
                 hashMapOf(Pair(RESTAURANT_ID_PARAM, id))
             )
 
@@ -145,11 +154,14 @@ class RestaurantDataSource(
         restaurant: String,
         vote: Boolean,
         success: () -> Unit,
-        error: (VolleyError) -> Unit
+        error: (VolleyError) -> Unit,
+        submitterId: Int = DEFAULT_DB_USER
     ) {
-        val uri =
+        var uri = "$RESTAURANT_VOTE_URI$SUBMITTER_QUERY=$submitterId"
+
+        uri =
             uriBuilder.buildUri(
-                RESTAURANT_VOTE_URI,
+                uri,
                 hashMapOf(Pair(RESTAURANT_ID_PARAM, restaurant))
             )
 
