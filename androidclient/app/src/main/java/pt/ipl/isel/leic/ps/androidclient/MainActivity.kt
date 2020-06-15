@@ -47,7 +47,8 @@ class MainActivity : AppCompatActivity() {
                 R.id.nav_add_insulin,
                 R.id.nav_saved_meals,
                 R.id.nav_add_custom_meal,
-                R.id.nav_sign
+                R.id.nav_sign,
+                R.id.nav_ingredients
             ),
             drawerLayout
         )
