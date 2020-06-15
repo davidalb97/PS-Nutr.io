@@ -13,12 +13,12 @@ class DetailedMealInput(
     isFavorite: Boolean,
     votes: VotesInputDto?,
     isSuggested: Boolean,
-    val portions: Collection<Int>,
-    val creationDate: OffsetDateTime,
+    val portions: Collection<Int>?,
+    val creationDate: String?,
     val composedBy: MealComposition?,
     val nutritionalInfo: NutritionalInfoInput,
     val createdBy: SimplifiedUserInput?,
-    val cuisines: Collection<String>
+    val cuisines: Collection<String>?
 ) : SimplifiedMealInput(
     mealIdentifier = id,
     name = name,

@@ -25,15 +25,15 @@ class InputMealInfoMapper(
         isFavorite = dto.isFavorite,
         imageUri = dto.imageUri,
         isSuggested = dto.isSuggested,
-        creationDate = TimestampWithTimeZone.parse(dto.creationDate?.toString()),
+        creationDate = TimestampWithTimeZone.parse(dto.creationDate),
         ingredientComponents = dto.composedBy?.let {
             inputMealIngredientMapper.mapToListModel(it.ingredients, false)
         } ?: emptyList(),
         mealComponents = dto.composedBy?.let {
             inputMealIngredientMapper.mapToListModel(it.meals, true)
         } ?: emptyList(),
-        cuisines = inputCuisineMapper.mapToListModel(dto.cuisines),
-        portions = inputPortionMapper.mapToListModel(dto.portions),
+        cuisines = dto.cuisines?.let { inputCuisineMapper.mapToListModel(dto.cuisines) } ?: emptyList(),
+        portions = dto.portions?.let { inputPortionMapper.mapToListModel(it) } ?: emptyList(),
         source = Source.API
     )
 

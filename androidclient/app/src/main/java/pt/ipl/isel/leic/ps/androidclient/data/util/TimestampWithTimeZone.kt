@@ -18,6 +18,10 @@ class TimestampWithTimeZone(
 
         fun parse(formatted: String?): TimestampWithTimeZone? {
             if (formatted.isNullOrEmpty()) return null
+
+            //Hotfix for restaurant/meal info creation date problem
+            if(formatted.toDoubleOrNull() != null) return null
+
             var split = formatted.split(" ")
             val date = split[0].split("-")
             val year = date[0]

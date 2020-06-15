@@ -15,7 +15,7 @@ class DetailedRestaurantInput(
     isFavorite: Boolean,
     imageUri: Uri?,
     val cuisines: Collection<String>,
-    val creationDate: OffsetDateTime?,
+    val creationDate: String?,
     val meals: Collection<SimplifiedMealInput>,
     val suggestedMeals: Collection<SimplifiedMealInput>
 ) : SimplifiedRestaurantInput(

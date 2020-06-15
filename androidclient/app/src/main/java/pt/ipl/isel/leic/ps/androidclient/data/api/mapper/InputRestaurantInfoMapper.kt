@@ -19,7 +19,7 @@ class InputRestaurantInfoMapper(
         latitude = dto.latitude,
         longitude = dto.longitude,
         votes = Votes(dto.votes!!.userVote, dto.votes.positive, dto.votes.negative),
-        creationDate = TimestampWithTimeZone.parse(dto.creationDate?.toString()),
+        creationDate = TimestampWithTimeZone.parse(dto.creationDate),
         isFavorite = dto.isFavorite,
         cuisines = cuisineInputMapper.mapToListModel(dto.cuisines),
         meals = mealInputMapper.mapToListModel(dto.meals),
