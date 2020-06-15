@@ -122,6 +122,11 @@
     <string name="show_ingredients">Ingredients</string>
     <string name="meal_info_add_ingredient">Add</string>
     <string name="meal_suggested">(suggested)</string>
+    <string name="user_id">User ID</string>
+    <string name="username">Username</string>
+    <string name="user_id_number">User id number</string>
+    <string name="register">Register</string>
+    <string name="sign_up">Register an account</string>
     <string-array name="custom_meal_unit_spinner_array">
         <item>grams</item>
     </string-array>

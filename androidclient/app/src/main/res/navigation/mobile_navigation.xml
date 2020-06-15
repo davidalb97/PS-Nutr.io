@@ -112,5 +112,11 @@
         android:label="Add a custom meal"
         tools:layout="@layout/add_custom_meal" />
 
+    <fragment
+        android:id="@+id/nav_sign"
+        android:name="pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.SignFragment"
+        android:label="Sign up / Sign in"
+        tools:layout="@layout/sign_fragment" />
+
 
 </navigation>
