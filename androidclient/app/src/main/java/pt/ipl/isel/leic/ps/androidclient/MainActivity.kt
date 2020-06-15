@@ -1,6 +1,7 @@
 package pt.ipl.isel.leic.ps.androidclient
 
 import android.os.Bundle
+import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
@@ -45,12 +46,20 @@ class MainActivity : AppCompatActivity() {
                 R.id.nav_add_meal_to_calculator,
                 R.id.nav_add_insulin,
                 R.id.nav_saved_meals,
-                R.id.nav_add_custom_meal
+                R.id.nav_add_custom_meal,
+                R.id.nav_sign
             ),
             drawerLayout
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+
+        val headerView = navView.getHeaderView(0)
+        val headerImage = headerView.findViewById<ImageView>(R.id.imageView)
+
+        headerImage.setOnClickListener {
+            navController.navigate(R.id.nav_sign)
+        }
     }
 
     override fun onSupportNavigateUp(): Boolean {
