@@ -3,7 +3,7 @@ package pt.isel.ps.g06.httpserver.dataAccess.db.repo
 import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.transaction.TransactionIsolationLevel
 import org.springframework.stereotype.Repository
-import pt.isel.ps.g06.httpserver.common.exception.clientError.NotYetVotedResponseStatusException
+import pt.isel.ps.g06.httpserver.common.exception.clientError.NotYetVotedException
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionContractType.VOTABLE
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.UserVoteDao
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.VotableDao
@@ -79,7 +79,7 @@ class VoteDbRepository(jdbi: Jdbi) : BaseDbRepo(jdbi) {
             val userVote = it
                     .attach(UserVoteDao::class.java)
                     .getUserVoteForSubmission(submissionId, submitterId)
-                    ?: throw NotYetVotedResponseStatusException()
+                    ?: throw NotYetVotedException()
 
             // Remove the user's vote on that Submission
             it.attach(voteDaoClass).delete(submissionId, submitterId)

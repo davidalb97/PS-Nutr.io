@@ -9,10 +9,12 @@ data class VotesOutput(
         val negative: Int
 )
 
-fun toVotesOutput(votes: Votes, userVote: VoteState): VotesOutput {
-    return VotesOutput(
-            userVote = userVote,
-            positive = votes.positive,
-            negative = votes.negative
-    )
+fun toVotesOutput(votes: Votes?, userVote: VoteState): VotesOutput? {
+    return votes?.let {
+        VotesOutput(
+                userVote = userVote,
+                positive = it.positive,
+                negative = it.negative
+        )
+    }
 }

@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.util.UriComponentsBuilder
 import pt.isel.ps.g06.httpserver.common.*
-import pt.isel.ps.g06.httpserver.common.exception.clientError.ForbiddenInsertionResponseStatusException
+import pt.isel.ps.g06.httpserver.common.exception.forbidden.NotSubmissionOwnerException
 import pt.isel.ps.g06.httpserver.common.exception.notFound.MealNotFoundException
 import pt.isel.ps.g06.httpserver.common.exception.notFound.RestaurantNotFoundException
 import pt.isel.ps.g06.httpserver.common.interceptor.ensureSubmitter
@@ -19,6 +19,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.output.meal.toRestaurantMealContaine
 import pt.isel.ps.g06.httpserver.service.MealService
 import pt.isel.ps.g06.httpserver.service.RestaurantMealService
 import pt.isel.ps.g06.httpserver.service.RestaurantService
+import pt.isel.ps.g06.httpserver.service.SubmissionService
 import javax.servlet.http.HttpServletRequest
 import javax.validation.Valid
 
@@ -28,10 +29,10 @@ import javax.validation.Valid
 class RestaurantMealController(
         private val restaurantService: RestaurantService,
         private val mealService: MealService,
+        private val submissionService: SubmissionService,
         private val restaurantMealService: RestaurantMealService,
         private val restaurantIdentifierBuilder: RestaurantIdentifierBuilder
 ) {
-
     @GetMapping(RESTAURANT_MEALS, consumes = [MediaType.ALL_VALUE])
     fun getMealsForRestaurant(
             @PathVariable(RESTAURANT_ID_VALUE) restaurantId: String
@@ -90,7 +91,7 @@ class RestaurantMealController(
                 ?: throw MealNotFoundException()
 
         if (!meal.isUserMeal()) {
-            throw ForbiddenInsertionResponseStatusException("Only meals created by you can be inserted!")
+            throw NotSubmissionOwnerException("Only meals created by you can be inserted!")
         }
 
         restaurantMealService.addRestaurantMeal(restaurantIdentifier, meal, submitterId)
@@ -133,12 +134,11 @@ class RestaurantMealController(
     ): ResponseEntity<Void> {
         val (submitterId) = request.ensureSubmitter()
         val restaurantIdentifier = restaurantIdentifierBuilder.extractIdentifiers(restaurantId)
+        val restaurantMeal = restaurantMealService.getRestaurantMeal(restaurantIdentifier, mealId)
 
-        restaurantMealService.alterRestaurantMealVote(
-                restaurantId = restaurantIdentifier,
-                mealId = mealId,
+        submissionService.alterRestaurantMealVote(
+                restaurantMeal = restaurantMeal,
                 submitterId = submitterId,
-                //Valid checks make sure user vote is not null
                 vote = userVote.vote!!
         )
 
@@ -150,12 +150,17 @@ class RestaurantMealController(
             @PathVariable(RESTAURANT_ID_VALUE) restaurantId: String,
             @PathVariable(MEAL_ID_VALUE) mealId: Int,
             request: HttpServletRequest
-    ) {
+    ): ResponseEntity<Void> {
         val (submitterId) = request.ensureSubmitter()
-
         val restaurantIdentifier = restaurantIdentifierBuilder.extractIdentifiers(restaurantId)
+        val restaurantMeal = restaurantMealService.getRestaurantMeal(restaurantIdentifier, mealId)
 
-        restaurantMealService.deleteRestaurantMealVote(restaurantIdentifier, mealId, submitterId)
+        submissionService.deleteRestaurantMealVote(
+                restaurantMeal = restaurantMeal,
+                submitterId = submitterId
+        )
+
+        return ResponseEntity.ok().build()
     }
 
     @DeleteMapping(RESTAURANT_MEAL_PORTION)
@@ -163,12 +168,13 @@ class RestaurantMealController(
             @PathVariable(RESTAURANT_ID_VALUE) restaurantId: String,
             @PathVariable(MEAL_ID_VALUE) mealId: Int,
             request: HttpServletRequest
-    ) {
+    ): ResponseEntity<Void> {
         val (submitterId) = request.ensureSubmitter()
-
         val restaurantIdentifier = restaurantIdentifierBuilder.extractIdentifiers(restaurantId)
 
         restaurantMealService.deleteUserPortion(restaurantIdentifier, mealId, submitterId)
+
+        return ResponseEntity.ok().build()
     }
 
     @DeleteMapping(RESTAURANT_MEAL)

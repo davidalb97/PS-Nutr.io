@@ -17,6 +17,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.output.restaurant.toDetailedRestaura
 import pt.isel.ps.g06.httpserver.dataAccess.output.restaurant.toSimplifiedRestaurantOutput
 import pt.isel.ps.g06.httpserver.exception.InvalidInputDomain
 import pt.isel.ps.g06.httpserver.exception.InvalidInputException
+import pt.isel.ps.g06.httpserver.model.Restaurant
 import pt.isel.ps.g06.httpserver.service.RestaurantService
 import pt.isel.ps.g06.httpserver.service.SubmissionService
 import javax.servlet.http.HttpServletRequest
@@ -35,11 +36,11 @@ class RestaurantController(
     /**
      * Allows to search for Restaurants from both an API (see [RestaurantApiType] for supported APIs) and
      * from a database around geolocation,
-     * giving priority to database values, as they may contain extra information added by an user.
+     * giving priority to database values as they may contain extra information added by an user.
      *
      * @param name optional, filters results by restaurant name
      * @param radius optional, changes the search radius in a circle (meters).
-     *  @param apiType allows the user to select which API to search from. See [RestaurantApiType].
+     * @param apiType allows the user to select which API to search from. See [RestaurantApiType].
      */
     @GetMapping(RESTAURANTS, consumes = [MediaType.ALL_VALUE])
     fun searchRestaurants(
@@ -68,15 +69,9 @@ class RestaurantController(
 
     @GetMapping(RESTAURANT, consumes = [MediaType.ALL_VALUE])
     fun getRestaurantInformation(
-            @PathVariable(RESTAURANT_ID_VALUE) id: String
+            @PathVariable(RESTAURANT_ID_VALUE) restaurantId: String
     ): ResponseEntity<DetailedRestaurantOutput> {
-        val (submitterId, submissionId, apiId) = restaurantIdentifierBuilder.extractIdentifiers(id)
-
-        val restaurant = restaurantService.getRestaurant(
-                submitterId = submitterId,
-                submissionId = submissionId,
-                apiId = apiId
-        ) ?: throw RestaurantNotFoundException()
+        val restaurant = ensureRestaurantExists(restaurantId)
 
         return ResponseEntity
                 .ok()
@@ -104,14 +99,9 @@ class RestaurantController(
     }
 
     @DeleteMapping(RESTAURANT, consumes = [MediaType.ALL_VALUE])
-    fun deleteRestaurant(@PathVariable(RESTAURANT_ID_VALUE) id: String, request: HttpServletRequest): ResponseEntity<Void> {
+    fun deleteRestaurant(@PathVariable(RESTAURANT_ID_VALUE) restaurantId: String, request: HttpServletRequest): ResponseEntity<Void> {
         val (submitterId) = request.ensureSubmitter()
-
-        val (restaurantId, submissionId, apiId) = restaurantIdentifierBuilder.extractIdentifiers(id)
-
-        val restaurant = (restaurantService
-                .getRestaurant(restaurantId, submissionId, apiId)
-                ?: throw RestaurantNotFoundException())
+        val restaurant = ensureRestaurantExists(restaurantId)
 
 
         if (!restaurant.isPresentInDatabase() || restaurant.submitterInfo.value.identifier != submitterId) {
@@ -123,26 +113,50 @@ class RestaurantController(
         return ResponseEntity.ok().build()
     }
 
-    @PostMapping(RESTAURANT_REPORT, consumes = [MediaType.APPLICATION_JSON_VALUE])
-    fun addRestaurantReport(@PathVariable(RESTAURANT_ID_VALUE) id: String, @RequestBody report: String) {
-
-    }
-
-    @PostMapping(RESTAURANT_VOTE, consumes = [MediaType.APPLICATION_JSON_VALUE])
-    fun addRestaurantVote(@PathVariable(RESTAURANT_ID_VALUE) id: String, @RequestBody vote: String) {
-
-    }
-
     @PutMapping(RESTAURANT_VOTE, consumes = [MediaType.APPLICATION_JSON_VALUE])
-    fun updateRestaurantVote(@PathVariable(RESTAURANT_ID_VALUE) id: String, @RequestBody vote: String) {
+    fun alterRestaurantVote(
+            @PathVariable(RESTAURANT_ID_VALUE) restaurantId: String,
+            @RequestBody userVote: VoteInput,
+            request: HttpServletRequest
+    ): ResponseEntity<Void> {
+        val (submitterId) = request.ensureSubmitter()
+        val restaurant = ensureRestaurantExists(restaurantId)
 
+        submissionService.alterRestaurantVote(
+                restaurant = restaurant,
+                submitterId = submitterId,
+                vote = userVote.vote!!
+        )
+
+        return ResponseEntity.ok().build()
     }
 
-    @PutMapping("/{submission_id}/vote", consumes = [MediaType.APPLICATION_JSON_VALUE])
-    fun updateRestaurantVote(@PathVariable submission_id: Int, @RequestBody vote: VoteInput) {
+    @DeleteMapping(RESTAURANT_VOTE, consumes = [MediaType.ALL_VALUE])
+    fun deleteRestaurantVote(
+            @PathVariable(RESTAURANT_ID_VALUE) restaurantId: String,
+            request: HttpServletRequest
+    ): ResponseEntity<Void> {
+        val (submitterId) = request.ensureSubmitter()
+
+        val restaurant = ensureRestaurantExists(restaurantId)
+        submissionService.deleteRestaurantVote(
+                restaurant = restaurant,
+                submitterId = submitterId
+        )
+
+        return ResponseEntity.ok().build()
     }
 
-    @DeleteMapping(RESTAURANT_VOTE, consumes = [MediaType.APPLICATION_JSON_VALUE])
-    fun deleteRestaurantVote(@PathVariable(RESTAURANT_ID_VALUE) id: String, vote: String) {
+    /**
+     * Helper method to avoid boilerplate code that ensures that a Restaurant exists.
+     *
+     * @throws RestaurantNotFoundException if it doesn't.
+     */
+    private fun ensureRestaurantExists(restaurantId: String): Restaurant {
+        val restaurantIdentifier = restaurantIdentifierBuilder.extractIdentifiers(restaurantId)
+
+        return restaurantService
+                .getRestaurant(restaurantIdentifier)
+                ?: throw RestaurantNotFoundException()
     }
 }

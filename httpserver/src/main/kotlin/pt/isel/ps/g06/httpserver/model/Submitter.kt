@@ -7,5 +7,6 @@ data class Submitter(
         val identifier: Int,
         val name: String,
         val creationDate: OffsetDateTime?,
-        val image: URI?
+        val image: URI?,
+        val isUser: Boolean
 )

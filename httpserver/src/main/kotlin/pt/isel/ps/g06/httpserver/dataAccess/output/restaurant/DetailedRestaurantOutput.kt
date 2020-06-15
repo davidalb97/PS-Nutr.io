@@ -3,6 +3,7 @@ package pt.isel.ps.g06.httpserver.dataAccess.output.restaurant
 import pt.isel.ps.g06.httpserver.dataAccess.output.meal.SimplifiedRestaurantMealOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.meal.toSimplifiedRestaurantMealOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.vote.VotesOutput
+import pt.isel.ps.g06.httpserver.dataAccess.output.vote.toVotesOutput
 import pt.isel.ps.g06.httpserver.model.Restaurant
 import pt.isel.ps.g06.httpserver.model.VoteState
 import java.time.OffsetDateTime
@@ -12,7 +13,7 @@ class DetailedRestaurantOutput(
         name: String,
         latitude: Float,
         longitude: Float,
-        votes: VotesOutput,
+        votes: VotesOutput?,
         isFavorite: Boolean,
         val cuisines: Collection<String>,
         val creationDate: OffsetDateTime?,
@@ -33,10 +34,9 @@ fun toDetailedRestaurantOutput(restaurant: Restaurant, userId: Int? = null): Det
             name = restaurant.name,
             latitude = restaurant.latitude,
             longitude = restaurant.longitude,
-            votes = VotesOutput(
-                    userVote = userId?.let { restaurant.userVote(userId) } ?: VoteState.NOT_VOTED,
-                    positive = restaurant.votes.positive,
-                    negative = restaurant.votes.positive
+            votes = toVotesOutput(
+                    votes = restaurant.votes,
+                    userVote = userId?.let { restaurant.userVote(userId) } ?: VoteState.NOT_VOTED
             ),
             isFavorite = userId?.let { restaurant.isFavorite(userId) } ?: false,
             cuisines = restaurant.cuisines.map { it.name }.toList(),

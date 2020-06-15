@@ -9,7 +9,10 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.ApiSubmitterMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbRestaurantDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.*
 import pt.isel.ps.g06.httpserver.dataAccess.model.RestaurantDto
-import pt.isel.ps.g06.httpserver.model.*
+import pt.isel.ps.g06.httpserver.model.Restaurant
+import pt.isel.ps.g06.httpserver.model.RestaurantIdentifier
+import pt.isel.ps.g06.httpserver.model.Submitter
+import pt.isel.ps.g06.httpserver.model.VoteState
 import pt.isel.ps.g06.httpserver.util.log
 import java.time.OffsetDateTime
 
@@ -27,7 +30,6 @@ class RestaurantResponseMapper(
             is DbRestaurantDto -> dbResponseMapper.mapTo(dto)
             else -> {
                 log("ERROR: Unregistered mapper for RestaurantDto of type '${dto.javaClass.typeName}'!")
-                //TODO Should a handler listen to this exception?
                 throw NoSuchMethodException("There is no mapper registered for given dto type!")
             }
         }
@@ -57,7 +59,7 @@ class HereRestaurantResponseMapper(
                         .asSequence(),
                 meals = emptySequence(),
                 //There are no votes if it's not inserted on db yet
-                votes = Votes(0, 0),
+                votes = null,
                 //User has not voted yet if not inserted
                 userVote = { VoteState.NOT_VOTED },
                 //User has not favored yet if not inserted
@@ -72,7 +74,8 @@ class HereRestaurantResponseMapper(
                             name = RestaurantApiType.Here.toString(),
                             creationDate = null,
                             //TODO return const image for Zomato api icon
-                            image = null
+                            image = null,
+                            isUser = false
                     )
                 }
         )
@@ -105,7 +108,7 @@ class ZomatoRestaurantResponseMapper(
                 suggestedMeals = dbMealRepository.getAllSuggestedMealsFromCuisineNames(cuisineNames).map(mealMapper::mapTo),
                 meals = emptySequence(),
                 //There are no votes if it's not inserted on db yet
-                votes = Votes(0, 0),
+                votes = null,
                 //User has not voted yet if not inserted
                 userVote = { VoteState.NOT_VOTED },
                 //User has not favored yet if not inserted
@@ -119,7 +122,8 @@ class ZomatoRestaurantResponseMapper(
                             name = RestaurantApiType.Zomato.toString(),
                             creationDate = null,
                             //TODO return const image for Zomato api icon
-                            image = null
+                            image = null,
+                            isUser = false
                     )
                 }
         )
