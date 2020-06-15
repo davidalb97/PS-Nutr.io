@@ -11,6 +11,7 @@ import pt.ipl.isel.leic.ps.androidclient.data.model.MealItem
 import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.MealRecyclerAdapter
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.tab.CALCULATOR_BUNDLE_FLAG
 import pt.ipl.isel.leic.ps.androidclient.ui.listener.ScrollListener
+import pt.ipl.isel.leic.ps.androidclient.ui.provider.BUNDLE_RESTAURANT_INFO_ID
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.MealRecyclerVMProviderFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.MealRecyclerViewModel
 
@@ -35,7 +36,7 @@ open class MealRecyclerFragment : ARequestRecyclerListFragment<MealItem, MealRec
      */
     protected open fun buildViewModel(savedInstanceState: Bundle?) {
         val rootActivity = this.requireActivity()
-        val factory = MealRecyclerVMProviderFactory(savedInstanceState, rootActivity.intent)
+        val factory = MealRecyclerVMProviderFactory(savedInstanceState, rootActivity.intent, requireArguments())
         viewModel = ViewModelProvider(rootActivity, factory)[MealRecyclerViewModel::class.java]
         activityApp = requireActivity().application
     }
@@ -55,7 +56,7 @@ open class MealRecyclerFragment : ARequestRecyclerListFragment<MealItem, MealRec
         list.adapter = adapter
         list.layoutManager = LinearLayoutManager(this.requireContext())
         startObserver()
-        viewModel.getSuggestedMeals()
+        viewModel.update()
     }
 
     override fun startScrollListener() {

@@ -5,11 +5,11 @@ import android.os.Bundle
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.MealRecyclerViewModel
 
 const val MEAL_LIST_VIEW_STATE: String = "MEAL_LIST_VIEW_STATE"
-const val MEAL_LIST_RESTAURANT_ID = "MEAL_LIST_RESTAURANT_ID"
 
 class MealRecyclerVMProviderFactory(
     savedInstanceState: Bundle?,
-    intent: Intent
+    intent: Intent,
+    private val arguments: Bundle
 ) : AViewModelProviderFactory<MealRecyclerViewModel>(
     savedInstanceState,
     intent
@@ -19,6 +19,7 @@ class MealRecyclerVMProviderFactory(
     override fun getViewModelClass(): Class<MealRecyclerViewModel> =
         MealRecyclerViewModel::class.java
 
-    override fun newViewModel(): MealRecyclerViewModel =
-        MealRecyclerViewModel()
+    override fun newViewModel(): MealRecyclerViewModel = MealRecyclerViewModel(
+        arguments.getString(BUNDLE_RESTAURANT_INFO_ID)
+    )
 }

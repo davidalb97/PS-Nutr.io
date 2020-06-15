@@ -9,7 +9,11 @@ import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.restaurantRepositor
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealItem
 import pt.ipl.isel.leic.ps.androidclient.data.model.RestaurantInfo
 
-class RestaurantInfoMealRecyclerViewModel : MealRecyclerViewModel(), Parcelable {
+class RestaurantInfoMealRecyclerViewModel(
+    override val restaurantId: String
+) : MealRecyclerViewModel(
+    restaurantId
+), Parcelable {
 
     var restaurantInfo: RestaurantInfo? = null
 

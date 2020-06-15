@@ -9,7 +9,8 @@ const val BUNDLE_RESTAURANT_INFO_ID = "BUNDLE_RESTAURANT_INFO_ID"
 
 class RestaurantInfoVMProviderFactory(
     savedInstanceState: Bundle?,
-    intent: Intent
+    intent: Intent,
+    private val arguments: Bundle
 ) : AViewModelProviderFactory<RestaurantInfoMealRecyclerViewModel>(
     savedInstanceState,
     intent
@@ -20,5 +21,7 @@ class RestaurantInfoVMProviderFactory(
         RestaurantInfoMealRecyclerViewModel::class.java
 
     override fun newViewModel(): RestaurantInfoMealRecyclerViewModel =
-        RestaurantInfoMealRecyclerViewModel()
+        RestaurantInfoMealRecyclerViewModel(
+            arguments.getString(BUNDLE_RESTAURANT_INFO_ID)!!
+        )
 }

@@ -21,8 +21,8 @@ class InputRestaurantInfoMapper(
         creationDate = TimestampWithTimeZone.parse(dto.creationDate?.toString()),
         isFavorite = dto.isFavorite,
         cuisines = cuisineInputMapper.mapToListModel(dto.cuisines),
-        meals = mealInputMapper.mapToListModel(dto.meals, false),
-        suggestedMeals = mealInputMapper.mapToListModel(dto.suggestedMeals, true),
+        meals = mealInputMapper.mapToListModel(dto.meals),
+        suggestedMeals = mealInputMapper.mapToListModel(dto.suggestedMeals),
         imageUri = dto.imageUri
     )
 

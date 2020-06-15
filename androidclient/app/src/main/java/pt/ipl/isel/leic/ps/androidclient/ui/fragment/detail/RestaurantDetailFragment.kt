@@ -5,20 +5,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.restaurantRepository
 import pt.ipl.isel.leic.ps.androidclient.R
-import pt.ipl.isel.leic.ps.androidclient.data.model.MealItem
 import pt.ipl.isel.leic.ps.androidclient.data.model.RestaurantInfo
-import pt.ipl.isel.leic.ps.androidclient.data.repo.RestaurantRepository
-import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.MealRecyclerAdapter
-import pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler.request.ARequestRecyclerListFragment
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler.request.MealRecyclerFragment
-import pt.ipl.isel.leic.ps.androidclient.ui.provider.BUNDLE_RESTAURANT_INFO_ID
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.RestaurantInfoVMProviderFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.util.Logger
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.RestaurantInfoMealRecyclerViewModel
@@ -36,9 +30,10 @@ class RestaurantDetailFragment : MealRecyclerFragment(){
      */
     override fun buildViewModel(savedInstanceState: Bundle?) {
         val rootActivity = this.requireActivity()
-        val factory = RestaurantInfoVMProviderFactory(savedInstanceState, rootActivity.intent)
+        val factory = RestaurantInfoVMProviderFactory(savedInstanceState, rootActivity.intent, requireArguments())
         innerViewModel = ViewModelProvider(rootActivity, factory)[RestaurantInfoMealRecyclerViewModel::class.java]
         viewModel = innerViewModel
+        activityApp = requireActivity().application
     }
 
     override fun onCreateView(
@@ -52,13 +47,8 @@ class RestaurantDetailFragment : MealRecyclerFragment(){
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val arguments = this.arguments
 
-        if (arguments != null) {
-            innerViewModel.restaurantId = arguments.get(BUNDLE_RESTAURANT_INFO_ID).toString()
-            innerViewModel.fetchInfo(::setupRestaurantInfoView, logger::e)
-        }
-
+        innerViewModel.fetchInfo(::setupRestaurantInfoView, logger::e)
     }
 
     private fun setupRestaurantInfoView(restaurantInfo: RestaurantInfo) {

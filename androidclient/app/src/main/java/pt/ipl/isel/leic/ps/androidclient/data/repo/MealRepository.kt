@@ -59,13 +59,12 @@ class MealRepository(private val dataSource: MealDataSource) {
 
     fun getMealInfo(
         mealId: Int,
-        isSuggested: Boolean,
         success: (MealInfo) -> Unit,
         error: (VolleyError) -> Unit
     ) {
         dataSource.getMealById(
             mealId,
-            { dtos -> success(inputMealInfoMapper.mapToModel(dtos, isSuggested)) },
+            { dtos -> success(inputMealInfoMapper.mapToModel(dtos)) },
             error
         )
     }
@@ -83,7 +82,7 @@ class MealRepository(private val dataSource: MealDataSource) {
             cuisines = cuisines,
             success = {
                 //TODO assuming that no user filter is passed, all meals are suggested
-                success(inputMealItemMapper.mapToListModel(it, true))
+                success(inputMealItemMapper.mapToListModel(it))
             },
             error = error
         )

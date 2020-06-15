@@ -4,7 +4,6 @@ import android.net.Uri
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.SimplifiedMealInput
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.SimplifiedUserInput
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.VotesInputDto
-import java.net.URI
 import java.time.OffsetDateTime
 
 class DetailedMealInput(
@@ -13,6 +12,7 @@ class DetailedMealInput(
     imageUri: Uri?,
     isFavorite: Boolean,
     votes: VotesInputDto?,
+    isSuggested: Boolean,
     val portions: Collection<Int>,
     val creationDate: OffsetDateTime,
     val composedBy: MealComposition?,
@@ -20,9 +20,10 @@ class DetailedMealInput(
     val createdBy: SimplifiedUserInput?,
     val cuisines: Collection<String>
 ) : SimplifiedMealInput(
-    id = id,
+    mealIdentifier = id,
     name = name,
     imageUri = imageUri,
     isFavorite = isFavorite,
-    votes = votes
+    votes = votes,
+    isSuggested = isSuggested
 )

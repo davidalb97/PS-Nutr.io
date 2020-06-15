@@ -2,9 +2,7 @@ package pt.ipl.isel.leic.ps.androidclient.data.api.mapper
 
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.info.DetailedMealInput
 import pt.ipl.isel.leic.ps.androidclient.data.db.entity.DbMealInfoEntity
-import pt.ipl.isel.leic.ps.androidclient.data.model.Cuisine
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealInfo
-import pt.ipl.isel.leic.ps.androidclient.data.model.MealIngredient
 import pt.ipl.isel.leic.ps.androidclient.data.util.TimestampWithTimeZone
 
 class InputMealInfoMapper(
@@ -14,10 +12,10 @@ class InputMealInfoMapper(
     private val inputPortionMapper: InputPortionMapper
 ) {
 
-    fun mapToModel(dto: DetailedMealInput, isSuggested: Boolean) = MealInfo(
+    fun mapToModel(dto: DetailedMealInput) = MealInfo(
         dbId = DbMealInfoEntity.DEFAULT_DB_ID,
         dbRestaurantId = DbMealInfoEntity.DEFAULT_DB_ID,
-        submissionId = dto.id,
+        submissionId = dto.mealIdentifier,
         name = dto.name,
         carbs = dto.nutritionalInfo.carbs,
         amount = dto.nutritionalInfo.amount,
@@ -25,6 +23,7 @@ class InputMealInfoMapper(
         votes = inputVotesMapper.mapToModel(dto.votes),
         isFavorite = dto.isFavorite,
         imageUri = dto.imageUri,
+        isSuggested = dto.isSuggested,
         creationDate = TimestampWithTimeZone.parse(dto.creationDate?.toString()),
         ingredientComponents = dto.composedBy?.let {
             inputMealIngredientMapper.mapToListModel(it.ingredients, false)
@@ -33,10 +32,9 @@ class InputMealInfoMapper(
             inputMealIngredientMapper.mapToListModel(it.meals, true)
         } ?: emptyList(),
         cuisines = inputCuisineMapper.mapToListModel(dto.cuisines),
-        portions = inputPortionMapper.mapToListModel(dto.portions),
-        isSuggested = isSuggested
+        portions = inputPortionMapper.mapToListModel(dto.portions)
     )
 
-    fun mapToListModel(dtos: Iterable<DetailedMealInput>, isSuggested: Boolean): List<MealInfo>
-            = dtos.map { mapToModel(it, isSuggested)}
+    fun mapToListModel(dtos: Iterable<DetailedMealInput>): List<MealInfo>
+            = dtos.map(this::mapToModel)
 }
