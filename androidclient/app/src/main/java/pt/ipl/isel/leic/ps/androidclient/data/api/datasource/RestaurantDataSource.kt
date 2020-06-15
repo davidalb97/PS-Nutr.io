@@ -23,7 +23,7 @@ private const val RESTAURANT_LOCATION_URI = RESTAURANT_URI +
         "&skip=$SKIP_PARAM" +
         "&count=$COUNT_PARAM"
 private const val RESTAURANT_REPORT_URI = "$URI_BASE/report/$RESTAURANT_ID_PARAM"
-private const val RESTAURANT_VOTE_URI = "$URI_BASE/vote/$RESTAURANT_ID_PARAM"
+private const val RESTAURANT_VOTE_URI = "$URI_BASE/$RESTAURANT_ID_URI/vote"
 private const val RESTAURANT_MEAL_URI = "$RESTAURANT_ID_URI/$MEAL"
 private const val RESTAURANT_MEAL_ID_URI = "$RESTAURANT_MEAL_URI/$MEAL_ID_PARAM"
 private const val RESTAURANT_MEAL_PORTION_URI = "$RESTAURANT_MEAL_ID_URI/portion"
@@ -138,38 +138,19 @@ class RestaurantDataSource(
         )*/
     }
 
-    fun postVote(
-        id: String,
-        vote: Boolean,
-        error: (VolleyError) -> Unit
-    ) {
-        val uri =
-            uriBuilder.buildUri(
-                RESTAURANT_VOTE_URI,
-                hashMapOf(Pair(RESTAURANT_ID_PARAM, id))
-            )
-
-        requestParser.request(
-            Method.POST,
-            uri,
-            VoteOutput(value = vote),
-            error,
-            { }
-        )
-    }
-
     /**
      * ----------------------------- PUTs ------------------------------
      */
     fun updateVote(
-        id: String,
+        restaurant: String,
         vote: Boolean,
+        success: () -> Unit,
         error: (VolleyError) -> Unit
     ) {
         val uri =
             uriBuilder.buildUri(
                 RESTAURANT_VOTE_URI,
-                hashMapOf(Pair(RESTAURANT_ID_PARAM, id))
+                hashMapOf(Pair(RESTAURANT_ID_PARAM, restaurant))
             )
 
         requestParser.request(
@@ -177,30 +158,11 @@ class RestaurantDataSource(
             uri,
             VoteOutput(value = vote),
             error,
-            { }
+            { success() }
         )
     }
 
     /**
      * ----------------------------- DELETEs ---------------------------
      */
-
-    fun deleteVote(
-        id: String,
-        error: (VolleyError) -> Unit
-    ) {
-        val uri =
-            uriBuilder.buildUri(
-                RESTAURANT_VOTE_URI,
-                hashMapOf(Pair(RESTAURANT_ID_PARAM, id))
-            )
-
-        requestParser.request(
-            Method.DELETE,
-            uri,
-            null,
-            error,
-            { }
-        )
-    }
 }

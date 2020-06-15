@@ -14,14 +14,13 @@ import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.RestaurantInfo
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler.request.MealRecyclerFragment
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.BUNDLE_RESTAURANT_INFO_ID
-import pt.ipl.isel.leic.ps.androidclient.ui.provider.CalculatorVMProviderFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.RestaurantInfoVMProviderFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.util.Logger
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.RestaurantInfoMealRecyclerViewModel
 
 class RestaurantDetailFragment : MealRecyclerFragment(){
 
-    private val logger = Logger(RestaurantDetailFragment::class)
+    private val log = Logger(RestaurantDetailFragment::class)
     private lateinit var innerViewModel: RestaurantInfoMealRecyclerViewModel
 
 
@@ -51,7 +50,7 @@ class RestaurantDetailFragment : MealRecyclerFragment(){
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        innerViewModel.fetchInfo(::setupRestaurantInfoView, logger::e)
+        innerViewModel.fetchInfo(::setupRestaurantInfoView, log::e)
     }
 
     private fun setupRestaurantInfoView(restaurantInfo: RestaurantInfo) {
@@ -78,12 +77,16 @@ class RestaurantDetailFragment : MealRecyclerFragment(){
 
         // Upvote
         restaurantUpvoteButton?.setOnClickListener { view ->
-            restaurantRepository.postVote(restaurantInfo.id, true, {})
+            restaurantRepository.putVote(restaurantInfo.id, true, {
+                //TODO change vote color
+            }, log::e)
         }
 
         // Downvote
         restaurantDownvoteButton?.setOnClickListener { view ->
-            restaurantRepository.postVote(restaurantInfo.id, false, {})
+            restaurantRepository.putVote(restaurantInfo.id, false, {
+                //TODO change vote color
+            },log::e)
         }
     }
 

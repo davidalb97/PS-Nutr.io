@@ -24,6 +24,7 @@ private const val MEAL_ID_URI = "$MEAL_URI/$MEAL_ID_PARAM"
 private const val RESTAURANT_ID_URI = "$URI_BASE/$RESTAURANT/$RESTAURANT_ID_PARAM"
 private const val RESTAURANT_ID_MEAL_URI = "$RESTAURANT_ID_URI/$MEAL"
 private const val RESTAURANT_ID_MEAL_ID_URI = "$RESTAURANT_ID_MEAL_URI/$MEAL_ID_PARAM"
+private const val RESTAURANT_ID_MEAL_ID_VOTE_URI = "$RESTAURANT_ID_MEAL_ID_URI/vote"
 
 val INPUT_MEAL_DTO = DetailedMealInput::class.java
 val OUTPUT_MEAL_DTO = MealOutput::class.java
@@ -263,13 +264,14 @@ class MealDataSource(
     /**
      * Parameter: restaurantId & mealId are required
      */
-    fun updateMealVote(
+    fun updateVote(
         restaurantId: String,
         mealId: Int,
         vote: Boolean,
+        success: () -> Unit,
         error: (VolleyError) -> Unit
     ) {
-        var uri = RESTAURANT_ID_MEAL_ID_URI
+        var uri = RESTAURANT_ID_MEAL_ID_VOTE_URI
 
         uri = uriBuilder.buildUri(
             uri,
@@ -284,7 +286,7 @@ class MealDataSource(
             uri,
             VoteOutput(value = vote),
             error,
-            { }
+            { success() }
         )
     }
 }

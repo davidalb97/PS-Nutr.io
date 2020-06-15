@@ -70,21 +70,10 @@ class RestaurantRepository(private val dataSource: RestaurantDataSource) {
         )
     }
 
-    fun postVote(
+    fun putVote(
         id: String,
         vote: Boolean,
+        success: () -> Unit,
         error: (VolleyError) -> Unit
-    ) = dataSource.postVote(id, vote, error)
-
-    fun updateVote(
-        id: String,
-        vote: Boolean,
-        error: (VolleyError) -> Unit
-    ) = dataSource.updateVote(id, vote, error)
-
-    fun deleteVote(
-        id: String,
-        vote: Boolean,
-        error: (VolleyError) -> Unit
-    ) = dataSource.deleteVote(id, error)
+    ) = dataSource.updateVote(id, vote, success, error)
 }
