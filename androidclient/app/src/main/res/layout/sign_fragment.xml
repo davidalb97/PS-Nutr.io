@@ -61,7 +61,7 @@
         </EditText>
 
         <Button
-            android:id="@+id/meal_info_show_ingredients_btn"
+            android:id="@+id/registerButton"
             android:layout_below="@+id/userNameInput"
             android:layout_width="100dp"
             android:layout_height="wrap_content"

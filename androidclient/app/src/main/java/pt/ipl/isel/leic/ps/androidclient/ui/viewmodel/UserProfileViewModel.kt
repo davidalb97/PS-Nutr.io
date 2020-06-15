@@ -9,12 +9,22 @@ class UserProfileViewModel() : ARecyclerViewModel<User>() {
     constructor(parcel: Parcel) : this() {
     }
 
-    /*fun createUserProfile() {
-        userRepository.createUser()
-    }*/
+
+
+    var userId: Int? = null
+
+    fun createUserProfile(user: User) = userRepository.createUser(user)
+
+    fun getUserProfile(id: Int) = userRepository.getUserById(id)
+
+    fun getAllProfiles() = userRepository.getAllUsers()
 
     override fun update() {
-        userRepository.getUserById(1)
+        liveDataHandler.set(userRepository.getAllUsers()) {
+            userRepository.userMapper.mapToModel(it)
+        }
+
+
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {

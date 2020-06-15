@@ -17,7 +17,7 @@ interface UserDao {
     fun insert(vararg userProfile: DbUserEntity)
 
     @Query("SELECT * FROM DbUser where userId =:id")
-    fun get(id: Int): LiveData<DbUserEntity>
+    fun get(id: Int): LiveData<List<DbUserEntity>>
 
     @Delete
     fun delete(profile: InsulinProfileEntity)
