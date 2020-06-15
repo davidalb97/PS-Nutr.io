@@ -4,8 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.bumptech.glide.Glide
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealInfo
 import pt.ipl.isel.leic.ps.androidclient.data.model.Source
@@ -52,13 +54,52 @@ class MealDetailFragment : Fragment(){
         super.onViewCreated(view, savedInstanceState)
         viewModel.setOnErrorFunc(log::e)
         viewModel.observe(this) {
-            receivedMeal = it.first()
-            setupView()
+            val mealInfo = it.first()
+            receivedMeal = mealInfo
+            setupView(mealInfo)
         }
         viewModel.update()
     }
 
-    private fun setupView() {
-        log.v("View created!")
+    private fun setupView(receivedMeal: MealInfo) {
+        val mealMealImage = view?.findViewById<ImageView>(R.id.meal_detail_image)
+        val mealMealTitle = view?.findViewById<TextView>(R.id.meal_detail_title)
+        val mealVotesRl = view?.findViewById<RelativeLayout>(R.id.meal_info_votes)
+        val mealUpvoteButton = view?.findViewById<Button>(R.id.meal_info_up_vote)
+        val mealDownvoteButton = view?.findViewById<Button>(R.id.meal_info_down_vote)
+        val mealShowIngredientsBtn = view?.findViewById<Button>(R.id.meal_info_show_ingredients_btn)
+        val mealIngredientsRl = view?.findViewById<RelativeLayout>(R.id.meal_info_ingredients_rl)
+        val mealAddIngredientImgBtn = view?.findViewById<ImageButton>(R.id.meal_info_add_ingredients_button)
+        val mealSuggestedRl = view?.findViewById<RelativeLayout>(R.id.meal_info_suggested_rl)
+
+        // Image loading
+        if (receivedMeal.imageUri == null)
+            mealMealImage?.visibility = View.GONE
+        else
+            Glide.with(requireView())
+                .load(receivedMeal.imageUri)
+                .into(mealMealImage!!)
+
+        mealMealTitle?.text = receivedMeal.name
+
+        if(receivedMeal.source != Source.CUSTOM) {
+            //Show suggested txt
+            if(receivedMeal.isSuggested) {
+                mealSuggestedRl?.visibility = View.VISIBLE
+            }
+
+            //Show votes
+            mealVotesRl?.visibility = View.VISIBLE
+
+            // Upvote
+            mealUpvoteButton?.setOnClickListener { view ->
+                viewModel.upVote()
+            }
+
+            // Downvote
+            mealDownvoteButton?.setOnClickListener { view ->
+                viewModel.downVote()
+            }
+        }
     }
 }

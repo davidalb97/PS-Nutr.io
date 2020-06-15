@@ -67,6 +67,14 @@ class MealInfoViewModel : ARecyclerViewModel<MealInfo>() {
         return 0
     }
 
+    fun upVote() {
+        TODO("Not yet implemented")
+    }
+
+    fun downVote() {
+        TODO("Not yet implemented")
+    }
+
     companion object CREATOR : Parcelable.Creator<RestaurantRecyclerViewModel> {
 
         override fun createFromParcel(parcel: Parcel): RestaurantRecyclerViewModel =
