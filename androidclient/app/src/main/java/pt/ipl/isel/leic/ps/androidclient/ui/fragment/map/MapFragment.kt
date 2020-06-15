@@ -169,7 +169,7 @@ class MapFragment
         this.mapboxMap = mapboxMap
 
         mapboxMap.setStyle(
-            Style.TRAFFIC_NIGHT
+            Style.TRAFFIC_DAY
         ) { style -> enableLocationComponent(style) }
     }
 
