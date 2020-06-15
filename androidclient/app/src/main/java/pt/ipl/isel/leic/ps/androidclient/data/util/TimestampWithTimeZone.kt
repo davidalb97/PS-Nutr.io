@@ -19,15 +19,20 @@ class TimestampWithTimeZone(
         fun parse(formatted: String?): TimestampWithTimeZone? {
             if (formatted.isNullOrEmpty()) return null
 
+            //TODO remove and fix this!
             //Hotfix for restaurant/meal info creation date problem
             if(formatted.toDoubleOrNull() != null) return null
 
-            var split = formatted.split(" ")
+            //TODO remove and fix this!
+            //Hotfix for invalid conversion
+            val formatterFix = formatted.replace("T", " ")
+
+            var split = formatterFix.split(" ")
             val date = split[0].split("-")
             val year = date[0]
             val month = date[1]
             val day = date[2]
-            split = formatted.split("+")
+            split = formatterFix.split("+")
             val timeZone = split[1]
             split = split[0].split(".")
             val millis = split[1]

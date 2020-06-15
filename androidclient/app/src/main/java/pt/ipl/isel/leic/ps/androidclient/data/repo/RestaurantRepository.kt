@@ -19,9 +19,11 @@ class RestaurantRepository(private val dataSource: RestaurantDataSource) {
     )
     private val inputMealInputMapper = InputMealItemMapper(inputVotesMapper)
     private val inputCuisineInputMapper = InputCuisineMapper()
+    private val votesInputMapper = InputVotesMapper()
     private val inputRestaurantInfoMapper = InputRestaurantInfoMapper(
         mealInputMapper = inputMealInputMapper,
-        cuisineInputMapper = inputCuisineInputMapper
+        cuisineInputMapper = inputCuisineInputMapper,
+        votesInputMapper = votesInputMapper
     )
 
     fun getRestaurantInfoById(
