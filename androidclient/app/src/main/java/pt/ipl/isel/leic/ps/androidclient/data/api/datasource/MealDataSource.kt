@@ -12,12 +12,14 @@ import pt.ipl.isel.leic.ps.androidclient.data.api.dto.output.RestaurantMealOutpu
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.output.VoteOutput
 import pt.ipl.isel.leic.ps.androidclient.data.model.Cuisine
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealIngredient
+import pt.ipl.isel.leic.ps.androidclient.data.repo.DEFAULT_DB_USER
 
 private const val RESTAURANT_ID_PARAM = ":restaurantId"
 private const val MEAL_ID_PARAM = ":mealId"
 private const val COUNT_PARAM = ":count"
 private const val SKIP_PARAM = ":skip"
 private const val CUISINES_PARAM = ":cuisines"
+private const val SUBMITTER_QUERY = "?submitter"
 
 private const val MEAL_URI = "$URI_BASE/$MEAL"
 private const val MEAL_ID_URI = "$MEAL_URI/$MEAL_ID_PARAM"
@@ -152,9 +154,10 @@ class MealDataSource(
         unit: String,
         ingredients: Iterable<MealIngredient>,
         cuisines: Iterable<Cuisine>,
-        error: (VolleyError) -> Unit
+        error: (VolleyError) -> Unit,
+        submitterId: Int = DEFAULT_DB_USER
     ) {
-        val uri = MEAL_URI
+        val uri = "$MEAL_URI$SUBMITTER_QUERY=$submitterId"
 
         requestParser.request(
             Method.POST,
@@ -181,9 +184,10 @@ class MealDataSource(
         restaurantId: String,
         mealId: Int,
         success: (MealOutput) -> Unit,
-        error: (VolleyError) -> Unit
+        error: (VolleyError) -> Unit,
+        submitterId: Int = DEFAULT_DB_USER
     ) {
-        var uri = RESTAURANT_ID_URI
+        var uri = "$RESTAURANT_ID_URI$SUBMITTER_QUERY=$submitterId"
         val params = hashMapOf(
             Pair(RESTAURANT_ID_PARAM, restaurantId)
         )
@@ -212,12 +216,15 @@ class MealDataSource(
     fun deleteMeal(
         mealId: Int,
         success: (Class<*>) -> Unit,
-        error: (VolleyError) -> Unit
+        error: (VolleyError) -> Unit,
+        submitterId: Int = DEFAULT_DB_USER
     ) {
 
-        val uri =
+        var uri = "$MEAL_ID_URI$SUBMITTER_QUERY=$submitterId"
+
+        uri =
             uriBuilder.buildUri(
-                MEAL_ID_URI,
+                uri,
                 hashMapOf(
                     Pair(MEAL_ID_PARAM, "$mealId")
                 )
@@ -237,11 +244,14 @@ class MealDataSource(
     fun deleteRestaurantMeal(
         restaurantId: String,
         mealId: Int,
-        error: (VolleyError) -> Unit
+        error: (VolleyError) -> Unit,
+        submitterId: Int = DEFAULT_DB_USER
     ) {
 
-        val uri = uriBuilder.buildUri(
-            RESTAURANT_ID_MEAL_ID_URI,
+        var uri = "$RESTAURANT_ID_MEAL_ID_URI$SUBMITTER_QUERY=$submitterId"
+
+        uri = uriBuilder.buildUri(
+            uri,
             hashMapOf(
                 Pair(RESTAURANT_ID_PARAM, restaurantId),
                 Pair(MEAL_ID_PARAM, "$mealId")
@@ -269,9 +279,10 @@ class MealDataSource(
         mealId: Int,
         vote: Boolean,
         success: () -> Unit,
-        error: (VolleyError) -> Unit
+        error: (VolleyError) -> Unit,
+        submitterId: Int = DEFAULT_DB_USER
     ) {
-        var uri = RESTAURANT_ID_MEAL_ID_VOTE_URI
+        var uri = "$RESTAURANT_ID_MEAL_ID_VOTE_URI$SUBMITTER_QUERY=$submitterId"
 
         uri = uriBuilder.buildUri(
             uri,

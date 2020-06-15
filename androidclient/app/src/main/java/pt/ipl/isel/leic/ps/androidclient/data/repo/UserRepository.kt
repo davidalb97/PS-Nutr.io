@@ -5,6 +5,8 @@ import pt.ipl.isel.leic.ps.androidclient.data.db.mapper.DbUserMapper
 import pt.ipl.isel.leic.ps.androidclient.data.model.User
 import pt.ipl.isel.leic.ps.androidclient.data.util.AsyncWorker
 
+const val DEFAULT_DB_USER = 3
+
 class UserRepository {
 
     val userMapper = DbUserMapper()

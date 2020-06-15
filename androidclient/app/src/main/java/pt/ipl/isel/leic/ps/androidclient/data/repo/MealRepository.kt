@@ -8,10 +8,7 @@ import pt.ipl.isel.leic.ps.androidclient.data.api.mapper.*
 import pt.ipl.isel.leic.ps.androidclient.data.db.entity.DbMealItemEntity
 import pt.ipl.isel.leic.ps.androidclient.data.db.mapper.*
 import pt.ipl.isel.leic.ps.androidclient.data.db.relation.DbMealInfoRelation
-import pt.ipl.isel.leic.ps.androidclient.data.model.Cuisine
-import pt.ipl.isel.leic.ps.androidclient.data.model.MealInfo
-import pt.ipl.isel.leic.ps.androidclient.data.model.MealItem
-import pt.ipl.isel.leic.ps.androidclient.data.model.Source
+import pt.ipl.isel.leic.ps.androidclient.data.model.*
 import pt.ipl.isel.leic.ps.androidclient.data.util.AsyncWorker
 
 class MealRepository(private val dataSource: MealDataSource) {
@@ -114,6 +111,17 @@ class MealRepository(private val dataSource: MealDataSource) {
             error = error
         )
     }
+
+    fun postMeal(
+        name: String,
+        quantity: Int,
+        unit: String,
+        ingredients: Iterable<MealIngredient>,
+        cuisines: Iterable<Cuisine>,
+        error: (VolleyError) -> Unit
+    ) =
+        dataSource.postMeal(name, quantity, unit, ingredients, cuisines, error)
+
 
     fun putVote(
         restaurantId: String,
