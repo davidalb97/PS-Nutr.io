@@ -12,6 +12,9 @@ open class MealRecyclerViewModel(
 
     var cuisines = emptyList<Cuisine>()
 
+    fun addToFavorite(mealItem: MealItem) =
+        mealRepository.insertItem(mealItem)
+
     constructor(parcel: Parcel): this(
         restaurantId = TODO()
 //        restaurantId = parcel.readString()

@@ -15,10 +15,7 @@ import pt.ipl.isel.leic.ps.androidclient.data.api.datasource.CuisineDataSource
 import pt.ipl.isel.leic.ps.androidclient.data.api.datasource.MealDataSource
 import pt.ipl.isel.leic.ps.androidclient.data.api.datasource.RestaurantDataSource
 import pt.ipl.isel.leic.ps.androidclient.data.db.NutrioDb
-import pt.ipl.isel.leic.ps.androidclient.data.repo.CuisineRepository
-import pt.ipl.isel.leic.ps.androidclient.data.repo.InsulinProfileRepository
-import pt.ipl.isel.leic.ps.androidclient.data.repo.MealRepository
-import pt.ipl.isel.leic.ps.androidclient.data.repo.RestaurantRepository
+import pt.ipl.isel.leic.ps.androidclient.data.repo.*
 
 const val TAG = "Nutr.io App"
 const val ROOM_DB_NAME = "nutrio-db"
@@ -69,6 +66,8 @@ class NutrioApp : Application() {
                 by lazy { CuisineRepository(CuisineDataSource(requester, uriBuilder)) }
         val insulinProfilesRepository
                 by lazy { InsulinProfileRepository() }
+        val userRepository
+                by lazy { UserRepository() }
     }
 
     override fun onCreate() {

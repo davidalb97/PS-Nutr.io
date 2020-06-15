@@ -11,6 +11,15 @@ class FavoriteMealRecyclerViewModel() : ARecyclerViewModel<MealItem>() {
     constructor(parcel: Parcel) : this() {
     }
 
+    override fun update() {
+        this.liveDataHandler.set(mealRepository.getAllInfoBySource(Source.FAVORITE)) {
+            mealRepository.dbMealInfoMapper.mapToModel(it)
+        }
+    }
+
+    fun insertItem(favoriteMeal: MealItem) =
+        mealRepository.insertItem(favoriteMeal)
+
     fun deleteItem(favoriteMeal: MealItem) =
         mealRepository.deleteItem(favoriteMeal)
 
@@ -21,21 +30,14 @@ class FavoriteMealRecyclerViewModel() : ARecyclerViewModel<MealItem>() {
     override fun describeContents(): Int {
         return 0
     }
-
     companion object CREATOR : Parcelable.Creator<FavoriteMealRecyclerViewModel> {
+
         override fun createFromParcel(parcel: Parcel): FavoriteMealRecyclerViewModel {
             return FavoriteMealRecyclerViewModel(parcel)
         }
-
         override fun newArray(size: Int): Array<FavoriteMealRecyclerViewModel?> {
             return arrayOfNulls(size)
         }
-    }
 
-    override fun update() {
-        //TODO filter by favorite FavoriteMealRecyclerViewModel.update()
-        this.liveDataHandler.set(mealRepository.getAllInfoBySource(Source.FAVORITE)) {
-            mealRepository.dbMealInfoMapper.mapToModel(it)
-        }
     }
 }
