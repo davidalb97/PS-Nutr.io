@@ -100,6 +100,21 @@ class MealDetailFragment : Fragment(){
             mealDownvoteButton?.setOnClickListener { view ->
                 viewModel.downVote()
             }
+        } else {
+            mealAddIngredientImgBtn?.visibility = View.VISIBLE
+            mealAddIngredientImgBtn?.setOnClickListener {
+                //TODO Navigate to fragment and select meals & ingredients to add to ingredient recycler
+            }
+        }
+
+        mealShowIngredientsBtn?.setOnClickListener {
+            mealIngredientsRl?.visibility?.also { visibility ->
+                mealIngredientsRl.visibility = if(visibility == View.GONE) {
+                    View.VISIBLE
+                } else {
+                    View.GONE
+                }
+            }
         }
     }
 }
