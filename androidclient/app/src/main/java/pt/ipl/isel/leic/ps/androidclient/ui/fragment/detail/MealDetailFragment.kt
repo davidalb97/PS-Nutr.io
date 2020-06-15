@@ -48,13 +48,11 @@ class MealDetailFragment : IngredientsRecyclerFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        requireActivity().actionBar?.title = "asdasdasd"
         buildViewModel(savedInstanceState)
         return inflater.inflate(R.layout.meal_detail, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        viewModelMealInfo.setOnErrorFunc(log::e)
         viewModelMealInfo.observe(this) {
             val mealInfo = it.first()
             receivedMeal = mealInfo

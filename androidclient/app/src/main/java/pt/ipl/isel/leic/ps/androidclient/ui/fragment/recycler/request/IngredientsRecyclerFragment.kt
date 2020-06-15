@@ -86,5 +86,5 @@ open class IngredientsRecyclerFragment
 
     override fun getRecyclerId() = R.id.itemList
 
-    override fun getProgressBarId() = R.id.meal_info_progress_bar
+    override fun getProgressBarId() = R.id.progressBar
 }
