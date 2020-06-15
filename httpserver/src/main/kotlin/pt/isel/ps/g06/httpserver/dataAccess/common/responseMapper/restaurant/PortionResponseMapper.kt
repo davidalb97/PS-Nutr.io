@@ -9,9 +9,9 @@ import pt.isel.ps.g06.httpserver.model.Portion
 class DbRestaurantMealPortionsResponseMapper : ResponseMapper<DbPortionDto, Portion> {
     override fun mapTo(dto: DbPortionDto): Portion {
         return Portion(
+                identifier = dto.submission_id,
                 amount = dto.quantity,
-                //TODO use unit from portion!
-                unit = Portion.TODO_DEFAULT_UNIT
+                unit = "gr"
         )
     }
 }

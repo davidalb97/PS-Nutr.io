@@ -4,19 +4,19 @@ import pt.isel.ps.g06.httpserver.model.Meal
 import java.net.URI
 
 data class SimplifiedMealOutput(
-        val id: Int,
+        val mealIdentifier: Int,
         val name: String,
         val isFavorite: Boolean,
         val isSuggested: Boolean,
-        val image: URI?
+        val imageUri: URI?
 )
 
 fun toSimplifiedMealOutput(meal: Meal, userId: Int? = null): SimplifiedMealOutput {
     return SimplifiedMealOutput(
-            id = meal.identifier,
+            mealIdentifier = meal.identifier,
             name = meal.name,
             isFavorite = userId?.let { meal.isFavorite(userId) } ?: false,
             isSuggested = !meal.isUserMeal(),
-            image = meal.imageUri
+            imageUri = meal.imageUri
     )
 }

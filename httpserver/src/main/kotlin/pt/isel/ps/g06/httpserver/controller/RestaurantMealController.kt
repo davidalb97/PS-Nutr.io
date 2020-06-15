@@ -155,8 +155,16 @@ class RestaurantMealController(
     }
 
     @DeleteMapping(RESTAURANT_MEAL_PORTION)
-    fun deleteMealPortion(@PathVariable(RESTAURANT_ID_VALUE) id: String, @PathVariable(MEAL_ID_VALUE) mealId: String, @RequestBody portion: String) {
+    fun deleteMealPortion(
+            @PathVariable(RESTAURANT_ID_VALUE) restaurantId: String,
+            @PathVariable(MEAL_ID_VALUE) mealId: Int,
+            @RequestBody portion: String
+    ) {
+        //TODO When there's authentication
+        val userId = 3
+        val restaurantIdentifier = restaurantIdentifierBuilder.extractIdentifiers(restaurantId)
 
+        restaurantMealService.deleteUserPortion(restaurantIdentifier, mealId, userId)
     }
 
     @DeleteMapping(RESTAURANT_MEAL)

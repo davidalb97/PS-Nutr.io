@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service
 import pt.isel.ps.g06.httpserver.common.exception.clientError.ForbiddenInsertionResponseStatusException
 import pt.isel.ps.g06.httpserver.common.exception.clientError.NotYetVotedResponseStatusException
 import pt.isel.ps.g06.httpserver.common.exception.forbidden.NotSubmissionOwnerException
+import pt.isel.ps.g06.httpserver.common.exception.notFound.PortionNotFoundException
 import pt.isel.ps.g06.httpserver.common.exception.notFound.RestaurantMealNotFound
 import pt.isel.ps.g06.httpserver.common.exception.notFound.RestaurantNotFoundException
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.PortionDbRepository
@@ -107,6 +108,16 @@ class RestaurantMealService(
                 ?: throw IllegalStateException("Expected RestaurantInfo for given RestaurantMeal, but none was found!")
 
         submissionService.deleteSubmission(restaurantInfo.restaurantMealIdentifier, submitterId)
+    }
+
+    fun deleteUserPortion(restaurantId: RestaurantIdentifier, mealId: Int, submitterId: Int) {
+        val userPortion = getUserPortion(restaurantId, mealId, submitterId) ?: throw PortionNotFoundException()
+        submissionService.deleteSubmission(userPortion.identifier, submitterId)
+    }
+
+    private fun getUserPortion(restaurantId: RestaurantIdentifier, mealId: Int, submitterId: Int): Portion? {
+        val restaurantMealInfo = getRestaurantMealInfo(restaurantId, mealId)
+        return restaurantMealInfo.userPortion(submitterId)
     }
 
     private fun getRestaurantMealInfo(restaurantId: RestaurantIdentifier, mealId: Int): MealRestaurantInfo {

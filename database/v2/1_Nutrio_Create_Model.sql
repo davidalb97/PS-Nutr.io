@@ -147,6 +147,7 @@ CREATE TABLE RestaurantMeal(
 	restaurant_submission_id integer,
 	meal_submission_id integer,
 	UNIQUE(meal_submission_id, restaurant_submission_id),
+	FOREIGN KEY(submission_id) REFERENCES Submission(submission_id) ON DELETE CASCADE,
 	FOREIGN KEY(restaurant_submission_id) REFERENCES Restaurant(submission_id) ON DELETE CASCADE,
 	FOREIGN KEY(meal_submission_id) REFERENCES Meal(submission_id) ON DELETE CASCADE
 );

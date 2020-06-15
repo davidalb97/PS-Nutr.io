@@ -5,27 +5,16 @@ import pt.isel.ps.g06.httpserver.model.RestaurantIdentifier
 import pt.isel.ps.g06.httpserver.model.VoteState
 import java.net.URI
 
+//TODO Better hierarchy because Simplified Meal output is equal (but without votes)
 open class SimplifiedRestaurantMealOutput(
         val mealIdentifier: Int,
         val name: String,
         val votes: VotesOutput?,
         val isFavorite: Boolean,
+        val isSuggested: Boolean,
         val imageUri: URI?
 )
 
-//fun toSimplifiedRestaurantMealOutput(restaurantMeal: RestaurantMeal, userId: Int?): SimplifiedRestaurantMealOutput {
-//    return SimplifiedRestaurantMealOutput(
-//            id = restaurantMeal.meal.identifier,
-//            name = restaurantMeal.meal.name,
-//            votes = VotesOutput(
-//                    userVote = userId?.let { restaurantMeal.userVote(userId) } ?: VoteState.NOT_VOTED,
-//                    positive = restaurantMeal.votes.positive,
-//                    negative = restaurantMeal.votes.positive
-//            ),
-//            isFavorite = userId?.let { restaurantMeal.meal.isFavorite(userId) } ?: false,
-//            image = restaurantMeal.meal.image
-//    )
-//}
 
 fun toSimplifiedRestaurantMealOutput(
         restaurantIdentifier: RestaurantIdentifier,
@@ -44,6 +33,7 @@ fun toSimplifiedRestaurantMealOutput(
             name = meal.name,
             isFavorite = userId?.let { meal.isFavorite(userId) } ?: false,
             imageUri = meal.imageUri,
-            votes = votes
+            votes = votes,
+            isSuggested = !meal.isUserMeal()
     )
 }

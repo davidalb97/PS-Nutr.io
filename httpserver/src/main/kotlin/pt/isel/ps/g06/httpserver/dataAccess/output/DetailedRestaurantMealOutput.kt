@@ -11,6 +11,7 @@ class DetailedRestaurantMealOutput(
         imageUri: URI?,
         votes: VotesOutput?,
         isFavorite: Boolean,
+        isSuggested: Boolean,
         val creationDate: OffsetDateTime?,
         val composedBy: MealCompositionOutput?,
         val nutritionalInfo: NutritionalInfoOutput,
@@ -21,7 +22,8 @@ class DetailedRestaurantMealOutput(
         name = name,
         votes = votes,
         isFavorite = isFavorite,
-        imageUri = imageUri
+        imageUri = imageUri,
+        isSuggested = isSuggested
 )
 
 fun toDetailedRestaurantMealOutput(restaurantMeal: RestaurantMeal, userId: Int? = null): DetailedRestaurantMealOutput {
@@ -47,6 +49,7 @@ fun toDetailedRestaurantMealOutput(restaurantMeal: RestaurantMeal, userId: Int? 
             nutritionalInfo = toNutritionalInfoOutput(meal.nutritionalValues),
             createdBy = meal.creatorInfo.value?.let { toSimplifiedUserOutput(it) },
             votes = votes,
+            isSuggested = !meal.isUserMeal(),
             portions = restaurantMealInfo
                     ?.portions
                     ?.map { portion -> portion.amount }
