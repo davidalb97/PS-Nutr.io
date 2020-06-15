@@ -28,7 +28,7 @@ class MealDetailFragment : Fragment(){
         viewModel = ViewModelProvider(rootActivity, factory)[MealInfoViewModel::class.java]
 
         //Read passed info from bundle
-        viewModel.mealInfo = arguments?.getParcelable<MealInfo>(BUNDLE_MEAL_INFO)
+        viewModel.mealInfo = arguments?.getParcelable(BUNDLE_MEAL_INFO)
         viewModel.source = arguments?.getInt(BUNDLE_MEAL_SOURCE, -1)?.let {
             if(it == -1) null else Source.values()[it]
         }
