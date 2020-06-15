@@ -93,5 +93,8 @@ abstract class MealInfoDao {
     @Delete
     abstract fun deleteMeal(mealEntity: DbMealInfoEntity)
 
+    @Query("DELETE FROM $TABLE WHERE $PRIMARY_KEY = :dbMealId")
+    abstract fun deleteById(dbMealId: Long)
+
 
 }

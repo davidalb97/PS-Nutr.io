@@ -59,6 +59,10 @@ class MealRepository(private val dataSource: MealDataSource) {
         roomDb.mealInfoDao().delete(dbMealInfoMapper.mapToRelation(meal))
     }
 
+    fun deleteInfoById(dbMealId: Long) = AsyncWorker<Unit, Unit> {
+        roomDb.mealInfoDao().deleteById(dbMealId)
+    }
+
     fun deleteItem(mealItem: MealItem) = AsyncWorker<Unit, Unit> {
         roomDb.mealItemDao().delete(dbMealItemMapper.mapToEntity(mealItem))
     }

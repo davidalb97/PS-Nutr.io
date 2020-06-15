@@ -20,7 +20,7 @@ class CustomMealRecyclerAdapter(
         val item: MealItem = viewModel.items[position]
         holder.bindTo(item)
         holder.isCalculatorMode = isCalculatorMode
-        holder.onDelete = { viewModel.deleteItem(item) }
+        holder.onDelete = { viewModel.deleteInfoById(item.dbId) }
     }
 
     override fun getItemViewId(): Int = R.layout.custom_meal_card

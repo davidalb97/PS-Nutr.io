@@ -15,8 +15,8 @@ class CustomMealRecyclerViewModel() : ARecyclerViewModel<MealItem>() {
     fun addCustomMeal(customMeal: MealInfo) =
         mealRepository.insertInfo(customMeal)
 
-    fun deleteItem(customMeal: MealItem) =
-        mealRepository.deleteItem(customMeal)
+    fun deleteInfoById(dbMealId: Long) =
+        mealRepository.deleteInfoById(dbMealId)
 
     override fun update() {
         this.liveDataHandler.set(mealRepository.getAllInfoBySource(Source.CUSTOM)) {
