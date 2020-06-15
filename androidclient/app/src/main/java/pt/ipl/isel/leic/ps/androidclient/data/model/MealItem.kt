@@ -20,7 +20,7 @@ open class MealItem(
     val votes: Votes?,
     val isFavorite: Boolean,
     val isSuggested: Boolean,
-    val source: Source
+    var source: Source
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         dbId = parcel.readLong(),

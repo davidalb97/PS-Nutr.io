@@ -99,4 +99,12 @@ class FavoriteMealRecyclerViewHolder(
         bundle.putLong(BUNDLE_MEAL_DB_ID, this.item.dbId)
         view.findNavController().navigate(R.id.nav_calculator, bundle)
     }
+
+    private fun sendToMealDetail() {
+        val bundle = Bundle()
+        bundle.putInt(BUNDLE_MEAL_SOURCE, this.item.source.ordinal)
+        bundle.putInt(BUNDLE_MEAL_SUBMISSION_ID, this.item.submissionId)
+        bundle.putLong(BUNDLE_MEAL_DB_ID, this.item.dbId)
+        view.findNavController().navigate(R.id.nav_meal_detail, bundle)
+    }
 }

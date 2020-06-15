@@ -2,13 +2,10 @@ package pt.ipl.isel.leic.ps.androidclient.ui.viewmodel
 
 import android.os.Parcel
 import android.os.Parcelable
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.ViewModel
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.mealRepository
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealInfo
 import pt.ipl.isel.leic.ps.androidclient.data.model.RestaurantInfo
 import pt.ipl.isel.leic.ps.androidclient.data.model.Source
-import pt.ipl.isel.leic.ps.androidclient.ui.util.LiveDataHandler
 
 class MealInfoViewModel : ARecyclerViewModel<MealInfo>() {
 
@@ -24,15 +21,21 @@ class MealInfoViewModel : ARecyclerViewModel<MealInfo>() {
 //        dbId = parcel.readSerializable() as Int
 //    )
 
+    fun setOnErrorFunc(onError: (Throwable) -> Unit) {
+        this.onError = onError
+    }
+
     override fun update() {
         if (mealInfo != null) {
             liveDataHandler.set(listOf(mealInfo!!))
         } else if (source != null) {
             //TODO logic should be in repo!
-            if (source == Source.API) {
+            if (source == Source.API || source == Source.FAVORITE) {
                 mealRepository.getApiMealInfo(
                     mealId = submissionId!!,
-                    success = { liveDataHandler.set(listOf(it)) },
+                    success = { liveDataHandler.set(listOf(it.also {
+                        it.source = source!!
+                    })) },
                     error = onError
                 )
             } else {
