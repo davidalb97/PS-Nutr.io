@@ -15,67 +15,77 @@
 - **David Albuquerque**, Number 43566
   - University email: A43566@alunos.isel.pt
   - GitHub page: https://github.com/davidalb97
+  
+## Software required
+The following software is required on your machine in order for the project to be executed:
 
-## Course URLs
+- **Git** - Required in order to obtain project's code via [Github](github.com).
+- **PostgreSQL 11** - Dependency used by project's HTTP-based server.
+  - Optionally, **psql** command via command line, which allows an easier database setup. 
+- **PostGIS** - A **PostgreSQL 11** add-on that enables Geolocation-based queries, which can be found [here](https://postgis.net/install/).
+- **Java JDK 11.06** (LTS) - Required in order to execute generated project's *jar*.
+- **Gradle** - Required in order to build and generate project's server *jar*.
+- **Android Studio** - Required in order to execute the android application.
 
-- Moodle Link: https://1920moodle.isel.pt/course/view.php?id=4726
+## Setup
 
-## Introduction
+Once previously required software is installed, all steps must be followed in given order to allow project's build and execution for both the project's HTTP-based server** and the **android application**:
 
-This project is our bachelor's final project and you are viewing our GitHub's remote repository.
+1. **Retrieve project's code using Git**
 
-The main goal of this project is to design a system that offers a way to facilitate difficult carbohydrate measurement situations, like in restaurants. To that end, a system that stores meals’ nutritional information will be developed, where users can use and calibrate its data with their feedback.
+   Retrieve project's code, either using a browser and accessing [the project's Github Repository](https://github.com/davidalb97/PS-Nutr.io); or via the command line, using the following git command:
 
-## Environment Setup & Work Practices
+   ```bash
+   git clone https://github.com/davidalb97/PS-Nutr.io.git
+   ```
 
-This section shows and explains how you should setup your work environment, so you can start the development as soon as possible.
+2. **Setup database dependency**
 
-### Software required:
+   After **PostgreSQL 11** has been downloaded, **a database that will contain all of the system's information needs to be created.** Make sure to remember the created database name, database creator name and password, as they will be needed.
 
-- **Git**
-- **Java JDK 11.06** (LTS)
-- **JetBrains Intellij** IDE 2019.4.3 or any other Java/Kotlin IDE with gradle integradtion
-- **PostgreSQL 11** - For database
-- **Android Studio** - For android 
+   Once the database has been created, declare the following environment variables on your system:
 
-### Recommended software:
-- **Visual Studio Code**, with the following extensions:
-  - Microsoft Live Share - Editing the same files and projects alongside your peers
-  - LaTeX Workshop - Producing LaTeX documents with Studio Code
-- **Postman** - Endpoints' tests
-- **Inkscape** - Vector image editing software
-- **MiKTeX** - LaTeX for Windows (documentation and reports production)
-- **Typora** - For .md documentation (Being used right now :P)
-- **Dia** - Relational database diagrams
-- **JustInMind** - For Android / Web UI mocks
-- (...)
+   ```
+   PS_POSTGRES_DB={created database name}
+   PS_POSTGRES_USER={database creator name}
+   PS_POSTGRES_PASSWORD={database creator password}
+   ```
 
-### Local repository setup:
+   Without these variables, the project's HTTP-based server will be unable to connect to the database and thus fail.
 
-- Cloning:
+   Afterwards, enable **PostGIS** on the newly created database using the following *psql* command:
 
-```bash
-git clone https://github.com/davidalb97/PS-Nutr.io.git
-```
+   ```plsql
+   CREATE EXTENSION postgis;
+   ```
 
-- Hard reset local repository:
+   Finally, all provided database setup scripts must be executed. To do so, first navigate to the `\PS-Nutr.io\database\v2` path and either: 
 
-```bash
-git reset --hard origin
-```
+   - execute the shell script `runScripts.sh` *(this requires the **psql** command and a way to execute shell scripts)*;
+   - run all `.sql` scripts in the numeric order they are given *(e.g. `1_Nutrio_Create_Model.sql`, then `2_insertCuisines.sql`, and so on)* in the newly created database.
 
-- (...)
+3. **Build, generate and run http-based server executable**
 
-### Notes about software installation and development:
+   To run the HTTP-based server, an executable `PS - httpserver-0.0.1-SNAPSHOT.jar` must first be created using `gradle`. 
 
-- Installs:
-  - To use LaTeX workshop, you will need to install MiKTeX first and make sure that the path ```C:\Program Files\Git\usr\bin``` is added to the system variables (PATH), inside the environment variables, so it can use the perl.exe.
-  - PostgreSQL:
-    - PostgreSQL requires PostGIS spatial extension to run our geolocation queries, installed by PostGreSQL's Stackbuilder application.
-    - Httpserver's db connection requires a PostgreSQL. Connection is made using PS_POSTGRES_DB, PS_POSTGRES_USER and PS_POSTGRES_PASSWORD enviroment variables using localhost:5432 (configurable on httpserver/src/main/resources/application.properties)
-    - Database model creation (1_Nutrio_Create_Model.sql) and fill (2_Nutrio_Fill_Model.sql) scripts must be executed on that order.
-- Development:
-  - When opening and building, for the first time, a .tex document inside the LaTeX workshop you will need to accept the packages' installations that will pop up after the build. Those are the packages included in the document's header. They are needed for additional LaTeX functions and required for the file compilation.
-- Documentation:
-  - Always using vector images inside reports and documentation is really appreciated
-- (...)
+   To do so, navigate to the `\PS-Nutr.io\httpserver` path and execute the following `gradle` command:
+
+   ```bash
+   gradle bootjar
+   ```
+
+   Afterwards, find the generated `.jar` in the `\PS-Nutr.io\httpserver\build\libs` folder and execute it to run the HTTP-based server with the following *java* command:
+
+   ```bash
+   java -jar "PS - httpserver-0.0.1-SNAPSHOT.jar"
+   ```
+
+   The HTTP-based server will now be running on port **8080** and can be accessed via a valid endpoint, such as `GET http://localhost:8080/ingredients`. 
+
+   For more information about valid endpoints, please check the annexed project's report.
+
+4. **Android**
+
+   To run the android application, an emulator with the proper API level is needed. Although the application was developed in **Android 10 (API level 29)**, any version below it, down to **Android 7 (API level 24)** can be used when creating a virtual device *(via Android Studio Manager)*.
+
+   Afterwards, select created virtual device and press the start button on Android Studio's top bar to launch the emulator, build the project, install all the required dependencies and execute the Android application.
