@@ -27,6 +27,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
             android:layout_gravity="center"
+            android:padding="5dp"
+            android:background="@drawable/textbox_shape"
             android:hint="@string/add_the_meal_name" />
 
         <TextView
@@ -128,6 +130,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:hint="@string/portion_quantity"
+                android:background="@drawable/textbox_shape"
+                android:padding="5dp"
                 android:layout_centerVertical="true">
             </EditText>
         </RelativeLayout>
@@ -184,6 +188,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
+                android:background="@drawable/textbox_shape"
+                android:padding="5dp"
                 android:hint="@string/meal_carbohydrates_amount">
             </EditText>
         </RelativeLayout>
@@ -213,6 +219,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:hint="@string/custom_meal_url_txt_hint"
+                android:background="@drawable/textbox_shape"
+                android:padding="5dp"
                 android:layout_centerVertical="true">
             </EditText>
         </RelativeLayout>

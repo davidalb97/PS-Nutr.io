@@ -35,22 +35,28 @@ class CalculatorFragment : Fragment() {
 
     private fun buildViewModel(savedInstanceState: Bundle?) {
         val rootActivity = this.requireActivity()
-        val factoryProfiles = InsulinProfilesVMProviderFactory(savedInstanceState, rootActivity.intent)
-        val factoryMealInfo = MealInfoVMProviderFactory(savedInstanceState, rootActivity.intent, arguments)
-        viewModelProfiles = ViewModelProvider(rootActivity, factoryProfiles)[InsulinProfilesRecyclerViewModel::class.java]
-        viewModelMeal = ViewModelProvider(rootActivity, factoryMealInfo)[MealInfoViewModel::class.java]
+        val factoryProfiles =
+            InsulinProfilesVMProviderFactory(savedInstanceState, rootActivity.intent)
+        val factoryMealInfo =
+            MealInfoVMProviderFactory(savedInstanceState, rootActivity.intent, arguments)
+        viewModelProfiles = ViewModelProvider(
+            rootActivity,
+            factoryProfiles
+        )[InsulinProfilesRecyclerViewModel::class.java]
+        viewModelMeal =
+            ViewModelProvider(rootActivity, factoryMealInfo)[MealInfoViewModel::class.java]
 
         //Read passed info from bundle
         viewModelMeal.mealInfo = arguments?.getParcelable(BUNDLE_MEAL_INFO)
         viewModelMeal.source = arguments?.getInt(BUNDLE_MEAL_SOURCE, -1)?.let {
-            if(it == -1) null else Source.values()[it]
+            if (it == -1) null else Source.values()[it]
         }
         viewModelMeal.submissionId = arguments?.getInt(BUNDLE_MEAL_SUBMISSION_ID, -1)?.let {
-            if(it == -1) null else it
+            if (it == -1) null else it
         }
         viewModelMeal.dbId = arguments?.getLong(BUNDLE_MEAL_DB_ID, -1)?.let {
             val check: Long = -1
-            if(it == check) null else it
+            if (it == check) null else it
         }
     }
 
@@ -167,7 +173,7 @@ class CalculatorFragment : Fragment() {
         val currentBloodGlucose =
             view?.findViewById<EditText>(R.id.user_blood_glucose)
         getActualProfile { profile ->
-            currentProfile = profile!!
+            currentProfile = profile
         }
         val result: Float
         if (receivedMeal != null && currentProfile != null) {
@@ -211,11 +217,42 @@ class CalculatorFragment : Fragment() {
                 LocalTime.parse(savedProfile.startTime)
             val parsedSavedEndTime =
                 LocalTime.parse(savedProfile.endTime)
-            if (time.isAfter(parsedSavedStartTime) && time.isBefore(parsedSavedEndTime))
+            if (time.isAfter(parsedSavedStartTime) && time.isBefore(parsedSavedEndTime)) {
                 cb(savedProfile)
+            }
         }
     }
 
+    /**
+     * Shows the profile details, according to the current time
+     */
+    @SuppressLint("SetTextI18n")
+    private fun showActualProfileDetails(profile: InsulinProfile) {
+        val startTime = view?.findViewById<TextView>(R.id.start_time)
+        val endTime = view?.findViewById<TextView>(R.id.end_time)
+        val glucoseObjective = view?.findViewById<TextView>(R.id.glucose_objective)
+        val insulinSensitivity =
+            view?.findViewById<TextView>(R.id.insulin_sensitivity_factor)
+        val carbohydrates = view?.findViewById<TextView>(R.id.carbohydrate_ratio)
+
+        startTime?.text =
+            resources.getString(R.string.start_time) +
+                    " ${profile.startTime}"
+        endTime?.text =
+            resources.getString(R.string.end_time) +
+                    " ${profile.endTime}"
+        glucoseObjective?.text =
+            resources.getString(R.string.glucose_objective_card) +
+                    " ${profile.glucoseObjective}"
+        insulinSensitivity?.text =
+            resources.getString(R.string.insulin_sensitivity_factor) +
+                    " ${profile.glucoseAmountPerInsulin} / " +
+                    resources.getString(R.string.insulin_unit)
+        carbohydrates?.text =
+            resources.getString(R.string.carbohydrate_ratio) +
+                    " ${profile.carbsAmountPerInsulin} / " +
+                    resources.getString(R.string.insulin_unit)
+    }
 
     /**
      * Shows the result dialog window

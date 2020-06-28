@@ -128,7 +128,15 @@
     <string name="register">Register</string>
     <string name="sign_up">Register an account</string>
     <string name="tab_meal_detail">Meal info</string>
+    <string name="your_current_profile_for_this_time">Your current profile for this time</string>
+    <string name="you_do_not_have_any_insulin_profile_please_create_one">You do not have any insulin profile, please create one to use the calculator</string>
+
+    <!-- ##################################### Arrays #####################################-->
     <string-array name="custom_meal_unit_spinner_array">
         <item>grams</item>
+    </string-array>
+    <string-array name="calculator_units">
+        <item>mg / dL</item>
+        <item>mmol / L</item>
     </string-array>
 </resources>
