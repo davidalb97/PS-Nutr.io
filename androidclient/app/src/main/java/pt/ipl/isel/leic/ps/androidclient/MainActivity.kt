@@ -1,8 +1,11 @@
 package pt.ipl.isel.leic.ps.androidclient
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.findNavController
@@ -10,8 +13,11 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import androidx.preference.SwitchPreferenceCompat
 import com.google.android.material.navigation.NavigationView
 import pt.ipl.isel.leic.ps.androidclient.ui.util.Logger
+
+const val DARK_MODE = "dark_mode"
 
 class MainActivity : AppCompatActivity() {
 
@@ -19,10 +25,26 @@ class MainActivity : AppCompatActivity() {
     private val log = Logger(MainActivity::class.java)
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
+
+        val sharedPreferences: SharedPreferences =
+            this.getSharedPreferences("preferences.xml", Context.MODE_PRIVATE)!!
+        val isLightMode = sharedPreferences.getBoolean(DARK_MODE, false)
+
+        if (!isLightMode) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        }
+
+        if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES)
+            setTheme(R.style.DarkTheme)
+        else if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_NO)
+            setTheme(R.style.AppTheme)
 
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
         val navView: NavigationView = findViewById(R.id.nav_view)

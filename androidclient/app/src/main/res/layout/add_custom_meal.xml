@@ -16,7 +16,7 @@
             android:layout_marginRight="30dp"
             android:layout_marginLeft="30dp"
             android:text="@string/meal_name"
-            android:textColor="@android:color/background_dark"
+            android:textColor="?attr/textColor"
             android:textSize="24sp"
             android:layout_gravity="center">
         </TextView>
@@ -38,7 +38,7 @@
             android:layout_marginRight="30dp"
             android:layout_marginLeft="30dp"
             android:text="@string/add_ingredients"
-            android:textColor="@android:color/background_dark"
+            android:textColor="?attr/textColor"
             android:textSize="24sp"
             android:layout_gravity="center">
         </TextView>
@@ -117,7 +117,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="10dp"
                 android:text="@string/the_meal_total_quantity"
-                android:textColor="@android:color/background_dark"
+                android:textColor="?attr/textColor"
                 android:textSize="18sp"
                 android:layout_gravity="center"
                 android:layout_centerVertical="true">
@@ -148,7 +148,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="10dp"
                 android:text="@string/custom_meal_unit"
-                android:textColor="@android:color/background_dark"
+                android:textColor="?attr/textColor"
                 android:textSize="18sp"
                 android:layout_centerVertical="true">
             </TextView>
@@ -177,7 +177,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="10dp"
                 android:text="@string/carbohydrates_amount"
-                android:textColor="@android:color/background_dark"
+                android:textColor="?attr/textColor"
                 android:textSize="18sp"
                 android:layout_centerVertical="true">
             </TextView>
@@ -206,7 +206,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="10dp"
                 android:text="@string/custom_meal_image_url_txt"
-                android:textColor="@android:color/background_dark"
+                android:textColor="?attr/textColor"
                 android:textSize="18sp"
                 android:layout_gravity="center"
                 android:layout_centerVertical="true">

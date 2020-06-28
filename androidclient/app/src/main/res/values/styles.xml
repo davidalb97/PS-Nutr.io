@@ -1,13 +1,41 @@
 <resources>
 
-    <!-- Base application theme. -->
+    <!-- Light / Day theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimary">#40DA9C</item>
+        <item name="colorPrimaryDark">#000000</item>
+        <item name="colorAccent">#2fd862</item>
+        <item name="backgroundColor">#FFFFFF</item>
+        <item name="cardBackgroundColor">#FFFFFF</item>
+        <item name="cardTextAccentColor">#000000</item>
+        <item name="cardTextColor">#888888</item>
+        <item name="textColor">#000000</item>
+        <item name="buttonColor">#40DA9C</item>
+        <item name="separatorColor">#888888</item>
     </style>
 
+    <!-- Dark / Night theme. -->
+    <style name="DarkTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">#40DA9C</item>
+        <item name="colorPrimaryDark">#000000</item>
+        <item name="colorAccent">#2fd862</item>
+        <item name="backgroundColor">#696969</item>
+        <item name="cardBackgroundColor">#FFFFFF</item>
+        <item name="cardTextAccentColor">#000000</item>
+        <item name="cardTextColor">#888888</item>
+        <item name="textColor">#FFFFFF</item>
+        <item name="buttonColor">#40DA9C</item>
+        <item name="separatorColor">#FFFFFF</item>
+    </style>
+
+    <!-- Animations between theme switch. -->
+    <style name="WindowAnimationTransition">
+        <item name="android:windowEnterAnimation">@android:anim/fade_in</item>
+        <item name="android:windowExitAnimation">@android:anim/fade_out</item>
+    </style>
+    
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>

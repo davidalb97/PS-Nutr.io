@@ -2,6 +2,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="?attr/backgroundColor"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -46,6 +47,7 @@
                     android:id="@+id/calc_meal_card"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
                     android:elevation="10dp"
                     app:cardCornerRadius="15dp"
                     android:visibility="invisible">
@@ -79,14 +81,14 @@
 
                 </androidx.cardview.widget.CardView>
 
-                <!--Separator-->
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_margin="20dp"
-                    android:layout_height="1dp"
-                    android:background="@android:color/darker_gray"/>
-
             </RelativeLayout>
+
+            <!--Separator-->
+            <View
+                android:layout_width="match_parent"
+                android:layout_margin="20dp"
+                android:layout_height="1dp"
+                android:background="?attr/separatorColor"/>
 
             <RelativeLayout>
                 <TextView
@@ -140,7 +142,7 @@
                 android:layout_width="match_parent"
                 android:layout_margin="20dp"
                 android:layout_height="1dp"
-                android:background="@android:color/darker_gray"/>
+                android:background="?attr/separatorColor"/>
 
             <RelativeLayout
                 android:id="@+id/current_profile_details">
@@ -164,6 +166,18 @@
                 </TextView>
 
                 <TextView
+                    android:id="@+id/start_time_value"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toEndOf="@+id/current_profile_label"
+                    android:layout_below="@+id/current_profile_label"
+                    android:text="@string/no_value">
+                </TextView>
+
+                <TextView
                     android:id="@+id/end_time"
                     android:layout_marginTop="10dp"
                     android:layout_marginStart="15dp"
@@ -171,6 +185,18 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/start_time"
                     android:text="@string/end_time">
+                </TextView>
+
+                <TextView
+                    android:id="@+id/end_time_value"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toEndOf="@+id/current_profile_label"
+                    android:layout_below="@+id/start_time_value"
+                    android:text="@string/no_value">
                 </TextView>
 
                 <TextView
@@ -184,6 +210,18 @@
                 </TextView>
 
                 <TextView
+                    android:id="@+id/glucose_objective_value"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toEndOf="@+id/current_profile_label"
+                    android:layout_below="@+id/end_time_value"
+                    android:text="@string/no_value">
+                </TextView>
+
+                <TextView
                     android:id="@+id/insulin_sensitivity_factor"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -194,6 +232,18 @@
                 </TextView>
 
                 <TextView
+                    android:id="@+id/insulin_sensitivity_factor_value"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toEndOf="@+id/current_profile_label"
+                    android:layout_below="@+id/glucose_objective_value"
+                    android:text="@string/no_value">
+                </TextView>
+
+                <TextView
                     android:id="@+id/carbohydrate_ratio"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -201,6 +251,18 @@
                     android:layout_marginStart="15dp"
                     android:layout_below="@+id/insulin_sensitivity_factor"
                     android:text="@string/carbohydrate_ratio">
+                </TextView>
+
+                <TextView
+                    android:id="@+id/carbohydrate_ratio_value"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toEndOf="@+id/current_profile_label"
+                    android:layout_below="@+id/insulin_sensitivity_factor_value"
+                    android:text="@string/no_value">
                 </TextView>
 
                 <TextView

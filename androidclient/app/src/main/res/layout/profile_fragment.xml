@@ -8,7 +8,7 @@
         android:id="@+id/user_tab"
         android:layout_width="match_parent"
         android:layout_height="175dp"
-        android:background="@color/colorPrimary">
+        android:background="?attr/colorPrimary">
 
         <ImageView
             android:id="@+id/user_picture"
@@ -42,7 +42,7 @@
             android:layout_marginTop="15dp"
             android:text="User info"
             android:textSize="20sp"
-            android:textColor="@color/cardview_light_background">
+            android:textColor="@android:color/background_light">
         </TextView>
 
     </RelativeLayout>

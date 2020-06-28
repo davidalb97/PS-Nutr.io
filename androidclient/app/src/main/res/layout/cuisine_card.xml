@@ -19,7 +19,7 @@
             android:layout_centerHorizontal="true"
             android:text="Cuisine_name"
             android:textSize="30dp"
-            android:textColor="@android:color/background_dark">
+            android:textColor="?attr/textColor">
         </TextView>
 
     </RelativeLayout>

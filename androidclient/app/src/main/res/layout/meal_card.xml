@@ -27,7 +27,7 @@
             android:layout_marginTop="1dp"
             android:layout_toEndOf="@+id/mealImage"
             android:text="@string/item_name"
-            android:textColor="@android:color/black"
+            android:textColor="?attr/cardTextAccentColor"
             android:textSize="20sp"
             android:textStyle="bold" />
 

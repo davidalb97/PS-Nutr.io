@@ -73,6 +73,8 @@ class CalculatorFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         searchForBundledMeal()
+        observeExistingInsulinProfiles()
+        viewModelProfiles.update()
         setupAddMealButtonListener()
         setupCalculateButtonListener()
     }
@@ -96,8 +98,7 @@ class CalculatorFragment : Fragment() {
     }
 
     /**
-     * Setups the CardView in the fragment that will hold the chosen
-     * meal.
+     * Setups the CardView in the fragment that will hold the chosen meal.
      */
     private fun addBundledMealHolder() {
         val selectedMealCard =
@@ -135,9 +136,9 @@ class CalculatorFragment : Fragment() {
 
         calculateButton?.setOnClickListener {
             closeKeyboard(this.requireActivity())
-            observeExistingInsulinProfiles()
+            //observeExistingInsulinProfiles()
             // Gets the profiles, unplugging the observer later
-            viewModelProfiles.update()
+            //viewModelProfiles.update()
         }
     }
 
@@ -148,8 +149,10 @@ class CalculatorFragment : Fragment() {
         viewModelProfiles.observe(this) { profilesList ->
             if (profilesList.isEmpty())
                 showNoExistingProfilesToast()
-            else
-                getProfileAndCalculateResult()
+            else {
+                getProfile()
+                setupCalculateButton()
+            }
         }
     }
 
@@ -169,25 +172,10 @@ class CalculatorFragment : Fragment() {
      * Gets the bundled meal, saved in this fragment field;
      * Calculates the insulin dosage that needs to be injected.
      */
-    private fun getProfileAndCalculateResult() {
-        val currentBloodGlucose =
-            view?.findViewById<EditText>(R.id.user_blood_glucose)
+    private fun getProfile() {
         getActualProfile { profile ->
             currentProfile = profile
-        }
-        val result: Float
-        if (receivedMeal != null && currentProfile != null) {
-            result =
-                calculator.calculateMealInsulin(
-                    currentProfile!!,
-                    currentBloodGlucose!!.text.toString().toInt(),
-                    receivedMeal!!.carbs
-                )
-            showResultDialog(result)
-
-            // Clean fields after show result
-            cleanCurrentGlucose(currentBloodGlucose)
-            cleanBundledMeal()
+            showActualProfileDetails(profile!!)
         }
     }
 
@@ -228,30 +216,45 @@ class CalculatorFragment : Fragment() {
      */
     @SuppressLint("SetTextI18n")
     private fun showActualProfileDetails(profile: InsulinProfile) {
-        val startTime = view?.findViewById<TextView>(R.id.start_time)
-        val endTime = view?.findViewById<TextView>(R.id.end_time)
-        val glucoseObjective = view?.findViewById<TextView>(R.id.glucose_objective)
+        val startTime = view?.findViewById<TextView>(R.id.start_time_value)
+        val endTime = view?.findViewById<TextView>(R.id.end_time_value)
+        val glucoseObjective = view?.findViewById<TextView>(R.id.glucose_objective_value)
         val insulinSensitivity =
-            view?.findViewById<TextView>(R.id.insulin_sensitivity_factor)
-        val carbohydrates = view?.findViewById<TextView>(R.id.carbohydrate_ratio)
+            view?.findViewById<TextView>(R.id.insulin_sensitivity_factor_value)
+        val carbohydrates = view?.findViewById<TextView>(R.id.carbohydrate_ratio_value)
 
-        startTime?.text =
-            resources.getString(R.string.start_time) +
-                    " ${profile.startTime}"
-        endTime?.text =
-            resources.getString(R.string.end_time) +
-                    " ${profile.endTime}"
-        glucoseObjective?.text =
-            resources.getString(R.string.glucose_objective_card) +
-                    " ${profile.glucoseObjective}"
+        startTime?.text = profile.startTime
+        endTime?.text = profile.endTime
+        glucoseObjective?.text = profile.glucoseObjective.toString()
         insulinSensitivity?.text =
-            resources.getString(R.string.insulin_sensitivity_factor) +
                     " ${profile.glucoseAmountPerInsulin} / " +
                     resources.getString(R.string.insulin_unit)
         carbohydrates?.text =
-            resources.getString(R.string.carbohydrate_ratio) +
                     " ${profile.carbsAmountPerInsulin} / " +
                     resources.getString(R.string.insulin_unit)
+    }
+
+    /**
+     * Sets up the calculation button, calculating the insulin to be injected following
+     * the previously configured profile.
+     */
+    private fun setupCalculateButton() {
+        val currentBloodGlucose =
+            view?.findViewById<EditText>(R.id.user_blood_glucose)
+        val result: Float
+        if (receivedMeal != null && currentProfile != null) {
+            result =
+                calculator.calculateMealInsulin(
+                    currentProfile!!,
+                    currentBloodGlucose!!.text.toString().toInt(),
+                    receivedMeal!!.carbs
+                )
+            showResultDialog(result)
+
+            // Clean fields after show result
+            cleanCurrentGlucose(currentBloodGlucose)
+            cleanBundledMeal()
+        }
     }
 
     /**

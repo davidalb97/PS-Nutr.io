@@ -130,6 +130,10 @@
     <string name="tab_meal_detail">Meal info</string>
     <string name="your_current_profile_for_this_time">Your current profile for this time</string>
     <string name="you_do_not_have_any_insulin_profile_please_create_one">You do not have any insulin profile, please create one to use the calculator</string>
+    <string name="no_value">-</string>
+    <string name="light_mode_on">Light mode is on</string>
+    <string name="dark_mode_on">Dark mode is on</string>
+    <string name="dark_mode">Dark mode</string>
 
     <!-- ##################################### Arrays #####################################-->
     <string-array name="custom_meal_unit_spinner_array">

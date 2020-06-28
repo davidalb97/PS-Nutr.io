@@ -4,10 +4,10 @@
 
         <SwitchPreferenceCompat
             app:defaultValue="false"
-            app:key="notification_enabled"
-            app:summaryOff="Light mode is on"
-            app:summaryOn="Dark mode is on"
-            app:title="Dark mode" />
+            app:key="dark_mode"
+            app:summaryOff="@string/light_mode_on"
+            app:summaryOn="@string/dark_mode_on"
+            app:title="@string/dark_mode" />
 
     </PreferenceCategory>
 

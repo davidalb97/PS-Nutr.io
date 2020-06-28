@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:background="?attr/backgroundColor"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -44,7 +45,7 @@
                         android:layout_marginStart="10dp"
                         android:layout_toEndOf="@+id/img_pedro"
                         android:text="Pedro Pires"
-                        android:textColor="@android:color/background_dark"
+                        android:textColor="?attr/textColor"
                         android:textSize="30sp">
                     </TextView>
 
@@ -71,7 +72,7 @@
                             android:layout_marginStart="10dp"
                             android:layout_toEndOf="@id/github_icon"
                             android:text="@string/link_pedro"
-                            android:textColor="@android:color/background_dark"
+                            android:textColor="?attr/textColor"
                             android:textSize="14sp">
                         </TextView>
 
@@ -107,7 +108,7 @@
                         android:layout_marginStart="10dp"
                         android:layout_toEndOf="@+id/img_david"
                         android:text="David Albuquerque"
-                        android:textColor="@android:color/background_dark"
+                        android:textColor="?attr/textColor"
                         android:textSize="30sp">
                     </TextView>
 
@@ -134,7 +135,7 @@
                             android:layout_marginStart="10dp"
                             android:layout_toEndOf="@id/github_icon_david"
                             android:text="@string/link_david"
-                            android:textColor="@android:color/background_dark"
+                            android:textColor="?attr/textColor"
                             android:textSize="14sp">
                         </TextView>
 
@@ -170,7 +171,7 @@
                         android:layout_marginStart="10dp"
                         android:layout_toEndOf="@+id/img_miguel"
                         android:text="Miguel Luís"
-                        android:textColor="@android:color/background_dark"
+                        android:textColor="?attr/textColor"
                         android:textSize="30sp">
                     </TextView>
 
@@ -197,7 +198,7 @@
                             android:layout_marginStart="10dp"
                             android:layout_toEndOf="@id/github_icon_mig"
                             android:text="@string/link_miguel"
-                            android:textColor="@android:color/background_dark"
+                            android:textColor="?attr/textColor"
                             android:textSize="14sp">
                         </TextView>
 
