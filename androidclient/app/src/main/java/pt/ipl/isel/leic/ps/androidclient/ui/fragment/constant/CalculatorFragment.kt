@@ -3,6 +3,8 @@ package pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.os.Bundle
+import android.text.Editable
+import android.text.SpannableStringBuilder
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +13,7 @@ import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
+import androidx.preference.PreferenceManager
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.db.InsulinCalculator
 import pt.ipl.isel.leic.ps.androidclient.data.model.InsulinProfile
@@ -20,9 +23,13 @@ import pt.ipl.isel.leic.ps.androidclient.ui.provider.*
 import pt.ipl.isel.leic.ps.androidclient.ui.util.closeKeyboard
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.InsulinProfilesRecyclerViewModel
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.MealInfoViewModel
+import java.math.RoundingMode
 import java.time.LocalTime
 
 const val BUNDLED_MEAL_INFO_TAG = "bundledMeal"
+const val CONVERTION_CONST = 18
+const val MILLIGRAM_PER_DL = "mg / dL"
+const val MILLIMOL_PER_L = "mmol / L"
 
 class CalculatorFragment : Fragment() {
 
@@ -72,11 +79,56 @@ class CalculatorFragment : Fragment() {
     @SuppressLint("NewApi")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        spinnerSetup()
         searchForBundledMeal()
         observeExistingInsulinProfiles()
         viewModelProfiles.update()
         setupAddMealButtonListener()
         setupCalculateButtonListener()
+    }
+
+    /**
+     * Setups the measurement units spinner following the shared preferences.
+     */
+    @Suppress("UNCHECKED_CAST")
+    private fun spinnerSetup() {
+        val spinner = view?.findViewById<Spinner>(R.id.measurement_units)
+        val spinnerAdapter: ArrayAdapter<String> = spinner!!.adapter as ArrayAdapter<String>
+
+        val sharedPreferences =
+            PreferenceManager.getDefaultSharedPreferences(this.context)
+        val defaultUnitKey =
+            sharedPreferences.getString("insulin_units", MILLIGRAM_PER_DL)
+
+        val spinnerPosition = spinnerAdapter.getPosition(defaultUnitKey)
+        spinner.setSelection(spinnerPosition)
+
+        // Changes the blood glucose value according to the unit spinner
+        val currentBloodGlucose =
+            view?.findViewById<EditText>(R.id.user_blood_glucose)
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                throw NotImplementedError("This function is not implemented")
+            }
+
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                val value = spinner.selectedItem.toString()
+
+                if (currentBloodGlucose!!.text.isNotBlank()) {
+                    if (value == MILLIGRAM_PER_DL) {
+                        currentBloodGlucose.text = convertToMG(currentBloodGlucose.text.toString())
+                    } else {
+                        currentBloodGlucose.text = convertToMMOL(currentBloodGlucose.text.toString())
+                    }
+                }
+
+            }
+        }
     }
 
     /**
@@ -267,6 +319,30 @@ class CalculatorFragment : Fragment() {
         builder.setPositiveButton(view?.context?.getString(R.string.Dialog_Ok)) { _, _ -> }
         builder.create().show()
     }
+
+    /**
+     * Converts blood glucose value from mg / dL to mmol / L.
+     */
+    private fun convertToMMOL(currentValue: String): Editable? =
+        SpannableStringBuilder(
+            (currentValue.toDouble() * CONVERTION_CONST)
+                .toBigDecimal()
+                .setScale(2, RoundingMode.HALF_UP)
+                .toFloat()
+                .toString()
+        )
+
+    /**
+     * Converts blood glucose value from mmol / L to mg / dL.
+     */
+    private fun convertToMG(currentValue: String): Editable? =
+        SpannableStringBuilder(
+            (currentValue.toDouble() / CONVERTION_CONST)
+                .toBigDecimal()
+                .setScale(2, RoundingMode.HALF_UP)
+                .toFloat()
+                .toString()
+        )
 
     /**
      * Cleans the current blood glucose text field

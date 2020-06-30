@@ -1,7 +1,7 @@
 <resources>
 
     <!-- Light / Day theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat.Light">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">#40DA9C</item>
         <item name="colorPrimaryDark">#000000</item>
@@ -13,21 +13,23 @@
         <item name="textColor">#000000</item>
         <item name="buttonColor">#40DA9C</item>
         <item name="separatorColor">#888888</item>
+        <item name="android:windowAnimationStyle">@style/WindowAnimationTransition</item>
     </style>
 
     <!-- Dark / Night theme. -->
-    <style name="DarkTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="DarkTheme" parent="Theme.AppCompat.Light">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">#40DA9C</item>
         <item name="colorPrimaryDark">#000000</item>
         <item name="colorAccent">#2fd862</item>
-        <item name="backgroundColor">#696969</item>
+        <item name="backgroundColor">#212121</item>
         <item name="cardBackgroundColor">#FFFFFF</item>
         <item name="cardTextAccentColor">#000000</item>
         <item name="cardTextColor">#888888</item>
         <item name="textColor">#FFFFFF</item>
         <item name="buttonColor">#40DA9C</item>
         <item name="separatorColor">#FFFFFF</item>
+        <item name="android:windowAnimationStyle">@style/WindowAnimationTransition</item>
     </style>
 
     <!-- Animations between theme switch. -->

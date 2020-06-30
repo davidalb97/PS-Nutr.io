@@ -11,13 +11,26 @@
 
     </PreferenceCategory>
 
-    <PreferenceCategory app:title="Data usage">
+    <PreferenceCategory app:title="Insulin units">
 
-        <SwitchPreferenceCompat
-            app:defaultValue="false"
-            app:key="notification_enabled"
-            app:summary="Data saving mode"
-            app:title="Mobile data mode" />
+        <ListPreference
+            app:key="insulin_units"
+            app:entries="@array/calculator_units"
+            app:entryValues="@array/calculator_units"
+            app:defaultValue="mg / dL"
+            app:title="Insulin measurement units"
+            app:summary="The units that will be set by default in calculations"
+            />
+
+        <ListPreference
+            app:key="weight_units"
+            app:entries="@array/weight_units"
+            app:entryValues="@array/weight_units"
+            app:defaultValue="grams"
+            app:title="Weight units"
+            app:summary="The weight units that will be set by default"
+            />
 
     </PreferenceCategory>
+
 </PreferenceScreen>

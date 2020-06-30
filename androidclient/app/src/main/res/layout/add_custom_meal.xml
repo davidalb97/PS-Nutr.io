@@ -160,7 +160,7 @@
                 android:layout_gravity="center"
                 android:layout_toEndOf="@+id/custom_meal_units_txt"
                 android:layout_centerVertical="true"
-                android:entries="@array/custom_meal_unit_spinner_array"
+                android:entries="@array/weight_units"
                 />
 
         </RelativeLayout>
