@@ -1,78 +1,108 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="?attr/backgroundColor">
 
-    <RelativeLayout
+    <androidx.cardview.widget.CardView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true">
+        android:layout_centerVertical="true"
+        android:elevation="10dp"
+        app:cardCornerRadius="15dp">
 
-        <TextView
-            android:id="@+id/signUpLabel"
+        <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="40dp"
-            android:text="@string/sign_up"
-            android:textSize="28sp"
-            android:textColor="?attr/textColor">
-        </TextView>
+            android:padding="25dp">
 
-        <TextView
-            android:id="@+id/userIdLabel"
-            android:layout_below="@+id/signUpLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:text="@string/user_id"
-            android:textSize="28sp"
-            android:textColor="?attr/textColor">
-        </TextView>
+            <TextView
+                android:id="@+id/signUpLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="40dp"
+                android:text="@string/sign_up"
+                android:textSize="28sp"
+                android:textColor="?attr/textColor">
+            </TextView>
 
-        <EditText
-            android:id="@+id/userIdInput"
-            android:layout_below="@+id/userIdLabel"
-            android:layout_centerHorizontal="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:hint="@string/user_id_number">
-        </EditText>
+            <TextView
+                android:id="@+id/userNameLabel"
+                android:layout_below="@+id/signUpLabel"
+                android:layout_centerHorizontal="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/username"
+                android:textSize="28sp"
+                android:textColor="?attr/textColor">
+            </TextView>
 
-        <TextView
-            android:id="@+id/userNameLabel"
-            android:layout_below="@+id/userIdInput"
-            android:layout_centerHorizontal="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/username"
-            android:textSize="28sp"
-            android:textColor="?attr/textColor">
-        </TextView>
+            <EditText
+                android:id="@+id/userNameInput"
+                android:layout_below="@+id/userNameLabel"
+                android:padding="5dp"
+                android:layout_centerHorizontal="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/textbox_shape"
+                android:hint="@string/username">
+            </EditText>
 
-        <EditText
-            android:id="@+id/userNameInput"
-            android:layout_below="@+id/userNameLabel"
-            android:layout_centerHorizontal="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:hint="@string/username">
-        </EditText>
+            <TextView
+                android:id="@+id/userPasswordLabel"
+                android:layout_below="@+id/userNameInput"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:text="@string/password"
+                android:textSize="28sp"
+                android:textColor="?attr/textColor">
+            </TextView>
 
-        <Button
-            android:id="@+id/registerButton"
-            android:layout_below="@+id/userNameInput"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:text="@string/register"
-            android:textColor="@color/cardview_light_background"
-            android:background="@drawable/rect_material_button_shape">
-        </Button>
+            <EditText
+                android:id="@+id/userPasswordInput"
+                android:padding="5dp"
+                android:layout_below="@+id/userPasswordLabel"
+                android:layout_centerHorizontal="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/textbox_shape"
+                android:hint="@string/password">
+            </EditText>
 
-    </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/userPasswordInput"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="20dp">
+                <Button
+                    android:id="@+id/registerButton"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/register"
+                    android:textColor="@color/cardview_light_background"
+                    android:layout_marginEnd="10dp"
+                    android:background="@drawable/rect_material_button_shape">
+                </Button>
+
+                <Button
+                    android:id="@+id/loginButton"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/login"
+                    android:layout_toEndOf="@id/registerButton"
+                    android:textColor="@color/cardview_light_background"
+                    android:background="@drawable/rect_material_button_shape">
+                </Button>
+            </RelativeLayout>
+
+
+        </RelativeLayout>
+    </androidx.cardview.widget.CardView>
 
 
 </RelativeLayout>

@@ -124,8 +124,9 @@
     <string name="meal_suggested">(suggested)</string>
     <string name="user_id">User ID</string>
     <string name="username">Username</string>
-    <string name="user_id_number">User id number</string>
+    <string name="password">Password</string>
     <string name="register">Register</string>
+    <string name="login">Login</string>
     <string name="sign_up">Register an account</string>
     <string name="tab_meal_detail">Meal info</string>
     <string name="your_current_profile_for_this_time">Your current profile for this time</string>

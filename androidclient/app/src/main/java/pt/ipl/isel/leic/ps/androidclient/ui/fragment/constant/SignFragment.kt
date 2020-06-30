@@ -36,24 +36,24 @@ class SignFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val userId: EditText = view.findViewById(R.id.userIdInput)
         val userName: EditText = view.findViewById(R.id.userNameInput)
+        val userPassword: EditText = view.findViewById(R.id.userPasswordInput)
         val registerBtn = view.findViewById<Button>(R.id.registerButton)
 
         registerBtn.setOnClickListener {
-            val userIdParsed = userId.text.toString()
             val userNameParsed = userName.text.toString()
+            val userPasswordParsed = userPassword.text.toString()
 
-            if (userIdParsed.isNotBlank() && userNameParsed.isNotBlank()) {
+            if (userPasswordParsed.isNotBlank() && userNameParsed.isNotBlank()) {
                 viewModel.createUserProfile(
                     User(
-                        userId = userIdParsed.toInt(),
+                        userId = userPasswordParsed.toInt(),
                         name = userNameParsed
                     )
                 ).setOnPostExecute {
                     Toast.makeText(
                         this.context,
-                        "User with id $userIdParsed created",
+                        "User with id $userPasswordParsed created",
                         Toast.LENGTH_LONG
                     ).show()
                 }.execute()
