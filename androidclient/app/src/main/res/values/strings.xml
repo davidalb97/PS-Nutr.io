@@ -134,6 +134,8 @@
     <string name="light_mode_on">Light mode is on</string>
     <string name="dark_mode_on">Dark mode is on</string>
     <string name="dark_mode">Dark mode</string>
+    <string name="results_title_dialog">Results</string>
+    <string name="setup_a_profile_before_proceed">Please setup a profile before proceed</string>
 
     <!-- ##################################### Arrays #####################################-->
     <string-array name="calculator_units">

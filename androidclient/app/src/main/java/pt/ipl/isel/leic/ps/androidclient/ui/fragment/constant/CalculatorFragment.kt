@@ -84,7 +84,6 @@ class CalculatorFragment : Fragment() {
         observeExistingInsulinProfiles()
         viewModelProfiles.update()
         setupAddMealButtonListener()
-        setupCalculateButtonListener()
     }
 
     /**
@@ -180,21 +179,6 @@ class CalculatorFragment : Fragment() {
     }
 
     /**
-     * Setups the calculation button behaviour.
-     */
-    private fun setupCalculateButtonListener() {
-        val calculateButton =
-            view?.findViewById<Button>(R.id.calculate_button)
-
-        calculateButton?.setOnClickListener {
-            closeKeyboard(this.requireActivity())
-            //observeExistingInsulinProfiles()
-            // Gets the profiles, unplugging the observer later
-            //viewModelProfiles.update()
-        }
-    }
-
-    /**
      * Observes modifications in the LiveData
      */
     private fun observeExistingInsulinProfiles() {
@@ -214,7 +198,7 @@ class CalculatorFragment : Fragment() {
     private fun showNoExistingProfilesToast() {
         Toast.makeText(
             this.context,
-            "Please setup a profile before proceed",
+            getString(R.string.setup_a_profile_before_proceed),
             Toast.LENGTH_LONG
         ).show()
     }
@@ -293,19 +277,37 @@ class CalculatorFragment : Fragment() {
     private fun setupCalculateButton() {
         val currentBloodGlucose =
             view?.findViewById<EditText>(R.id.user_blood_glucose)
-        val result: Float
-        if (receivedMeal != null && currentProfile != null) {
-            result =
-                calculator.calculateMealInsulin(
-                    currentProfile!!,
-                    currentBloodGlucose!!.text.toString().toInt(),
-                    receivedMeal!!.carbs
-                )
-            showResultDialog(result)
+        val calculateButton =
+            view?.findViewById<Button>(R.id.calculate_button)
+        val spinner = view?.findViewById<Spinner>(R.id.measurement_units)
 
-            // Clean fields after show result
-            cleanCurrentGlucose(currentBloodGlucose)
-            cleanBundledMeal()
+        calculateButton?.setOnClickListener {
+            val result: Float
+            if (receivedMeal != null && currentProfile != null) {
+                // Current blood glucose value
+                var bloodGlucoseValue = currentBloodGlucose!!
+                    .text.toString().toDouble().toInt()
+
+                // If the unit is different from default, convert back to the value to pass to
+                // the calculator
+                if (spinner?.selectedItem.toString() == MILLIMOL_PER_L) {
+                    bloodGlucoseValue =
+                        convertToMG(currentBloodGlucose.text.toString())
+                            .toString().toDouble().toInt()
+                }
+                result =
+                    calculator.calculateMealInsulin(
+                        currentProfile!!,
+                        bloodGlucoseValue,
+                        receivedMeal!!.carbs
+                    )
+
+                closeKeyboard(this.requireActivity())
+                showResultDialog(result)
+                // Clean fields after show result
+                cleanCurrentGlucose(currentBloodGlucose)
+                cleanBundledMeal()
+            }
         }
     }
 
@@ -314,7 +316,7 @@ class CalculatorFragment : Fragment() {
      */
     private fun showResultDialog(result: Float) {
         val builder = AlertDialog.Builder(requireContext())
-        builder.setTitle("Results")
+        builder.setTitle(getString(R.string.results_title_dialog))
         builder.setMessage("You need to inject $result insulin doses")
         builder.setPositiveButton(view?.context?.getString(R.string.Dialog_Ok)) { _, _ -> }
         builder.create().show()

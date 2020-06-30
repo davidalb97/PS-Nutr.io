@@ -23,9 +23,9 @@ import pt.ipl.isel.leic.ps.androidclient.ui.util.SpinnerHandler
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.CustomMealRecyclerViewModel
 import java.math.RoundingMode
 
-class AddCustomMealFragment : Fragment() {
+const val GRAM_OUNCE_RATIO = 0.035274
 
-    private val GRAM_OUNCE_RATIO = 0.035274
+class AddCustomMealFragment : Fragment() {
     lateinit var viewModel: CustomMealRecyclerViewModel
     private lateinit var ingredientsSpinnerHandler: SpinnerHandler
     private lateinit var mealsSpinnerHandler: SpinnerHandler
