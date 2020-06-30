@@ -2,28 +2,17 @@ package pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler.request
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.pm.PackageManager
+import android.location.LocationManager
 import android.os.Bundle
-import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SearchView
-import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.mapbox.android.core.location.*
-import com.mapbox.android.core.permissions.PermissionsListener
-import com.mapbox.android.core.permissions.PermissionsManager
-import com.mapbox.mapboxsdk.Mapbox
-import com.mapbox.mapboxsdk.location.LocationComponentActivationOptions
-import com.mapbox.mapboxsdk.location.modes.CameraMode
-import com.mapbox.mapboxsdk.location.modes.RenderMode
-import com.mapbox.mapboxsdk.maps.MapView
-import com.mapbox.mapboxsdk.maps.MapboxMap
-import com.mapbox.mapboxsdk.maps.OnMapReadyCallback
-import com.mapbox.mapboxsdk.maps.Style
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.RestaurantItem
 import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.RestaurantRecyclerAdapter
@@ -33,6 +22,8 @@ import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.RestaurantRecyclerViewMode
 
 open class RestaurantRecyclerFragment :
     ARequestRecyclerListFragment<RestaurantItem, RestaurantRecyclerViewModel>() {
+
+    private lateinit var locationManager: LocationManager
 
     protected val adapter: RestaurantRecyclerAdapter by lazy {
         RestaurantRecyclerAdapter(
@@ -62,8 +53,20 @@ open class RestaurantRecyclerFragment :
         return inflater.inflate(R.layout.restaurant_list, container, false)
     }
 
+    @SuppressLint("MissingPermission")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        locationManager =
+            requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        val lastLocation =
+            locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+
+        val longitude = lastLocation?.longitude
+        val latitude = lastLocation?.latitude
+        viewModel.latitude = latitude
+        viewModel.longitude = longitude
 
         initRecyclerList(view)
         setErrorFunction()
@@ -71,6 +74,7 @@ open class RestaurantRecyclerFragment :
         list.adapter = adapter
         list.layoutManager = LinearLayoutManager(this.requireContext())
         startObserver()
+        viewModel.update()
 
         val searchBar = view.findViewById<SearchView>(R.id.search_restaurant)
 
