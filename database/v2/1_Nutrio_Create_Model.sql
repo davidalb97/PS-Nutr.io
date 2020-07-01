@@ -35,10 +35,24 @@ CREATE TABLE Submitter(
 
 CREATE TABLE _User(
 	submitter_id integer,
-	email varchar(50),
-	session_secret varchar(256) NOT NULL, -- TODO: Check maximum length
-	PRIMARY KEY(submitter_id, email),
+	name varchar(50) NOT NULL,
+	email varchar(50) NOT NULL,
+	password varchar(50) NOT NULL, -- add crypto
+	-- session_secret varchar(256) NOT NULL, -- TODO: Check maximum length	
+	PRIMARY KEY(submitter_id),
 	FOREIGN KEY(submitter_id) REFERENCES Submitter(submitter_id)
+);
+
+CREATE TABLE InsulinProfile(
+	submitter_id integer,
+	profile_name varchar(30),
+	start_time varchar(5),
+	end_time varchar(5),
+	glucose_objective integer,
+	insulin_sensitivity_factor integer,
+	carbohydrate_ratio integer,
+	PRIMARY KEY(submitter_id, profile_name),
+	FOREIGN KEY(submitter_id) REFERENCES _User(submitter_id)
 );
 
 CREATE TABLE Api(

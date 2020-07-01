@@ -34,7 +34,8 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
     override fun configure(http: HttpSecurity?) {
         http!!
                 .authorizeRequests()
-                .antMatchers("/",
+                .antMatchers(
+                        "/",
                         "/restaurant",
                         "/restaurant/*",
                         "/meal",
@@ -44,7 +45,7 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
                 .anyRequest()
                 .authenticated()
                 .and()
-                .httpBasic()
+                .formLogin()
     }
 
 }
