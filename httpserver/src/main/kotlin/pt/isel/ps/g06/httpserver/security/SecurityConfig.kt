@@ -12,33 +12,39 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 
 @Configuration
 @EnableWebSecurity
-class SecurityConfig(
-        @Autowired private val nutriUserDetailsService: NutriUserDetailsService
-) : WebSecurityConfigurerAdapter() {
+class SecurityConfig : WebSecurityConfigurerAdapter() {
+
+    @Autowired
+    private lateinit var nutriUserDetailsService: NutriUserDetailsService
 
     @Bean
     public fun authenticationProvider(): AuthenticationProvider {
         val provider = DaoAuthenticationProvider()
-        provider.setUserDetailsService(nutriUserDetailsService)
-
         provider.setUserDetailsService(nutriUserDetailsService)
         provider.setPasswordEncoder(BCryptPasswordEncoder())
 
         return provider
     }
 
+    /**
+     * Configures what should need authentication.
+     * Anything that is included inside 'antMatchers' can be accessed without authentication.
+     * TODO - For now, all endpoints can be used, except the ones that will be created that only belong to the user context
+     */
     override fun configure(http: HttpSecurity?) {
-        http!!.authorizeRequests()
-                .antMatchers("/", "/home").permitAll()
+        http!!
+                .authorizeRequests()
+                .antMatchers("/",
+                        "/restaurant",
+                        "/restaurant/*",
+                        "/meal",
+                        "/meal/*",
+                        "/cuisines"
+                ).permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()
-                .formLogin()
-                .loginPage("/login")
-                .permitAll()
-                .and()
-                .logout()
-                .permitAll();
+                .httpBasic()
     }
 
 }

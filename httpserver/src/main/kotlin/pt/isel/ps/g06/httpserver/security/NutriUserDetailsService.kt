@@ -7,9 +7,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.stereotype.Service
 
 @Service
-class NutriUserDetailsService(
-        @Autowired private val userRepo: UserRepository
-) : UserDetailsService {
+class NutriUserDetailsService : UserDetailsService {
+
+    @Autowired private lateinit var userRepo: UserRepository
 
     override fun loadUserByUsername(username: String?): UserDetails {
         val user = userRepo.findByUsername(username) ?: throw UsernameNotFoundException("The user was not found")
