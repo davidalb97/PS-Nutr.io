@@ -34,8 +34,7 @@ CREATE TABLE Submitter(
 );
 
 CREATE TABLE _User(
-	submitter_id integer,
-	name varchar(50) NOT NULL,
+	submitter_id integer,	
 	email varchar(50) NOT NULL,
 	password varchar(50) NOT NULL, -- add crypto
 	-- session_secret varchar(256) NOT NULL, -- TODO: Check maximum length	

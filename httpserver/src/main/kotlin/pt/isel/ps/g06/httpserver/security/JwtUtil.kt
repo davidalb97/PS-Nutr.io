@@ -3,17 +3,20 @@ package pt.isel.ps.g06.httpserver.security
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
+import io.jsonwebtoken.security.Keys
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Service
 import java.util.*
 import java.util.function.Function
+import javax.crypto.SecretKey
 import kotlin.collections.HashMap
+
 
 @Suppress("DEPRECATION")
 @Service
 class JwtUtil {
 
-    private val secret = "nutrioprojectsecret2020socorrosocorrosocorrosocorrosocorrosocorrosocorro"
+    private val secretKey: String? = "nutrioproject20201234567890qwertyuiopasdfghjklzxcvbnm"
 
     fun getUsername(token: String): String =
             extractClaim<String>(token, Function { obj: Claims -> obj.subject })
@@ -27,7 +30,7 @@ class JwtUtil {
     }
 
     private fun extractAllClaims(token: String): Claims =
-            Jwts.parser().setSigningKey(secret).parseClaimsJws(token).body
+            Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).body
 
     private fun isTokenExpired(token: String): Boolean = getExpirationTime(token).before(Date())
 
@@ -42,7 +45,7 @@ class JwtUtil {
                     .setSubject(subject)
                     .setIssuedAt(Date(System.currentTimeMillis()))
                     .setExpiration(Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10))
-                    .signWith(SignatureAlgorithm.HS256, secret)
+                    .signWith(SignatureAlgorithm.HS256, secretKey)
                     .compact()
 
     fun validadeToken(token: String, userDetails: UserDetails): Boolean {

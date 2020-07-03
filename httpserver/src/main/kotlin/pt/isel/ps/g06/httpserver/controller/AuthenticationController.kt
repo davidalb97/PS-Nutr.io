@@ -12,6 +12,7 @@ import pt.isel.ps.g06.httpserver.security.JwtUtil
 import pt.isel.ps.g06.httpserver.security.MyUserDetailsService
 import pt.isel.ps.g06.httpserver.security.UserAuthRequest
 import pt.isel.ps.g06.httpserver.security.UserAuthResponse
+import java.util.*
 
 
 @RestController
@@ -28,6 +29,7 @@ class AuthenticationController(
             )
         } catch (e: Exception) {
             print(e.message)
+            return ResponseEntity.of(Optional.of(""))
         }
 
         val userDetails: UserDetails = userDetails.loadUserByUsername(userAuthRequest.username)
