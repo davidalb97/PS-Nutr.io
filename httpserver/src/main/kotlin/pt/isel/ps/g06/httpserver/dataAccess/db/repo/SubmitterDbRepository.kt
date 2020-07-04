@@ -10,6 +10,13 @@ private val isolationLevel = TransactionIsolationLevel.SERIALIZABLE
 
 @Repository
 class SubmitterDbRepository(private val jdbi: Jdbi) {
+
+    fun getSubmitterByName(name: String): DbSubmitterDto {
+        return jdbi.inTransaction<DbSubmitterDto, Exception> {
+            return@inTransaction it.attach(SubmitterDao::class.java).getSubmitterByName(name)
+        }
+    }
+
     fun getApiSubmittersByName(names: Collection<String>): Collection<DbSubmitterDto> {
         return jdbi.inTransaction<Collection<DbSubmitterDto>, Exception> {
             return@inTransaction it.attach(SubmitterDao::class.java).getApiSubmittersByName(names)

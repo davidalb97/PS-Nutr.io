@@ -31,4 +31,11 @@ interface SubmitterDao {
             " ON $table.$id = $SS_table.$SS_submitterId" +
             " WHERE $SS_table.$SS_submissionId = :submissionId")
     fun getSubmitterForSubmission(@Bind submissionId: Int): DbSubmitterDto?
+
+
+    @SqlQuery("SELECT * FROM $table WHERE $id = :submitterId")
+    fun getSubmitterById(submitterId: Int): DbSubmitterDto?
+
+    @SqlQuery("SELECT * FROM $table WHERE $name = :name")
+    fun getSubmitterByName(name: String): DbSubmitterDto?
 }
