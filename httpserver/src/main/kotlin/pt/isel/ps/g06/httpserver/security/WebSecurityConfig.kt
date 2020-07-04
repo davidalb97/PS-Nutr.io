@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.authentication.AuthenticationManager
+import org.springframework.security.authentication.AuthenticationProvider
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
@@ -21,14 +23,14 @@ class WebSecurityConfig(
         @Autowired private val jwtFilter: JwtFilter
 ) : WebSecurityConfigurerAdapter() {
 
-    /*@Bean
+    @Bean
     public fun authenticationProvider(): AuthenticationProvider {
         val provider = DaoAuthenticationProvider()
         provider.setUserDetailsService(myUserDetailsService)
         provider.setPasswordEncoder(BCryptPasswordEncoder())
 
         return provider
-    }*/
+    }
 
     /**
      * Setup the service
@@ -70,13 +72,9 @@ class WebSecurityConfig(
     }
 
     @Bean
-    override fun authenticationManagerBean(): AuthenticationManager {
-        return super.authenticationManagerBean()
-    }
+    override fun authenticationManagerBean(): AuthenticationManager = super.authenticationManagerBean()
 
     @Bean
-    fun passwordEncoder(): PasswordEncoder? {
-        return NoOpPasswordEncoder.getInstance()
-    }
+    fun passwordEncoder(): PasswordEncoder? = NoOpPasswordEncoder.getInstance()
 
 }

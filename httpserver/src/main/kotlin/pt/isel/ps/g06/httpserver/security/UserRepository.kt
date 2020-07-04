@@ -27,11 +27,11 @@ class UserRepository(jdbi: Jdbi) : BaseDbRepo(jdbi) {
         }
     }
 
-    fun insertUser(email: String, name: String, password: String): UserDto? {
+    fun insertUser(submitterId: Int, email: String, password: String): UserDto? {
         return jdbi.inTransaction<UserDto, Exception>(isolationLevel) { handle ->
             return@inTransaction handle
                     .attach(UserDao::class.java)
-                    .insertUser(email, name, password)
+                    .insertUser(submitterId, email, password)
         }
     }
 

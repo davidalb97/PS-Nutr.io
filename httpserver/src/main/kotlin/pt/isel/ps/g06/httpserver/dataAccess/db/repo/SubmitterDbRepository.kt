@@ -5,11 +5,13 @@ import org.jdbi.v3.core.transaction.TransactionIsolationLevel
 import org.springframework.stereotype.Repository
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.SubmitterDao
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbSubmitterDto
+import java.time.OffsetDateTime
+import java.util.*
 
 private val isolationLevel = TransactionIsolationLevel.SERIALIZABLE
 
 @Repository
-class SubmitterDbRepository(private val jdbi: Jdbi) {
+class SubmitterDbRepository(jdbi: Jdbi) : BaseDbRepo(jdbi){
 
     fun getSubmitterByName(name: String): DbSubmitterDto {
         return jdbi.inTransaction<DbSubmitterDto, Exception> {
@@ -28,6 +30,14 @@ class SubmitterDbRepository(private val jdbi: Jdbi) {
             return@inTransaction handle
                     .attach(SubmitterDao::class.java)
                     .getSubmitterForSubmission(submissionId)
+        }
+    }
+
+    fun insertSubmitter(name: String, date: OffsetDateTime, type: String): DbSubmitterDto {
+        return jdbi.inTransaction<DbSubmitterDto, Exception>(isolationLevel) { handle ->
+            return@inTransaction handle
+                    .attach(SubmitterDao::class.java)
+                    .insertSubmitter(name, date, type)
         }
     }
 }

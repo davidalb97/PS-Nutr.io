@@ -23,8 +23,16 @@ class AuthenticationController(
         @Autowired private val jwtUtil: JwtUtil
 ) {
     @PostMapping("/register")
-    fun register(@RequestBody userLoginRequest: UserRegisterRequest): ResponseEntity<*> {
-        TODO("check if the user exists then insert")
+    fun register(@RequestBody userRegisterRequest: UserRegisterRequest): ResponseEntity<*> {
+        //val userFound: UserDetails? = userDetails.loadUserByUsername(userRegisterRequest.username)
+
+        userDetails.registerUser(
+                userRegisterRequest.email,
+                userRegisterRequest.username,
+                userRegisterRequest.password
+        )
+        return ResponseEntity("User registered", HttpStatus.CREATED);
+
     }
 
     @PostMapping("/login")

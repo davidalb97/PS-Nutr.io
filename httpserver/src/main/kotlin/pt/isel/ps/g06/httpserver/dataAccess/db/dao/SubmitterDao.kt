@@ -4,6 +4,8 @@ import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.customizer.BindList
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbSubmitterDto
+import java.time.OffsetDateTime
+import java.util.*
 
 //SubmissionSubmitter table constants
 private const val SS_table = SubmissionSubmitterDao.table
@@ -18,8 +20,8 @@ interface SubmitterDao {
         const val table = "Submitter"
         const val id = "submitter_id"
         const val name = "submitter_name"
-        const val type = "submitter_type"
         const val date = "creation_date"
+        const val type = "submitter_type"
     }
 
     @SqlQuery("SELECT * FROM $table WHERE $type = '$API' AND submitter_name IN (<names>)")
@@ -32,10 +34,9 @@ interface SubmitterDao {
             " WHERE $SS_table.$SS_submissionId = :submissionId")
     fun getSubmitterForSubmission(@Bind submissionId: Int): DbSubmitterDto?
 
-
-    @SqlQuery("SELECT * FROM $table WHERE $id = :submitterId")
-    fun getSubmitterById(submitterId: Int): DbSubmitterDto?
-
     @SqlQuery("SELECT * FROM $table WHERE $name = :name")
-    fun getSubmitterByName(name: String): DbSubmitterDto?
+    fun getSubmitterByName(@Bind name: String): DbSubmitterDto?
+
+    @SqlQuery("INSERT INTO $table($name, $date, $type) VALUES(:name, :date, :type) RETURNING *")
+    fun insertSubmitter(@Bind name: String, @Bind date: OffsetDateTime, @Bind type: String): DbSubmitterDto
 }

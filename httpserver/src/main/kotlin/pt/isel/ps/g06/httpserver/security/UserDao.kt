@@ -18,9 +18,9 @@ interface UserDao {
     @SqlQuery("SELECT * FROM $table WHERE $email = :email")
     fun findByEmail(email: String?): UserDto
 
-    @SqlQuery("INSERT INTO $table($email, $submitterId, $password)" +
-            " VALUES(:email, :submitterId, :password) RETURNING *")
-    fun insertUser(email: String?, submitterId: String?, password: String?): UserDto
+    @SqlQuery("INSERT INTO $table($submitterId, $email, $password)" +
+            " VALUES(:submitterId, :email, :password) RETURNING *")
+    fun insertUser(submitterId: Int?, email: String?, password: String?): UserDto
 
     @SqlQuery("DELETE FROM $table WHERE $email=:email")
     fun deleteUserByEmail(email: String?): Boolean
