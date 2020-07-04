@@ -19,14 +19,14 @@ import pt.isel.ps.g06.httpserver.security.dto.UserRegisterRequest
 @RestController
 class AuthenticationController(
         @Autowired private val authenticationManager: AuthenticationManager,
-        @Autowired private val userDetails: MyUserDetailsService,
+        @Autowired private val userDetailsService: MyUserDetailsService,
         @Autowired private val jwtUtil: JwtUtil
 ) {
     @PostMapping("/register")
     fun register(@RequestBody userRegisterRequest: UserRegisterRequest): ResponseEntity<*> {
         //val userFound: UserDetails? = userDetails.loadUserByUsername(userRegisterRequest.username)
 
-        userDetails.registerUser(
+        userDetailsService.registerUser(
                 userRegisterRequest.email,
                 userRegisterRequest.username,
                 userRegisterRequest.password
@@ -45,10 +45,12 @@ class AuthenticationController(
             return ResponseEntity("Unauthorized", HttpStatus.UNAUTHORIZED);
         }
 
-        val userDetails: UserDetails = userDetails.loadUserByUsername(userLoginRequest.username)
+        val userDetails: UserDetails = userDetailsService.loadUserByUsername(userLoginRequest.username)
+
+        val submitterId = userDetailsService.getSubmitterByUsername(userLoginRequest.username).submitter_id
 
         val jwt = jwtUtil.generateToken(userDetails)
 
-        return ResponseEntity.ok(UserLoginResponse(jwt))
+        return ResponseEntity.ok(UserLoginResponse(jwt, submitterId))
     }
 }

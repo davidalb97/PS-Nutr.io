@@ -37,4 +37,7 @@ class MyUserDetailsService(
                 password = password
         )
     }
+
+    fun getSubmitterByUsername(username: String) = submitterDbRepository.getSubmitterByName(username)
+
 }
