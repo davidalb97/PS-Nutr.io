@@ -19,6 +19,7 @@ DROP TABLE IF EXISTS Submission CASCADE;
 --DROP SEQUENCE submission_submission_id_seq CASCADE;
 DROP TABLE IF EXISTS Api CASCADE;
 DROP TABLE IF EXISTS _User CASCADE;
+DROP TABLE IF EXISTS InsulinProfile CASCADE;
 DROP TABLE IF EXISTS Submitter CASCADE;
 DROP FUNCTION IF EXISTS AddFood;
 --DROP SEQUENCE submitter_submitter_id_seq CASCADE;
@@ -36,7 +37,7 @@ CREATE TABLE Submitter(
 CREATE TABLE _User(
 	submitter_id integer,	
 	email varchar(50) NOT NULL,
-	password varchar(50) NOT NULL, -- add crypto	
+	password varchar(60) NOT NULL, -- it will always be 60, because of the BCrypt password encoding
 	PRIMARY KEY(submitter_id),
 	FOREIGN KEY(submitter_id) REFERENCES Submitter(submitter_id)
 );

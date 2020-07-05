@@ -51,8 +51,8 @@ class WebSecurityConfig(
                 .authorizeRequests()
                 .antMatchers(
                         "/",
-                        "/login",
-                        "/register",
+                        "/user/login",
+                        "/user/register",
                         "/restaurant",
                         "/restaurant/*",
                         "/meal",

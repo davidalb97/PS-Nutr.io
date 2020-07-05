@@ -7,24 +7,26 @@ import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
+import pt.isel.ps.g06.httpserver.common.*
 import pt.isel.ps.g06.httpserver.security.JwtUtil
 import pt.isel.ps.g06.httpserver.security.MyUserDetailsService
+import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbUserInsulinProfileDto
 import pt.isel.ps.g06.httpserver.security.dto.UserLoginRequest
 import pt.isel.ps.g06.httpserver.security.dto.UserLoginResponse
 import pt.isel.ps.g06.httpserver.security.dto.UserRegisterRequest
+import pt.isel.ps.g06.httpserver.service.InsulinProfileService
 
 
 @RestController
-class AuthenticationController(
+class UserController(
         @Autowired private val authenticationManager: AuthenticationManager,
         @Autowired private val userDetailsService: MyUserDetailsService,
+        @Autowired private val insulinProfileService: InsulinProfileService,
         @Autowired private val jwtUtil: JwtUtil,
         @Autowired private val bCryptPasswordEncoder: BCryptPasswordEncoder
 ) {
-    @PostMapping("/register")
+    @PostMapping(REGISTER)
     fun register(@RequestBody userRegisterRequest: UserRegisterRequest): ResponseEntity<*> {
         //val userFound: UserDetails? = userDetails.loadUserByUsername(userRegisterRequest.username)
 
@@ -39,8 +41,8 @@ class AuthenticationController(
 
     }
 
-    @PostMapping("/login")
-    fun createAuthenticationToken(@RequestBody userLoginRequest: UserLoginRequest): ResponseEntity<*> {
+    @PostMapping(LOGIN)
+    fun login(@RequestBody userLoginRequest: UserLoginRequest): ResponseEntity<*> {
         try {
             authenticationManager.authenticate(
                     UsernamePasswordAuthenticationToken(userLoginRequest.username, userLoginRequest.password)
@@ -56,5 +58,30 @@ class AuthenticationController(
         val jwt = jwtUtil.generateToken(userDetails)
 
         return ResponseEntity.ok(UserLoginResponse(jwt, submitterId))
+    }
+
+    @GetMapping(INSULIN_PROFILES)
+    fun getAllInsulinProfiles(
+            @PathVariable(SUBMITTER_ID_VALUE) submitterId: Int
+    ): ResponseEntity<Collection<DbUserInsulinProfileDto>> {
+        TODO()
+    }
+
+    @GetMapping(INSULIN_PROFILE)
+    fun getInsulinProfile(
+            @PathVariable(SUBMITTER_ID_VALUE) submitterId: Int,
+            @PathVariable(PROFILE_NAME_VALUE) profileName: String
+    ): ResponseEntity<DbUserInsulinProfileDto> {
+        TODO()
+    }
+
+    @PostMapping(INSULIN_PROFILE)
+    fun createInsulinProfile(): ResponseEntity<*> {
+        TODO()
+    }
+
+    @DeleteMapping(INSULIN_PROFILE)
+    fun deleteInsulinProfile(): ResponseEntity<*> {
+        TODO()
     }
 }
