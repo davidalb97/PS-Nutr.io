@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.userdetails.UserDetails
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
@@ -20,16 +21,19 @@ import pt.isel.ps.g06.httpserver.security.dto.UserRegisterRequest
 class AuthenticationController(
         @Autowired private val authenticationManager: AuthenticationManager,
         @Autowired private val userDetailsService: MyUserDetailsService,
-        @Autowired private val jwtUtil: JwtUtil
+        @Autowired private val jwtUtil: JwtUtil,
+        @Autowired private val bCryptPasswordEncoder: BCryptPasswordEncoder
 ) {
     @PostMapping("/register")
     fun register(@RequestBody userRegisterRequest: UserRegisterRequest): ResponseEntity<*> {
         //val userFound: UserDetails? = userDetails.loadUserByUsername(userRegisterRequest.username)
 
+        val encodedPassword = bCryptPasswordEncoder.encode(userRegisterRequest.password);
+
         userDetailsService.registerUser(
                 userRegisterRequest.email,
                 userRegisterRequest.username,
-                userRegisterRequest.password
+                encodedPassword
         )
         return ResponseEntity("User registered", HttpStatus.CREATED);
 

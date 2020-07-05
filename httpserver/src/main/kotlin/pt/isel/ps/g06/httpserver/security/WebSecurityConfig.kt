@@ -12,7 +12,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
-import org.springframework.security.crypto.password.NoOpPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 
@@ -27,7 +26,7 @@ class WebSecurityConfig(
     public fun authenticationProvider(): AuthenticationProvider {
         val provider = DaoAuthenticationProvider()
         provider.setUserDetailsService(myUserDetailsService)
-        provider.setPasswordEncoder(BCryptPasswordEncoder())
+        provider.setPasswordEncoder(passwordEncoder())
 
         return provider
     }
@@ -75,6 +74,6 @@ class WebSecurityConfig(
     override fun authenticationManagerBean(): AuthenticationManager = super.authenticationManagerBean()
 
     @Bean
-    fun passwordEncoder(): PasswordEncoder? = NoOpPasswordEncoder.getInstance()
+    fun passwordEncoder(): BCryptPasswordEncoder = BCryptPasswordEncoder()
 
 }
