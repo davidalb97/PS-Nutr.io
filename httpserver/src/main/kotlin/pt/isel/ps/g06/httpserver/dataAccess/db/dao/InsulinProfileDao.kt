@@ -9,6 +9,11 @@ interface InsulinProfileDao {
         const val table = "InsulinProfile"
         const val submitterId = "submitter_id"
         const val profileName = "profile_name"
+        const val startTime = "start_time"
+        const val endTime = "end_time"
+        const val glucoseObjective = "glucose_objective"
+        const val insulinSensitivityFactor = "insulin_sensitivity_factor"
+        const val carbohydrateRatio = "carbohydrate_ratio"
     }
 
     @SqlQuery("SELECT * FROM $table WHERE $submitterId = :submitterId")
@@ -17,9 +22,12 @@ interface InsulinProfileDao {
     @SqlQuery("SELECT * FROM $table WHERE $submitterId = :submitterId AND $profileName = :profileName")
     fun getFromUser(submitterId: Int, profileName: String): DbUserInsulinProfileDto
 
-    //TODO
-    fun insertProfile(): DbUserInsulinProfileDto
+    // TODO - this is horrible
+    @SqlQuery("INSERT INTO $table($submitterId, $profileName, $startTime, $endTime, $glucoseObjective, $insulinSensitivityFactor, $carbohydrateRatio) VALUES(:submitterId, :profileName, :startTime, :endTime, :glucoseObjective, :insulinSensitivityFactor, :carbohydrateRatio)")
+    fun insertProfile(submitterId: Int, profileName: String, startTime: String, endTime: String,
+                      glucoseObjective: Int, insulinSensitivityFactor: Int, carbohydrateRatio: Int
+    ): DbUserInsulinProfileDto
 
-    //TODO
-    fun deleteProfile(): Boolean
+    @SqlQuery("DELETE FROM $table WHERE $submitterId = :submitterId AND $profileName = :profileName")
+    fun deleteProfile(submitterId: Int, profileName: String): Boolean
 }

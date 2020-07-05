@@ -2,6 +2,7 @@ package pt.isel.ps.g06.httpserver.controller
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
+import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -9,9 +10,9 @@ import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.web.bind.annotation.*
 import pt.isel.ps.g06.httpserver.common.*
+import pt.isel.ps.g06.httpserver.model.InsulinProfile
 import pt.isel.ps.g06.httpserver.security.JwtUtil
 import pt.isel.ps.g06.httpserver.security.MyUserDetailsService
-import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbUserInsulinProfileDto
 import pt.isel.ps.g06.httpserver.security.dto.UserLoginRequest
 import pt.isel.ps.g06.httpserver.security.dto.UserLoginResponse
 import pt.isel.ps.g06.httpserver.security.dto.UserRegisterRequest
@@ -63,25 +64,40 @@ class UserController(
     @GetMapping(INSULIN_PROFILES)
     fun getAllInsulinProfiles(
             @PathVariable(SUBMITTER_ID_VALUE) submitterId: Int
-    ): ResponseEntity<Collection<DbUserInsulinProfileDto>> {
-        TODO()
+    ): ResponseEntity<Collection<InsulinProfile>> {
+        return ResponseEntity.ok(insulinProfileService.getAllProfilesFromUser(submitterId))
     }
 
     @GetMapping(INSULIN_PROFILE)
     fun getInsulinProfile(
             @PathVariable(SUBMITTER_ID_VALUE) submitterId: Int,
             @PathVariable(PROFILE_NAME_VALUE) profileName: String
-    ): ResponseEntity<DbUserInsulinProfileDto> {
-        TODO()
+    ): ResponseEntity<InsulinProfile> {
+        return ResponseEntity.ok(insulinProfileService.getProfileFromUser(submitterId, profileName))
     }
 
-    @PostMapping(INSULIN_PROFILE)
-    fun createInsulinProfile(): ResponseEntity<*> {
-        TODO()
+    @PostMapping(INSULIN_PROFILES)
+    fun createInsulinProfile(
+            @RequestBody insulinProfile: InsulinProfile
+    ): ResponseEntity<*> {
+        return ResponseEntity.ok(
+                insulinProfileService.createProfile(
+                        insulinProfile.submitterId,
+                        insulinProfile.profileName,
+                        insulinProfile.startTime,
+                        insulinProfile.endTime,
+                        insulinProfile.glucoseObjective,
+                        insulinProfile.insulinSensitivityFactor,
+                        insulinProfile.carbohydrateRatio
+                )
+        )
     }
 
     @DeleteMapping(INSULIN_PROFILE)
-    fun deleteInsulinProfile(): ResponseEntity<*> {
-        TODO()
+    fun deleteInsulinProfile(
+            @PathVariable(SUBMITTER_ID_VALUE) submitterId: Int,
+            @PathVariable(PROFILE_NAME_VALUE) profileName: String
+    ): ResponseEntity<*> {
+        return ResponseEntity.ok(insulinProfileService.deleteProfile(submitterId, profileName))
     }
 }

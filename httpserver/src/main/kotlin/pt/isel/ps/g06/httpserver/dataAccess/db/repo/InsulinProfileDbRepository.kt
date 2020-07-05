@@ -34,11 +34,27 @@ class InsulinProfileDbRepository(jdbi: Jdbi) : BaseDbRepo(jdbi) {
         }
     }
 
-    fun insertProfile(): DbUserInsulinProfileDto {
-        TODO()
+    fun insertProfile(dto: DbUserInsulinProfileDto): DbUserInsulinProfileDto {
+        return jdbi.inTransaction<DbUserInsulinProfileDto, Exception>(isolationLevel) { handle ->
+            return@inTransaction handle
+                    .attach(insulinProfileDaoClass)
+                    .insertProfile(
+                            submitterId = dto.submitterId,
+                            profileName = dto.profileName,
+                            startTime = dto.startTime,
+                            endTime = dto.endTime,
+                            glucoseObjective = dto.glucoseObjective,
+                            insulinSensitivityFactor = dto.insulinSensitivityFactor,
+                            carbohydrateRatio = dto.carbohydrateRatio
+                    )
+        }
     }
 
-    fun deleteProfile(): Boolean {
-        TODO()
+    fun deleteProfile(submitterId: Int, profileName: String): Boolean {
+        return jdbi.inTransaction<Boolean, Exception>(isolationLevel) { handle ->
+            return@inTransaction handle
+                    .attach(insulinProfileDaoClass)
+                    .deleteProfile(submitterId, profileName)
+        }
     }
 }
