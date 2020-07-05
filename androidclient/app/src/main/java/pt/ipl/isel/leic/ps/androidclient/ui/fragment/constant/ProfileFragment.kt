@@ -1,5 +1,7 @@
 package pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -45,15 +47,21 @@ class ProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val sharedPreferences: SharedPreferences =
+            requireActivity().baseContext?.getSharedPreferences(
+                "preferences.xml",
+                Context.MODE_PRIVATE
+            )!!
+
         val userNameView = view.findViewById<TextView>(R.id.user_name)
 
-        viewModel.userId = 3
+        userNameView.text = sharedPreferences.getString("username", "")
+        viewModel.userId = sharedPreferences.getInt("submitterId", 0)
+
         viewModel.observe(this) {
             if (it.isEmpty()) {
                 Toast.makeText(context, "No users configured!", Toast.LENGTH_SHORT)
                     .show()
-            } else {
-                userNameView.text = it.first().name
             }
         }
         viewModel.update()

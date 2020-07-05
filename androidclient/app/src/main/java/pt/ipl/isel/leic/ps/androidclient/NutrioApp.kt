@@ -11,16 +11,13 @@ import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import pt.ipl.isel.leic.ps.androidclient.data.api.RequestParser
 import pt.ipl.isel.leic.ps.androidclient.data.api.UriBuilder
-import pt.ipl.isel.leic.ps.androidclient.data.api.datasource.CuisineDataSource
-import pt.ipl.isel.leic.ps.androidclient.data.api.datasource.IngredientDataSource
-import pt.ipl.isel.leic.ps.androidclient.data.api.datasource.MealDataSource
-import pt.ipl.isel.leic.ps.androidclient.data.api.datasource.RestaurantDataSource
+import pt.ipl.isel.leic.ps.androidclient.data.api.datasource.*
 import pt.ipl.isel.leic.ps.androidclient.data.db.NutrioDb
 import pt.ipl.isel.leic.ps.androidclient.data.repo.*
 
 const val TAG = "Nutr.io App"
 const val ROOM_DB_NAME = "nutrio-db"
-const val ROOM_DB_VERSION = 19
+const val ROOM_DB_VERSION = 20
 
 /**
  * The application context.
@@ -67,7 +64,9 @@ class NutrioApp : Application() {
             CuisineRepository(CuisineDataSource(requester, uriBuilder))
         }
         val insulinProfilesRepository by lazy(::InsulinProfileRepository)
-        val userRepository by lazy(::UserRepository)
+        val userRepository by lazy {
+            UserRepository(UserDataSource(requester, uriBuilder))
+        }
         val ingredientRepository by lazy {
             IngredientRepository(IngredientDataSource(requester, uriBuilder))
         }

@@ -3,7 +3,9 @@ package pt.ipl.isel.leic.ps.androidclient
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.view.View
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.Toolbar
@@ -15,6 +17,7 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.preference.SwitchPreferenceCompat
 import com.google.android.material.navigation.NavigationView
+import org.w3c.dom.Text
 import pt.ipl.isel.leic.ps.androidclient.ui.util.Logger
 
 const val DARK_MODE = "dark_mode"
@@ -70,6 +73,8 @@ class MainActivity : AppCompatActivity() {
                 R.id.nav_saved_meals,
                 R.id.nav_add_custom_meal,
                 R.id.nav_sign,
+                R.id.nav_register,
+                R.id.nav_login,
                 R.id.nav_ingredients
             ),
             drawerLayout
@@ -80,8 +85,17 @@ class MainActivity : AppCompatActivity() {
         val headerView = navView.getHeaderView(0)
         val headerImage = headerView.findViewById<ImageView>(R.id.imageView)
 
+        val username = headerView.findViewById<TextView>(R.id.username)
+        val userEmail = headerView.findViewById<TextView>(R.id.userEmail)
+
+        if (sharedPreferences.getString("username", "") != null) {
+            username.text = sharedPreferences.getString("username", "")
+            userEmail.visibility = View.INVISIBLE
+        }
+
+        //TODO - change when bottom bar is working
         headerImage.setOnClickListener {
-            navController.navigate(R.id.nav_sign)
+            navController.navigate(R.id.nav_login)
         }
     }
 

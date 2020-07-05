@@ -5,104 +5,20 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="?attr/backgroundColor">
 
-    <androidx.cardview.widget.CardView
-        android:layout_width="wrap_content"
+    <FrameLayout
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    </FrameLayout>
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigationBar"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:elevation="10dp"
-        app:cardCornerRadius="15dp">
-
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="25dp">
-
-            <TextView
-                android:id="@+id/signUpLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_marginBottom="40dp"
-                android:text="@string/sign_up"
-                android:textSize="28sp"
-                android:textColor="?attr/textColor">
-            </TextView>
-
-            <TextView
-                android:id="@+id/userNameLabel"
-                android:layout_below="@+id/signUpLabel"
-                android:layout_centerHorizontal="true"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/username"
-                android:textSize="28sp"
-                android:textColor="?attr/textColor">
-            </TextView>
-
-            <EditText
-                android:id="@+id/userNameInput"
-                android:layout_below="@+id/userNameLabel"
-                android:padding="5dp"
-                android:layout_centerHorizontal="true"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/textbox_shape"
-                android:hint="@string/username">
-            </EditText>
-
-            <TextView
-                android:id="@+id/userPasswordLabel"
-                android:layout_below="@+id/userNameInput"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:text="@string/password"
-                android:textSize="28sp"
-                android:textColor="?attr/textColor">
-            </TextView>
-
-            <EditText
-                android:id="@+id/userPasswordInput"
-                android:padding="5dp"
-                android:layout_below="@+id/userPasswordLabel"
-                android:layout_centerHorizontal="true"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/textbox_shape"
-                android:hint="@string/password">
-            </EditText>
-
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/userPasswordInput"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="20dp">
-                <Button
-                    android:id="@+id/registerButton"
-                    android:layout_width="100dp"
-                    android:layout_height="wrap_content"
-                    android:text="@string/register"
-                    android:textColor="@color/cardview_light_background"
-                    android:layout_marginEnd="10dp"
-                    android:background="@drawable/rect_material_button_shape">
-                </Button>
-
-                <Button
-                    android:id="@+id/loginButton"
-                    android:layout_width="100dp"
-                    android:layout_height="wrap_content"
-                    android:text="@string/login"
-                    android:layout_toEndOf="@id/registerButton"
-                    android:textColor="@color/cardview_light_background"
-                    android:background="@drawable/rect_material_button_shape">
-                </Button>
-            </RelativeLayout>
-
-
-        </RelativeLayout>
-    </androidx.cardview.widget.CardView>
+        android:layout_alignParentBottom="true"
+        android:background="?android:attr/windowBackground"
+        app:menu="@menu/bottom_navigation_bar">
+    </com.google.android.material.bottomnavigation.BottomNavigationView>
 
 
 </RelativeLayout>
