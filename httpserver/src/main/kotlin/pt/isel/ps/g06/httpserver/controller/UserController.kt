@@ -61,10 +61,12 @@ class UserController(
         return ResponseEntity.ok(UserLoginResponse(jwt, submitterId))
     }
 
+    // TODO - needs to separate each operation for each user
     @GetMapping(INSULIN_PROFILES)
     fun getAllInsulinProfiles(
             @PathVariable(SUBMITTER_ID_VALUE) submitterId: Int
     ): ResponseEntity<Collection<InsulinProfile>> {
+
         return ResponseEntity.ok(insulinProfileService.getAllProfilesFromUser(submitterId))
     }
 

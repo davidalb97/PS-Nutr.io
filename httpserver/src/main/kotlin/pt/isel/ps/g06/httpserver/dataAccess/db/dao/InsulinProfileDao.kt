@@ -22,8 +22,8 @@ interface InsulinProfileDao {
     @SqlQuery("SELECT * FROM $table WHERE $submitterId = :submitterId AND $profileName = :profileName")
     fun getFromUser(submitterId: Int, profileName: String): DbUserInsulinProfileDto
 
-    // TODO - this is horrible
-    @SqlQuery("INSERT INTO $table($submitterId, $profileName, $startTime, $endTime, $glucoseObjective, $insulinSensitivityFactor, $carbohydrateRatio) VALUES(:submitterId, :profileName, :startTime, :endTime, :glucoseObjective, :insulinSensitivityFactor, :carbohydrateRatio)")
+    // TODO
+    @SqlQuery("INSERT INTO $table($submitterId, $profileName, $startTime, $endTime, $glucoseObjective, $insulinSensitivityFactor, $carbohydrateRatio) VALUES(:submitterId, :profileName, :startTime, :endTime, :glucoseObjective, :insulinSensitivityFactor, :carbohydrateRatio) RETURNING *")
     fun insertProfile(submitterId: Int, profileName: String, startTime: String, endTime: String,
                       glucoseObjective: Int, insulinSensitivityFactor: Int, carbohydrateRatio: Int
     ): DbUserInsulinProfileDto
