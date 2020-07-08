@@ -3,6 +3,7 @@ package pt.isel.ps.g06.httpserver.security
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.HttpMethod
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.AuthenticationProvider
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider
@@ -23,7 +24,7 @@ class WebSecurityConfig(
 ) : WebSecurityConfigurerAdapter() {
 
     @Bean
-    public fun authenticationProvider(): AuthenticationProvider {
+    fun authenticationProvider(): AuthenticationProvider {
         val provider = DaoAuthenticationProvider()
         provider.setUserDetailsService(myUserDetailsService)
         provider.setPasswordEncoder(passwordEncoder())
@@ -49,15 +50,17 @@ class WebSecurityConfig(
                 .csrf()
                 .disable()
                 .authorizeRequests()
-                .antMatchers(
+                .antMatchers(HttpMethod.GET,
                         "/",
-                        "/user/login",
-                        "/user/register",
                         "/restaurant",
-                        "/restaurant/*",
+                        "/restaurant/**",
                         "/meal",
                         "/meal/*",
                         "/cuisines"
+                ).permitAll()
+                .antMatchers(HttpMethod.POST,
+                        "/user/login",
+                        "/user/register"
                 ).permitAll()
                 .anyRequest()
                 .authenticated()
