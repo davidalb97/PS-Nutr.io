@@ -22,15 +22,15 @@ class UserDataSource(
     ) {
 
         requestParser.request(
-            Method.POST,
-            REGISTER_URI,
-            RegisterOutput(
+            method = Method.POST,
+            urlStr = REGISTER_URI,
+            reqPayload = RegisterOutput(
                 email = email,
                 username = username,
                 password = password
             ),
-            error,
-            { }
+            onError = error,
+            responseConsumer = { }
         )
     }
 
@@ -41,14 +41,14 @@ class UserDataSource(
         consumerDto: (UserLoginInput) -> Unit
     ) {
         requestParser.request(
-            Method.POST,
-            LOGIN_URI,
-            LoginOutput(
+            method = Method.POST,
+            urlStr = LOGIN_URI,
+            reqPayload = LoginOutput(
                 username = username,
                 password = password
             ),
-            error,
-            { consumerDto(parseToDto(it)) }
+            onError = error,
+            responseConsumer = { consumerDto(parseToDto(it)) }
         )
     }
 

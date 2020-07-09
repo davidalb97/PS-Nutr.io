@@ -13,28 +13,34 @@ class BodyStringRequest : StringRequest {
     private val PROTOCOL_CHARSET = "utf-8"
     private val PROTOCOL_CONTENT_TYPE =
         String.format("application/json; charset=%s", PROTOCOL_CHARSET)
+    private val reqHeader: MutableMap<String, String>?
     private val reqPayload: String?
 
     constructor(
         method: Int,
         url: String?,
+        reqHeader: MutableMap<String, String>?,
         reqPayload: String?,
         listener: Response.Listener<String>?,
         errorListener: Response.ErrorListener?
     ) : super(method, url, listener, errorListener) {
+        this.reqHeader = reqHeader
         this.reqPayload = reqPayload
     }
 
 
     constructor(
         url: String?,
+        reqHeader: MutableMap<String, String>?,
         reqPayload: String?,
         listener: Response.Listener<String?>?,
         errorListener: Response.ErrorListener?
     ) : super(url, listener, errorListener) {
+        this.reqHeader = reqHeader
         this.reqPayload = reqPayload
     }
 
+    override fun getHeaders(): MutableMap<String, String> = this.reqHeader ?: mutableMapOf()
 
     override fun getBody(): ByteArray? {
         return try {

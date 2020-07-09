@@ -1,5 +1,7 @@
 package pt.ipl.isel.leic.ps.androidclient.ui.fragment.detail
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,6 +13,7 @@ import com.bumptech.glide.Glide
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.restaurantRepository
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.RestaurantInfo
+import pt.ipl.isel.leic.ps.androidclient.data.model.UserSession
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler.request.MealRecyclerFragment
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.BUNDLE_RESTAURANT_INFO_ID
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.RestaurantInfoVMProviderFactory
@@ -20,6 +23,7 @@ import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.RestaurantInfoMealRecycler
 class RestaurantDetailFragment : MealRecyclerFragment(){
 
     private val log = Logger(RestaurantDetailFragment::class)
+    private lateinit var sharedPreferences: SharedPreferences
     private lateinit var innerViewModel: RestaurantInfoMealRecyclerViewModel
 
 
@@ -53,6 +57,11 @@ class RestaurantDetailFragment : MealRecyclerFragment(){
     }
 
     private fun setupRestaurantInfoView(restaurantInfo: RestaurantInfo) {
+        sharedPreferences =
+            requireActivity().baseContext?.getSharedPreferences(
+                "preferences.xml",
+                Context.MODE_PRIVATE
+            )!!
         val restaurantMealImage =
             view?.findViewById<ImageView>(R.id.restaurant_detail_image)
         val restaurantMealTitle =
@@ -75,6 +84,11 @@ class RestaurantDetailFragment : MealRecyclerFragment(){
                 .load(restaurantInfo.imageUri)
                 .into(restaurantMealImage!!)
 
+        val userSession = UserSession(
+            sharedPreferences.getString("jwt", "")!!,
+            sharedPreferences.getInt("submitterId", 0)
+        )
+
         restaurantMealTitle?.text = restaurantInfo.name
 
         if(restaurantInfo.votes != null) {
@@ -89,7 +103,7 @@ class RestaurantDetailFragment : MealRecyclerFragment(){
                         "Upvoted!",
                         Toast.LENGTH_LONG
                     ).show()
-                }, log::e)
+                }, log::e, userSession)
             }
 
             // Downvote
@@ -100,7 +114,7 @@ class RestaurantDetailFragment : MealRecyclerFragment(){
                         "Downvoted!",
                         Toast.LENGTH_LONG
                     ).show()
-                },log::e)
+                },log::e, userSession)
             }
         }
     }

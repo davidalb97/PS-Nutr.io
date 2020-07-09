@@ -36,11 +36,11 @@ class IngredientDataSource(
         )
         uri = uriBuilder.buildUri(uri, params)
         requestParser.requestAndRespond(
-            Method.GET,
-            uri,
-            DetailedIngredientsInput::class.java,
-            success,
-            error
+            method = Method.GET,
+            urlStr = uri,
+            dtoClass = DetailedIngredientsInput::class.java,
+            onSuccess = success,
+            onError = error
         )
     }
 
@@ -60,11 +60,11 @@ class IngredientDataSource(
         uri = uriBuilder.buildUri(uri, params)
 
         requestParser.requestAndRespond(
-            Method.GET,
-            uri,
-            DetailedIngredientInput::class.java,
-            success,
-            error
+            method = Method.GET,
+            urlStr = uri,
+            dtoClass = DetailedIngredientInput::class.java,
+            onSuccess = success,
+            onError = error
         )
     }
 }

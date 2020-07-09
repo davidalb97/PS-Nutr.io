@@ -8,6 +8,7 @@ import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.mealRepository
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealInfo
 import pt.ipl.isel.leic.ps.androidclient.data.model.RestaurantInfo
 import pt.ipl.isel.leic.ps.androidclient.data.model.Source
+import pt.ipl.isel.leic.ps.androidclient.data.model.UserSession
 import java.lang.UnsupportedOperationException
 
 class MealInfoViewModel : ARecyclerViewModel<MealInfo>() {
@@ -81,13 +82,14 @@ class MealInfoViewModel : ARecyclerViewModel<MealInfo>() {
         return 0
     }
 
-    fun setVote(vote: Boolean, success: () -> Unit, error: (VolleyError) -> Unit) {
+    fun setVote(vote: Boolean, success: () -> Unit, error: (VolleyError) -> Unit, userSession: UserSession) {
         mealRepository.putVote(
             restaurantId = requireRestaurantId(),
             mealId = requireSubmissionId(),
             vote = vote,
             success = success,
-            error = error
+            error = error,
+            userSession = userSession
         )
     }
 

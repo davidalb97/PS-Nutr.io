@@ -12,7 +12,7 @@ import pt.ipl.isel.leic.ps.androidclient.data.api.dto.output.RestaurantMealOutpu
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.output.VoteOutput
 import pt.ipl.isel.leic.ps.androidclient.data.model.Cuisine
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealIngredient
-import pt.ipl.isel.leic.ps.androidclient.data.repo.DEFAULT_DB_USER
+import pt.ipl.isel.leic.ps.androidclient.data.model.UserSession
 
 private const val RESTAURANT_ID_PARAM = ":restaurantId"
 private const val MEAL_ID_PARAM = ":mealId"
@@ -61,11 +61,11 @@ class MealDataSource(
         uri = uriBuilder.buildUri(uri, params)
 
         requestParser.requestAndRespond(
-            Method.GET,
-            uri,
-            SimplifiedMealsInput::class.java,
-            success,
-            error
+            method = Method.GET,
+            urlStr = uri,
+            dtoClass = SimplifiedMealsInput::class.java,
+            onSuccess = success,
+            onError = error
         )
     }
 
@@ -88,11 +88,11 @@ class MealDataSource(
         uri = uriBuilder.buildUri(uri, params)
 
         requestParser.requestAndRespond(
-            Method.GET,
-            uri,
-            SimplifiedRestaurantMealsInput::class.java,
-            success,
-            error
+            method = Method.GET,
+            urlStr = uri,
+            dtoClass = SimplifiedRestaurantMealsInput::class.java,
+            onSuccess = success,
+            onError = error
         )
     }
 
@@ -114,11 +114,11 @@ class MealDataSource(
         )
         uri = uriBuilder.buildUri(uri, params)
         requestParser.requestAndRespond(
-            Method.GET,
-            uri,
-            INPUT_MEAL_DTO,
-            success,
-            error
+            method = Method.GET,
+            urlStr = uri,
+            dtoClass = INPUT_MEAL_DTO,
+            onSuccess = success,
+            onError = error
         )
     }
 
@@ -137,11 +137,11 @@ class MealDataSource(
                 )
             )
         requestParser.requestAndRespond(
-            Method.GET,
-            uri,
-            INPUT_MEAL_DTO,
-            success,
-            error
+            method = Method.GET,
+            urlStr = uri,
+            dtoClass = INPUT_MEAL_DTO,
+            onSuccess = success,
+            onError = error
         )
     }
 
@@ -155,14 +155,14 @@ class MealDataSource(
         ingredients: Iterable<MealIngredient>,
         cuisines: Iterable<Cuisine>,
         error: (VolleyError) -> Unit,
-        submitterId: Int = DEFAULT_DB_USER
+        submitterId: Int
     ) {
         val uri = "$MEAL_URI$SUBMITTER_QUERY=$submitterId"
 
         requestParser.request(
-            Method.POST,
-            uri,
-            MealOutput(
+            method = Method.POST,
+            urlStr = uri,
+            reqPayload = MealOutput(
                 name = name,
                 quantity = quantity,
                 unit = unit,
@@ -175,8 +175,8 @@ class MealDataSource(
                 },
                 cuisines = cuisines.map { it.name }
             ),
-            error,
-            { }
+            onError = error,
+            responseConsumer = { }
         )
     }
 
@@ -185,7 +185,7 @@ class MealDataSource(
         mealId: Int,
         success: (MealOutput) -> Unit,
         error: (VolleyError) -> Unit,
-        submitterId: Int = DEFAULT_DB_USER
+        submitterId: Int
     ) {
         var uri = "$RESTAURANT_ID_URI$SUBMITTER_QUERY=$submitterId"
         val params = hashMapOf(
@@ -193,12 +193,12 @@ class MealDataSource(
         )
         uri = uriBuilder.buildUri(uri, params)
         requestParser.requestAndRespond(
-            Method.POST,
-            uri,
-            OUTPUT_MEAL_DTO,
-            success,
-            error,
-            {
+            method = Method.POST,
+            urlStr = uri,
+            dtoClass = OUTPUT_MEAL_DTO,
+            onSuccess = success,
+            onError = error,
+            reqPayload = {
                 //TODO replace with output mapper
                 RestaurantMealOutput(
                     mealId = mealId
@@ -217,7 +217,7 @@ class MealDataSource(
         mealId: Int,
         success: (Class<*>) -> Unit,
         error: (VolleyError) -> Unit,
-        submitterId: Int = DEFAULT_DB_USER
+        submitterId: Int
     ) {
 
         var uri = "$MEAL_ID_URI$SUBMITTER_QUERY=$submitterId"
@@ -230,11 +230,11 @@ class MealDataSource(
                 )
             )
         requestParser.request(
-            Method.DELETE,
-            uri,
-            null,
-            error,
-            {}
+            method = Method.DELETE,
+            urlStr = uri,
+            reqPayload = null,
+            onError = error,
+            responseConsumer = {}
         )
     }
 
@@ -245,7 +245,7 @@ class MealDataSource(
         restaurantId: String,
         mealId: Int,
         error: (VolleyError) -> Unit,
-        submitterId: Int = DEFAULT_DB_USER
+        submitterId: Int
     ) {
 
         var uri = "$RESTAURANT_ID_MEAL_ID_URI$SUBMITTER_QUERY=$submitterId"
@@ -259,11 +259,11 @@ class MealDataSource(
         )
 
         requestParser.request(
-            Method.DELETE,
-            uri,
-            null,
-            error,
-            {}
+            method = Method.DELETE,
+            urlStr = uri,
+            reqPayload = null,
+            onError = error,
+            responseConsumer = {}
         )
     }
 
@@ -280,9 +280,9 @@ class MealDataSource(
         vote: Boolean,
         success: () -> Unit,
         error: (VolleyError) -> Unit,
-        submitterId: Int = DEFAULT_DB_USER
+        userSession: UserSession
     ) {
-        var uri = "$RESTAURANT_ID_MEAL_ID_VOTE_URI$SUBMITTER_QUERY=$submitterId"
+        var uri = "$RESTAURANT_ID_MEAL_ID_VOTE_URI$SUBMITTER_QUERY=$userSession.submitterId"
 
         uri = uriBuilder.buildUri(
             uri,
@@ -293,11 +293,11 @@ class MealDataSource(
         )
 
         requestParser.request(
-            Method.PUT,
-            uri,
-            VoteOutput(vote = vote),
-            error,
-            { success() }
+            method = Method.PUT,
+            urlStr = uri,
+            reqPayload = VoteOutput(vote = vote),
+            onError = error,
+            responseConsumer = { success() }
         )
     }
 }

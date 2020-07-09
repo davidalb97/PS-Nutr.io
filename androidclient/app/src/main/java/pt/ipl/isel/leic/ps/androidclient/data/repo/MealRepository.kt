@@ -136,9 +136,10 @@ class MealRepository(private val dataSource: MealDataSource) {
         unit: String,
         ingredients: Iterable<MealIngredient>,
         cuisines: Iterable<Cuisine>,
-        error: (VolleyError) -> Unit
+        error: (VolleyError) -> Unit,
+        submitterId: Int
     ) =
-        dataSource.postMeal(name, quantity, unit, ingredients, cuisines, error)
+        dataSource.postMeal(name, quantity, unit, ingredients, cuisines, error, submitterId)
 
 
     fun putVote(
@@ -146,6 +147,7 @@ class MealRepository(private val dataSource: MealDataSource) {
         mealId: Int,
         vote: Boolean,
         success: () -> Unit,
-        error: (VolleyError) -> Unit
-    ) = dataSource.updateVote(restaurantId, mealId, vote, success, error)
+        error: (VolleyError) -> Unit,
+        userSession: UserSession
+    ) = dataSource.updateVote(restaurantId, mealId, vote, success, error, userSession)
 }

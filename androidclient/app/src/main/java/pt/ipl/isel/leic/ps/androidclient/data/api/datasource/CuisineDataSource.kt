@@ -31,11 +31,11 @@ class CuisineDataSource(
         )
         uri = uriBuilder.buildUri(uri, params)
         requestParser.requestAndRespond(
-            Method.GET,
-            uri,
-            CuisinesInput::class.java,
-            success,
-            error
+            method = Method.GET,
+            urlStr = uri,
+            dtoClass = CuisinesInput::class.java,
+            onSuccess = success,
+            onError = error
         )
     }
 }

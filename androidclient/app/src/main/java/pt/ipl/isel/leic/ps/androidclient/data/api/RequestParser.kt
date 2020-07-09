@@ -48,12 +48,13 @@ class RequestParser(
     fun <Dto> requestAndRespond(
         method: Method,
         urlStr: String,
+        reqHeader: MutableMap<String, String>? = null,
         dtoClass: Class<Dto>,
         onSuccess: (Dto) -> Unit,
         onError: (VolleyError) -> Unit,
         reqPayload: Any? = null
     ) {
-        request(method, urlStr, reqPayload, onError) { strResponse ->
+        request(method, urlStr, reqHeader, reqPayload, onError) { strResponse ->
             parseDto(strResponse, dtoClass) { dtoArray ->
                 onSuccess(dtoArray)
             }
@@ -105,6 +106,7 @@ class RequestParser(
     fun request(
         method: Method,
         urlStr: String,
+        reqHeader: MutableMap<String, String>? = null,
         reqPayload: Any? = null,
         onError: (VolleyError) -> Unit,
         responseConsumer: (String) -> Unit
@@ -117,11 +119,12 @@ class RequestParser(
         //Custom string request that will allow a string payload
         val jsonRequest =
             BodyStringRequest(
-                method.value,
-                urlStr,
-                payloadStr,
-                Response.Listener { stringResponse -> responseConsumer(stringResponse) },
-                Response.ErrorListener { error -> onError(error) }
+                method = method.value,
+                url = urlStr,
+                reqHeader = reqHeader,
+                reqPayload = payloadStr,
+                listener = Response.Listener { stringResponse -> responseConsumer(stringResponse) },
+                errorListener = Response.ErrorListener { error -> onError(error) }
             )
         requestQueue.add(jsonRequest)
     }

@@ -7,7 +7,6 @@ import pt.ipl.isel.leic.ps.androidclient.data.model.UserLogin
 import pt.ipl.isel.leic.ps.androidclient.data.model.UserRegister
 import pt.ipl.isel.leic.ps.androidclient.data.model.UserSession
 
-const val DEFAULT_DB_USER = 3
 
 class UserRepository(private val userDataSource: UserDataSource) {
 

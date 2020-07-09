@@ -1,5 +1,7 @@
 package pt.ipl.isel.leic.ps.androidclient.ui.fragment.detail
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +12,7 @@ import com.bumptech.glide.Glide
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealInfo
 import pt.ipl.isel.leic.ps.androidclient.data.model.Source
+import pt.ipl.isel.leic.ps.androidclient.data.model.UserSession
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler.request.IngredientsRecyclerFragment
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.*
 import pt.ipl.isel.leic.ps.androidclient.ui.util.Logger
@@ -18,6 +21,7 @@ import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.MealInfoViewModel
 class MealDetailFragment : IngredientsRecyclerFragment() {
 
     private val log = Logger(MealDetailFragment::class.java)
+    lateinit var sharedPreferences: SharedPreferences
     lateinit var viewModelMealInfo: MealInfoViewModel
 
     private var receivedMeal: MealInfo? = null
@@ -65,6 +69,11 @@ class MealDetailFragment : IngredientsRecyclerFragment() {
     }
 
     private fun setupView(receivedMeal: MealInfo) {
+        sharedPreferences =
+            requireActivity().baseContext?.getSharedPreferences(
+                "preferences.xml",
+                Context.MODE_PRIVATE
+            )!!
         val mealMealImage = view?.findViewById<ImageView>(R.id.meal_detail_image)
         val mealMealTitle = view?.findViewById<TextView>(R.id.meal_detail_title)
         val mealVotesRl = view?.findViewById<RelativeLayout>(R.id.meal_info_votes)
@@ -93,6 +102,11 @@ class MealDetailFragment : IngredientsRecyclerFragment() {
                 //Show votes
                 mealVotesRl?.visibility = View.VISIBLE
 
+                val userSession = UserSession(
+                    sharedPreferences.getString("jwt", "")!!,
+                    sharedPreferences.getInt("submitterId", 0)
+                )
+
                 // Upvote
                 mealUpvoteButton?.setOnClickListener { view ->
                     viewModelMealInfo.setVote(
@@ -104,7 +118,8 @@ class MealDetailFragment : IngredientsRecyclerFragment() {
                                 Toast.LENGTH_LONG
                             ).show()
                         },
-                        error = log::e
+                        error = log::e,
+                        userSession = userSession
                     )
                 }
 
@@ -119,7 +134,8 @@ class MealDetailFragment : IngredientsRecyclerFragment() {
                                 Toast.LENGTH_LONG
                             ).show()
                         },
-                        error = log::e
+                        error = log::e,
+                        userSession = userSession
                     )
                 }
             }

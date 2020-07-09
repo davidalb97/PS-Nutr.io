@@ -7,7 +7,7 @@ import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.info.DetailedRestaur
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.output.RestaurantOutput
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.output.VoteOutput
 import pt.ipl.isel.leic.ps.androidclient.data.model.Cuisine
-import pt.ipl.isel.leic.ps.androidclient.data.repo.DEFAULT_DB_USER
+import pt.ipl.isel.leic.ps.androidclient.data.model.UserSession
 
 private const val LATITUDE_PARAM = ":latitude"
 private const val LONGITUDE_PARAM = ":longitude"
@@ -55,11 +55,11 @@ class RestaurantDataSource(
         uri = uriBuilder.buildUri(uri, params)
 
         requestParser.requestAndRespond(
-            Method.GET,
-            uri,
-            DetailedRestaurantInput::class.java,
-            success,
-            error
+            method = Method.GET,
+            urlStr = uri,
+            dtoClass = DetailedRestaurantInput::class.java,
+            onSuccess = success,
+            onError = error
         )
     }
 
@@ -81,11 +81,11 @@ class RestaurantDataSource(
         uri = uriBuilder.buildUri(uri, params)
 
         requestParser.requestAndRespond(
-            Method.GET,
-            uri,
-            Array<SimplifiedRestaurantInput>::class.java,
-            success,
-            error
+            method = Method.GET,
+            urlStr = uri,
+            dtoClass = Array<SimplifiedRestaurantInput>::class.java,
+            onSuccess = success,
+            onError = error
         )
     }
 
@@ -99,23 +99,24 @@ class RestaurantDataSource(
         longitude: Double,
         cuisines: Iterable<Cuisine>,
         error: (VolleyError) -> Unit,
-        submitterId: Int = DEFAULT_DB_USER
+        submitterId: Int
 
     ) {
+
 
         var uri = "$RESTAURANT$SUBMITTER_QUERY=$submitterId"
 
         requestParser.request(
-            Method.POST,
-            uri,
-            RestaurantOutput(
+            method = Method.POST,
+            urlStr = uri,
+            reqPayload = RestaurantOutput(
                 name = name,
                 latitude = latitude,
                 longitude = longitude,
                 cuisines = cuisines.map { it.name }
             ),
-            error,
-            { }
+            onError = error,
+            responseConsumer = { }
         )
     }
 
@@ -123,7 +124,7 @@ class RestaurantDataSource(
         id: String,
         report: String,
         error: (VolleyError) -> Unit,
-        submitterId: Int = DEFAULT_DB_USER
+        submitterId: Int
     ) {
         var uri = "$RESTAURANT_REPORT_URI$SUBMITTER_QUERY=$submitterId"
 
@@ -155,9 +156,9 @@ class RestaurantDataSource(
         vote: Boolean,
         success: () -> Unit,
         error: (VolleyError) -> Unit,
-        submitterId: Int = DEFAULT_DB_USER
+        userSession: UserSession
     ) {
-        var uri = "$RESTAURANT_VOTE_URI$SUBMITTER_QUERY=$submitterId"
+        var uri = "$RESTAURANT_VOTE_URI$SUBMITTER_QUERY=$userSession.submitterId"
 
         uri =
             uriBuilder.buildUri(
@@ -166,11 +167,11 @@ class RestaurantDataSource(
             )
 
         requestParser.request(
-            Method.PUT,
-            uri,
-            VoteOutput(vote = vote),
-            error,
-            { success() }
+            method = Method.PUT,
+            urlStr = uri,
+            reqPayload = VoteOutput(vote = vote),
+            onError = error,
+            responseConsumer = { success() }
         )
     }
 
