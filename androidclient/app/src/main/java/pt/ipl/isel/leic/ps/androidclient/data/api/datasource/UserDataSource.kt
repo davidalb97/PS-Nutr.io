@@ -1,13 +1,11 @@
 package pt.ipl.isel.leic.ps.androidclient.data.api.datasource
 
 import com.android.volley.VolleyError
-import pt.ipl.isel.leic.ps.androidclient.data.api.Method
-import pt.ipl.isel.leic.ps.androidclient.data.api.RequestParser
-import pt.ipl.isel.leic.ps.androidclient.data.api.URI_BASE
-import pt.ipl.isel.leic.ps.androidclient.data.api.UriBuilder
+import pt.ipl.isel.leic.ps.androidclient.data.api.*
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.UserLoginInput
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.output.LoginOutput
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.output.RegisterOutput
+import pt.ipl.isel.leic.ps.androidclient.data.model.UserSession
 
 private const val USER = "user"
 private const val LOGIN_URI = "$URI_BASE/$USER/login"
@@ -16,8 +14,7 @@ private const val LOGOUT_URI = "$URI_BASE/$USER/logout"
 private const val INSULIN_URI = "$URI_BASE/$USER/profile"
 
 class UserDataSource(
-    private val requestParser: RequestParser,
-    private val uriBuilder: UriBuilder
+    private val requestParser: RequestParser
 ) {
 
     /**
@@ -32,7 +29,7 @@ class UserDataSource(
 
         requestParser.request(
             method = Method.POST,
-            urlStr = REGISTER_URI,
+            uri = REGISTER_URI,
             reqPayload = RegisterOutput(
                 email = email,
                 username = username,
@@ -51,7 +48,7 @@ class UserDataSource(
     ) {
         requestParser.request(
             method = Method.POST,
-            urlStr = LOGIN_URI,
+            uri = LOGIN_URI,
             reqPayload = LoginOutput(
                 username = username,
                 password = password
@@ -69,26 +66,39 @@ class UserDataSource(
      * ################ GETs ################
      */
 
-    fun getUserInsulinProfiles(
+    fun getAllUserInsulinProfiles(
+        userSession: UserSession
+    ) {
 
+        //var uri = "$INSULIN_URI$SUBMITTER_QUERY=${userSession.submitterId}"
+
+        // Composing the authorization header
+        val reqHeader = buildAuthHeader(userSession.jwt)
+
+        /*requestParser.requestAndRespond(
+            method = Method.GET,
+            uri = INSULIN_URI,
+            reqHeader = reqHeader,
+            dtoClass = TODO(),
+            onSuccess = TODO(),
+            onError = TODO()
+        )*/
+    }
+
+    fun getAllUserCustomMeals(
+        userSession: UserSession
     ) {
 
     }
 
-    fun getUserCustomMeals(
-
+    fun getAllUserFavoriteMeals(
+        userSession: UserSession
     ) {
 
     }
 
-    fun getUserFavoriteMeals(
-
-    ) {
-
-    }
-
-    fun getUserSubmissions(
-
+    fun getAllUserSubmissions(
+        userSession: UserSession
     ) {
 
     }

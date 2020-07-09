@@ -9,17 +9,10 @@ import pt.ipl.isel.leic.ps.androidclient.data.api.dto.output.VoteOutput
 import pt.ipl.isel.leic.ps.androidclient.data.model.Cuisine
 import pt.ipl.isel.leic.ps.androidclient.data.model.UserSession
 
-// Authorization header composition
-private const val AUTH_HEADER = "Authorization"
-private const val BEARER = "Bearer"
-
 private const val LATITUDE_PARAM = ":latitude"
 private const val LONGITUDE_PARAM = ":longitude"
 private const val RESTAURANT_ID_PARAM = ":restaurantId"
 private const val MEAL_ID_PARAM = ":mealId"
-private const val COUNT_PARAM = ":count"
-private const val SKIP_PARAM = ":skip"
-private const val SUBMITTER_QUERY = "?submitter"
 
 private const val RESTAURANT_URI = "$URI_BASE/$RESTAURANT"
 private const val RESTAURANT_ID_URI = "$RESTAURANT_URI/$RESTAURANT_ID_PARAM"
@@ -40,8 +33,7 @@ val RESTAURANT_DTO = SimplifiedRestaurantInput::class.java
 
 
 class RestaurantDataSource(
-    private val requestParser: RequestParser,
-    private val uriBuilder: UriBuilder
+    private val requestParser: RequestParser
 ) {
 
     /**
@@ -56,11 +48,11 @@ class RestaurantDataSource(
         val params = hashMapOf(
             Pair(RESTAURANT_ID_PARAM, restaurantId)
         )
-        uri = uriBuilder.buildUri(uri, params)
+        uri = buildUri(uri, params)
 
         requestParser.requestAndRespond(
             method = Method.GET,
-            urlStr = uri,
+            uri = uri,
             dtoClass = DetailedRestaurantInput::class.java,
             onSuccess = success,
             onError = error
@@ -82,11 +74,11 @@ class RestaurantDataSource(
             Pair(SKIP_PARAM, "$skip"),
             Pair(COUNT_PARAM, "$count")
         )
-        uri = uriBuilder.buildUri(uri, params)
+        uri = buildUri(uri, params)
 
         requestParser.requestAndRespond(
             method = Method.GET,
-            urlStr = uri,
+            uri = uri,
             dtoClass = Array<SimplifiedRestaurantInput>::class.java,
             onSuccess = success,
             onError = error
@@ -110,12 +102,11 @@ class RestaurantDataSource(
         var uri = "$RESTAURANT$SUBMITTER_QUERY=${userSession.submitterId}"
 
         // Composing the authorization header
-        val reqHeader: MutableMap<String, String> =
-            mutableMapOf(Pair(AUTH_HEADER, "$BEARER ${userSession.jwt}"))
+        val reqHeader = buildAuthHeader(userSession.jwt)
 
         requestParser.request(
             method = Method.POST,
-            urlStr = uri,
+            uri = uri,
             reqHeader = reqHeader,
             reqPayload = RestaurantOutput(
                 name = name,
@@ -136,11 +127,7 @@ class RestaurantDataSource(
     ) {
         var uri = "$RESTAURANT_REPORT_URI$SUBMITTER_QUERY=${userSession.submitterId}"
 
-        uri =
-            uriBuilder.buildUri(
-                uri,
-                hashMapOf(Pair(RESTAURANT_ID_PARAM, id))
-            )
+        uri = buildUri(uri, hashMapOf(Pair(RESTAURANT_ID_PARAM, id)))
 
         /*requestParser.request(
             Method.POST,
@@ -168,19 +155,14 @@ class RestaurantDataSource(
     ) {
         var uri = "$RESTAURANT_VOTE_URI$SUBMITTER_QUERY=${userSession.submitterId}"
 
-        uri =
-            uriBuilder.buildUri(
-                uri,
-                hashMapOf(Pair(RESTAURANT_ID_PARAM, restaurant))
-            )
+        uri = buildUri(uri, hashMapOf(Pair(RESTAURANT_ID_PARAM, restaurant)))
 
         // Composing the authorization header
-        val reqHeader: MutableMap<String, String> =
-            mutableMapOf(Pair(AUTH_HEADER, "$BEARER ${userSession.jwt}"))
+        val reqHeader = buildAuthHeader(userSession.jwt)
 
         requestParser.request(
             method = Method.PUT,
-            urlStr = uri,
+            uri = uri,
             reqHeader = reqHeader,
             reqPayload = VoteOutput(vote = vote),
             onError = error,

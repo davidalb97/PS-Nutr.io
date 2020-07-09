@@ -47,14 +47,14 @@ class RequestParser(
      */
     fun <Dto> requestAndRespond(
         method: Method,
-        urlStr: String,
+        uri: String,
         reqHeader: MutableMap<String, String>? = null,
         dtoClass: Class<Dto>,
         onSuccess: (Dto) -> Unit,
         onError: (VolleyError) -> Unit,
         reqPayload: Any? = null
     ) {
-        request(method, urlStr, reqHeader, reqPayload, onError) { strResponse ->
+        request(method, uri, reqHeader, reqPayload, onError) { strResponse ->
             parseDto(strResponse, dtoClass) { dtoArray ->
                 onSuccess(dtoArray)
             }
@@ -105,13 +105,13 @@ class RequestParser(
      */
     fun request(
         method: Method,
-        urlStr: String,
+        uri: String,
         reqHeader: MutableMap<String, String>? = null,
         reqPayload: Any? = null,
         onError: (VolleyError) -> Unit,
         responseConsumer: (String) -> Unit
     ) {
-        Log.v(TAG, urlStr)
+        Log.v(TAG, uri)
 
         //Serialize request payload to String
         val payloadStr = jsonMapper.writeValueAsString(reqPayload)
@@ -120,7 +120,7 @@ class RequestParser(
         val jsonRequest =
             BodyStringRequest(
                 method = method.value,
-                url = urlStr,
+                url = uri,
                 reqHeader = reqHeader,
                 reqPayload = payloadStr,
                 listener = Response.Listener { stringResponse -> responseConsumer(stringResponse) },
