@@ -1,19 +1,28 @@
 package pt.ipl.isel.leic.ps.androidclient.data.api.datasource
 
 import com.android.volley.VolleyError
-import pt.ipl.isel.leic.ps.androidclient.data.api.*
+import pt.ipl.isel.leic.ps.androidclient.data.api.Method
+import pt.ipl.isel.leic.ps.androidclient.data.api.RequestParser
+import pt.ipl.isel.leic.ps.androidclient.data.api.URI_BASE
+import pt.ipl.isel.leic.ps.androidclient.data.api.UriBuilder
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.UserLoginInput
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.output.LoginOutput
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.output.RegisterOutput
 
-private const val LOGIN_URI = "$URI_BASE/login"
-private const val LOGOUT_URI = "$URI_BASE/logout"
-private const val REGISTER_URI = "$URI_BASE/register"
+private const val USER = "user"
+private const val LOGIN_URI = "$URI_BASE/$USER/login"
+private const val REGISTER_URI = "$URI_BASE/$USER/register"
+private const val LOGOUT_URI = "$URI_BASE/$USER/logout"
+private const val INSULIN_URI = "$URI_BASE/$USER/profile"
 
 class UserDataSource(
     private val requestParser: RequestParser,
     private val uriBuilder: UriBuilder
 ) {
+
+    /**
+     * ################ Auth methods ################
+     */
     fun register(
         email: String,
         username: String,
@@ -53,6 +62,78 @@ class UserDataSource(
     }
 
     fun logout() {
+
+    }
+
+    /**
+     * ################ GETs ################
+     */
+
+    fun getUserInsulinProfiles(
+
+    ) {
+
+    }
+
+    fun getUserCustomMeals(
+
+    ) {
+
+    }
+
+    fun getUserFavoriteMeals(
+
+    ) {
+
+    }
+
+    fun getUserSubmissions(
+
+    ) {
+
+    }
+
+    /**
+     * ################ POSTs ################
+     */
+
+    fun postUserInsulinProfile(
+
+    ) {
+
+    }
+
+    fun postUserCustomMeal(
+
+    ) {
+
+    }
+
+    fun postUserFavoriteMeal(
+
+    ) {
+
+    }
+
+    /**
+     * ################ DELETEs ################
+     */
+
+    fun deleteUserInsulinProfile(
+
+    ) {
+
+    }
+
+    fun deleteUserCustomMeal(
+
+    ) {
+
+    }
+
+    fun deleteUserFavoriteMeal(
+
+    ) {
 
     }
 
