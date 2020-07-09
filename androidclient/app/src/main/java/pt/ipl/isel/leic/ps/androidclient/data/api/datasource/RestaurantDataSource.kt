@@ -9,6 +9,10 @@ import pt.ipl.isel.leic.ps.androidclient.data.api.dto.output.VoteOutput
 import pt.ipl.isel.leic.ps.androidclient.data.model.Cuisine
 import pt.ipl.isel.leic.ps.androidclient.data.model.UserSession
 
+// Authorization header composition
+private const val AUTH_HEADER = "Authorization"
+private const val BEARER = "Bearer"
+
 private const val LATITUDE_PARAM = ":latitude"
 private const val LONGITUDE_PARAM = ":longitude"
 private const val RESTAURANT_ID_PARAM = ":restaurantId"
@@ -99,16 +103,20 @@ class RestaurantDataSource(
         longitude: Double,
         cuisines: Iterable<Cuisine>,
         error: (VolleyError) -> Unit,
-        submitterId: Int
+        userSession: UserSession
 
     ) {
 
+        var uri = "$RESTAURANT$SUBMITTER_QUERY=${userSession.submitterId}"
 
-        var uri = "$RESTAURANT$SUBMITTER_QUERY=$submitterId"
+        // Composing the authorization header
+        val reqHeader: MutableMap<String, String> =
+            mutableMapOf(Pair(AUTH_HEADER, "$BEARER ${userSession.jwt}"))
 
         requestParser.request(
             method = Method.POST,
             urlStr = uri,
+            reqHeader = reqHeader,
             reqPayload = RestaurantOutput(
                 name = name,
                 latitude = latitude,
@@ -124,9 +132,9 @@ class RestaurantDataSource(
         id: String,
         report: String,
         error: (VolleyError) -> Unit,
-        submitterId: Int
+        userSession: UserSession
     ) {
-        var uri = "$RESTAURANT_REPORT_URI$SUBMITTER_QUERY=$submitterId"
+        var uri = "$RESTAURANT_REPORT_URI$SUBMITTER_QUERY=${userSession.submitterId}"
 
         uri =
             uriBuilder.buildUri(
@@ -158,7 +166,7 @@ class RestaurantDataSource(
         error: (VolleyError) -> Unit,
         userSession: UserSession
     ) {
-        var uri = "$RESTAURANT_VOTE_URI$SUBMITTER_QUERY=$userSession.submitterId"
+        var uri = "$RESTAURANT_VOTE_URI$SUBMITTER_QUERY=${userSession.submitterId}"
 
         uri =
             uriBuilder.buildUri(
@@ -166,9 +174,14 @@ class RestaurantDataSource(
                 hashMapOf(Pair(RESTAURANT_ID_PARAM, restaurant))
             )
 
+        // Composing the authorization header
+        val reqHeader: MutableMap<String, String> =
+            mutableMapOf(Pair(AUTH_HEADER, "$BEARER ${userSession.jwt}"))
+
         requestParser.request(
             method = Method.PUT,
             urlStr = uri,
+            reqHeader = reqHeader,
             reqPayload = VoteOutput(vote = vote),
             onError = error,
             responseConsumer = { success() }

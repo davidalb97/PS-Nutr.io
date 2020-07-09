@@ -14,6 +14,10 @@ import pt.ipl.isel.leic.ps.androidclient.data.model.Cuisine
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealIngredient
 import pt.ipl.isel.leic.ps.androidclient.data.model.UserSession
 
+// Authorization header composition
+private const val AUTH_HEADER = "Authorization"
+private const val BEARER = "Bearer"
+
 private const val RESTAURANT_ID_PARAM = ":restaurantId"
 private const val MEAL_ID_PARAM = ":mealId"
 private const val COUNT_PARAM = ":count"
@@ -155,13 +159,18 @@ class MealDataSource(
         ingredients: Iterable<MealIngredient>,
         cuisines: Iterable<Cuisine>,
         error: (VolleyError) -> Unit,
-        submitterId: Int
+        userSession: UserSession
     ) {
-        val uri = "$MEAL_URI$SUBMITTER_QUERY=$submitterId"
+        val uri = "$MEAL_URI$SUBMITTER_QUERY=${userSession.submitterId}"
+
+        // Composing the authorization header
+        val reqHeader: MutableMap<String, String> =
+            mutableMapOf(Pair(AUTH_HEADER, "$BEARER ${userSession.jwt}"))
 
         requestParser.request(
             method = Method.POST,
             urlStr = uri,
+            reqHeader = reqHeader,
             reqPayload = MealOutput(
                 name = name,
                 quantity = quantity,
@@ -185,16 +194,22 @@ class MealDataSource(
         mealId: Int,
         success: (MealOutput) -> Unit,
         error: (VolleyError) -> Unit,
-        submitterId: Int
+        userSession: UserSession
     ) {
-        var uri = "$RESTAURANT_ID_URI$SUBMITTER_QUERY=$submitterId"
+        var uri = "$RESTAURANT_ID_URI$SUBMITTER_QUERY=${userSession.submitterId}"
         val params = hashMapOf(
             Pair(RESTAURANT_ID_PARAM, restaurantId)
         )
         uri = uriBuilder.buildUri(uri, params)
+
+        // Composing the authorization header
+        val reqHeader: MutableMap<String, String> =
+            mutableMapOf(Pair(AUTH_HEADER, "$BEARER ${userSession.jwt}"))
+
         requestParser.requestAndRespond(
             method = Method.POST,
             urlStr = uri,
+            reqHeader = reqHeader,
             dtoClass = OUTPUT_MEAL_DTO,
             onSuccess = success,
             onError = error,
@@ -217,10 +232,10 @@ class MealDataSource(
         mealId: Int,
         success: (Class<*>) -> Unit,
         error: (VolleyError) -> Unit,
-        submitterId: Int
+        userSession: UserSession
     ) {
 
-        var uri = "$MEAL_ID_URI$SUBMITTER_QUERY=$submitterId"
+        var uri = "$MEAL_ID_URI$SUBMITTER_QUERY=${userSession.submitterId}"
 
         uri =
             uriBuilder.buildUri(
@@ -229,9 +244,15 @@ class MealDataSource(
                     Pair(MEAL_ID_PARAM, "$mealId")
                 )
             )
+
+        // Composing the authorization header
+        val reqHeader: MutableMap<String, String> =
+            mutableMapOf(Pair(AUTH_HEADER, "$BEARER ${userSession.jwt}"))
+
         requestParser.request(
             method = Method.DELETE,
             urlStr = uri,
+            reqHeader = reqHeader,
             reqPayload = null,
             onError = error,
             responseConsumer = {}
@@ -245,10 +266,10 @@ class MealDataSource(
         restaurantId: String,
         mealId: Int,
         error: (VolleyError) -> Unit,
-        submitterId: Int
+        userSession: UserSession
     ) {
 
-        var uri = "$RESTAURANT_ID_MEAL_ID_URI$SUBMITTER_QUERY=$submitterId"
+        var uri = "$RESTAURANT_ID_MEAL_ID_URI$SUBMITTER_QUERY=${userSession.submitterId}"
 
         uri = uriBuilder.buildUri(
             uri,
@@ -258,9 +279,14 @@ class MealDataSource(
             )
         )
 
+        // Composing the authorization header
+        val reqHeader: MutableMap<String, String> =
+            mutableMapOf(Pair(AUTH_HEADER, "$BEARER ${userSession.jwt}"))
+
         requestParser.request(
             method = Method.DELETE,
             urlStr = uri,
+            reqHeader = reqHeader,
             reqPayload = null,
             onError = error,
             responseConsumer = {}
@@ -282,7 +308,7 @@ class MealDataSource(
         error: (VolleyError) -> Unit,
         userSession: UserSession
     ) {
-        var uri = "$RESTAURANT_ID_MEAL_ID_VOTE_URI$SUBMITTER_QUERY=$userSession.submitterId"
+        var uri = "$RESTAURANT_ID_MEAL_ID_VOTE_URI$SUBMITTER_QUERY=${userSession.submitterId}"
 
         uri = uriBuilder.buildUri(
             uri,
@@ -292,9 +318,14 @@ class MealDataSource(
             )
         )
 
+        // Composing the authorization header
+        val reqHeader: MutableMap<String, String> =
+            mutableMapOf(Pair(AUTH_HEADER, "$BEARER ${userSession.jwt}"))
+
         requestParser.request(
             method = Method.PUT,
             urlStr = uri,
+            reqHeader = reqHeader,
             reqPayload = VoteOutput(vote = vote),
             onError = error,
             responseConsumer = { success() }

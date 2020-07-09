@@ -137,9 +137,9 @@ class MealRepository(private val dataSource: MealDataSource) {
         ingredients: Iterable<MealIngredient>,
         cuisines: Iterable<Cuisine>,
         error: (VolleyError) -> Unit,
-        submitterId: Int
+        userSession: UserSession
     ) =
-        dataSource.postMeal(name, quantity, unit, ingredients, cuisines, error, submitterId)
+        dataSource.postMeal(name, quantity, unit, ingredients, cuisines, error, userSession)
 
 
     fun putVote(

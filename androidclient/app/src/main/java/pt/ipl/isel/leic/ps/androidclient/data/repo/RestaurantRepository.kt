@@ -63,7 +63,7 @@ class RestaurantRepository(private val dataSource: RestaurantDataSource) {
         longitude: Double,
         cuisines: Iterable<Cuisine>,
         error: (VolleyError) -> Unit,
-        submitterId: Int
+        userSession: UserSession
     ) {
         dataSource.postRestaurant(
             name,
@@ -71,7 +71,7 @@ class RestaurantRepository(private val dataSource: RestaurantDataSource) {
             longitude,
             cuisines,
             error,
-            submitterId
+            userSession
         )
     }
 
