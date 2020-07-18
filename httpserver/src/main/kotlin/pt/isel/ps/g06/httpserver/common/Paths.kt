@@ -32,5 +32,8 @@ const val INGREDIENTS = "/ingredients"
 const val USER = "/user"
 const val LOGIN = "$USER/login"
 const val REGISTER = "$USER/register"
-const val INSULIN_PROFILES = "$USER/{$SUBMITTER_ID_VALUE}/profile"
-const val INSULIN_PROFILE = "$USER/{$SUBMITTER_ID_VALUE}/profile/{$PROFILE_NAME_VALUE}"
+const val INSULIN_PROFILES = "$USER/profile"
+
+//Request utils
+const val AUTH_HEADER = "Authorization"
+const val BEARER = "Bearer "
