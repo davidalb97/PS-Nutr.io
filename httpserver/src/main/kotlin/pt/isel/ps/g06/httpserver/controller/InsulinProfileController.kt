@@ -10,6 +10,7 @@ import pt.isel.ps.g06.httpserver.common.BEARER
 import pt.isel.ps.g06.httpserver.common.INSULIN_PROFILES
 import pt.isel.ps.g06.httpserver.common.PROFILE_NAME_VALUE
 import pt.isel.ps.g06.httpserver.model.InsulinProfile
+import pt.isel.ps.g06.httpserver.model.RequestError
 import pt.isel.ps.g06.httpserver.security.JwtUtil
 import pt.isel.ps.g06.httpserver.security.MyUserDetailsService
 import pt.isel.ps.g06.httpserver.service.InsulinProfileService
@@ -39,7 +40,10 @@ class InsulinProfileController(
             ResponseEntity.ok(insulinProfileService.getProfileFromUser(submitterId, profileName))
         } catch (e: Exception) {
             // TODO - Better exception handling
-            ResponseEntity("You don't have any profile called '$profileName'", HttpStatus.NOT_FOUND)
+            ResponseEntity(
+                    RequestError(404, "You don't have any profile called '$profileName'"),
+                    HttpStatus.NOT_FOUND
+            )
         }
     }
 
@@ -51,9 +55,13 @@ class InsulinProfileController(
         val submitterId = getSubmitterIdFromJwt(jwt)
 
         if (submitterId != insulinProfile.submitterId) {
-            return ResponseEntity("Unauthorized", HttpStatus.UNAUTHORIZED)
+            return ResponseEntity(
+                    RequestError(401, "Unauthorized"),
+                    HttpStatus.UNAUTHORIZED
+            )
         }
 
+        // TODO - created
         return ResponseEntity.ok(
                 insulinProfileService.createProfile(
                         insulinProfile.submitterId,
@@ -77,7 +85,10 @@ class InsulinProfileController(
             ResponseEntity.ok(insulinProfileService.deleteProfile(submitterId, profileName))
         } catch (e: Exception) {
             // TODO - Better exception handling
-            ResponseEntity("You don't have any profile called '$profileName'", HttpStatus.NOT_FOUND)
+            ResponseEntity(
+                    RequestError(404, "You don't have any profile called '$profileName'"),
+                    HttpStatus.NOT_FOUND
+            )
         }
     }
 

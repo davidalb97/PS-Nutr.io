@@ -20,6 +20,7 @@ DROP TABLE IF EXISTS Submission CASCADE;
 DROP TABLE IF EXISTS Api CASCADE;
 DROP TABLE IF EXISTS _User CASCADE;
 DROP TABLE IF EXISTS InsulinProfile CASCADE;
+DROP TABLE IF EXISTS CustomMeal CASCADE;
 DROP TABLE IF EXISTS Submitter CASCADE;
 DROP FUNCTION IF EXISTS AddFood;
 --DROP SEQUENCE submitter_submitter_id_seq CASCADE;
@@ -163,6 +164,16 @@ CREATE TABLE RestaurantMeal(
 	FOREIGN KEY(submission_id) REFERENCES Submission(submission_id) ON DELETE CASCADE,
 	FOREIGN KEY(restaurant_submission_id) REFERENCES Restaurant(submission_id) ON DELETE CASCADE,
 	FOREIGN KEY(meal_submission_id) REFERENCES Meal(submission_id) ON DELETE CASCADE
+);
+
+CREATE TABLE CustomMeal(
+	submission_id integer PRIMARY KEY,	
+	meal_name varchar(30),
+	-- TODO: add ingredient support
+	meal_portion integer,
+	carb_amount integer,
+	image_url varchar(100),
+	FOREIGN KEY(submission_id) REFERENCES Submission(submission_id) ON DELETE CASCADE	
 );
 
 CREATE TABLE Favorite(
