@@ -51,6 +51,7 @@ CREATE TABLE InsulinProfile(
 	glucose_objective integer,
 	insulin_sensitivity_factor integer,
 	carbohydrate_ratio integer,
+	modification_date timestamp with time zone default CURRENT_TIMESTAMP,
 	PRIMARY KEY(submitter_id, profile_name),
 	FOREIGN KEY(submitter_id) REFERENCES _User(submitter_id)
 );
