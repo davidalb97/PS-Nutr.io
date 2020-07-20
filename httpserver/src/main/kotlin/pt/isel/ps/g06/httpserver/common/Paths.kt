@@ -36,6 +36,7 @@ const val USER = "/user"
 const val LOGIN = "$USER/login"
 const val REGISTER = "$USER/register"
 const val INSULIN_PROFILES = "$USER/profile"
+const val INSULIN_PROFILE = "$USER/profile/{$PROFILE_NAME_VALUE}"
 
 //Request utils
 const val AUTH_HEADER = "Authorization"

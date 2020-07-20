@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.*
 import pt.isel.ps.g06.httpserver.common.AUTH_HEADER
-import pt.isel.ps.g06.httpserver.common.BEARER
+import pt.isel.ps.g06.httpserver.common.INSULIN_PROFILE
 import pt.isel.ps.g06.httpserver.common.INSULIN_PROFILES
 import pt.isel.ps.g06.httpserver.common.PROFILE_NAME_VALUE
 import pt.isel.ps.g06.httpserver.model.InsulinProfile
@@ -14,6 +14,7 @@ import pt.isel.ps.g06.httpserver.model.RequestError
 import pt.isel.ps.g06.httpserver.security.JwtUtil
 import pt.isel.ps.g06.httpserver.security.MyUserDetailsService
 import pt.isel.ps.g06.httpserver.service.InsulinProfileService
+import org.springframework.web.util.UriComponentsBuilder
 
 @Controller
 class InsulinProfileController(
@@ -54,25 +55,22 @@ class InsulinProfileController(
     ): ResponseEntity<*> {
         val submitterId = getSubmitterIdFromJwt(jwt)
 
-        if (submitterId != insulinProfile.submitterId) {
-            return ResponseEntity(
-                    RequestError(401, "Unauthorized"),
-                    HttpStatus.UNAUTHORIZED
-            )
-        }
-
-        // TODO - created
-        return ResponseEntity.ok(
-                insulinProfileService.createProfile(
-                        insulinProfile.submitterId,
-                        insulinProfile.profileName,
-                        insulinProfile.startTime,
-                        insulinProfile.endTime,
-                        insulinProfile.glucoseObjective,
-                        insulinProfile.insulinSensitivityFactor,
-                        insulinProfile.carbohydrateRatio
-                )
+        val profile = insulinProfileService.createProfile(
+                submitterId,
+                insulinProfile.profileName,
+                insulinProfile.startTime,
+                insulinProfile.endTime,
+                insulinProfile.glucoseObjective,
+                insulinProfile.insulinSensitivityFactor,
+                insulinProfile.carbohydrateRatio
         )
+
+        return ResponseEntity.created(
+                UriComponentsBuilder
+                        .fromUriString(INSULIN_PROFILE)
+                        .buildAndExpand(mapOf(Pair(PROFILE_NAME_VALUE, profile.profileName)))
+                        .toUri()
+        ).build()
     }
 
     @DeleteMapping(INSULIN_PROFILES)
