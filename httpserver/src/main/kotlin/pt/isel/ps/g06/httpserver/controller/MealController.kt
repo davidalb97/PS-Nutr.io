@@ -8,14 +8,15 @@ import pt.isel.ps.g06.httpserver.common.*
 import pt.isel.ps.g06.httpserver.common.exception.clientError.InvalidQueryParameter
 import pt.isel.ps.g06.httpserver.common.exception.forbidden.NotSubmissionOwnerException
 import pt.isel.ps.g06.httpserver.common.exception.notFound.MealNotFoundException
-import pt.isel.ps.g06.httpserver.common.interceptor.ensureSubmitter
 import pt.isel.ps.g06.httpserver.dataAccess.input.MealInput
 import pt.isel.ps.g06.httpserver.dataAccess.output.meal.DetailedMealOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.meal.SimplifiedMealContainer
 import pt.isel.ps.g06.httpserver.dataAccess.output.meal.toDetailedMealOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.meal.toSimplifiedMealContainer
+import pt.isel.ps.g06.httpserver.service.AuthenticationService
 import pt.isel.ps.g06.httpserver.service.MealService
 import pt.isel.ps.g06.httpserver.service.SubmissionService
+import pt.isel.ps.g06.httpserver.service.UserService
 import javax.servlet.http.HttpServletRequest
 import javax.validation.Valid
 
@@ -24,7 +25,9 @@ import javax.validation.Valid
 @RequestMapping(produces = [MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_PROBLEM_JSON_VALUE])
 class MealController(
         private val mealService: MealService,
-        private val submissionService: SubmissionService
+        private val submissionService: SubmissionService,
+        private val userService: UserService,
+        private val authenticationService: AuthenticationService
 ) {
     /**
      * Obtains all meals present in the database, filtered down by query parameters
@@ -83,8 +86,12 @@ class MealController(
     }
 
     @PostMapping(MEALS)
-    fun createMeal(@Valid @RequestBody meal: MealInput, request: HttpServletRequest): ResponseEntity<Void> {
-        val (submitterId) = request.ensureSubmitter()
+    fun createMeal(
+            @RequestHeader(AUTH_HEADER) jwt: String,
+            @Valid @RequestBody meal: MealInput,
+            request: HttpServletRequest
+    ): ResponseEntity<Void> {
+        val submitterId = userService.getSubmitterIdFromUserName(authenticationService.getUsernameByJwt(jwt))
 
         //Due to validators we are sure fields are never null
         val createdMeal = mealService.createMeal(
@@ -104,8 +111,12 @@ class MealController(
     }
 
     @DeleteMapping(MEAL)
-    fun deleteMeal(@PathVariable(MEAL_ID_VALUE) mealId: Int, request: HttpServletRequest): ResponseEntity<Void> {
-        val (submitterId) = request.ensureSubmitter()
+    fun deleteMeal(
+            @RequestHeader(AUTH_HEADER) jwt: String,
+            @PathVariable(MEAL_ID_VALUE) mealId: Int,
+            request: HttpServletRequest
+    ): ResponseEntity<Void> {
+        val submitterId = userService.getSubmitterIdFromUserName(authenticationService.getUsernameByJwt(jwt))
 
         val meal = mealService.getMeal(mealId) ?: throw MealNotFoundException()
 

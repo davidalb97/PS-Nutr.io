@@ -1,11 +1,11 @@
 package pt.isel.ps.g06.httpserver.security
 
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource
 import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
+import pt.isel.ps.g06.httpserver.service.UserService
 import javax.servlet.FilterChain
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
@@ -14,8 +14,8 @@ private const val AUTH_HEADER = "Authorization"
 
 @Component
 class JwtFilter(
-        @Autowired private val myUserDetailsService: MyUserDetailsService,
-        @Autowired private val jwtUtil: JwtUtil
+        private val jwtUtil: JwtUtil,
+        private val userService: UserService
 ) : OncePerRequestFilter() {
 
     override fun doFilterInternal(request: HttpServletRequest, response: HttpServletResponse, filterChain: FilterChain) {
@@ -30,7 +30,7 @@ class JwtFilter(
         }
 
         if (jwt != null && username != null && SecurityContextHolder.getContext().authentication == null) {
-            val userDetails = this.myUserDetailsService.loadUserByUsername(username)
+            val userDetails = this.userService.loadUserByUsername(username)
 
             if (jwtUtil.validadeToken(jwt, userDetails)) {
                 val userPasswordAuthenticationToken = UsernamePasswordAuthenticationToken(

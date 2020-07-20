@@ -7,7 +7,6 @@ import org.springframework.web.util.UriComponentsBuilder
 import pt.isel.ps.g06.httpserver.common.*
 import pt.isel.ps.g06.httpserver.common.exception.forbidden.NotSubmissionOwnerException
 import pt.isel.ps.g06.httpserver.common.exception.notFound.RestaurantNotFoundException
-import pt.isel.ps.g06.httpserver.common.interceptor.ensureSubmitter
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.RestaurantApiType
 import pt.isel.ps.g06.httpserver.dataAccess.input.RestaurantInput
 import pt.isel.ps.g06.httpserver.dataAccess.input.VoteInput
@@ -18,8 +17,10 @@ import pt.isel.ps.g06.httpserver.dataAccess.output.restaurant.toSimplifiedRestau
 import pt.isel.ps.g06.httpserver.exception.InvalidInputDomain
 import pt.isel.ps.g06.httpserver.exception.InvalidInputException
 import pt.isel.ps.g06.httpserver.model.Restaurant
+import pt.isel.ps.g06.httpserver.service.AuthenticationService
 import pt.isel.ps.g06.httpserver.service.RestaurantService
 import pt.isel.ps.g06.httpserver.service.SubmissionService
+import pt.isel.ps.g06.httpserver.service.UserService
 import javax.servlet.http.HttpServletRequest
 import javax.validation.Valid
 
@@ -31,7 +32,9 @@ private const val INVALID_RESTAURANT_SEARCH = "To search nearby restaurants, a g
 class RestaurantController(
         private val restaurantService: RestaurantService,
         private val submissionService: SubmissionService,
-        private val restaurantIdentifierBuilder: RestaurantIdentifierBuilder
+        private val userService: UserService,
+        private val restaurantIdentifierBuilder: RestaurantIdentifierBuilder,
+        private val authenticationService: AuthenticationService
 ) {
     /**
      * Allows to search for Restaurants from both an API (see [RestaurantApiType] for supported APIs) and
@@ -79,8 +82,12 @@ class RestaurantController(
     }
 
     @PostMapping(RESTAURANTS, consumes = [MediaType.APPLICATION_JSON_VALUE])
-    fun createRestaurant(@Valid @RequestBody restaurant: RestaurantInput, request: HttpServletRequest): ResponseEntity<Void> {
-        val (submitterId) = request.ensureSubmitter()
+    fun createRestaurant(
+            @RequestHeader(AUTH_HEADER) jwt: String,
+            @Valid @RequestBody restaurant: RestaurantInput,
+            request: HttpServletRequest
+    ): ResponseEntity<Void> {
+        val submitterId = userService.getSubmitterIdFromUserName(authenticationService.getUsernameByJwt(jwt))
 
         val createdRestaurant = restaurantService.createRestaurant(
                 submitterId = submitterId,
@@ -99,8 +106,12 @@ class RestaurantController(
     }
 
     @DeleteMapping(RESTAURANT, consumes = [MediaType.ALL_VALUE])
-    fun deleteRestaurant(@PathVariable(RESTAURANT_ID_VALUE) restaurantId: String, request: HttpServletRequest): ResponseEntity<Void> {
-        val (submitterId) = request.ensureSubmitter()
+    fun deleteRestaurant(
+            @RequestHeader(AUTH_HEADER) jwt: String,
+            @PathVariable(RESTAURANT_ID_VALUE) restaurantId: String,
+            request: HttpServletRequest
+    ): ResponseEntity<Void> {
+        val submitterId = userService.getSubmitterIdFromUserName(authenticationService.getUsernameByJwt(jwt))
         val restaurant = ensureRestaurantExists(restaurantId)
 
 
@@ -115,11 +126,12 @@ class RestaurantController(
 
     @PutMapping(RESTAURANT_VOTE, consumes = [MediaType.APPLICATION_JSON_VALUE])
     fun alterRestaurantVote(
+            @RequestHeader(AUTH_HEADER) jwt: String,
             @PathVariable(RESTAURANT_ID_VALUE) restaurantId: String,
             @RequestBody userVote: VoteInput,
             request: HttpServletRequest
     ): ResponseEntity<Void> {
-        val (submitterId) = request.ensureSubmitter()
+        val submitterId = userService.getSubmitterIdFromUserName(authenticationService.getUsernameByJwt(jwt))
         val restaurant = ensureRestaurantExists(restaurantId)
 
         submissionService.alterRestaurantVote(
@@ -133,10 +145,11 @@ class RestaurantController(
 
     @DeleteMapping(RESTAURANT_VOTE, consumes = [MediaType.ALL_VALUE])
     fun deleteRestaurantVote(
+            @RequestHeader(AUTH_HEADER) jwt: String,
             @PathVariable(RESTAURANT_ID_VALUE) restaurantId: String,
             request: HttpServletRequest
     ): ResponseEntity<Void> {
-        val (submitterId) = request.ensureSubmitter()
+        val submitterId = userService.getSubmitterIdFromUserName(authenticationService.getUsernameByJwt(jwt))
 
         val restaurant = ensureRestaurantExists(restaurantId)
         submissionService.deleteRestaurantVote(

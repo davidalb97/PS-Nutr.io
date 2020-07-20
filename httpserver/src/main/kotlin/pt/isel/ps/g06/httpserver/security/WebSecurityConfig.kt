@@ -14,20 +14,20 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
+import pt.isel.ps.g06.httpserver.service.UserService
 
 @Configuration
 @EnableWebSecurity
 class WebSecurityConfig(
-        @Autowired private val myUserDetailsService: MyUserDetailsService,
-        @Autowired private val jwtFilter: JwtFilter
+        private val userService: UserService,
+        private val jwtFilter: JwtFilter
 ) : WebSecurityConfigurerAdapter() {
 
     @Bean
     fun authenticationProvider(): AuthenticationProvider {
         val provider = DaoAuthenticationProvider()
-        provider.setUserDetailsService(myUserDetailsService)
+        provider.setUserDetailsService(userService)
         provider.setPasswordEncoder(passwordEncoder())
-
         return provider
     }
 
@@ -36,7 +36,7 @@ class WebSecurityConfig(
      */
     @Autowired
     override fun configure(auth: AuthenticationManagerBuilder) {
-        auth.userDetailsService(myUserDetailsService)
+        auth.userDetailsService(userService)
     }
 
     /**
@@ -77,5 +77,4 @@ class WebSecurityConfig(
 
     @Bean
     fun passwordEncoder(): BCryptPasswordEncoder = BCryptPasswordEncoder()
-
 }

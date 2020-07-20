@@ -6,7 +6,6 @@ import org.jdbi.v3.sqlobject.customizer.BindList
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbSubmitterDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.mapper.DbRowSubmitterMapper
-import java.time.OffsetDateTime
 
 //SubmissionSubmitter table constants
 private const val SS_table = SubmissionSubmitterDao.table
@@ -39,6 +38,6 @@ interface SubmitterDao {
     @SqlQuery("SELECT * FROM $table WHERE $name = :name")
     fun getSubmitterByName(@Bind name: String): DbSubmitterDto?
 
-    @SqlQuery("INSERT INTO $table($name, $date, $type) VALUES(:name, :date, :type) RETURNING *")
-    fun insertSubmitter(@Bind name: String, @Bind date: OffsetDateTime, @Bind type: String): DbSubmitterDto
+    @SqlQuery("INSERT INTO $table($name, $type) VALUES(:name, :date, :type) RETURNING *")
+    fun insertSubmitter(@Bind name: String, @Bind type: String): DbSubmitterDto
 }

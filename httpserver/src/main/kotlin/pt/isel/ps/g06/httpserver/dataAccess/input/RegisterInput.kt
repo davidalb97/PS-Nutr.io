@@ -1,6 +1,6 @@
-package pt.isel.ps.g06.httpserver.security.dto
+package pt.isel.ps.g06.httpserver.dataAccess.input
 
-class UserDto(
+class RegisterInput(
         val submitterId: Int,
         val email: String,
         val password: String
