@@ -1,6 +1,6 @@
 package pt.isel.ps.g06.httpserver.service
 
-import pt.isel.ps.g06.httpserver.dataAccess.db.mapper.CustomMealDbMapper
+import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.CustomMealDbMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.CustomMealDbRepository
 import pt.isel.ps.g06.httpserver.model.CustomMeal
 

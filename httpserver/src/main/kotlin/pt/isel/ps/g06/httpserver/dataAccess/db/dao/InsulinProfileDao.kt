@@ -24,7 +24,8 @@ interface InsulinProfileDao {
     fun getAllFromUser(submitterId: Int): Collection<DbUserInsulinProfileDto>
 
     @SqlQuery("SELECT * FROM $table WHERE $submitterId = :submitterId AND $profileName = :profileName")
-    fun getFromUser(submitterId: Int, profileName: String): DbUserInsulinProfileDto
+    fun getFromUser(submitterId: Int, profileName: String): DbUserInsulinProfileDto?
+
 
     // TODO
     @SqlQuery("INSERT INTO $table(" +
@@ -38,6 +39,6 @@ interface InsulinProfileDao {
             glucoseObjective: Int, sensitivityFactor: Int, carbRatio: Int
     ): DbUserInsulinProfileDto
 
-    @SqlQuery("DELETE FROM $table WHERE $submitterId = :submitterId AND $profileName = :profileName")
-    fun deleteProfile(submitterId: Int, profileName: String): Boolean
+    @SqlQuery("DELETE FROM $table WHERE $submitterId = :submitterId AND $profileName = :profileName RETURNING *")
+    fun deleteProfile(submitterId: Int, profileName: String): DbUserInsulinProfileDto?
 }

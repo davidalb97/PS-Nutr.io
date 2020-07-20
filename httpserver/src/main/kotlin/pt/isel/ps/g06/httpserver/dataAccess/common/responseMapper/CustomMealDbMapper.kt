@@ -1,4 +1,4 @@
-package pt.isel.ps.g06.httpserver.dataAccess.db.mapper
+package pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper
 
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbCustomMealDto
 import pt.isel.ps.g06.httpserver.model.CustomMeal

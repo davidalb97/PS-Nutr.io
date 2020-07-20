@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.AuthenticationException
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.web.bind.annotation.PostMapping
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 import pt.isel.ps.g06.httpserver.common.LOGIN
 import pt.isel.ps.g06.httpserver.common.REGISTER
+import pt.isel.ps.g06.httpserver.common.exception.authentication.NotAuthenticatedException
 import pt.isel.ps.g06.httpserver.security.JwtUtil
 import pt.isel.ps.g06.httpserver.security.MyUserDetailsService
 import pt.isel.ps.g06.httpserver.security.dto.UserLoginRequest
@@ -29,15 +31,15 @@ class UserController(
     fun register(@RequestBody userRegisterRequest: UserRegisterRequest): ResponseEntity<*> {
         //val userFound: UserDetails? = userDetails.loadUserByUsername(userRegisterRequest.username)
 
-        val encodedPassword = bCryptPasswordEncoder.encode(userRegisterRequest.password);
+        val encodedPassword = bCryptPasswordEncoder.encode(userRegisterRequest.password)
 
         userDetailsService.registerUser(
                 userRegisterRequest.email,
                 userRegisterRequest.username,
                 encodedPassword
         )
-        return ResponseEntity("User registered", HttpStatus.CREATED);
-
+        //TODO pass created uri!
+        return ResponseEntity("User registered", HttpStatus.CREATED)
     }
 
     @PostMapping(LOGIN)
@@ -46,8 +48,8 @@ class UserController(
             authenticationManager.authenticate(
                     UsernamePasswordAuthenticationToken(userLoginRequest.username, userLoginRequest.password)
             )
-        } catch (e: Exception) {
-            return ResponseEntity("Unauthorized", HttpStatus.UNAUTHORIZED);
+        } catch (e: AuthenticationException) {
+            throw NotAuthenticatedException()
         }
 
         val userDetails: UserDetails = userDetailsService.loadUserByUsername(userLoginRequest.username)
