@@ -29,17 +29,18 @@ class InsulinProfileService(
             glucoseObjective: Int,
             insulinSensitivityFactor: Int,
             carbohydrateRatio: Int
-    ) {
-        val insulinProfile = DbUserInsulinProfileDto(
-                submitterId,
-                profileName,
-                startTime,
-                endTime,
-                glucoseObjective,
-                insulinSensitivityFactor,
-                carbohydrateRatio
+    ): InsulinProfile {
+        return insulinProfileMapper.mapToModel(
+                insulinProfileDbRepository.insertProfile(
+                        submitterId,
+                        profileName,
+                        startTime,
+                        endTime,
+                        glucoseObjective,
+                        insulinSensitivityFactor,
+                        carbohydrateRatio
+                )
         )
-        insulinProfileDbRepository.insertProfile(insulinProfile)
     }
 
     fun deleteProfile(submitterId: Int, profileName: String) {

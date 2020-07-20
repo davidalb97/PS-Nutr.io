@@ -34,18 +34,25 @@ class InsulinProfileDbRepository(jdbi: Jdbi) : BaseDbRepo(jdbi) {
         }
     }
 
-    fun insertProfile(dto: DbUserInsulinProfileDto): DbUserInsulinProfileDto {
+    fun insertProfile(submitterId: Int,
+                      profileName: String,
+                      startTime: String,
+                      endTime: String,
+                      glucoseObjective: Int,
+                      insulinSensitivityFactor: Int,
+                      carbohydrateRatio: Int
+    ): DbUserInsulinProfileDto {
         return jdbi.inTransaction<DbUserInsulinProfileDto, Exception>(isolationLevel) { handle ->
             return@inTransaction handle
                     .attach(insulinProfileDaoClass)
                     .insertProfile(
-                            submitterId = dto.submitterId,
-                            profileName = dto.profileName,
-                            startTime = dto.startTime,
-                            endTime = dto.endTime,
-                            glucoseObjective = dto.glucoseObjective,
-                            insulinSensitivityFactor = dto.insulinSensitivityFactor,
-                            carbohydrateRatio = dto.carbohydrateRatio
+                            submitterId = submitterId,
+                            profileName = profileName,
+                            startTime = startTime,
+                            endTime = endTime,
+                            glucoseObjective = glucoseObjective,
+                            sensitivityFactor = insulinSensitivityFactor,
+                            carbRatio = carbohydrateRatio
                     )
         }
     }

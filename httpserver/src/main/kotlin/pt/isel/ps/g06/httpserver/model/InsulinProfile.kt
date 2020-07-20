@@ -1,5 +1,7 @@
 package pt.isel.ps.g06.httpserver.model
 
+import java.time.OffsetDateTime
+
 data class InsulinProfile(
         val submitterId: Int,
         val profileName: String,
@@ -7,5 +9,6 @@ data class InsulinProfile(
         val endTime: String,
         val glucoseObjective: Int,
         val insulinSensitivityFactor: Int,
-        val carbohydrateRatio: Int
+        val carbohydrateRatio: Int,
+        val modificationDate: OffsetDateTime
 )
