@@ -13,7 +13,7 @@ import pt.ipl.isel.leic.ps.androidclient.R
 const val PREFERENCES_FILE = "preferences.xml"
 const val DARK_MODE = "dark_mode"
 
-// Application preferences keys
+// Application shared preferences keys
 const val FIRST_TIME = "isFirstTime"
 const val USERNAME = "username"
 const val PASSWORD = "password"
