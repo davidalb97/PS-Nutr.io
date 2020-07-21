@@ -3,7 +3,6 @@ package pt.ipl.isel.leic.ps.androidclient
 import org.junit.Assert
 import org.junit.Test
 import pt.ipl.isel.leic.ps.androidclient.data.db.InsulinCalculator
-import pt.ipl.isel.leic.ps.androidclient.data.db.entity.InsulinProfileEntity
 import pt.ipl.isel.leic.ps.androidclient.data.model.InsulinProfile
 
 class InsulinCalculatorTests {

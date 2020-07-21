@@ -69,42 +69,51 @@
                     android:padding="5dp">
                 </EditText>
 
-                <Button
-                    android:id="@+id/loginButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/userPasswordInput"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginTop="30dp"
-                    android:background="@drawable/rect_material_button_shape"
-                    android:text="@string/login"
-                    android:textColor="@android:color/background_light">
-                </Button>
-
-                <TextView
-                    android:id="@+id/already_logged_in_warning"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/loginButton"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginTop="50dp"
-                    android:textColor="?attr/textColor">
-                </TextView>
-
-                <Button
-                    android:id="@+id/logoutButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/already_logged_in_warning"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginTop="30dp"
-                    android:background="@drawable/rect_material_button_shape"
-                    android:text="@string/logout"
-                    android:textColor="@android:color/background_light"
-                    android:visibility="invisible">
-                </Button>
-
             </RelativeLayout>
+
+            <Button
+                android:id="@+id/loginButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="60dp"
+                android:layout_marginEnd="60dp"
+                android:layout_below="@id/userPasswordInput"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="30dp"
+                android:background="@drawable/rect_material_button_shape"
+                android:text="@string/login"
+                android:textColor="@android:color/background_light">
+            </Button>
+
+            <Button
+                android:id="@+id/registerButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="60dp"
+                android:layout_marginEnd="60dp"
+                android:layout_below="@+id/userPasswordInput"
+                android:layout_toEndOf="@id/loginButton"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="30dp"
+                android:background="@drawable/rect_material_button_shape"
+                android:text="@string/register"
+                android:textColor="@android:color/background_light">
+            </Button>
+
+            <Button
+                android:id="@+id/skipButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/loginButton"
+                android:layout_centerHorizontal="true"
+                android:layout_marginStart="60dp"
+                android:layout_marginEnd="60dp"
+                android:layout_marginTop="30dp"
+                android:background="@drawable/rect_material_button_shape"
+                android:text="@string/skip"
+                android:textColor="@android:color/background_light"
+                >
+            </Button>
 
             <View
                 android:layout_width="match_parent"

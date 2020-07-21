@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.text.method.TextKeyListener.clear
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -60,7 +59,7 @@ class LoginFragment : Fragment() {
             val logoutButton = view.findViewById<Button>(R.id.logoutButton)
             logoutButton.visibility = View.VISIBLE
 
-            // Eliminate token
+            // Eliminate shared preferences
             logoutButton.setOnClickListener {
                 sharedPreferences.edit().clear().apply()
             }
@@ -82,8 +81,10 @@ class LoginFragment : Fragment() {
                     ),
                     ::saveSession
                 )
-                sharedPreferences.edit().putString("username", userNameParsed).apply()
-                sharedPreferences.edit().putString("email", userNameParsed).apply()
+                sharedPreferences.edit()
+                    .putString("username", userNameParsed)
+                    .putString("email", userNameParsed)
+                    .apply()
             }
         }
     }
