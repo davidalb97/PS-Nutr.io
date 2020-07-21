@@ -15,7 +15,6 @@ class UserLoginMapper {
 
     fun mapToModel(dto: UserLoginInput): UserSession =
         UserSession(
-            jwt = dto.jwt,
-            submitterId = dto.submitterId
+            jwt = dto.jwt
         )
 }

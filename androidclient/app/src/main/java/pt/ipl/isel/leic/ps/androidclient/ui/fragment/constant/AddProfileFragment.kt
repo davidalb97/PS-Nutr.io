@@ -9,10 +9,9 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.findNavController
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.InsulinProfile
-import pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler.room.InsulinProfilesRecyclerFragment
+import pt.ipl.isel.leic.ps.androidclient.data.util.TimestampWithTimeZone
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.InsulinProfilesVMProviderFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.InsulinProfilesRecyclerViewModel
 import java.time.LocalTime
@@ -92,13 +91,14 @@ class AddProfileFragment : Fragment() {
 
             // Creates profile if everything is ok until here
             val profile = InsulinProfile(
-                    profileName.text.toString(),
-                    startTimeUser.text.toString(),
-                    endTimeUser.text.toString(),
-                    glucoseObjective.text.toString().toInt(),
-                    glucoseAmount.text.toString().toInt(),
-                    carboAmount.text.toString().toInt()
-                )
+                profileName.text.toString(),
+                startTimeUser.text.toString(),
+                endTimeUser.text.toString(),
+                glucoseObjective.text.toString().toInt(),
+                glucoseAmount.text.toString().toInt(),
+                carboAmount.text.toString().toInt(),
+                TimestampWithTimeZone.now()
+            )
 
             // Asserts time period with the other profiles
             profileTimesValidation(profile) { isValid ->
@@ -110,7 +110,7 @@ class AddProfileFragment : Fragment() {
                     ).show()
                 } else {
                     viewModel
-                        .addInsulinProfile(profile)
+                        .addDbInsulinProfile(profile)
                         .setOnPostExecute { parentFragmentManager.popBackStack() }
                         .execute()
                 }

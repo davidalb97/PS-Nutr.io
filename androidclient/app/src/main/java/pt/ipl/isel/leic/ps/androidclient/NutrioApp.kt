@@ -16,7 +16,7 @@ import pt.ipl.isel.leic.ps.androidclient.data.repo.*
 
 const val TAG = "Nutr.io App"
 const val ROOM_DB_NAME = "nutrio-db"
-const val ROOM_DB_VERSION = 20
+const val ROOM_DB_VERSION = 22
 
 /**
  * The application context.
@@ -57,7 +57,10 @@ class NutrioApp : Application() {
         val cuisineRepository by lazy {
             CuisineRepository(CuisineDataSource(requester))
         }
-        val insulinProfilesRepository by lazy(::InsulinProfileRepository)
+        val insulinProfilesRepository by lazy {
+            InsulinProfileRepository(InsulinProfileDataSource(requester))
+        }
+
         val userRepository by lazy {
             UserRepository(UserDataSource(requester))
         }

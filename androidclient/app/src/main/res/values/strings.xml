@@ -138,6 +138,7 @@
     <string name="dark_mode">Dark mode</string>
     <string name="results_title_dialog">Results</string>
     <string name="setup_a_profile_before_proceed">Please setup a profile before proceed</string>
+    <string name="logout">Logout</string>
 
     <!-- ##################################### Arrays #####################################-->
     <string-array name="calculator_units">
@@ -149,4 +150,13 @@
         <item>grams</item>
         <item>ounces</item>
     </string-array>
+    <string name="title_activity_login">LoginActivity</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
 </resources>

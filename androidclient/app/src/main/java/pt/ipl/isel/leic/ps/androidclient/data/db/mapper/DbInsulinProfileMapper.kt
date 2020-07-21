@@ -1,7 +1,10 @@
 package pt.ipl.isel.leic.ps.androidclient.data.db.mapper
 
+import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.InsulinProfileInput
+import pt.ipl.isel.leic.ps.androidclient.data.api.dto.output.InsulinProfileOutput
 import pt.ipl.isel.leic.ps.androidclient.data.db.entity.InsulinProfileEntity
 import pt.ipl.isel.leic.ps.androidclient.data.model.InsulinProfile
+import pt.ipl.isel.leic.ps.androidclient.data.util.TimestampWithTimeZone
 
 class DbInsulinProfileMapper {
 
@@ -11,7 +14,8 @@ class DbInsulinProfileMapper {
         dto.endTime,
         dto.glucoseObjective,
         dto.glucoseAmountPerInsulin,
-        dto.carbsAmountPerInsulin
+        dto.carbsAmountPerInsulin,
+        dto.modificationDate
     )
 
     fun mapToRelation(model: InsulinProfile) = InsulinProfileEntity(
@@ -20,10 +24,11 @@ class DbInsulinProfileMapper {
         model.endTime,
         model.glucoseObjective,
         model.glucoseAmountPerInsulin,
-        model.carbsAmountPerInsulin
+        model.carbsAmountPerInsulin,
+        model.modificationDate
     )
 
     fun mapToListModel(dtos: Iterable<InsulinProfileEntity>) = dtos.map(::mapToModel)
 
-    fun mapToListDto(models: Iterable<InsulinProfile>) = models.map(::mapToRelation)
+    fun mapToListRelation(models: Iterable<InsulinProfile>) = models.map(::mapToRelation)
 }

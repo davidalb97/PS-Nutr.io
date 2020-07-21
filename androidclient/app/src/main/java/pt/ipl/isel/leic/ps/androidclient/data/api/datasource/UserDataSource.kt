@@ -7,7 +7,7 @@ import pt.ipl.isel.leic.ps.androidclient.data.api.dto.output.LoginOutput
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.output.RegisterOutput
 import pt.ipl.isel.leic.ps.androidclient.data.model.UserSession
 
-private const val USER = "user"
+const val USER = "user"
 private const val LOGIN_URI = "$URI_BASE/$USER/login"
 private const val REGISTER_URI = "$URI_BASE/$USER/register"
 private const val LOGOUT_URI = "$URI_BASE/$USER/logout"
@@ -151,11 +151,9 @@ class UserDataSource(
         val pairs = str.split(",")
 
         val jwt = pairs[0].split(":")[1].removeSurrounding("\"")
-        val submitterId = pairs[1].split(":")[1].removeSuffix("}").toInt()
 
         return UserLoginInput(
-            jwt = jwt,
-            submitterId = submitterId
+            jwt = jwt
         )
     }
 

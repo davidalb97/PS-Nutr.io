@@ -7,18 +7,27 @@ import pt.ipl.isel.leic.ps.androidclient.data.model.InsulinProfile
 
 open class InsulinProfilesRecyclerViewModel() : ARecyclerViewModel<InsulinProfile>() {
 
+    lateinit var jwt: String
+
     constructor(parcel: Parcel) : this()
 
-    fun addInsulinProfile(profile: InsulinProfile) =
-        insulinProfilesRepository.addProfile(profile)
+    fun addDbInsulinProfile(profile: InsulinProfile) =
+        insulinProfilesRepository.addProfile(profile, jwt, onError)
 
-    fun deleteItem(profile: InsulinProfile) =
-        insulinProfilesRepository.deleteProfile(profile)
+    fun deleteItem(profileName: String) =
+        insulinProfilesRepository.deleteProfile(profileName, jwt, onError)
 
     override fun update() {
-        this.liveDataHandler.set(insulinProfilesRepository.getAllProfiles()) {
+
+        this.liveDataHandler.set(insulinProfilesRepository.getAllDbProfiles()) {
             insulinProfilesRepository.insulinProfileMapper.mapToModel(it)
         }
+
+        insulinProfilesRepository.getAllProfiles(
+            jwt,
+            this.liveDataHandler::add,
+            onError
+        )
     }
 
     override fun writeToParcel(dest: Parcel?, flags: Int) {

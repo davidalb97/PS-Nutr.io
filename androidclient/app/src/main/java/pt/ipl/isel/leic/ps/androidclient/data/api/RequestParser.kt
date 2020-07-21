@@ -19,7 +19,7 @@ const val RESTAURANT = "restaurant"
 const val CUISINES = "cuisines"
 const val URI_END = "$SKIP=:skip$COUNT=:count"
 const val INGREDIENTS = "ingredients"
-const val USER_QUERY = "user"
+const val INSULIN_PROFILE = "profile"
 
 /**
  * HTTP methods enum

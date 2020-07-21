@@ -1,8 +1,10 @@
 package pt.ipl.isel.leic.ps.androidclient
 
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.os.Handler
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -16,9 +18,13 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.preference.SwitchPreferenceCompat
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.PeriodicWorkRequest
+import androidx.work.WorkManager
 import com.google.android.material.navigation.NavigationView
 import org.w3c.dom.Text
 import pt.ipl.isel.leic.ps.androidclient.ui.util.Logger
+import java.util.concurrent.TimeUnit
 
 const val DARK_MODE = "dark_mode"
 
@@ -27,6 +33,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var appBarConfiguration: AppBarConfiguration
     private val log = Logger(MainActivity::class.java)
 
+    private lateinit var handler: Handler
+
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
@@ -34,8 +42,22 @@ class MainActivity : AppCompatActivity() {
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
 
+        handler = Handler()
+
         val sharedPreferences: SharedPreferences =
             this.getSharedPreferences("preferences.xml", Context.MODE_PRIVATE)!!
+
+        val currentUser  = sharedPreferences.getString("username", "")
+
+        if (currentUser.isNullOrBlank()) {
+            handler.postDelayed({
+                val intent = Intent(this, LoginActivity::class.java)
+                startActivity(intent)
+                finish()
+            }, 2000)
+        }
+
+        // Check current theme
         val isLightMode = sharedPreferences.getBoolean(DARK_MODE, false)
 
         if (!isLightMode) {
@@ -97,6 +119,14 @@ class MainActivity : AppCompatActivity() {
         headerImage.setOnClickListener {
             navController.navigate(R.id.nav_login)
         }
+
+        // Periodic worker to sync user related data
+        val periodicWorkerRequest: PeriodicWorkRequest = PeriodicWorkRequest.Builder(
+            PeriodicWorker::class.java, 1, TimeUnit.DAYS
+        ).build()
+
+        WorkManager.getInstance(this)
+            .enqueueUniquePeriodicWork(TAG, ExistingPeriodicWorkPolicy.KEEP, periodicWorkerRequest)
     }
 
     override fun onSupportNavigateUp(): Boolean {

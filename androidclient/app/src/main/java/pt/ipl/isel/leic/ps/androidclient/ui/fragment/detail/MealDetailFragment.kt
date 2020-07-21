@@ -103,8 +103,7 @@ class MealDetailFragment : IngredientsRecyclerFragment() {
                 mealVotesRl?.visibility = View.VISIBLE
 
                 val userSession = UserSession(
-                    sharedPreferences.getString("jwt", "")!!,
-                    sharedPreferences.getInt("submitterId", 0)
+                    sharedPreferences.getString("jwt", "")!!
                 )
 
                 // Upvote

@@ -43,6 +43,7 @@
 
         <EditText
             android:id="@+id/userPasswordInput"
+            android:inputType="textPassword"
             android:padding="5dp"
             android:layout_below="@+id/userPasswordLabel"
             android:layout_centerHorizontal="true"
@@ -74,6 +75,19 @@
             android:textColor="?attr/textColor"
             android:layout_centerHorizontal="true">
         </TextView>
+
+        <Button
+            android:id="@+id/logoutButton"
+            android:visibility="invisible"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:layout_below="@id/already_logged_in_warning"
+            android:text="@string/logout"
+            android:textColor="@android:color/background_light"
+            android:background="@drawable/rect_material_button_shape"
+            android:layout_centerHorizontal="true">
+        </Button>
 
     </RelativeLayout>
 

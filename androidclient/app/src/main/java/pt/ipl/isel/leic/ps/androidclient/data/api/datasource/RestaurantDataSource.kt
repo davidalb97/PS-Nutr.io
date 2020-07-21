@@ -29,7 +29,6 @@ private const val RESTAURANT_MEAL_PORTION_URI = "$RESTAURANT_MEAL_ID_URI/portion
 private const val RESTAURANT_MEAL_REPORT_URI = "$RESTAURANT_MEAL_ID_URI/report"
 private const val RESTAURANT_MEAL_VOTE_URI = "$RESTAURANT_MEAL_ID_URI/vote"
 
-val RESTAURANT_DTO = SimplifiedRestaurantInput::class.java
 
 
 class RestaurantDataSource(
@@ -98,15 +97,12 @@ class RestaurantDataSource(
         userSession: UserSession
 
     ) {
-
-        var uri = "$RESTAURANT$SUBMITTER_QUERY=${userSession.submitterId}"
-
         // Composing the authorization header
         val reqHeader = buildAuthHeader(userSession.jwt)
 
         requestParser.request(
             method = Method.POST,
-            uri = uri,
+            uri = RESTAURANT,
             reqHeader = reqHeader,
             reqPayload = RestaurantOutput(
                 name = name,
@@ -125,9 +121,7 @@ class RestaurantDataSource(
         error: (VolleyError) -> Unit,
         userSession: UserSession
     ) {
-        var uri = "$RESTAURANT_REPORT_URI$SUBMITTER_QUERY=${userSession.submitterId}"
-
-        uri = buildUri(uri, hashMapOf(Pair(RESTAURANT_ID_PARAM, id)))
+        val uri = buildUri(RESTAURANT_REPORT_URI, hashMapOf(Pair(RESTAURANT_ID_PARAM, id)))
 
         /*requestParser.request(
             Method.POST,
@@ -153,9 +147,7 @@ class RestaurantDataSource(
         error: (VolleyError) -> Unit,
         userSession: UserSession
     ) {
-        var uri = "$RESTAURANT_VOTE_URI$SUBMITTER_QUERY=${userSession.submitterId}"
-
-        uri = buildUri(uri, hashMapOf(Pair(RESTAURANT_ID_PARAM, restaurant)))
+        val uri = buildUri(RESTAURANT_VOTE_URI, hashMapOf(Pair(RESTAURANT_ID_PARAM, restaurant)))
 
         // Composing the authorization header
         val reqHeader = buildAuthHeader(userSession.jwt)

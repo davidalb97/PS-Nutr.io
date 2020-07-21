@@ -85,8 +85,7 @@ class RestaurantDetailFragment : MealRecyclerFragment(){
                 .into(restaurantMealImage!!)
 
         val userSession = UserSession(
-            sharedPreferences.getString("jwt", "")!!,
-            sharedPreferences.getInt("submitterId", 0)
+            sharedPreferences.getString("jwt", "")!!
         )
 
         restaurantMealTitle?.text = restaurantInfo.name

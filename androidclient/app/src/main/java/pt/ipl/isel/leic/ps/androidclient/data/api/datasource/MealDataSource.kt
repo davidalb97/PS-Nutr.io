@@ -153,14 +153,13 @@ class MealDataSource(
         error: (VolleyError) -> Unit,
         userSession: UserSession
     ) {
-        val uri = "$MEAL_URI$SUBMITTER_QUERY=${userSession.submitterId}"
 
         // Composing the authorization header
         val reqHeader = buildAuthHeader(userSession.jwt)
 
         requestParser.request(
             method = Method.POST,
-            uri = uri,
+            uri = MEAL_URI,
             reqHeader = reqHeader,
             reqPayload = MealOutput(
                 name = name,
@@ -187,18 +186,16 @@ class MealDataSource(
         error: (VolleyError) -> Unit,
         userSession: UserSession
     ) {
-        var uri = "$RESTAURANT_ID_URI$SUBMITTER_QUERY=${userSession.submitterId}"
         val params = hashMapOf(
             Pair(RESTAURANT_ID_PARAM, restaurantId)
         )
-        uri = buildUri(uri, params)
 
         // Composing the authorization header
         val reqHeader = buildAuthHeader(userSession.jwt)
 
         requestParser.requestAndRespond(
             method = Method.POST,
-            uri = uri,
+            uri = RESTAURANT_ID_URI,
             reqHeader = reqHeader,
             dtoClass = OUTPUT_MEAL_DTO,
             onSuccess = success,
@@ -224,12 +221,9 @@ class MealDataSource(
         error: (VolleyError) -> Unit,
         userSession: UserSession
     ) {
-
-        var uri = "$MEAL_ID_URI$SUBMITTER_QUERY=${userSession.submitterId}"
-
-        uri =
+        val uri =
             buildUri(
-                uri,
+                MEAL_ID_URI,
                 hashMapOf(
                     Pair(MEAL_ID_PARAM, "$mealId")
                 )
@@ -257,11 +251,8 @@ class MealDataSource(
         error: (VolleyError) -> Unit,
         userSession: UserSession
     ) {
-
-        var uri = "$RESTAURANT_ID_MEAL_ID_URI$SUBMITTER_QUERY=${userSession.submitterId}"
-
-        uri = buildUri(
-            uri,
+        val uri = buildUri(
+            RESTAURANT_ID_MEAL_ID_URI,
             hashMapOf(
                 Pair(RESTAURANT_ID_PARAM, restaurantId),
                 Pair(MEAL_ID_PARAM, "$mealId")
@@ -296,10 +287,8 @@ class MealDataSource(
         error: (VolleyError) -> Unit,
         userSession: UserSession
     ) {
-        var uri = "$RESTAURANT_ID_MEAL_ID_VOTE_URI$SUBMITTER_QUERY=${userSession.submitterId}"
-
-        uri = buildUri(
-            uri,
+        val uri = buildUri(
+            RESTAURANT_ID_MEAL_ID_VOTE_URI,
             hashMapOf(
                 Pair(RESTAURANT_ID_PARAM, restaurantId),
                 Pair(MEAL_ID_PARAM, "$mealId")

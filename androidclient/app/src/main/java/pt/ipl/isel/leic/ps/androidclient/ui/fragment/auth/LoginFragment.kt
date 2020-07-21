@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.text.method.TextKeyListener.clear
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -50,11 +51,19 @@ class LoginFragment : Fragment() {
 
         val signedUser = sharedPreferences.getString("username", "")
 
-        if (signedUser != null) {
+        if (signedUser?.isNotBlank()!!) {
             val signedWarning = view.findViewById<TextView>(R.id.already_logged_in_warning)
             signedWarning.visibility = View.VISIBLE
             signedWarning.text = "You are already logged in with the user $signedUser"
             // TODO extract resource string
+
+            val logoutButton = view.findViewById<Button>(R.id.logoutButton)
+            logoutButton.visibility = View.VISIBLE
+
+            // Eliminate token
+            logoutButton.setOnClickListener {
+                sharedPreferences.edit().clear().apply()
+            }
         }
 
         val userName: EditText = view.findViewById(R.id.userNameInput)
@@ -82,6 +91,5 @@ class LoginFragment : Fragment() {
     @SuppressLint("CommitPrefEdits")
     private fun saveSession(userSession: UserSession) {
         sharedPreferences.edit().putString("jwt", userSession.jwt).apply();
-        sharedPreferences.edit().putInt("submitterId", userSession.submitterId).apply();
     }
 }

@@ -4,18 +4,15 @@ import android.os.Parcel
 import android.os.Parcelable
 
 class UserSession(
-    val jwt: String,
-    val submitterId: Int
+    val jwt: String
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
-        parcel.readString()!!,
-        parcel.readInt()
+        parcel.readString()!!
     ) {
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(jwt)
-        parcel.writeInt(submitterId)
     }
 
     override fun describeContents(): Int {
