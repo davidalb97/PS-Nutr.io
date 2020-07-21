@@ -23,10 +23,10 @@ import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
 import com.google.android.material.navigation.NavigationView
 import org.w3c.dom.Text
+import pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.DARK_MODE
+import pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.PREFERENCES_FILE
 import pt.ipl.isel.leic.ps.androidclient.ui.util.Logger
 import java.util.concurrent.TimeUnit
-
-const val DARK_MODE = "dark_mode"
 
 class MainActivity : AppCompatActivity() {
 
@@ -43,11 +43,11 @@ class MainActivity : AppCompatActivity() {
         handler = Handler()
 
         val sharedPreferences: SharedPreferences =
-            this.getSharedPreferences("preferences.xml", Context.MODE_PRIVATE)!!
+            this.getSharedPreferences(PREFERENCES_FILE, Context.MODE_PRIVATE)!!
 
-        val isFirstTime: Boolean? = sharedPreferences.getBoolean("isFirstTime", false)
+        val isFirstTime: Boolean = sharedPreferences.getBoolean("isFirstTime", true)
 
-        if (isFirstTime == null || isFirstTime) {
+        if (isFirstTime) {
             handler.postDelayed({
                 val intent = Intent(this, LoginActivity::class.java)
                 startActivity(intent)

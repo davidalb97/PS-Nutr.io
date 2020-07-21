@@ -161,4 +161,5 @@
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
     <string name="nutr_io">Nutr.io</string>
     <string name="skip">Skip</string>
+    <string name="already_logged_in_message">You are already logged in with the user</string>
 </resources>

@@ -15,6 +15,10 @@ import androidx.lifecycle.ViewModelProvider
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.UserLogin
 import pt.ipl.isel.leic.ps.androidclient.data.model.UserSession
+import pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.EMAIL
+import pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.JWT
+import pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.PREFERENCES_FILE
+import pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.USERNAME
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.UserProfileVMProviderFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.UserProfileViewModel
 
@@ -39,21 +43,22 @@ class LoginFragment : Fragment() {
         return inflater.inflate(R.layout.login_fragment, container, false)
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         sharedPreferences =
             requireActivity().baseContext?.getSharedPreferences(
-                "preferences.xml",
+                PREFERENCES_FILE,
                 Context.MODE_PRIVATE
             )!!
 
-        val signedUser = sharedPreferences.getString("username", "")
+        val signedUser = sharedPreferences.getString(USERNAME, "")
 
         if (signedUser?.isNotBlank()!!) {
             val signedWarning = view.findViewById<TextView>(R.id.already_logged_in_warning)
             signedWarning.visibility = View.VISIBLE
-            signedWarning.text = "You are already logged in with the user $signedUser"
+            signedWarning.text = "${getString(R.string.already_logged_in_message)} $signedUser"
             // TODO extract resource string
 
             val logoutButton = view.findViewById<Button>(R.id.logoutButton)
@@ -82,8 +87,8 @@ class LoginFragment : Fragment() {
                     ::saveSession
                 )
                 sharedPreferences.edit()
-                    .putString("username", userNameParsed)
-                    .putString("email", userNameParsed)
+                    .putString(USERNAME, userNameParsed)
+                    .putString(EMAIL, userNameParsed)
                     .apply()
             }
         }
@@ -91,6 +96,6 @@ class LoginFragment : Fragment() {
 
     @SuppressLint("CommitPrefEdits")
     private fun saveSession(userSession: UserSession) {
-        sharedPreferences.edit().putString("jwt", userSession.jwt).apply();
+        sharedPreferences.edit().putString(JWT, userSession.jwt).apply();
     }
 }

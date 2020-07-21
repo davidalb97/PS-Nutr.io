@@ -8,8 +8,17 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreferenceCompat
-import pt.ipl.isel.leic.ps.androidclient.DARK_MODE
 import pt.ipl.isel.leic.ps.androidclient.R
+
+const val PREFERENCES_FILE = "preferences.xml"
+const val DARK_MODE = "dark_mode"
+
+// Application preferences keys
+const val FIRST_TIME = "isFirstTime"
+const val USERNAME = "username"
+const val PASSWORD = "password"
+const val EMAIL = "email"
+const val JWT = "jwt"
 
 class SettingsFragment : PreferenceFragmentCompat() {
 
@@ -23,7 +32,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         val darkModeSwitch = findPreference<SwitchPreferenceCompat>(DARK_MODE)
         val sharedPreferences: SharedPreferences =
             requireActivity().baseContext?.getSharedPreferences(
-                "preferences.xml",
+                PREFERENCES_FILE,
                 Context.MODE_PRIVATE
             )!!
 

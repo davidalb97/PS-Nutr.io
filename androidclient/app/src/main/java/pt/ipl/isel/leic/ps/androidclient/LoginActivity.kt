@@ -51,7 +51,7 @@ class LoginActivity : AppCompatActivity() {
         }
 
         skipBtn.setOnClickListener {
-            goToMainActivity()
+            skip()
         }
     }
 
@@ -95,7 +95,7 @@ class LoginActivity : AppCompatActivity() {
 
     @SuppressLint("CommitPrefEdits")
     private fun skip() {
-        sharedPreferences.edit().putBoolean("isFirstTime", true).apply()
+        sharedPreferences.edit().putBoolean("isFirstTime", false).apply()
         goToMainActivity()
     }
 
