@@ -38,14 +38,14 @@ class MealRepository(private val dataSource: MealDataSource) {
         inputVotesMapper = inputVotesMapper
     )
 
-    fun getByIdAndSource(dbId: Long, source: Source)
-            = roomDb.mealInfoDao().getByIdAndSource(dbId, source.ordinal)
+    fun getByIdAndSource(dbId: Long, source: Source) =
+        roomDb.mealInfoDao().getByIdAndSource(dbId, source.ordinal)
 
-    fun getAllInfoBySource(source: Source): LiveData<List<DbMealInfoRelation>>
-            = roomDb.mealInfoDao().getAllBySource(source.ordinal)
+    fun getAllInfoBySource(source: Source): LiveData<List<DbMealInfoRelation>> =
+        roomDb.mealInfoDao().getAllBySource(source.ordinal)
 
-    fun getAllItemBySource(source: Source): LiveData<List<DbMealItemEntity>>
-            = roomDb.mealItemDao().getAllBySource(source.ordinal)
+    fun getAllItemBySource(source: Source): LiveData<List<DbMealItemEntity>> =
+        roomDb.mealItemDao().getAllBySource(source.ordinal)
 
     fun insertInfo(meal: MealInfo) = AsyncWorker<Unit, Unit> {
         roomDb.mealInfoDao().insert(dbMealInfoMapper.mapToRelation(meal))

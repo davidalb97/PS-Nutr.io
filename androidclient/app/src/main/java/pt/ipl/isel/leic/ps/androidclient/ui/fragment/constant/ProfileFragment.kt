@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -76,6 +75,6 @@ class ProfileFragment : Fragment() {
         tabLayout = view.findViewById(R.id.profile_tab)
         viewPager = view.findViewById(R.id.profile_view_pager)
         viewPager.adapter = tabPagerAdapter
-        tabLayout.setupWithViewPager(viewPager);
+        tabLayout.setupWithViewPager(viewPager)
     }
 }

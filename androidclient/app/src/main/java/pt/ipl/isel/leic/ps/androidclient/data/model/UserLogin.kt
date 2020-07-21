@@ -6,13 +6,12 @@ import android.os.Parcelable
 data class UserLogin(
     val username: String,
     val password: String
-): Parcelable {
+) : Parcelable {
 
     constructor(parcel: Parcel) : this(
         parcel.readString()!!,
         parcel.readString()!!
-    ) {
-    }
+    )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(username)

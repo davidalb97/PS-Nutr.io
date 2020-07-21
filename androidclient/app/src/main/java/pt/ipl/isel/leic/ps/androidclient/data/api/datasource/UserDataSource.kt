@@ -1,7 +1,9 @@
 package pt.ipl.isel.leic.ps.androidclient.data.api.datasource
 
 import com.android.volley.VolleyError
-import pt.ipl.isel.leic.ps.androidclient.data.api.*
+import pt.ipl.isel.leic.ps.androidclient.data.api.Method
+import pt.ipl.isel.leic.ps.androidclient.data.api.RequestParser
+import pt.ipl.isel.leic.ps.androidclient.data.api.URI_BASE
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.UserLoginInput
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.output.LoginOutput
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.output.RegisterOutput

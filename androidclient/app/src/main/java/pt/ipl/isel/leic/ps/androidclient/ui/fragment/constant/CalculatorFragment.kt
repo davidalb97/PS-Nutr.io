@@ -122,7 +122,8 @@ class CalculatorFragment : Fragment() {
                     if (value == MILLIGRAM_PER_DL) {
                         currentBloodGlucose.text = convertToMG(currentBloodGlucose.text.toString())
                     } else {
-                        currentBloodGlucose.text = convertToMMOL(currentBloodGlucose.text.toString())
+                        currentBloodGlucose.text =
+                            convertToMMOL(currentBloodGlucose.text.toString())
                     }
                 }
 
@@ -263,10 +264,10 @@ class CalculatorFragment : Fragment() {
         endTime?.text = profile.endTime
         glucoseObjective?.text = profile.glucoseObjective.toString()
         insulinSensitivity?.text =
-                    " ${profile.glucoseAmountPerInsulin} / " +
+            " ${profile.glucoseAmountPerInsulin} / " +
                     resources.getString(R.string.insulin_unit)
         carbohydrates?.text =
-                    " ${profile.carbsAmountPerInsulin} / " +
+            " ${profile.carbsAmountPerInsulin} / " +
                     resources.getString(R.string.insulin_unit)
     }
 

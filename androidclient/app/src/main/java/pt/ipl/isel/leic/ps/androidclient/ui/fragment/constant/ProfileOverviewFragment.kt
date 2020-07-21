@@ -31,7 +31,4 @@ class ProfileOverviewFragment : Fragment() {
         return inflater.inflate(R.layout.profile_overview_fragment, container, false)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-    }
 }

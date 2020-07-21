@@ -1,10 +1,7 @@
 package pt.ipl.isel.leic.ps.androidclient.data.db.mapper
 
-import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.InsulinProfileInput
-import pt.ipl.isel.leic.ps.androidclient.data.api.dto.output.InsulinProfileOutput
 import pt.ipl.isel.leic.ps.androidclient.data.db.entity.InsulinProfileEntity
 import pt.ipl.isel.leic.ps.androidclient.data.model.InsulinProfile
-import pt.ipl.isel.leic.ps.androidclient.data.util.TimestampWithTimeZone
 
 class DbInsulinProfileMapper {
 

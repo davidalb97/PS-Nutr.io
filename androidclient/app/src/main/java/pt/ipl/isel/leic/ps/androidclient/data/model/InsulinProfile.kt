@@ -6,7 +6,6 @@ import androidx.room.PrimaryKey
 import pt.ipl.isel.leic.ps.androidclient.data.util.TimestampWithTimeZone
 import pt.ipl.isel.leic.ps.androidclient.data.util.readTimestampWithTimeZone
 import pt.ipl.isel.leic.ps.androidclient.data.util.writeTimestampWithTimeZone
-import java.sql.Date
 
 data class InsulinProfile(
     @PrimaryKey val profileName: String,
@@ -16,7 +15,7 @@ data class InsulinProfile(
     val glucoseAmountPerInsulin: Int,
     val carbsAmountPerInsulin: Int,
     val modificationDate: TimestampWithTimeZone
-): Parcelable {
+) : Parcelable {
 
     constructor(parcel: Parcel) : this(
         profileName = parcel.readString()!!,

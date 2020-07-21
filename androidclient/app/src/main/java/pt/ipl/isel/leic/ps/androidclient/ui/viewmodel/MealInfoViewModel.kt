@@ -9,7 +9,6 @@ import pt.ipl.isel.leic.ps.androidclient.data.model.MealInfo
 import pt.ipl.isel.leic.ps.androidclient.data.model.RestaurantInfo
 import pt.ipl.isel.leic.ps.androidclient.data.model.Source
 import pt.ipl.isel.leic.ps.androidclient.data.model.UserSession
-import java.lang.UnsupportedOperationException
 
 class MealInfoViewModel : ARecyclerViewModel<MealInfo>() {
 
@@ -36,7 +35,7 @@ class MealInfoViewModel : ARecyclerViewModel<MealInfo>() {
         } else if (source != null) {
             //TODO logic should be in repo!
             if (source == Source.API || source == Source.FAVORITE) {
-                if(restaurantId != null) {
+                if (restaurantId != null) {
                     mealRepository.getApiRestaurantMealInfo(
                         restaurantId = requireRestaurantId(),
                         mealId = requireSubmissionId(),
@@ -76,13 +75,19 @@ class MealInfoViewModel : ARecyclerViewModel<MealInfo>() {
 //        dest?.writeSerializable(source?.ordinal)
 //        dest?.writeSerializable(submissionId)
 //        dest?.writeSerializable(dbId)
+        TODO("Save MealInfoViewModel to bundle")
     }
 
     override fun describeContents(): Int {
         return 0
     }
 
-    fun setVote(vote: Boolean, success: () -> Unit, error: (VolleyError) -> Unit, userSession: UserSession) {
+    fun setVote(
+        vote: Boolean,
+        success: () -> Unit,
+        error: (VolleyError) -> Unit,
+        userSession: UserSession
+    ) {
         mealRepository.putVote(
             restaurantId = requireRestaurantId(),
             mealId = requireSubmissionId(),
@@ -116,7 +121,7 @@ class MealInfoViewModel : ARecyclerViewModel<MealInfo>() {
     companion object CREATOR : Parcelable.Creator<RestaurantRecyclerViewModel> {
 
         override fun createFromParcel(parcel: Parcel): RestaurantRecyclerViewModel =
-            TODO()
+            TODO("Restore RestaurantRecyclerViewModel from bundle")
 
         override fun newArray(size: Int): Array<RestaurantRecyclerViewModel?> {
             return arrayOfNulls(size)

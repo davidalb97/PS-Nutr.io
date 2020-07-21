@@ -40,23 +40,23 @@ class SettingsFragment : PreferenceFragmentCompat() {
         val editor: SharedPreferences.Editor = sharedPreferences.edit()
 
         if (!isLightMode) {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         } else {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
         }
 
         darkModeSwitch!!.onPreferenceChangeListener =
-            Preference.OnPreferenceChangeListener() { preference: Preference, value: Any ->
+            Preference.OnPreferenceChangeListener { preference: Preference, value: Any ->
                 if (!(value as Boolean)) {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
                     editor.putBoolean(DARK_MODE, false)
                     editor.apply()
                 } else {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
                     editor.putBoolean(DARK_MODE, true)
                     editor.apply()
                 }
-                true;
+                true
             }
     }
 }

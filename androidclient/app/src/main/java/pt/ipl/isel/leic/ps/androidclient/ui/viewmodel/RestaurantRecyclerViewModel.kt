@@ -4,7 +4,6 @@ import android.os.Parcel
 import android.os.Parcelable
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.restaurantRepository
 import pt.ipl.isel.leic.ps.androidclient.data.model.RestaurantItem
-import pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler.COUNT
 
 class RestaurantRecyclerViewModel : ARecyclerViewModel<RestaurantItem>() {
 
@@ -32,7 +31,7 @@ class RestaurantRecyclerViewModel : ARecyclerViewModel<RestaurantItem>() {
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        TODO()
+        TODO("Save RestaurantRecyclerViewModel to bundle")
     }
 
     override fun describeContents(): Int {
@@ -41,7 +40,7 @@ class RestaurantRecyclerViewModel : ARecyclerViewModel<RestaurantItem>() {
 
     companion object CREATOR : Parcelable.Creator<RestaurantRecyclerViewModel> {
         override fun createFromParcel(parcel: Parcel): RestaurantRecyclerViewModel =
-            TODO()
+            TODO("Restore RestaurantRecyclerViewModel from bundle")
 
 
         override fun newArray(size: Int): Array<RestaurantRecyclerViewModel?> {

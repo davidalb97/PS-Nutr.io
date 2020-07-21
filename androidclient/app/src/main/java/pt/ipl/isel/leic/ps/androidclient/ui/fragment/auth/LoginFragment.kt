@@ -96,6 +96,6 @@ class LoginFragment : Fragment() {
 
     @SuppressLint("CommitPrefEdits")
     private fun saveSession(userSession: UserSession) {
-        sharedPreferences.edit().putString(JWT, userSession.jwt).apply();
+        sharedPreferences.edit().putString(JWT, userSession.jwt).apply()
     }
 }

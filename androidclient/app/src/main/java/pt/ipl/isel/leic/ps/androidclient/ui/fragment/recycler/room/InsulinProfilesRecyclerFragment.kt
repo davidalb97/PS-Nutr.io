@@ -85,7 +85,7 @@ class InsulinProfilesRecyclerFragment :
         val refreshLayout =
             view.findViewById<SwipeRefreshLayout>(R.id.insulin_refresh_layout)
 
-        refreshLayout.setOnRefreshListener(object: SwipeRefreshLayout(this.requireContext()),
+        refreshLayout.setOnRefreshListener(object : SwipeRefreshLayout(this.requireContext()),
             SwipeRefreshLayout.OnRefreshListener {
             override fun onRefresh() {
                 // TODO - GET to insulin profiles

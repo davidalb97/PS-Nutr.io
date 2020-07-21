@@ -2,7 +2,6 @@ package pt.ipl.isel.leic.ps.androidclient.ui.provider
 
 import android.content.Intent
 import android.os.Bundle
-import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.CustomMealRecyclerViewModel
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.FavoriteMealRecyclerViewModel
 
 const val FAVORITE_MEAL_LIST_VIEW_STATE: String = "FAVORITE_MEAL_LIST_VIEW_STATE"

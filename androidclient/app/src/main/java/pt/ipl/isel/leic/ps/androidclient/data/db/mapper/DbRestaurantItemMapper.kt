@@ -15,7 +15,7 @@ class DbRestaurantItemMapper {
         name = entity.name,
         latitude = entity.latitude,
         longitude = entity.longitude,
-        votes = if(entity.hasVote) Votes(
+        votes = if (entity.hasVote) Votes(
             userHasVoted = VoteState.values()[entity.userVoteOrdinal!!],
             positive = entity.positiveVotes!!,
             negative = entity.negativeVotes!!

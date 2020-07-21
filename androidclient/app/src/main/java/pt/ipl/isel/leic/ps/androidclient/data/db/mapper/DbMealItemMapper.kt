@@ -18,7 +18,7 @@ class DbMealItemMapper {
         carbs = entity.carbs,
         amount = entity.amount,
         unit = entity.unit,
-        votes = if(entity.hasVote) Votes(
+        votes = if (entity.hasVote) Votes(
             userHasVoted = VoteState.values()[entity.userVoteOrdinal!!],
             positive = entity.positiveVotes!!,
             negative = entity.negativeVotes!!

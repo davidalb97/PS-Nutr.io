@@ -30,7 +30,6 @@ private const val RESTAURANT_MEAL_REPORT_URI = "$RESTAURANT_MEAL_ID_URI/report"
 private const val RESTAURANT_MEAL_VOTE_URI = "$RESTAURANT_MEAL_ID_URI/vote"
 
 
-
 class RestaurantDataSource(
     private val requestParser: RequestParser
 ) {

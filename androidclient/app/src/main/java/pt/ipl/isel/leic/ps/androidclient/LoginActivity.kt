@@ -102,7 +102,7 @@ class LoginActivity : AppCompatActivity() {
 
     @SuppressLint("CommitPrefEdits")
     private fun saveSession(userSession: UserSession) {
-        sharedPreferences.edit().putString("jwt", userSession.jwt).apply();
+        sharedPreferences.edit().putString("jwt", userSession.jwt).apply()
     }
 
     private fun goToMainActivity() {

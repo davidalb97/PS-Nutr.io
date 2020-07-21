@@ -8,8 +8,7 @@ class UserSession(
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString()!!
-    ) {
-    }
+    )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(jwt)

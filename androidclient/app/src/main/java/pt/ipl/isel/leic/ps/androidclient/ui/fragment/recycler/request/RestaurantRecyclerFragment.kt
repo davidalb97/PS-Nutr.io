@@ -54,11 +54,8 @@ open class RestaurantRecyclerFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        locationManager =
-            requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        val lastLocation =
-            locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+        locationManager = activityApp.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        val lastLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
 
         val longitude = lastLocation?.longitude
         val latitude = lastLocation?.latitude

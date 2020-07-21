@@ -11,7 +11,6 @@ import androidx.navigation.findNavController
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealItem
 import pt.ipl.isel.leic.ps.androidclient.data.util.AsyncWorker
-import pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.BUNDLED_MEAL_INFO_TAG
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.BUNDLE_MEAL_DB_ID
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.BUNDLE_MEAL_RESTAURANT_SUBMISSION_ID
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.BUNDLE_MEAL_SOURCE
@@ -41,13 +40,17 @@ class CustomMealRecyclerViewHolder(
     private fun setupViewHolderElements() {
         val resources = ctx.resources
         customMealName.text = item.name
-        customMealQuantity.text = String.format(resources.getString(
-            R.string.meal_quantity_card),
+        customMealQuantity.text = String.format(
+            resources.getString(
+                R.string.meal_quantity_card
+            ),
             item.amount,
             item.unit
         )
-        customMealCarbs.text = String.format(resources.getString(
-            R.string.carbohydrates_amount_card),
+        customMealCarbs.text = String.format(
+            resources.getString(
+                R.string.carbohydrates_amount_card
+            ),
             item.carbs
         )
     }

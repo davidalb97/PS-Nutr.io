@@ -5,7 +5,6 @@ import android.view.View
 import androidx.annotation.IdRes
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
-import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.ARecyclerViewModel
 
 // Default pagination value

@@ -17,12 +17,10 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import androidx.preference.SwitchPreferenceCompat
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
 import com.google.android.material.navigation.NavigationView
-import org.w3c.dom.Text
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.DARK_MODE
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.PREFERENCES_FILE
 import pt.ipl.isel.leic.ps.androidclient.ui.util.Logger
@@ -62,9 +60,9 @@ class MainActivity : AppCompatActivity() {
             val isLightMode = sharedPreferences.getBoolean(DARK_MODE, false)
 
             if (!isLightMode) {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
             } else {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
             }
 
             if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES)
@@ -127,7 +125,11 @@ class MainActivity : AppCompatActivity() {
             ).build()
 
             WorkManager.getInstance(this)
-                .enqueueUniquePeriodicWork(TAG, ExistingPeriodicWorkPolicy.KEEP, periodicWorkerRequest)
+                .enqueueUniquePeriodicWork(
+                    TAG,
+                    ExistingPeriodicWorkPolicy.KEEP,
+                    periodicWorkerRequest
+                )
         }
 
     }

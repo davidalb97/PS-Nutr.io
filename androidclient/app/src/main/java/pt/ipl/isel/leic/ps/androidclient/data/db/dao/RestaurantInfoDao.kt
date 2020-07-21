@@ -2,7 +2,9 @@ package pt.ipl.isel.leic.ps.androidclient.data.db.dao
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import pt.ipl.isel.leic.ps.androidclient.data.db.entity.*
+import pt.ipl.isel.leic.ps.androidclient.data.db.entity.DbCuisineEntity
+import pt.ipl.isel.leic.ps.androidclient.data.db.entity.DbMealItemEntity
+import pt.ipl.isel.leic.ps.androidclient.data.db.entity.DbRestaurantInfoEntity
 import pt.ipl.isel.leic.ps.androidclient.data.db.relation.DbRestaurantInfoRelation
 
 private const val TABLE = DbRestaurantInfoEntity.tableName

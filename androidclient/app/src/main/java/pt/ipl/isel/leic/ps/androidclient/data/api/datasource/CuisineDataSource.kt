@@ -1,12 +1,15 @@
 package pt.ipl.isel.leic.ps.androidclient.data.api.datasource
 
 import com.android.volley.VolleyError
-import pt.ipl.isel.leic.ps.androidclient.data.api.*
+import pt.ipl.isel.leic.ps.androidclient.data.api.CUISINES
+import pt.ipl.isel.leic.ps.androidclient.data.api.Method
+import pt.ipl.isel.leic.ps.androidclient.data.api.RequestParser
+import pt.ipl.isel.leic.ps.androidclient.data.api.URI_BASE
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.CuisinesInput
 
 private const val CUISINE_URI = "$URI_BASE/$CUISINES" +
-    "?skip=$SKIP_PARAM" +
-    "&count=$COUNT_PARAM"
+        "?skip=$SKIP_PARAM" +
+        "&count=$COUNT_PARAM"
 
 class CuisineDataSource(
     private val requestParser: RequestParser

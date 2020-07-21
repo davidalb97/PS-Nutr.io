@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewModelScope
 import com.bumptech.glide.Glide
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.restaurantRepository
 import pt.ipl.isel.leic.ps.androidclient.R
@@ -20,7 +19,7 @@ import pt.ipl.isel.leic.ps.androidclient.ui.provider.RestaurantInfoVMProviderFac
 import pt.ipl.isel.leic.ps.androidclient.ui.util.Logger
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.RestaurantInfoMealRecyclerViewModel
 
-class RestaurantDetailFragment : MealRecyclerFragment(){
+class RestaurantDetailFragment : MealRecyclerFragment() {
 
     private val log = Logger(RestaurantDetailFragment::class)
     private lateinit var sharedPreferences: SharedPreferences
@@ -34,8 +33,15 @@ class RestaurantDetailFragment : MealRecyclerFragment(){
      */
     override fun buildViewModel(savedInstanceState: Bundle?) {
         val rootActivity = this.requireActivity()
-        val factory = RestaurantInfoVMProviderFactory(savedInstanceState, rootActivity.intent, requireArguments())
-        innerViewModel = ViewModelProvider(rootActivity, factory)[RestaurantInfoMealRecyclerViewModel::class.java]
+        val factory = RestaurantInfoVMProviderFactory(
+            savedInstanceState,
+            rootActivity.intent,
+            requireArguments()
+        )
+        innerViewModel = ViewModelProvider(
+            rootActivity,
+            factory
+        )[RestaurantInfoMealRecyclerViewModel::class.java]
         innerViewModel.restaurantId = requireArguments().getString(BUNDLE_RESTAURANT_INFO_ID)!!
         viewModel = innerViewModel
         activityApp = requireActivity().application
@@ -90,7 +96,7 @@ class RestaurantDetailFragment : MealRecyclerFragment(){
 
         restaurantMealTitle?.text = restaurantInfo.name
 
-        if(restaurantInfo.votes != null) {
+        if (restaurantInfo.votes != null) {
             votesTxtRl?.visibility = View.VISIBLE
             votesRl?.visibility = View.VISIBLE
 
@@ -113,7 +119,7 @@ class RestaurantDetailFragment : MealRecyclerFragment(){
                         "Downvoted!",
                         Toast.LENGTH_LONG
                     ).show()
-                },log::e, userSession)
+                }, log::e, userSession)
             }
         }
     }

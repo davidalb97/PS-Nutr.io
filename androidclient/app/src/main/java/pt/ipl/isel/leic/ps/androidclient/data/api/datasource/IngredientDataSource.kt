@@ -1,12 +1,15 @@
 package pt.ipl.isel.leic.ps.androidclient.data.api.datasource
 
 import com.android.volley.VolleyError
-import pt.ipl.isel.leic.ps.androidclient.data.api.*
+import pt.ipl.isel.leic.ps.androidclient.data.api.INGREDIENTS
+import pt.ipl.isel.leic.ps.androidclient.data.api.Method
+import pt.ipl.isel.leic.ps.androidclient.data.api.RequestParser
+import pt.ipl.isel.leic.ps.androidclient.data.api.URI_BASE
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.info.DetailedIngredientInput
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.info.DetailedIngredientsInput
 
-private const val INGREDIENT_URI ="$URI_BASE/$INGREDIENTS"
-private const val INGREDIENT_LIST_URI ="$URI_BASE/$INGREDIENTS" +
+private const val INGREDIENT_URI = "$URI_BASE/$INGREDIENTS"
+private const val INGREDIENT_LIST_URI = "$URI_BASE/$INGREDIENTS" +
         "?skip=$SKIP_PARAM" +
         "&count=$COUNT_PARAM"
 private const val INGREDIENT_ID_PARAM = ":id"
@@ -49,10 +52,12 @@ class IngredientDataSource(
         error: (VolleyError) -> Unit
     ) {
         var uri = INGREDIENT_ID_URI
-        val params = hashMapOf(Pair(
-            INGREDIENT_ID_PARAM,
-            "$ingredientId"
-        ))
+        val params = hashMapOf(
+            Pair(
+                INGREDIENT_ID_PARAM,
+                "$ingredientId"
+            )
+        )
         uri = buildUri(uri, params)
 
         requestParser.requestAndRespond(

@@ -26,25 +26,27 @@ class MealDetailFragment : IngredientsRecyclerFragment() {
 
     private var receivedMeal: MealInfo? = null
 
-    protected override fun buildViewModel(savedInstanceState: Bundle?) {
+    override fun buildViewModel(savedInstanceState: Bundle?) {
         super.buildViewModel(savedInstanceState)
 
         val rootActivity = this.requireActivity()
-        val factoryMealInfo = MealInfoVMProviderFactory(savedInstanceState, rootActivity.intent, arguments)
-        viewModelMealInfo = ViewModelProvider(rootActivity, factoryMealInfo)[MealInfoViewModel::class.java]
+        val factoryMealInfo =
+            MealInfoVMProviderFactory(savedInstanceState, rootActivity.intent, arguments)
+        viewModelMealInfo =
+            ViewModelProvider(rootActivity, factoryMealInfo)[MealInfoViewModel::class.java]
 
         //Read passed info from bundle
         viewModelMealInfo.mealInfo = arguments?.getParcelable(BUNDLE_MEAL_INFO)
         viewModelMealInfo.source = arguments?.getInt(BUNDLE_MEAL_SOURCE, -1)?.let {
-            if(it == -1) null else Source.values()[it]
+            if (it == -1) null else Source.values()[it]
         }
         viewModelMealInfo.submissionId = arguments?.getInt(BUNDLE_MEAL_SUBMISSION_ID, -1)?.let {
-            if(it == -1) null else it
+            if (it == -1) null else it
         }
         viewModelMealInfo.restaurantId = arguments?.getString(BUNDLE_MEAL_RESTAURANT_SUBMISSION_ID)
         viewModelMealInfo.dbId = arguments?.getLong(BUNDLE_MEAL_DB_ID, -1)?.let {
             val check: Long = -1
-            if(it == check) null else it
+            if (it == check) null else it
         }
     }
 
@@ -81,7 +83,8 @@ class MealDetailFragment : IngredientsRecyclerFragment() {
         val mealDownvoteButton = view?.findViewById<Button>(R.id.meal_info_down_vote)
         val mealShowIngredientsBtn = view?.findViewById<Button>(R.id.meal_info_show_ingredients_btn)
         val mealIngredientsRl = view?.findViewById<RelativeLayout>(R.id.meal_info_ingredients_rl)
-        val mealAddIngredientImgBtn = view?.findViewById<ImageButton>(R.id.meal_info_add_ingredients_button)
+        val mealAddIngredientImgBtn =
+            view?.findViewById<ImageButton>(R.id.meal_info_add_ingredients_button)
         val mealSuggestedRl = view?.findViewById<RelativeLayout>(R.id.meal_info_suggested_rl)
 
         // Image loading
@@ -94,9 +97,9 @@ class MealDetailFragment : IngredientsRecyclerFragment() {
 
         mealMealTitle?.text = receivedMeal.name
 
-        if(receivedMeal.source != Source.CUSTOM) {
+        if (receivedMeal.source != Source.CUSTOM) {
             //Show suggested txt
-            if(receivedMeal.isSuggested) {
+            if (receivedMeal.isSuggested) {
                 mealSuggestedRl?.visibility = View.VISIBLE
             } else {
                 //Show votes
@@ -148,7 +151,7 @@ class MealDetailFragment : IngredientsRecyclerFragment() {
 
         mealShowIngredientsBtn?.setOnClickListener {
             mealIngredientsRl?.visibility?.also { visibility ->
-                mealIngredientsRl.visibility = if(visibility == View.GONE) {
+                mealIngredientsRl.visibility = if (visibility == View.GONE) {
                     View.VISIBLE
                 } else {
                     View.GONE

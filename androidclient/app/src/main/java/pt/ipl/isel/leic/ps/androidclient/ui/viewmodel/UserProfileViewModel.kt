@@ -8,8 +8,7 @@ import pt.ipl.isel.leic.ps.androidclient.data.model.UserRegister
 import pt.ipl.isel.leic.ps.androidclient.data.model.UserSession
 
 class UserProfileViewModel() : ARecyclerViewModel<UserLogin>() {
-    constructor(parcel: Parcel) : this() {
-    }
+    constructor(parcel: Parcel) : this()
 
     var userId: Int? = null
 
@@ -27,7 +26,7 @@ class UserProfileViewModel() : ARecyclerViewModel<UserLogin>() {
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        TODO()
+        TODO("Save UserProfileViewModel to bundle")
     }
 
     override fun describeContents(): Int {

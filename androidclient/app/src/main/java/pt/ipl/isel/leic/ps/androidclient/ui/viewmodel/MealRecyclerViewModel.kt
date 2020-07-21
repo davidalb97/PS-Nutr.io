@@ -14,10 +14,10 @@ open class MealRecyclerViewModel() : ARecyclerViewModel<MealItem>() {
     open fun addToFavorite(mealItem: MealItem) =
         mealRepository.insertItem(mealItem)
 
-    constructor(parcel: Parcel): this()
+    constructor(parcel: Parcel) : this()
 
     override fun update() {
-        if(restaurantId != null) {
+        if (restaurantId != null) {
             mealRepository.getRestaurantMealItems(
                 restaurantId = restaurantId!!,
                 count = count,
@@ -43,11 +43,13 @@ open class MealRecyclerViewModel() : ARecyclerViewModel<MealItem>() {
     override fun describeContents(): Int {
         TODO("Not yet implemented")
     }
+
     companion object CREATOR : Parcelable.Creator<MealRecyclerViewModel> {
 
         override fun createFromParcel(parcel: Parcel): MealRecyclerViewModel {
             return MealRecyclerViewModel(parcel)
         }
+
         override fun newArray(size: Int): Array<MealRecyclerViewModel?> {
             return arrayOfNulls(size)
         }

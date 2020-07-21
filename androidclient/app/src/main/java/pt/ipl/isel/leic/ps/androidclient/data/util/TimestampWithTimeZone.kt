@@ -21,7 +21,7 @@ class TimestampWithTimeZone(
 
             //TODO remove and fix this!
             //Hotfix for restaurant/meal info creation date problem
-            if(formatted.toDoubleOrNull() != null) return null
+            if (formatted.toDoubleOrNull() != null) return null
 
             //TODO remove and fix this!
             //Hotfix for invalid conversion

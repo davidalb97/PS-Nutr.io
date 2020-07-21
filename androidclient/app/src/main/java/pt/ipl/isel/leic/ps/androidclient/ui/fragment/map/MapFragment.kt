@@ -28,7 +28,6 @@ import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.RestaurantItem
 import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.RestaurantRecyclerAdapter
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler.request.ARequestRecyclerListFragment
-import pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler.request.RestaurantRecyclerFragment
 import pt.ipl.isel.leic.ps.androidclient.ui.listener.ScrollListener
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.RestaurantRecyclerVMProviderFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.RestaurantRecyclerViewModel
@@ -83,7 +82,7 @@ class MapFragment :
         initLocationEngineCallback()
         mapView = view.findViewById(R.id.mapBoxView)
         mapView?.onCreate(savedInstanceState)
-        mapView?.getMapAsync(this);
+        mapView?.getMapAsync(this)
 
         initRecyclerList(view)
         setErrorFunction()
@@ -167,7 +166,7 @@ class MapFragment :
             // Activate with the LocationComponentActivationOptions object
             locationComponent.activateLocationComponent(locationComponentActivationOptions)
 
-            if(!requirePermissions()) {
+            if (!requirePermissions()) {
                 return
             }
 
@@ -202,7 +201,7 @@ class MapFragment :
         permissions: Array<out String>,
         grantResults: IntArray
     ) {
-        permissionsManager?.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        permissionsManager?.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
     override fun onExplanationNeeded(permissionsToExplain: MutableList<String>?) {
@@ -210,7 +209,7 @@ class MapFragment :
             activityApp,
             R.string.user_location_permission_explanation,
             Toast.LENGTH_LONG
-        ).show();
+        ).show()
     }
 
     override fun onPermissionResult(granted: Boolean) {
@@ -294,9 +293,9 @@ class MapFragment :
     override fun onDestroy() {
         super.onDestroy()
         if (locationEngine != null) {
-            locationEngine!!.removeLocationUpdates(callback);
+            locationEngine!!.removeLocationUpdates(callback)
         }
-        mapView?.onDestroy();
+        mapView?.onDestroy()
     }
 
     override fun onLowMemory() {

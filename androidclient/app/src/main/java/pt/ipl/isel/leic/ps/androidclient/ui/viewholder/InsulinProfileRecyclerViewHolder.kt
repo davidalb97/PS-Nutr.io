@@ -75,6 +75,7 @@ class InsulinProfileRecyclerViewHolder(
     override fun onClick(v: View?) {
         setButtonsVisibility(false)
     }
+
     override fun onLongClick(v: View?): Boolean {
         setButtonsVisibility(true)
         deleteButton.setOnClickListener {

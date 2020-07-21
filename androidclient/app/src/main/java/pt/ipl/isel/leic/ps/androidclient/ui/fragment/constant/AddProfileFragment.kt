@@ -52,8 +52,8 @@ class AddProfileFragment : Fragment() {
         val endTimeUser = view.findViewById<TextView>(R.id.end_time_user)
 
         val calendar = Calendar.getInstance()
-        val mHour = calendar.get(Calendar.HOUR_OF_DAY);
-        val mMinute = calendar.get(Calendar.MINUTE);
+        val mHour = calendar.get(Calendar.HOUR_OF_DAY)
+        val mMinute = calendar.get(Calendar.MINUTE)
 
         addStartTime.setOnClickListener {
             setupTimePickerDialog(startTimeUser, mHour, mMinute)
