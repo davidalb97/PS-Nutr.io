@@ -22,7 +22,9 @@ import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
 import com.google.android.material.navigation.NavigationView
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.DARK_MODE
+import pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.FIRST_TIME
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.PREFERENCES_FILE
+import pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.USERNAME
 import pt.ipl.isel.leic.ps.androidclient.ui.util.Logger
 import java.util.concurrent.TimeUnit
 
@@ -43,7 +45,7 @@ class MainActivity : AppCompatActivity() {
         val sharedPreferences: SharedPreferences =
             this.getSharedPreferences(PREFERENCES_FILE, Context.MODE_PRIVATE)!!
 
-        val isFirstTime: Boolean = sharedPreferences.getBoolean("isFirstTime", true)
+        val isFirstTime: Boolean = sharedPreferences.getBoolean(FIRST_TIME, true)
 
         if (isFirstTime) {
             handler.postDelayed({
@@ -109,8 +111,10 @@ class MainActivity : AppCompatActivity() {
             val username = headerView.findViewById<TextView>(R.id.username)
             val userEmail = headerView.findViewById<TextView>(R.id.userEmail)
 
-            if (sharedPreferences.getString("username", "") != null) {
-                username.text = sharedPreferences.getString("username", "")
+            val registeredUser = sharedPreferences.getString(USERNAME, "")
+
+            if (registeredUser != null) {
+                username.text = registeredUser
                 userEmail.visibility = View.INVISIBLE
             }
 
@@ -138,15 +142,4 @@ class MainActivity : AppCompatActivity() {
         val navController = findNavController(R.id.nav_host_fragment)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
-
-/*    // TODO
-    override fun onBackPressed() {
-        log.v("Called onBackPressed()")
-        val count = supportFragmentManager.backStackEntryCount
-        if (count == 0) {
-            super.onBackPressed()
-        } else {
-            supportFragmentManager.popBackStack()
-        }
-    }*/
 }

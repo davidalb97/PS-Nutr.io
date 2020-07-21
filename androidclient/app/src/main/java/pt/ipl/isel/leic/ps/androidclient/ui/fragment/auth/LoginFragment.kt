@@ -59,7 +59,6 @@ class LoginFragment : Fragment() {
             val signedWarning = view.findViewById<TextView>(R.id.already_logged_in_warning)
             signedWarning.visibility = View.VISIBLE
             signedWarning.text = "${getString(R.string.already_logged_in_message)} $signedUser"
-            // TODO extract resource string
 
             val logoutButton = view.findViewById<Button>(R.id.logoutButton)
             logoutButton.visibility = View.VISIBLE
