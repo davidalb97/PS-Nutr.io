@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_margin="4dp"
+    android:elevation="10dp"
+    android:padding="10dp"
+    app:cardCornerRadius="15dp">
 
     <RelativeLayout
         android:layout_width="wrap_content"
@@ -9,72 +14,48 @@
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true">
 
-        <TextView
-            android:id="@+id/emailLabel"
-            android:layout_centerHorizontal="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/email"
-            android:textSize="28sp"
-            android:textColor="?attr/textColor">
-        </TextView>
-
         <EditText
             android:id="@+id/userEmailInput"
-            android:layout_below="@+id/emailLabel"
-            android:padding="5dp"
-            android:layout_centerHorizontal="true"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="100dp"
-            android:background="@drawable/textbox_shape"
-            android:hint="@string/email">
-        </EditText>
-
-        <TextView
-            android:id="@+id/userNameLabel"
             android:layout_centerHorizontal="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/userEmailInput"
-            android:text="@string/username"
-            android:textSize="28sp"
-            android:textColor="?attr/textColor">
-        </TextView>
+            android:layout_marginStart="100dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/textbox_shape"
+            android:drawableStart="@drawable/ic_email"
+            android:drawablePadding="10dp"
+            android:hint="@string/email"
+            android:padding="5dp">
+        </EditText>
 
         <EditText
             android:id="@+id/userNameInput"
-            android:layout_below="@+id/userNameLabel"
-            android:padding="5dp"
-            android:layout_centerHorizontal="true"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="100dp"
-            android:background="@drawable/textbox_shape"
-            android:hint="@string/username">
-        </EditText>
-
-        <TextView
-            android:id="@+id/userPasswordLabel"
-            android:layout_below="@+id/userNameInput"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_below="@+id/userEmailInput"
             android:layout_centerHorizontal="true"
-            android:text="@string/password"
-            android:textSize="28sp"
-            android:textColor="?attr/textColor">
-        </TextView>
+            android:layout_marginStart="100dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/textbox_shape"
+            android:drawableStart="@drawable/ic_user"
+            android:drawablePadding="10dp"
+            android:hint="@string/username"
+            android:padding="5dp">
+        </EditText>
 
         <EditText
             android:id="@+id/userPasswordInput"
-            android:padding="5dp"
-            android:layout_below="@+id/userPasswordLabel"
-            android:layout_centerHorizontal="true"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/userNameInput"
+            android:layout_centerHorizontal="true"
             android:layout_marginStart="100dp"
+            android:layout_marginTop="10dp"
             android:background="@drawable/textbox_shape"
-            android:hint="@string/password">
+            android:drawableStart="@drawable/ic_password"
+            android:drawablePadding="10dp"
+            android:hint="@string/password"
+            android:padding="5dp">
         </EditText>
 
         <Button
@@ -91,4 +72,4 @@
 
     </RelativeLayout>
 
-</RelativeLayout>
+</androidx.cardview.widget.CardView>

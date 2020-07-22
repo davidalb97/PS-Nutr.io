@@ -120,7 +120,7 @@ class MainActivity : AppCompatActivity() {
 
             //TODO - change when bottom bar is working
             headerImage.setOnClickListener {
-                navController.navigate(R.id.nav_login)
+                navController.navigate(R.id.nav_sign)
             }
 
             // Periodic worker to sync user related data

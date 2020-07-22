@@ -14,12 +14,12 @@ class SignFragment : Fragment() {
     private val onNavigationItemSelectedListener =
         BottomNavigationView.OnNavigationItemSelectedListener { item ->
             when (item.itemId) {
-                R.id.nav_register -> {
-                    setFragment(RegisterFragment())
+                R.id.loginButton -> {
+                    setFragment(LoginFragment())
                     true
                 }
-                R.id.nav_login -> {
-                    setFragment(LoginFragment())
+                R.id.registerButton -> {
+                    setFragment(RegisterFragment())
                     true
                 }
                 else -> false
@@ -37,8 +37,7 @@ class SignFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val fragmentContainer = view.findViewById<FrameLayout>(R.id.fragment_container)
-        val bottomNavigationBar =
+        val bottomNavigationBar=
             view.findViewById<BottomNavigationView>(R.id.bottomNavigationBar)
 
         setFragment(LoginFragment())
