@@ -38,6 +38,6 @@ interface SubmitterDao {
     @SqlQuery("SELECT * FROM $table WHERE $name = :name")
     fun getSubmitterByName(@Bind name: String): DbSubmitterDto?
 
-    @SqlQuery("INSERT INTO $table($name, $type) VALUES(:name, :date, :type) RETURNING *")
+    @SqlQuery("INSERT INTO $table($name, $type) VALUES(:name, :type) RETURNING *")
     fun insertSubmitter(@Bind name: String, @Bind type: String): DbSubmitterDto
 }
