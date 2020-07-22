@@ -39,7 +39,7 @@ class InsulinProfileDataSource(
         onError: (VolleyError) -> Unit
     ) {
 
-        val uri = buildUri(INSULIN_PROFILES_URI, hashMapOf(Pair(INSULIN_PROFILE_PARAM, name)))
+        val uri = buildUri(INSULIN_PROFILE_URI, hashMapOf(Pair(INSULIN_PROFILE_PARAM, name)))
 
         requestParser.requestAndRespond(
             Method.GET,
