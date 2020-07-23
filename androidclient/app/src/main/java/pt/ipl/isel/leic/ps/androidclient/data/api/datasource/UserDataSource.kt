@@ -2,6 +2,7 @@ package pt.ipl.isel.leic.ps.androidclient.data.api.datasource
 
 import com.android.volley.VolleyError
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.UserLoginInput
+import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.UserRegisterInput
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.output.LoginOutput
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.output.RegisterOutput
 import pt.ipl.isel.leic.ps.androidclient.data.api.request.HTTPMethod
@@ -26,10 +27,9 @@ class UserDataSource(
         email: String,
         username: String,
         password: String,
-        consumerDto: (UserLoginInput) -> Unit,
+        consumerDto: (UserRegisterInput) -> Unit,
         error: (VolleyError) -> Unit
     ) {
-
         requestParser.requestAndParse(
             method = HTTPMethod.POST,
             uri = REGISTER_URI,
@@ -38,7 +38,7 @@ class UserDataSource(
                 username = username,
                 password = password
             ),
-            dtoClass = UserLoginInput::class.java,
+            dtoClass = UserRegisterInput::class.java,
             onSuccess = consumerDto,
             onError = error
         )
