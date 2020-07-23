@@ -1,7 +1,5 @@
 package pt.ipl.isel.leic.ps.androidclient.ui.fragment.auth
 
-import android.annotation.SuppressLint
-import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -14,12 +12,11 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.UserLogin
-import pt.ipl.isel.leic.ps.androidclient.data.model.UserSession
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.EMAIL
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.JWT
-import pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.PREFERENCES_FILE
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.USERNAME
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.UserProfileVMProviderFactory
+import pt.ipl.isel.leic.ps.androidclient.ui.util.requireSharedPreferences
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.UserProfileViewModel
 
 class LoginFragment : Fragment() {
@@ -43,58 +40,66 @@ class LoginFragment : Fragment() {
         return inflater.inflate(R.layout.login_fragment, container, false)
     }
 
-    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        sharedPreferences =
-            requireActivity().baseContext?.getSharedPreferences(
-                PREFERENCES_FILE,
-                Context.MODE_PRIVATE
-            )!!
+        sharedPreferences = requireSharedPreferences()
 
-        val signedUser = sharedPreferences.getString(USERNAME, "")
+        val signedUser = sharedPreferences.getString(USERNAME, null)
 
-        if (signedUser?.isNotBlank()!!) {
+        val userNameEditText: EditText = view.findViewById(R.id.userNameInput)
+        val userPasswordEditText: EditText = view.findViewById(R.id.userPasswordInput)
+        val loginBtn = view.findViewById<Button>(R.id.loginButton)
+
+        if (signedUser != null) {
+            loginBtn.visibility = View.INVISIBLE
+            userNameEditText.visibility = View.INVISIBLE
+            userPasswordEditText.visibility = View.INVISIBLE
+
             val signedWarning = view.findViewById<TextView>(R.id.already_logged_in_warning)
             signedWarning.visibility = View.VISIBLE
-            signedWarning.text = "${getString(R.string.already_logged_in_message)} $signedUser"
+            signedWarning.text = String.format(
+                getString(R.string.already_logged_in_message),
+                signedUser
+            )
 
             val logoutButton = view.findViewById<Button>(R.id.logoutButton)
             logoutButton.visibility = View.VISIBLE
 
             // Eliminate shared preferences
             logoutButton.setOnClickListener {
-                sharedPreferences.edit().clear().apply()
+                sharedPreferences.edit()
+                    .clear()
+                    .apply()
             }
         }
 
-        val userName: EditText = view.findViewById(R.id.userNameInput)
-        val userPassword: EditText = view.findViewById(R.id.userPasswordInput)
-        val loginBtn = view.findViewById<Button>(R.id.loginButton)
-
         loginBtn.setOnClickListener {
-            val userNameParsed = userName.text.toString()
-            val userPasswordParsed = userPassword.text.toString()
-
-            if (userPasswordParsed.isNotBlank() && userNameParsed.isNotBlank()) {
+            val userName = userNameEditText.text.toString()
+            val password = userPasswordEditText.text.toString()
+            if (listOf(userName, password).all(String::isNotBlank)) {
                 viewModel.login(
                     UserLogin(
-                        username = userNameParsed,
-                        password = userPasswordParsed
-                    ),
-                    ::saveSession
-                )
-                sharedPreferences.edit()
-                    .putString(USERNAME, userNameParsed)
-                    .putString(EMAIL, userNameParsed)
-                    .apply()
+                        username = userName,
+                        password = password
+                    )
+                ) { userSession ->
+                    //Only save if login completed
+                    saveSession(
+                        jwt = userSession.jwt,
+                        userName = userName,
+                        email = userName
+                    )
+                }
             }
         }
     }
 
-    @SuppressLint("CommitPrefEdits")
-    private fun saveSession(userSession: UserSession) {
-        sharedPreferences.edit().putString(JWT, userSession.jwt).apply()
+    private fun saveSession(jwt: String, userName: String, email: String) {
+        sharedPreferences.edit()
+            .putString(JWT, jwt)
+            .putString(USERNAME, userName)
+            .putString(EMAIL, email)
+            .apply()
     }
 }

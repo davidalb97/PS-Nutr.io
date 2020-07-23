@@ -12,13 +12,23 @@ class UserProfileViewModel() : ARecyclerViewModel<UserLogin>() {
 
     var userId: Int? = null
 
-    fun register(userRegister: UserRegister) = userRepository.registerUser(userRegister)
+    fun register(
+        userRegister: UserRegister,
+        userSessionConsumer: (UserSession) -> Unit
+    ) = userRepository.registerUser(
+        userReg = userRegister,
+        userSessionConsumer = userSessionConsumer,
+        error = onError
+    )
 
-    fun login(userLogin: UserLogin, userSession: (UserSession) -> Unit) =
-        userRepository.loginUser(
-            userLogin,
-            userSession
-        )
+    fun login(
+        userLogin: UserLogin,
+        userSessionConsumer: (UserSession) -> Unit
+    ) = userRepository.loginUser(
+        userLogin = userLogin,
+        userSessionConsumer = userSessionConsumer,
+        error = onError
+    )
 
 
     override fun update() {

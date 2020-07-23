@@ -1,5 +1,6 @@
 package pt.ipl.isel.leic.ps.androidclient.ui.fragment.auth
 
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,11 +11,16 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.UserRegister
+import pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.EMAIL
+import pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.JWT
+import pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.USERNAME
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.UserProfileVMProviderFactory
+import pt.ipl.isel.leic.ps.androidclient.ui.util.requireSharedPreferences
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.UserProfileViewModel
 
 class RegisterFragment : Fragment() {
 
+    private lateinit var sharedPreferences: SharedPreferences
     lateinit var viewModel: UserProfileViewModel
 
     private fun buildViewModel(savedInstanceState: Bundle?) {
@@ -36,26 +42,42 @@ class RegisterFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val userEmail: EditText = view.findViewById(R.id.userEmailInput)
-        val userName: EditText = view.findViewById(R.id.userNameInput)
-        val userPassword: EditText = view.findViewById(R.id.userPasswordInput)
+        sharedPreferences = requireSharedPreferences()
+
+        val userEmailEditText: EditText = view.findViewById(R.id.userEmailInput)
+        val userNameEditText: EditText = view.findViewById(R.id.userNameInput)
+        val userPasswordEditText: EditText = view.findViewById(R.id.userPasswordInput)
         val registerBtn = view.findViewById<Button>(R.id.registerButton)
 
         registerBtn.setOnClickListener {
-            val userEmailParsed = userEmail.text.toString()
-            val userNameParsed = userName.text.toString()
-            val userPasswordParsed = userPassword.text.toString()
+            val userEmail = userEmailEditText.text.toString()
+            val userName = userNameEditText.text.toString()
+            val userPassword = userPasswordEditText.text.toString()
 
-            if (userPasswordParsed.isNotBlank() && userNameParsed.isNotBlank() && userEmailParsed.isNotBlank()) {
+            if (listOf(userEmail, userName, userPassword).all(String::isNotBlank)) {
                 viewModel.register(
-                    UserRegister(
-                        email = userEmailParsed,
-                        username = userNameParsed,
-                        password = userPasswordParsed
+                    userRegister = UserRegister(
+                        email = userEmail,
+                        username = userName,
+                        password = userPassword
                     )
-                )
+                ) { userSession ->
+                    saveSession(
+                        jwt = userSession.jwt,
+                        email = userEmail,
+                        userName = userName
+                    )
+                }
             }
         }
+    }
+
+    private fun saveSession(jwt: String, userName: String, email: String) {
+        sharedPreferences.edit()
+            .putString(JWT, jwt)
+            .putString(USERNAME, userName)
+            .putString(EMAIL, email)
+            .apply()
     }
 
 }

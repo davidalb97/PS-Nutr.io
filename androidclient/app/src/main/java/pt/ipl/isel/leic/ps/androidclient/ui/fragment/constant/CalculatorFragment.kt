@@ -24,7 +24,8 @@ import pt.ipl.isel.leic.ps.androidclient.ui.util.closeKeyboard
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.InsulinProfilesRecyclerViewModel
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.MealInfoViewModel
 import java.math.RoundingMode
-import java.time.LocalTime
+import java.text.SimpleDateFormat
+import java.util.*
 
 const val BUNDLED_MEAL_INFO_TAG = "bundledMeal"
 const val CONVERTION_CONST = 18
@@ -219,13 +220,10 @@ class CalculatorFragment : Fragment() {
     /**
      * Searches for a profile that matches the current time
      */
-    @SuppressLint("NewApi")
     private fun getActualProfile(cb: (InsulinProfile?) -> Unit) {
 
         // Gets actual time in hh:mm format
-        val time = LocalTime.now()
-            .withNano(0)
-            .withSecond(0)
+        val time = Calendar.getInstance().time
 
         val profiles = viewModelProfiles.items
         if (profiles.isEmpty()) {
@@ -237,12 +235,11 @@ class CalculatorFragment : Fragment() {
             ).show()
             return
         }
+        val timeInstance = SimpleDateFormat("HH:MM")
         viewModelProfiles.items.forEach { savedProfile ->
-            val parsedSavedStartTime =
-                LocalTime.parse(savedProfile.startTime)
-            val parsedSavedEndTime =
-                LocalTime.parse(savedProfile.endTime)
-            if (time.isAfter(parsedSavedStartTime) && time.isBefore(parsedSavedEndTime)) {
+            val parsedSavedStartTime = timeInstance.parse(savedProfile.startTime)
+            val parsedSavedEndTime = timeInstance.parse(savedProfile.endTime)
+            if (time.after(parsedSavedStartTime) && time.before(parsedSavedEndTime)) {
                 cb(savedProfile)
             }
         }
@@ -251,7 +248,6 @@ class CalculatorFragment : Fragment() {
     /**
      * Shows the profile details, according to the current time
      */
-    @SuppressLint("SetTextI18n")
     private fun showActualProfileDetails(profile: InsulinProfile) {
         val startTime = view?.findViewById<TextView>(R.id.start_time_value)
         val endTime = view?.findViewById<TextView>(R.id.end_time_value)
@@ -263,12 +259,16 @@ class CalculatorFragment : Fragment() {
         startTime?.text = profile.startTime
         endTime?.text = profile.endTime
         glucoseObjective?.text = profile.glucoseObjective.toString()
-        insulinSensitivity?.text =
-            " ${profile.glucoseAmountPerInsulin} / " +
-                    resources.getString(R.string.insulin_unit)
-        carbohydrates?.text =
-            " ${profile.carbsAmountPerInsulin} / " +
-                    resources.getString(R.string.insulin_unit)
+        insulinSensitivity?.text = String.format(
+            "%1\$d / %2\$s",
+            profile.glucoseAmountPerInsulin,
+            resources.getString(R.string.insulin_unit)
+        )
+        carbohydrates?.text = String.format(
+            "%1\$d / %2\$s",
+            profile.carbsAmountPerInsulin,
+            resources.getString(R.string.insulin_unit)
+        )
     }
 
     /**

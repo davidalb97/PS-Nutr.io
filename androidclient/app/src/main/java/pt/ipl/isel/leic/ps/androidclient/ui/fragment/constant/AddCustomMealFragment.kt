@@ -1,6 +1,5 @@
 package pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant
 
-import android.annotation.SuppressLint
 import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
@@ -48,7 +47,6 @@ class AddCustomMealFragment : Fragment() {
         return inflater.inflate(R.layout.add_custom_meal, container, false)
     }
 
-    @SuppressLint("NewApi")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         unitSpinnerSetup()

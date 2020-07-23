@@ -74,7 +74,7 @@ class InsulinProfileRepository(private val dataSource: InsulinProfileDataSource)
             )
         }
 
-    // TODO
+    // TODO("Update profile on API")
     fun updateProfile(jwt: String, profileDb: InsulinProfile) = AsyncWorker<Unit, Unit> {
         roomDb.insulinProfileDao().update(insulinProfileMapper.mapToRelation(profileDb))
     }

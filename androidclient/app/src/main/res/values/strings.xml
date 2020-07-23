@@ -62,10 +62,10 @@
     <string name="access_token">pk.eyJ1IjoibWlnMDciLCJhIjoiY2thNm96MWQzMDh6cTJybzMybnVjMjZ4dCJ9.VEnqYHRE7wBwhTp7-ASOBQ</string>
     <string name="create_your_routine">Create your routine</string>
     <string name="touch_to_create_your_routine_profiles">Touch to create your routine profiles</string>
-    <string name="start_time">Starts at:</string>
-    <string name="end_time">Ends at:</string>
+    <string name="start_time">Starts at: %1$s</string>
+    <string name="end_time">Ends at: %1$s</string>
     <string name="profile_name">Profile name</string>
-    <string name="carbohydrate_ratio">Carbohydrate ratio:</string>
+    <string name="carbohydrate_ratio">Carbohydrate ratio: %1$s / %2$s</string>
     <string name="recent_activity">Recent activity</string>
     <string name="routine_graph">Routine graph</string>
     <string name="add_insulin_profile_nav">Add an insulin profile</string>
@@ -84,8 +84,8 @@
     <string name="carbohydrate_amount">Carbohydrate amount</string>
     <string name="create_button">Create</string>
     <string name="you_don_t_have_a_routine_right_now">You don\'t have a routine right now</string>
-    <string name="glucose_objective_card">Glucose objective:</string>
-    <string name="insulin_sensitivity_factor">Insulin sensitivity factor:</string>
+    <string name="glucose_objective_card">Glucose objective: %1$s</string>
+    <string name="insulin_sensitivity_factor">Insulin sensitivity factor: %1$s / %2$s</string>
     <string name="insulin_unit">insulin unit</string>
     <string name="DialogAlert_deleteWarning">Warning</string>
     <string name="AlertDialog_deleteQuestion">Do you want to delete this item?</string>
@@ -161,5 +161,5 @@
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
     <string name="nutr_io">Nutr.io</string>
     <string name="skip">Skip</string>
-    <string name="already_logged_in_message">You are already logged in with the user</string>
+    <string name="already_logged_in_message">You are already logged in with the user %1$s</string>
 </resources>
