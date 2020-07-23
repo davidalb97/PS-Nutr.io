@@ -18,10 +18,10 @@ class AuthenticationService(
 ) {
 
     fun login(userName: String, password: String): String {
-        val userDetails = User(userName, password, ArrayList())
+        val userDetails = User(userName, password, emptyList())
         try {
             authenticationManager.authenticate(
-                    UsernamePasswordAuthenticationToken(userDetails.username, userDetails.password)
+                    UsernamePasswordAuthenticationToken(userName, password)
             )
         } catch (e: AuthenticationException) {
             throw NotAuthenticatedException()
