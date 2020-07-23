@@ -1,12 +1,12 @@
 package pt.ipl.isel.leic.ps.androidclient.data.api.datasource
 
 import com.android.volley.VolleyError
-import pt.ipl.isel.leic.ps.androidclient.data.api.INSULIN_PROFILE
-import pt.ipl.isel.leic.ps.androidclient.data.api.Method
-import pt.ipl.isel.leic.ps.androidclient.data.api.RequestParser
-import pt.ipl.isel.leic.ps.androidclient.data.api.URI_BASE
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.InsulinProfileInput
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.output.InsulinProfileOutput
+import pt.ipl.isel.leic.ps.androidclient.data.api.request.HTTPMethod
+import pt.ipl.isel.leic.ps.androidclient.data.api.request.INSULIN_PROFILE
+import pt.ipl.isel.leic.ps.androidclient.data.api.request.RequestParser
+import pt.ipl.isel.leic.ps.androidclient.data.api.request.URI_BASE
 
 private const val INSULIN_PROFILE_PARAM = ":profileName"
 
@@ -22,8 +22,8 @@ class InsulinProfileDataSource(
         onSuccess: (Array<InsulinProfileInput>) -> Unit,
         onError: (VolleyError) -> Unit
     ) {
-        requestParser.requestAndRespond(
-            Method.GET,
+        requestParser.requestAndParse(
+            HTTPMethod.GET,
             INSULIN_PROFILES_URI,
             buildAuthHeader(jwt),
             Array<InsulinProfileInput>::class.java,
@@ -41,8 +41,8 @@ class InsulinProfileDataSource(
 
         val uri = buildUri(INSULIN_PROFILE_URI, hashMapOf(Pair(INSULIN_PROFILE_PARAM, name)))
 
-        requestParser.requestAndRespond(
-            Method.GET,
+        requestParser.requestAndParse(
+            HTTPMethod.GET,
             uri,
             buildAuthHeader(jwt),
             InsulinProfileInput::class.java,
@@ -57,7 +57,7 @@ class InsulinProfileDataSource(
         onError: (VolleyError) -> Unit
     ) {
         requestParser.request(
-            Method.POST,
+            HTTPMethod.POST,
             INSULIN_PROFILES_URI,
             buildAuthHeader(jwt),
             insulinProfileOutput,
@@ -72,7 +72,7 @@ class InsulinProfileDataSource(
         onError: (VolleyError) -> Unit
     ) {
         requestParser.request(
-            Method.DELETE,
+            HTTPMethod.DELETE,
             INSULIN_PROFILES_URI,
             buildAuthHeader(jwt),
             profileName,

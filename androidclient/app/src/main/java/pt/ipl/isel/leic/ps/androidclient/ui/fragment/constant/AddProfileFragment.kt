@@ -50,16 +50,16 @@ class AddProfileFragment : Fragment() {
         val endTimeUser = view.findViewById<TextView>(R.id.end_time_user)
 
         val calendar = Calendar.getInstance()
-        val mHour = calendar.get(Calendar.HOUR_OF_DAY)
-        val mMinute = calendar.get(Calendar.MINUTE)
+        val defaultHour = calendar.get(Calendar.HOUR_OF_DAY)
+        val defaultMinute = calendar.get(Calendar.MINUTE)
 
         addStartTime.setOnClickListener {
-            setupTimePickerDialog(startTimeUser, mHour, mMinute)
+            setupTimePickerDialog(startTimeUser, defaultHour, defaultMinute)
                 .show()
         }
 
         addEndTime.setOnClickListener {
-            setupTimePickerDialog(endTimeUser, mHour, mMinute)
+            setupTimePickerDialog(endTimeUser, defaultHour, defaultMinute)
                 .show()
         }
 
@@ -160,17 +160,23 @@ class AddProfileFragment : Fragment() {
     /**
      * Setups each time picker dialog saving the chosen values to a TextView
      * so it can also display to the user
+     * @param textView The [TextView] to set
+     * @param defaultHour The default time (hours)
+     * @param defaultMinute The default time (minutes)
      */
-    @SuppressLint("SetTextI18n")
-    private fun setupTimePickerDialog(textView: TextView, hour: Int, minute: Int)
-            : TimePickerDialog =
-        TimePickerDialog(
+    private fun setupTimePickerDialog(
+        textView: TextView,
+        defaultHour: Int,
+        defaultMinute: Int
+    ): TimePickerDialog {
+        return TimePickerDialog(
             view?.context,
-            TimePickerDialog.OnTimeSetListener { timePicker: TimePicker, hour: Int, minute: Int ->
+            TimePickerDialog.OnTimeSetListener { _: TimePicker, hour: Int, minute: Int ->
                 textView.text = String.format("%02d:%02d", hour, minute)
             },
-            hour,
-            minute,
+            defaultHour,
+            defaultMinute,
             true
         )
+    }
 }

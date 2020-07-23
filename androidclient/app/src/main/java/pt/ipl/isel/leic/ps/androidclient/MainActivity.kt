@@ -111,7 +111,7 @@ class MainActivity : AppCompatActivity() {
             val username = headerView.findViewById<TextView>(R.id.username)
             val userEmail = headerView.findViewById<TextView>(R.id.userEmail)
 
-            val registeredUser = sharedPreferences.getString(USERNAME, "")
+            val registeredUser = sharedPreferences.getString(USERNAME, null)
 
             if (registeredUser != null) {
                 username.text = registeredUser

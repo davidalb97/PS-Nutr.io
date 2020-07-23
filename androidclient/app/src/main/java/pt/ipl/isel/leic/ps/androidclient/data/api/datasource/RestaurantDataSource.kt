@@ -1,11 +1,11 @@
 package pt.ipl.isel.leic.ps.androidclient.data.api.datasource
 
 import com.android.volley.VolleyError
-import pt.ipl.isel.leic.ps.androidclient.data.api.*
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.SimplifiedRestaurantInput
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.info.DetailedRestaurantInput
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.output.RestaurantOutput
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.output.VoteOutput
+import pt.ipl.isel.leic.ps.androidclient.data.api.request.*
 import pt.ipl.isel.leic.ps.androidclient.data.model.Cuisine
 import pt.ipl.isel.leic.ps.androidclient.data.model.UserSession
 
@@ -48,8 +48,8 @@ class RestaurantDataSource(
         )
         uri = buildUri(uri, params)
 
-        requestParser.requestAndRespond(
-            method = Method.GET,
+        requestParser.requestAndParse(
+            method = HTTPMethod.GET,
             uri = uri,
             dtoClass = DetailedRestaurantInput::class.java,
             onSuccess = success,
@@ -74,8 +74,8 @@ class RestaurantDataSource(
         )
         uri = buildUri(uri, params)
 
-        requestParser.requestAndRespond(
-            method = Method.GET,
+        requestParser.requestAndParse(
+            method = HTTPMethod.GET,
             uri = uri,
             dtoClass = Array<SimplifiedRestaurantInput>::class.java,
             onSuccess = success,
@@ -100,7 +100,7 @@ class RestaurantDataSource(
         val reqHeader = buildAuthHeader(userSession.jwt)
 
         requestParser.request(
-            method = Method.POST,
+            method = HTTPMethod.POST,
             uri = RESTAURANT,
             reqHeader = reqHeader,
             reqPayload = RestaurantOutput(
@@ -152,7 +152,7 @@ class RestaurantDataSource(
         val reqHeader = buildAuthHeader(userSession.jwt)
 
         requestParser.request(
-            method = Method.PUT,
+            method = HTTPMethod.PUT,
             uri = uri,
             reqHeader = reqHeader,
             reqPayload = VoteOutput(vote = vote),

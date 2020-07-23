@@ -1,12 +1,12 @@
 package pt.ipl.isel.leic.ps.androidclient.data.api.datasource
 
 import com.android.volley.VolleyError
-import pt.ipl.isel.leic.ps.androidclient.data.api.Method
-import pt.ipl.isel.leic.ps.androidclient.data.api.RequestParser
-import pt.ipl.isel.leic.ps.androidclient.data.api.URI_BASE
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.UserLoginInput
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.output.LoginOutput
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.output.RegisterOutput
+import pt.ipl.isel.leic.ps.androidclient.data.api.request.HTTPMethod
+import pt.ipl.isel.leic.ps.androidclient.data.api.request.RequestParser
+import pt.ipl.isel.leic.ps.androidclient.data.api.request.URI_BASE
 import pt.ipl.isel.leic.ps.androidclient.data.model.UserSession
 
 const val USER = "user"
@@ -26,19 +26,21 @@ class UserDataSource(
         email: String,
         username: String,
         password: String,
+        consumerDto: (UserLoginInput) -> Unit,
         error: (VolleyError) -> Unit
     ) {
 
-        requestParser.request(
-            method = Method.POST,
+        requestParser.requestAndParse(
+            method = HTTPMethod.POST,
             uri = REGISTER_URI,
             reqPayload = RegisterOutput(
                 email = email,
                 username = username,
                 password = password
             ),
-            onError = error,
-            responseConsumer = { }
+            dtoClass = UserLoginInput::class.java,
+            onSuccess = consumerDto,
+            onError = error
         )
     }
 
@@ -48,15 +50,16 @@ class UserDataSource(
         error: (VolleyError) -> Unit,
         consumerDto: (UserLoginInput) -> Unit
     ) {
-        requestParser.request(
-            method = Method.POST,
+        requestParser.requestAndParse(
+            method = HTTPMethod.POST,
             uri = LOGIN_URI,
             reqPayload = LoginOutput(
                 username = username,
                 password = password
             ),
-            onError = error,
-            responseConsumer = { consumerDto(parseToDto(it)) }
+            dtoClass = UserLoginInput::class.java,
+            onSuccess = consumerDto,
+            onError = error
         )
     }
 

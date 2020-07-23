@@ -1,7 +1,6 @@
-package pt.ipl.isel.leic.ps.androidclient.data.api
+package pt.ipl.isel.leic.ps.androidclient.data.api.request
 
 import android.util.Log
-import com.android.volley.Request
 import com.android.volley.RequestQueue
 import com.android.volley.Response
 import com.android.volley.VolleyError
@@ -22,16 +21,6 @@ const val INGREDIENTS = "ingredients"
 const val INSULIN_PROFILE = "profile"
 
 /**
- * HTTP methods enum
- */
-enum class Method(val value: Int) {
-    GET(Request.Method.GET),
-    POST(Request.Method.POST),
-    PUT(Request.Method.PUT),
-    DELETE(Request.Method.DELETE)
-}
-
-/**
  * This class makes asynchronous HTTP requests and parses
  * the received data to objects (DTOs), as specified by
  * the repository pattern.
@@ -45,8 +34,8 @@ class RequestParser(
     /**
      * A all-in-one function: requests and parses the string response to Dto
      */
-    fun <Dto> requestAndRespond(
-        method: Method,
+    fun <Dto> requestAndParse(
+        method: HTTPMethod,
         uri: String,
         reqHeader: MutableMap<String, String>? = null,
         dtoClass: Class<Dto>,
@@ -54,9 +43,9 @@ class RequestParser(
         onError: (VolleyError) -> Unit,
         reqPayload: Any? = null
     ) {
-        request(method, uri, reqHeader, reqPayload, onError) { strResponse ->
-            parseDto(strResponse, dtoClass) { dtoArray ->
-                onSuccess(dtoArray)
+        request(method, uri, reqHeader, reqPayload, onError) { response ->
+            deserializeBody(response.body, dtoClass) { deserializedBody ->
+                onSuccess(deserializedBody)
             }
         }
     }
@@ -104,12 +93,12 @@ class RequestParser(
      * Makes an asynchronous request with an optional payload
      */
     fun request(
-        method: Method,
+        method: HTTPMethod,
         uri: String,
         reqHeader: MutableMap<String, String>? = null,
         reqPayload: Any? = null,
         onError: (VolleyError) -> Unit,
-        responseConsumer: (String) -> Unit
+        responseConsumer: (PayloadResponse) -> Unit
     ) {
         Log.v(TAG, uri)
 
@@ -118,8 +107,8 @@ class RequestParser(
 
         //Custom string request that will allow a string payload
         val jsonRequest =
-            BodyStringRequest(
-                method = method.value,
+            JsonRequest(
+                method = method,
                 url = uri,
                 reqHeader = reqHeader,
                 reqPayload = payloadStr,
@@ -132,7 +121,7 @@ class RequestParser(
     /**
      * Parses string to Dto
      */
-    private fun <Dto> parseDto(
+    private fun <Dto> deserializeBody(
         value: String,
         dtoClass: Class<Dto>,
         dtoConsumer: (Dto) -> Unit

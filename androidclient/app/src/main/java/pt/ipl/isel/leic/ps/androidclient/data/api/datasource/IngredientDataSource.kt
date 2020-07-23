@@ -1,12 +1,12 @@
 package pt.ipl.isel.leic.ps.androidclient.data.api.datasource
 
 import com.android.volley.VolleyError
-import pt.ipl.isel.leic.ps.androidclient.data.api.INGREDIENTS
-import pt.ipl.isel.leic.ps.androidclient.data.api.Method
-import pt.ipl.isel.leic.ps.androidclient.data.api.RequestParser
-import pt.ipl.isel.leic.ps.androidclient.data.api.URI_BASE
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.info.DetailedIngredientInput
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.info.DetailedIngredientsInput
+import pt.ipl.isel.leic.ps.androidclient.data.api.request.HTTPMethod
+import pt.ipl.isel.leic.ps.androidclient.data.api.request.INGREDIENTS
+import pt.ipl.isel.leic.ps.androidclient.data.api.request.RequestParser
+import pt.ipl.isel.leic.ps.androidclient.data.api.request.URI_BASE
 
 private const val INGREDIENT_URI = "$URI_BASE/$INGREDIENTS"
 private const val INGREDIENT_LIST_URI = "$URI_BASE/$INGREDIENTS" +
@@ -34,8 +34,8 @@ class IngredientDataSource(
             Pair(COUNT_PARAM, "$count")
         )
         uri = buildUri(uri, params)
-        requestParser.requestAndRespond(
-            method = Method.GET,
+        requestParser.requestAndParse(
+            method = HTTPMethod.GET,
             uri = uri,
             dtoClass = DetailedIngredientsInput::class.java,
             onSuccess = success,
@@ -60,8 +60,8 @@ class IngredientDataSource(
         )
         uri = buildUri(uri, params)
 
-        requestParser.requestAndRespond(
-            method = Method.GET,
+        requestParser.requestAndParse(
+            method = HTTPMethod.GET,
             uri = uri,
             dtoClass = DetailedIngredientInput::class.java,
             onSuccess = success,
