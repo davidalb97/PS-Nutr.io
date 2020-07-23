@@ -1,6 +1,5 @@
 package pt.ipl.isel.leic.ps.androidclient.ui.viewholder
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.view.View
 import android.view.ViewGroup
@@ -40,31 +39,25 @@ class InsulinProfileRecyclerViewHolder(
         setupListeners()
     }
 
-    @SuppressLint("SetTextI18n")
     fun setupTextFields() {
         profileName.text = item.profileName
         val resources = ctx.resources
-        startTime.text =
-            resources.getString(R.string.start_time) +
-                    " ${item.startTime}"
-
-        endTime.text =
-            resources.getString(R.string.end_time) +
-                    " ${item.endTime}"
-
-        glucoseObjective.text =
-            resources.getString(R.string.glucose_objective_card) +
-                    " ${item.glucoseObjective}"
-
-        insulinSensitivityFactor.text =
-            resources.getString(R.string.insulin_sensitivity_factor) +
-                    " ${item.glucoseAmountPerInsulin} / " +
-                    resources.getString(R.string.insulin_unit)
-
-        carboRatio.text =
-            resources.getString(R.string.carbohydrate_ratio) +
-                    " ${item.carbsAmountPerInsulin} / " +
-                    resources.getString(R.string.insulin_unit)
+        startTime.text = String.format(resources.getString(R.string.start_time), item.startTime)
+        endTime.text = String.format(resources.getString(R.string.end_time), item.endTime)
+        glucoseObjective.text = String.format(
+            resources.getString(R.string.glucose_objective_card),
+            item.glucoseObjective
+        )
+        insulinSensitivityFactor.text = String.format(
+            resources.getString(R.string.insulin_sensitivity_factor),
+            item.glucoseAmountPerInsulin,
+            resources.getString(R.string.insulin_unit)
+        )
+        carboRatio.text = String.format(
+            resources.getString(R.string.carbohydrate_ratio),
+            item.carbsAmountPerInsulin,
+            resources.getString(R.string.insulin_unit)
+        )
     }
 
     private fun setupListeners() {

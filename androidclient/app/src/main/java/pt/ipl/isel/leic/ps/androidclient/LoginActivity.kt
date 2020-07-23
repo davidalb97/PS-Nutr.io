@@ -1,6 +1,5 @@
 package pt.ipl.isel.leic.ps.androidclient
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -93,14 +92,11 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    @SuppressLint("CommitPrefEdits")
     private fun skip() {
         sharedPreferences.edit().putBoolean("isFirstTime", false).apply()
         goToMainActivity()
     }
 
-
-    @SuppressLint("CommitPrefEdits")
     private fun saveSession(userSession: UserSession) {
         sharedPreferences.edit().putString("jwt", userSession.jwt).apply()
     }

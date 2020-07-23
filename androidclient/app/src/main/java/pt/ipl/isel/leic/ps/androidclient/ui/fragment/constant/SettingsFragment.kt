@@ -1,6 +1,5 @@
 package pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -27,7 +26,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
         setupDarkModeSwitch()
     }
 
-    @SuppressLint("CommitPrefEdits")
     private fun setupDarkModeSwitch() {
         val darkModeSwitch = findPreference<SwitchPreferenceCompat>(DARK_MODE)
         val sharedPreferences: SharedPreferences =
