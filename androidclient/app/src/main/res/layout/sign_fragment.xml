@@ -37,4 +37,5 @@
         app:menu="@menu/bottom_navigation_bar">
     </com.google.android.material.bottomnavigation.BottomNavigationView>
 
+
 </RelativeLayout>
