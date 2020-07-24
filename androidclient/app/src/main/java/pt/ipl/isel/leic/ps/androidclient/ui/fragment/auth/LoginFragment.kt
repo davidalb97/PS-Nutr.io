@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import pt.ipl.isel.leic.ps.androidclient.R
@@ -78,11 +79,19 @@ class LoginFragment : Fragment() {
             val userName = userNameEditText.text.toString()
             val password = userPasswordEditText.text.toString()
             if (listOf(userName, password).all(String::isNotBlank)) {
+
+                viewModel.onError = {
+
+                }
+
                 viewModel.login(
                     UserLogin(
                         username = userName,
                         password = password
-                    )
+                    ),
+                    onError = {
+                        Toast.makeText(context, R.string.login_error, Toast.LENGTH_SHORT).show()
+                    }
                 ) { userSession ->
                     //Only save if login completed
                     saveSession(

@@ -128,6 +128,8 @@
     <string name="password">Password</string>
     <string name="register">Register</string>
     <string name="login">Login</string>
+    <string name="login_error">Could not login</string>
+    <string name="register_error">Could not register</string>
     <string name="sign_up">Register an account</string>
     <string name="tab_meal_detail">Meal info</string>
     <string name="your_current_profile_for_this_time">Your current profile for this time</string>

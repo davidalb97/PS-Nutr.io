@@ -2,6 +2,7 @@ package pt.ipl.isel.leic.ps.androidclient.ui.viewmodel
 
 import android.os.Parcel
 import android.os.Parcelable
+import com.android.volley.VolleyError
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.userRepository
 import pt.ipl.isel.leic.ps.androidclient.data.model.UserLogin
 import pt.ipl.isel.leic.ps.androidclient.data.model.UserRegister
@@ -14,6 +15,7 @@ class UserProfileViewModel() : ARecyclerViewModel<UserLogin>() {
 
     fun register(
         userRegister: UserRegister,
+        onError: (VolleyError) -> Unit,
         userSessionConsumer: (UserSession) -> Unit
     ) = userRepository.registerUser(
         userReg = userRegister,
@@ -23,6 +25,7 @@ class UserProfileViewModel() : ARecyclerViewModel<UserLogin>() {
 
     fun login(
         userLogin: UserLogin,
+        onError: (VolleyError) -> Unit,
         userSessionConsumer: (UserSession) -> Unit
     ) = userRepository.loginUser(
         userLogin = userLogin,

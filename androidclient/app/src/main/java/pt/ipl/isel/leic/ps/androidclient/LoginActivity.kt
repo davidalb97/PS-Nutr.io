@@ -6,6 +6,7 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import pt.ipl.isel.leic.ps.androidclient.data.model.UserLogin
@@ -64,7 +65,10 @@ class LoginActivity : AppCompatActivity() {
                     username = userNameParsed,
                     password = userPasswordParsed
                 ),
-                ::saveSession
+                onError = {
+                    Toast.makeText(this, R.string.login_error, Toast.LENGTH_SHORT).show()
+                },
+                userSessionConsumer = ::saveSession
             )
             sharedPreferences.edit().putString("username", userNameParsed).apply()
             sharedPreferences.edit().putString("email", userNameParsed).apply()
@@ -83,7 +87,10 @@ class LoginActivity : AppCompatActivity() {
                     username = userNameParsed,
                     password = userPasswordParsed
                 ),
-                ::saveSession
+                onError = {
+                    Toast.makeText(this, R.string.login_error, Toast.LENGTH_SHORT).show()
+                },
+                userSessionConsumer = ::saveSession
             )
             sharedPreferences.edit().putString("username", userNameParsed).apply()
             sharedPreferences.edit().putString("email", userNameParsed).apply()

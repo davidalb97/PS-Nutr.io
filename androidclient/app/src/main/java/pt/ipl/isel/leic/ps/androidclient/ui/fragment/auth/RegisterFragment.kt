@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import pt.ipl.isel.leic.ps.androidclient.R
@@ -60,7 +61,10 @@ class RegisterFragment : Fragment() {
                         email = userEmail,
                         username = userName,
                         password = userPassword
-                    )
+                    ),
+                    onError = {
+                        Toast.makeText(context, R.string.register_error, Toast.LENGTH_SHORT).show()
+                    }
                 ) { userSession ->
                     saveSession(
                         jwt = userSession.jwt,
