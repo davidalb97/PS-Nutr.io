@@ -63,10 +63,6 @@ class UserDataSource(
         )
     }
 
-    fun logout() {
-
-    }
-
     /**
      * ################ GETs ################
      */

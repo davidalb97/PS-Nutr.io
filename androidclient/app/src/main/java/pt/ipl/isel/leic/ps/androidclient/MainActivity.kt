@@ -118,7 +118,6 @@ class MainActivity : AppCompatActivity() {
                 userEmail.visibility = View.INVISIBLE
             }
 
-            //TODO - change when bottom bar is working
             headerImage.setOnClickListener {
                 navController.navigate(R.id.nav_sign)
             }

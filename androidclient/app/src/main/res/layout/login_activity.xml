@@ -23,47 +23,45 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
 
-                <TextView
-                    android:id="@+id/userNameLabel"
-                    android:layout_width="wrap_content"
+                <EditText
+                    android:id="@+id/userEmailInput"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
-                    android:text="@string/username"
-                    android:textColor="?attr/textColor"
-                    android:textSize="28sp">
-                </TextView>
+                    android:layout_marginStart="100dp"
+                    android:background="@drawable/textbox_shape"
+                    android:drawableStart="@drawable/ic_email"
+                    android:drawablePadding="10dp"
+                    android:hint="@string/email"
+                    android:padding="5dp">
+                </EditText>
 
                 <EditText
                     android:id="@+id/userNameInput"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/userNameLabel"
+                    android:layout_below="@+id/userEmailInput"
                     android:layout_centerHorizontal="true"
+                    android:layout_marginTop="10dp"
                     android:layout_marginStart="100dp"
                     android:background="@drawable/textbox_shape"
+                    android:drawableStart="@drawable/ic_user"
+                    android:drawablePadding="10dp"
                     android:hint="@string/username"
                     android:padding="5dp">
                 </EditText>
-
-                <TextView
-                    android:id="@+id/userPasswordLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/userNameInput"
-                    android:layout_centerHorizontal="true"
-                    android:text="@string/password"
-                    android:textColor="?attr/textColor"
-                    android:textSize="28sp">
-                </TextView>
 
                 <EditText
                     android:id="@+id/userPasswordInput"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/userPasswordLabel"
+                    android:layout_below="@+id/userNameInput"
                     android:layout_centerHorizontal="true"
                     android:layout_marginStart="100dp"
+                    android:layout_marginTop="10dp"
                     android:background="@drawable/textbox_shape"
+                    android:drawableStart="@drawable/ic_password"
+                    android:drawablePadding="10dp"
                     android:hint="@string/password"
                     android:inputType="textPassword"
                     android:padding="5dp">
@@ -77,8 +75,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="60dp"
                 android:layout_marginEnd="60dp"
-                android:layout_below="@id/userPasswordInput"
-                android:layout_centerHorizontal="true"
                 android:layout_marginTop="30dp"
                 android:background="@drawable/rect_material_button_shape"
                 android:text="@string/login"
@@ -91,9 +87,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="60dp"
                 android:layout_marginEnd="60dp"
-                android:layout_below="@+id/userPasswordInput"
-                android:layout_toEndOf="@id/loginButton"
-                android:layout_centerHorizontal="true"
                 android:layout_marginTop="30dp"
                 android:background="@drawable/rect_material_button_shape"
                 android:text="@string/register"
@@ -104,15 +97,12 @@
                 android:id="@+id/skipButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/loginButton"
-                android:layout_centerHorizontal="true"
                 android:layout_marginStart="60dp"
                 android:layout_marginEnd="60dp"
                 android:layout_marginTop="30dp"
                 android:background="@drawable/rect_material_button_shape"
                 android:text="@string/skip"
-                android:textColor="@android:color/background_light"
-                >
+                android:textColor="@android:color/background_light">
             </Button>
 
             <View

@@ -17,8 +17,8 @@
         <RelativeLayout
             android:id="@+id/loginBox"
             android:padding="10dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
             <TextView
                 android:id="@+id/loginTitle"
@@ -71,31 +71,48 @@
                 android:textColor="@android:color/background_light"
                 android:background="@drawable/rect_material_button_shape">
             </Button>
+
         </RelativeLayout>
 
-        <TextView
-            android:id="@+id/already_logged_in_warning"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="50dp"
+        <RelativeLayout
+            android:id="@+id/logoutBox"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:visibility="gone"
-            android:layout_below="@id/loginBox"
-            android:textColor="?attr/textColor"
-            android:layout_centerHorizontal="true">
-        </TextView>
+            android:padding="10dp"
+            android:layout_centerInParent="true"
+            android:layout_below="@id/loginBox">
 
-        <Button
-            android:id="@+id/logoutButton"
-            android:visibility="gone"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            android:layout_below="@id/already_logged_in_warning"
-            android:text="@string/logout"
-            android:textColor="@android:color/background_light"
-            android:background="@drawable/rect_material_button_shape"
-            android:layout_centerHorizontal="true">
-        </Button>
+            <TextView
+                android:id="@+id/already_logged_in_warning"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:textColor="?attr/textColor">
+            </TextView>
+
+            <Button
+                android:id="@+id/logoutButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"
+                android:layout_below="@id/already_logged_in_warning"
+                android:text="@string/logout"
+                android:textColor="@android:color/background_light"
+                android:background="@drawable/rect_material_button_shape">
+            </Button>
+        </RelativeLayout>
+
+        <ProgressBar
+            android:id="@+id/progressWheel"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:indeterminate="true"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            android:visibility="invisible">
+        </ProgressBar>
 
     </RelativeLayout>
 

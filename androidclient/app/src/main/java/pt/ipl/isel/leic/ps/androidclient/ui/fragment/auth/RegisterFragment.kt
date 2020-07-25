@@ -7,11 +7,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.UserRegister
+import pt.ipl.isel.leic.ps.androidclient.data.util.AsyncWorker
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.EMAIL
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.JWT
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.USERNAME
@@ -71,9 +74,17 @@ class RegisterFragment : Fragment() {
                         email = userEmail,
                         userName = userName
                     )
+
+                    statusMessage(getString(R.string.register_error))
+                    view.findNavController().navigate(R.id.nav_home)
                 }
             }
         }
+    }
+
+    private fun statusMessage(message: String) {
+        viewModel.progressWheel.visibility = View.INVISIBLE
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
 
     private fun saveSession(jwt: String, userName: String, email: String) {

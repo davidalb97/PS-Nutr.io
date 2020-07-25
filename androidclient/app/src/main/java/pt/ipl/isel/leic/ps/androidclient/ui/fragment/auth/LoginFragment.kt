@@ -5,12 +5,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.EditText
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.UserLogin
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.EMAIL
@@ -48,30 +46,33 @@ class LoginFragment : Fragment() {
 
         val signedUser = sharedPreferences.getString(USERNAME, null)
 
+        val loginBox = view.findViewById<RelativeLayout>(R.id.loginBox)
+        val logoutBox = view.findViewById<RelativeLayout>(R.id.logoutBox)
         val userNameEditText: EditText = view.findViewById(R.id.userNameInput)
         val userPasswordEditText: EditText = view.findViewById(R.id.userPasswordInput)
         val loginBtn = view.findViewById<Button>(R.id.loginButton)
+        viewModel.progressWheel = view.findViewById<ProgressBar>(R.id.progressWheel)
 
         if (signedUser != null) {
-            loginBtn.visibility = View.INVISIBLE
-            userNameEditText.visibility = View.INVISIBLE
-            userPasswordEditText.visibility = View.INVISIBLE
+            loginBox.visibility = View.GONE
+            logoutBox.visibility = View.VISIBLE
 
             val signedWarning = view.findViewById<TextView>(R.id.already_logged_in_warning)
-            signedWarning.visibility = View.VISIBLE
             signedWarning.text = String.format(
                 getString(R.string.already_logged_in_message),
                 signedUser
             )
 
             val logoutButton = view.findViewById<Button>(R.id.logoutButton)
-            logoutButton.visibility = View.VISIBLE
 
             // Eliminate shared preferences
             logoutButton.setOnClickListener {
                 sharedPreferences.edit()
                     .clear()
                     .apply()
+
+                statusMessage(getString(R.string.logout_success))
+                view.findNavController().navigate(R.id.nav_home)
             }
         }
 
@@ -79,18 +80,14 @@ class LoginFragment : Fragment() {
             val userName = userNameEditText.text.toString()
             val password = userPasswordEditText.text.toString()
             if (listOf(userName, password).all(String::isNotBlank)) {
-
-                viewModel.onError = {
-
-                }
-
+                viewModel.progressWheel.visibility = View.VISIBLE
                 viewModel.login(
                     UserLogin(
                         username = userName,
                         password = password
                     ),
                     onError = {
-                        Toast.makeText(context, R.string.login_error, Toast.LENGTH_SHORT).show()
+                        statusMessage(getString(R.string.login_error))
                     }
                 ) { userSession ->
                     //Only save if login completed
@@ -99,9 +96,17 @@ class LoginFragment : Fragment() {
                         userName = userName,
                         email = userName
                     )
+
+                    statusMessage(getString(R.string.login_success))
+                    view.findNavController().navigate(R.id.nav_home)
                 }
             }
         }
+    }
+
+    private fun statusMessage(message: String) {
+        viewModel.progressWheel.visibility = View.INVISIBLE
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
 
     private fun saveSession(jwt: String, userName: String, email: String) {
