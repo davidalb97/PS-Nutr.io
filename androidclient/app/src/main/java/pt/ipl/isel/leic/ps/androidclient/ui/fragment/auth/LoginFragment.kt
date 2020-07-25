@@ -51,7 +51,7 @@ class LoginFragment : Fragment() {
         val userNameEditText: EditText = view.findViewById(R.id.userNameInput)
         val userPasswordEditText: EditText = view.findViewById(R.id.userPasswordInput)
         val loginBtn = view.findViewById<Button>(R.id.loginButton)
-        viewModel.progressWheel = view.findViewById<ProgressBar>(R.id.progressWheel)
+        viewModel.loadingCard = view.findViewById(R.id.loadingCard)
 
         if (signedUser != null) {
             loginBox.visibility = View.GONE
@@ -80,7 +80,7 @@ class LoginFragment : Fragment() {
             val userName = userNameEditText.text.toString()
             val password = userPasswordEditText.text.toString()
             if (listOf(userName, password).all(String::isNotBlank)) {
-                viewModel.progressWheel.visibility = View.VISIBLE
+                viewModel.startLoading()
                 viewModel.login(
                     UserLogin(
                         username = userName,
@@ -105,7 +105,7 @@ class LoginFragment : Fragment() {
     }
 
     private fun statusMessage(message: String) {
-        viewModel.progressWheel.visibility = View.INVISIBLE
+        viewModel.stopLoading()
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
 

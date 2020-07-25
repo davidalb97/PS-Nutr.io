@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -113,6 +113,42 @@
 
         </TableLayout>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        <androidx.cardview.widget.CardView
+            android:id="@+id/loadingCard"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:visibility="gone"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_margin="4dp"
+            android:elevation="10dp"
+            app:cardCornerRadius="15dp">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="10dp">
+
+                <ProgressBar
+                    android:id="@+id/progressWheel"
+                    android:layout_centerHorizontal="true"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp">
+                </ProgressBar>
+
+                <TextView
+                    android:layout_below="@+id/progressWheel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:text="@string/loading"
+                    android:textSize="24sp">
+                </TextView>
+
+            </RelativeLayout>
+
+        </androidx.cardview.widget.CardView>
+        
+    </RelativeLayout>
 
 </ScrollView>

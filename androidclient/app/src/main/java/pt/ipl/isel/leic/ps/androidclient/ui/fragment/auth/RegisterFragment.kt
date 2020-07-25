@@ -7,14 +7,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
-import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.UserRegister
-import pt.ipl.isel.leic.ps.androidclient.data.util.AsyncWorker
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.EMAIL
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.JWT
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.USERNAME
@@ -52,6 +50,7 @@ class RegisterFragment : Fragment() {
         val userNameEditText: EditText = view.findViewById(R.id.userNameInput)
         val userPasswordEditText: EditText = view.findViewById(R.id.userPasswordInput)
         val registerBtn = view.findViewById<Button>(R.id.registerButton)
+        viewModel.loadingCard = view.findViewById(R.id.loadingCard)
 
         registerBtn.setOnClickListener {
             val userEmail = userEmailEditText.text.toString()
@@ -59,6 +58,8 @@ class RegisterFragment : Fragment() {
             val userPassword = userPasswordEditText.text.toString()
 
             if (listOf(userEmail, userName, userPassword).all(String::isNotBlank)) {
+                viewModel.startLoading()
+
                 viewModel.register(
                     userRegister = UserRegister(
                         email = userEmail,
@@ -66,6 +67,7 @@ class RegisterFragment : Fragment() {
                         password = userPassword
                     ),
                     onError = {
+                        viewModel.stopLoading()
                         Toast.makeText(context, R.string.register_error, Toast.LENGTH_SHORT).show()
                     }
                 ) { userSession ->
@@ -75,7 +77,7 @@ class RegisterFragment : Fragment() {
                         userName = userName
                     )
 
-                    statusMessage(getString(R.string.register_error))
+                    statusMessage(getString(R.string.register_success))
                     view.findNavController().navigate(R.id.nav_home)
                 }
             }
@@ -83,7 +85,7 @@ class RegisterFragment : Fragment() {
     }
 
     private fun statusMessage(message: String) {
-        viewModel.progressWheel.visibility = View.INVISIBLE
+        viewModel.stopLoading()
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
 
@@ -94,5 +96,4 @@ class RegisterFragment : Fragment() {
             .putString(EMAIL, email)
             .apply()
     }
-
 }
