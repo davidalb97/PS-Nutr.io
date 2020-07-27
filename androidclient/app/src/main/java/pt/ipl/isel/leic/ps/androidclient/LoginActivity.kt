@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import pt.ipl.isel.leic.ps.androidclient.data.model.UserLogin
 import pt.ipl.isel.leic.ps.androidclient.data.model.UserRegister
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.EMAIL
+import pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.FIRST_TIME
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.JWT
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.USERNAME
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.UserProfileVMProviderFactory
@@ -133,7 +134,7 @@ class LoginActivity : AppCompatActivity() {
 
     private fun skip() {
         viewModel.stopLoading()
-        sharedPreferences.edit().putBoolean("isFirstTime", false).apply()
+        sharedPreferences.edit().putBoolean(FIRST_TIME, false).apply()
         val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
         finish()
