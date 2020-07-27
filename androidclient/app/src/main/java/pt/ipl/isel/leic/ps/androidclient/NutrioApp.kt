@@ -2,17 +2,30 @@ package pt.ipl.isel.leic.ps.androidclient
 
 import android.app.Application
 import android.content.Context
+import android.content.SharedPreferences
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
+import android.widget.Toast
 import androidx.room.Room
+import androidx.security.crypto.EncryptedSharedPreferences
+import androidx.security.crypto.MasterKey
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.PeriodicWorkRequest
+import androidx.work.WorkManager
 import com.android.volley.toolbox.Volley
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import pt.ipl.isel.leic.ps.androidclient.data.api.datasource.*
 import pt.ipl.isel.leic.ps.androidclient.data.api.request.RequestParser
 import pt.ipl.isel.leic.ps.androidclient.data.db.NutrioDb
+import pt.ipl.isel.leic.ps.androidclient.data.model.UserLogin
 import pt.ipl.isel.leic.ps.androidclient.data.repo.*
+import pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.JWT
+import pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.PASSWORD
+import pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.PREFERENCES_FILE
+import pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.USERNAME
+import java.util.concurrent.TimeUnit
 
 const val TAG = "Nutr.io App"
 const val ROOM_DB_NAME = "nutrio-db"
@@ -20,8 +33,8 @@ const val ROOM_DB_VERSION = 22
 
 /**
  * The application context.
- * ---------------------------------------
- * Starts the the application's data source & repositories.
+ * --------------------------------------------------------------------
+ * Starts the the application's data source, repositories and services.
  */
 class NutrioApp : Application() {
 
@@ -48,12 +61,24 @@ class NutrioApp : Application() {
         lateinit var roomDb: NutrioDb
 
         /**
+         * Shared preferences
+         */
+        lateinit var sharedPreferences: SharedPreferences
+
+        /**
+         * Encrypted shared preferences
+         */
+        lateinit var encryptedSharedPreferences: SharedPreferences
+
+        /**
          *  Repositories initialization
          */
         val restaurantRepository by lazy {
             RestaurantRepository(RestaurantDataSource(requester))
         }
+
         val mealRepository by lazy { MealRepository(MealDataSource(requester)) }
+
         val cuisineRepository by lazy {
             CuisineRepository(CuisineDataSource(requester))
         }
@@ -75,7 +100,86 @@ class NutrioApp : Application() {
         roomDb = Room.databaseBuilder(applicationContext, NutrioDb::class.java, ROOM_DB_NAME)
             .fallbackToDestructiveMigration()
             .build()
+
+        initSharedPreferences()
+        initEncryptedSharedPreferences()
+        initPeriodicWorker()
+
+        authenticateUser()
     }
+
+    private fun initSharedPreferences() {
+        sharedPreferences =
+            getSharedPreferences(PREFERENCES_FILE, Context.MODE_PRIVATE)
+    }
+
+    private fun initEncryptedSharedPreferences() {
+        val masterKey = MasterKey
+            .Builder(applicationContext)
+            .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+            .build()
+
+        encryptedSharedPreferences =
+            EncryptedSharedPreferences.create(
+                applicationContext,
+                "encryptedPreferences",
+                masterKey,
+                EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+                EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+            )
+    }
+
+    private fun initPeriodicWorker() {
+        val periodicWorkerRequest: PeriodicWorkRequest = PeriodicWorkRequest.Builder(
+            PeriodicWorker::class.java, 1, TimeUnit.DAYS
+        ).build()
+
+        WorkManager.getInstance(this)
+            .enqueueUniquePeriodicWork(
+                TAG,
+                ExistingPeriodicWorkPolicy.KEEP,
+                periodicWorkerRequest
+            )
+    }
+
+    private fun authenticateUser() {
+
+        val username = encryptedSharedPreferences.getString(USERNAME, "")
+        val password = encryptedSharedPreferences.getString(PASSWORD, "")
+
+        if (username!!.isNotBlank() && password!!.isNotBlank()) {
+            userRepository.loginUser(
+                UserLogin(username, password),
+                { userSession -> saveSession(userSession.jwt, username, password) },
+                {
+                    Toast.makeText(
+                        app,
+                        getString(R.string.invalid_auth_credentials),
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            )
+        }
+    }
+}
+
+/**
+ * Saves the user credentials into the encrypted shared preferences
+ * and the JSON Web Token into the shared preferences.
+ *
+ * @param jwt - The JSON Web Token
+ * @param username - The username
+ * @param password - The password
+ */
+fun saveSession(jwt: String, username: String, password: String) {
+    NutrioApp.encryptedSharedPreferences
+        .edit()
+        .putString(USERNAME, username)
+        .putString(PASSWORD, password)
+        .apply()
+    NutrioApp.sharedPreferences.edit()
+        .putString(JWT, jwt)
+        .apply()
 }
 
 /**

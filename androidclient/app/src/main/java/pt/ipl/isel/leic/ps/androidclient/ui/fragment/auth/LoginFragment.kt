@@ -1,6 +1,5 @@
 package pt.ipl.isel.leic.ps.androidclient.ui.fragment.auth
 
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,19 +8,18 @@ import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
+import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.encryptedSharedPreferences
+import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.sharedPreferences
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.UserLogin
-import pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.EMAIL
-import pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.JWT
+import pt.ipl.isel.leic.ps.androidclient.saveSession
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.USERNAME
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.UserProfileVMProviderFactory
-import pt.ipl.isel.leic.ps.androidclient.ui.util.requireSharedPreferences
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.UserProfileViewModel
 
 class LoginFragment : Fragment() {
 
     lateinit var viewModel: UserProfileViewModel
-    private lateinit var sharedPreferences: SharedPreferences
 
     private fun buildViewModel(savedInstanceState: Bundle?) {
         val rootActivity = this.requireActivity()
@@ -42,9 +40,7 @@ class LoginFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        sharedPreferences = requireSharedPreferences()
-
-        val signedUser = sharedPreferences.getString(USERNAME, null)
+        val signedUser = encryptedSharedPreferences.getString(USERNAME, null)
 
         val loginBox = view.findViewById<RelativeLayout>(R.id.loginBox)
         val logoutBox = view.findViewById<RelativeLayout>(R.id.logoutBox)
@@ -65,12 +61,8 @@ class LoginFragment : Fragment() {
 
             val logoutButton = view.findViewById<Button>(R.id.logoutButton)
 
-            // Eliminate shared preferences
             logoutButton.setOnClickListener {
-                sharedPreferences.edit()
-                    .clear()
-                    .apply()
-
+                clearUserData()
                 statusMessage(getString(R.string.logout_success))
                 view.findNavController().navigate(R.id.nav_home)
             }
@@ -90,11 +82,11 @@ class LoginFragment : Fragment() {
                         statusMessage(getString(R.string.login_error))
                     }
                 ) { userSession ->
-                    //Only save if login completed
+                    //Only saves if the login succeeded
                     saveSession(
                         jwt = userSession.jwt,
-                        userName = userName,
-                        email = userName
+                        username = userName,
+                        password = password
                     )
 
                     statusMessage(getString(R.string.login_success))
@@ -109,11 +101,12 @@ class LoginFragment : Fragment() {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
 
-    private fun saveSession(jwt: String, userName: String, email: String) {
+    private fun clearUserData() {
+        encryptedSharedPreferences.edit()
+            .clear()
+            .apply()
         sharedPreferences.edit()
-            .putString(JWT, jwt)
-            .putString(USERNAME, userName)
-            .putString(EMAIL, email)
+            .clear()
             .apply()
     }
 }

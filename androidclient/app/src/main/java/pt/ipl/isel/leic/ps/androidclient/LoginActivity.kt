@@ -1,27 +1,22 @@
 package pt.ipl.isel.leic.ps.androidclient
 
-import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.sharedPreferences
 import pt.ipl.isel.leic.ps.androidclient.data.model.UserLogin
 import pt.ipl.isel.leic.ps.androidclient.data.model.UserRegister
-import pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.EMAIL
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.FIRST_TIME
-import pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.JWT
-import pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.USERNAME
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.UserProfileVMProviderFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.UserProfileViewModel
 
 class LoginActivity : AppCompatActivity() {
 
     lateinit var viewModel: UserProfileViewModel
-    private lateinit var sharedPreferences: SharedPreferences
 
     private fun buildViewModel(savedInstanceState: Bundle?) {
         val factory = UserProfileVMProviderFactory(savedInstanceState, intent)
@@ -30,12 +25,6 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        sharedPreferences =
-            this.baseContext?.getSharedPreferences(
-                "preferences.xml",
-                Context.MODE_PRIVATE
-            )!!
 
         buildViewModel(savedInstanceState)
         setContentView(R.layout.login_activity)
@@ -94,8 +83,8 @@ class LoginActivity : AppCompatActivity() {
             userSessionConsumer = { userSession ->
                 saveSession(
                     jwt = userSession.jwt,
-                    userName = username,
-                    email = username
+                    username = username,
+                    password = password
                 )
                 skip()
             }
@@ -116,20 +105,12 @@ class LoginActivity : AppCompatActivity() {
             userSessionConsumer = { userSession ->
                 saveSession(
                     jwt = userSession.jwt,
-                    userName = username,
-                    email = email
+                    username = username,
+                    password = password
                 )
                 skip()
             }
         )
-    }
-
-    private fun saveSession(jwt: String, userName: String, email: String) {
-        sharedPreferences.edit()
-            .putString(JWT, jwt)
-            .putString(USERNAME, userName)
-            .putString(EMAIL, email)
-            .apply()
     }
 
     private fun skip() {

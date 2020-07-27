@@ -17,14 +17,14 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import androidx.security.crypto.EncryptedSharedPreferences
+import androidx.security.crypto.MasterKey
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
 import com.google.android.material.navigation.NavigationView
-import pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.DARK_MODE
-import pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.FIRST_TIME
-import pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.PREFERENCES_FILE
-import pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.USERNAME
+import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.sharedPreferences
+import pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.*
 import pt.ipl.isel.leic.ps.androidclient.ui.util.Logger
 import java.util.concurrent.TimeUnit
 
@@ -41,9 +41,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.splash_screen)
 
         handler = Handler()
-
-        val sharedPreferences: SharedPreferences =
-            this.getSharedPreferences(PREFERENCES_FILE, Context.MODE_PRIVATE)!!
 
         val isFirstTime: Boolean = sharedPreferences.getBoolean(FIRST_TIME, true)
 
@@ -121,18 +118,6 @@ class MainActivity : AppCompatActivity() {
             headerImage.setOnClickListener {
                 navController.navigate(R.id.nav_sign)
             }
-
-            // Periodic worker to sync user related data
-            val periodicWorkerRequest: PeriodicWorkRequest = PeriodicWorkRequest.Builder(
-                PeriodicWorker::class.java, 1, TimeUnit.DAYS
-            ).build()
-
-            WorkManager.getInstance(this)
-                .enqueueUniquePeriodicWork(
-                    TAG,
-                    ExistingPeriodicWorkPolicy.KEEP,
-                    periodicWorkerRequest
-                )
         }
 
     }

@@ -13,11 +13,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.UserRegister
+import pt.ipl.isel.leic.ps.androidclient.saveSession
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.EMAIL
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.JWT
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.USERNAME
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.UserProfileVMProviderFactory
-import pt.ipl.isel.leic.ps.androidclient.ui.util.requireSharedPreferences
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.UserProfileViewModel
 
 class RegisterFragment : Fragment() {
@@ -43,8 +43,6 @@ class RegisterFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        sharedPreferences = requireSharedPreferences()
 
         val userEmailEditText: EditText = view.findViewById(R.id.userEmailInput)
         val userNameEditText: EditText = view.findViewById(R.id.userNameInput)
@@ -73,8 +71,8 @@ class RegisterFragment : Fragment() {
                 ) { userSession ->
                     saveSession(
                         jwt = userSession.jwt,
-                        email = userEmail,
-                        userName = userName
+                        username = userName,
+                        password = userPassword
                     )
 
                     statusMessage(getString(R.string.register_success))
@@ -87,13 +85,5 @@ class RegisterFragment : Fragment() {
     private fun statusMessage(message: String) {
         viewModel.stopLoading()
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-    }
-
-    private fun saveSession(jwt: String, userName: String, email: String) {
-        sharedPreferences.edit()
-            .putString(JWT, jwt)
-            .putString(USERNAME, userName)
-            .putString(EMAIL, email)
-            .apply()
     }
 }
