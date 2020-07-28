@@ -12,8 +12,8 @@ class InputInsulinProfileMapper {
         dto.endTime,
         dto.glucoseObjective,
         dto.sensitivityFactor,
-        dto.carbohydrateValue,
-        TimestampWithTimeZone.parse(dto.modificationTime)!!
+        dto.carbohydrateRatio,
+        TimestampWithTimeZone.parse(dto.modificationTime)
     )
 
     fun mapToListInputModel(dtos: Iterable<InsulinProfileInput>) = dtos.map(::mapToInputModel)

@@ -71,11 +71,13 @@ class InsulinProfileDataSource(
         jwt: String,
         onError: (VolleyError) -> Unit
     ) {
+        val uri = buildUri(INSULIN_PROFILE_URI, hashMapOf(Pair(INSULIN_PROFILE_PARAM, profileName)))
+
         requestParser.request(
             HTTPMethod.DELETE,
-            INSULIN_PROFILES_URI,
+            uri,
             buildAuthHeader(jwt),
-            profileName,
+            null,
             onError = onError,
             responseConsumer = {}
         )

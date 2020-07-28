@@ -66,8 +66,8 @@ class InsulinProfileRepository(private val dataSource: InsulinProfileDataSource)
                     startTime = profileDb.startTime,
                     endTime = profileDb.endTime,
                     glucoseObjective = profileDb.glucoseObjective,
-                    glucoseAmountPerInsulin = profileDb.glucoseAmountPerInsulin,
-                    carbsAmountPerInsulin = profileDb.carbsAmountPerInsulin
+                    insulinSensitivityFactor = profileDb.glucoseAmountPerInsulin,
+                    carbohydrateRatio = profileDb.carbsAmountPerInsulin
                 ),
                 jwt,
                 onError
@@ -81,8 +81,8 @@ class InsulinProfileRepository(private val dataSource: InsulinProfileDataSource)
 
     fun deleteProfile(profileName: String, jwt: String, onError: (VolleyError) -> Unit) =
         AsyncWorker<Unit, Unit> {
-            roomDb.insulinProfileDao().delete(profileName)
             dataSource.deleteInsulinProfile(profileName, jwt, onError)
+            roomDb.insulinProfileDao().delete(profileName)
         }
 }
 

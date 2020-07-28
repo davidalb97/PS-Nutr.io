@@ -1,6 +1,5 @@
 package pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler.room
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,9 +10,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.sharedPreferences
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.InsulinProfile
 import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.InsulinProfileRecyclerAdapter
+import pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.JWT
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.InsulinProfilesVMProviderFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.InsulinProfilesRecyclerViewModel
 
@@ -46,13 +47,7 @@ class InsulinProfilesRecyclerFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val sharedPreferences =
-            requireActivity().baseContext?.getSharedPreferences(
-                "preferences.xml",
-                Context.MODE_PRIVATE
-            )!!
-
-        val jwt = sharedPreferences.getString("jwt", "")
+        val jwt = sharedPreferences.getString(JWT, "")
 
         if (jwt != null) {
             viewModel.jwt = jwt
@@ -68,16 +63,15 @@ class InsulinProfilesRecyclerFragment :
         setErrorFunction()
         list.adapter = adapter
         list.layoutManager = LinearLayoutManager(this.requireContext())
+        viewModel.update()
 
         startObserver()
 
-        viewModel.update()
 
-        // Retrieve button to add an insulin profile
         val addButton =
             view.findViewById<ImageButton>(R.id.add_profile)
 
-        // Setup a listener to go to the fragment that adds a profile
+        // Setups a listener to go to the fragment that adds a profile
         addButton.setOnClickListener {
             view.findNavController().navigate(R.id.nav_add_insulin)
         }
@@ -85,10 +79,11 @@ class InsulinProfilesRecyclerFragment :
         val refreshLayout =
             view.findViewById<SwipeRefreshLayout>(R.id.insulin_refresh_layout)
 
+        // Setups a listener that refresh the displayed information by swiping down
         refreshLayout.setOnRefreshListener(object : SwipeRefreshLayout(this.requireContext()),
             SwipeRefreshLayout.OnRefreshListener {
             override fun onRefresh() {
-                // TODO - GET to insulin profiles
+                viewModel.update()
             }
         })
     }

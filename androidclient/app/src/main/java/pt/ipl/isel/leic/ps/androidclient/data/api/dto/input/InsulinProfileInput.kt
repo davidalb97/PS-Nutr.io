@@ -6,6 +6,6 @@ class InsulinProfileInput(
     val endTime: String,
     val glucoseObjective: Int,
     val sensitivityFactor: Int,
-    val carbohydrateValue: Int,
-    val modificationTime: String
+    val carbohydrateRatio: Int,
+    val modificationTime: String?
 )

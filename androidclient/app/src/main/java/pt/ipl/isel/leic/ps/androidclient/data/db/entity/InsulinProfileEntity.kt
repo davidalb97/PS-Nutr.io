@@ -12,7 +12,7 @@ data class InsulinProfileEntity(
     val glucoseObjective: Int,
     val glucoseAmountPerInsulin: Int,
     val carbsAmountPerInsulin: Int,
-    val modificationDate: TimestampWithTimeZone
+    val modificationDate: TimestampWithTimeZone?
 ) {
     companion object {
         const val tableName = "InsulinProfile"

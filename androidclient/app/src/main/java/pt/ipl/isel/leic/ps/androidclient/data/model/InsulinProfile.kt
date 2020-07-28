@@ -14,12 +14,12 @@ data class InsulinProfile(
     val glucoseObjective: Int,
     val glucoseAmountPerInsulin: Int,
     val carbsAmountPerInsulin: Int,
-    val modificationDate: TimestampWithTimeZone
+    val modificationDate: TimestampWithTimeZone?
 ) : Parcelable {
 
     constructor(parcel: Parcel) : this(
         profileName = parcel.readString()!!,
-        modificationDate = readTimestampWithTimeZone(parcel)!!,
+        modificationDate = readTimestampWithTimeZone(parcel),
         startTime = parcel.readString()!!,
         endTime = parcel.readString()!!,
         glucoseObjective = parcel.readInt(),
