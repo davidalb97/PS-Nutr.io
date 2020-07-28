@@ -71,10 +71,10 @@ class InsulinProfileController(
         ).build()
     }
 
-    @DeleteMapping(INSULIN_PROFILES)
+    @DeleteMapping(INSULIN_PROFILE)
     fun deleteInsulinProfile(
             @RequestHeader(AUTH_HEADER) jwt: String,
-            @RequestParam(PROFILE_NAME_VALUE) profileName: String
+            @PathVariable(PROFILE_NAME_VALUE) profileName: String
     ): ResponseEntity<*> {
         val submitterId = userService.getSubmitterIdFromUserName(authenticationService.getUsernameByJwt(jwt))
         return ResponseEntity.ok(
