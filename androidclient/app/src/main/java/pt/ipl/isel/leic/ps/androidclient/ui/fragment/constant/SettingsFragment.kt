@@ -9,7 +9,8 @@ import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreferenceCompat
 import pt.ipl.isel.leic.ps.androidclient.R
 
-const val PREFERENCES_FILE = "preferences.xml"
+const val SECRET_PREFERENCES = "encryptedPreferences"
+const val PREFERENCES = "preferences.xml"
 const val DARK_MODE = "dark_mode"
 
 // Application shared preferences keys
@@ -30,7 +31,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         val darkModeSwitch = findPreference<SwitchPreferenceCompat>(DARK_MODE)
         val sharedPreferences: SharedPreferences =
             requireActivity().baseContext?.getSharedPreferences(
-                PREFERENCES_FILE,
+                PREFERENCES,
                 Context.MODE_PRIVATE
             )!!
 

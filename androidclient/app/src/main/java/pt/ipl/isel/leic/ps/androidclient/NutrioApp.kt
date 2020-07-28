@@ -10,9 +10,7 @@ import android.widget.Toast
 import androidx.room.Room
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
-import androidx.work.ExistingPeriodicWorkPolicy
-import androidx.work.PeriodicWorkRequest
-import androidx.work.WorkManager
+import androidx.work.*
 import com.android.volley.toolbox.Volley
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
@@ -21,10 +19,7 @@ import pt.ipl.isel.leic.ps.androidclient.data.api.request.RequestParser
 import pt.ipl.isel.leic.ps.androidclient.data.db.NutrioDb
 import pt.ipl.isel.leic.ps.androidclient.data.model.UserLogin
 import pt.ipl.isel.leic.ps.androidclient.data.repo.*
-import pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.JWT
-import pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.PASSWORD
-import pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.PREFERENCES_FILE
-import pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.USERNAME
+import pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.*
 import java.util.concurrent.TimeUnit
 
 const val TAG = "Nutr.io App"
@@ -109,8 +104,7 @@ class NutrioApp : Application() {
     }
 
     private fun initSharedPreferences() {
-        sharedPreferences =
-            getSharedPreferences(PREFERENCES_FILE, Context.MODE_PRIVATE)
+        sharedPreferences = getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE)
     }
 
     private fun initEncryptedSharedPreferences() {
@@ -122,7 +116,7 @@ class NutrioApp : Application() {
         encryptedSharedPreferences =
             EncryptedSharedPreferences.create(
                 applicationContext,
-                "encryptedPreferences",
+                SECRET_PREFERENCES,
                 masterKey,
                 EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
                 EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
@@ -130,9 +124,20 @@ class NutrioApp : Application() {
     }
 
     private fun initPeriodicWorker() {
-        val periodicWorkerRequest: PeriodicWorkRequest = PeriodicWorkRequest.Builder(
-            PeriodicWorker::class.java, 1, TimeUnit.DAYS
-        ).build()
+
+        // Device constraints for the periodic worker
+        val constraints = Constraints
+            .Builder()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .setRequiresStorageNotLow(true)
+            .setRequiresBatteryNotLow(true)
+            .build()
+
+        val periodicWorkerRequest: PeriodicWorkRequest =
+            PeriodicWorkRequest
+                .Builder(PeriodicWorker::class.java, 1, TimeUnit.DAYS)
+                .setConstraints(constraints)
+                .build()
 
         WorkManager.getInstance(this)
             .enqueueUniquePeriodicWork(
@@ -154,7 +159,7 @@ class NutrioApp : Application() {
                 {
                     Toast.makeText(
                         app,
-                        getString(R.string.invalid_auth_credentials),
+                        getString(R.string.login_error),
                         Toast.LENGTH_LONG
                     ).show()
                 }

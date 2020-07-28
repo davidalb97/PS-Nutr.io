@@ -14,9 +14,6 @@ import androidx.navigation.findNavController
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.UserRegister
 import pt.ipl.isel.leic.ps.androidclient.saveSession
-import pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.EMAIL
-import pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.JWT
-import pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.USERNAME
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.UserProfileVMProviderFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.UserProfileViewModel
 
