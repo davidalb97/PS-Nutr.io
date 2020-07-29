@@ -49,6 +49,9 @@ class InsulinProfilesRecyclerFragment :
 
         val jwt = sharedPreferences.getString(JWT, "")
 
+        viewModel.refreshLayout =
+            view.findViewById(R.id.insulin_refresh_layout)
+
         if (jwt != null) {
             viewModel.jwt = jwt
         }
@@ -76,11 +79,9 @@ class InsulinProfilesRecyclerFragment :
             view.findNavController().navigate(R.id.nav_add_insulin)
         }
 
-        val refreshLayout =
-            view.findViewById<SwipeRefreshLayout>(R.id.insulin_refresh_layout)
-
         // Setups a listener that refresh the displayed information by swiping down
-        refreshLayout.setOnRefreshListener(object : SwipeRefreshLayout(this.requireContext()),
+        viewModel.refreshLayout.setOnRefreshListener(object :
+            SwipeRefreshLayout(this.requireContext()),
             SwipeRefreshLayout.OnRefreshListener {
             override fun onRefresh() {
                 viewModel.update()

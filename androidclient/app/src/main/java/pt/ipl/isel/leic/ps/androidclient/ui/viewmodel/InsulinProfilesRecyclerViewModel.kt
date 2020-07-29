@@ -2,12 +2,14 @@ package pt.ipl.isel.leic.ps.androidclient.ui.viewmodel
 
 import android.os.Parcel
 import android.os.Parcelable
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.insulinProfilesRepository
 import pt.ipl.isel.leic.ps.androidclient.data.model.InsulinProfile
 
 open class InsulinProfilesRecyclerViewModel() : ARecyclerViewModel<InsulinProfile>() {
 
     lateinit var jwt: String
+    lateinit var refreshLayout: SwipeRefreshLayout
 
     constructor(parcel: Parcel) : this()
 
@@ -28,6 +30,10 @@ open class InsulinProfilesRecyclerViewModel() : ARecyclerViewModel<InsulinProfil
             this.liveDataHandler::add,
             onError
         )
+
+        if (refreshLayout.isRefreshing) {
+            refreshLayout.isRefreshing = false
+        }
     }
 
     override fun writeToParcel(dest: Parcel?, flags: Int) {
