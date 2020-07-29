@@ -37,12 +37,12 @@ class LoginActivity : AppCompatActivity() {
         val skipBtn = findViewById<Button>(R.id.skipButton)
         viewModel.loadingCard = findViewById(R.id.loadingCard)
 
-        val signButtons = arrayOf(loginBtn, registerBtn)
+        loginBtn.setOnClickListener {
+            loginTrigger(userName, userPassword)
+        }
 
-        signButtons.forEach { signButton ->
-            signButton.setOnClickListener {
-                sign(userEmail, userName, userPassword)
-            }
+        registerBtn.setOnClickListener {
+            registerTrigger(userEmail, userName, userPassword)
         }
 
         skipBtn.setOnClickListener {
@@ -50,19 +50,30 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    private fun sign(email: EditText, username: EditText, password: EditText) {
+    private fun loginTrigger(username: EditText, password: EditText) {
+        val userNameParsed = username.text.toString()
+        val userPasswordParsed = password.text.toString()
+
+        val loginCredentials = arrayOf(userNameParsed, userPasswordParsed)
+
+        if (loginCredentials.all { it.isNotBlank() }) {
+            login(userNameParsed, userPasswordParsed)
+            viewModel.startLoading()
+        } else {
+            Toast.makeText(this, R.string.Fill_in_all_the_available_fields, Toast.LENGTH_SHORT)
+                .show()
+        }
+    }
+
+    private fun registerTrigger(email: EditText, username: EditText, password: EditText) {
         val userEmailParsed = email.text.toString()
         val userNameParsed = username.text.toString()
         val userPasswordParsed = password.text.toString()
 
         val credentials = arrayOf(userEmailParsed, userNameParsed, userPasswordParsed)
-        val loginCredentials = arrayOf(userNameParsed, userPasswordParsed)
 
         if (credentials.all { it.isNotBlank() }) {
             register(userEmailParsed, userNameParsed, userPasswordParsed)
-            viewModel.startLoading()
-        } else if (userEmailParsed.isBlank() && loginCredentials.all { it.isNotBlank() }) {
-            login(userNameParsed, userPasswordParsed)
             viewModel.startLoading()
         } else {
             Toast.makeText(this, R.string.Fill_in_all_the_available_fields, Toast.LENGTH_SHORT)

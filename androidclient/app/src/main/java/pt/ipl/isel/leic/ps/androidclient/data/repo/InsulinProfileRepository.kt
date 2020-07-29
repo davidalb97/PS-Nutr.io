@@ -74,11 +74,6 @@ class InsulinProfileRepository(private val dataSource: InsulinProfileDataSource)
             )
         }
 
-    // TODO("Update profile on API")
-    fun updateProfile(jwt: String, profileDb: InsulinProfile) = AsyncWorker<Unit, Unit> {
-        roomDb.insulinProfileDao().update(insulinProfileMapper.mapToRelation(profileDb))
-    }
-
     fun deleteProfile(profileName: String, jwt: String, onError: (VolleyError) -> Unit) =
         AsyncWorker<Unit, Unit> {
             dataSource.deleteInsulinProfile(profileName, jwt, onError)
