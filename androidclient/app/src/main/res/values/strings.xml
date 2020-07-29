@@ -169,4 +169,5 @@
     <string name="already_logged_in_message">You are already logged in with the user %1$s</string>
     <string name="loading">Loading ...</string>
     <string name="invalid_auth_credentials">The credentials are no longer valid, please login again</string>
+    <string name="turn_on_geolocation">Please turn on your geolocation</string>
 </resources>

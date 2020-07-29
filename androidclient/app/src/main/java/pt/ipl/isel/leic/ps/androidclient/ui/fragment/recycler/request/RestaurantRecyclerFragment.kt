@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SearchView
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import pt.ipl.isel.leic.ps.androidclient.R
@@ -57,8 +58,14 @@ open class RestaurantRecyclerFragment :
         locationManager = activityApp.getSystemService(Context.LOCATION_SERVICE) as LocationManager
         val lastLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
 
-        val longitude = lastLocation?.longitude
-        val latitude = lastLocation?.latitude
+        if (lastLocation == null) {
+            Toast.makeText(context, getString(R.string.turn_on_geolocation), Toast.LENGTH_LONG)
+                .show()
+            return
+        }
+
+        val longitude = lastLocation.longitude
+        val latitude = lastLocation.latitude
         viewModel.latitude = latitude
         viewModel.longitude = longitude
 
