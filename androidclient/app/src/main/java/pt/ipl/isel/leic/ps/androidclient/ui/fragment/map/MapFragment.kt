@@ -4,19 +4,24 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.os.Looper
+import android.os.Looper.getMainLooper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SearchView
 import android.widget.Toast
+import androidx.annotation.NonNull
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.mapbox.android.core.location.*
 import com.mapbox.android.core.permissions.PermissionsListener
 import com.mapbox.android.core.permissions.PermissionsManager
 import com.mapbox.mapboxsdk.Mapbox
+import com.mapbox.mapboxsdk.location.LocationComponent
 import com.mapbox.mapboxsdk.location.LocationComponentActivationOptions
 import com.mapbox.mapboxsdk.location.modes.CameraMode
 import com.mapbox.mapboxsdk.location.modes.RenderMode
@@ -31,23 +36,30 @@ import pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler.request.ARequestRe
 import pt.ipl.isel.leic.ps.androidclient.ui.listener.ScrollListener
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.RestaurantRecyclerVMProviderFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.RestaurantRecyclerViewModel
+import java.lang.ref.WeakReference
 
 
 class MapFragment :
     ARequestRecyclerListFragment<RestaurantItem, RestaurantRecyclerViewModel>(),
-    PermissionsListener, OnMapReadyCallback {
+    /*PermissionsListener,*/ OnMapReadyCallback {
 
-    protected val DEFAULT_INTERVAL_IN_MILLISECONDS: Long = 100000L
-    protected val DEFAULT_MAX_WAIT_TIME = DEFAULT_INTERVAL_IN_MILLISECONDS * 5
-    protected val PERMISSION_ID = 42
+    private val DEFAULT_INTERVAL_IN_MILLISECONDS: Long = 100000L
+    private val DEFAULT_MAX_WAIT_TIME = DEFAULT_INTERVAL_IN_MILLISECONDS * 5
+    private val PERMISSION_ID = 42
 
-    protected var mapView: MapView? = null
-    protected var permissionsManager: PermissionsManager? = null
-    protected var locationEngine: LocationEngine? = null
-    protected lateinit var callback: LocationEngineCallback<LocationEngineResult>
-    protected var mapboxMap: MapboxMap? = null
+    /**
+     * Constant of request permission code that has private access on PermissionsManager.
+     * @see [PermissionsManager.REQUEST_PERMISSIONS_CODE]
+     */
+    private val REQUEST_PERMISSIONS_CODE = 0
 
-    protected val adapter: RestaurantRecyclerAdapter by lazy {
+    private var mapView: MapView? = null
+    private var permissionsManager: PermissionsManager? = null
+    private var locationEngine: LocationEngine? = null
+    private val callback = initLocationEngineCallback()
+    private var mapboxMap: MapboxMap? = null
+
+    private val adapter: RestaurantRecyclerAdapter by lazy {
         RestaurantRecyclerAdapter(
             viewModel,
             this.requireContext()
@@ -79,7 +91,6 @@ class MapFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        initLocationEngineCallback()
         mapView = view.findViewById(R.id.mapBoxView)
         mapView?.onCreate(savedInstanceState)
         mapView?.getMapAsync(this)
@@ -127,49 +138,35 @@ class MapFragment :
         })
     }
 
-    protected fun requirePermissions(): Boolean {
-        // Enable to make component visible
-        if (ActivityCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return false
+    override fun onMapReady(mapboxMap: MapboxMap) {
+        this.mapboxMap = mapboxMap
+
+        mapboxMap.setStyle(Style.TRAFFIC_DAY) { style: Style ->
+            enableLocationComponent(style)
         }
-        return true
     }
 
+    /**
+     * Initialize the Maps SDK's LocationComponent
+     */
     @SuppressLint("MissingPermission")
-    protected fun enableLocationComponent(loadedMapStyle: Style) {
+    private fun enableLocationComponent(@NonNull loadedMapStyle: Style) {
         // Check if permissions are enabled and if not request
         if (PermissionsManager.areLocationPermissionsGranted(requireContext())) {
 
             // Get an instance of the component
-            val locationComponent = mapboxMap!!.locationComponent
+            val locationComponent: LocationComponent = mapboxMap!!.locationComponent
 
             // Set the LocationComponent activation options
             val locationComponentActivationOptions =
-                LocationComponentActivationOptions.builder(activityApp, loadedMapStyle)
+                LocationComponentActivationOptions.builder(requireContext(), loadedMapStyle)
                     .useDefaultLocationEngine(false)
                     .build()
 
             // Activate with the LocationComponentActivationOptions object
             locationComponent.activateLocationComponent(locationComponentActivationOptions)
 
-            if (!requirePermissions()) {
-                return
-            }
-
+            // Enable to make component visible
             locationComponent.isLocationComponentEnabled = true
 
             // Set the component's camera mode
@@ -179,90 +176,70 @@ class MapFragment :
             locationComponent.renderMode = RenderMode.COMPASS
             initLocationEngine()
         } else {
-            permissionsManager = PermissionsManager(this)
-            permissionsManager!!.requestLocationPermissions(requireActivity())
+            requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), REQUEST_PERMISSIONS_CODE)
         }
     }
 
+    /**
+     * Set up the LocationEngine and the parameters for querying the device's location
+     */
     @SuppressLint("MissingPermission")
     private fun initLocationEngine() {
-        locationEngine = LocationEngineProvider.getBestLocationEngine(requireContext())
-        val request: LocationEngineRequest =
+        locationEngine = LocationEngineProvider.getBestLocationEngine(requireActivity())
+        val request =
             LocationEngineRequest.Builder(DEFAULT_INTERVAL_IN_MILLISECONDS)
                 .setPriority(LocationEngineRequest.PRIORITY_HIGH_ACCURACY)
                 .setMaxWaitTime(DEFAULT_MAX_WAIT_TIME).build()
-        locationEngine!!.requestLocationUpdates(request, callback, Looper.getMainLooper())
+        locationEngine!!.requestLocationUpdates(request, callback, getMainLooper())
         locationEngine!!.getLastLocation(callback)
     }
 
-
     override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
+        requestCode: Int, permissions: Array<String?>,
         grantResults: IntArray
     ) {
-        permissionsManager?.onRequestPermissionsResult(requestCode, permissions, grantResults)
-    }
-
-    override fun onExplanationNeeded(permissionsToExplain: MutableList<String>?) {
-        Toast.makeText(
-            activityApp,
-            R.string.user_location_permission_explanation,
-            Toast.LENGTH_LONG
-        ).show()
-    }
-
-    override fun onPermissionResult(granted: Boolean) {
-        if (granted) {
-            mapboxMap!!.getStyle {
-                enableLocationComponent(it)
+        if(requestCode == REQUEST_PERMISSIONS_CODE) {
+            if (grantResults.all { it == PackageManager.PERMISSION_GRANTED } ) {
+                mapboxMap?.setStyle(Style.TRAFFIC_DAY) { style: Style ->
+                    enableLocationComponent(style)
+                }
             }
-        } else {
-            Toast.makeText(
-                activityApp,
-                "Location permission not granted",
-                Toast.LENGTH_LONG
-            ).show()
         }
     }
 
+    private fun initLocationEngineCallback(): LocationEngineCallback<LocationEngineResult> {
+        return object: LocationEngineCallback<LocationEngineResult> {
 
-    protected fun initLocationEngineCallback() {
-        this.callback = object : LocationEngineCallback<LocationEngineResult> {
+            /**
+             * The LocationEngineCallback interface's method which fires when the device's location has changed.
+             *
+             * @param result the LocationEngineResult object which has the last known location within it.
+             */
             override fun onSuccess(result: LocationEngineResult?) {
-                val location = result!!.lastLocation ?: return
-
-                // Create a Toast which displays the new location's coordinates
-                viewModel.latitude = result.lastLocation!!.latitude
-
-                viewModel.longitude = result.lastLocation!!.longitude
+                val location = result?.lastLocation ?: return
 
                 // Pass the new location to the Maps SDK's LocationComponent
-                if (mapboxMap != null && result.lastLocation != null) {
-                    mapboxMap!!.locationComponent
-                        .forceLocationUpdate(result.lastLocation)
-                }
+                mapboxMap?.locationComponent?.forceLocationUpdate(location)
 
+                //Update viewmodel with new location
+                viewModel.latitude = location.latitude
+                viewModel.longitude = location.longitude
                 viewModel.update()
             }
 
+            /**
+             * The LocationEngineCallback interface's method which fires when the device's location can't be captured
+             *
+             * @param exception the exception message
+             */
             override fun onFailure(exception: java.lang.Exception) {
                 Toast.makeText(
-                    activityApp,
+                    requireActivity(),
                     exception.localizedMessage,
                     Toast.LENGTH_SHORT
                 ).show()
             }
-
         }
-    }
-
-    override fun onMapReady(mapboxMap: MapboxMap) {
-        this.mapboxMap = mapboxMap
-
-        mapboxMap.setStyle(
-            Style.TRAFFIC_DAY
-        ) { style -> enableLocationComponent(style) }
     }
 
     /**
@@ -292,9 +269,6 @@ class MapFragment :
 
     override fun onDestroy() {
         super.onDestroy()
-        if (locationEngine != null) {
-            locationEngine!!.removeLocationUpdates(callback)
-        }
         mapView?.onDestroy()
     }
 
