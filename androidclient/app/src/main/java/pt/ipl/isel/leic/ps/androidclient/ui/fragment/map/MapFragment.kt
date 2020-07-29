@@ -11,14 +11,9 @@ import android.view.ViewGroup
 import android.widget.SearchView
 import android.widget.Toast
 import androidx.annotation.NonNull
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
-import androidx.fragment.app.FragmentActivity
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.mapbox.android.core.location.*
-import com.mapbox.android.core.permissions.PermissionsListener
 import com.mapbox.android.core.permissions.PermissionsManager
 import com.mapbox.mapboxsdk.Mapbox
 import com.mapbox.mapboxsdk.location.LocationComponent
@@ -36,25 +31,16 @@ import pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler.request.ARequestRe
 import pt.ipl.isel.leic.ps.androidclient.ui.listener.ScrollListener
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.RestaurantRecyclerVMProviderFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.RestaurantRecyclerViewModel
-import java.lang.ref.WeakReference
 
+private const val DEFAULT_INTERVAL_IN_MILLISECONDS: Long = 100000L
+private const val DEFAULT_MAX_WAIT_TIME = DEFAULT_INTERVAL_IN_MILLISECONDS * 5
+private const val REQUEST_PERMISSIONS_CODE = 0
 
 class MapFragment :
     ARequestRecyclerListFragment<RestaurantItem, RestaurantRecyclerViewModel>(),
-    /*PermissionsListener,*/ OnMapReadyCallback {
-
-    private val DEFAULT_INTERVAL_IN_MILLISECONDS: Long = 100000L
-    private val DEFAULT_MAX_WAIT_TIME = DEFAULT_INTERVAL_IN_MILLISECONDS * 5
-    private val PERMISSION_ID = 42
-
-    /**
-     * Constant of request permission code that has private access on PermissionsManager.
-     * @see [PermissionsManager.REQUEST_PERMISSIONS_CODE]
-     */
-    private val REQUEST_PERMISSIONS_CODE = 0
+    OnMapReadyCallback {
 
     private var mapView: MapView? = null
-    private var permissionsManager: PermissionsManager? = null
     private var locationEngine: LocationEngine? = null
     private val callback = initLocationEngineCallback()
     private var mapboxMap: MapboxMap? = null
@@ -71,7 +57,7 @@ class MapFragment :
      * Initializes the view model, calling the respective
      * view model provider factory
      */
-    protected fun buildViewModel(savedInstanceState: Bundle?) {
+    private fun buildViewModel(savedInstanceState: Bundle?) {
         val rootActivity = this.requireActivity()
         val factory = RestaurantRecyclerVMProviderFactory(savedInstanceState, rootActivity.intent)
         viewModel =
@@ -107,7 +93,7 @@ class MapFragment :
         searchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 if (query.isNullOrEmpty()) return false
-                //viewModel.restaurantName = query //TODO: we should clear this later
+                //viewModel.restaurantName = query //TODO Use query for restaurant name filter
                 //viewModel.getRestaurantById()
                 searchBar.clearFocus()
                 return true
@@ -176,7 +162,10 @@ class MapFragment :
             locationComponent.renderMode = RenderMode.COMPASS
             initLocationEngine()
         } else {
-            requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), REQUEST_PERMISSIONS_CODE)
+            requestPermissions(
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                REQUEST_PERMISSIONS_CODE
+            )
         }
     }
 
@@ -198,8 +187,8 @@ class MapFragment :
         requestCode: Int, permissions: Array<String?>,
         grantResults: IntArray
     ) {
-        if(requestCode == REQUEST_PERMISSIONS_CODE) {
-            if (grantResults.all { it == PackageManager.PERMISSION_GRANTED } ) {
+        if (requestCode == REQUEST_PERMISSIONS_CODE) {
+            if (grantResults.all { it == PackageManager.PERMISSION_GRANTED }) {
                 mapboxMap?.setStyle(Style.TRAFFIC_DAY) { style: Style ->
                     enableLocationComponent(style)
                 }
@@ -208,7 +197,7 @@ class MapFragment :
     }
 
     private fun initLocationEngineCallback(): LocationEngineCallback<LocationEngineResult> {
-        return object: LocationEngineCallback<LocationEngineResult> {
+        return object : LocationEngineCallback<LocationEngineResult> {
 
             /**
              * The LocationEngineCallback interface's method which fires when the device's location has changed.
