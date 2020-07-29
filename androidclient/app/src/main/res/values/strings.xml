@@ -123,6 +123,7 @@
     <string name="meal_info_add_ingredient">Add</string>
     <string name="meal_suggested">(suggested)</string>
     <string name="user_id">User ID</string>
+    <string name="email_sign_activity">Email (register only)</string>
     <string name="email">Email</string>
     <string name="username">Username</string>
     <string name="password">Password</string>

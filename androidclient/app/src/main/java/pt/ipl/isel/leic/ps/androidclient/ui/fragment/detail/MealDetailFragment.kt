@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
+import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.sharedPreferences
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealInfo
 import pt.ipl.isel.leic.ps.androidclient.data.model.Source
@@ -21,7 +22,6 @@ import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.MealInfoViewModel
 class MealDetailFragment : IngredientsRecyclerFragment() {
 
     private val log = Logger(MealDetailFragment::class.java)
-    lateinit var sharedPreferences: SharedPreferences
     lateinit var viewModelMealInfo: MealInfoViewModel
 
     private var receivedMeal: MealInfo? = null
@@ -71,11 +71,6 @@ class MealDetailFragment : IngredientsRecyclerFragment() {
     }
 
     private fun setupView(receivedMeal: MealInfo) {
-        sharedPreferences =
-            requireActivity().baseContext?.getSharedPreferences(
-                "preferences.xml",
-                Context.MODE_PRIVATE
-            )!!
         val mealMealImage = view?.findViewById<ImageView>(R.id.meal_detail_image)
         val mealMealTitle = view?.findViewById<TextView>(R.id.meal_detail_title)
         val mealVotesRl = view?.findViewById<RelativeLayout>(R.id.meal_info_votes)

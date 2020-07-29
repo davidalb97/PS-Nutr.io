@@ -10,9 +10,11 @@ import android.widget.*
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.restaurantRepository
+import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.sharedPreferences
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.RestaurantInfo
 import pt.ipl.isel.leic.ps.androidclient.data.model.UserSession
+import pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.JWT
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler.request.MealRecyclerFragment
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.BUNDLE_RESTAURANT_INFO_ID
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.RestaurantInfoVMProviderFactory
@@ -22,7 +24,6 @@ import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.RestaurantInfoMealRecycler
 class RestaurantDetailFragment : MealRecyclerFragment() {
 
     private val log = Logger(RestaurantDetailFragment::class)
-    private lateinit var sharedPreferences: SharedPreferences
     private lateinit var innerViewModel: RestaurantInfoMealRecyclerViewModel
 
 
@@ -63,11 +64,7 @@ class RestaurantDetailFragment : MealRecyclerFragment() {
     }
 
     private fun setupRestaurantInfoView(restaurantInfo: RestaurantInfo) {
-        sharedPreferences =
-            requireActivity().baseContext?.getSharedPreferences(
-                "preferences.xml",
-                Context.MODE_PRIVATE
-            )!!
+
         val restaurantMealImage =
             view?.findViewById<ImageView>(R.id.restaurant_detail_image)
         val restaurantMealTitle =
@@ -91,7 +88,7 @@ class RestaurantDetailFragment : MealRecyclerFragment() {
                 .into(restaurantMealImage!!)
 
         val userSession = UserSession(
-            sharedPreferences.getString("jwt", "")!!
+            sharedPreferences.getString(JWT, "")!!
         )
 
         restaurantMealTitle?.text = restaurantInfo.name

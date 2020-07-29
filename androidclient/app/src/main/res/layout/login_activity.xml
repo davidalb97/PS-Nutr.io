@@ -32,7 +32,7 @@
                     android:background="@drawable/textbox_shape"
                     android:drawableStart="@drawable/ic_email"
                     android:drawablePadding="10dp"
-                    android:hint="@string/email"
+                    android:hint="@string/email_sign_activity"
                     android:padding="5dp">
                 </EditText>
 
