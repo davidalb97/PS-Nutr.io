@@ -1,7 +1,9 @@
 package pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler.request
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,14 +11,18 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.SearchView
 import android.widget.Toast
+import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.mapbox.mapboxsdk.maps.Style
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.RestaurantItem
 import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.RestaurantRecyclerAdapter
 import pt.ipl.isel.leic.ps.androidclient.ui.listener.ScrollListener
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.RestaurantRecyclerVMProviderFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.RestaurantRecyclerViewModel
+
+private const val REQUEST_PERMISSIONS_CODE = 0
 
 open class RestaurantRecyclerFragment :
     ARequestRecyclerListFragment<RestaurantItem, RestaurantRecyclerViewModel>() {
@@ -51,23 +57,9 @@ open class RestaurantRecyclerFragment :
         return inflater.inflate(R.layout.restaurant_list, container, false)
     }
 
-    @SuppressLint("MissingPermission")
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        locationManager = activityApp.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        val lastLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
-
-        if (lastLocation == null) {
-            Toast.makeText(context, getString(R.string.turn_on_geolocation), Toast.LENGTH_LONG)
-                .show()
-            return
-        }
-
-        val longitude = lastLocation.longitude
-        val latitude = lastLocation.latitude
-        viewModel.latitude = latitude
-        viewModel.longitude = longitude
 
         initRecyclerList(view)
         setErrorFunction()
@@ -75,7 +67,6 @@ open class RestaurantRecyclerFragment :
         list.adapter = adapter
         list.layoutManager = LinearLayoutManager(this.requireContext())
         startObserver()
-        viewModel.update()
 
         val searchBar = view.findViewById<SearchView>(R.id.search_restaurant)
 
@@ -91,6 +82,50 @@ open class RestaurantRecyclerFragment :
             override fun onQueryTextChange(query: String?): Boolean = true
 
         })
+
+        if(isLocationEnabled()) {
+            onLocationEnabled()
+        } else {
+            requestPermissions(
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                REQUEST_PERMISSIONS_CODE
+            )
+        }
+    }
+
+    private fun isLocationEnabled(): Boolean {
+        return ActivityCompat.checkSelfPermission(
+            requireContext(),
+            Manifest.permission.ACCESS_FINE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
+    }
+
+    private fun onLocationRejected() {
+        Toast.makeText(context, R.string.turn_on_geolocation, Toast.LENGTH_LONG)
+            .show()
+        parentFragmentManager.popBackStack()
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int, permissions: Array<String?>,
+        grantResults: IntArray
+    ) {
+        if (requestCode == REQUEST_PERMISSIONS_CODE && grantResults.all { result -> result == PackageManager.PERMISSION_GRANTED }) {
+            onLocationEnabled()
+        } else onLocationRejected()
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun onLocationEnabled() {
+        locationManager = activityApp.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        val lastLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)!!
+
+        val longitude = lastLocation.longitude
+        val latitude = lastLocation.latitude
+        viewModel.latitude = latitude
+        viewModel.longitude = longitude
+
+        viewModel.update()
     }
 
     override fun startScrollListener() {

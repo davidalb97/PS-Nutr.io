@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.SearchView
 import android.widget.Toast
 import androidx.annotation.NonNull
+import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.mapbox.android.core.location.*
@@ -187,12 +188,20 @@ class MapFragment :
         requestCode: Int, permissions: Array<String?>,
         grantResults: IntArray
     ) {
-        if (requestCode == REQUEST_PERMISSIONS_CODE) {
-            if (grantResults.all { it == PackageManager.PERMISSION_GRANTED }) {
-                mapboxMap?.setStyle(Style.TRAFFIC_DAY) { style: Style ->
-                    enableLocationComponent(style)
-                }
-            }
+        if (requestCode == REQUEST_PERMISSIONS_CODE && grantResults.all { result -> result == PackageManager.PERMISSION_GRANTED }) {
+            onLocationEnabled()
+        } else onLocationRejected()
+    }
+
+    private fun onLocationRejected() {
+        Toast.makeText(context, R.string.turn_on_geolocation, Toast.LENGTH_LONG)
+            .show()
+        parentFragmentManager.popBackStack()
+    }
+
+    private fun onLocationEnabled() {
+        mapboxMap?.setStyle(Style.TRAFFIC_DAY) { style: Style ->
+            enableLocationComponent(style)
         }
     }
 
