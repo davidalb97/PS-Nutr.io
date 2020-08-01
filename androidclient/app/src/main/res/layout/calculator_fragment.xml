@@ -106,6 +106,7 @@
                 <EditText
                     android:id="@+id/user_blood_glucose"
                     android:layout_width="100dp"
+                    android:inputType="number"
                     android:layout_height="wrap_content"
                     android:background="@drawable/textbox_shape"
                     android:padding="5dp"

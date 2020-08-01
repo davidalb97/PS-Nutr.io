@@ -111,6 +111,7 @@
 
         <EditText
             android:id="@+id/glucose_objective"
+            android:inputType="number"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -131,6 +132,7 @@
 
         <EditText
             android:id="@+id/glucose_amount"
+            android:inputType="number"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -152,6 +154,7 @@
 
         <EditText
             android:id="@+id/carbo_amount"
+            android:inputType="number"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
