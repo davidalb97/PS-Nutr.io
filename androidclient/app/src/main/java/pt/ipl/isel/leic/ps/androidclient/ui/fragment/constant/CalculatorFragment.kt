@@ -240,7 +240,9 @@ class CalculatorFragment : Fragment() {
     private fun getActualProfile(cb: (InsulinProfile?) -> Unit) {
 
         // Gets actual time in hh:mm format
-        val time = Calendar.getInstance().time
+        val calendar = Calendar.getInstance()
+        val currentTime =
+            "${calendar.get(Calendar.HOUR_OF_DAY)}:${calendar.get(Calendar.MINUTE)}"
 
         val profiles = viewModelProfiles.items
         if (profiles.isEmpty()) {
@@ -248,12 +250,14 @@ class CalculatorFragment : Fragment() {
             showNoExistingProfilesToast()
             return
         }
-        val timeInstance = SimpleDateFormat("HH:MM")
+
+        val timeInstance = SimpleDateFormat("HH:mm")
+        val now = timeInstance.parse(currentTime)
         viewModelProfiles.items.forEach { savedProfile ->
             val parsedSavedStartTime = timeInstance.parse(savedProfile.startTime)
             val parsedSavedEndTime = timeInstance.parse(savedProfile.endTime)
-            if (time.after(parsedSavedStartTime) && time.before(parsedSavedEndTime)) {
-                cb(savedProfile) // TODO: callback is not affected, see condition
+            if (now.after(parsedSavedStartTime) && now.before(parsedSavedEndTime)) {
+                cb(savedProfile)
             }
         }
     }
