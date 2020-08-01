@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
+import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.app
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.sharedPreferences
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealInfo
@@ -110,7 +111,7 @@ class MealDetailFragment : IngredientsRecyclerFragment() {
                         vote = true,
                         success = {
                             Toast.makeText(
-                                this.context,
+                                app,
                                 "Upvoted!",
                                 Toast.LENGTH_LONG
                             ).show()
@@ -126,7 +127,7 @@ class MealDetailFragment : IngredientsRecyclerFragment() {
                         vote = true,
                         success = {
                             Toast.makeText(
-                                this.context,
+                                app,
                                 "Downvoted!",
                                 Toast.LENGTH_LONG
                             ).show()

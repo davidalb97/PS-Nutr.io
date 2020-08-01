@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
+import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.app
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.InsulinProfile
 import pt.ipl.isel.leic.ps.androidclient.data.util.AsyncWorker
@@ -75,7 +76,7 @@ class InsulinProfileRecyclerViewHolder(
             onDelete(this.item)
                 .setOnPostExecute {
                     Toast.makeText(
-                        ctx,
+                        app,
                         ctx.getString(R.string.DialogAlert_deleted), Toast.LENGTH_SHORT
                     ).show()
                     setButtonsVisibility(false)

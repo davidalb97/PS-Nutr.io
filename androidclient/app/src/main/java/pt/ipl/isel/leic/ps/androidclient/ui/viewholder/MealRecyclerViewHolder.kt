@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.navigation.findNavController
 import com.bumptech.glide.Glide
+import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.app
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealItem
 import pt.ipl.isel.leic.ps.androidclient.data.model.Source
@@ -84,7 +85,7 @@ class MealRecyclerViewHolder(view: ViewGroup, ctx: Context) :
             onFavorite(favoriteItem)
                 .setOnPostExecute {
                     Toast.makeText(
-                        ctx,
+                        app,
                         "Added to favorites",
                         Toast.LENGTH_SHORT
                     ).show()

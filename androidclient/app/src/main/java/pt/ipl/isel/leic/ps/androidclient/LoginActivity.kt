@@ -7,6 +7,7 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.app
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.sharedPreferences
 import pt.ipl.isel.leic.ps.androidclient.data.model.UserLogin
 import pt.ipl.isel.leic.ps.androidclient.data.model.UserRegister
@@ -60,7 +61,7 @@ class LoginActivity : AppCompatActivity() {
             login(userNameParsed, userPasswordParsed)
             viewModel.startLoading()
         } else {
-            Toast.makeText(this, R.string.Fill_in_all_the_available_fields, Toast.LENGTH_SHORT)
+            Toast.makeText(app, R.string.Fill_in_all_the_available_fields, Toast.LENGTH_SHORT)
                 .show()
         }
     }
@@ -76,7 +77,7 @@ class LoginActivity : AppCompatActivity() {
             register(userEmailParsed, userNameParsed, userPasswordParsed)
             viewModel.startLoading()
         } else {
-            Toast.makeText(this, R.string.Fill_in_all_the_available_fields, Toast.LENGTH_SHORT)
+            Toast.makeText(app, R.string.Fill_in_all_the_available_fields, Toast.LENGTH_SHORT)
                 .show()
         }
     }
@@ -89,7 +90,7 @@ class LoginActivity : AppCompatActivity() {
             ),
             onError = {
                 viewModel.stopLoading()
-                Toast.makeText(this, R.string.login_error, Toast.LENGTH_SHORT).show()
+                Toast.makeText(app, R.string.login_error, Toast.LENGTH_SHORT).show()
             },
             userSessionConsumer = { userSession ->
                 saveSession(
@@ -111,7 +112,7 @@ class LoginActivity : AppCompatActivity() {
             ),
             onError = {
                 viewModel.stopLoading()
-                Toast.makeText(this, R.string.register_error, Toast.LENGTH_SHORT).show()
+                Toast.makeText(app, R.string.register_error, Toast.LENGTH_SHORT).show()
             },
             userSessionConsumer = { userSession ->
                 saveSession(

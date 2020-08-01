@@ -25,6 +25,7 @@ import com.mapbox.mapboxsdk.maps.MapView
 import com.mapbox.mapboxsdk.maps.MapboxMap
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback
 import com.mapbox.mapboxsdk.maps.Style
+import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.app
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.RestaurantItem
 import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.RestaurantRecyclerAdapter
@@ -194,7 +195,7 @@ class MapFragment :
     }
 
     private fun onLocationRejected() {
-        Toast.makeText(context, R.string.turn_on_geolocation, Toast.LENGTH_LONG)
+        Toast.makeText(app, R.string.turn_on_geolocation, Toast.LENGTH_LONG)
             .show()
         parentFragmentManager.popBackStack()
     }
@@ -232,7 +233,7 @@ class MapFragment :
              */
             override fun onFailure(exception: java.lang.Exception) {
                 Toast.makeText(
-                    requireActivity(),
+                    app,
                     exception.localizedMessage,
                     Toast.LENGTH_SHORT
                 ).show()

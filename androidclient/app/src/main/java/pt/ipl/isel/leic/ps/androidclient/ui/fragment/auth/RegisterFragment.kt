@@ -11,6 +11,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
+import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.app
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.UserRegister
 import pt.ipl.isel.leic.ps.androidclient.saveSession
@@ -63,7 +64,7 @@ class RegisterFragment : Fragment() {
                     ),
                     onError = {
                         viewModel.stopLoading()
-                        Toast.makeText(context, R.string.register_error, Toast.LENGTH_SHORT).show()
+                        Toast.makeText(app, R.string.register_error, Toast.LENGTH_SHORT).show()
                     }
                 ) { userSession ->
                     saveSession(
@@ -81,6 +82,6 @@ class RegisterFragment : Fragment() {
 
     private fun statusMessage(message: String) {
         viewModel.stopLoading()
-        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+        Toast.makeText(app, message, Toast.LENGTH_SHORT).show()
     }
 }

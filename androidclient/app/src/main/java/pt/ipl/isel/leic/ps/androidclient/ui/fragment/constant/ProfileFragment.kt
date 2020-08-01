@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
+import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.app
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.ui.adapter.TabAdapter
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler.room.InsulinProfilesRecyclerFragment
@@ -59,7 +60,7 @@ class ProfileFragment : Fragment() {
 
         viewModel.observe(this) {
             if (it.isEmpty()) {
-                Toast.makeText(context, "No users configured!", Toast.LENGTH_SHORT)
+                Toast.makeText(app, "No users configured!", Toast.LENGTH_SHORT)
                     .show()
             }
         }

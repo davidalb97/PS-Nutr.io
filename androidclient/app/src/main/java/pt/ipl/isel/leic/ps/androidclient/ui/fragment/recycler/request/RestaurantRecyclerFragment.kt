@@ -15,6 +15,7 @@ import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.mapbox.mapboxsdk.maps.Style
+import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.app
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.RestaurantItem
 import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.RestaurantRecyclerAdapter
@@ -101,7 +102,7 @@ open class RestaurantRecyclerFragment :
     }
 
     private fun onLocationRejected() {
-        Toast.makeText(context, R.string.turn_on_geolocation, Toast.LENGTH_LONG)
+        Toast.makeText(app, R.string.turn_on_geolocation, Toast.LENGTH_LONG)
             .show()
         parentFragmentManager.popBackStack()
     }

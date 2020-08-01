@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.app
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.sharedPreferences
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.InsulinProfile
@@ -57,7 +58,7 @@ class InsulinProfilesRecyclerFragment :
         }
 
         viewModel.onError = {
-            Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
+            Toast.makeText(app, it.message, Toast.LENGTH_SHORT).show()
         }
 
         noItemsLabel =

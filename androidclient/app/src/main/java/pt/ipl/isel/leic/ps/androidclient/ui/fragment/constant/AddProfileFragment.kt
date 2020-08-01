@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.app
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.InsulinProfile
 import pt.ipl.isel.leic.ps.androidclient.data.util.TimestampWithTimeZone
@@ -80,7 +81,7 @@ class AddProfileFragment : Fragment() {
 
             if (anyFieldBlank) {
                 Toast.makeText(
-                    this.context,
+                    app,
                     getString(R.string.Fill_in_all_the_available_fields),
                     Toast.LENGTH_SHORT
                 ).show()
@@ -102,7 +103,7 @@ class AddProfileFragment : Fragment() {
             profileTimesValidation(profile) { isValid ->
                 if (!isValid) {
                     Toast.makeText(
-                        this.context,
+                        app,
                         getString(R.string.This_time_period_is_already_occupied),
                         Toast.LENGTH_LONG
                     ).show()
@@ -132,7 +133,7 @@ class AddProfileFragment : Fragment() {
         // Checks if start time is before end time
         if (parsedEndTime.before(parsedStartTime)) {
             Toast.makeText(
-                this.context,
+                app,
                 "The time period is not valid",
                 Toast.LENGTH_LONG
             ).show()
