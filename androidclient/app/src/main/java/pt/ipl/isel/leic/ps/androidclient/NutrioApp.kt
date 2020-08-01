@@ -7,6 +7,7 @@ import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.room.Room
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
@@ -14,6 +15,7 @@ import androidx.work.*
 import com.android.volley.toolbox.Volley
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.app
 import pt.ipl.isel.leic.ps.androidclient.data.api.datasource.*
 import pt.ipl.isel.leic.ps.androidclient.data.api.request.RequestParser
 import pt.ipl.isel.leic.ps.androidclient.data.db.NutrioDb
@@ -91,7 +93,7 @@ class NutrioApp : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        app = this
+        app = applicationContext
         roomDb = Room.databaseBuilder(applicationContext, NutrioDb::class.java, ROOM_DB_NAME)
             .fallbackToDestructiveMigration()
             .build()
@@ -190,7 +192,7 @@ fun saveSession(jwt: String, username: String, password: String) {
 /**
  * Checks the internet connectivity
  */
-fun hasInternetConnection(app: NutrioApp): Boolean {
+fun hasInternetConnection(): Boolean {
     val cm = app.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
     var hasInternet = false
     val networks: Array<Network> = cm.allNetworks
@@ -204,4 +206,10 @@ fun hasInternetConnection(app: NutrioApp): Boolean {
     }
 
     return hasInternet
+}
+
+fun Fragment.withCtx(work: () -> Unit) {
+    if (this.isAdded) {
+        work
+    }
 }

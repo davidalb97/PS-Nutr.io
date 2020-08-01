@@ -5,11 +5,12 @@ import android.os.Parcelable
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.insulinProfilesRepository
 import pt.ipl.isel.leic.ps.androidclient.data.model.InsulinProfile
+import pt.ipl.isel.leic.ps.androidclient.data.util.TimestampWithTimeZone
 
 open class InsulinProfilesRecyclerViewModel() : ARecyclerViewModel<InsulinProfile>() {
 
-    lateinit var jwt: String
-    lateinit var refreshLayout: SwipeRefreshLayout
+    var jwt: String? = null
+    var refreshLayout: SwipeRefreshLayout? = null
 
     constructor(parcel: Parcel) : this()
 
@@ -20,19 +21,8 @@ open class InsulinProfilesRecyclerViewModel() : ARecyclerViewModel<InsulinProfil
         insulinProfilesRepository.deleteProfile(profileName, jwt, onError)
 
     override fun update() {
-
-        this.liveDataHandler.set(insulinProfilesRepository.getAllDbProfiles()) {
+        this.liveDataHandler.set(insulinProfilesRepository.getAllProfiles()) {
             insulinProfilesRepository.insulinProfileMapper.mapToModel(it)
-        }
-
-        insulinProfilesRepository.getAllProfiles(
-            jwt,
-            this.liveDataHandler::add,
-            onError
-        )
-
-        if (refreshLayout.isRefreshing) {
-            refreshLayout.isRefreshing = false
         }
     }
 

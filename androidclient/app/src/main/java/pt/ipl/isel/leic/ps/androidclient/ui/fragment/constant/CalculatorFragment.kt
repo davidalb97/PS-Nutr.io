@@ -1,6 +1,5 @@
 package pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant
 
-import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.os.Bundle
 import android.text.Editable
@@ -13,7 +12,8 @@ import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
-import androidx.preference.PreferenceManager
+import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.app
+import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.sharedPreferences
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.db.InsulinCalculator
 import pt.ipl.isel.leic.ps.androidclient.data.model.InsulinProfile
@@ -66,6 +66,8 @@ class CalculatorFragment : Fragment() {
             val check: Long = -1
             if (it == check) null else it
         }
+
+        viewModelProfiles
     }
 
     override fun onCreateView(
@@ -77,13 +79,30 @@ class CalculatorFragment : Fragment() {
         return inflater.inflate(R.layout.calculator_fragment, container, false)
     }
 
-    @SuppressLint("NewApi")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         spinnerSetup()
         searchForBundledMeal()
-        observeExistingInsulinProfiles()
+
+        val jwt = sharedPreferences.getString(JWT, null)
+
+        if (jwt == null) {
+            Toast.makeText(
+                app,
+                R.string.calculator_login_warning,
+                Toast.LENGTH_LONG
+            ).show()
+        } else {
+            viewModelProfiles.jwt = jwt
+        }
+
+        viewModelProfiles.onError = {
+            Toast.makeText(app, R.string.profiles_error, Toast.LENGTH_LONG)
+                .show()
+        }
+
         viewModelProfiles.update()
+        observeExistingInsulinProfiles()
         setupAddMealButtonListener()
     }
 
@@ -95,8 +114,6 @@ class CalculatorFragment : Fragment() {
         val spinner = view?.findViewById<Spinner>(R.id.measurement_units)
         val spinnerAdapter: ArrayAdapter<String> = spinner!!.adapter as ArrayAdapter<String>
 
-        val sharedPreferences =
-            PreferenceManager.getDefaultSharedPreferences(this.context)
         val defaultUnitKey =
             sharedPreferences.getString("insulin_units", MILLIGRAM_PER_DL)
 
@@ -164,7 +181,7 @@ class CalculatorFragment : Fragment() {
         selectedMealName?.text = receivedMeal?.name
         selectedMealCard?.visibility = View.VISIBLE
 
-        selectedMealDeleteButton?.setOnClickListener { view ->
+        selectedMealDeleteButton?.setOnClickListener {
             cleanBundledMeal(selectedMealCard)
         }
     }
@@ -199,8 +216,8 @@ class CalculatorFragment : Fragment() {
      */
     private fun showNoExistingProfilesToast() {
         Toast.makeText(
-            this.context,
-            getString(R.string.setup_a_profile_before_proceed),
+            app,
+            R.string.setup_a_profile_before_proceed,
             Toast.LENGTH_LONG
         ).show()
     }
@@ -228,11 +245,7 @@ class CalculatorFragment : Fragment() {
         val profiles = viewModelProfiles.items
         if (profiles.isEmpty()) {
             cb(null)
-            Toast.makeText(
-                this.context,
-                "Please setup a profile before proceed",
-                Toast.LENGTH_LONG
-            ).show()
+            showNoExistingProfilesToast()
             return
         }
         val timeInstance = SimpleDateFormat("HH:MM")
@@ -240,7 +253,7 @@ class CalculatorFragment : Fragment() {
             val parsedSavedStartTime = timeInstance.parse(savedProfile.startTime)
             val parsedSavedEndTime = timeInstance.parse(savedProfile.endTime)
             if (time.after(parsedSavedStartTime) && time.before(parsedSavedEndTime)) {
-                cb(savedProfile)
+                cb(savedProfile) // TODO: callback is not affected, see condition
             }
         }
     }

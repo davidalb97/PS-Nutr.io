@@ -37,7 +37,7 @@ abstract class ARequestRecyclerListFragment<M : Any, VM : ARecyclerViewModel<M>>
 
     override fun errorFunction(exception: Throwable) {
         if (this.isAdded) {
-            if (!hasInternetConnection(activityApp as NutrioApp)) {
+            if (!hasInternetConnection()) {
                 Toast.makeText(
                     activityApp, R.string.no_internet_connection,
                     Toast.LENGTH_LONG

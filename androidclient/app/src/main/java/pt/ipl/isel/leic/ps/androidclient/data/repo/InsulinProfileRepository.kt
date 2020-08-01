@@ -10,35 +10,29 @@ import pt.ipl.isel.leic.ps.androidclient.data.db.entity.InsulinProfileEntity
 import pt.ipl.isel.leic.ps.androidclient.data.db.mapper.DbInsulinProfileMapper
 import pt.ipl.isel.leic.ps.androidclient.data.model.InsulinProfile
 import pt.ipl.isel.leic.ps.androidclient.data.util.AsyncWorker
+import pt.ipl.isel.leic.ps.androidclient.hasInternetConnection
 
 class InsulinProfileRepository(private val dataSource: InsulinProfileDataSource) {
 
     val insulinProfileMapper = DbInsulinProfileMapper()
     private val inputInsulinProfileMapper = InputInsulinProfileMapper()
 
-    fun getAllDbProfiles(): LiveData<List<InsulinProfileEntity>> =
-        roomDb.insulinProfileDao().getAll()
+    fun getAllProfiles() = roomDb.insulinProfileDao().getAll()
 
-    fun getAllProfiles(
-        jwt: String,
-        onSuccess: (List<InsulinProfile>) -> Unit,
-        onError: (VolleyError) -> Unit
-    ) {
-
-        dataSource.getAllInsulinProfiles(
-            jwt,
-            {
-                onSuccess(inputInsulinProfileMapper.mapToListInputModel(it.asIterable()))
-            },
-            onError
-        )
+    fun getRemoteProfiles() {
+        /*if (!jwt.isNullOrBlank() && hasInternetConnection()) {
+            dataSource.getAllInsulinProfiles(
+                jwt,
+                {
+                    onSuccess(inputInsulinProfileMapper.mapToListInputModel(it.asIterable()))
+                },
+                onError
+            )
+        }*/
     }
 
-    fun getDbProfile(name: String): LiveData<InsulinProfileEntity> =
-        roomDb.insulinProfileDao().get(name)
-
-    fun getProfile(
-        jwt: String,
+    /*fun getProfile(
+        jwt: String?,
         name: String,
         onSuccess: (InsulinProfile) -> Unit,
         onError: (VolleyError) -> Unit
@@ -55,28 +49,32 @@ class InsulinProfileRepository(private val dataSource: InsulinProfileDataSource)
         } else {
             onSuccess(insulinProfileMapper.mapToModel(insulinProfile.value!!))
         }
-    }
+    }*/
 
-    fun addProfile(profileDb: InsulinProfile, jwt: String, onError: (VolleyError) -> Unit) =
+    fun addProfile(profileDb: InsulinProfile, jwt: String?, onError: (VolleyError) -> Unit) =
         AsyncWorker<Unit, Unit> {
             roomDb.insulinProfileDao().insert(insulinProfileMapper.mapToRelation(profileDb))
-            dataSource.postInsulinProfile(
-                InsulinProfileOutput(
-                    profileName = profileDb.profileName,
-                    startTime = profileDb.startTime,
-                    endTime = profileDb.endTime,
-                    glucoseObjective = profileDb.glucoseObjective,
-                    insulinSensitivityFactor = profileDb.glucoseAmountPerInsulin,
-                    carbohydrateRatio = profileDb.carbsAmountPerInsulin
-                ),
-                jwt,
-                onError
-            )
+
+            if (!jwt.isNullOrBlank() && hasInternetConnection()) {
+                dataSource.postInsulinProfile(
+                    InsulinProfileOutput(
+                        profileName = profileDb.profileName,
+                        startTime = profileDb.startTime,
+                        endTime = profileDb.endTime,
+                        glucoseObjective = profileDb.glucoseObjective,
+                        insulinSensitivityFactor = profileDb.glucoseAmountPerInsulin,
+                        carbohydrateRatio = profileDb.carbsAmountPerInsulin
+                    ),
+                    jwt,
+                    onError
+                )
+            }
         }
 
-    fun deleteProfile(profileName: String, jwt: String, onError: (VolleyError) -> Unit) =
+    fun deleteProfile(profileName: String, jwt: String?, onError: (VolleyError) -> Unit) =
         AsyncWorker<Unit, Unit> {
-            dataSource.deleteInsulinProfile(profileName, jwt, onError)
+            if (!jwt.isNullOrBlank() && hasInternetConnection())
+                dataSource.deleteInsulinProfile(profileName, jwt, onError)
             roomDb.insulinProfileDao().delete(profileName)
         }
 }

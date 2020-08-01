@@ -63,9 +63,12 @@
     <string name="create_your_routine">Create your routine</string>
     <string name="touch_to_create_your_routine_profiles">Touch to create your routine profiles</string>
     <string name="start_time">Starts at: %1$s</string>
+    <string name="start_time_calc">Starts at:</string>
     <string name="end_time">Ends at: %1$s</string>
+    <string name="end_time_calc">Ends at:</string>
     <string name="profile_name">Profile name</string>
     <string name="carbohydrate_ratio">Carbohydrate ratio: %1$s / %2$s</string>
+    <string name="carbohydrate_ratio_calc">Carbohydrate ratio:</string>
     <string name="recent_activity">Recent activity</string>
     <string name="routine_graph">Routine graph</string>
     <string name="add_insulin_profile_nav">Add an insulin profile</string>
@@ -85,7 +88,9 @@
     <string name="create_button">Create</string>
     <string name="you_don_t_have_a_routine_right_now">You don\'t have a routine right now</string>
     <string name="glucose_objective_card">Glucose objective: %1$s</string>
+    <string name="glucose_objective_calc">Glucose objective:</string>
     <string name="insulin_sensitivity_factor">Insulin sensitivity factor: %1$s / %2$s</string>
+    <string name="insulin_sensitivity_factor_calc">Insulin sensitivity factor:</string>
     <string name="insulin_unit">insulin unit</string>
     <string name="DialogAlert_deleteWarning">Warning</string>
     <string name="AlertDialog_deleteQuestion">Do you want to delete this item?</string>
@@ -171,5 +176,8 @@
     <string name="loading">Loading …</string>
     <string name="invalid_auth_credentials">The credentials are no longer valid, please login again</string>
     <string name="turn_on_geolocation">Please turn on your geolocation</string>
+    <string name="setup_profile_before_proceed">Please setup a profile before proceed</string>
+    <string name="calculator_login_warning">You need to be login to use the calculator</string>
+    <string name="profiles_error">Error obtaining profiles</string>
     <string name="user_location_permission_denied">Location permission not granted</string>
 </resources>
