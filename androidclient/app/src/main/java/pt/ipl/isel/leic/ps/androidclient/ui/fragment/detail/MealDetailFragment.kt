@@ -1,7 +1,5 @@
 package pt.ipl.isel.leic.ps.androidclient.ui.fragment.detail
 
-import android.content.Context
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,6 +13,7 @@ import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealInfo
 import pt.ipl.isel.leic.ps.androidclient.data.model.Source
 import pt.ipl.isel.leic.ps.androidclient.data.model.UserSession
+import pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.JWT
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler.request.IngredientsRecyclerFragment
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.*
 import pt.ipl.isel.leic.ps.androidclient.ui.util.Logger
@@ -102,7 +101,7 @@ class MealDetailFragment : IngredientsRecyclerFragment() {
                 mealVotesRl?.visibility = View.VISIBLE
 
                 val userSession = UserSession(
-                    sharedPreferences.getString("jwt", "")!!
+                    sharedPreferences.getString(JWT, null)!!
                 )
 
                 // Upvote

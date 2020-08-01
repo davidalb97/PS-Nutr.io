@@ -151,10 +151,10 @@ class NutrioApp : Application() {
 
     private fun authenticateUser() {
 
-        val username = encryptedSharedPreferences.getString(USERNAME, "")
-        val password = encryptedSharedPreferences.getString(PASSWORD, "")
+        val username = encryptedSharedPreferences.getString(USERNAME, null)
+        val password = encryptedSharedPreferences.getString(PASSWORD, null)
 
-        if (username!!.isNotBlank() && password!!.isNotBlank()) {
+        if (username != null && password != null) {
             userRepository.loginUser(
                 UserLogin(username, password),
                 { userSession -> saveSession(userSession.jwt, username, password) },

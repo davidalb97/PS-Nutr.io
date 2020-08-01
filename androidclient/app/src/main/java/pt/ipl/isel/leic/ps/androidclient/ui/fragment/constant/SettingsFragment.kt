@@ -1,12 +1,12 @@
 package pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant
 
-import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreferenceCompat
+import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.sharedPreferences
 import pt.ipl.isel.leic.ps.androidclient.R
 
 const val SECRET_PREFERENCES = "encryptedPreferences"
@@ -29,11 +29,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
     private fun setupDarkModeSwitch() {
         val darkModeSwitch = findPreference<SwitchPreferenceCompat>(DARK_MODE)
-        val sharedPreferences: SharedPreferences =
-            requireActivity().baseContext?.getSharedPreferences(
-                PREFERENCES,
-                Context.MODE_PRIVATE
-            )!!
 
         val isLightMode = sharedPreferences.getBoolean(DARK_MODE, false)
         val editor: SharedPreferences.Editor = sharedPreferences.edit()

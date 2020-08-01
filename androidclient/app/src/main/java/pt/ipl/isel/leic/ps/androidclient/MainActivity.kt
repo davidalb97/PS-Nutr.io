@@ -1,8 +1,6 @@
 package pt.ipl.isel.leic.ps.androidclient
 
-import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
 import android.view.View
@@ -17,17 +15,13 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import androidx.security.crypto.EncryptedSharedPreferences
-import androidx.security.crypto.MasterKey
-import androidx.work.ExistingPeriodicWorkPolicy
-import androidx.work.PeriodicWorkRequest
-import androidx.work.WorkManager
 import com.google.android.material.navigation.NavigationView
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.encryptedSharedPreferences
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.sharedPreferences
-import pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.*
+import pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.DARK_MODE
+import pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.FIRST_TIME
+import pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.USERNAME
 import pt.ipl.isel.leic.ps.androidclient.ui.util.Logger
-import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity() {
 
