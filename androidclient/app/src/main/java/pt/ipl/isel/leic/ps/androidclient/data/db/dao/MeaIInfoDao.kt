@@ -14,7 +14,10 @@ abstract class MealInfoDao {
 
     @Transaction
     @Query("SELECT * FROM $TABLE WHERE $PRIMARY_KEY = :dbId AND $SOURCE_ORDINAL = :sourceOrdinal")
-    abstract fun getByIdAndSource(dbId: Long, sourceOrdinal: Int): LiveData<List<DbMealInfoRelation>>
+    abstract fun getByIdAndSource(
+        dbId: Long,
+        sourceOrdinal: Int
+    ): LiveData<List<DbMealInfoRelation>>
 
     @Transaction
     @Query("SELECT * FROM $TABLE WHERE $SOURCE_ORDINAL = :sourceOrdinal")

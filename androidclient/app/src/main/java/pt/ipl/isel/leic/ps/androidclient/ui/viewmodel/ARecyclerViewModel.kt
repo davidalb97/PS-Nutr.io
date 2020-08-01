@@ -1,8 +1,8 @@
 package pt.ipl.isel.leic.ps.androidclient.ui.viewmodel
 
 import android.os.Parcelable
-import androidx.annotation.IdRes
-import androidx.lifecycle.*
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.ViewModel
 import pt.ipl.isel.leic.ps.androidclient.ui.util.LiveDataHandler
 
 /**

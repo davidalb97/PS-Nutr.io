@@ -24,7 +24,7 @@ class MealInfo(
     val portions: List<Portion>,
     isSuggested: Boolean,
     source: Source
-): MealItem(
+) : MealItem(
     dbId = dbId,
     dbRestaurantId = dbRestaurantId,
     submissionId = submissionId,

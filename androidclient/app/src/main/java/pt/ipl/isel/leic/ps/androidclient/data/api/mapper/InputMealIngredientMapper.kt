@@ -35,9 +35,9 @@ class InputMealIngredientMapper {
         isMeal = isMeal
     )
 
-    fun mapToListModel(dtos: Iterable<DetailedMealInput>, isMeal: Boolean): List<MealIngredient>
-            = dtos.map { mapToModel(it, isMeal) }
+    fun mapToListModel(dtos: Iterable<DetailedMealInput>, isMeal: Boolean): List<MealIngredient> =
+        dtos.map { mapToModel(it, isMeal) }
 
-    fun mapToListModel(dto: DetailedIngredientsInput): List<MealIngredient>
-            = dto.ingredients.map(this::mapToModel)
+    fun mapToListModel(dto: DetailedIngredientsInput): List<MealIngredient> =
+        dto.ingredients.map(this::mapToModel)
 }

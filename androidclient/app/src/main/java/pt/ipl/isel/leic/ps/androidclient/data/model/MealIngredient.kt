@@ -20,7 +20,7 @@ class MealIngredient(
     amount: Int,
     unit: String,
     val isMeal: Boolean
-) : MealItem (
+) : MealItem(
     dbId = dbId,
     dbRestaurantId = DbMealItemEntity.DEFAULT_DB_ID,
     submissionId = submissionId,
@@ -37,16 +37,16 @@ class MealIngredient(
 ), Parcelable {
 
     constructor(parcel: Parcel) : this(
-    dbId = parcel.readLong(),
-    dbMealId = parcel.readLong(),
-    submissionId = parcel.readInt(),
-    name = parcel.readString()!!,
-    carbs = parcel.readInt(),
-    amount = parcel.readInt(),
-    unit = parcel.readString()!!,
-    isFavorite = readBoolean(parcel),
-    imageUri = readUri(parcel),
-    isMeal = readBoolean(parcel)
+        dbId = parcel.readLong(),
+        dbMealId = parcel.readLong(),
+        submissionId = parcel.readInt(),
+        name = parcel.readString()!!,
+        carbs = parcel.readInt(),
+        amount = parcel.readInt(),
+        unit = parcel.readString()!!,
+        isFavorite = readBoolean(parcel),
+        imageUri = readUri(parcel),
+        isMeal = readBoolean(parcel)
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {

@@ -1,6 +1,7 @@
 package pt.ipl.isel.leic.ps.androidclient
 
 import android.content.Context
+import android.util.Log
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 
@@ -16,6 +17,8 @@ class PeriodicWorker(
 ) : Worker(ctx, workerParams) {
 
     override fun doWork(): Result {
-        TODO("Not yet implemented")
+        // TODO
+        Log.e(TAG, "Should fetch and synchronize user related data...")
+        return Result.success()
     }
 }

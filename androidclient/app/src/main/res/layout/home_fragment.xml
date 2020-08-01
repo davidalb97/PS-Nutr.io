@@ -4,7 +4,9 @@
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:id="@+id/homeLayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:background="?attr/backgroundColor"
+    android:layout_height="match_parent"
+    android:layout_marginBottom="15dp">
 
     <TableLayout
         android:layout_width="match_parent"
@@ -24,7 +26,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="@string/restaurants"
-                android:textColor="@android:color/background_dark"
+                android:textColor="?attr/cardTextAccentColor"
                 android:textSize="20sp"
                 android:textStyle="bold">
             </TextView>
@@ -56,7 +58,7 @@
                         android:layout_alignParentBottom="true"
                         android:layout_centerHorizontal="true"
                         android:text="@string/by_name"
-                        android:textColor="@android:color/background_dark"
+                        android:textColor="?attr/cardTextAccentColor"
                         android:textSize="18sp"
                         android:textStyle="bold">
                     </TextView>
@@ -82,8 +84,8 @@
                         android:layout_below="@+id/firstSection_image2"
                         android:layout_alignParentBottom="true"
                         android:layout_centerHorizontal="true"
-                        android:text="@string/by_location"
-                        android:textColor="@android:color/background_dark"
+                        android:text="@string/map_view"
+                        android:textColor="?attr/cardTextAccentColor"
                         android:textSize="18sp"
                         android:textStyle="bold">
                     </TextView>
@@ -108,7 +110,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="@string/meals"
-                android:textColor="@android:color/background_dark"
+                android:textColor="?attr/cardTextAccentColor"
                 android:textSize="20sp"
                 android:textStyle="bold">
             </TextView>
@@ -139,7 +141,7 @@
                         android:layout_alignParentBottom="true"
                         android:layout_centerHorizontal="true"
                         android:text="@string/by_name"
-                        android:textColor="@android:color/background_dark"
+                        android:textColor="?attr/cardTextAccentColor"
                         android:textSize="18sp"
                         android:textStyle="bold">
                     </TextView>
@@ -165,7 +167,7 @@
                         android:layout_alignParentBottom="true"
                         android:layout_centerHorizontal="true"
                         android:text="@string/tab_your_meals"
-                        android:textColor="@android:color/background_dark"
+                        android:textColor="?attr/cardTextAccentColor"
                         android:textSize="18sp"
                         android:textStyle="bold">
                     </TextView>
@@ -190,7 +192,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="@string/insulin_values"
-                android:textColor="@android:color/background_dark"
+                android:textColor="?attr/cardTextAccentColor"
                 android:textSize="20sp"
                 android:textStyle="bold">
             </TextView>
@@ -221,7 +223,7 @@
                         android:layout_alignParentBottom="true"
                         android:layout_centerHorizontal="true"
                         android:text="@string/calculator"
-                        android:textColor="@android:color/background_dark"
+                        android:textColor="?attr/cardTextAccentColor"
                         android:textSize="18sp"
                         android:textStyle="bold">
                     </TextView>
@@ -247,7 +249,7 @@
                         android:layout_alignParentBottom="true"
                         android:layout_centerHorizontal="true"
                         android:text="@string/history"
-                        android:textColor="@android:color/background_dark"
+                        android:textColor="?attr/cardTextAccentColor"
                         android:textSize="18sp"
                         android:textStyle="bold">
                     </TextView>

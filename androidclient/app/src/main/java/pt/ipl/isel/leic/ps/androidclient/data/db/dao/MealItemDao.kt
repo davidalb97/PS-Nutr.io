@@ -2,8 +2,7 @@ package pt.ipl.isel.leic.ps.androidclient.data.db.dao
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import pt.ipl.isel.leic.ps.androidclient.data.db.entity.*
-import pt.ipl.isel.leic.ps.androidclient.data.db.relation.DbMealInfoRelation
+import pt.ipl.isel.leic.ps.androidclient.data.db.entity.DbMealItemEntity
 
 private const val TABLE = DbMealItemEntity.tableName
 private const val PRIMARY_KEY = DbMealItemEntity.primaryKeyName
@@ -21,7 +20,9 @@ abstract class MealItemDao {
     @Delete
     abstract fun delete(mealEntity: DbMealItemEntity)
 
-    @Query("DELETE FROM ${DbMealItemEntity.tableName}" +
-            " WHERE ${DbMealItemEntity.sourceOrdinalName} = :sourceOrdinal")
+    @Query(
+        "DELETE FROM ${DbMealItemEntity.tableName}" +
+                " WHERE ${DbMealItemEntity.sourceOrdinalName} = :sourceOrdinal"
+    )
     abstract fun deleteAllBySource(sourceOrdinal: Int)
 }

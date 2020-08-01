@@ -19,7 +19,7 @@ interface InsulinProfileDao {
     @Query("SELECT * FROM InsulinProfile where profileName =:name")
     fun get(name: String?): LiveData<InsulinProfileEntity>
 
-    @Delete
-    fun delete(profile: InsulinProfileEntity)
+    @Query("DELETE FROM InsulinProfile WHERE profileName =:profileName")
+    fun delete(profileName: String)
 
 }

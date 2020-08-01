@@ -11,7 +11,8 @@ class DbInsulinProfileMapper {
         dto.endTime,
         dto.glucoseObjective,
         dto.glucoseAmountPerInsulin,
-        dto.carbsAmountPerInsulin
+        dto.carbsAmountPerInsulin,
+        dto.modificationDate
     )
 
     fun mapToRelation(model: InsulinProfile) = InsulinProfileEntity(
@@ -20,10 +21,11 @@ class DbInsulinProfileMapper {
         model.endTime,
         model.glucoseObjective,
         model.glucoseAmountPerInsulin,
-        model.carbsAmountPerInsulin
+        model.carbsAmountPerInsulin,
+        model.modificationDate
     )
 
     fun mapToListModel(dtos: Iterable<InsulinProfileEntity>) = dtos.map(::mapToModel)
 
-    fun mapToListDto(models: Iterable<InsulinProfile>) = models.map(::mapToRelation)
+    fun mapToListRelation(models: Iterable<InsulinProfile>) = models.map(::mapToRelation)
 }

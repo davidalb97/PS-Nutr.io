@@ -4,7 +4,6 @@ import android.net.Uri
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.SimplifiedMealInput
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.SimplifiedRestaurantInput
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.VotesInputDto
-import java.time.OffsetDateTime
 
 class DetailedRestaurantInput(
     id: String,

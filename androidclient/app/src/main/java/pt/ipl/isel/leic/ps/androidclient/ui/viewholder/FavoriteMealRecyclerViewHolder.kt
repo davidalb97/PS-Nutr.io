@@ -10,10 +10,10 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.navigation.findNavController
 import com.bumptech.glide.Glide
+import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.app
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealItem
 import pt.ipl.isel.leic.ps.androidclient.data.util.AsyncWorker
-import pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.BUNDLED_MEAL_INFO_TAG
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.BUNDLE_MEAL_DB_ID
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.BUNDLE_MEAL_RESTAURANT_SUBMISSION_ID
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.BUNDLE_MEAL_SOURCE
@@ -73,7 +73,7 @@ class FavoriteMealRecyclerViewHolder(
                     .setOnPostExecute {
                         this.bindingAdapter?.notifyItemRemoved(layoutPosition)
                         Toast.makeText(
-                            ctx,
+                            app,
                             ctx.getString(R.string.DialogAlert_deleted), Toast.LENGTH_SHORT
                         ).show()
                         setButtonsVisibility(false)

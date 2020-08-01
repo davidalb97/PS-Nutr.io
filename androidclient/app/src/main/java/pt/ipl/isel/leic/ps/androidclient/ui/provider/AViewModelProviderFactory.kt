@@ -3,21 +3,19 @@ package pt.ipl.isel.leic.ps.androidclient.ui.provider
 import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import pt.ipl.isel.leic.ps.androidclient.MainActivity
-import pt.ipl.isel.leic.ps.androidclient.TAG
 import pt.ipl.isel.leic.ps.androidclient.ui.util.Logger
 
-abstract class AViewModelProviderFactory<VM: Parcelable>(
+abstract class AViewModelProviderFactory<VM : Parcelable>(
     val savedInstanceState: Bundle?,
     val intent: Intent
 ) : ViewModelProvider.Factory {
 
 
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        val log = Logger("${AViewModelProviderFactory::class.java.simpleName}<${getViewModelClass()}>")
+        val log =
+            Logger("${AViewModelProviderFactory::class.java.simpleName}<${getViewModelClass()}>")
         val viewModelClass = getViewModelClass()
         if (savedInstanceState != null) {
             val model: VM? = savedInstanceState.getParcelable(getStateName())

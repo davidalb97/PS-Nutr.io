@@ -1,16 +1,17 @@
 package pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant
 
-import android.annotation.SuppressLint
 import android.net.Uri
 import android.os.Bundle
+import android.text.Editable
+import android.text.SpannableStringBuilder
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.EditText
-import android.widget.Spinner
+import android.widget.*
+import android.widget.AdapterView.OnItemSelectedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.preference.PreferenceManager
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.db.entity.DbMealInfoEntity
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealInfo
@@ -19,9 +20,11 @@ import pt.ipl.isel.leic.ps.androidclient.data.util.TimestampWithTimeZone
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.CustomMealRecyclerVMProviderFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.util.SpinnerHandler
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.CustomMealRecyclerViewModel
+import java.math.RoundingMode
+
+const val GRAM_OUNCE_RATIO = 0.035274
 
 class AddCustomMealFragment : Fragment() {
-
     lateinit var viewModel: CustomMealRecyclerViewModel
     private lateinit var ingredientsSpinnerHandler: SpinnerHandler
     private lateinit var mealsSpinnerHandler: SpinnerHandler
@@ -44,10 +47,17 @@ class AddCustomMealFragment : Fragment() {
         return inflater.inflate(R.layout.add_custom_meal, container, false)
     }
 
-    @SuppressLint("NewApi")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        unitSpinnerSetup()
+        fragmentElementsSetup(view)
+    }
 
+    /**
+     * Setups all the other elements inside the fragment
+     */
+    private fun fragmentElementsSetup(view: View) {
+        val currentActivity = requireActivity()
         val customMealName = view.findViewById<EditText>(R.id.meal_name)
         val customMealPortion = view.findViewById<EditText>(R.id.meal_portion_quantity)
         val customMealUnitSpinner = view.findViewById<Spinner>(R.id.custom_meal_units_spinner)
@@ -56,15 +66,15 @@ class AddCustomMealFragment : Fragment() {
         val createButton = view.findViewById<Button>(R.id.create_custom_meal_button)
 
         cuisinesSpinnerHandler = SpinnerHandler(
-            requireActivity(),
+            currentActivity,
             R.id.custom_meal_cuisines_spinner
         )
         ingredientsSpinnerHandler = SpinnerHandler(
-            requireActivity(),
+            currentActivity,
             R.id.custom_meal_ingredients_spinner
         )
         mealsSpinnerHandler = SpinnerHandler(
-            requireActivity(),
+            currentActivity,
             R.id.custom_meal_meals_spinner
         )
 
@@ -109,4 +119,65 @@ class AddCustomMealFragment : Fragment() {
             }
         }
     }
+
+    /**
+     * Setups the measurement units spinner following the shared preferences.
+     */
+    @Suppress("UNCHECKED_CAST")
+    private fun unitSpinnerSetup() {
+        val spinner = view?.findViewById<Spinner>(R.id.custom_meal_units_spinner)
+        val spinnerAdapter: ArrayAdapter<String> = spinner!!.adapter as ArrayAdapter<String>
+
+        val sharedPreferences =
+            PreferenceManager.getDefaultSharedPreferences(this.context)
+        val defaultUnitKey =
+            sharedPreferences.getString("weight_units", "grams")
+
+        val spinnerPosition = spinnerAdapter.getPosition(defaultUnitKey)
+        spinner.setSelection(spinnerPosition)
+
+        // Changes the weight value according to the unit spinner
+        val customMealPortion = view?.findViewById<EditText>(R.id.meal_portion_quantity)
+        spinner.onItemSelectedListener = object : OnItemSelectedListener {
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                throw NotImplementedError("This function is not implemented")
+            }
+
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                val value = spinner.selectedItem.toString()
+
+                if (customMealPortion!!.text.isNotBlank()) {
+                    if (value == "ounces") {
+                        customMealPortion.text = convertToOunces(customMealPortion.text.toString())
+                    } else {
+                        customMealPortion.text = convertToGrams(customMealPortion.text.toString())
+                    }
+                }
+
+            }
+        }
+    }
+
+    private fun convertToGrams(currentValue: String): Editable? =
+        SpannableStringBuilder(
+            (currentValue.toDouble() / GRAM_OUNCE_RATIO)
+                .toBigDecimal()
+                .setScale(2, RoundingMode.HALF_UP)
+                .toFloat()
+                .toString()
+        )
+
+    private fun convertToOunces(currentValue: String): Editable? =
+        SpannableStringBuilder(
+            (currentValue.toDouble() * GRAM_OUNCE_RATIO)
+                .toBigDecimal()
+                .setScale(2, RoundingMode.HALF_UP)
+                .toFloat()
+                .toString()
+        )
 }

@@ -33,11 +33,12 @@ class InputMealInfoMapper(
         mealComponents = dto.composedBy?.let {
             inputMealIngredientMapper.mapToListModel(it.meals, true)
         } ?: emptyList(),
-        cuisines = dto.cuisines?.let { inputCuisineMapper.mapToListModel(dto.cuisines) } ?: emptyList(),
+        cuisines = dto.cuisines?.let { inputCuisineMapper.mapToListModel(dto.cuisines) }
+            ?: emptyList(),
         portions = dto.portions?.let { inputPortionMapper.mapToListModel(it) } ?: emptyList(),
         source = Source.API
     )
 
-    fun mapToListModel(dtos: Iterable<DetailedMealInput>, restaurantId: String?): List<MealInfo>
-            = dtos.map { mapToModel(it, restaurantId) }
+    fun mapToListModel(dtos: Iterable<DetailedMealInput>, restaurantId: String?): List<MealInfo> =
+        dtos.map { mapToModel(it, restaurantId) }
 }

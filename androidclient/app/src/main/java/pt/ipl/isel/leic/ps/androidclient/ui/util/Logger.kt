@@ -6,9 +6,9 @@ import kotlin.reflect.KClass
 
 class Logger(private val subject: String) {
 
-    constructor(klass: KClass<*>): this(klass.simpleName!!.toString())
+    constructor(klass: KClass<*>) : this(klass.simpleName!!.toString())
 
-    constructor(clazz: Class<*>): this(clazz.simpleName)
+    constructor(clazz: Class<*>) : this(clazz.simpleName)
 
     fun v(msg: String) {
         logv1(subject, msg)

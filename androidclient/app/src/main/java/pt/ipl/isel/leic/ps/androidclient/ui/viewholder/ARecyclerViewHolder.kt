@@ -2,7 +2,6 @@ package pt.ipl.isel.leic.ps.androidclient.ui.viewholder
 
 import android.content.Context
 import android.os.Parcelable
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 
@@ -20,5 +19,5 @@ abstract class ARecyclerViewHolder<T : Parcelable>(
     open fun bindTo(item: T) {
         this.item = item
     }
-    
+
 }

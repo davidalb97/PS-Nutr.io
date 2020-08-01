@@ -6,6 +6,7 @@ import pt.ipl.isel.leic.ps.androidclient.data.api.mapper.*
 import pt.ipl.isel.leic.ps.androidclient.data.model.Cuisine
 import pt.ipl.isel.leic.ps.androidclient.data.model.RestaurantInfo
 import pt.ipl.isel.leic.ps.androidclient.data.model.RestaurantItem
+import pt.ipl.isel.leic.ps.androidclient.data.model.UserSession
 
 /**
  * The repository that maps every restaurant dto to its respective model
@@ -61,14 +62,16 @@ class RestaurantRepository(private val dataSource: RestaurantDataSource) {
         latitude: Double,
         longitude: Double,
         cuisines: Iterable<Cuisine>,
-        error: (VolleyError) -> Unit
+        error: (VolleyError) -> Unit,
+        userSession: UserSession
     ) {
         dataSource.postRestaurant(
             name,
             latitude,
             longitude,
             cuisines,
-            error
+            error,
+            userSession
         )
     }
 
@@ -76,6 +79,7 @@ class RestaurantRepository(private val dataSource: RestaurantDataSource) {
         id: String,
         vote: Boolean,
         success: () -> Unit,
-        error: (VolleyError) -> Unit
-    ) = dataSource.updateVote(id, vote, success, error)
+        error: (VolleyError) -> Unit,
+        userSession: UserSession
+    ) = dataSource.updateVote(id, vote, success, error, userSession)
 }

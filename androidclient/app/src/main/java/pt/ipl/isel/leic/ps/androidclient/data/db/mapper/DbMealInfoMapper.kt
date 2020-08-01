@@ -3,7 +3,10 @@ package pt.ipl.isel.leic.ps.androidclient.data.db.mapper
 import android.net.Uri
 import pt.ipl.isel.leic.ps.androidclient.data.db.entity.DbMealInfoEntity
 import pt.ipl.isel.leic.ps.androidclient.data.db.relation.DbMealInfoRelation
-import pt.ipl.isel.leic.ps.androidclient.data.model.*
+import pt.ipl.isel.leic.ps.androidclient.data.model.MealInfo
+import pt.ipl.isel.leic.ps.androidclient.data.model.Source
+import pt.ipl.isel.leic.ps.androidclient.data.model.VoteState
+import pt.ipl.isel.leic.ps.androidclient.data.model.Votes
 
 class DbMealInfoMapper(
     private val componentIngredientMapper: DbComponentIngredientMapper,
@@ -21,7 +24,7 @@ class DbMealInfoMapper(
         carbs = relation.entity.carbs,
         amount = relation.entity.amount,
         unit = relation.entity.unit,
-        votes = if(relation.entity.hasVote) Votes(
+        votes = if (relation.entity.hasVote) Votes(
             userHasVoted = VoteState.values()[relation.entity.userVoteOrdinal!!],
             positive = relation.entity.positiveVotes!!,
             negative = relation.entity.negativeVotes!!

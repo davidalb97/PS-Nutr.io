@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         android:text="@string/create_your_routine"
         android:textSize="28sp"
-        android:textColor="@android:color/background_dark"
+        android:textColor="?attr/textColor"
         android:layout_centerHorizontal="true">
 
     </TextView>

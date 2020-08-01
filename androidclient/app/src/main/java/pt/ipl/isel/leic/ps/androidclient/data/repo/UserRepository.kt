@@ -1,33 +1,38 @@
 package pt.ipl.isel.leic.ps.androidclient.data.repo
 
-import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.roomDb
-import pt.ipl.isel.leic.ps.androidclient.data.db.mapper.DbUserMapper
-import pt.ipl.isel.leic.ps.androidclient.data.model.User
-import pt.ipl.isel.leic.ps.androidclient.data.util.AsyncWorker
+import com.android.volley.VolleyError
+import pt.ipl.isel.leic.ps.androidclient.data.api.datasource.UserDataSource
+import pt.ipl.isel.leic.ps.androidclient.data.api.mapper.InputUserLoginMapper
+import pt.ipl.isel.leic.ps.androidclient.data.api.mapper.InputUserRegisterMapper
+import pt.ipl.isel.leic.ps.androidclient.data.model.UserLogin
+import pt.ipl.isel.leic.ps.androidclient.data.model.UserRegister
+import pt.ipl.isel.leic.ps.androidclient.data.model.UserSession
 
-const val DEFAULT_DB_USER = 3
+class UserRepository(private val userDataSource: UserDataSource) {
 
-class UserRepository {
+    private val loginUserMapper = InputUserLoginMapper()
+    private val registerUserMapper = InputUserRegisterMapper()
 
-    val userMapper = DbUserMapper()
+    fun registerUser(
+        userReg: UserRegister,
+        userSessionConsumer: (UserSession) -> Unit,
+        error: (VolleyError) -> Unit
+    ) = userDataSource.register(
+        email = userReg.email,
+        username = userReg.username,
+        password = userReg.password,
+        error = error,
+        consumerDto = { userSessionConsumer(registerUserMapper.mapToModel(it)) }
+    )
 
-    fun getAllUsers() = roomDb.userDao().getAll()
-
-    fun getUserById(userId: Int) =
-        roomDb.userDao().get(userId)
-
-    fun createUser(userProfile: User) =
-        AsyncWorker<Unit, Unit> {
-            roomDb.userDao().insert(userMapper.mapToEntity(userProfile))
-        }
-
-    fun updateUser(userProfile: User) =
-        AsyncWorker<Unit, Unit> {
-            roomDb.userDao().insert(userMapper.mapToEntity(userProfile))
-        }
-
-    fun deleteUser(userProfile: User) =
-        AsyncWorker<Unit, Unit> {
-            roomDb.userDao().insert(userMapper.mapToEntity(userProfile))
-        }
+    fun loginUser(
+        userLogin: UserLogin,
+        userSessionConsumer: (UserSession) -> Unit,
+        error: (VolleyError) -> Unit
+    ) = userDataSource.login(
+        username = userLogin.username,
+        password = userLogin.password,
+        error = error,
+        consumerDto = { userSessionConsumer(loginUserMapper.mapToModel(it)) }
+    )
 }

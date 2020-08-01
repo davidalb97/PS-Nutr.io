@@ -9,8 +9,7 @@ import pt.ipl.isel.leic.ps.androidclient.data.model.Source
 
 class CustomMealRecyclerViewModel() : ARecyclerViewModel<MealItem>() {
 
-    constructor(parcel: Parcel) : this() {
-    }
+    constructor(parcel: Parcel) : this()
 
     fun addCustomMeal(customMeal: MealInfo) =
         mealRepository.insertInfo(customMeal)
@@ -31,11 +30,13 @@ class CustomMealRecyclerViewModel() : ARecyclerViewModel<MealItem>() {
     override fun describeContents(): Int {
         TODO("Not yet implemented")
     }
+
     companion object CREATOR : Parcelable.Creator<CustomMealRecyclerViewModel> {
 
         override fun createFromParcel(parcel: Parcel): CustomMealRecyclerViewModel {
             return CustomMealRecyclerViewModel(parcel)
         }
+
         override fun newArray(size: Int): Array<CustomMealRecyclerViewModel?> {
             return arrayOfNulls(size)
         }

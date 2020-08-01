@@ -32,7 +32,7 @@
             android:gravity="center"
             android:text="@string/meal_example"
             android:textStyle="bold"
-            android:textColor="@android:color/background_dark"
+            android:textColor="?attr/textColor"
             android:textSize="26sp">
         </TextView>
 
@@ -129,7 +129,7 @@
                 android:layout_marginStart="20dp"
                 android:text="@string/add_meal_to_calc"
                 android:textSize="18sp"
-                android:textColor="@android:color/background_dark"
+                android:textColor="?attr/textColor"
                 android:layout_toEndOf="@+id/meal_add_button"
                 android:gravity="center"
                 android:layout_centerVertical="true">

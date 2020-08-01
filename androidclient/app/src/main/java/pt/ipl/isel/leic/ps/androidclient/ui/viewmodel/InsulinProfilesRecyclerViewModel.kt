@@ -2,18 +2,23 @@ package pt.ipl.isel.leic.ps.androidclient.ui.viewmodel
 
 import android.os.Parcel
 import android.os.Parcelable
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.insulinProfilesRepository
 import pt.ipl.isel.leic.ps.androidclient.data.model.InsulinProfile
+import pt.ipl.isel.leic.ps.androidclient.data.util.TimestampWithTimeZone
 
 open class InsulinProfilesRecyclerViewModel() : ARecyclerViewModel<InsulinProfile>() {
 
+    var jwt: String? = null
+    var refreshLayout: SwipeRefreshLayout? = null
+
     constructor(parcel: Parcel) : this()
 
-    fun addInsulinProfile(profile: InsulinProfile) =
-        insulinProfilesRepository.addProfile(profile)
+    fun addDbInsulinProfile(profile: InsulinProfile) =
+        insulinProfilesRepository.addProfile(profile, jwt, onError)
 
-    fun deleteItem(profile: InsulinProfile) =
-        insulinProfilesRepository.deleteProfile(profile)
+    fun deleteItem(profileName: String) =
+        insulinProfilesRepository.deleteProfile(profileName, jwt, onError)
 
     override fun update() {
         this.liveDataHandler.set(insulinProfilesRepository.getAllProfiles()) {
