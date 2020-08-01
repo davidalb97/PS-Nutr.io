@@ -5,7 +5,8 @@
     android:id="@+id/homeLayout"
     android:layout_width="match_parent"
     android:background="?attr/backgroundColor"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:layout_marginBottom="15dp">
 
     <TableLayout
         android:layout_width="match_parent"
@@ -83,7 +84,7 @@
                         android:layout_below="@+id/firstSection_image2"
                         android:layout_alignParentBottom="true"
                         android:layout_centerHorizontal="true"
-                        android:text="@string/by_location"
+                        android:text="@string/map_view"
                         android:textColor="?attr/cardTextAccentColor"
                         android:textSize="18sp"
                         android:textStyle="bold">
