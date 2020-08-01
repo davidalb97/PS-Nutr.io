@@ -1,7 +1,5 @@
 package pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant
 
-import android.content.Context
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.app
+import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.encryptedSharedPreferences
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.ui.adapter.TabAdapter
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler.room.InsulinProfilesRecyclerFragment
@@ -47,16 +46,9 @@ class ProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val sharedPreferences: SharedPreferences =
-            requireActivity().baseContext?.getSharedPreferences(
-                "preferences.xml",
-                Context.MODE_PRIVATE
-            )!!
-
         val userNameView = view.findViewById<TextView>(R.id.user_name)
 
-        userNameView.text = sharedPreferences.getString("username", "")
-        viewModel.userId = sharedPreferences.getInt("submitterId", 0)
+        userNameView.text = encryptedSharedPreferences.getString(USERNAME, null)
 
         viewModel.observe(this) {
             if (it.isEmpty()) {

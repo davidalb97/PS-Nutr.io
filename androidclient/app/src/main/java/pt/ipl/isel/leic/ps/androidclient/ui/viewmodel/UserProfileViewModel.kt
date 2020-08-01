@@ -15,8 +15,6 @@ import pt.ipl.isel.leic.ps.androidclient.data.model.UserSession
 class UserProfileViewModel() : ARecyclerViewModel<UserLogin>() {
     constructor(parcel: Parcel) : this()
 
-    var userId: Int? = null
-
     lateinit var loadingCard: CardView
 
     fun register(

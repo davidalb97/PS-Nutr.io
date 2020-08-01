@@ -23,6 +23,7 @@ import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
 import com.google.android.material.navigation.NavigationView
+import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.encryptedSharedPreferences
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.sharedPreferences
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.*
 import pt.ipl.isel.leic.ps.androidclient.ui.util.Logger
@@ -108,7 +109,7 @@ class MainActivity : AppCompatActivity() {
             val username = headerView.findViewById<TextView>(R.id.username)
             val userEmail = headerView.findViewById<TextView>(R.id.userEmail)
 
-            val registeredUser = sharedPreferences.getString(USERNAME, null)
+            val registeredUser = encryptedSharedPreferences.getString(USERNAME, null)
 
             if (registeredUser != null) {
                 username.text = registeredUser
