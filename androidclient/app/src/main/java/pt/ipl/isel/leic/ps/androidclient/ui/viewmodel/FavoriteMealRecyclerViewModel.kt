@@ -8,8 +8,7 @@ import pt.ipl.isel.leic.ps.androidclient.data.model.Source
 
 class FavoriteMealRecyclerViewModel() : ARecyclerViewModel<MealItem>() {
 
-    constructor(parcel: Parcel) : this() {
-    }
+    constructor(parcel: Parcel) : this()
 
     override fun update() {
         this.liveDataHandler.set(mealRepository.getAllItemBySource(Source.FAVORITE)) {
@@ -27,11 +26,13 @@ class FavoriteMealRecyclerViewModel() : ARecyclerViewModel<MealItem>() {
     override fun describeContents(): Int {
         return 0
     }
+
     companion object CREATOR : Parcelable.Creator<FavoriteMealRecyclerViewModel> {
 
         override fun createFromParcel(parcel: Parcel): FavoriteMealRecyclerViewModel {
             return FavoriteMealRecyclerViewModel(parcel)
         }
+
         override fun newArray(size: Int): Array<FavoriteMealRecyclerViewModel?> {
             return arrayOfNulls(size)
         }

@@ -10,7 +10,10 @@ import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.RestaurantRecyclerViewMode
 class RestaurantRecyclerAdapter(
     model: RestaurantRecyclerViewModel,
     ctx: Context
-) : ARecyclerAdapter<RestaurantItem, RestaurantRecyclerViewModel, RestaurantRecyclerViewHolder>(model, ctx) {
+) : ARecyclerAdapter<RestaurantItem, RestaurantRecyclerViewModel, RestaurantRecyclerViewHolder>(
+    model,
+    ctx
+) {
 
     override fun getItemViewId(): Int = R.layout.restaurant_card
 

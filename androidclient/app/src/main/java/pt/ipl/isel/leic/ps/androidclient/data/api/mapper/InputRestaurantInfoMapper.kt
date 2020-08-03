@@ -4,7 +4,6 @@ import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.info.DetailedRestaur
 import pt.ipl.isel.leic.ps.androidclient.data.db.entity.DbRestaurantInfoEntity
 import pt.ipl.isel.leic.ps.androidclient.data.model.RestaurantInfo
 import pt.ipl.isel.leic.ps.androidclient.data.model.Source
-import pt.ipl.isel.leic.ps.androidclient.data.model.Votes
 import pt.ipl.isel.leic.ps.androidclient.data.util.TimestampWithTimeZone
 
 class InputRestaurantInfoMapper(

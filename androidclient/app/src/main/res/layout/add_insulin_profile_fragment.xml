@@ -17,7 +17,7 @@
             android:layout_marginRight="30dp"
             android:layout_marginLeft="30dp"
             android:text="@string/profile_name_label"
-            android:textColor="@android:color/background_dark"
+            android:textColor="?attr/textColor"
             android:textSize="24sp"
             android:layout_gravity="center">
         </TextView>
@@ -37,7 +37,7 @@
             android:layout_marginRight="30dp"
             android:layout_marginLeft="30dp"
             android:text="@string/define_the_profile_time_period"
-            android:textColor="@android:color/background_dark"
+            android:textColor="?attr/textColor"
             android:textSize="24sp"
             android:layout_gravity="center">
         </TextView>
@@ -104,13 +104,14 @@
             android:layout_marginRight="30dp"
             android:layout_marginLeft="30dp"
             android:text="@string/glucose_objective"
-            android:textColor="@android:color/background_dark"
+            android:textColor="?attr/textColor"
             android:textSize="18sp"
             android:layout_gravity="center">
         </TextView>
 
         <EditText
             android:id="@+id/glucose_objective"
+            android:inputType="number"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -124,13 +125,14 @@
             android:layout_marginRight="30dp"
             android:layout_marginLeft="30dp"
             android:text="@string/how_much_glucose_is_reduced_by_an_unit_of_insulin"
-            android:textColor="@android:color/background_dark"
+            android:textColor="?attr/textColor"
             android:textSize="14sp"
             android:layout_gravity="center">
         </TextView>
 
         <EditText
             android:id="@+id/glucose_amount"
+            android:inputType="number"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -145,13 +147,14 @@
             android:layout_marginLeft="30dp"
             android:gravity="center"
             android:text="@string/how_many_carbohydrates_are_lowered_by_1_insulin_dose"
-            android:textColor="@android:color/background_dark"
+            android:textColor="?attr/textColor"
             android:textSize="14sp"
             android:layout_gravity="center">
         </TextView>
 
         <EditText
             android:id="@+id/carbo_amount"
+            android:inputType="number"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"

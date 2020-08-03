@@ -1,23 +1,28 @@
 package pt.ipl.isel.leic.ps.androidclient.ui.fragment.detail
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewModelScope
 import com.bumptech.glide.Glide
+import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.app
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.restaurantRepository
+import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.sharedPreferences
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.RestaurantInfo
+import pt.ipl.isel.leic.ps.androidclient.data.model.UserSession
+import pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.JWT
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler.request.MealRecyclerFragment
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.BUNDLE_RESTAURANT_INFO_ID
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.RestaurantInfoVMProviderFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.util.Logger
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.RestaurantInfoMealRecyclerViewModel
 
-class RestaurantDetailFragment : MealRecyclerFragment(){
+class RestaurantDetailFragment : MealRecyclerFragment() {
 
     private val log = Logger(RestaurantDetailFragment::class)
     private lateinit var innerViewModel: RestaurantInfoMealRecyclerViewModel
@@ -30,8 +35,15 @@ class RestaurantDetailFragment : MealRecyclerFragment(){
      */
     override fun buildViewModel(savedInstanceState: Bundle?) {
         val rootActivity = this.requireActivity()
-        val factory = RestaurantInfoVMProviderFactory(savedInstanceState, rootActivity.intent, requireArguments())
-        innerViewModel = ViewModelProvider(rootActivity, factory)[RestaurantInfoMealRecyclerViewModel::class.java]
+        val factory = RestaurantInfoVMProviderFactory(
+            savedInstanceState,
+            rootActivity.intent,
+            requireArguments()
+        )
+        innerViewModel = ViewModelProvider(
+            rootActivity,
+            factory
+        )[RestaurantInfoMealRecyclerViewModel::class.java]
         innerViewModel.restaurantId = requireArguments().getString(BUNDLE_RESTAURANT_INFO_ID)!!
         viewModel = innerViewModel
         activityApp = requireActivity().application
@@ -53,6 +65,7 @@ class RestaurantDetailFragment : MealRecyclerFragment(){
     }
 
     private fun setupRestaurantInfoView(restaurantInfo: RestaurantInfo) {
+
         val restaurantMealImage =
             view?.findViewById<ImageView>(R.id.restaurant_detail_image)
         val restaurantMealTitle =
@@ -75,9 +88,13 @@ class RestaurantDetailFragment : MealRecyclerFragment(){
                 .load(restaurantInfo.imageUri)
                 .into(restaurantMealImage!!)
 
+        val userSession = UserSession(
+            sharedPreferences.getString(JWT, null)!!
+        )
+
         restaurantMealTitle?.text = restaurantInfo.name
 
-        if(restaurantInfo.votes != null) {
+        if (restaurantInfo.votes != null) {
             votesTxtRl?.visibility = View.VISIBLE
             votesRl?.visibility = View.VISIBLE
 
@@ -85,22 +102,22 @@ class RestaurantDetailFragment : MealRecyclerFragment(){
             restaurantUpvoteButton?.setOnClickListener { view ->
                 restaurantRepository.putVote(restaurantInfo.id, true, {
                     Toast.makeText(
-                        this.context,
+                        app,
                         "Upvoted!",
                         Toast.LENGTH_LONG
                     ).show()
-                }, log::e)
+                }, log::e, userSession)
             }
 
             // Downvote
             restaurantDownvoteButton?.setOnClickListener { view ->
                 restaurantRepository.putVote(restaurantInfo.id, false, {
                     Toast.makeText(
-                        this.context,
+                        app,
                         "Downvoted!",
                         Toast.LENGTH_LONG
                     ).show()
-                },log::e)
+                }, log::e, userSession)
             }
         }
     }

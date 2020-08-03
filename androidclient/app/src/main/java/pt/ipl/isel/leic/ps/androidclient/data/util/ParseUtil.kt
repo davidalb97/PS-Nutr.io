@@ -2,12 +2,9 @@ package pt.ipl.isel.leic.ps.androidclient.data.util
 
 import android.net.Uri
 import android.os.Parcel
-import pt.ipl.isel.leic.ps.androidclient.data.model.VoteState
-import java.net.URI
-import java.time.OffsetDateTime
 import kotlin.reflect.KClass
 
-fun <R: Any> readList(parcel: Parcel, kClass: KClass<R>): ArrayList<R> {
+fun <R : Any> readList(parcel: Parcel, kClass: KClass<R>): ArrayList<R> {
     return ArrayList<R>().also {
         parcel.readList(it as List<R>, kClass.java.classLoader)
     }
@@ -23,7 +20,7 @@ fun writeBoolean(parcel: Parcel, boolean: Boolean) {
 
 fun readUri(parcel: Parcel): Uri? {
     //return parcel.readString()?.let { if(it.isNotBlank()) URI.create(it) else null }
-    return parcel.readString()?.let { if(it.isNotBlank()) Uri.parse(it) else null }
+    return parcel.readString()?.let { if (it.isNotBlank()) Uri.parse(it) else null }
 }
 
 fun writeUri(parcel: Parcel, uri: Uri?) {

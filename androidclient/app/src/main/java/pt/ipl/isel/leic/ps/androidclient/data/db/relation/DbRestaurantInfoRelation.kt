@@ -2,7 +2,9 @@ package pt.ipl.isel.leic.ps.androidclient.data.db.relation
 
 import androidx.room.Embedded
 import androidx.room.Relation
-import pt.ipl.isel.leic.ps.androidclient.data.db.entity.*
+import pt.ipl.isel.leic.ps.androidclient.data.db.entity.DbCuisineEntity
+import pt.ipl.isel.leic.ps.androidclient.data.db.entity.DbMealItemEntity
+import pt.ipl.isel.leic.ps.androidclient.data.db.entity.DbRestaurantInfoEntity
 
 data class DbRestaurantInfoRelation(
     @Embedded val entity: DbRestaurantInfoEntity,

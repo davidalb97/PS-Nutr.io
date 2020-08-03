@@ -38,14 +38,14 @@ class MealRepository(private val dataSource: MealDataSource) {
         inputVotesMapper = inputVotesMapper
     )
 
-    fun getByIdAndSource(dbId: Long, source: Source)
-            = roomDb.mealInfoDao().getByIdAndSource(dbId, source.ordinal)
+    fun getByIdAndSource(dbId: Long, source: Source) =
+        roomDb.mealInfoDao().getByIdAndSource(dbId, source.ordinal)
 
-    fun getAllInfoBySource(source: Source): LiveData<List<DbMealInfoRelation>>
-            = roomDb.mealInfoDao().getAllBySource(source.ordinal)
+    fun getAllInfoBySource(source: Source): LiveData<List<DbMealInfoRelation>> =
+        roomDb.mealInfoDao().getAllBySource(source.ordinal)
 
-    fun getAllItemBySource(source: Source): LiveData<List<DbMealItemEntity>>
-            = roomDb.mealItemDao().getAllBySource(source.ordinal)
+    fun getAllItemBySource(source: Source): LiveData<List<DbMealItemEntity>> =
+        roomDb.mealItemDao().getAllBySource(source.ordinal)
 
     fun insertInfo(meal: MealInfo) = AsyncWorker<Unit, Unit> {
         roomDb.mealInfoDao().insert(dbMealInfoMapper.mapToRelation(meal))
@@ -136,9 +136,10 @@ class MealRepository(private val dataSource: MealDataSource) {
         unit: String,
         ingredients: Iterable<MealIngredient>,
         cuisines: Iterable<Cuisine>,
-        error: (VolleyError) -> Unit
+        error: (VolleyError) -> Unit,
+        userSession: UserSession
     ) =
-        dataSource.postMeal(name, quantity, unit, ingredients, cuisines, error)
+        dataSource.postMeal(name, quantity, unit, ingredients, cuisines, error, userSession)
 
 
     fun putVote(
@@ -146,6 +147,7 @@ class MealRepository(private val dataSource: MealDataSource) {
         mealId: Int,
         vote: Boolean,
         success: () -> Unit,
-        error: (VolleyError) -> Unit
-    ) = dataSource.updateVote(restaurantId, mealId, vote, success, error)
+        error: (VolleyError) -> Unit,
+        userSession: UserSession
+    ) = dataSource.updateVote(restaurantId, mealId, vote, success, error, userSession)
 }

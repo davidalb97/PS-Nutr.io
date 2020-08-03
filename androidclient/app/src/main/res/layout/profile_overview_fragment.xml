@@ -15,7 +15,7 @@
             android:layout_margin="10dp"
             android:layout_below="@+id/user_tab"
             android:text="@string/routine_graph"
-            android:textColor="@android:color/background_dark"
+            android:textColor="?attr/textColor"
             android:textSize="28sp">
         </TextView>
 
@@ -39,7 +39,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:text="@string/recent_activity"
-            android:textColor="@android:color/background_dark"
+            android:textColor="?attr/textColor"
             android:textSize="28sp">
         </TextView>
 

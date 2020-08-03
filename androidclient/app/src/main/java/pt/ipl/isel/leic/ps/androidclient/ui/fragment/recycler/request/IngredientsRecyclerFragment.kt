@@ -10,12 +10,10 @@ import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealIngredient
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealItem
 import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.MealRecyclerAdapter
-import pt.ipl.isel.leic.ps.androidclient.ui.fragment.tab.CALCULATOR_BUNDLE_FLAG
 import pt.ipl.isel.leic.ps.androidclient.ui.listener.ScrollListener
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.BUNDLE_INGREDIENT_LIST
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.IngredientRecyclerVMProviderFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.IngredientRecyclerViewModel
-import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.MealRecyclerViewModel
 
 open class IngredientsRecyclerFragment
     : ARequestRecyclerListFragment<MealItem, IngredientRecyclerViewModel>() {
@@ -36,8 +34,9 @@ open class IngredientsRecyclerFragment
     protected open fun buildViewModel(savedInstanceState: Bundle?) {
         val rootActivity = this.requireActivity()
         val factory = IngredientRecyclerVMProviderFactory(savedInstanceState, rootActivity.intent)
-        viewModel = ViewModelProvider(rootActivity, factory)[IngredientRecyclerViewModel::class.java]
-        if(arguments != null) {
+        viewModel =
+            ViewModelProvider(rootActivity, factory)[IngredientRecyclerViewModel::class.java]
+        if (arguments != null) {
             val ingredients = requireArguments().getParcelableArrayList<MealIngredient>(
                 BUNDLE_INGREDIENT_LIST
             )

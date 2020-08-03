@@ -1,4 +1,3 @@
-
 package pt.ipl.isel.leic.ps.androidclient.ui.util
 
 import android.view.View
@@ -47,7 +46,7 @@ class SpinnerHandler(
                 val selectedItem = parent.getItemAtPosition(position) as String
                 log.v("Selected: \"$selectedItem\"")
 
-                if(selectedItem != NO_FILTER) {
+                if (selectedItem != NO_FILTER) {
                     log.v("Selected filterId: \"$selectedItem\"")
 
                     arrayAdapter.remove(selectedItem)

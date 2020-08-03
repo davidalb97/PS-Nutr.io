@@ -2,7 +2,6 @@ package pt.ipl.isel.leic.ps.androidclient.data.db.mapper
 
 import android.net.Uri
 import pt.ipl.isel.leic.ps.androidclient.data.db.entity.DbComponentIngredientEntity
-import pt.ipl.isel.leic.ps.androidclient.data.db.relation.DbMealInfoRelation
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealIngredient
 
 class DbComponentIngredientMapper {
@@ -33,7 +32,8 @@ class DbComponentIngredientMapper {
         dto.mealKey = model.dbMealId
     }
 
-    fun mapToListModel(relations: List<DbComponentIngredientEntity>) = relations.map(this::mapToModel)
+    fun mapToListModel(relations: List<DbComponentIngredientEntity>) =
+        relations.map(this::mapToModel)
 
     fun mapToListEntity(relations: List<MealIngredient>) = relations.map(this::mapToEntity)
 }

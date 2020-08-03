@@ -30,8 +30,10 @@ class AboutFragment : Fragment() {
                 view.findViewById(R.id.github_link_pedro),
                 view.findViewById<TextView>(R.id.link_pedro).text.toString()
             ),
-            Pair(view.findViewById(
-                R.id.github_link_david),
+            Pair(
+                view.findViewById(
+                    R.id.github_link_david
+                ),
                 view.findViewById<TextView>(R.id.link_david).text.toString()
             ),
             Pair(

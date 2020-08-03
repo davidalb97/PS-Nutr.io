@@ -2,7 +2,6 @@ package pt.ipl.isel.leic.ps.androidclient.data.db.converter
 
 import androidx.room.TypeConverter
 import pt.ipl.isel.leic.ps.androidclient.data.util.TimestampWithTimeZone
-import java.time.OffsetDateTime
 
 //This class is a work around OffsetDateTime.parse requires API level 26
 class TimestampWithTimeZoneConverter {

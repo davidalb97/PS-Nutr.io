@@ -18,7 +18,7 @@ class InsulinProfileRecyclerAdapter(
     override fun onBindViewHolder(holder: InsulinProfileRecyclerViewHolder, position: Int) {
         val item: InsulinProfile = viewModel.items[position]
         holder.bindTo(item)
-        holder.onDelete = { viewModel.deleteItem(item) }
+        holder.onDelete = { viewModel.deleteItem(item.profileName) }
     }
 
     override fun getItemViewId(): Int = R.layout.insulin_profile_card

@@ -1,77 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/backgroundColor">
 
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true">
-
-        <TextView
-            android:id="@+id/signUpLabel"
+    <ScrollView
+        android:id="@+id/containerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <RelativeLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="40dp"
-            android:text="@string/sign_up"
-            android:textSize="28sp"
-            android:textColor="@android:color/background_dark">
-        </TextView>
+            android:layout_height="wrap_content">
+            <View
+                android:id="@+id/headerWave"
+                android:layout_width="wrap_content"
+                android:layout_height="200dp"
+                android:background="@drawable/ic_wave">
+            </View>
 
-        <TextView
-            android:id="@+id/userIdLabel"
-            android:layout_below="@+id/signUpLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:text="@string/user_id"
-            android:textSize="28sp"
-            android:textColor="@android:color/background_dark">
-        </TextView>
+            <FrameLayout
+                android:id="@+id/fragment_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/headerWave"
+                android:layout_marginStart="25dp"
+                android:layout_marginEnd="25dp"
+                android:layout_marginBottom="100dp">
+            </FrameLayout>
 
-        <EditText
-            android:id="@+id/userIdInput"
-            android:layout_below="@+id/userIdLabel"
-            android:layout_centerHorizontal="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:hint="@string/user_id_number">
-        </EditText>
+        </RelativeLayout>
 
-        <TextView
-            android:id="@+id/userNameLabel"
-            android:layout_below="@+id/userIdInput"
-            android:layout_centerHorizontal="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/username"
-            android:textSize="28sp"
-            android:textColor="@android:color/background_dark">
-        </TextView>
+    </ScrollView>
 
-        <EditText
-            android:id="@+id/userNameInput"
-            android:layout_below="@+id/userNameLabel"
-            android:layout_centerHorizontal="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:hint="@string/username">
-        </EditText>
 
-        <Button
-            android:id="@+id/registerButton"
-            android:layout_below="@+id/userNameInput"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:text="@string/register"
-            android:textColor="@color/cardview_light_background"
-            android:background="@drawable/rect_material_button_shape">
-        </Button>
-
-    </RelativeLayout>
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigationBar"
+        android:layout_width="match_parent"
+        android:layout_height="75dp"
+        android:layout_alignParentBottom="true"
+        android:background="?android:attr/windowBackground"
+        app:menu="@menu/bottom_navigation_bar">
+    </com.google.android.material.bottomnavigation.BottomNavigationView>
 
 
 </RelativeLayout>

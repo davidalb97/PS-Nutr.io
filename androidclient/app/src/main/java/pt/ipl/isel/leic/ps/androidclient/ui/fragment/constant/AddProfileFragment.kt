@@ -1,6 +1,5 @@
 package pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant
 
-import android.annotation.SuppressLint
 import android.app.TimePickerDialog
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,13 +8,13 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.findNavController
+import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.app
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.InsulinProfile
-import pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler.room.InsulinProfilesRecyclerFragment
+import pt.ipl.isel.leic.ps.androidclient.data.util.TimestampWithTimeZone
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.InsulinProfilesVMProviderFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.InsulinProfilesRecyclerViewModel
-import java.time.LocalTime
+import java.text.SimpleDateFormat
 import java.util.*
 
 class AddProfileFragment : Fragment() {
@@ -38,7 +37,6 @@ class AddProfileFragment : Fragment() {
         return inflater.inflate(R.layout.add_insulin_profile_fragment, container, false)
     }
 
-    @SuppressLint("NewApi")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -53,16 +51,16 @@ class AddProfileFragment : Fragment() {
         val endTimeUser = view.findViewById<TextView>(R.id.end_time_user)
 
         val calendar = Calendar.getInstance()
-        val mHour = calendar.get(Calendar.HOUR_OF_DAY);
-        val mMinute = calendar.get(Calendar.MINUTE);
+        val defaultHour = calendar.get(Calendar.HOUR_OF_DAY)
+        val defaultMinute = calendar.get(Calendar.MINUTE)
 
         addStartTime.setOnClickListener {
-            setupTimePickerDialog(startTimeUser, mHour, mMinute)
+            setupTimePickerDialog(startTimeUser, defaultHour, defaultMinute)
                 .show()
         }
 
         addEndTime.setOnClickListener {
-            setupTimePickerDialog(endTimeUser, mHour, mMinute)
+            setupTimePickerDialog(endTimeUser, defaultHour, defaultMinute)
                 .show()
         }
 
@@ -83,7 +81,7 @@ class AddProfileFragment : Fragment() {
 
             if (anyFieldBlank) {
                 Toast.makeText(
-                    this.context,
+                    app,
                     getString(R.string.Fill_in_all_the_available_fields),
                     Toast.LENGTH_SHORT
                 ).show()
@@ -92,25 +90,26 @@ class AddProfileFragment : Fragment() {
 
             // Creates profile if everything is ok until here
             val profile = InsulinProfile(
-                    profileName.text.toString(),
-                    startTimeUser.text.toString(),
-                    endTimeUser.text.toString(),
-                    glucoseObjective.text.toString().toInt(),
-                    glucoseAmount.text.toString().toInt(),
-                    carboAmount.text.toString().toInt()
-                )
+                profileName.text.toString(),
+                startTimeUser.text.toString(),
+                endTimeUser.text.toString(),
+                glucoseObjective.text.toString().toInt(),
+                glucoseAmount.text.toString().toInt(),
+                carboAmount.text.toString().toInt(),
+                TimestampWithTimeZone.now()
+            )
 
             // Asserts time period with the other profiles
             profileTimesValidation(profile) { isValid ->
                 if (!isValid) {
                     Toast.makeText(
-                        this.context,
+                        app,
                         getString(R.string.This_time_period_is_already_occupied),
                         Toast.LENGTH_LONG
                     ).show()
                 } else {
                     viewModel
-                        .addInsulinProfile(profile)
+                        .addDbInsulinProfile(profile)
                         .setOnPostExecute { parentFragmentManager.popBackStack() }
                         .execute()
                 }
@@ -122,18 +121,19 @@ class AddProfileFragment : Fragment() {
     /**
      * Checks if the time period passed to the time pickers is valid
      */
-    @SuppressLint("NewApi")
     private fun profileTimesValidation(
         profileDb: InsulinProfile,
         cb: (Boolean) -> Unit
     ) {
-        val parsedStartTime = LocalTime.parse(profileDb.startTime)
-        val parsedEndTime = LocalTime.parse(profileDb.endTime)
+        val timeInstance = SimpleDateFormat("HH:MM")
+
+        val parsedStartTime = timeInstance.parse(profileDb.startTime)!!
+        val parsedEndTime = timeInstance.parse(profileDb.endTime)!!
 
         // Checks if start time is before end time
-        if (parsedEndTime.isBefore(parsedStartTime)) {
+        if (parsedEndTime.before(parsedStartTime)) {
             Toast.makeText(
-                this.context,
+                app,
                 "The time period is not valid",
                 Toast.LENGTH_LONG
             ).show()
@@ -145,13 +145,11 @@ class AddProfileFragment : Fragment() {
         var isValid = true
         if (insulinProfiles.isNotEmpty()) {
             insulinProfiles.forEach { savedProfile ->
-                val parsedSavedStartTime =
-                    LocalTime.parse(savedProfile.startTime)
-                val parsedSavedEndTime =
-                    LocalTime.parse(savedProfile.endTime)
+                val parsedSavedStartTime = timeInstance.parse(savedProfile.startTime)!!
+                val parsedSavedEndTime = timeInstance.parse(savedProfile.endTime)!!
 
-                if (!(parsedEndTime.isBefore(parsedSavedStartTime) ||
-                            parsedStartTime.isAfter(parsedSavedEndTime))
+                if (!(parsedEndTime.before(parsedSavedStartTime) ||
+                            parsedStartTime.after(parsedSavedEndTime))
                 ) {
                     isValid = false
                 }
@@ -163,17 +161,23 @@ class AddProfileFragment : Fragment() {
     /**
      * Setups each time picker dialog saving the chosen values to a TextView
      * so it can also display to the user
+     * @param textView The [TextView] to set
+     * @param defaultHour The default time (hours)
+     * @param defaultMinute The default time (minutes)
      */
-    @SuppressLint("SetTextI18n")
-    private fun setupTimePickerDialog(textView: TextView, hour: Int, minute: Int)
-            : TimePickerDialog =
-        TimePickerDialog(
+    private fun setupTimePickerDialog(
+        textView: TextView,
+        defaultHour: Int,
+        defaultMinute: Int
+    ): TimePickerDialog {
+        return TimePickerDialog(
             view?.context,
-            TimePickerDialog.OnTimeSetListener { timePicker: TimePicker, hour: Int, minute: Int ->
+            TimePickerDialog.OnTimeSetListener { _: TimePicker, hour: Int, minute: Int ->
                 textView.text = String.format("%02d:%02d", hour, minute)
             },
-            hour,
-            minute,
+            defaultHour,
+            defaultMinute,
             true
         )
+    }
 }

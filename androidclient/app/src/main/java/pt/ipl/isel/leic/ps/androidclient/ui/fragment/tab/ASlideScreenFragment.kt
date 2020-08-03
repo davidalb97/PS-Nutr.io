@@ -49,6 +49,6 @@ abstract class ASlideScreenFragment(
         viewPager = view.findViewById(R.id.viewPager)
         tabLayout = view.findViewById(R.id.tab)
         viewPager.adapter = tabPagerAdapter
-        tabLayout.setupWithViewPager(viewPager);
+        tabLayout.setupWithViewPager(viewPager)
     }
 }

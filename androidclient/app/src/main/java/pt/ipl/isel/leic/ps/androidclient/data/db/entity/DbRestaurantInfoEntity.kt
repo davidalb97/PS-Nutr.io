@@ -3,7 +3,6 @@ package pt.ipl.isel.leic.ps.androidclient.data.db.entity
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import pt.ipl.isel.leic.ps.androidclient.data.util.TimestampWithTimeZone
-import java.time.OffsetDateTime
 
 @Entity(tableName = DbRestaurantInfoEntity.tableName)
 data class DbRestaurantInfoEntity(

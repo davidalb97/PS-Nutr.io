@@ -3,7 +3,6 @@ package pt.ipl.isel.leic.ps.androidclient.ui.provider
 import android.content.Intent
 import android.os.Bundle
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.IngredientRecyclerViewModel
-import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.MealRecyclerViewModel
 
 const val INGREDIENT_LIST_VIEW_STATE: String = "INGREDIENT_LIST_VIEW_STATE"
 const val BUNDLE_INGREDIENT_LIST: String = "BUNDLE_INGREDIENT_LIST"
