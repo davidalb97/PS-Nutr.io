@@ -7,7 +7,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.common.TransactionHolder
 
 
 @Configuration
-class ControllerConfiguration {
+class ControllerConfig {
 
     @Bean
     fun transactionHolder(jdbi: Jdbi): TransactionHolder = TransactionHolder(jdbi)
