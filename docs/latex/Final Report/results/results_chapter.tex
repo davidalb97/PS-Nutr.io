@@ -82,8 +82,10 @@ Here are all the dependencies injected inside HTTP server gradle settings file.\
 
 \subsection{JDBI}
 
-After some discussion of which driver should be used to allow communication between the server and database, the group decided that the JDBI was best
+After some discussion of which driver should be used to allow communication between the server and database, the group decided that the JDBI was the best
 option as it is a library built on JDBC.\\
+
+\textbf{DONE - eng. Félix says: "Usage of JDBI and the declarative API needs justification and perhaps a brief introduction."}
 
 The library also exposes two different API's styles: a fluent style and sql object style (used during development), as shown below.
 
@@ -100,8 +102,6 @@ The library also exposes two different API's styles: a fluent style and sql obje
         \caption{JDBI using a SQL object API style (example from HTTP server)}
     \end{center}
 \end{figure}
-
-\textbf{TODO - eng. Félix says: "Usage of JDBI and the declarative API needs justification and perhaps a brief introduction."}
 
 \section{Geolocation}
 
@@ -126,6 +126,8 @@ option for two reasons:
 The group chose to use Kotlin for the mobile application development, as it is now the official programming language for Android development,
 according to Google.\\
 
+It is also the language taught during the optinal course - movel devices programming (PDM)\\
+
 \subsubsection{External dependencies}
 
 Here are the dependencies that were included in the mobile application which gave more functionalities to it.
@@ -136,7 +138,8 @@ Here are the dependencies that were included in the mobile application which gav
     \item \textbf{Room} - A framework to store data locally;
     \item \textbf{MapBox} - A framework to provide maps and geolocation tools;
     \item \textbf{MPAndroidChart} - provides custom graphs inside the application;
-    \item \textbf{Glide} - a framework for image loading.
+    \item \textbf{Glide} - a framework for image loading;
+    \item \textbf{Androidx crypto} - a new crypto library made by Google, used to encrypt User credentials.
 \end{itemize}
 
 \subsection{Code structure}
@@ -155,7 +158,7 @@ The mobile application code structure follows the \textbf{repository pattern}, w
 Above there is the pattern's diagram provided by the Android Jetpack.\\
 
 The idea behind this architecture is that each Activity or fragment has its own ViewModel and each one calls the needed functions present inside the repository.
-The repository corresponds to a layer that manages where the information should be retrieved from.\\
+The repository is a layer that manages where the information should be retrieved from.\\
 
 The 'DTO to model' mapping also occurs inside the repository, following the rule where ViewModels should only manipulate models and the layers below should only use DTOs.\\
 
@@ -179,8 +182,28 @@ for multiple reasons:
 The user has the ability to sign up or sign in the mobile application. Besides being the server responsable for this matter, the mobile application has also some intervention
 here, because after a successful login or register, the HTTP server will return a jwt (JSON Web Token) that will authenticate and authorize the user in future requests.\\
 
-This token will be stored in the Android SharedPreferences, which is the safest way to store a token inside Android applications. The token will also to be renewed from time
-to time due to expiration time.
+This token will be stored in the Android Shared Preferences and it will also to be renewed periodically due to its 10h expiration time. The user credentials will be also be saved
+inside the mobile device to allow automatic logins to renew the user's JSON Web Token and avoid its expiration.\\
+
+\textbf{Problem:} Is it safe to store user information inside the shared preferences?\\
+
+Although the Android Shared Preferences being a safe place to store application information, it is not completely true:
+a normal device can not access these preferences and it should be a safe place to store user credentials, however rooted devices can easily
+access the shared preferences file and retrieve plain text from it, which would compromise the user security.\\
+
+\textbf{Resolution:} Androidx Crypto\\
+
+The Androidx crypto was used to solve this issue. This library is used to encrypt the user credentials before writing them inside the mobile device.\\
+
+These new Google library takes advantage of the Android KeyStore system, which encrypts information using a hardware-level encryption, making the
+encryption even harder to break. The information is encrypted using a symmetric cipher algorithm: AES-256\\
+
+The group also discussed if any credentials should be saved inside the device or if only the database should have them.
+If that approach was taken, the user had to login each time it was needed to read or write a protected resource.\\
+
+As this platform is not, for example, a bank application that needs top protection. The group found this level of protection
+unnecessary for the application and inconvenient for the user and decided that only the essential protection should be provided - 
+user credentials encryption to avoid information leaks from rooted devices.
 
 \subsubsection{Data synchronization}
 
