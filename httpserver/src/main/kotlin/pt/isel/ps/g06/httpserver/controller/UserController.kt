@@ -1,6 +1,5 @@
 package pt.isel.ps.g06.httpserver.controller
 
-import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -13,12 +12,13 @@ import pt.isel.ps.g06.httpserver.dataAccess.output.security.UserLoginOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.security.UserRegisterOutput
 import pt.isel.ps.g06.httpserver.service.AuthenticationService
 import pt.isel.ps.g06.httpserver.service.UserService
+import javax.validation.Valid
 
 @RestController
 class UserController(private val userService: UserService, private val authenticationService: AuthenticationService) {
 
     @PostMapping(REGISTER)
-    fun register(@RequestBody userRegisterInput: UserRegisterInput): ResponseEntity<UserRegisterOutput> {
+    fun register(@Valid @RequestBody userRegisterInput: UserRegisterInput): ResponseEntity<UserRegisterOutput> {
 
         userService.registerUser(
                 userRegisterInput.email,
@@ -26,7 +26,7 @@ class UserController(private val userService: UserService, private val authentic
                 authenticationService.encodePassword(userRegisterInput.password)
         )
         val jwt = authenticationService.login(userRegisterInput.username, userRegisterInput.password)
-        
+
         return ResponseEntity.ok(UserRegisterOutput(jwt))
     }
 

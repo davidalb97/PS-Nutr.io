@@ -13,7 +13,9 @@ import pt.isel.ps.g06.httpserver.dataAccess.output.InsulinProfileOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.toInsulinProfileOutput
 import pt.isel.ps.g06.httpserver.model.Submitter
 import pt.isel.ps.g06.httpserver.service.InsulinProfileService
+import javax.validation.Valid
 
+@Suppress("MVCPathVariableInspection")
 @Controller
 class InsulinProfileController(private val insulinProfileService: InsulinProfileService) {
 
@@ -43,19 +45,19 @@ class InsulinProfileController(private val insulinProfileService: InsulinProfile
 
     @PostMapping(INSULIN_PROFILES)
     fun createInsulinProfile(
-            @RequestBody insulinProfile: InsulinProfileInput,
+            @Valid @RequestBody insulinProfile: InsulinProfileInput,
             submitter: Submitter?
     ): ResponseEntity<Void> {
         submitter ?: throw NotAuthenticatedException()
 
         val profile = insulinProfileService.createProfile(
                 submitter.identifier,
-                insulinProfile.profileName,
-                insulinProfile.startTime,
-                insulinProfile.endTime,
-                insulinProfile.glucoseObjective,
-                insulinProfile.insulinSensitivityFactor,
-                insulinProfile.carbohydrateRatio
+                insulinProfile.profileName!!,
+                insulinProfile.startTime!!,
+                insulinProfile.endTime!!,
+                insulinProfile.glucoseObjective!!,
+                insulinProfile.insulinSensitivityFactor!!,
+                insulinProfile.carbohydrateRatio!!
         )
 
         return ResponseEntity.created(
