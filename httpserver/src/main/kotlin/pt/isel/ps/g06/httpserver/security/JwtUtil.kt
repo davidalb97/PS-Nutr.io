@@ -3,15 +3,14 @@ package pt.isel.ps.g06.httpserver.security
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
-import io.jsonwebtoken.security.Keys
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Service
 import pt.isel.ps.g06.httpserver.common.JWT_EXPIRATION
 import pt.isel.ps.g06.httpserver.springConfig.dto.ServerConfigDto
-import java.security.Key
 import java.util.*
 import java.util.function.Function
 import javax.crypto.spec.SecretKeySpec
+import javax.xml.bind.DatatypeConverter
 import kotlin.collections.HashMap
 
 /***
@@ -50,7 +49,7 @@ class JwtUtil(val serverConfigDto: ServerConfigDto) {
      */
     private fun extractAllClaims(token: String): Claims =
             Jwts.parserBuilder()
-                    .setSigningKey(getServerSecretKeySpec())
+                    .setSigningKey(getServerSecretBytes())
                     .build()
                     .parseClaimsJws(token)
                     .body
@@ -77,6 +76,11 @@ class JwtUtil(val serverConfigDto: ServerConfigDto) {
      */
     private fun createToken(claims: Map<String, Any>, subject: String): String {
 
+        val secret = SecretKeySpec(
+                getServerSecretBytes(),
+                SignatureAlgorithm.HS256.jcaName
+        )
+
         val now = System.currentTimeMillis()
 
         return Jwts.builder()
@@ -84,7 +88,7 @@ class JwtUtil(val serverConfigDto: ServerConfigDto) {
                 .setSubject(subject)
                 .setIssuedAt(Date(now))
                 .setExpiration(Date(now + JWT_EXPIRATION))
-                .signWith(getServerSecretKeySpec())
+                .signWith(secret)
                 .compact()
     }
 
@@ -99,15 +103,10 @@ class JwtUtil(val serverConfigDto: ServerConfigDto) {
     }
 
     /**
-     * Converts the secret plain text from the environment variables and converts to a java.security.Key
+     * Converts the server secret environment variable value into an array of bytes.
      */
-    private fun getServerSecretKeySpec(): Key {
+    private fun getServerSecretBytes(): ByteArray {
         val serverSecret = serverConfigDto.secret ?: throw Exception("The server could not generate the token")
-
-        val secretBytes = serverSecret.toByteArray()
-        return SecretKeySpec(
-                secretBytes,
-                Keys.secretKeyFor(SignatureAlgorithm.HS256).algorithm
-        )
+        return DatatypeConverter.parseBase64Binary(serverSecret)
     }
 }
