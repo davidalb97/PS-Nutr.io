@@ -4,30 +4,26 @@ import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.util.UriComponentsBuilder
-import pt.isel.ps.g06.httpserver.common.AUTH_HEADER
 import pt.isel.ps.g06.httpserver.common.INSULIN_PROFILE
 import pt.isel.ps.g06.httpserver.common.INSULIN_PROFILES
 import pt.isel.ps.g06.httpserver.common.PROFILE_NAME_VALUE
+import pt.isel.ps.g06.httpserver.common.exception.authentication.NotAuthenticatedException
 import pt.isel.ps.g06.httpserver.dataAccess.input.InsulinProfileInput
 import pt.isel.ps.g06.httpserver.dataAccess.output.InsulinProfileOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.toInsulinProfileOutput
-import pt.isel.ps.g06.httpserver.service.AuthenticationService
+import pt.isel.ps.g06.httpserver.model.Submitter
 import pt.isel.ps.g06.httpserver.service.InsulinProfileService
-import pt.isel.ps.g06.httpserver.service.UserService
 
 @Controller
-class InsulinProfileController(
-        private val insulinProfileService: InsulinProfileService,
-        private val userService: UserService,
-        private val authenticationService: AuthenticationService
-) {
+class InsulinProfileController(private val insulinProfileService: InsulinProfileService) {
+
     @GetMapping(INSULIN_PROFILES)
-    fun getAllUserInsulinProfiles(
-            @RequestHeader(AUTH_HEADER) jwt: String
-    ): ResponseEntity<Collection<InsulinProfileOutput>> {
-        val submitterId = userService.getSubmitterIdFromUserName(authenticationService.getUsernameByJwt(jwt))
+    fun getAllUserInsulinProfiles(submitter: Submitter?): ResponseEntity<Collection<InsulinProfileOutput>> {
+        submitter ?: throw NotAuthenticatedException()
+
         return ResponseEntity.ok(
-                insulinProfileService.getAllProfilesFromUser(submitterId)
+                insulinProfileService
+                        .getAllProfilesFromUser(submitter.identifier)
                         .map(::toInsulinProfileOutput)
                         .toList()
         )
@@ -35,26 +31,25 @@ class InsulinProfileController(
 
     @GetMapping(INSULIN_PROFILE)
     fun getUserInsulinProfile(
-            @RequestHeader(AUTH_HEADER) jwt: String,
-            @PathVariable(PROFILE_NAME_VALUE) profileName: String
+            @PathVariable(PROFILE_NAME_VALUE) profileName: String,
+            submitter: Submitter?
     ): ResponseEntity<InsulinProfileOutput> {
-        val submitterId = userService.getSubmitterIdFromUserName(authenticationService.getUsernameByJwt(jwt))
+        submitter ?: throw NotAuthenticatedException()
 
-        return ResponseEntity.ok(
-                toInsulinProfileOutput(insulinProfileService.getProfileFromUser(submitterId, profileName)
-                )
-        )
+        val userProfile = insulinProfileService.getProfileFromUser(submitter.identifier, profileName)
+
+        return ResponseEntity.ok(toInsulinProfileOutput(userProfile))
     }
 
     @PostMapping(INSULIN_PROFILES)
     fun createInsulinProfile(
-            @RequestHeader(AUTH_HEADER) jwt: String,
-            @RequestBody insulinProfile: InsulinProfileInput
-    ): ResponseEntity<Any> {
-        val submitterId = userService.getSubmitterIdFromUserName(authenticationService.getUsernameByJwt(jwt))
+            @RequestBody insulinProfile: InsulinProfileInput,
+            submitter: Submitter?
+    ): ResponseEntity<Void> {
+        submitter ?: throw NotAuthenticatedException()
 
         val profile = insulinProfileService.createProfile(
-                submitterId,
+                submitter.identifier,
                 insulinProfile.profileName,
                 insulinProfile.startTime,
                 insulinProfile.endTime,
@@ -73,12 +68,15 @@ class InsulinProfileController(
 
     @DeleteMapping(INSULIN_PROFILE)
     fun deleteInsulinProfile(
-            @RequestHeader(AUTH_HEADER) jwt: String,
-            @PathVariable(PROFILE_NAME_VALUE) profileName: String
-    ): ResponseEntity<*> {
-        val submitterId = userService.getSubmitterIdFromUserName(authenticationService.getUsernameByJwt(jwt))
-        return ResponseEntity.ok(
-                insulinProfileService.deleteProfile(submitterId, profileName)
-        )
+            @PathVariable(PROFILE_NAME_VALUE) profileName: String,
+            submitter: Submitter?
+    ): ResponseEntity<Void> {
+        submitter ?: throw NotAuthenticatedException()
+
+        insulinProfileService.deleteProfile(submitter.identifier, profileName)
+
+        return ResponseEntity
+                .ok()
+                .build()
     }
 }

@@ -5,13 +5,16 @@ import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.stereotype.Service
 import pt.isel.ps.g06.httpserver.common.exception.authentication.NotAuthenticatedException
+import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.submitter.SubmitterResponseMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.SubmitterDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.UserRepository
+import pt.isel.ps.g06.httpserver.model.Submitter
 
 @Service
 class UserService(
         private val userRepo: UserRepository,
-        private val submitterDbRepository: SubmitterDbRepository
+        private val submitterDbRepository: SubmitterDbRepository,
+        private val submitterMapper: SubmitterResponseMapper
 ) : UserDetailsService {
 
     override fun loadUserByUsername(username: String): UserDetails {
@@ -34,11 +37,9 @@ class UserService(
         )
     }
 
-    fun getSubmitterIdFromUserName(username: String): Int {
-
-        val submitterByUsername = submitterDbRepository.getSubmitterByName(username)
-                ?: throw NotAuthenticatedException()
-
-        return submitterByUsername.submitter_id
+    fun getSubmitterFromUsername(username: String): Submitter? {
+        return submitterDbRepository
+                .getSubmitterByName(username)
+                ?.let(submitterMapper::mapTo)
     }
 }
