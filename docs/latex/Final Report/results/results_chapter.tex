@@ -179,26 +179,28 @@ for multiple reasons:
 
 \subsubsection{User authentication and authorization}
 
-The user has the ability to sign up or sign in the mobile application. Besides being the server responsable for this matter, the mobile application has also some intervention
+The user has the ability to register and login in the mobile application. Besides being the server responsable for these functions, the mobile application has also some intervention
 here, because after a successful login or register, the HTTP server will return a jwt (JSON Web Token) that will authenticate and authorize the user in future requests.\\
 
-This token will be stored in the Android Shared Preferences and it will also to be renewed periodically due to its 10h expiration time. The user credentials will be also be saved
+This token will be stored in the Android Shared Preferences and it will also to be renewed periodically due to its 10h expiration time. The user credentials will also be saved
 inside the mobile device to allow automatic logins to renew the user's JSON Web Token and avoid its expiration.\\
 
-\textbf{Problem:} Is it safe to store user information inside the shared preferences?\\
+\textbf{Problem:} The content inside the shared preferences is written in plaintext. Is it safe to store user credentials inside the shared preferences?\\
 
-Although the Android Shared Preferences being a safe place to store application information, it is not completely true:
+Although the Android Shared Preferences being a safe place to store application information, this fact is not completely true:
 a normal device can not access these preferences and it should be a safe place to store user credentials, however rooted devices can easily
-access the shared preferences file and retrieve plain text from it, which would compromise the user security.\\
+access the shared preferences file and retrieve plaintext from it, which would compromise the user security.\\
 
 \textbf{Resolution:} Androidx Crypto\\
 
 The Androidx crypto was used to solve this issue. This library is used to encrypt the user credentials before writing them inside the mobile device.\\
 
 These new Google library takes advantage of the Android KeyStore system, which encrypts information using a hardware-level encryption, making the
-encryption even harder to break. The information is encrypted using a symmetric cipher algorithm: AES-256\\
+encryption even harder to break. The information is encrypted using a symmetric cipher algorithm (AES-256), the key used to sign and encrypt information
+is hardware-generated and it is managed by the application itself, so the key's retrieval from an 'encrypted' shared preferences is equal to the 'normal'
+shared preferences.\\
 
-The group also discussed if any credentials should be saved inside the device or if only the database should have them.
+The group also discussed if the credentials should be saved inside the device or if only the database should possess them.
 If that approach was taken, the user had to login each time it was needed to read or write a protected resource.\\
 
 As this platform is not, for example, a bank application that needs top protection. The group found this level of protection
@@ -214,14 +216,17 @@ Background data synchronization will happen after a successful login or register
     \item Favorites.
 \end{itemize}
 
-When logged in, the data can be synchronized in two ways: the user forces the synchronization by triggering a button inside the specific list;
-The Android WorkManager will make sure that the data is synchronized at least once a 
-day when the phone is inactive and connected to the internet.
+When logged in, the data can be synchronized in two ways:
+\begin{itemize}
+    \item the user forces the synchronization by swiping down on a list;
+    \item The Android WorkManager will make sure that the data is synchronized at least once a 
+    day when the phone is inactive and connected to the internet.    
+\end{itemize}
 
 \subsubsection{Android version compatibility}
 
 In order to garantee a global support by most of the Android devices nowadays, the mobile application is supported since \textbf{Android 7} (API level 24)
-up to \textbf{Android 10} (API level 29). It is recommended to use the last one as the Android emulator used this version.
+up to \textbf{Android 10} (API level 29).
 
 \subsubsection{TODO}
 As mentioned in the progress report, the group managed to implement in the mobile application a fragment that displays a map with a list of restaurants nearby the user.\\
