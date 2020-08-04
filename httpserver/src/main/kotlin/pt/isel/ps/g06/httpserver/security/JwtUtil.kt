@@ -6,7 +6,7 @@ import io.jsonwebtoken.SignatureAlgorithm
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Service
 import pt.isel.ps.g06.httpserver.common.JWT_EXPIRATION
-import pt.isel.ps.g06.httpserver.springConfig.dto.ServerConfigDto
+import pt.isel.ps.g06.httpserver.springConfig.ServerSecret
 import java.util.*
 import java.util.function.Function
 import javax.crypto.spec.SecretKeySpec
@@ -17,7 +17,7 @@ import kotlin.collections.HashMap
  * The JwtUtil generates and validates tokens.
  */
 @Service
-class JwtUtil(val serverConfigDto: ServerConfigDto) {
+class JwtUtil(val serverSecret: ServerSecret) {
 
     /**
      * Gets the username from the jwt.
@@ -105,8 +105,6 @@ class JwtUtil(val serverConfigDto: ServerConfigDto) {
     /**
      * Converts the server secret environment variable value into an array of bytes.
      */
-    private fun getServerSecretBytes(): ByteArray {
-        val serverSecret = serverConfigDto.secret ?: throw Exception("The server could not generate the token")
-        return DatatypeConverter.parseBase64Binary(serverSecret)
-    }
+    private fun getServerSecretBytes(): ByteArray =
+            DatatypeConverter.parseBase64Binary(serverSecret.secret)
 }

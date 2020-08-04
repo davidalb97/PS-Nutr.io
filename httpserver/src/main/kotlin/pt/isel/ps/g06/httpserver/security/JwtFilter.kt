@@ -13,6 +13,9 @@ import javax.servlet.http.HttpServletResponse
 
 private const val AUTH_HEADER = "Authorization"
 
+/***
+ * The JwtUtil filters the request, checking if the jwt in the authorization header is valid.
+ */
 @Component
 class JwtFilter(
         private val jwtUtil: JwtUtil,
