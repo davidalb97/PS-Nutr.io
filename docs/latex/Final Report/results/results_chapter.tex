@@ -103,6 +103,67 @@ The library also exposes two different API's styles: a fluent style and sql obje
     \end{center}
 \end{figure}
 
+\subsection{Spring Security}
+
+\subsubsection{JSON Web Tokens}
+
+As each client needs to have authentication to provide the user a way to create an account and allow submissions and data synchronization,
+the group had to discuss about the platform's security and the safest ways to do that.\\
+
+It was concluded that the use of \textbf{JSON Web Tokens} was the best option, because of the nature of the clients, more specifically the fact that
+the mobile application is completely \textbf{stateless}.\\
+
+\textbf{TODO: check the text below}
+
+Another advantage is the fact that these tokens have an expiration time, which means that after a certain amount of time they are no longer valid.
+In case of breach this feature becomes useful, because if the hacker does not have a way to generate valid tokens or does not know the user password and steals 
+a valid token this is will only be used by a short period of time (10h), easing the amount a destruction an intruder can make and confining it to 
+only one user inside the platform.\\
+
+The picture below represents a very generic and simplified workflow of the JSON Web Token. 
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[scale=0.9]{_figures/JWT-simple-diagram.eps}
+        \caption{The JWT workflow}
+    \end{center}
+\end{figure}
+
+\subsubsection{Implementation}
+
+To implement the shown workflow inside the HTTP server, as the group is implementing it with Spring, the more obvious choice was to use \textbf{Spring Security}.\\
+
+Spring Security is a customizable authentication and access-control framework.\\
+
+The picture below shows how the server handles a user login usin this framework.\\
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[scale=0.65]{_figures/Spring-jwt-diagram.eps}
+        \caption{A Spring security workflow example with the POST /user/login}
+    \end{center}
+\end{figure}
+
+After the previously mentioned dependencies are installed, the WebSecurityConfig is the first class to be constructed. Here are specified, via antMatchers, which
+endpoints do not need authentication, acting like a whitelist, so every endpoint that is not specified via antMatchers needs authentication, and will return code 401
+Unauthorized if the JWT is invalid or absent. The JWT filter is also started up inside this class.\\
+
+The Jwtfilter class, as the name says, filters each request, checking the authentication header and extracting the jwt from the Bearer
+verifying if it is valid. This class extends the OncePerRequestFilter() which garantees a single execution of this filter every request.\\
+
+The Authentication service class calls the Spring Authentication Manager and authenticates the user, it provides methods which call the JwtUtil
+to retrieve the email from the token or encode the password when registering.\\
+
+The password encoding always happens when the user registers for the first time: the server hashes the password using \textbf{BCrypt} before inserting the new
+user into the database.\\
+
+BCrypt is a password-hashing function based on the Blowfish cipher. The group found this function very convenient, because it already pre salts the password
+preventing from rainbow table attacks. It also excels in bruteforce attacks, making them completely inviable: the iteration count can be increased to make it 
+even slower to crack, which is very revelant nowadays, because some bruteforce attacks are GPU-powered, providing a huge computer power to the attacker.\\
+
+The JwtUtil is the core class which validates, generates and adds claims to the tokens.\\
+
+
 \section{Geolocation}
 
 Given how all clients rely on obtaining nearby restaurants, there was a need to implement a geolocation function in the project's design.\\
@@ -167,7 +228,12 @@ The application follows this diagram with the only difference that Volley is use
 By following this pattern, the code becomes segmented and organized,
 allowing a good comprehension and code maintainability.\\
 
-\subsubsection{Local data storing}
+\subsubsection{Fragments}
+
+The group chose to use fragments for each application view instead of activities. Although a fragment has a more complex lifecycle than the activity and depends on it
+to exist, they are far more lightweight to instanciate than an activity and thus they provide more performance to the application.\\ 
+
+\subsection{Local data storing}
 
 As mentioned in the dependencies, the mobile application utilizes Room to store data locally. This is convenient
 for multiple reasons: 
@@ -177,7 +243,7 @@ for multiple reasons:
     \item To help data synchronization, that will be detailed later in this section.
 \end{itemize}
 
-\subsubsection{User authentication and authorization}
+\subsection{User authentication and authorization}
 
 The user has the ability to register and login in the mobile application. Besides being the server responsable for these functions, the mobile application has also some intervention
 here, because after a successful login or register, the HTTP server will return a jwt (JSON Web Token) that will authenticate and authorize the user in future requests.\\
@@ -185,13 +251,13 @@ here, because after a successful login or register, the HTTP server will return 
 This token will be stored in the Android Shared Preferences and it will also to be renewed periodically due to its 10h expiration time. The user credentials will also be saved
 inside the mobile device to allow automatic logins to renew the user's JSON Web Token and avoid its expiration.\\
 
-\textbf{Problem:} The content inside the shared preferences is written in plaintext. Is it safe to store user credentials inside the shared preferences?\\
+\subsubsection{Problem: The content inside the shared preferences is written in plaintext. Is it safe to store user credentials inside the shared preferences?}
 
 Although the Android Shared Preferences being a safe place to store application information, this fact is not completely true:
 a normal device can not access these preferences and it should be a safe place to store user credentials, however rooted devices can easily
 access the shared preferences file and retrieve plaintext from it, which would compromise the user security.\\
 
-\textbf{Resolution:} Androidx Crypto\\
+\subsubsection{Resolution: Androidx Crypto}
 
 The Androidx crypto was used to solve this issue. This library is used to encrypt the user credentials before writing them inside the mobile device.\\
 
@@ -207,7 +273,7 @@ As this platform is not, for example, a bank application that needs top protecti
 unnecessary for the application and inconvenient for the user and decided that only the essential protection should be provided - 
 user credentials encryption to avoid information leaks from rooted devices.
 
-\subsubsection{Data synchronization}
+\subsection{Data synchronization}
 
 Background data synchronization will happen after a successful login or register. The only user data that will be synchronized are:
 \begin{itemize}
@@ -223,7 +289,7 @@ When logged in, the data can be synchronized in two ways:
     day when the phone is inactive and connected to the internet.    
 \end{itemize}
 
-\subsubsection{Android version compatibility}
+\subsection{Android version compatibility}
 
 In order to garantee a global support by most of the Android devices nowadays, the mobile application is supported since \textbf{Android 7} (API level 24)
 up to \textbf{Android 10} (API level 29).
