@@ -4,7 +4,7 @@
 \usepackage{lipsum}
 \usepackage{indentfirst}
 \usepackage{float}
-\usepackage{natbib}
+\usepackage[square,numbers]{natbib}
 \usepackage{graphicx}
 \usepackage{grffile}
 \usepackage{epsfig}
@@ -57,6 +57,7 @@
 % --- Title end ---
 
 \date{September, 2020}
+\author{}
 
 \begin{document}
 
@@ -104,6 +105,8 @@
     \cleardoublepage
     \input{abstract/abstract_chapter.tex}
 
+    \input{glossary/glossary_chapter.tex}
+
     \cleardoublepage
     \tableofcontents\cleardoublepage
 
@@ -124,5 +127,8 @@
 
     % Appendix    
     \input{appendix/appendix_chapter.tex}
+
+    \bibliographystyle{abbrvnat}
+    \bibliography{biblio}
 
 \end{document}
