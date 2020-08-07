@@ -87,7 +87,7 @@ The next subsections identify the requirements for each component.
 
 \section{Component's structure}
 
-To match the previously stated requirements the group managed to conceive a platform following the structure
+To match previously stated requirements the group conceived a platform following the structure
 represented by the next picture:\\
 
 \begin{figure}[H]
@@ -104,3 +104,19 @@ External APIs will also be used to obtain restaurants' related information. Afte
 to use the Here API, to provide restaurant information and geolocation.\\
 
 More details about the chosen tecnologies for each component will be described in the fourth chapter of this report.\\
+
+\section{Stakeholders}
+
+Given the fact that the database groups various types of information from diferent sources,
+there is a need to label the source of information, in order to map it correctly.\\
+
+\subsection{User}
+
+A User is an entity which takes place on the client side and, from the server, requests information and, if authenticated, can make submissions,
+representing a person that registered to the platform. A user is a type of submitter.\\
+
+\subsection{External API}
+
+An external API, like an user, makes submissions and it is also a type of submitter, however it only exists inside the backend's context: 
+it is an entity which labels that a certain restaurant or meal came from an 
+external API and not from a registered platform user.\\
