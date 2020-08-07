@@ -9,7 +9,7 @@
 \usepackage{grffile}
 \usepackage{epsfig}
 \usepackage{soul}
-\usepackage{hyperref}
+\usepackage[hidelinks]{hyperref}
 \usepackage{pdflscape}
 \usepackage{appendix}
 \usepackage[scaled]{helvet}
@@ -108,7 +108,9 @@
     \input{glossary/glossary_chapter.tex}
 
     \cleardoublepage
-    \tableofcontents\cleardoublepage
+    \tableofcontents
+    \listoffigures
+    \cleardoublepage
 
     \setcounter{page}{1}
     \pagenumbering{arabic}
