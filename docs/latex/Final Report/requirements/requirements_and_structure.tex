@@ -107,16 +107,17 @@ More details about the chosen tecnologies for each component will be described i
 
 \section{Stakeholders}
 
-Given the fact that the database groups various types of information from diferent sources,
-there is a need to label the source of information, in order to map it correctly.\\
+Analyzed components and requirements imply the existance of two types of submitters which will interact with the system - an user and external APIs.\\
+
+The way they can interact with the system is as follows:\\
 
 \subsection{User}
 
-A User is an entity which takes place on the client side and, from the server, requests information and, if authenticated, can make submissions,
-representing a person that registered to the platform. A user is a type of submitter.\\
+An user interacts with the system via a client which can request submissions.
+Additionally, if authenticated, an user can create, vote and report submissions; making him the most vital stakeholder when it comes to creating a self-maintained system.
 
 \subsection{External API}
 
-An external API, like an user, makes submissions and it is also a type of submitter, however it only exists inside the backend's context: 
-it is an entity which labels that a certain restaurant or meal came from an 
-external API and not from a registered platform user.\\
+An external API interacts directly with the HTTP server and is resposible in providing nearby restaurants around given geolocation.\\
+
+However, since not all restaurants are registered in utilized APIs, the need for a collaborative user is highly vital when creating a self-maintained system.\\
