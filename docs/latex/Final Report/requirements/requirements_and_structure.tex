@@ -1,27 +1,35 @@
 %
-% Chapter 2 - Requirements and project's structure
+% Chapter 2 - Components and requirements
 %
 
-\chapter{Requirements and project's structure}
+\chapter{Components and requirements}
 
 \section{Requirements analysis}
 
 In order to build this multiplaform application a relational database and a HTTP server must be included
-in the backend, which will store and supply information to the mobile and web browser clients.
+in the backend, which will store and supply information to the mobile and web browser clients.\\
+
+The next subsections identify the requirements for each component.
 
 \subsection{Database}
 
 \subsubsection{Functional requirements}
 
 \begin{itemize}
-    \item Store user information and submissions;
+    \item A model that stores and organizes information from diferent sources - APIs and users;
+    \item Unify various types of information from various sources into a single entity, named Submission;
+    \item Suggest meals for a given restaurant;
+    \item Store user sensitive information;
+    \item Provide restaurants around any given geolocation;
     \item Seperate data, labeling which ones should be votable, favorable or reportable;
 \end{itemize}
 
 \subsubsection{Non-functional requirements}
 
 \begin{itemize}
-    \item Support encrypted tuples;
+    \item Performance when searching nearby restaurants;
+    \item Query simplicity;
+    \item Database normalization;
 \end{itemize}
 
 \subsection{HTTP Server}
@@ -29,18 +37,16 @@ in the backend, which will store and supply information to the mobile and web br
 \subsubsection{Functional requirements}
 
 \begin{itemize}
-    \item Provide lists from restaurants and their meals;
-    \item Allow the clients to add restaurants and meals;
-    \item Provide the ability to vote on other user's content to filter the information and provide self-maintainability;
-    \item Provide the ability to report in case of corrupt / voided submits;
-    \item Provide restaurants and meals information based on the user geolocation;
+    \item Provide endpoints that allow users to view and create nearby restaurants and meals;
+    \item Provide users the ability to edit their submissions and vote or report others;
+    \item Filter content based on a submission's votes and reports;
 \end{itemize}
 
 \subsubsection{Non-functional requirements}
 
 \begin{itemize}
-    \item Provide user credentials encryption when registering;
-    \item Encrypt user sensitive information when inserting them into the database, like insulin profiles;
+    \item Garantee authentication and password encryption when registering;
+    \item Encrypt authenticated users' insulin profiles when inserting them into the database;
 \end{itemize}
 
 \subsection{Mobile application}
@@ -48,18 +54,19 @@ in the backend, which will store and supply information to the mobile and web br
 \subsubsection{Functional requirements}
 
 \begin{itemize}
-    \item Show lists and detailed information that is provided by the HTTP server;
-    \item Allow the user to create insulin profiles;
-    \item Insulin dosage calculation based on the current user's blood glucose;
-    \item Allow the user to vote, report and add content to its personal favorites;
-    \item Give the ability to login and logout from the user account;
+    \item Communicate with the HTTP server in order to display nearby restaurants and their meals based on current geolocation;
+    \item Allow users to create restaurants and meals;
+    \item Allow authenticated users to create and remove insulin profiles;
+    \item Calculate insulin dosages based on a user's blood glucose, insulin profile and the selected meal;
+    \item Allow users to vote, report and add submissions to their personal favorites;
+    \item Allow mimimum functionalities for unauthenticated users;
 \end{itemize}
 
 \subsubsection{Non-functional requirements}
 
 \begin{itemize}
     \item Allow the user to choose its default measurement units;
-    \item Allow user registering;
+    \item Allow user authentication and registering;
 \end{itemize}
 
 \subsection{Front web application}
@@ -78,7 +85,7 @@ in the backend, which will store and supply information to the mobile and web br
     \item TODO
 \end{itemize}
 
-\section{Project's structure}
+\section{Component's structure}
 
 To match the previously stated requirements the group managed to conceive a platform following the structure
 represented by the next picture:\\
