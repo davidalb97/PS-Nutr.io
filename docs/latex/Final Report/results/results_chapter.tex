@@ -63,8 +63,6 @@ it a more solid choice.\\
 
 \subsubsection{Used dependencies}
 
-\textbf{TODO - eng. Félix says: "external dependencies used."}\\
-
 Here are all the dependencies injected inside HTTP server gradle settings file.\\
 
 \begin{itemize}
@@ -80,12 +78,19 @@ Here are all the dependencies injected inside HTTP server gradle settings file.\
 
 \textbf{TODO - eng. Félix says: "Needs more information about the backend organization, such as: intermediaries, controllers, services, database access method, external dependencies used"}
 
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[scale=0.7]{_figures/server-classes.eps}
+        \caption{Server's classes structure}
+    \end{center}
+\end{figure}
+
 \subsection{JDBI}
 
 After some discussion of which driver should be used to allow communication between the server and database, the group decided that the JDBI\cite{jdbi} was the best
 option as it is a library built on JDBC\cite{jdbc}.\\
 
-\textbf{DONE - eng. Félix says: "Usage of JDBI and the declarative API needs justification and perhaps a brief introduction."}
+\textbf{TODO - eng. Félix says: "Usage of JDBI and the declarative API needs justification..."}
 
 The library also exposes two different API's styles: a fluent style and sql object style (used during development), as shown below.
 
@@ -328,6 +333,8 @@ variety of reasons, being the main one a better performance comparing to a tradi
 
 \subsubsection{Routing}
 
+\textbf{Under development}
+
 \subsection{Functionalities}
 
-\textbf{TODO: application images and diagrams}
+\textbf{Under development}
