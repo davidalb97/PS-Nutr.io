@@ -90,6 +90,24 @@ Here are all the dependencies injected inside HTTP server gradle settings file.\
 
 \subsection{Code structure}
 
+The HTTP server uses a Spring MVC implementation, structuring its' code in several layers:\\
+
+\begin{itemize}
+    \item MVC Controller layer, uses multiple services and handles input to model and model to
+     output \textit{DTO} mappings through \textit{DTO} class mappers. Data Transfer Objects (\textit{DTO}):
+     For every model there is an equivalent input and output \textit{DTO} class which is represented by its
+     corresponding suffix, e.g. "\textit{DTOInsulinProfilesInput}" and "\textit{InsulinProfilesOutput}".
+     Controller classes are prefixed by "\textit{Controller}".
+     \item Service layer, uses multiple repositories and handles model to database \textit{DTO} and database \textit{DTO}
+      to model mapping through instance mappers. The mapper classes used to map the DTOs to model have a domain prefix e.g.
+      "\textit{DB}" or "\textit{API}" while having a type "\textit{Mapper}" suffix e.g. "\textit{DbRestaurantMapper}". 
+      The service class names are prefixed by "\textit{Service}". 
+      \item Data Access layer, is ranged between repositories and Data Access Objects (\textit{DAOs}), each repository
+       uses various \textit{DAOs} that represent each database entity/relation through JDBI declarative API. 
+       For database \textit{DTOs}, the prefix "\textit{Db}" is used before the table name and then the suffix "\textit{DTO}". For \textit{DAOs} it was used the
+       table name and the prefix "Dao" e.g. "\textit{UserDao}". Repository classes are
+       prefixed by "\textit{Repository}" e.g. "\textit{RestaurantDbRepository}". 
+\end{itemize}
 
 \begin{figure}[H]
     \begin{center}
@@ -97,6 +115,17 @@ Here are all the dependencies injected inside HTTP server gradle settings file.\
         \caption{Server's classes structure}
     \end{center}
 \end{figure}
+
+\subsection{Request lifecycle}
+Each request is received in a spring controller mapping, with input object,
+parameters or path variables as arguments. When receiving an input object \textit{DTO},
+it will be validated with java's \textit{javax.validation} (Hibernate).
+Once validated the input model's data might be used in subsequent service layer calls.\\
+
+Repositories are used on the service level to handle all \textit{DAO} interactions with
+the database and other HTTP API requests. The resulting responses (input and database \textit{DTOs})
+are converted to the model \textit{DTOs} according to their response mappers.
+All API calls are made from asynchronous HTTP requests, while database calls block the calling thread.\\
 
 \subsection{JDBI}
 
