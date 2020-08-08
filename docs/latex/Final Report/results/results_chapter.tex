@@ -104,23 +104,24 @@ Here are all the dependencies injected inside HTTP server gradle settings file.\
 After some discussion of which driver should be used to allow communication between the server and database, the group decided that the JDBI\cite{jdbi} was the best
 option as it is a library built on JDBC\cite{jdbc}.\\
 
-\textbf{TODO - eng. Félix says: "Usage of JDBI and the declarative API needs justification..."}
-
-The library also exposes two different API's styles: a fluent style and sql object style (used during development), as shown below.
+The library also exposes two different API's styles: a fluent/imperative style and a declarative style (used during development), as shown below.
 
 \begin{figure}[H]
     \begin{center}
         \includegraphics[scale=0.5]{_figures/fluentApiJdbi.png}
-        \caption{JDBI using a fluent API style}
+        \caption{JDBI using an imperative API style}
     \end{center}
 \end{figure}
 
 \begin{figure}[H]
     \begin{center}
         \includegraphics[scale=0.5]{_figures/sqlObjectJdbi.png}
-        \caption{JDBI using a SQL object API style (example from HTTP server)}
+        \caption{JDBI using a declarative API style (example from HTTP server)}
     \end{center}
 \end{figure}
+
+The group chose to use a declarative style due to its convenience and code simplicity
+over the imperative one. It was also the more adequate style to the project's structure. 
 
 \subsection{Spring Security}
 
