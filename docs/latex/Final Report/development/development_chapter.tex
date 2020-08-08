@@ -12,8 +12,7 @@
 
     Multiple iterations of the database's model were designed until a consistent result was implemented,
     mainly due to a lack of initial research on the project's functional requirements and a later change
-    of some core beliefs (ideas?) regarding how meals would be handled. (maybe reference another problem
-    section?)\\
+    of some core beliefs regarding how meals would be handled.\\
 
     \subsection{Food API's}
 
@@ -24,7 +23,7 @@
     This conclusion came after comparing the nutritional values of multiple
     meals and ingredients from three APIs - Edamam, Nutrionix and Spoonacular -
     to the corresponding values provided by official portuguese sources. 
-    The results can be found in TODO
+    The results can be found in [\nameref{app:nutritional_sheet}]
 
     The group assumes that this inaccuracy is due to the fact that
     mentioned API's automatically calculate a recipe's carbohydrates
@@ -60,9 +59,16 @@
     As such, two alternatives were discussed:\\
 
     An OCR tool could be used in order to convert meals from a graphical menu to a text-based one.
-    This implies additional response times for the user when querying a restaurant due to the added layer 
-    of communications [esta parte podia ser melhorada] and is not reliable in cases where restaurants
-    design their menus with just an image of a meal and its' price [example reference/image].\\
+    This implies additional response times for the user when querying a restaurant, due to the added layer 
+    of communications and is not reliable in cases where restaurants
+    design their menus with just an image of a meal and its' price.
+
+    \begin{figure}[H]
+        \begin{center}
+            \includegraphics[scale=0.4]{_figures/examplemenu.jpg}
+            \caption{An example of a restaurant's menu that would bring implications to the OCR translation}
+        \end{center}
+    \end{figure}
 
     Another alternative - and the adopted one - is to manually establish a set of statistically probable meals for cuisines
     and suggest them when obtaining a restaurant's information and cuisines.

@@ -106,10 +106,12 @@
     \cleardoublepage
     \input{abstract/abstract_chapter.tex}
 
+    % Glossary
     \input{glossary/glossary_chapter.tex}
 
     \cleardoublepage
     \tableofcontents
+    \renewcommand{\numberline}[1]{\hspace*{-1.5em}}
     \listoffigures
     \cleardoublepage
 
@@ -118,6 +120,9 @@
 
     % Introduction
     \input{introduction/introduction_chapter.tex}
+
+    % Objectives
+    \input{objectives/objectives_chapter.tex}
     
     % Requirements and project's structure
     \input{requirements/requirements_and_structure.tex}
