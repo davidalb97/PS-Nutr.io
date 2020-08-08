@@ -3,38 +3,43 @@
 %
 \chapter{Project development}
 
-
-    TODO\\
-
-    \section{Issues and resolutions}
+    \section{Issues}
 
     This section describes the issues found and the decisions made
     to overcome them during development.
     
     \subsection{Relational database}
 
-    The group had to redesign the database's models multiple times again, due to the previously mentioned API withdrawals and other encountered
-    incoherences.\\    
+    Multiple iterations of the database's model were designed until a consistent result was implemented,
+    mainly due to a lack of initial research on the project's functional requirements and a later change
+    of some core beliefs (ideas?) regarding how meals would be handled. (maybe reference another problem
+    section?)\\
 
     \subsection{Food API's}
-    Throughout development and with some research, the group concluded that no meal API exists
-    that provides accurate nutritional - either for a recipe/meal or a base ingredient, such as rice.\\
 
-    This conclusion came from investigating three possible API's: Edamam, Nutrionix and Spoonacular; and comparing
-    their provided nutritional values with corresponding values obtained from
-    certified sources for Portugal. The results can be found in [\nameref{app:nutritional_sheet}].\\
+    While testing an initial version of the HTTP server,
+    it was concluded that no researched API responsible in
+    providing accurate nutritional information exists.
+
+    This conclusion came after comparing the nutritional values of multiple
+    meals and ingredients from three APIs - Edamam, Nutrionix and Spoonacular -
+    to the corresponding values provided by official portuguese sources. 
+    The results can be found in TODO
 
     The group assumes that this inaccuracy is due to the fact that
     mentioned API's automatically calculate a recipe's carbohydrates
-    from it's ingredients without taking into consideration the cooking process, meaning, 
-    100g of raw rice does not have the same carbohydrates has 100g of cooked rice.\\
+    from its ingredients without taking into consideration the cooking process, meaning that, for example,  
+    100g of raw rice does not equal to the same amount of carbohydrates that 100g of 
+    cooked rice might have.\\
 
-    Another assumption is that there is no international standard for nutritional values,
+    Another possible explanation is that there is no international standard for nutritional values,
     meaning that the same meal (and it's ingredients nutritional composition) 
     can have different carbohydrates between Portugal and the United States of America.\\
     
-    As a result, the group no longer relies on food API's and as such, inserts curated meals and ingredients 
-    in the project's database. 
+    As a result, the system no longer depends on food APIs meaning that every meal, ingredient and its' nutritional values
+    need to be inserted manually by other sources, such as the developers themselves or authenticated users.
+    For an initial release, the group added around 60 basic ingredients and 30 meals.\\
+    
     This comes with the limitation that certain ingredients might have been missed,
     meaning that a user might not be able to create their desired meals.
 
@@ -42,3 +47,24 @@
 
     The Android application's development progressed normally but it had to be put on hold sometimes, because of HTTP server's endpoints' completion, in which the application
     depends strongly. A major dto and model restructure had also to be made inside the mobile application in order to meet with the current HTTP responses.\\
+
+    \subsection{Restaurant APIs}
+
+    During early stages of development, 
+    the group incorrectly assumed that researched restaurant APIs (namely Zomato) were capable 
+    of providing menus for any restaurant in text form, and as such, their meals. Although such endpoint exists [Reference here], 
+    restaurant owners instead prefer to publish their menu as an image, 
+    meaning that initially established functional requirements would never be able to be accomplished without 
+    another viable alternative.\\
+
+    As such, two alternatives were discussed:\\
+
+    An OCR tool could be used in order to convert meals from a graphical menu to a text-based one.
+    This implies additional response times for the user when querying a restaurant due to the added layer 
+    of communications [esta parte podia ser melhorada] and is not reliable in cases where restaurants
+    design their menus with just an image of a meal and its' price [example reference/image].\\
+
+    Another alternative - and the adopted one - is to manually establish a set of statistically probable meals for cuisines
+    and suggest them when obtaining a restaurant's information and cuisines.
+    This solution is based on statistics and cultural assumptions meaning that not every suggestion might be accurate, which is
+    why authenticated users' input is highly valuable in maintainin the system's data.\\
