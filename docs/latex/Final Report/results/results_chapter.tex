@@ -29,7 +29,7 @@ instead of a No-SQL database, because of the project's structure - there are man
 no-SQL option.\\
 
 Out of all researched relational databases, 
-PostgreSQL was chosen as it supports the PostGIS plugin, and 
+PostgreSQL was chosen as it supports the PostGIS\cite{postGIS} plugin, and 
 is supported by Heroku - allowing to 
 deploy the application in later stages of development.\\
 
@@ -188,7 +188,7 @@ The JwtUtil is the core class which validates, generates and adds claims to the 
 
 Given how all clients rely on obtaining nearby restaurants, there was a need to implement a geolocation function in the project's design.\\
 
-Initial research showcased two possible solutions: Haversine distances and cartesian distances, where the latter returns a highly imprecise distances.
+Initial research showcased two possible solutions: Haversine\cite{haversine} distances and cartesian distances, where the latter returns a highly imprecise distances.
 As such, Haversine was selected.\\
 
 The next step was to choose which system filters nearby restaurants: database or HTTP server. After some discussion, the group decided that database was the best
@@ -315,20 +315,39 @@ up to \textbf{Android 10} (API level 29).
 
 \subsection{Functionalities}
 
-\textbf{TODO: application images and diagrams}
+\subsubsection{Login and Register}
 
-\subsubsection{TODO}
-As mentioned in the progress report, the group managed to implement in the mobile application a fragment that displays a map with a list of restaurants nearby the user.\\
+\begin{figure}
+    \begin{subfigure}{.5\textwidth}
+        \centering
+        \includegraphics[scale=1.0]{_figures/login.png}
+        \caption{Android client's login}
+    \end{subfigure}
+    \begin{subfigure}{.5\textwidth}
+        \centering
+        \includegraphics[scale=1.0]{_figures/register.png}
+        \caption{Android client's register}
+    \end{subfigure}
+\end{figure}
 
-The user can also search for restaurants, meals and cuisines providing the associated name or identifier.\\
+\subsubsection{User profile overview}
 
-The core feature of the application was also finished during this time period - the insulin calculator. This feature calculates how many insulin doses should be injected
-in order to maintain the blood glucose levels stabilized according to the user's planned glucose objective for that period of the day.\\
+\begin{figure}
+    \begin{center}
+        \includegraphics[scale=1.0]{_figures/profileOverview.png}
+        \caption{The user profile slide screen}
+    \end{center}
+\end{figure}
 
-The blood glucose objective is set inside the user's profile, by creating multiples insulin profiles, each one has a limited time period to give the user freedom to map its
-own insulin routine throughout the day.\\
 
-This is due to the fact that user's insulin sensitivity factor varies along the day, so the user has the ability to specify its own values in order to the calculator\\
+\subsubsection{User insulin profile creation}
+
+\begin{figure}
+    \begin{center}
+        \includegraphics[scale=1.0]{_figures/insulinprofilecreation.png}
+        \caption{Insulin profile creation fragment}
+    \end{center}
+\end{figure}
 
 \section{Web browser application}
 
