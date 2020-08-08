@@ -9,15 +9,29 @@ including every decision made by the group and tangible accomplishments for each
 \newpage
 \section{Relational database}
 
+Which database should be used is one of the first and most
+crucial steps after determining functional requirements 
+as it establishes the data's model and how the communication
+with the server will be made, meaning that a wrong choice
+would cause major restructures.\\
+
+Before adopting a specific database, one should first
+consider between a relational model and a No-SQL model. 
+Given the complex hierarchy between data entities,
+tutor's considerations and the need for a model capable of 
+providing quick results when querying around a geolocation, 
+a relational model was chosen.
+
 \subsection{Used tecnologies}
 
 When the project was in a planning phase, the group decided that a relational database was the most suitable option for this project
 instead of a No-SQL database, because of the project's structure - there are many hierarchies between entities, which invalidated the
 no-SQL option.\\
 
-After some discussion about the tecnology to be used, the group chose to use PostgreSQL\cite{postgresql} rather than Microsoft SQL\cite{msql}, because it has the
-PostGIS\cite{postGIS} plugin which is convenient for geolocation proposes and it is supported by an Heroku plugin, where it is planned to deploy the
-front end web application alongside with the database model.\\
+Out of all researched relational databases, 
+PostgreSQL was chosen as it supports the PostGIS plugin, and 
+is supported by Heroku - allowing to 
+deploy the application in later stages of development.\\
 
 \subsection{Conceptual model}
 As a result of multiples redesigns, here is the database's conceptual model.
