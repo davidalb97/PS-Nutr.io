@@ -273,14 +273,17 @@ The 'DTO to model' mapping also occurs inside the repository, following the rule
 
 By following this pattern, the code becomes segmented and organized, allowing a good comprehension and code maintainability.\\
 
+Just as the server the android client has the input and output "\textit{DTOs}" suffixed with "\textit{input}" and "\textit{output}". 
+These classes are mapped by input mappers prefixed with "\textit{input}".\\
+
+The Activity, Fragments, ViewModel, Adapters and Repositories classes are all prefixed by their type.
+
 \subsubsection{Fragments}
 
 The group chose to use fragments\cite{fragment} for each application view instead of activities. Although a fragment has a more complex lifecycle than the activity and depends on it
 to exist, they are far more lightweight to instanciate than an activity and thus they provide more performance to the application.\\ 
 
 It is also the recommended Android widget to use when designing an application with a side drawer.\\
-
-In the application's code every fragment class has \textit{fragment} suffix.
 
 \subsection{Local data storing}
 
@@ -291,6 +294,10 @@ for multiple reasons:
     \item To save data in order to avoid unnecessary requests to the server;
     \item To help data synchronization, that will be detailed later in this section.
 \end{itemize}
+
+Room classes use the "\textit{Db}" prefixed followed by the name and prefixed by their type e.g. "\textit{DbMealInfoMapper}", "\textit{DbMealInfoRelation}" and "\textit{DbMealInfoEntity}". 
+The \textit{DAO} classes However are only prefixed with "\textit{Dao}". 
+All entities are mapped by a database mapper suffixed with "\textit{Mapper}".
 
 \subsection{User authentication and authorization}
 
@@ -303,7 +310,7 @@ inside the mobile device to allow automatic logins to renew the user's JSON Web 
 \subsubsection{Problem: The content inside the shared preferences is written in plaintext. Is it safe to store user credentials inside the shared preferences?}
 
 Although the Android Shared Preferences being a safe place to store application information, this fact is not completely true:
-a normal device can not access these preferences and it should be a safe place to store user credentials, however rooted devices can easily
+a normal device can not access these preferences and it should be a safe place to store user credentials, however rooted devices\cite{root} can easily
 access the shared preferences file and retrieve plaintext from it, which would compromise the user security.\\
 
 \subsubsection{Resolution: Androidx Crypto}
