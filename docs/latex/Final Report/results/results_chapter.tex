@@ -99,13 +99,13 @@ The HTTP server uses a Spring MVC implementation, structuring its' code in sever
      corresponding suffix, e.g. "\textit{InsulinProfilesInput}" and "\textit{InsulinProfilesOutput}".
      Controller classes are prefixed by "\textit{Controller}".
      \item Service layer, uses multiple repositories and handles model to database \textit{DTO} and database \textit{DTO}
-      to model mapping through instance mappers. The mapper classes used to map the DTOs to model have a domain prefix e.g.
-      "\textit{DB}" or "\textit{API}" while having a type "\textit{Mapper}" suffix e.g. "\textit{DbRestaurantMapper}". 
+      to model mapping through instance mappers. The mapper classes used to map the \textit{DTOs} to model have a domain prefix e.g.
+      "\textit{Db}" or "\textit{Api}" while having a type "\textit{Mapper}" suffix e.g. "\textit{DbRestaurantMapper}". 
       The service class names are prefixed by "\textit{Service}". 
       \item Data Access layer, is ranged between repositories and Data Access Objects (\textit{DAOs}), each repository
        uses various \textit{DAOs} that represent each database entity/relation through JDBI declarative API. 
        For database \textit{DTOs}, the prefix "\textit{Db}" is used before the table name and then the suffix "\textit{DTO}". For \textit{DAOs} it was used the
-       table name and the prefix "Dao" e.g. "\textit{UserDao}". Repository classes are
+       table name and the prefix "\textit{Dao}" e.g. "\textit{UserDao}". Repository classes are
        prefixed by "\textit{Repository}" e.g. "\textit{RestaurantDbRepository}". 
 \end{itemize}
 
@@ -162,9 +162,9 @@ It was concluded that the use of \textbf{JSON Web Tokens}\cite{jwt} was the best
 the mobile application is completely \textbf{stateless}.\\
 
 Another advantage is the fact that these tokens have an expiration time, which means that after a certain amount of time they are no longer valid.
-In case of security breach, this feature becomes useful, because if the attacker does not have a way to generate valid tokens neither does not know the user password and steals 
-a valid token, this will only be used by a short period of time (10h), easing the amount of damage that an intruder can make and confining it to 
-only one user inside the platform.\\
+In case of security breach, this feature becomes useful, because if a valid token is stolen, neither the attacker has a way to generate valid tokens 
+nor does he know the user's password. The token could only be used by a short period of time (10h), easing the amount of damage that an intruder can
+make and confining it to only one user inside the platform.\\
 
 The picture below represents a very generic and simplified workflow of the JSON Web Token. 
 
@@ -192,7 +192,7 @@ The picture below shows how the server handles an user login using this framewor
 
 After the previously mentioned dependencies are installed, the WebSecurityConfig is the first class to be constructed. Here are specified, via antMatchers, which
 endpoints do not need authentication, acting like a whitelist, so every endpoint that is not specified via antMatchers needs authentication, and will return code 401
-Unauthorized if the JWT is invalid or absent. The JWT filter is also started up inside this class.\\
+Unauthorized if the JWT is invalid. The JWT filter is also started up inside this class.\\
 
 The Jwtfilter class, as the name says, filters each request, checking the authentication header and extracting the jwt from the Bearer
 verifying if it is valid. This class extends the OncePerRequestFilter() which garantees a single execution of this filter every request.\\
@@ -200,10 +200,10 @@ verifying if it is valid. This class extends the OncePerRequestFilter() which ga
 The Authentication service class calls the Spring Authentication Manager and authenticates the user, it provides methods which call the JwtUtil
 to retrieve the email from the token or encode the password when registering.\\
 
-The password encoding always happens when the user registers for the first time: the server hashes the password using \textbf{BCrypt} before inserting the new
+The password encoding always happens when the user registers for the first time: the server hashes the password using \textbf{BCrypt}\cite{bcrypt} before inserting the new
 user into the database.\\
 
-BCrypt\cite{bcrypt} is a password-hashing function based on the Blowfish\cite{blowfish} cipher. The group found this function very convenient for these reasons:
+BCrypt is a password-hashing function based on the Blowfish\cite{blowfish} cipher. The group found this function very convenient for these reasons:
 \begin{itemize}
     \item Already pre salts the passwords, preventing rainbow table attacks\cite{rainbowtable};
     \item Makes bruteforce attacks inviable: the iteration count can be increased to make it even slower to crack.
@@ -235,7 +235,7 @@ option for two reasons:
 The group chose to use Kotlin for the mobile application development, as it is now the official programming language for Android development,
 according to Google.\\
 
-It is also the language taught during the optinal course - mobile devices programming (PDM)\\
+It is also the language taught during the optinal course - mobile devices programming (PDM).\\
 
 \subsubsection{External dependencies}
 
@@ -278,7 +278,9 @@ By following this pattern, the code becomes segmented and organized, allowing a 
 The group chose to use fragments\cite{fragment} for each application view instead of activities. Although a fragment has a more complex lifecycle than the activity and depends on it
 to exist, they are far more lightweight to instanciate than an activity and thus they provide more performance to the application.\\ 
 
-It is also the recommended Android widget to use when designing an application with a side drawer.
+It is also the recommended Android widget to use when designing an application with a side drawer.\\
+
+In the application's code every fragment class has \textit{fragment} suffix.
 
 \subsection{Local data storing}
 
