@@ -4,9 +4,9 @@ import org.jdbi.v3.sqlobject.config.RegisterRowMapper
 import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbSubmissionDto
-import pt.isel.ps.g06.httpserver.dataAccess.db.mapper.SubmissionMapper
+import pt.isel.ps.g06.httpserver.dataAccess.db.mapper.DbRowSubmissionMapper
 
-@RegisterRowMapper(SubmissionMapper::class)
+@RegisterRowMapper(DbRowSubmissionMapper::class)
 interface SubmissionDao {
 
     companion object {

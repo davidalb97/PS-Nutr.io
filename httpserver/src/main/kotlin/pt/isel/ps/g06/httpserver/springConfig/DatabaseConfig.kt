@@ -9,7 +9,7 @@ import javax.sql.DataSource
 
 
 @Configuration
-class DatabaseConfiguration {
+class DatabaseConfig {
     @Bean
     @ConfigurationProperties(prefix = "spring.datasource")
     fun driverManagerDataSource(): DataSource {
