@@ -5,11 +5,12 @@ import javax.validation.constraints.NotNull
 import javax.validation.constraints.Pattern
 
 class UserRegisterInput(
-        @field:NotNull(message = "An email must be given!")
-        /*@field:Pattern(
-                regexp = "/^([a-z0-9_\\.\\+-]+)@([\\da-z\\.-]+)\\.([a-z\\.]{2,6})\$/",
+        //@field:NotNull(message = "An email must be given!")
+        @field:Pattern(
+                //regexp = "/^([a-z0-9_\\.\\+-]+)@([\\da-z\\.-]+)\\.([a-z\\.]{2,6})\$/",
+                regexp = "^[a-zA-Z0-9_!#\$%&’*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+\$",
                 message = "Given email must follow a valid email pattern!"
-        )*/
+        )
         val email: String,
 
         @field:NotBlank(message = "An username must be given!")
