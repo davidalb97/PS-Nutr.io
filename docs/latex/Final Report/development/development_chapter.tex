@@ -3,18 +3,16 @@
 %
 \chapter{Project development}
 
-    \section{Issues}
-
     This section describes the issues found and the decisions made
     to overcome them during development.
-    
-    \subsection{Relational database}
+
+    \section{Relational database}
 
     Multiple iterations of the database's model were designed until a consistent result was implemented,
     mainly due to a lack of initial research on the project's functional requirements and a later change
     of some core beliefs regarding how meals would be handled.\\
 
-    \subsection{Food API's}
+    \section{Food API's}
 
     While testing an initial version of the HTTP server,
     it was concluded that no researched API responsible in
@@ -42,12 +40,12 @@
     This comes with the limitation that certain ingredients might have been missed,
     meaning that a user might not be able to create their desired meals.
 
-    \subsection{Android client}
+    \section{Android client}
 
     The Android application's development progressed normally but it had to be put on hold several times, because of HTTP server's endpoints' completion, in which the application
     depends strongly. A major dto and model restructure had also to be made inside the mobile application in order to meet with the current HTTP responses.\\
 
-    \subsection{Restaurant APIs}
+    \section{Restaurant APIs}
 
     During early stages of development, 
     we incorrectly assumed that researched restaurant APIs (namely Zomato) were capable 
