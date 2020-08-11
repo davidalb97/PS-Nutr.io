@@ -5,9 +5,9 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.util.UriComponentsBuilder
 import pt.isel.ps.g06.httpserver.common.*
+import pt.isel.ps.g06.httpserver.common.exception.authentication.NotAuthenticatedException
 import pt.isel.ps.g06.httpserver.common.exception.forbidden.NotSubmissionOwnerException
 import pt.isel.ps.g06.httpserver.common.exception.notFound.RestaurantNotFoundException
-import pt.isel.ps.g06.httpserver.common.interceptor.ensureSubmitter
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.RestaurantApiType
 import pt.isel.ps.g06.httpserver.dataAccess.input.RestaurantInput
 import pt.isel.ps.g06.httpserver.dataAccess.input.VoteInput
@@ -18,9 +18,9 @@ import pt.isel.ps.g06.httpserver.dataAccess.output.restaurant.toSimplifiedRestau
 import pt.isel.ps.g06.httpserver.exception.InvalidInputDomain
 import pt.isel.ps.g06.httpserver.exception.InvalidInputException
 import pt.isel.ps.g06.httpserver.model.Restaurant
+import pt.isel.ps.g06.httpserver.model.Submitter
 import pt.isel.ps.g06.httpserver.service.RestaurantService
 import pt.isel.ps.g06.httpserver.service.SubmissionService
-import javax.servlet.http.HttpServletRequest
 import javax.validation.Valid
 
 private const val INVALID_RESTAURANT_SEARCH = "To search nearby restaurants, a geolocation must be given!"
@@ -79,11 +79,14 @@ class RestaurantController(
     }
 
     @PostMapping(RESTAURANTS, consumes = [MediaType.APPLICATION_JSON_VALUE])
-    fun createRestaurant(@Valid @RequestBody restaurant: RestaurantInput, request: HttpServletRequest): ResponseEntity<Void> {
-        val (submitterId) = request.ensureSubmitter()
+    fun createRestaurant(
+            @Valid @RequestBody restaurant: RestaurantInput,
+            submitter: Submitter?
+    ): ResponseEntity<Void> {
+        submitter ?: throw NotAuthenticatedException()
 
         val createdRestaurant = restaurantService.createRestaurant(
-                submitterId = submitterId,
+                submitterId = submitter.identifier,
                 restaurantName = restaurant.name!!,
                 cuisines = restaurant.cuisines!!,
                 latitude = restaurant.latitude!!,
@@ -99,49 +102,58 @@ class RestaurantController(
     }
 
     @DeleteMapping(RESTAURANT, consumes = [MediaType.ALL_VALUE])
-    fun deleteRestaurant(@PathVariable(RESTAURANT_ID_VALUE) restaurantId: String, request: HttpServletRequest): ResponseEntity<Void> {
-        val (submitterId) = request.ensureSubmitter()
+    fun deleteRestaurant(
+            @PathVariable(RESTAURANT_ID_VALUE) restaurantId: String,
+            submitter: Submitter?
+    ): ResponseEntity<Void> {
+        submitter ?: throw NotAuthenticatedException()
+
         val restaurant = ensureRestaurantExists(restaurantId)
 
-
-        if (!restaurant.isPresentInDatabase() || restaurant.submitterInfo.value.identifier != submitterId) {
+        if (!restaurant.isPresentInDatabase() || restaurant.submitterInfo.value.identifier != submitter.identifier) {
             //If Restaurant is not in database, owner is an API
             throw NotSubmissionOwnerException()
         }
 
-        submissionService.deleteSubmission(restaurant.identifier.value.submissionId!!, submitterId)
-        return ResponseEntity.ok().build()
+        submissionService.deleteSubmission(restaurant.identifier.value.submissionId!!, submitter.identifier)
+
+        return ResponseEntity
+                .ok()
+                .build()
     }
 
     @PutMapping(RESTAURANT_VOTE, consumes = [MediaType.APPLICATION_JSON_VALUE])
     fun alterRestaurantVote(
             @PathVariable(RESTAURANT_ID_VALUE) restaurantId: String,
-            @RequestBody userVote: VoteInput,
-            request: HttpServletRequest
+            @Valid @RequestBody userVote: VoteInput,
+            submitter: Submitter?
     ): ResponseEntity<Void> {
-        val (submitterId) = request.ensureSubmitter()
+        submitter ?: throw NotAuthenticatedException()
+
         val restaurant = ensureRestaurantExists(restaurantId)
 
         submissionService.alterRestaurantVote(
                 restaurant = restaurant,
-                submitterId = submitterId,
+                submitterId = submitter.identifier,
                 vote = userVote.vote!!
         )
 
-        return ResponseEntity.ok().build()
+        return ResponseEntity
+                .ok()
+                .build()
     }
 
     @DeleteMapping(RESTAURANT_VOTE, consumes = [MediaType.ALL_VALUE])
     fun deleteRestaurantVote(
             @PathVariable(RESTAURANT_ID_VALUE) restaurantId: String,
-            request: HttpServletRequest
+            submitter: Submitter?
     ): ResponseEntity<Void> {
-        val (submitterId) = request.ensureSubmitter()
+        submitter ?: throw NotAuthenticatedException()
 
         val restaurant = ensureRestaurantExists(restaurantId)
         submissionService.deleteRestaurantVote(
                 restaurant = restaurant,
-                submitterId = submitterId
+                submitterId = submitter.identifier
         )
 
         return ResponseEntity.ok().build()

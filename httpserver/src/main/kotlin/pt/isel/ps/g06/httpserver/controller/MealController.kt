@@ -5,18 +5,18 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.util.UriComponentsBuilder
 import pt.isel.ps.g06.httpserver.common.*
+import pt.isel.ps.g06.httpserver.common.exception.authentication.NotAuthenticatedException
 import pt.isel.ps.g06.httpserver.common.exception.clientError.InvalidQueryParameter
 import pt.isel.ps.g06.httpserver.common.exception.forbidden.NotSubmissionOwnerException
 import pt.isel.ps.g06.httpserver.common.exception.notFound.MealNotFoundException
-import pt.isel.ps.g06.httpserver.common.interceptor.ensureSubmitter
 import pt.isel.ps.g06.httpserver.dataAccess.input.MealInput
 import pt.isel.ps.g06.httpserver.dataAccess.output.meal.DetailedMealOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.meal.SimplifiedMealContainer
 import pt.isel.ps.g06.httpserver.dataAccess.output.meal.toDetailedMealOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.meal.toSimplifiedMealContainer
+import pt.isel.ps.g06.httpserver.model.Submitter
 import pt.isel.ps.g06.httpserver.service.MealService
 import pt.isel.ps.g06.httpserver.service.SubmissionService
-import javax.servlet.http.HttpServletRequest
 import javax.validation.Valid
 
 @Suppress("MVCPathVariableInspection")
@@ -83,8 +83,11 @@ class MealController(
     }
 
     @PostMapping(MEALS)
-    fun createMeal(@Valid @RequestBody meal: MealInput, request: HttpServletRequest): ResponseEntity<Void> {
-        val (submitterId) = request.ensureSubmitter()
+    fun createMeal(
+            @Valid @RequestBody meal: MealInput,
+            submitter: Submitter?
+    ): ResponseEntity<Void> {
+        submitter ?: throw NotAuthenticatedException()
 
         //Due to validators we are sure fields are never null
         val createdMeal = mealService.createMeal(
@@ -92,7 +95,7 @@ class MealController(
                 ingredients = meal.ingredients!!,
                 cuisines = meal.cuisines!!,
                 quantity = meal.quantity!!,
-                submitterId = submitterId
+                submitterId = submitter.identifier
         )
 
         return ResponseEntity.created(
@@ -104,16 +107,22 @@ class MealController(
     }
 
     @DeleteMapping(MEAL)
-    fun deleteMeal(@PathVariable(MEAL_ID_VALUE) mealId: Int, request: HttpServletRequest): ResponseEntity<Void> {
-        val (submitterId) = request.ensureSubmitter()
+    fun deleteMeal(
+            @PathVariable(MEAL_ID_VALUE) mealId: Int,
+            submitter: Submitter?
+    ): ResponseEntity<Void> {
+        submitter ?: throw NotAuthenticatedException()
 
         val meal = mealService.getMeal(mealId) ?: throw MealNotFoundException()
 
-        if (!meal.isUserMeal() || meal.submitterInfo.value!!.identifier != submitterId) {
+        if (!meal.isUserMeal() || meal.submitterInfo.value!!.identifier != submitter.identifier) {
             throw NotSubmissionOwnerException()
         }
 
-        submissionService.deleteSubmission(meal.identifier, submitterId)
-        return ResponseEntity.ok().build()
+        submissionService.deleteSubmission(meal.identifier, submitter.identifier)
+
+        return ResponseEntity
+                .ok()
+                .build()
     }
 }

@@ -19,6 +19,7 @@ DROP TABLE IF EXISTS Submission CASCADE;
 --DROP SEQUENCE submission_submission_id_seq CASCADE;
 DROP TABLE IF EXISTS Api CASCADE;
 DROP TABLE IF EXISTS _User CASCADE;
+DROP TABLE IF EXISTS InsulinProfile CASCADE;
 DROP TABLE IF EXISTS Submitter CASCADE;
 DROP FUNCTION IF EXISTS AddFood;
 --DROP SEQUENCE submitter_submitter_id_seq CASCADE;
@@ -34,11 +35,24 @@ CREATE TABLE Submitter(
 );
 
 CREATE TABLE _User(
-	submitter_id integer,
-	email varchar(50),
-	session_secret varchar(256) NOT NULL, -- TODO: Check maximum length
-	PRIMARY KEY(submitter_id, email),
+	submitter_id integer,	
+	email varchar(50) NOT NULL,
+	password varchar(60) NOT NULL, -- it will always be 60, because of the BCrypt password encoding
+	PRIMARY KEY(submitter_id),
 	FOREIGN KEY(submitter_id) REFERENCES Submitter(submitter_id)
+);
+
+CREATE TABLE InsulinProfile(
+	submitter_id integer,
+	profile_name varchar(30),
+	start_time time without time zone,
+	end_time time without time zone,
+	glucose_objective integer,
+	insulin_sensitivity_factor integer,
+	carbohydrate_ratio integer,
+	modification_date timestamp with time zone default CURRENT_TIMESTAMP,
+	PRIMARY KEY(submitter_id, profile_name),
+	FOREIGN KEY(submitter_id) REFERENCES _User(submitter_id)
 );
 
 CREATE TABLE Api(
