@@ -2,6 +2,7 @@ package pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler
 
 import android.app.Application
 import android.view.View
+import androidx.annotation.IdRes
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.ARecyclerViewModel
@@ -23,7 +24,12 @@ abstract class ARecyclerListFragment<T : Any, VM : ARecyclerViewModel<T>> : Frag
     /**
      * Starts the observer inside the view model
      */
-    abstract fun startObserver()
+    fun startObserver() {
+        viewModel.observe(this) {
+            list.adapter?.notifyDataSetChanged()
+            successFunction(it)
+        }
+    }
 
     /**
      * Recycler list scroll listener
@@ -31,8 +37,7 @@ abstract class ARecyclerListFragment<T : Any, VM : ARecyclerViewModel<T>> : Frag
      */
     abstract fun startScrollListener()
 
-    fun setCallbackFunctions() {
-        viewModel.onSuccess = this::successFunction
+    fun setErrorFunction() {
         viewModel.onError = this::errorFunction
     }
 
@@ -48,6 +53,11 @@ abstract class ARecyclerListFragment<T : Any, VM : ARecyclerViewModel<T>> : Frag
      * Pops up a Toast if there's no internet connection
      * or if it couldn't get results.
      */
-    open fun errorFunction(exception: Exception) {}
+    open fun errorFunction(exception: Throwable) {}
 
+    @IdRes
+    abstract fun getRecyclerId(): Int
+
+    @IdRes
+    abstract fun getProgressBarId(): Int
 }

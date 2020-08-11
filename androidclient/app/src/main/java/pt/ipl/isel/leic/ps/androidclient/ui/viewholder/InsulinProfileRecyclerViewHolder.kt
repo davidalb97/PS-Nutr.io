@@ -1,19 +1,23 @@
 package pt.ipl.isel.leic.ps.androidclient.ui.viewholder
 
-import android.annotation.SuppressLint
-import android.app.AlertDialog
 import android.content.Context
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
+import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.app
 import pt.ipl.isel.leic.ps.androidclient.R
-import pt.ipl.isel.leic.ps.androidclient.data.source.model.InsulinProfile
+import pt.ipl.isel.leic.ps.androidclient.data.model.InsulinProfile
+import pt.ipl.isel.leic.ps.androidclient.data.util.AsyncWorker
 
 class InsulinProfileRecyclerViewHolder(
     view: ViewGroup,
     ctx: Context
-) : ADeletableRecyclerViewHolder<InsulinProfile>(view, ctx) {
+) : ARecyclerViewHolder<InsulinProfile>(view, ctx),
+    IDeletable<InsulinProfile> {
+
+    override lateinit var onDelete: (InsulinProfile) -> AsyncWorker<Unit, Unit>
 
     private val profileName: TextView =
         view.findViewById(R.id.insulin_profile_name)
@@ -27,7 +31,8 @@ class InsulinProfileRecyclerViewHolder(
         view.findViewById(R.id.profile_fsi_card)
     private val carboRatio: TextView =
         view.findViewById(R.id.profile_carbo_ratio_card)
-
+    override var deleteButton: ImageButton =
+        view.findViewById(R.id.delete_item_button)
 
     override fun bindTo(item: InsulinProfile) {
         super.bindTo(item)
@@ -35,39 +40,56 @@ class InsulinProfileRecyclerViewHolder(
         setupListeners()
     }
 
-    @SuppressLint("SetTextI18n")
     fun setupTextFields() {
-        profileName.text = item.profile_name
+        profileName.text = item.profileName
         val resources = ctx.resources
-        startTime.text =
-            resources.getString(R.string.start_time) +
-                    " ${item.start_time}"
-
-        endTime.text =
-            resources.getString(R.string.end_time) +
-                    " ${item.end_time}"
-
-        glucoseObjective.text =
-            resources.getString(R.string.glucose_objective_card) +
-                    " ${item.glucose_objective}"
-
-        insulinSensitivityFactor.text =
-            resources.getString(R.string.insulin_sensitivity_factor) +
-                    " ${item.glucose_amount} / " +
-                    resources.getString(R.string.insulin_unit)
-
-        carboRatio.text =
-            resources.getString(R.string.carbohydrate_ratio) +
-                    " ${item.carbohydrate_amount} / " +
-                    resources.getString(R.string.insulin_unit)
+        startTime.text = String.format(resources.getString(R.string.start_time), item.startTime)
+        endTime.text = String.format(resources.getString(R.string.end_time), item.endTime)
+        glucoseObjective.text = String.format(
+            resources.getString(R.string.glucose_objective_card),
+            item.glucoseObjective
+        )
+        insulinSensitivityFactor.text = String.format(
+            resources.getString(R.string.insulin_sensitivity_factor),
+            item.glucoseAmountPerInsulin,
+            resources.getString(R.string.insulin_unit)
+        )
+        carboRatio.text = String.format(
+            resources.getString(R.string.carbohydrate_ratio),
+            item.carbsAmountPerInsulin,
+            resources.getString(R.string.insulin_unit)
+        )
     }
 
-    fun setupListeners() {
+    private fun setupListeners() {
+        this.view.setOnClickListener(this)
         this.view.setOnLongClickListener(this)
     }
 
     override fun onClick(v: View?) {
-        TODO("Not yet implemented")
+        setButtonsVisibility(false)
+    }
+
+    override fun onLongClick(v: View?): Boolean {
+        setButtonsVisibility(true)
+        deleteButton.setOnClickListener {
+            onDelete(this.item)
+                .setOnPostExecute {
+                    Toast.makeText(
+                        app,
+                        ctx.getString(R.string.DialogAlert_deleted), Toast.LENGTH_SHORT
+                    ).show()
+                    setButtonsVisibility(false)
+                    this.bindingAdapter?.notifyItemRemoved(layoutPosition)
+                }.execute()
+        }
+        return true
+    }
+
+    override fun setButtonsVisibility(isVisible: Boolean) {
+        val visibility =
+            if (isVisible) View.VISIBLE else View.INVISIBLE
+        deleteButton.visibility = visibility
     }
 
 }

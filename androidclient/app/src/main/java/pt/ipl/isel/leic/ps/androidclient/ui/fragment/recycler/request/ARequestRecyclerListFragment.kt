@@ -4,8 +4,8 @@ import android.util.Log
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.Toast
-import androidx.recyclerview.widget.RecyclerView
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp
+import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.app
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.TAG
 import pt.ipl.isel.leic.ps.androidclient.hasInternetConnection
@@ -15,57 +15,40 @@ import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.ARecyclerViewModel
 abstract class ARequestRecyclerListFragment<M : Any, VM : ARecyclerViewModel<M>>
     : ARecyclerListFragment<M, VM>() {
 
-    lateinit var progressBar: ProgressBar
+    lateinit var progressWheel: ProgressBar
 
     override fun initRecyclerList(view: View) {
-        this.list =
-            view.findViewById(R.id.itemList) as RecyclerView
+        this.list = view.findViewById(getRecyclerId())
 
         // List progressBar
-        this.progressBar =
-            view.findViewById(R.id.progressBar) as ProgressBar
+        this.progressWheel = view.findViewById(getProgressBarId())
 
-        this.progressBar.visibility = View.VISIBLE
-
-
-    }
-
-    override fun startObserver() {
-        viewModel.observe(this) {
-            list.adapter?.notifyDataSetChanged()
-            if (viewModel.mediatorLiveData.value!!.isEmpty()) {
-                Toast.makeText(
-                    this.requireContext(),
-                    R.string.no_result_found,
-                    Toast.LENGTH_LONG
-                ).show()
-            }
-            this.progressBar.visibility = View.INVISIBLE
-        }
+        this.progressWheel.visibility = View.VISIBLE
     }
 
     override fun successFunction(list: List<M>) {
         if (list.isEmpty() && this.isAdded)
             Toast.makeText(
-                activityApp, R.string.no_result_found,
+                app, R.string.no_result_found,
                 Toast.LENGTH_LONG
             ).show()
+        this.progressWheel.visibility = View.INVISIBLE
         Log.v(TAG, "running on the thread : ${Thread.currentThread().name}")
     }
 
-    override fun errorFunction(exception: Exception) {
+    override fun errorFunction(exception: Throwable) {
         if (this.isAdded) {
-            if (!hasInternetConnection(activityApp as NutrioApp)) {
+            if (!hasInternetConnection()) {
                 Toast.makeText(
-                    activityApp, R.string.no_internet_connection,
+                    app, R.string.no_internet_connection,
                     Toast.LENGTH_LONG
                 ).show()
             } else {
-                Toast.makeText(activityApp, R.string.error_network, Toast.LENGTH_LONG)
+                Toast.makeText(app, R.string.error_network, Toast.LENGTH_LONG)
                     .show()
             }
         }
-        this.progressBar.visibility = View.INVISIBLE
+        this.progressWheel.visibility = View.INVISIBLE
         Log.v(TAG, exception.message, exception)
     }
 }

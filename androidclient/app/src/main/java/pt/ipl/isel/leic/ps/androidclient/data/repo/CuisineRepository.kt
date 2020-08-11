@@ -1,23 +1,24 @@
 package pt.ipl.isel.leic.ps.androidclient.data.repo
 
-import pt.ipl.isel.leic.ps.androidclient.data.source.endpoint.CuisineDataSource
-import pt.ipl.isel.leic.ps.androidclient.data.source.model.Cuisine
+import pt.ipl.isel.leic.ps.androidclient.data.api.datasource.CuisineDataSource
+import pt.ipl.isel.leic.ps.androidclient.data.api.mapper.InputCuisineMapper
+import pt.ipl.isel.leic.ps.androidclient.data.model.Cuisine
 
 class CuisineRepository(private val dataSource: CuisineDataSource) {
 
+    val inputCuisineMapper = InputCuisineMapper()
+
     fun getCuisines(
-        success: (List<Cuisine>) -> Unit,
-        error: () -> Unit,
-        uriParameters: HashMap<String, String>?,
         count: Int,
-        skip: Int
+        skip: Int,
+        success: (List<Cuisine>) -> Unit,
+        error: (Throwable) -> Unit
     ) {
-        /*dataSource.getCuisines(
-            { success(it) },
-            { error() },
-            uriParameters,
+        dataSource.getCuisines(
             count,
-            skip
-        )*/
+            skip,
+            { success(inputCuisineMapper.mapToListModel(it)) },
+            error
+        )
     }
 }

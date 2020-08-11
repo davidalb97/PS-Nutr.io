@@ -2,35 +2,42 @@ package pt.ipl.isel.leic.ps.androidclient.ui.viewmodel
 
 import android.os.Parcel
 import android.os.Parcelable
-import androidx.lifecycle.LiveData
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.mealRepository
-import pt.ipl.isel.leic.ps.androidclient.data.source.model.Meal
-import pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler.COUNT
+import pt.ipl.isel.leic.ps.androidclient.data.model.Cuisine
+import pt.ipl.isel.leic.ps.androidclient.data.model.MealItem
 
-class MealRecyclerViewModel() : ARecyclerViewModel<Meal>() {
+open class MealRecyclerViewModel() : ARecyclerViewModel<MealItem>() {
 
-    constructor(parcel: Parcel) : this() {
-    }
+    var restaurantId: String? = null
+    var cuisines = emptyList<Cuisine>()
 
-    fun getMeals(
-        onSuccess: (Meal) -> Unit,
-        onError: () -> Unit
-    ) {
-        mealRepository.getMeals(
-            onSuccess,
-            onError,
-            parameters,
-            COUNT,
-            skip
-        )
-    }
+    open fun addToFavorite(mealItem: MealItem) =
+        mealRepository.insertItem(mealItem)
 
-    override fun fetchLiveData(): LiveData<List<Meal>> {
-        TODO("Not yet implemented")
+    constructor(parcel: Parcel) : this()
+
+    override fun update() {
+        if (restaurantId != null) {
+            mealRepository.getRestaurantMealItems(
+                restaurantId = restaurantId!!,
+                count = count,
+                skip = skip,
+                success = liveDataHandler::add,
+                error = onError
+            )
+        } else {
+            mealRepository.getMealItems(
+                count = count,
+                skip = skip,
+                cuisines = cuisines,
+                success = liveDataHandler::add,
+                error = onError
+            )
+        }
     }
 
     override fun writeToParcel(dest: Parcel?, flags: Int) {
-        TODO("Not yet implemented")
+//        dest?.writeString(restaurantId)
     }
 
     override fun describeContents(): Int {
@@ -38,6 +45,7 @@ class MealRecyclerViewModel() : ARecyclerViewModel<Meal>() {
     }
 
     companion object CREATOR : Parcelable.Creator<MealRecyclerViewModel> {
+
         override fun createFromParcel(parcel: Parcel): MealRecyclerViewModel {
             return MealRecyclerViewModel(parcel)
         }
@@ -45,6 +53,7 @@ class MealRecyclerViewModel() : ARecyclerViewModel<Meal>() {
         override fun newArray(size: Int): Array<MealRecyclerViewModel?> {
             return arrayOfNulls(size)
         }
+
     }
 
 }

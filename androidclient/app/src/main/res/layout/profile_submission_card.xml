@@ -17,7 +17,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Submission title"
-            android:textColor="@android:color/background_dark"
+            android:textColor="?attr/cardTextAccentColor"
             android:textSize="28dp"
             android:layout_margin="10dp">
         </TextView>
@@ -27,7 +27,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/submission_title"
             android:text="Submission details"
-            android:textColor="@android:color/background_dark"
+            android:textColor="?attr/cardTextColor"
             android:textSize="18dp"
             android:layout_marginLeft="10dp">
         </TextView>

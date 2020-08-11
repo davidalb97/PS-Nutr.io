@@ -1,24 +1,36 @@
 package pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler.request
 
+import android.Manifest
+import android.annotation.SuppressLint
+import android.content.Context
+import android.content.pm.PackageManager
+import android.location.LocationManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SearchView
+import android.widget.Toast
+import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.mapbox.mapboxsdk.maps.Style
+import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.app
 import pt.ipl.isel.leic.ps.androidclient.R
-import pt.ipl.isel.leic.ps.androidclient.data.source.model.Restaurant
+import pt.ipl.isel.leic.ps.androidclient.data.model.RestaurantItem
 import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.RestaurantRecyclerAdapter
-import pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler.ARecyclerListFragment
 import pt.ipl.isel.leic.ps.androidclient.ui.listener.ScrollListener
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.RestaurantRecyclerVMProviderFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.RestaurantRecyclerViewModel
 
-class RestaurantRecyclerFragment :
-    ARequestRecyclerListFragment<Restaurant, RestaurantRecyclerViewModel>() {
+private const val REQUEST_PERMISSIONS_CODE = 0
 
-    private val adapter: RestaurantRecyclerAdapter by lazy {
+open class RestaurantRecyclerFragment :
+    ARequestRecyclerListFragment<RestaurantItem, RestaurantRecyclerViewModel>() {
+
+    private lateinit var locationManager: LocationManager
+
+    protected val adapter: RestaurantRecyclerAdapter by lazy {
         RestaurantRecyclerAdapter(
             viewModel,
             this.requireContext()
@@ -30,7 +42,7 @@ class RestaurantRecyclerFragment :
      * Initializes the view model, calling the respective
      * view model provider factory
      */
-    private fun buildViewModel(savedInstanceState: Bundle?) {
+    protected fun buildViewModel(savedInstanceState: Bundle?) {
         val rootActivity = this.requireActivity()
         val factory = RestaurantRecyclerVMProviderFactory(savedInstanceState, rootActivity.intent)
         viewModel =
@@ -46,12 +58,13 @@ class RestaurantRecyclerFragment :
         return inflater.inflate(R.layout.restaurant_list, container, false)
     }
 
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         initRecyclerList(view)
-        setCallbackFunctions()
-        viewModel.getNearbyRestaurants()
+        setErrorFunction()
+
         list.adapter = adapter
         list.layoutManager = LinearLayoutManager(this.requireContext())
         startObserver()
@@ -61,7 +74,8 @@ class RestaurantRecyclerFragment :
         searchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 if (query.isNullOrEmpty()) return false
-                viewModel.parameters[":id"] = query
+                //viewModel.restaurantName = query //TODO: we should clear this later
+                //viewModel.getRestaurantById()
                 searchBar.clearFocus()
                 return true
             }
@@ -69,25 +83,73 @@ class RestaurantRecyclerFragment :
             override fun onQueryTextChange(query: String?): Boolean = true
 
         })
+
+        if(isLocationEnabled()) {
+            onLocationEnabled()
+        } else {
+            requestPermissions(
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                REQUEST_PERMISSIONS_CODE
+            )
+        }
+    }
+
+    private fun isLocationEnabled(): Boolean {
+        return ActivityCompat.checkSelfPermission(
+            requireContext(),
+            Manifest.permission.ACCESS_FINE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
+    }
+
+    private fun onLocationRejected() {
+        Toast.makeText(app, R.string.turn_on_geolocation, Toast.LENGTH_LONG)
+            .show()
+        parentFragmentManager.popBackStack()
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int, permissions: Array<String?>,
+        grantResults: IntArray
+    ) {
+        if (requestCode == REQUEST_PERMISSIONS_CODE && grantResults.all { result -> result == PackageManager.PERMISSION_GRANTED }) {
+            onLocationEnabled()
+        } else onLocationRejected()
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun onLocationEnabled() {
+        locationManager = activityApp.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        val lastLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)!!
+
+        val longitude = lastLocation.longitude
+        val latitude = lastLocation.latitude
+        viewModel.latitude = latitude
+        viewModel.longitude = longitude
+
+        viewModel.update()
     }
 
     override fun startScrollListener() {
         list.addOnScrollListener(object :
-            ScrollListener(list.layoutManager as LinearLayoutManager, progressBar) {
+            ScrollListener(list.layoutManager as LinearLayoutManager, progressWheel) {
 
             var minimumListSize = 1
 
             override fun loadMore() {
-                minimumListSize = viewModel.mediatorLiveData.value!!.size + 1
+                minimumListSize = viewModel.items.size + 1
                 if (!isLoading && progressBar.visibility == View.INVISIBLE) {
                     startLoading()
-                    viewModel.updateListFromLiveData()
+                    viewModel.update()
                     stopLoading()
                 }
             }
 
             override fun shouldGetMore(): Boolean =
-                !isLoading && minimumListSize < viewModel.mediatorLiveData.value!!.size
+                !isLoading && minimumListSize < viewModel.items.size
         })
     }
+
+    override fun getRecyclerId() = R.id.itemList
+
+    override fun getProgressBarId() = R.id.progressBar
 }

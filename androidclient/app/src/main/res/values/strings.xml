@@ -21,7 +21,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="section_name">Section_name</string>
     <string name="restaurants">Restaurants</string>
-    <string name="by_location">By location</string>
+    <string name="map_view">Map view</string>
     <string name="by_name">By name</string>
     <string name="meals">Meals</string>
     <string name="cuisines">Cuisines</string>
@@ -54,26 +54,27 @@
     <string name="link_miguel">https://github.com/mig07</string>
     <string name="insulin_calculator">Insulin Calculator</string>
     <string name="insulin_type">Insulin type</string>
-    <string name="current_blood_glucose">Current blood glucose</string>
     <string name="add_a_meal_to_this_calculation">Add a meal to this calculation</string>
     <string name="pre_meal_blood_glucose_target">Pre-meal blood glucose target</string>
     <string name="insulin_calculator_nav">Insulin calculator</string>
-    <string name="calculate">Calculate</string>
 
     <!-- MapBox api key -->
     <string name="access_token">pk.eyJ1IjoibWlnMDciLCJhIjoiY2thNm96MWQzMDh6cTJybzMybnVjMjZ4dCJ9.VEnqYHRE7wBwhTp7-ASOBQ</string>
     <string name="create_your_routine">Create your routine</string>
     <string name="touch_to_create_your_routine_profiles">Touch to create your routine profiles</string>
-    <string name="start_time">Starts at:</string>
-    <string name="end_time">Ends at:</string>
+    <string name="start_time">Starts at: %1$s</string>
+    <string name="start_time_calc">Starts at:</string>
+    <string name="end_time">Ends at: %1$s</string>
+    <string name="end_time_calc">Ends at:</string>
     <string name="profile_name">Profile name</string>
-    <string name="carbohydrate_ratio">Carbohydrate ratio:</string>
+    <string name="carbohydrate_ratio">Carbohydrate ratio: %1$s / %2$s</string>
+    <string name="carbohydrate_ratio_calc">Carbohydrate ratio:</string>
     <string name="recent_activity">Recent activity</string>
     <string name="routine_graph">Routine graph</string>
     <string name="add_insulin_profile_nav">Add an insulin profile</string>
     <string name="add_a_profile_dialog">Add a profile</string>
-    <string name="cancel_add_profile_dialog">cancel</string>
-    <string name="confirm_add_profile_dialog">ok</string>
+    <string name="cancel_add_profile_dialog">Cancel</string>
+    <string name="confirm_add_profile_dialog">OK</string>
     <string name="add_profile_name_hint">Add profile name</string>
     <string name="profile_name_label">Profile name</string>
     <string name="define_the_profile_time_period">Define the profile time period</string>
@@ -86,13 +87,99 @@
     <string name="carbohydrate_amount">Carbohydrate amount</string>
     <string name="create_button">Create</string>
     <string name="you_don_t_have_a_routine_right_now">You don\'t have a routine right now</string>
-    <string name="glucose_objective_card">Glucose objective:</string>
-    <string name="insulin_sensitivity_factor">Insulin sensitivity factor:</string>
-    <string name="insulin_unit">1 insulin dose</string>
+    <string name="glucose_objective_card">Glucose objective: %1$s</string>
+    <string name="glucose_objective_calc">Glucose objective:</string>
+    <string name="insulin_sensitivity_factor">Insulin sensitivity factor: %1$s / %2$s</string>
+    <string name="insulin_sensitivity_factor_calc">Insulin sensitivity factor:</string>
+    <string name="insulin_unit">insulin unit</string>
     <string name="DialogAlert_deleteWarning">Warning</string>
     <string name="AlertDialog_deleteQuestion">Do you want to delete this item?</string>
     <string name="DialogAlert_Yes">Yes</string>
     <string name="Dialog_no">No</string>
+    <string name="Dialog_Ok">OK</string>
     <string name="DialogAlert_deleted">Item deleted</string>
     <string name="you_don_t_have_any_submissions_right_now">You don\'t have any submissions right now</string>
+    <string name="Fill_in_all_the_available_fields">Fill in all the available fields</string>
+    <string name="This_time_period_is_already_occupied">This time period is already occupied</string>
+    <string name="add_a_meal">Add a meal</string>
+    <string name="current_blood_glucose">Current blood glucose</string>
+    <string name="calculate">Calculate</string>
+    <string name="you_don_t_have_any_saved_meals_at_the_moment">You don\'t have any saved meals at the moment</string>
+    <string name="meal_name">Meal name</string>
+    <string name="custom_meal_unit">Unit</string>
+    <string name="glucose_amount_card">Glucose amount:</string>
+    <string name="meal_carbohydrates_amount">Meal carbohydrates amount</string>
+    <string name="meal_glucose_amount">Meal glucose amount</string>
+    <string name="the_meal_total_quantity">The meal total quantity</string>
+    <string name="carbohydrates_amount">Carbohydrates amount</string>
+    <string name="add_the_meal_name">Add the meal name</string>
+    <string name="add_ingredients">Add ingredients</string>
+    <string name="portion_quantity">Portion quantity</string>
+    <string name="meal_quantity_card">Meal quantity: %1$d %2$s</string>
+    <string name="carbohydrates_amount_card">Carbohydrates amount: %1$d</string>
+    <string name="tab_your_meals">Your meals</string>
+    <string name="custom_meal_image_url_txt">Image url</string>
+    <string name="custom_meal_url_txt_hint">www.example.com (Optional)</string>
+    <string name="user_location_permission_explanation">You need to turn on your device location</string>
+    <string name="you_don_t_have_any_favorite_meals">You don\'t have any favorite meals</string>
+    <string name="you_don_t_have_any_saved_meals">You don\'t have any saved meals</string>
+    <string name="you_don_t_have_any_meal_ingredients">This meal doesn\'t have any ingredients</string>
+    <string name="show_ingredients">Ingredients</string>
+    <string name="meal_info_add_ingredient">Add</string>
+    <string name="meal_suggested">(suggested)</string>
+    <string name="user_id">User ID</string>
+    <string name="email_sign_activity">Email (register only)</string>
+    <string name="email">Email</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="register">Register</string>
+    <string name="login">Login</string>
+    <string name="login_success">Successfully logged in</string>
+    <string name="login_error">Could not login</string>
+    <string name="register_success">Successfully registered</string>
+    <string name="register_error">Could not register</string>
+    <string name="sign_up">Register an account</string>
+    <string name="tab_meal_detail">Meal info</string>
+    <string name="your_current_profile_for_this_time">Your current profile for this time</string>
+    <string name="you_do_not_have_any_insulin_profile_please_create_one">You do not have any insulin profile, please create one to use the calculator</string>
+    <string name="no_value">-</string>
+    <string name="light_mode_on">Light mode is on</string>
+    <string name="dark_mode_on">Dark mode is on</string>
+    <string name="dark_mode">Dark mode</string>
+    <string name="results_title_dialog">Results</string>
+    <string name="setup_a_profile_before_proceed">Please setup a profile before proceed</string>
+    <string name="logout">Logout</string>
+    <string name="logout_success">Successfully logged out</string>
+
+    <!-- ##################################### Arrays #####################################-->
+    <string-array name="calculator_units">
+        <item>mg / dL</item>
+        <item>mmol / L</item>
+    </string-array>
+
+    <string-array name="weight_units">
+        <item>grams</item>
+        <item>ounces</item>
+    </string-array>
+    <string name="title_activity_login">LoginActivity</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="nutr_io">Nutr.io</string>
+    <string name="skip">Skip</string>
+    <string name="already_logged_in_message">You are already logged in with the user %1$s</string>
+    <string name="loading">Loading …</string>
+    <string name="invalid_auth_credentials">The credentials are no longer valid, please login again</string>
+    <string name="turn_on_geolocation">Please turn on your geolocation</string>
+    <string name="setup_profile_before_proceed">Please setup a profile before proceed</string>
+    <string name="calculator_login_warning">You need to be login to use the calculator</string>
+    <string name="profiles_error">Error obtaining profiles</string>
+    <string name="user_location_permission_denied">Location permission not granted</string>
+    <string name="about_us_title">The team that developed this project</string>
+    <string name="about_us_footer">This project was made in the context of our bachelor\'s final project</string>
 </resources>

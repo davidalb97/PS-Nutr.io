@@ -2,23 +2,29 @@ package pt.ipl.isel.leic.ps.androidclient.ui.viewmodel
 
 import android.os.Parcel
 import android.os.Parcelable
-import androidx.lifecycle.LiveData
-import pt.ipl.isel.leic.ps.androidclient.NutrioApp
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.insulinProfilesRepository
-import pt.ipl.isel.leic.ps.androidclient.data.repo.InsulinProfileRepository
-import pt.ipl.isel.leic.ps.androidclient.data.source.model.InsulinProfile
+import pt.ipl.isel.leic.ps.androidclient.data.model.InsulinProfile
+import pt.ipl.isel.leic.ps.androidclient.data.util.TimestampWithTimeZone
 
-class InsulinProfilesRecyclerViewModel() : ARecyclerViewModel<InsulinProfile>() {
+open class InsulinProfilesRecyclerViewModel() : ARecyclerViewModel<InsulinProfile>() {
 
-    constructor(parcel: Parcel) : this() {
+    var jwt: String? = null
+    var refreshLayout: SwipeRefreshLayout? = null
+
+    constructor(parcel: Parcel) : this()
+
+    fun addDbInsulinProfile(profile: InsulinProfile) =
+        insulinProfilesRepository.addProfile(profile, jwt, onError)
+
+    fun deleteItem(profileName: String) =
+        insulinProfilesRepository.deleteProfile(profileName, jwt, onError)
+
+    override fun update() {
+        this.liveDataHandler.set(insulinProfilesRepository.getAllProfiles()) {
+            insulinProfilesRepository.insulinProfileMapper.mapToModel(it)
+        }
     }
-
-    fun deleteItem(profile: InsulinProfile) {
-        insulinProfilesRepository.deleteProfile(profile)
-    }
-
-    override fun fetchLiveData(): LiveData<List<InsulinProfile>> =
-        insulinProfilesRepository.getAllProfiles()
 
     override fun writeToParcel(dest: Parcel?, flags: Int) {
         TODO("Not yet implemented")

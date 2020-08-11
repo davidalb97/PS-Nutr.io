@@ -18,6 +18,5 @@ class MealRecyclerVMProviderFactory(
     override fun getViewModelClass(): Class<MealRecyclerViewModel> =
         MealRecyclerViewModel::class.java
 
-    override fun newViewModel(): MealRecyclerViewModel =
-        MealRecyclerViewModel()
+    override fun newViewModel(): MealRecyclerViewModel = MealRecyclerViewModel()
 }

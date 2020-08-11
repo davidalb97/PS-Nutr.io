@@ -1,51 +1,81 @@
 package pt.ipl.isel.leic.ps.androidclient.data.repo
 
 import androidx.lifecycle.LiveData
+import com.android.volley.VolleyError
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.roomDb
-import pt.ipl.isel.leic.ps.androidclient.data.source.model.InsulinProfile
+import pt.ipl.isel.leic.ps.androidclient.data.api.datasource.InsulinProfileDataSource
+import pt.ipl.isel.leic.ps.androidclient.data.api.dto.output.InsulinProfileOutput
+import pt.ipl.isel.leic.ps.androidclient.data.api.mapper.InputInsulinProfileMapper
+import pt.ipl.isel.leic.ps.androidclient.data.db.entity.InsulinProfileEntity
+import pt.ipl.isel.leic.ps.androidclient.data.db.mapper.DbInsulinProfileMapper
+import pt.ipl.isel.leic.ps.androidclient.data.model.InsulinProfile
 import pt.ipl.isel.leic.ps.androidclient.data.util.AsyncWorker
+import pt.ipl.isel.leic.ps.androidclient.hasInternetConnection
 
-class InsulinProfileRepository {
+class InsulinProfileRepository(private val dataSource: InsulinProfileDataSource) {
 
-    fun getAllProfiles(): LiveData<List<InsulinProfile>> {
-        return roomDb.insulinProfileDao().getAll()
-        /*var res: LiveData<List<InsulinProfile>>? = null
+    val insulinProfileMapper = DbInsulinProfileMapper()
+    private val inputInsulinProfileMapper = InputInsulinProfileMapper()
 
-        AsyncWorker<Unit, LiveData<List<InsulinProfile>>> {
-            roomDb.insulinProfileDao().getAll()
-        }.setOnPostExecute{
-            res = it
-        }
+    fun getAllProfiles() = roomDb.insulinProfileDao().getAll()
 
-        return res!!*/
+    fun getRemoteProfiles() {
+        /*if (!jwt.isNullOrBlank() && hasInternetConnection()) {
+            dataSource.getAllInsulinProfiles(
+                jwt,
+                {
+                    onSuccess(inputInsulinProfileMapper.mapToListInputModel(it.asIterable()))
+                },
+                onError
+            )
+        }*/
     }
 
-    fun getProfile(name: String): InsulinProfile {
-        return roomDb.insulinProfileDao().get(name)
-        /*var res: InsulinProfile? = null
+    /*fun getProfile(
+        jwt: String?,
+        name: String,
+        onSuccess: (InsulinProfile) -> Unit,
+        onError: (VolleyError) -> Unit
+    ) {
+        val insulinProfile = roomDb.insulinProfileDao().get(name)
 
-        AsyncWorker<Unit, InsulinProfile> {
-            roomDb.insulinProfileDao().get(name)
-        }.setOnPostExecute{
-            res = it
+        if (insulinProfile.value == null) {
+            dataSource.getInsulinProfile(
+                jwt,
+                name,
+                { onSuccess(inputInsulinProfileMapper.mapToInputModel(it)) },
+                onError
+            )
+        } else {
+            onSuccess(insulinProfileMapper.mapToModel(insulinProfile.value!!))
+        }
+    }*/
+
+    fun addProfile(profileDb: InsulinProfile, jwt: String?, onError: (VolleyError) -> Unit) =
+        AsyncWorker<Unit, Unit> {
+            roomDb.insulinProfileDao().insert(insulinProfileMapper.mapToRelation(profileDb))
+
+            if (!jwt.isNullOrBlank() && hasInternetConnection()) {
+                dataSource.postInsulinProfile(
+                    InsulinProfileOutput(
+                        profileName = profileDb.profileName,
+                        startTime = profileDb.startTime,
+                        endTime = profileDb.endTime,
+                        glucoseObjective = profileDb.glucoseObjective,
+                        insulinSensitivityFactor = profileDb.glucoseAmountPerInsulin,
+                        carbohydrateRatio = profileDb.carbsAmountPerInsulin
+                    ),
+                    jwt,
+                    onError
+                )
+            }
         }
 
-        return res!!*/
-    }
-
-    fun addProfile(profile: InsulinProfile) =
+    fun deleteProfile(profileName: String, jwt: String?, onError: (VolleyError) -> Unit) =
         AsyncWorker<Unit, Unit> {
-            roomDb.insulinProfileDao().insert(profile)
-        }.execute()
-
-    fun updateProfile(profile: InsulinProfile) =
-        AsyncWorker<Unit, Unit> {
-            roomDb.insulinProfileDao().update(profile)
+            if (!jwt.isNullOrBlank() && hasInternetConnection())
+                dataSource.deleteInsulinProfile(profileName, jwt, onError)
+            roomDb.insulinProfileDao().delete(profileName)
         }
-
-    fun deleteProfile(profile: InsulinProfile) =
-        AsyncWorker<Unit, Unit> {
-            roomDb.insulinProfileDao().delete(profile)
-        }.execute()
 }
 

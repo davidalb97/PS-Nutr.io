@@ -20,12 +20,12 @@
             android:layout_alignParentTop="true"
             android:layout_marginTop="1dp"
             android:text="@string/item_name"
-            android:textColor="@android:color/black"
+            android:textColor="?attr/separatorColor"
             android:textSize="20sp"
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/restaurantCuisines"
+            android:id="@+id/mealCuisines"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/history_name"

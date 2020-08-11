@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/restaurantCardView"
+    android:id="@+id/mealCardView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="4dp"
@@ -19,7 +19,7 @@
             android:layout_centerHorizontal="true"
             android:text="Cuisine_name"
             android:textSize="30dp"
-            android:textColor="@android:color/background_dark">
+            android:textColor="?attr/textColor">
         </TextView>
 
     </RelativeLayout>

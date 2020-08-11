@@ -1,90 +1,307 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="?attr/backgroundColor"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="50dp">
+        android:layout_height="wrap_content">
 
         <TableLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+
             <RelativeLayout
-                android:id="@+id/add_meal_layout"
+                android:layout_margin="30dp"
+                android:gravity="center">
+                <TextView
+                    android:id="@+id/add_a_meal_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/add_a_meal"
+                    android:layout_centerVertical="true"
+                    android:textSize="24sp">
+                </TextView>
+
+                <ImageButton
+                    android:id="@+id/meal_add_button"
+                    android:background="@drawable/material_button_shape"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:src="@drawable/ic_add"
+                    android:layout_toEndOf="@id/add_a_meal_text"
+                    android:layout_marginStart="20dp">
+                </ImageButton>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/calculator_selected_meal"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:gravity="center">
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/calc_meal_card"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:elevation="10dp"
+                    app:cardCornerRadius="15dp"
+                    android:visibility="invisible">
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center">
+
+                        <TextView
+                            android:id="@+id/calc_meal_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginStart="15dp"
+                            android:text="Meal name"
+                            android:textSize="18sp">
+                        </TextView>
+
+                        <ImageButton
+                            android:id="@+id/remove_meal_from_calc_button"
+                            android:background="@drawable/material_bin_button_background"
+                            android:layout_toEndOf="@+id/calc_meal_name"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:src="@drawable/ic_close"
+                            android:layout_marginStart="20dp">
+                        </ImageButton>
+
+                    </RelativeLayout>
+
+                </androidx.cardview.widget.CardView>
+
+            </RelativeLayout>
+
+            <!--Separator-->
+            <View
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp">
+                android:layout_margin="20dp"
+                android:layout_height="1dp"
+                android:background="?attr/separatorColor"/>
 
+            <RelativeLayout>
                 <TextView
+                    android:id="@+id/blood_glucose"
+                    android:layout_centerHorizontal="true"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:text="@string/add_a_meal_to_this_calculation"
-                    android:textColor="@android:color/background_dark"
-                    android:textSize="20sp">
-                </TextView>
-
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
                     android:text="@string/current_blood_glucose"
-                    android:textColor="@android:color/background_dark"
-                    android:textSize="20sp">
+                    android:textSize="24sp">
                 </TextView>
-
-                <EditText
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true">
-                </EditText>
-
             </RelativeLayout>
 
             <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp">
+                android:gravity="center">
+                <EditText
+                    android:id="@+id/user_blood_glucose"
+                    android:layout_width="100dp"
+                    android:inputType="number"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/textbox_shape"
+                    android:padding="5dp"
+                    android:gravity="center">
+                </EditText>
+                <Spinner
+                    android:id="@+id/measurement_units"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="center"
+                    android:layout_gravity="center"
+                    android:layout_toEndOf="@+id/user_blood_glucose"
+                    android:layout_centerVertical="true"
+                    android:entries="@array/calculator_units">
+                </Spinner>
+            </RelativeLayout>
+
+            <RelativeLayout>
+                <Button
+                    android:id="@+id/calculate_button"
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/quantity_slider"
+                    android:layout_marginTop="10dp"
+                    android:layout_centerHorizontal="true"
+                    android:text="@string/calculate"
+                    android:textColor="@color/cardview_light_background"
+                    android:background="@drawable/rect_material_button_shape">
+                </Button>
+            </RelativeLayout>
+
+            <!--Separator-->
+            <View
+                android:layout_width="match_parent"
+                android:layout_margin="20dp"
+                android:layout_height="1dp"
+                android:background="?attr/separatorColor"/>
+
+            <RelativeLayout
+                android:id="@+id/current_profile_details">
+                <TextView
+                    android:id="@+id/current_profile_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:text="@string/your_current_profile_for_this_time"
+                    android:textSize="18sp">
+                </TextView>
+
+                <TableLayout
+                    android:id="@+id/current_profile_overview"
+                    android:layout_below="@id/current_profile_label"
+                    android:layout_marginTop="10dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TableRow>
+                        <TextView
+                            android:id="@+id/start_time"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginStart="15dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/start_time_calc">
+                        </TextView>
+                    </TableRow>
+
+                    <TableRow>
+                        <TextView
+                            android:id="@+id/end_time"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginStart="15dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/end_time_calc">
+                        </TextView>
+                    </TableRow>
+
+                    <TableRow>
+                        <TextView
+                            android:id="@+id/glucose_objective"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginStart="15dp"
+                            android:text="@string/glucose_objective_calc">
+                        </TextView>
+
+                    </TableRow>
+
+                    <TableRow>
+                        <TextView
+                            android:id="@+id/insulin_sensitivity_factor"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginStart="15dp"
+                            android:text="@string/insulin_sensitivity_factor_calc">
+                        </TextView>
+                    </TableRow>
+
+                    <TableRow>
+                        <TextView
+                            android:id="@+id/carbohydrate_ratio"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginStart="15dp"
+                            android:text="@string/carbohydrate_ratio_calc">
+                        </TextView>
+                    </TableRow>
+                </TableLayout>
+
+                <TableLayout
+                    android:id="@+id/current_profile_overview_values"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_alignEnd="@+id/current_profile_label"
+                    android:layout_below="@+id/current_profile_label">
+
+                    <TableRow>
+                        <TextView
+                            android:id="@+id/start_time_value"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginStart="15dp"
+                            android:layout_marginEnd="10dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/no_value">
+                        </TextView>
+                    </TableRow>
+
+                    <TableRow>
+                        <TextView
+                            android:id="@+id/end_time_value"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginStart="15dp"
+                            android:layout_marginEnd="10dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/no_value">
+                        </TextView>
+                    </TableRow>
+
+                    <TableRow>
+                        <TextView
+                            android:id="@+id/glucose_objective_value"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginStart="15dp"
+                            android:layout_marginEnd="10dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/no_value">
+                        </TextView>
+                    </TableRow>
+
+                    <TableRow>
+                        <TextView
+                            android:id="@+id/insulin_sensitivity_factor_value"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginStart="15dp"
+                            android:layout_marginEnd="10dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/no_value">
+                        </TextView>
+                    </TableRow>
+
+                    <TableRow>
+                        <TextView
+                            android:id="@+id/carbohydrate_ratio_value"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginStart="15dp"
+                            android:layout_marginEnd="10dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/no_value">
+                        </TextView>
+                    </TableRow>
+                </TableLayout>
 
                 <TextView
+                    android:id="@+id/no_profile_label"
+                    android:gravity="center"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginStart="15dp"
                     android:layout_centerHorizontal="true"
-                    android:text="@string/pre_meal_blood_glucose_target"
-                    android:textColor="@android:color/background_dark"
-                    android:textSize="20sp">
+                    android:text="@string/you_do_not_have_any_insulin_profile_please_create_one"
+                    android:visibility="invisible">
                 </TextView>
 
             </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp">
-                <Button
-                    android:id="@+id/calculation_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:background="@drawable/rect_material_button_shape"
-                    android:text="@string/calculate"
-                    android:textColor="@color/cardview_light_background">
-                </Button>
-
-            </RelativeLayout>
-
-
         </TableLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

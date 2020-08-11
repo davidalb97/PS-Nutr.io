@@ -1,6 +1,7 @@
 package pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler
 
 import android.content.Context
+import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
@@ -11,7 +12,7 @@ import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.ARecyclerViewModel
 /**
  *  A generic Adapter for Recycler Views.
  */
-abstract class ARecyclerAdapter<T : Any, ViewModelType : ARecyclerViewModel<T>, ViewHolderType : ARecyclerViewHolder<T>>(
+abstract class ARecyclerAdapter<T : Parcelable, ViewModelType : ARecyclerViewModel<T>, ViewHolderType : ARecyclerViewHolder<T>>(
     val viewModel: ViewModelType,
     val ctx: Context
 ) : RecyclerView.Adapter<ViewHolderType>() {
@@ -24,6 +25,8 @@ abstract class ARecyclerAdapter<T : Any, ViewModelType : ARecyclerViewModel<T>, 
 
     override fun getItemCount(): Int = viewModel.items.size
 
+    override fun onBindViewHolder(holder: ViewHolderType, position: Int) =
+        holder.bindTo(viewModel.items[position])
 
     @LayoutRes
     abstract fun getItemViewId(): Int
