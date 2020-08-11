@@ -24,7 +24,7 @@ a relational model was chosen.
 
 \subsection{Used tecnologies}
 
-When the project was in a planning phase, the group decided that a relational database was the most suitable option for this project
+When the project was in a planning phase, we decided that a relational database was the most suitable option for this project
 instead of a No-SQL database, because of the project's structure - there are many hierarchies between entities, which invalidated the
 no-SQL option.\\
 
@@ -63,16 +63,16 @@ Therefore each meal possesses nutritional information, which is essential to the
 
 \subsubsection{Kotlin}
 
-The group chose to use Kotlin\cite{kotlin} for the HTTP server developed as it is a language that is being more adopted and used nowadays and because it is totally 
+We chose to use Kotlin\cite{kotlin} for the HTTP server developed as it is a language that is being more adopted and used nowadays and because it is totally 
 interoperable with Java\cite{java}.\\
 
 It was also the language used during PDM, which is an optional course for Android application development inside the LEIC programme, 
-making this a language the group felt confortable with.\\
+making this a language we felt confortable with.\\
 
 \subsubsection{Spring MVC}
 
-At the beginning of the project the group decided to use Spring MVC\cite{springmvc} rather than Ktor\cite{ktor}, as the first one is taught in DAW, which is an optional course
-for Web applications development inside the LEIC programme. As Spring MVC has a better coverage inside the LEIC programme, the group considered 
+At the beginning of the project we decided to use Spring MVC\cite{springmvc} rather than Ktor\cite{ktor}, as the first one is taught in DAW, which is an optional course
+for Web applications development inside the LEIC programme. As Spring MVC has a better coverage inside the LEIC programme, we considered 
 it a more solid choice.\\
 
 \newpage
@@ -130,7 +130,7 @@ All API calls are made from asynchronous HTTP requests, while database calls blo
 
 \subsection{JDBI}
 
-After some discussion of which driver should be used to allow communication between the server and database, the group decided that the JDBI\cite{jdbi} was the best
+After some discussion of which driver should be used to allow communication between the server and database, we decided that the JDBI\cite{jdbi} was the best
 option as it is a library built on JDBC\cite{jdbc}.\\
 
 The library also exposes two different API's styles: a fluent/imperative style and a declarative style (used during development), as shown below.
@@ -149,7 +149,7 @@ The library also exposes two different API's styles: a fluent/imperative style a
     \end{center}
 \end{figure}
 
-The group chose to use a declarative style due to its convenience and code simplicity
+We chose to use a declarative style due to its convenience and code simplicity
 over the imperative one. It was also the more adequate style to the project's structure. 
 
 \subsection{Spring Security}
@@ -157,7 +157,7 @@ over the imperative one. It was also the more adequate style to the project's st
 \subsubsection{JSON Web Tokens}
 
 As each client needs to have authentication to provide the user a way to create an account and allow submissions and data synchronization,
-the group had to discuss about the platform's security and the safest ways to do that.\\
+we had to discuss about the platform's security and the safest ways to do that.\\
 
 It was concluded that the use of \textbf{JSON Web Tokens}\cite{jwt} was the best option, because of the nature of the clients, more specifically the fact that
 the mobile application is completely \textbf{stateless}.\\
@@ -178,7 +178,7 @@ The picture below represents a very generic and simplified workflow of the JSON 
 
 \subsubsection{Implementation}
 
-To implement the shown workflow inside the HTTP server, as the group is implementing it with Spring, the more obvious choice was to use \textbf{Spring Security}\cite{springsecurity}.\\
+To implement the shown workflow inside the HTTP server, as we are implementing it with Spring, the more obvious choice was to use \textbf{Spring Security}\cite{springsecurity}.\\
 
 Spring Security is a customizable authentication and access-control framework.\\
 
@@ -204,7 +204,7 @@ to retrieve the email from the token or encode the password when registering.\\
 The password encoding always happens when the user registers for the first time: the server hashes the password using \textbf{BCrypt}\cite{bcrypt} before inserting the new
 user into the database.\\
 
-BCrypt is a password-hashing function based on the Blowfish\cite{blowfish} cipher. The group found this function very convenient for these reasons:
+BCrypt is a password-hashing function based on the Blowfish\cite{blowfish} cipher. We found this function very convenient for these reasons:
 \begin{itemize}
     \item Already pre salts the passwords, preventing rainbow table attacks\cite{rainbowtable};
     \item Makes bruteforce attacks inviable: the iteration count can be increased to make it even slower to crack.
@@ -220,7 +220,7 @@ Given how all clients rely on obtaining nearby restaurants, there was a need to 
 Initial research showcased two possible solutions: Haversine\cite{haversine} distances and cartesian distances, where the latter returns a highly imprecise distances.
 As such, Haversine was selected.\\
 
-The next step was to choose which system filters nearby restaurants: database or HTTP server. After some discussion, the group decided that database was the best
+The next step was to choose which system filters nearby restaurants: database or HTTP server. After some discussion, we decided that database was the best
 option for two reasons: 
 \begin{itemize}
     \item Given the large amount of existing restaurants, sending such data from the database to the HTTP server so that it could filter it would occupy too much memory;
@@ -233,7 +233,7 @@ option for two reasons:
 
 \subsubsection{Kotlin}
 
-The group chose to use Kotlin for the mobile application development, as it is now the official programming language for Android development,
+We chose to use Kotlin for the mobile application development, as it is now the official programming language for Android development,
 according to Google.\\
 
 It is also the language taught during the optinal course - mobile devices programming (PDM).\\
@@ -281,7 +281,7 @@ The Activity, Fragments, ViewModel, Adapters and Repositories classes are all pr
 
 \subsubsection{Fragments}
 
-The group chose to use fragments\cite{fragment} for each application view instead of activities. Although a fragment has a more complex lifecycle than the activity and depends on it
+We chose to use fragments\cite{fragment} for each application view instead of activities. Although a fragment has a more complex lifecycle than the activity and depends on it
 to exist, they are far more lightweight to instanciate than an activity and thus they provide more performance to the application.\\ 
 
 It is also the recommended Android widget to use when designing an application with a side drawer.\\
@@ -323,10 +323,10 @@ encryption even harder to break. The information is encrypted using a symmetric 
 is hardware-generated and it is managed by the application itself, so the key's retrieval from an 'encrypted' shared preferences is equal to the 'normal'
 shared preferences.\\
 
-The group also discussed if the credentials should be saved inside the device or if only the database should possess them.
+We also discussed if the credentials should be saved inside the device or if only the database should possess them.
 If that approach was taken, the user had to login each time it was needed to read or write a protected resource.\\
 
-As this platform is not, for example, a bank application that needs top protection. The group found this level of protection
+As this platform is not, for example, a bank application that needs top protection. We found this level of protection
 unnecessary for the application and inconvenient for the user and decided that only the essential protection should be provided - 
 user credentials encryption to avoid information leaks from rooted devices.
 
@@ -364,14 +364,14 @@ Here will be displayed pictures of the mobile application and its functionalitie
 
 \subsubsection{React framework}
 
-The group chose to build the website with JavaScript \cite{javascript} using the React framework \cite{react} , as it was the framework lectured in the Web applications
+We chose to build the website with JavaScript \cite{javascript} using the React framework \cite{react} , as it was the framework lectured in the Web applications
 development course and has innumerous advantages to other frameworks, such as Node.JS.
 
 \subsection{Code structure}
 
 \subsubsection{Single-page application}
 
-As website design pattern, the group chose to conceive a single-page application. This pattern was chosen for a 
+As website design pattern, we chose to conceive a single-page application. This pattern was chosen for a 
 variety of reasons, being the main one a better performance comparing to a traditional multi-page application.\\
 
 \subsubsection{Routing}
