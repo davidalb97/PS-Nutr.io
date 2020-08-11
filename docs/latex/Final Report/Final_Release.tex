@@ -4,12 +4,13 @@
 \usepackage{lipsum}
 \usepackage{indentfirst}
 \usepackage{float}
-\usepackage{natbib}
+\usepackage[square,numbers]{natbib}
 \usepackage{graphicx}
 \usepackage{grffile}
 \usepackage{epsfig}
 \usepackage{soul}
-\usepackage{hyperref}
+\usepackage[hidelinks]{hyperref}
+\usepackage{subcaption}
 \usepackage{pdflscape}
 \usepackage{appendix}
 \usepackage[scaled]{helvet}
@@ -57,6 +58,7 @@
 % --- Title end ---
 
 \date{September, 2020}
+\author{}
 
 \begin{document}
 
@@ -104,14 +106,23 @@
     \cleardoublepage
     \input{abstract/abstract_chapter.tex}
 
+    % Glossary
+    \input{glossary/glossary_chapter.tex}
+
     \cleardoublepage
-    \tableofcontents\cleardoublepage
+    \tableofcontents
+    \renewcommand{\numberline}[1]{\hspace*{-1.5em}}
+    \listoffigures
+    \cleardoublepage
 
     \setcounter{page}{1}
     \pagenumbering{arabic}
 
     % Introduction
     \input{introduction/introduction_chapter.tex}
+
+    % Objectives
+    \input{objectives/objectives_chapter.tex}
     
     % Requirements and project's structure
     \input{requirements/requirements_and_structure.tex}
@@ -119,10 +130,16 @@
     % Development
     \input{development/development_chapter.tex}
 
-    % Results and Conclusion
+    % Results
     \input{results/results_chapter.tex}
+
+    % Conclusion
+    \input{conclusion/conclusion_chapter.tex}
 
     % Appendix    
     \input{appendix/appendix_chapter.tex}
+
+    \bibliographystyle{abbrvnat}
+    \bibliography{biblio}
 
 \end{document}
