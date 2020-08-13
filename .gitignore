@@ -104,3 +104,4 @@ latex.out/
 
 # Dependency directories
 node_modules/
+dist/
