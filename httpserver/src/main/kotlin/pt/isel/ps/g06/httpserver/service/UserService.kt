@@ -5,6 +5,7 @@ import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.stereotype.Service
 import pt.isel.ps.g06.httpserver.common.exception.authentication.NotAuthenticatedException
+import pt.isel.ps.g06.httpserver.common.exception.notFound.UserNotFoundException
 import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.submitter.SubmitterResponseMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.SubmitterDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.UserDbRepository
@@ -39,7 +40,7 @@ class UserService(
 
     fun getSubmitterFromEmail(email: String): Submitter? {
         val dbUserDto = userDbRepository.getByEmail(email) ?:
-                throw Exception() // TODO(Change exception)
+                throw UserNotFoundException()
 
         return submitterDbRepository
                 .getSubmitterBySubmitterId(dbUserDto.submitterId)
