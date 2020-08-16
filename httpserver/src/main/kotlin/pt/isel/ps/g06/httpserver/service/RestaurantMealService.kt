@@ -52,7 +52,8 @@ class RestaurantMealService(
                     restaurantName = restaurant.name,
                     cuisines = restaurant.cuisines.map { it.name }.toList(),
                     latitude = restaurant.latitude,
-                    longitude = restaurant.longitude
+                    longitude = restaurant.longitude,
+                    ownerId = restaurant.ownerId!!
             )
         }
 
