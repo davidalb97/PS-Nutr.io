@@ -38,8 +38,8 @@ CREATE TABLE _User(
 	submitter_id integer,	
 	email varchar(50) NOT NULL,
 	password varchar(60) NOT NULL, -- it will always be 60, because of the BCrypt password encoding
-	role boolean NOT NULL,
-	status boolean NOT NULL,
+	role varchar(10) CHECK(role = 'normal' OR role = 'mod') NOT NULL,
+	is_banned boolean NOT NULL,
 	PRIMARY KEY(submitter_id),
 	FOREIGN KEY(submitter_id) REFERENCES Submitter(submitter_id)
 );
