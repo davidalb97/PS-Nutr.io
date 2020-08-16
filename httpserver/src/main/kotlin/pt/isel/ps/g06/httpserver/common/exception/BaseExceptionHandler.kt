@@ -1,9 +1,8 @@
-package pt.isel.ps.g06.httpserver.common.interceptor
+package pt.isel.ps.g06.httpserver.common.exception
 
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
-import pt.isel.ps.g06.httpserver.common.exception.BaseResponseStatusException
 import pt.isel.ps.g06.httpserver.common.hypermedia.ProblemJson
 import pt.isel.ps.g06.httpserver.common.hypermedia.toResponseEntity
 

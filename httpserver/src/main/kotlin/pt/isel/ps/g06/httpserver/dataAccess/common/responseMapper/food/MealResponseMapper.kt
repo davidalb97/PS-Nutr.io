@@ -5,10 +5,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.ResponseMapper
 import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.restaurant.DbCuisineResponseMapper
 import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.submitter.DbSubmitterResponseMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbMealDto
-import pt.isel.ps.g06.httpserver.dataAccess.db.repo.CuisineDbRepository
-import pt.isel.ps.g06.httpserver.dataAccess.db.repo.MealDbRepository
-import pt.isel.ps.g06.httpserver.dataAccess.db.repo.SubmissionDbRepository
-import pt.isel.ps.g06.httpserver.dataAccess.db.repo.SubmitterDbRepository
+import pt.isel.ps.g06.httpserver.dataAccess.db.repo.*
 import pt.isel.ps.g06.httpserver.dataAccess.model.MealComposition
 import pt.isel.ps.g06.httpserver.model.food.Meal
 
@@ -21,7 +18,9 @@ class DbMealResponseMapper(
         private val dbMealRepo: MealDbRepository,
         private val dbCuisineRepo: CuisineDbRepository,
         private val submissionDbRepository: SubmissionDbRepository,
-        private val submitterDbRepository: SubmitterDbRepository
+        private val submitterDbRepository: SubmitterDbRepository,
+        private val dbRestaurantMeal: RestaurantMealDbRepository,
+        private val mealRestaurantInfoResponseMapper: MealRestaurantInfoResponseMapper
 ) : ResponseMapper<DbMealDto, Meal> {
     override fun mapTo(dto: DbMealDto): Meal {
         return Meal(
@@ -47,6 +46,11 @@ class DbMealResponseMapper(
                     submitterDbRepository
                             .getSubmitterForSubmission(dto.submission_id)
                             ?.let(dbSubmitterMapper::mapTo)
+                },
+                restaurantInfoSupplier = {
+                    dbRestaurantMeal
+                            .getRestaurantMeal(it, dto.submission_id)
+                            ?.let(mealRestaurantInfoResponseMapper::mapTo)
                 }
         )
     }

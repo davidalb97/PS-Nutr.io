@@ -1,5 +1,6 @@
-package pt.isel.ps.g06.httpserver.common.interceptor
+package pt.isel.ps.g06.httpserver.interceptor
 
+import org.springframework.stereotype.Component
 import org.springframework.web.servlet.HandlerInterceptor
 import org.springframework.web.servlet.ModelAndView
 import pt.isel.ps.g06.httpserver.dataAccess.db.common.DatabaseContext
@@ -14,6 +15,7 @@ import javax.servlet.http.HttpServletResponse
  * **_"Returning cursor-like types such as Stream<T> or Iterable<T> outside of the outermost on-demand call does not work.
  * Since the Handle is closed, the database cursor is released and reading will fail."_**
  */
+@Component
 class DatabaseCleanupInterceptor(private val databaseContext: DatabaseContext) : HandlerInterceptor {
     override fun postHandle(
             request: HttpServletRequest,

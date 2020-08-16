@@ -6,6 +6,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.food.DbMealRes
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.MealDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.input.IngredientInput
 import pt.isel.ps.g06.httpserver.model.food.Meal
+import java.util.stream.Stream
 
 @Service
 class MealService(
@@ -20,7 +21,7 @@ class MealService(
                 ?.let(dbMealResponseMapper::mapTo)
     }
 
-    fun getSuggestedMeals(): Sequence<Meal> {
+    fun getSuggestedMeals(): Stream<Meal> {
         return dbMealRepo
                 .getAllSuggestedMeals()
                 .map { dbMealResponseMapper.mapTo(it) }

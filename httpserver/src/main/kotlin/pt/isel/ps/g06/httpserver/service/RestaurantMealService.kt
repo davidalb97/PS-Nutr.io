@@ -5,11 +5,13 @@ import pt.isel.ps.g06.httpserver.common.exception.clientError.DuplicateMealExcep
 import pt.isel.ps.g06.httpserver.common.exception.forbidden.NotSubmissionOwnerException
 import pt.isel.ps.g06.httpserver.common.exception.notFound.PortionNotFoundException
 import pt.isel.ps.g06.httpserver.common.exception.notFound.RestaurantMealNotFound
-import pt.isel.ps.g06.httpserver.common.exception.notFound.RestaurantNotFoundException
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.PortionDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.RestaurantMealDbRepository
 import pt.isel.ps.g06.httpserver.model.food.Meal
+import pt.isel.ps.g06.httpserver.model.restaurant.Restaurant
 import pt.isel.ps.g06.httpserver.model.restaurant.RestaurantIdentifier
+import java.util.stream.Stream
+import kotlin.streams.toList
 
 @Service
 class RestaurantMealService(
@@ -19,40 +21,30 @@ class RestaurantMealService(
         private val dbRestaurantMealRepository: RestaurantMealDbRepository,
         private val dbPortionRepository: PortionDbRepository
 ) {
-    fun getRestaurantMeal(restaurantId: RestaurantIdentifier, mealId: Int): RestaurantMeal {
-        val restaurant = restaurantService
-                .getRestaurant(restaurantId.submitterId, restaurantId.submissionId, restaurantId.apiId)
-                ?: throw RestaurantNotFoundException()
-
-        val meal = mealService.getMeal(mealId) ?: throw RestaurantMealNotFound()
-
-        //Although the meal exists, it is not associated to given Restaurant
-        //Hence, it is not a RestaurantMeal
-        if (!meal.isRestaurantMeal(restaurant)) {
-            throw RestaurantMealNotFound()
-        }
-
-        return RestaurantMeal(restaurant, meal)
+    fun getRestaurantMeal(restaurant: Restaurant, mealId: Int): Meal {
+        return findRestaurantMeal(mealId, restaurant.meals)
+                ?: findRestaurantMeal(mealId, restaurant.suggestedMeals)
+                ?: throw RestaurantMealNotFound()
     }
 
-    fun addRestaurantMeal(restaurantId: RestaurantIdentifier, meal: Meal, submitterId: Int? = null): Int {
-        var restaurant = restaurantService.getRestaurant(restaurantId) ?: throw RestaurantNotFoundException()
+    fun addRestaurantMeal(restaurant: Restaurant, meal: Meal, submitterId: Int? = null): Int {
+        var targetRestaurant = restaurant
 
-        if (meal.getMealRestaurantInfo(restaurantId) != null) {
-            //Given meal already is in given restaurant
-            throw DuplicateMealException()
-        }
-
-        if (!restaurant.identifier.value.isPresentInDatabase()) {
+        if (!targetRestaurant.identifier.value.isPresentInDatabase()) {
             //Ensure that existing Restaurant exists in database before creating associations for it
-            restaurant = restaurantService.createRestaurant(
-                    submitterId = restaurantId.submitterId,
-                    apiId = restaurantId.apiId,
+            targetRestaurant = restaurantService.createRestaurant(
+                    submitterId = targetRestaurant.identifier.value.submitterId,
+                    apiId = targetRestaurant.identifier.value.apiId,
                     restaurantName = restaurant.name,
                     cuisines = restaurant.cuisines.map { it.name }.toList(),
                     latitude = restaurant.latitude,
                     longitude = restaurant.longitude
             )
+        }
+
+        if (meal.getRestaurantMeal(targetRestaurant.identifier.value.submissionId!!) != null) {
+            //Given meal already is in given restaurant
+            throw DuplicateMealException()
         }
 
         val (submission_id) = dbRestaurantMealRepository.insert(
@@ -76,7 +68,7 @@ class RestaurantMealService(
         //If given meal is a suggested Meal, make a RestaurantMeal first before adding user portion
         val restaurantMealIdentifier = restaurantInfo
                 .restaurantMealIdentifier
-                ?: this.addRestaurantMeal(restaurant.identifier.value, meal)
+                ?: addRestaurantMeal(restaurant.identifier.value, meal)
 
         dbPortionRepository.insert(submitterId, restaurantMealIdentifier, quantity)
     }
@@ -104,4 +96,9 @@ class RestaurantMealService(
 
         submissionService.deleteSubmission(userPortion.identifier, submitterId)
     }
+
+    private fun findRestaurantMeal(mealId: Int, meals: Stream<Meal>): Meal? {
+        return meals.filter { it.identifier == mealId }.findAny().orElse(null)
+    }
+
 }

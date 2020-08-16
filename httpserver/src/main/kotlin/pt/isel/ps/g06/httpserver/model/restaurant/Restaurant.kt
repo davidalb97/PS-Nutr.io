@@ -2,7 +2,7 @@ package pt.isel.ps.g06.httpserver.model.restaurant
 
 import pt.isel.ps.g06.httpserver.dataAccess.model.Cuisine
 import pt.isel.ps.g06.httpserver.model.Submitter
-import pt.isel.ps.g06.httpserver.model.food.RestaurantMeal
+import pt.isel.ps.g06.httpserver.model.food.Meal
 import pt.isel.ps.g06.httpserver.model.submission.Favorable
 import pt.isel.ps.g06.httpserver.model.submission.IFavorable
 import pt.isel.ps.g06.httpserver.model.submission.IVotable
@@ -20,8 +20,8 @@ data class Restaurant(
         val image: URI? = null,
         val submitterInfo: Lazy<Submitter>,
         val creationDate: Lazy<OffsetDateTime?>,
-        val meals: Stream<RestaurantMeal>,
-        val suggestedMeals: Stream<RestaurantMeal>,
+        val meals: Stream<Meal>,
+        val suggestedMeals: Stream<Meal>,
         val cuisines: Stream<Cuisine>,
         override val votable: Votable,
         override val favorable: Favorable
@@ -38,6 +38,6 @@ data class Restaurant(
      * Checks if given restaurant was created by a user or not.
      */
     fun wasCreatedByUser(): Boolean {
-        return submitterInfo.isUser
+        return submitterInfo.value.isUser
     }
 }
