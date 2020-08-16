@@ -1,4 +1,4 @@
-package pt.isel.ps.g06.httpserver.common
+package pt.isel.ps.g06.httpserver.argumentResolver
 
 import org.springframework.context.annotation.Lazy
 import org.springframework.core.MethodParameter

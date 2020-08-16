@@ -7,7 +7,7 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver
 import org.springframework.web.servlet.config.annotation.EnableWebMvc
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
-import pt.isel.ps.g06.httpserver.common.AuthenticationArgumentResolver
+import pt.isel.ps.g06.httpserver.argumentResolver.AuthenticationArgumentResolver
 import pt.isel.ps.g06.httpserver.interceptor.LoggerInterceptor
 
 @EnableWebMvc
