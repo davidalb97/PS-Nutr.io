@@ -2,10 +2,10 @@ package pt.isel.ps.g06.httpserver.service
 
 import org.springframework.stereotype.Service
 import pt.isel.ps.g06.httpserver.common.exception.clientError.InvalidMealException
-import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.restaurant.DbMealResponseMapper
+import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.food.DbMealResponseMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.MealDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.input.IngredientInput
-import pt.isel.ps.g06.httpserver.model.Meal
+import pt.isel.ps.g06.httpserver.model.food.Meal
 
 @Service
 class MealService(

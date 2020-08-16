@@ -3,6 +3,7 @@ package pt.isel.ps.g06.httpserver.dataAccess.db.dao
 import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbCustomMealDto
+import java.util.stream.Stream
 
 //SubmissionSubmitter table constants
 private const val SS_table = SubmissionSubmitterDao.table
@@ -23,7 +24,7 @@ interface CustomMealDao {
             "INNER JOIN $SS_table " +
             "ON $table.$id = $SS_table.$SS_submissionId " +
             "WHERE $SS_table.$SS_submitterId = :submitterId")
-    fun getAllUserCustomMeals(@Bind submitterId: Int): Sequence<DbCustomMealDto>
+    fun getAllUserCustomMeals(@Bind submitterId: Int): Stream<DbCustomMealDto>
 
     @SqlQuery("SELECT * FROM $table " +
             "INNER JOIN $SS_table " +

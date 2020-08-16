@@ -4,6 +4,7 @@ import org.jdbi.v3.sqlobject.config.RegisterRowMapper
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbUserInsulinProfileDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.mapper.DbRowInsulinProfileMapper
+import java.util.stream.Stream
 
 @RegisterRowMapper(DbRowInsulinProfileMapper::class)
 interface InsulinProfileDao {
@@ -21,7 +22,7 @@ interface InsulinProfileDao {
     }
 
     @SqlQuery("SELECT * FROM $table WHERE $submitterId = :submitterId")
-    fun getAllFromUser(submitterId: Int): Collection<DbUserInsulinProfileDto>
+    fun getAllFromUser(submitterId: Int): Stream<DbUserInsulinProfileDto>
 
     @SqlQuery("SELECT * FROM $table WHERE $submitterId = :submitterId AND $profileName = :profileName")
     fun getFromUser(submitterId: Int, profileName: String): DbUserInsulinProfileDto?
@@ -40,5 +41,5 @@ interface InsulinProfileDao {
     ): DbUserInsulinProfileDto
 
     @SqlQuery("DELETE FROM $table WHERE $submitterId = :submitterId AND $profileName = :profileName RETURNING *")
-    fun deleteProfile(submitterId: Int, profileName: String): DbUserInsulinProfileDto?
+    fun deleteProfile(submitterId: Int, profileName: String): DbUserInsulinProfileDto
 }

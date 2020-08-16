@@ -8,5 +8,5 @@ data class Submitter(
         val name: String,
         val creationDate: OffsetDateTime?,
         val image: URI?,
-        val isUser: Boolean
+        val isUser: Boolean //TODO This should be its own sub-class
 )

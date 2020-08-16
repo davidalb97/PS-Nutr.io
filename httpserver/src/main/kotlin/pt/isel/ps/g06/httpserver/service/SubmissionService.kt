@@ -7,9 +7,8 @@ import pt.isel.ps.g06.httpserver.common.exception.forbidden.NotSubmissionOwnerEx
 import pt.isel.ps.g06.httpserver.common.exception.notFound.SubmissionNotFoundException
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.SubmissionDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.VoteDbRepository
-import pt.isel.ps.g06.httpserver.model.Restaurant
-import pt.isel.ps.g06.httpserver.model.RestaurantMeal
 import pt.isel.ps.g06.httpserver.model.VoteState
+import pt.isel.ps.g06.httpserver.model.restaurant.Restaurant
 
 /**
  * Handles actions that are common to any Submission (like Restaurant, Meal, RestaurantMeal),
@@ -38,7 +37,7 @@ class SubmissionService(
     }
 
     fun alterRestaurantVote(restaurant: Restaurant, submitterId: Int, vote: Boolean) {
-        if (!restaurant.isPresentInDatabase() || !restaurant.isUserRestaurant()) {
+        if (!restaurant.isPresentInDatabase() || !restaurant.wasCreatedByUser()) {
             throw SubmissionNotVotableException("Only restaurants created by users can have votes!")
         }
 
@@ -59,7 +58,7 @@ class SubmissionService(
     }
 
     fun deleteRestaurantVote(restaurant: Restaurant, submitterId: Int) {
-        if (!restaurant.isUserRestaurant()) {
+        if (!restaurant.wasCreatedByUser()) {
             throw SubmissionNotVotableException("Only restaurants created by users can have votes!")
         }
 

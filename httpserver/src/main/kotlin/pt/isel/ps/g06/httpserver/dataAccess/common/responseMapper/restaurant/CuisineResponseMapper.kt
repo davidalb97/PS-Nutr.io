@@ -7,14 +7,13 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.ApiSubmitterMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbCuisineDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.CuisineDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.model.Cuisine
+import java.util.stream.Stream
+import kotlin.streams.toList
 
 @Component
 class DbCuisineResponseMapper : ResponseMapper<DbCuisineDto, Cuisine> {
     override fun mapTo(dto: DbCuisineDto): Cuisine {
-        return Cuisine(
-                identifier = dto.submission_id,
-                name = dto.cuisine_name
-        )
+        return Cuisine(identifier = dto.submission_id, name = dto.cuisine_name)
     }
 }
 
@@ -22,10 +21,10 @@ class DbCuisineResponseMapper : ResponseMapper<DbCuisineDto, Cuisine> {
 class ZomatoCuisineResponseMapper(
         private val dbCuisineRepo: CuisineDbRepository,
         private val dbCuisineMapper: DbCuisineResponseMapper
-) : ResponseMapper<Sequence<String>, Sequence<Cuisine>> {
-    override fun mapTo(dto: Sequence<String>): Sequence<Cuisine> {
-        return dbCuisineRepo.getAllByNames(dto)
-                .map(dbCuisineMapper::mapTo)
+) : ResponseMapper<Stream<String>, Stream<Cuisine>> {
+    override fun mapTo(dto: Stream<String>): Stream<Cuisine> {
+        //TODO Instead of eager, make db method to search one by one
+        return dbCuisineRepo.getAllByNames(dto.toList()).map(dbCuisineMapper::mapTo)
     }
 }
 
@@ -34,8 +33,8 @@ class HereCuisineResponseMapper(
         private val dbCuisineRepo: CuisineDbRepository,
         private val dbCuisineMapper: DbCuisineResponseMapper,
         private val apiSubmitterMapper: ApiSubmitterMapper
-) : ResponseMapper<Sequence<String>, Sequence<Cuisine>> {
-    override fun mapTo(dto: Sequence<String>): Sequence<Cuisine> {
+) : ResponseMapper<Collection<String>, Stream<Cuisine>> {
+    override fun mapTo(dto: Collection<String>): Stream<Cuisine> {
         val apiSubmitterId = apiSubmitterMapper.getSubmitter(RestaurantApiType.Here)!!
 
         return dbCuisineRepo

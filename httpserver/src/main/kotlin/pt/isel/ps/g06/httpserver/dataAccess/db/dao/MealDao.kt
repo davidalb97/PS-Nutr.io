@@ -4,6 +4,7 @@ import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.customizer.BindList
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbMealDto
+import java.util.stream.Stream
 
 //Restaurant table constants
 private const val RM_table = RestaurantMealDao.table
@@ -84,7 +85,7 @@ interface MealDao {
             " AND $C_table.$C_name IN (<cuisineNames>)" +
             " ORDER BY $table.$name ASC"
     )
-    fun getAllSuggestedForCuisineNames(@BindList cuisineNames: Collection<String>): Collection<DbMealDto>
+    fun getAllSuggestedForCuisineNames(@BindList cuisineNames: Collection<String>): Stream<DbMealDto>
 
     @SqlQuery("SELECT DISTINCT ON ($table.$name) $table.$id, $table.$name, $table.$carbs, $table.$quantity, $table.$unit" +
             " FROM $C_table" +
@@ -105,7 +106,7 @@ interface MealDao {
     fun getAllSuggestedForApiCuisines(
             @Bind submitterId: Int,
             @BindList apiIds: Collection<String>
-    ): Collection<DbMealDto>
+    ): Stream<DbMealDto>
 
     @SqlQuery("SELECT $table.$id, $table.$name, $table.$carbs, $table.$quantity, $table.$unit" +
             " FROM $table" +
@@ -117,7 +118,7 @@ interface MealDao {
             " AND $S_table.$S_submission_type = '$MEAL_TYPE'" +
             " ORDER BY $table.$name ASC"
     )
-    fun getAllSuggestedMeals(): Collection<DbMealDto>
+    fun getAllSuggestedMeals(): Stream<DbMealDto>
 
     @SqlQuery("INSERT INTO $table($id, $name, $carbs, $quantity, $unit) " +
             "VALUES(:submissionId, :mealName, :carbs, :quantity, :unit) " +
@@ -142,11 +143,9 @@ interface MealDao {
             "INNER JOIN $S_table " +
             "ON $S_table.$S_submission_id = $table.$id " +
             "WHERE $S_table.$S_submission_type = '$INGREDIENT_TYPE' " +
-            "ORDER BY $table.$name ASC " +
-            "LIMIT :limit " +
-            "OFFSET :skip"
+            "ORDER BY $table.$name ASC "
     )
-    fun getAllIngredients(skip: Int = 0, limit: Int? = null): Collection<DbMealDto>
+    fun getAllIngredients(): Stream<DbMealDto>
 
     @SqlQuery("SELECT $table.$id, $table.$name, $table.$carbs, $table.$quantity, $table.$unit " +
             "FROM $table " +
@@ -156,7 +155,7 @@ interface MealDao {
             "AND $table.$id IN (<submissionIds>) " +
             "ORDER BY $table.$name ASC "
     )
-    fun getAllIngredientsByIds(@BindList submissionIds: Collection<Int>): Collection<DbMealDto>
+    fun getAllIngredientsByIds(@BindList submissionIds: Collection<Int>): Stream<DbMealDto>
 
     @SqlQuery("SELECT $table.$id, $table.$name, $table.$carbs, $table.$quantity, $table.$unit " +
             "FROM $table " +
@@ -165,5 +164,5 @@ interface MealDao {
             "INNER JOIN $SS_table " +
             "ON $RM_table.$RM_table_submissionId = $SS_table.$SS_submissionId " +
             "WHERE $RM_table.$RM_restaurantId = :restaurantId")
-    fun getAllUserMealsByRestaurantId(@Bind restaurantId: Int): Collection<DbMealDto>
+    fun getAllUserMealsByRestaurantId(@Bind restaurantId: Int): Stream<DbMealDto>
 }

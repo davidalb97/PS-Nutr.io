@@ -2,9 +2,9 @@ package pt.isel.ps.g06.httpserver.dataAccess.output.meal
 
 import pt.isel.ps.g06.httpserver.dataAccess.output.vote.VotesOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.vote.toVotesOutput
-import pt.isel.ps.g06.httpserver.model.Meal
-import pt.isel.ps.g06.httpserver.model.RestaurantIdentifier
 import pt.isel.ps.g06.httpserver.model.VoteState
+import pt.isel.ps.g06.httpserver.model.food.Meal
+import pt.isel.ps.g06.httpserver.model.restaurant.RestaurantIdentifier
 import java.net.URI
 
 open class SimplifiedRestaurantMealOutput(
@@ -28,7 +28,7 @@ fun toSimplifiedRestaurantMealOutput(
         meal: Meal,
         userId: Int? = null
 ): SimplifiedRestaurantMealOutput {
-    val votes = meal.getMealRestaurantInfo(restaurantIdentifier)?.let {
+    val votes = meal.getMealRestaurantInfo(restaurantIdentifier).let {
         toVotesOutput(
                 it.votes.value,
                 userId?.let { id -> it.userVote(id) } ?: VoteState.NOT_VOTED

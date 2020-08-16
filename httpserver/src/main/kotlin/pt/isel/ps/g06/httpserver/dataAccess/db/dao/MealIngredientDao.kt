@@ -5,6 +5,7 @@ import org.jdbi.v3.sqlobject.customizer.BindBeanList
 import org.jdbi.v3.sqlobject.customizer.BindList
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbMealIngredientDto
+import java.util.stream.Stream
 
 //Submission constants
 private const val S_table = SubmissionDao.table
@@ -30,7 +31,7 @@ interface MealIngredientDao {
             "WHERE $S_table.$S_submission_type = '$INGREDIENT' " +
             "AND $table.$mealId = :mealId"
     )
-    fun getMealIngredients(@Bind mealId: Int): Collection<DbMealIngredientDto>
+    fun getMealIngredients(@Bind mealId: Int): Stream<DbMealIngredientDto>
 
     @SqlQuery("SELECT * " +
             "FROM $table " +
@@ -39,7 +40,7 @@ interface MealIngredientDao {
             "WHERE $S_table.$S_submission_type = '$MEAL' " +
             "AND $table.$mealId = :mealId"
     )
-    fun getMealComponents(@Bind mealId: Int): Collection<DbMealIngredientDto>
+    fun getMealComponents(@Bind mealId: Int): Stream<DbMealIngredientDto>
 
 
     @SqlQuery("INSERT INTO $table($mealId, $ingredientId, $quantity) values <mealIngredientParams> RETURNING *")

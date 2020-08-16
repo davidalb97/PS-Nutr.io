@@ -1,47 +1,43 @@
 package pt.isel.ps.g06.httpserver.dataAccess.db.repo
 
-import org.jdbi.v3.core.Jdbi
-import org.jdbi.v3.core.transaction.TransactionIsolationLevel
 import org.springframework.stereotype.Repository
 import pt.isel.ps.g06.httpserver.common.exception.clientError.DuplicateSubmitterException
+import pt.isel.ps.g06.httpserver.dataAccess.db.common.DatabaseContext
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.SubmitterDao
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbSubmitterDto
-
-private val isolationLevel = TransactionIsolationLevel.SERIALIZABLE
+import java.util.stream.Stream
 
 @Repository
-class SubmitterDbRepository(jdbi: Jdbi) : BaseDbRepo(jdbi) {
+class SubmitterDbRepository(private val databaseContext: DatabaseContext) {
 
     fun getSubmitterByName(name: String): DbSubmitterDto? {
-        return jdbi.inTransaction<DbSubmitterDto, Exception> {
-            return@inTransaction it.attach(SubmitterDao::class.java)
-                    .getSubmitterByName(name)
+        return databaseContext.inTransaction {
+            it.attach(SubmitterDao::class.java).getSubmitterByName(name)
         }
     }
 
-    fun getApiSubmittersByName(names: Collection<String>): Collection<DbSubmitterDto> {
-        return jdbi.inTransaction<Collection<DbSubmitterDto>, Exception> {
-            return@inTransaction it.attach(SubmitterDao::class.java).getApiSubmittersByName(names)
+    fun getApiSubmittersByName(names: Collection<String>): Stream<DbSubmitterDto> {
+        return databaseContext.inTransaction {
+            it.attach(SubmitterDao::class.java).getApiSubmittersByName(names)
         }
     }
 
     fun getSubmitterForSubmission(submissionId: Int): DbSubmitterDto? {
-        return jdbi.inTransaction<DbSubmitterDto?, Exception>(isolationLevel) { handle ->
-            return@inTransaction handle
-                    .attach(SubmitterDao::class.java)
-                    .getSubmitterForSubmission(submissionId)
+        return databaseContext.inTransaction {
+            it.attach(SubmitterDao::class.java).getSubmitterForSubmission(submissionId)
         }
     }
 
+    //TODO Should be submitter model as parameter
     fun insertSubmitter(name: String, type: String): DbSubmitterDto {
-        return jdbi.inTransaction<DbSubmitterDto, Exception>(isolationLevel) { handle ->
+        return databaseContext.inTransaction {
+            val submitterDao = it.attach(SubmitterDao::class.java)
 
-            val submitterDao = handle.attach(SubmitterDao::class.java)
-            if(submitterDao.getSubmitterByName(name) != null) {
+            if (submitterDao.getSubmitterByName(name) != null) {
                 throw DuplicateSubmitterException()
             }
-            return@inTransaction submitterDao
-                    .insertSubmitter(name, type)
+
+            return@inTransaction submitterDao.insertSubmitter(name, type)
         }
     }
 }

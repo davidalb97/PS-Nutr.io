@@ -8,9 +8,8 @@ import pt.isel.ps.g06.httpserver.common.exception.notFound.RestaurantMealNotFoun
 import pt.isel.ps.g06.httpserver.common.exception.notFound.RestaurantNotFoundException
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.PortionDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.RestaurantMealDbRepository
-import pt.isel.ps.g06.httpserver.model.Meal
-import pt.isel.ps.g06.httpserver.model.RestaurantIdentifier
-import pt.isel.ps.g06.httpserver.model.RestaurantMeal
+import pt.isel.ps.g06.httpserver.model.food.Meal
+import pt.isel.ps.g06.httpserver.model.restaurant.RestaurantIdentifier
 
 @Service
 class RestaurantMealService(
@@ -76,7 +75,7 @@ class RestaurantMealService(
 
         //If given meal is a suggested Meal, make a RestaurantMeal first before adding user portion
         val restaurantMealIdentifier = restaurantInfo
-                ?.restaurantMealIdentifier
+                .restaurantMealIdentifier
                 ?: this.addRestaurantMeal(restaurant.identifier.value, meal)
 
         dbPortionRepository.insert(submitterId, restaurantMealIdentifier, quantity)
@@ -100,7 +99,7 @@ class RestaurantMealService(
     fun deleteUserPortion(restaurantId: RestaurantIdentifier, mealId: Int, submitterId: Int) {
         val restaurantMeal = getRestaurantMeal(restaurantId, mealId)
         val userPortion = restaurantMeal.getRestaurantMealInfo()
-                ?.let { it.userPortion(submitterId) }
+                .let { it.userPortion(submitterId) }
                 ?: throw PortionNotFoundException()
 
         submissionService.deleteSubmission(userPortion.identifier, submitterId)

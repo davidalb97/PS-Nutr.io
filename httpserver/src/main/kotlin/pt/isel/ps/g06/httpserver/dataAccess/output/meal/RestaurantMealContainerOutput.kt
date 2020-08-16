@@ -1,6 +1,6 @@
 package pt.isel.ps.g06.httpserver.dataAccess.output.meal
 
-import pt.isel.ps.g06.httpserver.model.Restaurant
+import pt.isel.ps.g06.httpserver.model.restaurant.Restaurant
 
 data class RestaurantMealContainerOutput(
         val restaurantIdentifier: String,

@@ -1,23 +1,23 @@
 package pt.isel.ps.g06.httpserver.dataAccess.db.repo
 
-import org.jdbi.v3.core.Jdbi
-import org.jdbi.v3.core.transaction.TransactionIsolationLevel
 import org.springframework.stereotype.Repository
 import pt.isel.ps.g06.httpserver.common.exception.clientError.NotYetVotedException
-import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionContractType.VOTABLE
+import pt.isel.ps.g06.httpserver.dataAccess.db.common.DatabaseContext
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.UserVoteDao
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.VotableDao
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbUserVoteDto
+import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbVotesDto
+import pt.isel.ps.g06.httpserver.model.VoteState
 
-private val isolationLevel = TransactionIsolationLevel.SERIALIZABLE
 private val voteDaoClass = UserVoteDao::class.java
 
 @Repository
-class VoteDbRepository(jdbi: Jdbi) : BaseDbRepo(jdbi) {
+class VoteDbRepository(private val databaseContext: DatabaseContext) {
     fun insertOrUpdate(voterId: Int, submissionId: Int, vote: Boolean): DbUserVoteDto {
-        return jdbi.inTransaction<DbUserVoteDto, Exception>(isolationLevel) {
+        return databaseContext.inTransaction {
             // Check if the submission exists and it is votable
-            requireContract(submissionId, VOTABLE, isolationLevel)
+            //TODO
+//            requireContract(submissionId, VOTABLE, isolationLevel)
 
             val voteDao = it.attach(voteDaoClass)
             val userVoteForSubmission = voteDao.getUserVoteForSubmission(submissionId, voterId)
@@ -50,9 +50,10 @@ class VoteDbRepository(jdbi: Jdbi) : BaseDbRepo(jdbi) {
     }
 
     fun delete(submitterId: Int, submissionId: Int) {
-        jdbi.inTransaction<Unit, Exception>(isolationLevel) {
+        databaseContext.inTransaction {
             // Check if the submission exists and it is votable
-            requireContract(submissionId, VOTABLE, isolationLevel)
+            //TODO
+//            requireContract(submissionId, VOTABLE, isolationLevel)
 
             // Check if this submitter already voted this submission
             val userVote = it
@@ -69,6 +70,23 @@ class VoteDbRepository(jdbi: Jdbi) : BaseDbRepo(jdbi) {
                     positiveOffset = if (userVote.vote) -1 else 0,
                     negativeOffset = if (userVote.vote) 0 else -1
             )
+        }
+    }
+
+    fun getVotes(submissionId: Int): DbVotesDto {
+        return databaseContext
+                .inTransaction { it.attach(VotableDao::class.java).getById(submissionId) }
+                ?: DbVotesDto(0, 0)
+    }
+
+    fun getUserVote(submissionId: Int, userId: Int): VoteState {
+        return databaseContext.inTransaction {
+            val dto = it
+                    .attach(UserVoteDao::class.java)
+                    .getUserVoteForSubmission(submissionId, userId)
+                    ?: return@inTransaction VoteState.NOT_VOTED
+
+            return@inTransaction if (dto.vote) VoteState.POSITIVE else VoteState.NEGATIVE
         }
     }
 }

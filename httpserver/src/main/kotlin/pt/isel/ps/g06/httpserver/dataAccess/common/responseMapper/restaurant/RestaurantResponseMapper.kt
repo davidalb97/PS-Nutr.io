@@ -5,16 +5,22 @@ import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.RestaurantApiType
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.dto.ZomatoRestaurantDto
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.dto.here.HereResultItem
 import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.ResponseMapper
+import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.food.DbMealResponseMapper
+import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.food.RestaurantMealResponseMapper
+import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.submitter.DbSubmitterResponseMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.ApiSubmitterMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbRestaurantDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.*
 import pt.isel.ps.g06.httpserver.dataAccess.model.RestaurantDto
-import pt.isel.ps.g06.httpserver.model.Restaurant
-import pt.isel.ps.g06.httpserver.model.RestaurantIdentifier
 import pt.isel.ps.g06.httpserver.model.Submitter
 import pt.isel.ps.g06.httpserver.model.VoteState
+import pt.isel.ps.g06.httpserver.model.Votes
+import pt.isel.ps.g06.httpserver.model.restaurant.Restaurant
+import pt.isel.ps.g06.httpserver.model.restaurant.RestaurantIdentifier
+import pt.isel.ps.g06.httpserver.model.submission.Favorable
+import pt.isel.ps.g06.httpserver.model.submission.Votable
 import pt.isel.ps.g06.httpserver.util.log
-import java.time.OffsetDateTime
+import java.util.stream.Stream
 
 @Component
 class RestaurantResponseMapper(
@@ -41,11 +47,12 @@ class HereRestaurantResponseMapper(
         private val dbMealRepository: MealDbRepository,
         private val apiSubmitterMapper: ApiSubmitterMapper,
         private val dbMealMapper: DbMealResponseMapper,
-        private val hereCuisineMapper: HereCuisineResponseMapper
+        private val hereCuisineMapper: HereCuisineResponseMapper,
+        private val restaurantMealResponseMapper: RestaurantMealResponseMapper
 ) : ResponseMapper<HereResultItem, Restaurant> {
 
     override fun mapTo(dto: HereResultItem): Restaurant {
-        val cuisineIds = dto.foodTypes?.map { it.id }?.asSequence() ?: emptySequence()
+        val cuisineIds = dto.foodTypes?.map { it.id } ?: emptyList()
         val apiSubmitterId = apiSubmitterMapper.getSubmitter(RestaurantApiType.Here)!!
         return Restaurant(
                 identifier = lazy { RestaurantIdentifier(apiId = dto.id, submitterId = apiSubmitterId) },
@@ -55,29 +62,25 @@ class HereRestaurantResponseMapper(
                 cuisines = hereCuisineMapper.mapTo(cuisineIds),
                 suggestedMeals = dbMealRepository
                         .getAllSuggestedMealsByCuisineApiIds(apiSubmitterId, cuisineIds)
-                        .map(dbMealMapper::mapTo)
-                        .asSequence(),
-                meals = emptySequence(),
-                //There are no votes if it's not inserted on db yet
-                votes = null,
-                //User has not voted yet if not inserted
-                userVote = { VoteState.NOT_VOTED },
-                //User has not favored yet if not inserted
-                isFavorite = { false },
+                        .map(dbMealMapper::mapTo),
+                meals = Stream.empty(),
                 //Here api does not supply image
                 image = dto.image,
                 //Here api does not supply creation date
-                creationDate = lazy<OffsetDateTime?> { null },
+                creationDate = null,
                 submitterInfo = lazy {
                     Submitter(
                             identifier = apiSubmitterId,
                             name = RestaurantApiType.Here.toString(),
                             creationDate = null,
-                            //TODO return const image for Zomato api icon
                             image = null,
                             isUser = false
                     )
-                }
+                },
+                //TODO Get vote from db
+                votable = Votable({ VoteState.NOT_VOTED }, Votes(0, 0)),
+                //TODO Get favorite from DB
+                favorable = Favorable { false }
         )
     }
 }
@@ -105,16 +108,10 @@ class ZomatoRestaurantResponseMapper(
                 longitude = dto.longitude,
                 cuisines = zomatoCuisineMapper.mapTo(cuisineNames),
                 suggestedMeals = dbMealRepository.getAllSuggestedMealsFromCuisineNames(cuisineNames).map(mealMapper::mapTo),
-                meals = emptySequence(),
-                //There are no votes if it's not inserted on db yet
-                votes = null,
-                //User has not voted yet if not inserted
-                userVote = { VoteState.NOT_VOTED },
-                //User has not favored yet if not inserted
-                isFavorite = { false },
+                meals = Stream.empty(),
                 image = dto.image,
                 //Zomato api does not supply creation date
-                creationDate = lazy<OffsetDateTime?> { null },
+                creationDate = lazy { null },
                 submitterInfo = lazy {
                     Submitter(
                             identifier = apiSubmitterId,
@@ -124,7 +121,11 @@ class ZomatoRestaurantResponseMapper(
                             image = null,
                             isUser = false
                     )
-                }
+                },
+                //TODO Get vote from db
+                votable = Votable({ VoteState.NOT_VOTED }, Votes(0, 0)),
+                //TODO Get favorite from DB
+                favorable = Favorable { false }
         )
     }
 }
@@ -151,7 +152,7 @@ class DbRestaurantResponseMapper(
                 identifier = lazy {
                     //A restaurant always has a submitter
                     val submitterId = dbRestaurantRepository.getSubmitterForSubmissionId(dto.submission_id)!!.submitter_id
-                    val apiId = dbRestaurantRepository.getApiSubmissionById(dto.submission_id)?.apiId
+                    val apiId = dbRestaurantRepository.getApiSubmissionById(dto.submission_id).apiId
                     RestaurantIdentifier(
                             submissionId = dto.submission_id,
                             apiId = apiId,
@@ -170,9 +171,6 @@ class DbRestaurantResponseMapper(
                         .getAllSuggestedMealsFromCuisineNames(cuisines.map { it.name })
                         .map(dbMealMapper::mapTo),
 
-                votes = dbVotesMapper.mapTo(dbRestaurantRepository.getVotes(dto.submission_id)),
-                userVote = { userId -> dbRestaurantRepository.getUserVote(dto.submission_id, userId) },
-                isFavorite = { userId -> dbFavoriteRepo.getFavorite(dto.submission_id, userId) },
                 image = dto.image,
                 creationDate = lazy { dbRestaurantRepository.getCreationDate(dto.submission_id) },
                 submitterInfo = lazy {
@@ -180,7 +178,11 @@ class DbRestaurantResponseMapper(
                     dbSubmitterRepo
                             .getSubmitterForSubmission(dto.submission_id)
                             ?.let { submitter -> dbSubmitterMapper.mapTo(submitter) }!!
-                }
+                },
+                //TODO Get vote from db
+                votable = Votable({ VoteState.NOT_VOTED }, Votes(0, 0)),
+                //TODO Get favorite from DB
+                favorable = Favorable { false }
         )
     }
 }

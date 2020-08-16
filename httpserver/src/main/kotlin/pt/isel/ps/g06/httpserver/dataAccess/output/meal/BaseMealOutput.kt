@@ -1,6 +1,6 @@
 package pt.isel.ps.g06.httpserver.dataAccess.output.meal
 
-import pt.isel.ps.g06.httpserver.model.Meal
+import pt.isel.ps.g06.httpserver.model.food.Meal
 import java.net.URI
 
 open class BaseMealOutput(

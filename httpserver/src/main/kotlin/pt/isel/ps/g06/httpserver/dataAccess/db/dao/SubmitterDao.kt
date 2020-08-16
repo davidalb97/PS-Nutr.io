@@ -6,6 +6,7 @@ import org.jdbi.v3.sqlobject.customizer.BindList
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbSubmitterDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.mapper.DbRowSubmitterMapper
+import java.util.stream.Stream
 
 //SubmissionSubmitter table constants
 private const val SS_table = SubmissionSubmitterDao.table
@@ -26,7 +27,7 @@ interface SubmitterDao {
     }
 
     @SqlQuery("SELECT * FROM $table WHERE $type = '$API' AND submitter_name IN (<names>)")
-    fun getApiSubmittersByName(@BindList names: Collection<String>): Collection<DbSubmitterDto>
+    fun getApiSubmittersByName(@BindList names: Collection<String>): Stream<DbSubmitterDto>
 
     @SqlQuery("SELECT $table.$id, $table.$name, $table.$type, $table.$date" +
             " FROM $table" +
