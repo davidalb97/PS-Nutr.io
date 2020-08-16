@@ -25,6 +25,12 @@ class SubmitterDbRepository(jdbi: Jdbi) : BaseDbRepo(jdbi) {
         }
     }
 
+    fun getSubmitterBySubmitterId(submitterId: Int): DbSubmitterDto {
+        return jdbi.inTransaction<DbSubmitterDto, Exception> {
+            return@inTransaction it.attach(SubmitterDao::class.java).getSubmitterBySubmitterId(submitterId)
+        }
+    }
+
     fun getSubmitterForSubmission(submissionId: Int): DbSubmitterDto? {
         return jdbi.inTransaction<DbSubmitterDto?, Exception>(isolationLevel) { handle ->
             return@inTransaction handle

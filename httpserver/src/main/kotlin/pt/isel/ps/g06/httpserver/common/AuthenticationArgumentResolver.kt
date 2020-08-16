@@ -29,7 +29,7 @@ class AuthenticationArgumentResolver(
     ): Any? {
         return webRequest
                 .getHeader(AUTHORIZATION)
-                ?.let(authenticationService::getUsernameByJwt)
-                ?.let(userService::getSubmitterFromUsername)
+                ?.let(authenticationService::getEmailFromJwt)
+                ?.let(userService::getSubmitterFromEmail)
     }
 }

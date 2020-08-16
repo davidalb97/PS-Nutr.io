@@ -25,7 +25,7 @@ class UserController(private val userService: UserService, private val authentic
                 userRegisterInput.username,
                 authenticationService.encodePassword(userRegisterInput.password)
         )
-        val jwt = authenticationService.login(userRegisterInput.username, userRegisterInput.password)
+        val jwt = authenticationService.login(userRegisterInput.email, userRegisterInput.password)
 
         return ResponseEntity.ok(UserRegisterOutput(jwt))
     }
@@ -33,7 +33,7 @@ class UserController(private val userService: UserService, private val authentic
     @PostMapping(LOGIN)
     fun login(@RequestBody userLoginInput: UserLoginInput): ResponseEntity<UserLoginOutput> {
 
-        val jwt = authenticationService.login(userLoginInput.username, userLoginInput.password)
+        val jwt = authenticationService.login(userLoginInput.email, userLoginInput.password)
 
         return ResponseEntity.ok(UserLoginOutput(jwt))
     }
