@@ -38,6 +38,8 @@ CREATE TABLE _User(
 	submitter_id integer,	
 	email varchar(50) NOT NULL,
 	password varchar(60) NOT NULL, -- it will always be 60, because of the BCrypt password encoding
+	role boolean NOT NULL,
+	status boolean NOT NULL,
 	PRIMARY KEY(submitter_id),
 	FOREIGN KEY(submitter_id) REFERENCES Submitter(submitter_id)
 );
@@ -132,7 +134,9 @@ CREATE TABLE Restaurant(
 	restaurant_name varchar(30) NOT NULL,
 	latitude REAL,
 	longitude REAL,
-	FOREIGN KEY(submission_id) REFERENCES Submission(submission_id) ON DELETE CASCADE
+	owner_id integer,
+	FOREIGN KEY(submission_id) REFERENCES Submission(submission_id) ON DELETE CASCADE,
+	FOREIGN KEY(owner_id) REFERENCES Submitter(submitter_id) ON DELETE CASCADE
 );
 
 CREATE TABLE Cuisine(
@@ -160,6 +164,7 @@ CREATE TABLE RestaurantMeal(
 	submission_id integer PRIMARY KEY,
 	restaurant_submission_id integer,
 	meal_submission_id integer,
+	verified boolean NOT NULL,
 	UNIQUE(meal_submission_id, restaurant_submission_id),
 	FOREIGN KEY(submission_id) REFERENCES Submission(submission_id) ON DELETE CASCADE,
 	FOREIGN KEY(restaurant_submission_id) REFERENCES Restaurant(submission_id) ON DELETE CASCADE,
