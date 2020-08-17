@@ -9,6 +9,7 @@ enum class Navigation(@IdRes private val _navId: Int?) {
     SEND_TO_ADD_CUSTOM_RESTAURANT(null),//TODO add/edit restaurant
     SEND_TO_CALCULATOR(R.id.nav_calculator),
     SEND_TO_HISTORY(R.id.nav_history),
+    SEND_TO_HOME(R.id.nav_home),
     SEND_TO_MEAL_DETAIL(R.id.nav_meal_detail),
     SEND_TO_MEAL_LIST_BY_NAME(R.id.nav_tab_meals),
     SEND_TO_MEAL_LIST_CUSTOM(R.id.nav_tab_your_meals),
