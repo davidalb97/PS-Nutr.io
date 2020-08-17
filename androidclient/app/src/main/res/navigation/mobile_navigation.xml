@@ -43,13 +43,13 @@
 
     <fragment
         android:id="@+id/nav_restaurant_detail"
-        android:name="pt.ipl.isel.leic.ps.androidclient.ui.fragment.detail.RestaurantDetailFragment"
+        android:name="pt.ipl.isel.leic.ps.androidclient.ui.fragment.list.detail.RestaurantInfoFragment"
         android:label="@string/tab_restaurants"
         tools:layout="@layout/restaurant_detail" />
 
     <fragment
         android:id="@+id/nav_meal_detail"
-        android:name="pt.ipl.isel.leic.ps.androidclient.ui.fragment.detail.MealDetailFragment"
+        android:name="pt.ipl.isel.leic.ps.androidclient.ui.fragment.list.detail.MealInfoFragment"
         android:label="@string/tab_meal_detail"
         tools:layout="@layout/meal_detail" />
 
@@ -67,8 +67,8 @@
 
     <fragment
         android:id="@+id/nav_map"
-        android:name="pt.ipl.isel.leic.ps.androidclient.ui.fragment.map.MapFragment"
-        android:label="Restaurants by location"
+        android:name="pt.ipl.isel.leic.ps.androidclient.ui.fragment.list.MapFragment"
+        android:label="@string/restaurant_map_nav"
         tools:layout="@layout/map_fragment" />
 
     <fragment
@@ -79,13 +79,13 @@
 
     <fragment
         android:id="@+id/nav_history"
-        android:name="pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler.room.HistoryFragment"
+        android:name="pt.ipl.isel.leic.ps.androidclient.ui.fragment.list.HistoryListFragment"
         android:label="@string/insulin_calculator_nav"
         tools:layout="@layout/calculator_fragment" />
 
     <fragment
         android:id="@+id/nav_insulin_profiles"
-        android:name="pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler.room.InsulinProfilesRecyclerFragment"
+        android:name="pt.ipl.isel.leic.ps.androidclient.ui.fragment.list.InsulinProfilesListFragment"
         tools:layout="@layout/insulin_profiles_fragment" />
 
     <fragment
@@ -102,9 +102,9 @@
 
     <fragment
         android:id="@+id/nav_saved_meals"
-        android:name="pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler.room.CustomMealRecyclerFragment"
+        android:name="pt.ipl.isel.leic.ps.androidclient.ui.fragment.list.CustomMealListFragment"
         android:label="Saved meals"
-        tools:layout="@layout/custom_meals_list" />
+        tools:layout="@layout/meal_list" />
 
     <fragment
         android:id="@+id/nav_add_custom_meal"
@@ -132,8 +132,8 @@
 
     <fragment
         android:id="@+id/nav_ingredients"
-        android:name="pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler.request.IngredientsRecyclerFragment"
+        android:name="pt.ipl.isel.leic.ps.androidclient.ui.fragment.list.IngredientsListFragment"
         android:label="Ingredients"
-        tools:layout="@layout/custom_meals_list" />
+        tools:layout="@layout/meal_list" />
 
 </navigation>
