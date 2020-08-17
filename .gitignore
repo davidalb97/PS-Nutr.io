@@ -101,3 +101,7 @@ latex.out/
 # Visual Studio Code
 .vscode/
 .history
+
+# Dependency directories
+node_modules/
+dist/

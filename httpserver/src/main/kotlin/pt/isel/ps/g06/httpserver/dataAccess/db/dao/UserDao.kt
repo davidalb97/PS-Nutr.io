@@ -1,28 +1,40 @@
 package pt.isel.ps.g06.httpserver.dataAccess.db.dao
 
-import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbUserDto
 
-private const val Submitter_table = SubmitterDao.table
-private const val Submitter_id = SubmitterDao.id
-private const val Submitter_name = SubmitterDao.name
-private const val Submitter_date = SubmitterDao.date
+private const val S_table = SubmitterDao.table
+private const val S_id = SubmitterDao.id
+private const val S_name = SubmitterDao.name
+private const val S_date = SubmitterDao.date
+
 
 interface UserDao {
     companion object {
         const val table = "_User"
-        const val id = "submitter_id"
+        const val submitterId = "submitter_id"
         const val email = "email"
-        const val sessionSecret = "session_secret"
+        const val password = "password"
     }
 
-    @SqlQuery("SELECT " +
-            "$Submitter_table.$Submitter_name, $table.$id, $table.$email, $table.$sessionSecret, $Submitter_table.$Submitter_date " +
-            "FROM $table " +
-            "INNER JOIN $Submitter_table " +
-            "ON $table.$id = $Submitter_table.$Submitter_id " +
-            "WHERE $table.$id = :submitterId"
+    @SqlQuery("SELECT $table.$submitterId, $table.$email, $table.$password" +
+            " FROM $table" +
+            " INNER JOIN $S_table" +
+            " ON $S_table.$S_id = $table.$submitterId" +
+            " WHERE $S_table.$S_name = :submitterName"
     )
-    fun getById(@Bind submitterId: Int): DbUserDto?
+    fun findBySubmitterName(submitterName: String): DbUserDto?
+
+    @SqlQuery("SELECT * FROM $table WHERE $submitterId = :submitterId")
+    fun findBySubmitterId(submitterId: Int): DbUserDto?
+
+    @SqlQuery("SELECT * FROM $table WHERE $email = :email")
+    fun findByEmail(email: String): DbUserDto?
+
+    @SqlQuery("INSERT INTO $table($submitterId, $email, $password)" +
+            " VALUES(:submitterId, :email, :password) RETURNING *")
+    fun insertUser(submitterId: Int, email: String, password: String): DbUserDto
+
+    @SqlQuery("DELETE FROM $table WHERE $email=:email RETURNING *")
+    fun deleteUserByEmail(email: String): DbUserDto?
 }

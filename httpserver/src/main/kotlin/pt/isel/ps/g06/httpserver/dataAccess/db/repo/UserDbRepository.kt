@@ -9,13 +9,45 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbUserDto
 private val isolationLevel = TransactionIsolationLevel.SERIALIZABLE
 
 @Repository
-class UserDbRepository(jdbi: Jdbi) : BaseDbRepo(jdbi) {
+class UserRepository(jdbi: Jdbi) : BaseDbRepo(jdbi) {
 
-    fun getBySubmitterId(submitterId: Int): DbUserDto? {
-        return jdbi.inTransaction<DbUserDto?, Exception>(isolationLevel) { handle ->
+    fun getBySubmitterName(submitterName: String): DbUserDto? {
+        return jdbi.inTransaction<DbUserDto, Exception>(isolationLevel) { handle ->
             return@inTransaction handle
                     .attach(UserDao::class.java)
-                    .getById(submitterId)
+                    .findBySubmitterName(submitterName)
+        }
+    }
+
+    fun getBySubmitterId(submitterId: Int): DbUserDto? {
+        return jdbi.inTransaction<DbUserDto, Exception>(isolationLevel) { handle ->
+            return@inTransaction handle
+                    .attach(UserDao::class.java)
+                    .findBySubmitterId(submitterId)
+        }
+    }
+
+    fun getByEmail(email: String): DbUserDto? {
+        return jdbi.inTransaction<DbUserDto, Exception>(isolationLevel) { handle ->
+            return@inTransaction handle
+                    .attach(UserDao::class.java)
+                    .findByEmail(email)
+        }
+    }
+
+    fun insertUser(submitterId: Int, email: String, password: String): DbUserDto? {
+        return jdbi.inTransaction<DbUserDto, Exception>(isolationLevel) { handle ->
+            return@inTransaction handle
+                    .attach(UserDao::class.java)
+                    .insertUser(submitterId, email, password)
+        }
+    }
+
+    fun deleteUser(email: String): DbUserDto? {
+        return jdbi.inTransaction<DbUserDto, Exception>(isolationLevel) { handle ->
+            return@inTransaction handle
+                    .attach(UserDao::class.java)
+                    .deleteUserByEmail(email)
         }
     }
 }
