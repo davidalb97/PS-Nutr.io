@@ -38,6 +38,15 @@ fun saveSession(jwt: String, username: String, password: String) {
         .apply()
 }
 
+fun deleteSession() {
+    encryptedSharedPreferences.edit()
+        .clear()
+        .apply()
+    NutrioApp.sharedPreferences.edit()
+        .clear()
+        .apply()
+}
+
 fun getUserSession(): UserSession? = NutrioApp.sharedPreferences
     .getJwt()
     ?.let(::UserSession)
