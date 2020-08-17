@@ -1,43 +1,45 @@
 package pt.ipl.isel.leic.ps.androidclient.ui.viewholder
 
 import android.content.Context
+import android.os.Bundle
 import android.view.View
-import android.view.ViewGroup
 import android.widget.ImageButton
+import android.widget.RelativeLayout
 import android.widget.TextView
-import android.widget.Toast
-import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.app
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.InsulinProfile
-import pt.ipl.isel.leic.ps.androidclient.data.util.AsyncWorker
+import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.IDeleteActionButton
+import pt.ipl.isel.leic.ps.androidclient.ui.util.ItemAction
+import pt.ipl.isel.leic.ps.androidclient.ui.util.Navigation
+import pt.ipl.isel.leic.ps.androidclient.ui.util.putItemActions
+import pt.ipl.isel.leic.ps.androidclient.ui.util.putNavigation
 
-class InsulinProfileRecyclerViewHolder(
-    view: ViewGroup,
+abstract class InsulinProfileRecyclerViewHolder(
+    override val actions: List<ItemAction>,
+    navDestination: Navigation,
+    view: View,
     ctx: Context
-) : ARecyclerViewHolder<InsulinProfile>(view, ctx),
-    IDeletable<InsulinProfile> {
+) : BaseRecyclerViewHolder<InsulinProfile>(
+    navDestination = navDestination,
+    view = view,
+    ctx = ctx
+), IDeleteActionButton<InsulinProfile> {
 
-    override lateinit var onDelete: (InsulinProfile) -> AsyncWorker<Unit, Unit>
-
-    private val profileName: TextView =
-        view.findViewById(R.id.insulin_profile_name)
-    private val startTime: TextView =
-        view.findViewById(R.id.profile_start_time)
-    private val endTime: TextView =
-        view.findViewById(R.id.profile_end_time)
-    private val glucoseObjective: TextView =
-        view.findViewById(R.id.profile_glucose_objective_card)
-    private val insulinSensitivityFactor: TextView =
-        view.findViewById(R.id.profile_fsi_card)
-    private val carboRatio: TextView =
-        view.findViewById(R.id.profile_carbo_ratio_card)
-    override var deleteButton: ImageButton =
-        view.findViewById(R.id.delete_item_button)
+    private val profileName: TextView = view.findViewById(R.id.insulin_profile_name)
+    private val startTime: TextView = view.findViewById(R.id.profile_start_time)
+    private val endTime: TextView = view.findViewById(R.id.profile_end_time)
+    private val glucoseObjective: TextView = view.findViewById(R.id.profile_glucose_objective_card)
+    private val insulinSensitivityFactor: TextView = view.findViewById(R.id.profile_fsi_card)
+    private val carboRatio: TextView = view.findViewById(R.id.profile_carbo_ratio_card)
+    override var deleteButton: ImageButton = view.findViewById(R.id.delete_item_action)
+    override val pressActionView: RelativeLayout = view.findViewById(R.id.actions_layout)
 
     override fun bindTo(item: InsulinProfile) {
         super.bindTo(item)
+
         setupTextFields()
-        setupListeners()
+        super.setupPressAction(view)
+        super.setupOnDeleteAction(bindingAdapter, layoutPosition)
     }
 
     fun setupTextFields() {
@@ -61,35 +63,8 @@ class InsulinProfileRecyclerViewHolder(
         )
     }
 
-    private fun setupListeners() {
-        this.view.setOnClickListener(this)
-        this.view.setOnLongClickListener(this)
+    override fun onSendToDestination(bundle: Bundle) {
+        bundle.putItemActions(actions)
+        bundle.putNavigation(navDestination)
     }
-
-    override fun onClick(v: View?) {
-        setButtonsVisibility(false)
-    }
-
-    override fun onLongClick(v: View?): Boolean {
-        setButtonsVisibility(true)
-        deleteButton.setOnClickListener {
-            onDelete(this.item)
-                .setOnPostExecute {
-                    Toast.makeText(
-                        app,
-                        ctx.getString(R.string.DialogAlert_deleted), Toast.LENGTH_SHORT
-                    ).show()
-                    setButtonsVisibility(false)
-                    this.bindingAdapter?.notifyItemRemoved(layoutPosition)
-                }.execute()
-        }
-        return true
-    }
-
-    override fun setButtonsVisibility(isVisible: Boolean) {
-        val visibility =
-            if (isVisible) View.VISIBLE else View.INVISIBLE
-        deleteButton.visibility = visibility
-    }
-
 }
