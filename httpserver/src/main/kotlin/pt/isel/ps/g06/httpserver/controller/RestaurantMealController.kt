@@ -9,6 +9,7 @@ import pt.isel.ps.g06.httpserver.common.exception.authentication.NotAuthenticate
 import pt.isel.ps.g06.httpserver.common.exception.forbidden.NotSubmissionOwnerException
 import pt.isel.ps.g06.httpserver.common.exception.notFound.MealNotFoundException
 import pt.isel.ps.g06.httpserver.common.exception.notFound.RestaurantNotFoundException
+import pt.isel.ps.g06.httpserver.dataAccess.input.FavoriteInput
 import pt.isel.ps.g06.httpserver.dataAccess.input.PortionInput
 import pt.isel.ps.g06.httpserver.dataAccess.input.RestaurantMealInput
 import pt.isel.ps.g06.httpserver.dataAccess.input.VoteInput
@@ -205,5 +206,25 @@ class RestaurantMealController(
         return ResponseEntity
                 .ok()
                 .build()
+    }
+
+    @PutMapping(RESTAURANT_MEAL_FAVORITE)
+    fun setFavoriteRestaurant(
+            submitter: Submitter?,
+            @PathVariable(RESTAURANT_ID_VALUE) restaurantId: String,
+            @PathVariable(MEAL_ID_VALUE) mealId: Int,
+            @Valid @RequestBody favorite: FavoriteInput
+    ): ResponseEntity<Any> {
+        submitter ?: throw NotAuthenticatedException()
+
+        val restaurantIdentifier = restaurantIdentifierBuilder.extractIdentifiers(restaurantId)
+
+        restaurantMealService.setFavorite(
+                restaurantIdentifier,
+                mealId,
+                submitter.identifier,
+                favorite.isFavorite!!
+        )
+        return ResponseEntity.ok().build()
     }
 }
