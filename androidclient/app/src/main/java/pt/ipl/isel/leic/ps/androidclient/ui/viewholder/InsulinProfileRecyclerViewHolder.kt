@@ -6,13 +6,13 @@ import android.view.View
 import android.widget.ImageButton
 import android.widget.RelativeLayout
 import android.widget.TextView
+import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.sharedPreferences
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.InsulinProfile
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.IDeleteActionButton
-import pt.ipl.isel.leic.ps.androidclient.ui.util.ItemAction
-import pt.ipl.isel.leic.ps.androidclient.ui.util.Navigation
-import pt.ipl.isel.leic.ps.androidclient.ui.util.putItemActions
-import pt.ipl.isel.leic.ps.androidclient.ui.util.putNavigation
+import pt.ipl.isel.leic.ps.androidclient.ui.util.*
+import pt.ipl.isel.leic.ps.androidclient.ui.util.units.GlucoseUnits
+import pt.ipl.isel.leic.ps.androidclient.ui.util.units.WeightUnits
 
 abstract class InsulinProfileRecyclerViewHolder(
     override val actions: List<ItemAction>,
@@ -38,29 +38,55 @@ abstract class InsulinProfileRecyclerViewHolder(
 
     override fun bindTo(item: InsulinProfile) {
         super.bindTo(item)
-
         setupTextFields()
         super.setupPressAction(view)
         super.setupOnDeleteAction(view, bindingAdapter, layoutPosition)
     }
 
     private fun setupTextFields() {
+
+        val glucoseUnit = sharedPreferences.getGlucoseUnitOrDefault()
+        val carbUnit = sharedPreferences.getWeightUnitOrDefault()
+
+        var convertedGlucoseObjective: Float? = null
+        var convertedGlucoseAmount: Float? = null
+        var convertedCarbAmount: Float? = null
+
+        val glucoseUnitTarget = GlucoseUnits.fromValue(glucoseUnit)
+        val weightUnitTarget = WeightUnits.fromValue(carbUnit)
+
+        if (glucoseUnit != DEFAULT_GLUCOSE_UNIT.toString()) {
+            convertedGlucoseObjective = DEFAULT_GLUCOSE_UNIT
+                .convert(glucoseUnitTarget, item.glucoseObjective)
+
+            convertedGlucoseAmount = DEFAULT_GLUCOSE_UNIT
+                .convert(glucoseUnitTarget, item.glucoseAmountPerInsulin)
+        }
+
+        if (carbUnit != DEFAULT_WEIGHT_UNIT.toString()) {
+            convertedCarbAmount = DEFAULT_WEIGHT_UNIT
+                .convert(weightUnitTarget, item.carbsAmountPerInsulin)
+        }
+
         profileName.text = item.profileName
         val resources = ctx.resources
         startTime.text = String.format(resources.getString(R.string.start_time), item.startTime)
         endTime.text = String.format(resources.getString(R.string.end_time), item.endTime)
         glucoseObjective.text = String.format(
             resources.getString(R.string.glucose_objective_card),
-            item.glucoseObjective
+            convertedGlucoseObjective ?: item.glucoseObjective,
+            sharedPreferences.getGlucoseUnitOrDefault()
         )
         insulinSensitivityFactor.text = String.format(
             resources.getString(R.string.insulin_sensitivity_factor),
-            item.glucoseAmountPerInsulin,
+            convertedGlucoseAmount ?: item.glucoseAmountPerInsulin,
+            sharedPreferences.getGlucoseUnitOrDefault(),
             resources.getString(R.string.insulin_unit)
         )
         carboRatio.text = String.format(
             resources.getString(R.string.carbohydrate_ratio),
-            item.carbsAmountPerInsulin,
+            convertedCarbAmount ?: item.carbsAmountPerInsulin,
+            sharedPreferences.getWeightUnitOrDefault(),
             resources.getString(R.string.insulin_unit)
         )
     }

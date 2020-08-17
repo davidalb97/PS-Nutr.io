@@ -67,7 +67,7 @@
     <string name="end_time">Ends at: %1$s</string>
     <string name="end_time_calc">Ends at:</string>
     <string name="profile_name">Profile name</string>
-    <string name="carbohydrate_ratio">Carbohydrate ratio: %1$s / %2$s</string>
+    <string name="carbohydrate_ratio">Carbohydrate ratio: %1$s %2$s/ %3$s</string>
     <string name="carbohydrate_ratio_calc">Carbohydrate ratio:</string>
     <string name="recent_activity">Recent activity</string>
     <string name="routine_graph">Routine graph</string>
@@ -87,9 +87,9 @@
     <string name="carbohydrate_amount">Carbohydrate amount</string>
     <string name="create_button">Create</string>
     <string name="you_don_t_have_a_routine_right_now">You don\'t have a routine right now</string>
-    <string name="glucose_objective_card">Glucose objective: %1$s</string>
+    <string name="glucose_objective_card">Glucose objective: %1$s %2$s</string>
     <string name="glucose_objective_calc">Glucose objective:</string>
-    <string name="insulin_sensitivity_factor">Insulin sensitivity factor: %1$s / %2$s</string>
+    <string name="insulin_sensitivity_factor">Insulin sensitivity factor: %1$s %2$s / %3$s</string>
     <string name="insulin_sensitivity_factor_calc">Insulin sensitivity factor:</string>
     <string name="insulin_unit">insulin unit</string>
     <string name="DialogAlert_deleteWarning">Warning</string>

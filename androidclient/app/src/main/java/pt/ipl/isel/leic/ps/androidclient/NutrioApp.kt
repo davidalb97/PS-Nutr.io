@@ -29,7 +29,7 @@ import java.util.concurrent.TimeUnit
 
 const val TAG = "Nutr.io App"
 const val ROOM_DB_NAME = "nutrio-db"
-const val ROOM_DB_VERSION = 27
+const val ROOM_DB_VERSION = 28
 
 /**
  * The application context.
@@ -109,7 +109,7 @@ class NutrioApp : Application() {
     }
 
     private fun initSharedPreferences() {
-        sharedPreferences = getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE)
+        sharedPreferences = applicationContext.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE)
     }
 
     private fun initEncryptedSharedPreferences() {

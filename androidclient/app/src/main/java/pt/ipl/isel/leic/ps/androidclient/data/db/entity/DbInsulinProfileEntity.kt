@@ -9,9 +9,9 @@ data class DbInsulinProfileEntity(
     @PrimaryKey val profileName: String,
     val startTime: String,
     val endTime: String,
-    val glucoseObjective: Int,
-    val glucoseAmountPerInsulin: Int,
-    val carbsAmountPerInsulin: Int,
+    val glucoseObjective: Float,
+    val glucoseAmountPerInsulin: Float,
+    val carbsAmountPerInsulin: Float,
     val modificationDate: TimestampWithTimeZone?
 ) {
     companion object {

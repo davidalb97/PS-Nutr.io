@@ -10,7 +10,7 @@ enum class WeightUnits(private val str: String) {
     GRAMS("grams"),
     OUNCES("ounces");
 
-    fun convert(targetUnit: WeightUnits, value: Double): Double {
+    fun convert(targetUnit: WeightUnits, value: Float): Float {
         if (this == targetUnit) {
             return value
         }
@@ -24,7 +24,7 @@ enum class WeightUnits(private val str: String) {
                 .setScale(2, RoundingMode.HALF_UP)
                 .toFloat()
                 .toString()
-        ).toString().toDouble()
+        ).toString().toFloat()
     }
 
     override fun toString(): String = str

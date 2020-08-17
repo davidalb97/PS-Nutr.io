@@ -4,7 +4,7 @@ class InsulinProfileOutput(
     val profileName: String,
     val startTime: String,
     val endTime: String,
-    val glucoseObjective: Int,
-    val insulinSensitivityFactor: Int,
-    val carbohydrateRatio: Int
+    val glucoseObjective: Float,
+    val insulinSensitivityFactor: Float,
+    val carbohydrateRatio: Float
 )

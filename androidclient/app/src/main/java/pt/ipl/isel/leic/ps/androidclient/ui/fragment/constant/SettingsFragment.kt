@@ -1,5 +1,6 @@
 package pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant
 
+import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatDelegate
@@ -12,13 +13,16 @@ import pt.ipl.isel.leic.ps.androidclient.ui.util.getIsNightMode
 import pt.ipl.isel.leic.ps.androidclient.ui.util.setIsNightMode
 
 const val SECRET_PREFERENCES = "encryptedPreferences"
-const val PREFERENCES = "preferences.xml"
+const val PREFERENCES = "preferences"
 const val DARK_MODE = "dark_mode"
 
 
 class SettingsFragment : PreferenceFragmentCompat() {
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+        preferenceManager.sharedPreferencesMode = Context.MODE_PRIVATE
+        preferenceManager.sharedPreferencesName = PREFERENCES
+
         addPreferencesFromResource(R.xml.preferences)
         setupDarkModeSwitch()
     }

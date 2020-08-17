@@ -13,8 +13,7 @@ import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.InsulinProfile
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.BaseFragment
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.InsulinProfilesVMProviderFactory
-import pt.ipl.isel.leic.ps.androidclient.ui.util.getUnitOrDefault
-import pt.ipl.isel.leic.ps.androidclient.ui.util.getUserSession
+import pt.ipl.isel.leic.ps.androidclient.ui.util.*
 import pt.ipl.isel.leic.ps.androidclient.ui.util.units.GlucoseUnits
 import pt.ipl.isel.leic.ps.androidclient.ui.util.units.WeightUnits
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.InsulinProfilesListViewModel
@@ -39,9 +38,9 @@ class AddProfileFragment : BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val profileName = view.findViewById<EditText>(R.id.profile_name)
-        val glucoseObjective = view.findViewById<EditText>(R.id.glucose_objective)
-        val glucoseAmount = view.findViewById<EditText>(R.id.glucose_amount)
-        val carboAmount = view.findViewById<EditText>(R.id.carbo_amount)
+        var glucoseObjective = view.findViewById<EditText>(R.id.glucose_objective)
+        var glucoseAmount = view.findViewById<EditText>(R.id.glucose_amount)
+        var carboAmount = view.findViewById<EditText>(R.id.carbo_amount)
         val createButton = view.findViewById<Button>(R.id.create_custom_meal)
         val addStartTime = view.findViewById<Button>(R.id.start_time_label)
         val startTimeUser = view.findViewById<TextView>(R.id.start_time_user)
@@ -89,14 +88,42 @@ class AddProfileFragment : BaseFragment() {
                 return@setOnClickListener
             }
 
+            /**
+             * If the user used a non-standard unit, convert back to standard in order to store
+             * Ex: mmol / L -> mg / dL ////// ounces -> grams
+             */
+            val glucoseUnitSpinner = view.findViewById<Spinner>(R.id.glucose_measurement_units)
+            val carbUnitSpinner = view.findViewById<Spinner>(R.id.carbohydrate_measurement_units)
+
+            var convertedGlucoseObjective: Float? = null
+            var convertedGlucoseAmount: Float? = null
+            var convertedCarbAmount: Float? = null
+
+            val selectedGlucoseUnit =
+                GlucoseUnits.fromValue(glucoseUnitSpinner.selectedItem.toString())
+            val selectedCarbohydratesUnit =
+                WeightUnits.fromValue(carbUnitSpinner.selectedItem.toString())
+
+            if (selectedGlucoseUnit != DEFAULT_GLUCOSE_UNIT) {
+                convertedGlucoseObjective = selectedGlucoseUnit
+                    .convert(DEFAULT_GLUCOSE_UNIT, glucoseObjective.text.toString().toFloat())
+                convertedGlucoseAmount = selectedGlucoseUnit
+                    .convert(DEFAULT_GLUCOSE_UNIT, glucoseAmount.text.toString().toFloat())
+            }
+
+            if (selectedCarbohydratesUnit != DEFAULT_WEIGHT_UNIT) {
+                convertedCarbAmount = selectedCarbohydratesUnit
+                    .convert(DEFAULT_WEIGHT_UNIT, carboAmount.text.toString().toFloat())
+            }
+
             // Creates profile if everything is ok until here
             val profile = InsulinProfile(
                 profileName.text.toString(),
                 startTimeUser.text.toString(),
                 endTimeUser.text.toString(),
-                glucoseObjective.text.toString().toInt(),
-                glucoseAmount.text.toString().toInt(),
-                carboAmount.text.toString().toInt(),
+                convertedGlucoseObjective ?: glucoseObjective.text.toString().toFloat(),
+                convertedGlucoseAmount ?: glucoseAmount.text.toString().toFloat(),
+                convertedCarbAmount ?: carboAmount.text.toString().toFloat(),
                 TimestampWithTimeZone.now()
             )
 
@@ -125,7 +152,7 @@ class AddProfileFragment : BaseFragment() {
         val spinner = view?.findViewById<Spinner>(R.id.glucose_measurement_units)
         val spinnerAdapter: ArrayAdapter<String> = spinner!!.adapter as ArrayAdapter<String>
 
-        val configuredUnit = NutrioApp.sharedPreferences.getUnitOrDefault()
+        val configuredUnit = NutrioApp.sharedPreferences.getGlucoseUnitOrDefault()
 
         val spinnerPosition = spinnerAdapter.getPosition(configuredUnit)
         spinner.setSelection(spinnerPosition)
@@ -160,7 +187,7 @@ class AddProfileFragment : BaseFragment() {
         val spinner = view?.findViewById<Spinner>(R.id.carbohydrate_measurement_units)
         val spinnerAdapter: ArrayAdapter<String> = spinner!!.adapter as ArrayAdapter<String>
 
-        val configuredUnit = NutrioApp.sharedPreferences.getUnitOrDefault()
+        val configuredUnit = NutrioApp.sharedPreferences.getWeightUnitOrDefault()
 
         val spinnerPosition = spinnerAdapter.getPosition(configuredUnit)
         spinner.setSelection(spinnerPosition)
@@ -197,7 +224,7 @@ class AddProfileFragment : BaseFragment() {
             GlucoseUnits.MILLI_GRAM_PER_DL -> GlucoseUnits.MILLI_MOL_PER_L
             GlucoseUnits.MILLI_MOL_PER_L -> GlucoseUnits.MILLI_GRAM_PER_DL
         }
-        val currentValue = textBox.text.toString().toDouble()
+        val currentValue = textBox.text.toString().toFloat()
         textBox.setText(oldUnit.convert(newUnit, currentValue).toString())
     }
 
@@ -212,7 +239,7 @@ class AddProfileFragment : BaseFragment() {
             WeightUnits.GRAMS -> WeightUnits.OUNCES
             WeightUnits.OUNCES -> WeightUnits.GRAMS
         }
-        val currentValue = textBox.text.toString().toDouble()
+        val currentValue = textBox.text.toString().toFloat()
         textBox.setText(oldUnit.convert(newUnit, currentValue).toString())
     }
 

@@ -14,6 +14,7 @@ import androidx.navigation.findNavController
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.flexbox.FlexboxLayoutManager
+import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.sharedPreferences
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.db.entity.DbComponentMealEntity
 import pt.ipl.isel.leic.ps.androidclient.data.db.entity.DbMealInfoEntity
@@ -298,10 +299,7 @@ class AddCustomMealFragment : BaseFragment() {
         val spinner = view.findViewById<Spinner>(R.id.custom_meal_units_spinner)
         val spinnerAdapter: ArrayAdapter<String> = spinner!!.adapter as ArrayAdapter<String>
 
-        val sharedPreferences =
-            PreferenceManager.getDefaultSharedPreferences(this.context)
-
-        val defaultUnitKey = viewModel.unit ?: sharedPreferences.getUnit()
+        val defaultUnitKey = viewModel.unit ?: sharedPreferences.getWeightUnitOrDefault()
 
         val spinnerPosition = spinnerAdapter.getPosition(defaultUnitKey)
         spinner.setSelection(spinnerPosition)
@@ -326,7 +324,7 @@ class AddCustomMealFragment : BaseFragment() {
                         WeightUnits.GRAMS -> WeightUnits.OUNCES
                         WeightUnits.OUNCES -> WeightUnits.GRAMS
                     }
-                    val currentValue = customMealPortion.text.toString().toDouble()
+                    val currentValue = customMealPortion.text.toString().toFloat()
                     customMealPortion.setText(oldUnit.convert(newUnit, currentValue).toString())
                 }
             }

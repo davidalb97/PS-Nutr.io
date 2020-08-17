@@ -11,9 +11,9 @@ data class InsulinProfile(
     @PrimaryKey val profileName: String,
     val startTime: String,
     val endTime: String,
-    val glucoseObjective: Int,
-    val glucoseAmountPerInsulin: Int,
-    val carbsAmountPerInsulin: Int,
+    val glucoseObjective: Float,
+    val glucoseAmountPerInsulin: Float,
+    val carbsAmountPerInsulin: Float,
     val modificationDate: TimestampWithTimeZone?
 ) : Parcelable {
 
@@ -22,9 +22,9 @@ data class InsulinProfile(
         modificationDate = parcel.readTimestampWithTimeZone(),
         startTime = parcel.readString()!!,
         endTime = parcel.readString()!!,
-        glucoseObjective = parcel.readInt(),
-        glucoseAmountPerInsulin = parcel.readInt(),
-        carbsAmountPerInsulin = parcel.readInt()
+        glucoseObjective = parcel.readFloat(),
+        glucoseAmountPerInsulin = parcel.readFloat(),
+        carbsAmountPerInsulin = parcel.readFloat()
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -32,9 +32,9 @@ data class InsulinProfile(
         parcel.writeTimestampWithTimeZone(modificationDate)
         parcel.writeString(startTime)
         parcel.writeString(endTime)
-        parcel.writeInt(glucoseObjective)
-        parcel.writeInt(glucoseAmountPerInsulin)
-        parcel.writeInt(carbsAmountPerInsulin)
+        parcel.writeFloat(glucoseObjective)
+        parcel.writeFloat(glucoseAmountPerInsulin)
+        parcel.writeFloat(carbsAmountPerInsulin)
     }
 
     override fun describeContents(): Int {
