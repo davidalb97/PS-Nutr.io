@@ -2,24 +2,30 @@ package pt.ipl.isel.leic.ps.androidclient.ui.provider
 
 import android.content.Intent
 import android.os.Bundle
-import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.InsulinProfilesRecyclerViewModel
-
-const val INSULIN_PROFILE_LIST_VIEW_STATE: String = "INSULIN_PROFILE_LIST_VIEW_STATE"
+import androidx.lifecycle.ViewModel
+import pt.ipl.isel.leic.ps.androidclient.ui.util.Logger
+import pt.ipl.isel.leic.ps.androidclient.ui.util.getItemActions
+import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.InsulinProfilesListViewModel
 
 class InsulinProfilesVMProviderFactory(
+    arguments: Bundle?,
     savedInstanceState: Bundle?,
     intent: Intent
-) : AViewModelProviderFactory<InsulinProfilesRecyclerViewModel>(
+) : AViewModelProviderFactory(
+    arguments,
     savedInstanceState,
     intent
 ) {
-    override fun getStateName(): String = INSULIN_PROFILE_LIST_VIEW_STATE
+    override val logger = Logger(InsulinProfilesVMProviderFactory::class)
 
-    override fun getViewModelClass(): Class<InsulinProfilesRecyclerViewModel> =
-        InsulinProfilesRecyclerViewModel::class.java
-
-    override fun newViewModel(): InsulinProfilesRecyclerViewModel =
-        InsulinProfilesRecyclerViewModel()
-
-
+    override fun <T : ViewModel?> newViewModel(modelClass: Class<T>): ViewModel? {
+        return when (modelClass) {
+            InsulinProfilesListViewModel::class.java -> {
+                InsulinProfilesListViewModel(
+                    actions = arguments?.getItemActions() ?: emptyList()
+                )
+            }
+            else -> null
+        }
+    }
 }

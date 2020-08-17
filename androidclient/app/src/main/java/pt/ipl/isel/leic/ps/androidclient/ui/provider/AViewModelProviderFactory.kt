@@ -7,34 +7,29 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import pt.ipl.isel.leic.ps.androidclient.ui.util.Logger
 
-abstract class AViewModelProviderFactory<VM : Parcelable>(
+abstract class AViewModelProviderFactory(
+    val arguments: Bundle?,
     val savedInstanceState: Bundle?,
     val intent: Intent
 ) : ViewModelProvider.Factory {
 
+    abstract val logger: Logger
 
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        val log =
-            Logger("${AViewModelProviderFactory::class.java.simpleName}<${getViewModelClass()}>")
-        val viewModelClass = getViewModelClass()
+    abstract fun <T : ViewModel?> newViewModel(modelClass: Class<T>): ViewModel?
+
+    override fun <T> create(modelClass: Class<T>): T where T : ViewModel {
         if (savedInstanceState != null) {
-            val model: VM? = savedInstanceState.getParcelable(getStateName())
+            val model: Parcelable? = savedInstanceState.getParcelable(modelClass.simpleName)
             if (model != null) {
-                log.v("Restored ${viewModelClass.simpleName} from Bundle!")
+                logger.v("Restored ViewModel from Bundle!")
                 return model as T
             }
         }
-        return when (modelClass) {
-            viewModelClass -> newViewModel().apply {
-                log.v("Creating ${viewModelClass.simpleName} from the scratch!")
-            } as T
-            else -> throw IllegalArgumentException("There is no ViewModel for class $modelClass")
-        }
+        return newViewModel(modelClass)
+            ?.let {
+                logger.v("Creating ViewModel from the scratch!")
+                it as T
+            }
+            ?: throw IllegalArgumentException("There is no ViewModel for class $modelClass")
     }
-
-    abstract fun getStateName(): String
-
-    abstract fun getViewModelClass(): Class<VM>
-
-    abstract fun newViewModel(): VM
 }

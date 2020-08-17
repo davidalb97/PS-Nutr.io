@@ -4,21 +4,21 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.lifecycle.ViewModel
 import pt.ipl.isel.leic.ps.androidclient.ui.util.Logger
-import pt.ipl.isel.leic.ps.androidclient.ui.util.getItemActions
 import pt.ipl.isel.leic.ps.androidclient.ui.util.getMealInfo
 import pt.ipl.isel.leic.ps.androidclient.ui.util.getMealItem
+import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.InsulinProfilesListViewModel
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.meal.info.MealInfoViewModel
 
-open class MealInfoVMProviderFactory(
+class CalculatorVMProviderFactory(
     arguments: Bundle?,
     savedInstanceState: Bundle?,
     intent: Intent
-) : IngredientRecyclerVMProviderFactory(
+) : AViewModelProviderFactory(
     arguments,
     savedInstanceState,
     intent
 ) {
-    override val logger = Logger(MealInfoVMProviderFactory::class)
+    override val logger = Logger(CalculatorVMProviderFactory::class)
 
     override fun <T : ViewModel?> newViewModel(modelClass: Class<T>): ViewModel? {
         return when (modelClass) {
@@ -28,18 +28,23 @@ open class MealInfoVMProviderFactory(
                 when {
                     mealInfo != null -> MealInfoViewModel(
                         mealInfo = mealInfo,
-                        ingredientActions = arguments?.getItemActions() ?: emptyList()
+                        ingredientActions = emptyList()
                     )
                     mealItem != null -> MealInfoViewModel(
                         mealItem = mealItem,
-                        ingredientActions = arguments?.getItemActions() ?: emptyList()
+                        ingredientActions = emptyList()
                     )
                     else -> MealInfoViewModel(
-                        ingredientActions = arguments?.getItemActions() ?: emptyList()
+                        ingredientActions = emptyList()
                     )
                 }
             }
-            else -> super.newViewModel(modelClass)
+            InsulinProfilesListViewModel::class.java -> {
+                InsulinProfilesListViewModel(
+                    actions = emptyList()
+                )
+            }
+            else -> null
         }
     }
 }
