@@ -32,7 +32,7 @@ class MapFragment : RestaurantListFragment(), OnMapReadyCallback {
     private var mapView: MapView? = null
     private var locationEngine: LocationEngine? = null
     private val callback = initLocationEngineCallback()
-    private var mapboxMap: MapboxMap? = null
+    private var mapBoxMap: MapboxMap? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -68,7 +68,7 @@ class MapFragment : RestaurantListFragment(), OnMapReadyCallback {
     }
 
     override fun onMapReady(mapboxMap: MapboxMap) {
-        this.mapboxMap = mapboxMap
+        this.mapBoxMap = mapboxMap
 
         mapboxMap.setStyle(Style.TRAFFIC_DAY) { style: Style ->
             enableLocationComponent(style)
@@ -84,7 +84,7 @@ class MapFragment : RestaurantListFragment(), OnMapReadyCallback {
         if (PermissionsManager.areLocationPermissionsGranted(requireContext())) {
 
             // Get an instance of the component
-            val locationComponent: LocationComponent = mapboxMap!!.locationComponent
+            val locationComponent: LocationComponent = mapBoxMap!!.locationComponent
 
             if (!locationComponent.isLocationComponentActivated) {
                 // Set the LocationComponent activation options
@@ -130,7 +130,7 @@ class MapFragment : RestaurantListFragment(), OnMapReadyCallback {
     }
 
     override fun onLocationEnabled() {
-        mapboxMap?.setStyle(Style.TRAFFIC_DAY) { style: Style ->
+        mapBoxMap?.setStyle(Style.TRAFFIC_DAY) { style: Style ->
             enableLocationComponent(style)
         }
     }
@@ -148,7 +148,7 @@ class MapFragment : RestaurantListFragment(), OnMapReadyCallback {
                 val location = result?.lastLocation ?: return
 
                 // Pass the new location to the Maps SDK's LocationComponent
-                mapboxMap?.locationComponent?.forceLocationUpdate(location)
+                mapBoxMap?.locationComponent?.forceLocationUpdate(location)
 
                 //Update viewmodel with new location
                 recyclerViewModel.latitude = location.latitude

@@ -35,6 +35,7 @@ class CustomMealListFragment
                 view.findNavController().navigate(R.id.nav_add_custom_meal)
             }
         }
+        //TODO Remove this hardcoded debug meal manual insertion
         recyclerViewModel.restoreFromList(
             listOf(
                 MealInfo(

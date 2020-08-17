@@ -18,7 +18,7 @@ interface IReportMenuItem : IMenu, IContext, IAction, ILog, IUserSession {
         if (!actions.contains(ItemAction.REPORT)) {
             return
         }
-        menus.add(object : AMenuItemFactory() {
+        menus.add(object : MenuItemFactory() {
             override fun newMenuItem(menu: Menu): MenuItem {
                 return menu.add(R.string.report_menu_item_title).also { menuItem ->
                     menuItem.setOnMenuItemClickListener {

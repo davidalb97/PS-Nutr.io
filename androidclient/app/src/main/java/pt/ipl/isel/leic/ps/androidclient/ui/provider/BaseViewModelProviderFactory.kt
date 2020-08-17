@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import pt.ipl.isel.leic.ps.androidclient.ui.util.Logger
 
-abstract class AViewModelProviderFactory(
+abstract class BaseViewModelProviderFactory(
     val arguments: Bundle?,
     val savedInstanceState: Bundle?,
     val intent: Intent

@@ -88,8 +88,8 @@ class CalculatorFragment : BaseFragment() {
                 if (currentBloodGlucose!!.text.isNotBlank()) {
                     val newUnit = GlucoseUnits.valueOf(spinner.selectedItem.toString())
                     val oldUnit = when (newUnit) {
-                        GlucoseUnits.MILLIGRAM_PER_DL -> GlucoseUnits.MILLIMOL_PER_L
-                        GlucoseUnits.MILLIMOL_PER_L -> GlucoseUnits.MILLIGRAM_PER_DL
+                        GlucoseUnits.MILLI_GRAM_PER_DL -> GlucoseUnits.MILLI_MOL_PER_L
+                        GlucoseUnits.MILLI_MOL_PER_L -> GlucoseUnits.MILLI_GRAM_PER_DL
                     }
                     val currentValue = currentBloodGlucose.text.toString().toDouble()
                     currentBloodGlucose.setText(oldUnit.convert(newUnit, currentValue).toString())

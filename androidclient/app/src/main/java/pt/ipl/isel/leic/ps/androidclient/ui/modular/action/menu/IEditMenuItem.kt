@@ -14,7 +14,7 @@ interface IEditMenuItem : IMenu, IAction {
         if (!actions.contains(ItemAction.EDIT)) {
             return
         }
-        menus.add(object : AMenuItemFactory() {
+        menus.add(object : MenuItemFactory() {
             override fun newMenuItem(menu: Menu): MenuItem {
                 return menu.add(R.string.edit_menu_item_title).also { menuItem ->
                     menuItem.setOnMenuItemClickListener {

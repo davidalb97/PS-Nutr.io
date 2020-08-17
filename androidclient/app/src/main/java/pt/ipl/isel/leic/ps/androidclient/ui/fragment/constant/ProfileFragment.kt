@@ -34,9 +34,9 @@ class ProfileFragment : BaseFragment() {
 
         // Add fragments and tab tiles to show in the tab layout
         tabPagerAdapter.addFragment(ProfileOverviewFragment(), "Overview")
-        tabPagerAdapter.addFragment(InsulinProfilesListFragment().also {
-            it.arguments = Bundle().also {
-                it.putItemActions(ItemAction.EDIT, ItemAction.DELETE)
+        tabPagerAdapter.addFragment(InsulinProfilesListFragment().also { fragment ->
+            fragment.arguments = Bundle().also { bundle ->
+                bundle.putItemActions(ItemAction.EDIT, ItemAction.DELETE)
             }
         }, "Profiles")
         tabPagerAdapter.addFragment(ProfileSubmissionsListFragment(), "Submissions")

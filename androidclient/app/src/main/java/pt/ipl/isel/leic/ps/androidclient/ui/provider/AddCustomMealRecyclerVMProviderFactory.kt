@@ -14,7 +14,7 @@ class AddCustomMealRecyclerVMProviderFactory(
     arguments: Bundle?,
     savedInstanceState: Bundle?,
     intent: Intent
-) : AViewModelProviderFactory(
+) : BaseViewModelProviderFactory(
     arguments,
     savedInstanceState,
     intent

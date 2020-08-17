@@ -18,7 +18,7 @@ class InsulinProfilesListFragment : BaseListFragment<
         InsulinProfileRecyclerAdapter
         >() {
 
-    var refreshLayout: SwipeRefreshLayout? = null
+    private var refreshLayout: SwipeRefreshLayout? = null
 
     override val recyclerAdapter: InsulinProfileRecyclerAdapter by lazy {
         InsulinProfileRecyclerAdapter(

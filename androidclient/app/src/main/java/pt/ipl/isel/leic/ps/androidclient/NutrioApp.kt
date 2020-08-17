@@ -175,6 +175,7 @@ class NutrioApp : Application() {
 
 /**
  * Checks the internet connectivity
+ * //TODO Do not place Android context classes in static fields; this is a memory leak
  */
 fun hasInternetConnection(): Boolean {
     val cm = app.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager

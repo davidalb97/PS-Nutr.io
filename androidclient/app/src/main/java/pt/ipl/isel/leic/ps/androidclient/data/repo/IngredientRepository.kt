@@ -10,8 +10,8 @@ import pt.ipl.isel.leic.ps.androidclient.util.AsyncWorker
 
 class IngredientRepository(private val dataSource: IngredientDataSource) {
 
-    val dbMealItemMapper = DbMealItemMapper()
-    val inputIngredientMapper = InputMealIngredientMapper()
+    private val dbMealItemMapper = DbMealItemMapper()
+    private val inputIngredientMapper = InputMealIngredientMapper()
 
     fun getIngredients(
         count: Int,

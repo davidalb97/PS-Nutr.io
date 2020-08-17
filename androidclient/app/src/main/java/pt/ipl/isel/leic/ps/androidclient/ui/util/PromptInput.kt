@@ -42,7 +42,7 @@ class PromptInput(
     }
 
     fun clear() {
-        editText.setText("")
+        editText.text.clear()
     }
 
     private fun hideInput() {

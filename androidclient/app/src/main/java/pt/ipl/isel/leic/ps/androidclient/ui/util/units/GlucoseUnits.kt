@@ -3,19 +3,19 @@ package pt.ipl.isel.leic.ps.androidclient.ui.util.units
 import android.text.SpannableStringBuilder
 import java.math.RoundingMode
 
-private const val CONVERTION_CONST = 18
+private const val CONVERSION_CONST = 18
 
-enum class GlucoseUnits(val str: String) {
-    MILLIGRAM_PER_DL("mg / dL"),
-    MILLIMOL_PER_L("mmol / L");
+enum class GlucoseUnits(val string: String) {
+    MILLI_GRAM_PER_DL("mg / dL"),
+    MILLI_MOL_PER_L("mmol / L");
 
     fun convert(targetUnit: GlucoseUnits, value: Double): Double {
         if (this == targetUnit) {
             return value
         }
         val builder = when (targetUnit) {
-            MILLIGRAM_PER_DL -> value / CONVERTION_CONST
-            MILLIMOL_PER_L -> value * CONVERTION_CONST
+            MILLI_GRAM_PER_DL -> value / CONVERSION_CONST
+            MILLI_MOL_PER_L -> value * CONVERSION_CONST
         }
         return SpannableStringBuilder(
             builder
@@ -26,5 +26,5 @@ enum class GlucoseUnits(val str: String) {
         ).toString().toDouble()
     }
 
-    override fun toString(): String = str
+    override fun toString(): String = string
 }

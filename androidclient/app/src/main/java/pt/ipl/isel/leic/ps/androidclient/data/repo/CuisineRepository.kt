@@ -6,7 +6,7 @@ import pt.ipl.isel.leic.ps.androidclient.data.model.Cuisine
 
 class CuisineRepository(private val dataSource: CuisineDataSource) {
 
-    val inputCuisineMapper = InputCuisineMapper()
+    private val inputCuisineMapper = InputCuisineMapper()
 
     fun getCuisines(
         count: Int,

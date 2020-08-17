@@ -15,7 +15,7 @@ const val PASSWORD_KEY = "password"
 const val EMAIL_KEY = "email"
 const val JWT_KEY = "jwt"
 const val GLUCOSE_UNITS_KEY = "insulin_units"
-val DEFAULT_GLUCOSE_UNIT = GlucoseUnits.MILLIGRAM_PER_DL
+val DEFAULT_GLUCOSE_UNIT = GlucoseUnits.MILLI_GRAM_PER_DL
 const val WEIGHT_UNIT_KEY = "weight_units"
 val DEFAULT_WEIGHT_UNIT = WeightUnits.GRAMS
 
@@ -48,11 +48,12 @@ fun SharedPreferences.getJwt() = getString(JWT_KEY, null)
 
 fun SharedPreferences.getIsFirstTime() = getBoolean(FIRST_TIME, true)
 
-fun SharedPreferences.Editor.setIsFirstTime(boolean: Boolean) = putBoolean(FIRST_TIME, boolean)
+fun SharedPreferences.Editor.setIsFirstTime(boolean: Boolean): SharedPreferences.Editor =
+    putBoolean(FIRST_TIME, boolean)
 
 fun SharedPreferences.getIsNightMode() = getBoolean(DARK_MODE, false)
 
-fun SharedPreferences.Editor.setIsNightMode(defaultValue: Boolean) =
+fun SharedPreferences.Editor.setIsNightMode(defaultValue: Boolean): SharedPreferences.Editor =
     putBoolean(DARK_MODE, defaultValue)
 
 fun SharedPreferences.getDefaultUnitKey() =

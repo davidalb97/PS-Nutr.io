@@ -13,29 +13,28 @@ import pt.ipl.isel.leic.ps.androidclient.util.AsyncWorker
 
 class MealRepository(private val dataSource: MealDataSource) {
 
-    val dbComponentIngredientMapper = DbComponentIngredientMapper()
-    val dbComponentMealMapper = DbComponentMealMapper()
-    val dbCuisinesMapper = DbCuisineMapper()
-    val dbCortionMapper = DbPortionMapper()
+    private val dbComponentIngredientMapper = DbComponentIngredientMapper()
+    private val dbComponentMealMapper = DbComponentMealMapper()
+    private val dbCuisinesMapper = DbCuisineMapper()
+    private val dbPortionMapper = DbPortionMapper()
     val dbMealInfoMapper = DbMealInfoMapper(
         dbComponentIngredientMapper,
         dbComponentMealMapper,
         dbCuisinesMapper,
-        dbCortionMapper
+        dbPortionMapper
     )
     val dbMealItemMapper = DbMealItemMapper()
-    val inputVotesMapper = InputVotesMapper()
-    val inputCuisineMapper = InputCuisineMapper()
-    val inputMealIngredientMapper = InputMealIngredientMapper()
-    val inputPortionMapper = InputPortionMapper()
-    val inputMealInfoMapper =
-        InputMealInfoMapper(
+    private val inputVotesMapper = InputVotesMapper()
+    private val inputCuisineMapper = InputCuisineMapper()
+    private val inputMealIngredientMapper = InputMealIngredientMapper()
+    private val inputPortionMapper = InputPortionMapper()
+    private val inputMealInfoMapper = InputMealInfoMapper(
             inputVotesMapper = inputVotesMapper,
             inputCuisineMapper = inputCuisineMapper,
             inputMealIngredientMapper = inputMealIngredientMapper,
             inputPortionMapper = inputPortionMapper
         )
-    val inputMealItemMapper = InputMealItemMapper(
+    private val inputMealItemMapper = InputMealItemMapper(
         inputVotesMapper = inputVotesMapper
     )
 
@@ -53,24 +52,24 @@ class MealRepository(private val dataSource: MealDataSource) {
     }
 
     fun insertItem(meal: MealItem) = AsyncWorker<Unit, Unit> {
-            roomDb.mealItemDao().insert(dbMealItemMapper.mapToEntity(meal))
-        }
+        roomDb.mealItemDao().insert(dbMealItemMapper.mapToEntity(meal))
+    }
 
     fun deleteInfo(meal: MealInfo) = AsyncWorker<Unit, Unit> {
-            roomDb.mealInfoDao().delete(dbMealInfoMapper.mapToRelation(meal))
-        }
+        roomDb.mealInfoDao().delete(dbMealInfoMapper.mapToRelation(meal))
+    }
 
     fun deleteInfoById(dbMealId: Long) = AsyncWorker<Unit, Unit> {
-            roomDb.mealInfoDao().deleteById(dbMealId)
-        }
+        roomDb.mealInfoDao().deleteById(dbMealId)
+    }
 
     fun deleteItem(mealItem: MealItem) = AsyncWorker<Unit, Unit> {
-            roomDb.mealItemDao().delete(dbMealItemMapper.mapToEntity(mealItem))
-        }
+        roomDb.mealItemDao().delete(dbMealItemMapper.mapToEntity(mealItem))
+    }
 
     fun deleteItemById(dbMealId: Long) = AsyncWorker<Unit, Unit> {
-            roomDb.mealItemDao().deleteById(dbMealId)
-        }
+        roomDb.mealItemDao().deleteById(dbMealId)
+    }
 
     fun getApiRestaurantMealInfo(
         restaurantId: String,

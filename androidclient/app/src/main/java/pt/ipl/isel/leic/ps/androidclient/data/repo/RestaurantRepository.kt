@@ -111,14 +111,14 @@ class RestaurantRepository(private val dataSource: RestaurantDataSource) {
     fun report(
         restaurantId: String,
         reportMsg: String,
-        onSucess: () -> Unit,
+        onSuccess: () -> Unit,
         onError: (VolleyError) -> Unit,
         userSession: UserSession
     ) {
         dataSource.putRestaurantReport(
             restaurant = restaurantId,
             reportStr = reportMsg,
-            success = onSucess,
+            success = onSuccess,
             error = onError,
             jwt = userSession.jwt
         )

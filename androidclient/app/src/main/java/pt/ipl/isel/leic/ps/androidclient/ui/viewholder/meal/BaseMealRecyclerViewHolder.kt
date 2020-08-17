@@ -12,7 +12,7 @@ import pt.ipl.isel.leic.ps.androidclient.ui.modular.IVoteProgress
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.ICalculatorActionButton
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.IDeleteActionButton
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.IFavoriteActionButton
-import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.menu.AMenuItemFactory
+import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.menu.MenuItemFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.menu.IPopupMenuButton
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.menu.IReportMenuItem
 import pt.ipl.isel.leic.ps.androidclient.ui.util.*
@@ -36,7 +36,7 @@ abstract class BaseMealRecyclerViewHolder<T : MealItem>(
     IReportMenuItem {
 
     private val mealName: TextView = view.findViewById(R.id.mealName)
-    override val menus: MutableList<AMenuItemFactory> = mutableListOf()
+    override val menus: MutableList<MenuItemFactory> = mutableListOf()
     override val menuButton: ImageButton = view.findViewById(R.id.options)
     override val image: ImageView = view.findViewById(R.id.mealImage)
     override val pressActionView: RelativeLayout = view.findViewById(R.id.actions_layout)

@@ -13,7 +13,7 @@ import androidx.lifecycle.ViewModelProvider
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.hasInternetConnection
-import pt.ipl.isel.leic.ps.androidclient.ui.provider.AViewModelProviderFactory
+import pt.ipl.isel.leic.ps.androidclient.ui.provider.BaseViewModelProviderFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.util.Logger
 
 abstract class BaseFragment : Fragment() {
@@ -49,7 +49,7 @@ abstract class BaseFragment : Fragment() {
     protected abstract fun getVMProviderFactory(
         savedInstanceState: Bundle?,
         intent: Intent
-    ): AViewModelProviderFactory
+    ): BaseViewModelProviderFactory
 
     protected open fun onError(throwable: Throwable) {
         if (!hasInternetConnection()) {

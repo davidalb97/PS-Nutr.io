@@ -64,7 +64,7 @@ class RestaurantInfoViewModel : MealItemListViewModel {
         restaurantRepository.report(
             restaurantId = restaurantId!!,
             reportMsg = reportMsg,
-            onSucess = onSuccess,
+            onSuccess = onSuccess,
             onError = onError,
             userSession = requireUserSession()
         )

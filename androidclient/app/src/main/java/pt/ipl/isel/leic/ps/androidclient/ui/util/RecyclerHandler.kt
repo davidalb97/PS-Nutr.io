@@ -22,9 +22,9 @@ class RecyclerHandler<M : Parcelable, VM : BaseListViewModel<M>, A : BaseRecycle
     val onError: (Throwable) -> Unit
 ) {
 
-    val recyclerView: RecyclerView = view.findViewById(recyclerId)
-    val recyclerNoItemsTxtView: TextView = view.findViewById(noItemsTxt)
-    val recyclerProgressWheel: ProgressBar = view.findViewById(progressBar)
+    private val recyclerView: RecyclerView = view.findViewById(recyclerId)
+    private val recyclerNoItemsTxtView: TextView = view.findViewById(noItemsTxt)
+    private val recyclerProgressWheel: ProgressBar = view.findViewById(progressBar)
 
     init {
 

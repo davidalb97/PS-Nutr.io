@@ -61,7 +61,7 @@ class RestaurantListViewModel(
     ) = restaurantRepository.report(
         restaurantId = restaurantItem.id,
         reportMsg = reportMsg,
-        onSucess = {
+        onSuccess = {
             restaurantItem.isFavorite = !restaurantItem.isFavorite
             onSuccess()
         },

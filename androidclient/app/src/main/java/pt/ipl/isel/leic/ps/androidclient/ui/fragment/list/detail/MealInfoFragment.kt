@@ -17,11 +17,11 @@ import pt.ipl.isel.leic.ps.androidclient.ui.modular.IImage
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.ICalculatorActionButton
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.IFavoriteActionButton
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.IVoteActionButtons
-import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.menu.AMenuItemFactory
+import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.menu.MenuItemFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.menu.IEditMenuItem
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.menu.IPopupMenuButton
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.menu.IReportMenuItem
-import pt.ipl.isel.leic.ps.androidclient.ui.provider.AViewModelProviderFactory
+import pt.ipl.isel.leic.ps.androidclient.ui.provider.BaseViewModelProviderFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.MealInfoVMProviderFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.util.*
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.meal.info.MealInfoViewModel
@@ -42,7 +42,7 @@ class MealInfoFragment :
             this.requireContext()
         )
     }
-    override val menus: MutableList<AMenuItemFactory> = mutableListOf()
+    override val menus: MutableList<MenuItemFactory> = mutableListOf()
     override lateinit var actions: List<ItemAction>
     override lateinit var image: ImageView
     override lateinit var voteCountersLayout: ViewGroup
@@ -160,7 +160,7 @@ class MealInfoFragment :
     override fun getVMProviderFactory(
         savedInstanceState: Bundle?,
         intent: Intent
-    ): AViewModelProviderFactory {
+    ): BaseViewModelProviderFactory {
         return MealInfoVMProviderFactory(
             arguments,
             savedInstanceState,

@@ -11,7 +11,7 @@ open class IngredientRecyclerVMProviderFactory(
     arguments: Bundle?,
     savedInstanceState: Bundle?,
     intent: Intent
-) : AViewModelProviderFactory(
+) : BaseViewModelProviderFactory(
     arguments,
     savedInstanceState,
     intent

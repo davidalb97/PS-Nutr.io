@@ -9,7 +9,7 @@ import pt.ipl.isel.leic.ps.androidclient.data.model.RestaurantItem
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.IImage
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.IVoteProgress
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.IFavoriteActionButton
-import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.menu.AMenuItemFactory
+import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.menu.MenuItemFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.menu.IPopupMenuButton
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.menu.IReportMenuItem
 import pt.ipl.isel.leic.ps.androidclient.ui.util.*
@@ -31,7 +31,7 @@ abstract class RestaurantItemRecyclerViewHolder(
     IReportMenuItem {
 
     private val restaurantName: TextView = view.findViewById(R.id.restaurantName)
-    override val menus: MutableList<AMenuItemFactory> = mutableListOf()
+    override val menus: MutableList<MenuItemFactory> = mutableListOf()
     override val menuButton: ImageButton = view.findViewById(R.id.options)
     override val image: ImageView = view.findViewById(R.id.restaurantImage)
     override val votesBar: ProgressBar = view.findViewById(R.id.votesBar)

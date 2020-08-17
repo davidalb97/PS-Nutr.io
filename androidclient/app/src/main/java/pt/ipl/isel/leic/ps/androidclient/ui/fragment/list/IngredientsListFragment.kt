@@ -6,7 +6,7 @@ import android.view.View
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealInfo
 import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.meal.MealInfoRecyclerAdapter
-import pt.ipl.isel.leic.ps.androidclient.ui.provider.AViewModelProviderFactory
+import pt.ipl.isel.leic.ps.androidclient.ui.provider.BaseViewModelProviderFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.IngredientRecyclerVMProviderFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.meal.IngredientListViewModel
 
@@ -38,7 +38,7 @@ open class IngredientsListFragment
     override fun getVMProviderFactory(
         savedInstanceState: Bundle?,
         intent: Intent
-    ): AViewModelProviderFactory {
+    ): BaseViewModelProviderFactory {
         return IngredientRecyclerVMProviderFactory(
             arguments,
             savedInstanceState,

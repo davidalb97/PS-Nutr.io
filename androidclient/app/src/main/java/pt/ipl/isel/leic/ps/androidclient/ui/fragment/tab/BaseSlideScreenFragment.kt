@@ -10,13 +10,13 @@ import com.google.android.material.tabs.TabLayout
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.ui.adapter.TabAdapter
 
-abstract class ASlideScreenFragment(
+abstract class BaseSlideScreenFragment(
     private val tabs: Map<Fragment, String>
 ) : Fragment() {
 
-    lateinit var tabPagerAdapter: TabAdapter
-    lateinit var viewPager: ViewPager
-    lateinit var tabLayout: TabLayout
+    private lateinit var tabPagerAdapter: TabAdapter
+    private lateinit var viewPager: ViewPager
+    private lateinit var tabLayout: TabLayout
 
     override fun onCreateView(
         inflater: LayoutInflater,

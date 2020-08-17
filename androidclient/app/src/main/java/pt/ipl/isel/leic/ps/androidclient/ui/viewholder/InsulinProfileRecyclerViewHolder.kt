@@ -42,7 +42,7 @@ abstract class InsulinProfileRecyclerViewHolder(
         super.setupOnDeleteAction(bindingAdapter, layoutPosition)
     }
 
-    fun setupTextFields() {
+    private fun setupTextFields() {
         profileName.text = item.profileName
         val resources = ctx.resources
         startTime.text = String.format(resources.getString(R.string.start_time), item.startTime)
