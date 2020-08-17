@@ -5,9 +5,15 @@ import java.math.RoundingMode
 
 private const val CONVERSION_CONST = 18
 
-enum class GlucoseUnits(val string: String) {
+enum class GlucoseUnits {
     MILLI_GRAM_PER_DL("mg / dL"),
     MILLI_MOL_PER_L("mmol / L");
+
+    val string: String
+
+    constructor(string: String) {
+        this.string = string
+    }
 
     fun convert(targetUnit: GlucoseUnits, value: Double): Double {
         if (this == targetUnit) {
@@ -27,4 +33,11 @@ enum class GlucoseUnits(val string: String) {
     }
 
     override fun toString(): String = string
+
+    companion object {
+        @Override
+        fun fromValue(description: String): GlucoseUnits {
+            return values().first { it.toString() == description }
+        }
+    }
 }

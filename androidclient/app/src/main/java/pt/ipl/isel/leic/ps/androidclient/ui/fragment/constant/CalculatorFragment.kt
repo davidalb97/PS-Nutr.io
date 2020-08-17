@@ -67,9 +67,9 @@ class CalculatorFragment : BaseFragment() {
         val spinner = view?.findViewById<Spinner>(R.id.measurement_units)
         val spinnerAdapter: ArrayAdapter<String> = spinner!!.adapter as ArrayAdapter<String>
 
-        val defaultUnitKey = sharedPreferences.getDefaultUnitKey()
+        val configuredUnit = sharedPreferences.getUnitOrDefault()
 
-        val spinnerPosition = spinnerAdapter.getPosition(defaultUnitKey)
+        val spinnerPosition = spinnerAdapter.getPosition(configuredUnit)
         spinner.setSelection(spinnerPosition)
 
         // Changes the blood glucose value according to the unit spinner
@@ -86,7 +86,7 @@ class CalculatorFragment : BaseFragment() {
                 id: Long
             ) {
                 if (currentBloodGlucose!!.text.isNotBlank()) {
-                    val newUnit = GlucoseUnits.valueOf(spinner.selectedItem.toString())
+                    val newUnit = GlucoseUnits.fromValue(spinner.selectedItem.toString())
                     val oldUnit = when (newUnit) {
                         GlucoseUnits.MILLI_GRAM_PER_DL -> GlucoseUnits.MILLI_MOL_PER_L
                         GlucoseUnits.MILLI_MOL_PER_L -> GlucoseUnits.MILLI_GRAM_PER_DL
@@ -255,7 +255,7 @@ class CalculatorFragment : BaseFragment() {
 
                 // If the unit is different from default, convert back to the value to pass to
                 // the calculator
-                val currentUnit = GlucoseUnits.valueOf(spinner?.selectedItem.toString())
+                val currentUnit = GlucoseUnits.fromValue(spinner?.selectedItem.toString())
                 if (currentUnit != DEFAULT_GLUCOSE_UNIT) {
                     bloodGlucoseValue = currentUnit.convert(
                         DEFAULT_GLUCOSE_UNIT,

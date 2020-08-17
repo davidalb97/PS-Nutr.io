@@ -321,7 +321,7 @@ class AddCustomMealFragment : BaseFragment() {
             ) {
 
                 if (customMealPortion!!.text.isNotBlank()) {
-                    val newUnit = WeightUnits.valueOf(spinner.selectedItem.toString())
+                    val newUnit = WeightUnits.fromValue(spinner.selectedItem.toString())
                     val oldUnit = when (newUnit) {
                         WeightUnits.GRAMS -> WeightUnits.OUNCES
                         WeightUnits.OUNCES -> WeightUnits.GRAMS

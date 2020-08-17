@@ -28,4 +28,11 @@ enum class WeightUnits(private val str: String) {
     }
 
     override fun toString(): String = str
+
+    companion object {
+        @Override
+        fun fromValue(description: String): WeightUnits {
+            return values().first { it.toString() == description }
+        }
+    }
 }
