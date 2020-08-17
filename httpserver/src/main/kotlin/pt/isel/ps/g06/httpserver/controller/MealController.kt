@@ -9,6 +9,7 @@ import pt.isel.ps.g06.httpserver.common.exception.authentication.NotAuthenticate
 import pt.isel.ps.g06.httpserver.common.exception.clientError.InvalidQueryParameter
 import pt.isel.ps.g06.httpserver.common.exception.forbidden.NotSubmissionOwnerException
 import pt.isel.ps.g06.httpserver.common.exception.notFound.MealNotFoundException
+import pt.isel.ps.g06.httpserver.dataAccess.input.FavoriteInput
 import pt.isel.ps.g06.httpserver.dataAccess.input.MealInput
 import pt.isel.ps.g06.httpserver.dataAccess.output.meal.DetailedMealOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.meal.SimplifiedMealContainer
@@ -72,6 +73,17 @@ class MealController(
                 .body(toSimplifiedMealContainer(meals))
     }
 
+    @PutMapping(MEAL_FAVORITE)
+    fun setFavoriteMeal(
+            submitter: Submitter?,
+            @PathVariable(MEAL_ID_VALUE) mealId: Int,
+            @Valid @RequestBody favorite: FavoriteInput
+    ): ResponseEntity<Any> {
+        submitter ?: throw NotAuthenticatedException()
+
+        mealService.setFavorite(mealId, submitter.identifier, favorite.isFavorite!!)
+        return ResponseEntity.ok().build()
+    }
 
     @GetMapping(MEAL)
     fun getMealInformation(@PathVariable(MEAL_ID_VALUE) mealId: Int): ResponseEntity<DetailedMealOutput> {
@@ -125,4 +137,6 @@ class MealController(
                 .ok()
                 .build()
     }
+
+
 }
