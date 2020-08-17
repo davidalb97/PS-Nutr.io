@@ -1,4 +1,4 @@
-package pt.ipl.isel.leic.ps.androidclient.data.api.mapper
+package pt.ipl.isel.leic.ps.androidclient.data.api.mapper.input
 
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.SimplifiedMealInput
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.SimplifiedMealsInput

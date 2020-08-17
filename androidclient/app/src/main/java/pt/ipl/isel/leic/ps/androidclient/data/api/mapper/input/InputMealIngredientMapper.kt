@@ -1,4 +1,4 @@
-package pt.ipl.isel.leic.ps.androidclient.data.api.mapper
+package pt.ipl.isel.leic.ps.androidclient.data.api.mapper.input
 
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.info.DetailedIngredientInput
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.info.DetailedIngredientsInput
@@ -6,6 +6,7 @@ import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.info.DetailedMealInp
 import pt.ipl.isel.leic.ps.androidclient.data.db.entity.DbComponentIngredientEntity
 import pt.ipl.isel.leic.ps.androidclient.data.db.entity.DbMealInfoEntity
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealIngredient
+import pt.ipl.isel.leic.ps.androidclient.data.model.Source
 
 class InputMealIngredientMapper {
 
@@ -14,12 +15,12 @@ class InputMealIngredientMapper {
         dbMealId = DbMealInfoEntity.DEFAULT_DB_ID,
         submissionId = dto.id,
         name = dto.name,
-        isFavorite = dto.isFavorite,
         imageUri = dto.imageUri,
         carbs = dto.nutritionalInfo.carbs,
         amount = dto.nutritionalInfo.amount,
         unit = dto.nutritionalInfo.unit,
-        isMeal = false //Not a meal (DetailedIngredientInput)
+        isMeal = false, //Not a meal (DetailedIngredientInput)
+        source = Source.API
     )
 
     fun mapToModel(dto: DetailedMealInput, isMeal: Boolean) = MealIngredient(
@@ -27,12 +28,12 @@ class InputMealIngredientMapper {
         dbMealId = DbMealInfoEntity.DEFAULT_DB_ID,
         submissionId = dto.mealIdentifier,
         name = dto.name,
-        isFavorite = dto.isFavorite,
         imageUri = dto.imageUri,
         carbs = dto.nutritionalInfo.carbs,
         amount = dto.nutritionalInfo.amount,
         unit = dto.nutritionalInfo.unit,
-        isMeal = isMeal
+        isMeal = isMeal,
+        source = Source.API
     )
 
     fun mapToListModel(dtos: Iterable<DetailedMealInput>, isMeal: Boolean): List<MealIngredient> =

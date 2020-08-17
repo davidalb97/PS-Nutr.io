@@ -1,8 +1,6 @@
-package pt.ipl.isel.leic.ps.androidclient.data.api.mapper
+package pt.ipl.isel.leic.ps.androidclient.data.api.mapper.input
 
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.UserLoginInput
-import pt.ipl.isel.leic.ps.androidclient.data.api.dto.output.UserLoginOutput
-import pt.ipl.isel.leic.ps.androidclient.data.model.UserLogin
 import pt.ipl.isel.leic.ps.androidclient.data.model.UserSession
 
 class InputUserLoginMapper {

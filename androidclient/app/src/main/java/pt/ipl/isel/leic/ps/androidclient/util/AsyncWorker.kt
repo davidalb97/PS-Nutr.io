@@ -1,4 +1,4 @@
-package pt.ipl.isel.leic.ps.androidclient.data.util
+package pt.ipl.isel.leic.ps.androidclient.util
 
 import android.os.AsyncTask
 import android.util.Log

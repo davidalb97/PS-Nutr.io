@@ -4,62 +4,67 @@ import android.net.Uri
 import android.os.Parcel
 import android.os.Parcelable
 import pt.ipl.isel.leic.ps.androidclient.data.db.entity.DbMealItemEntity
-import pt.ipl.isel.leic.ps.androidclient.data.util.readBoolean
-import pt.ipl.isel.leic.ps.androidclient.data.util.readUri
-import pt.ipl.isel.leic.ps.androidclient.data.util.writeBoolean
-import pt.ipl.isel.leic.ps.androidclient.data.util.writeUri
+import pt.ipl.isel.leic.ps.androidclient.util.readBooleanCompat
+import pt.ipl.isel.leic.ps.androidclient.util.readUri
+import pt.ipl.isel.leic.ps.androidclient.util.writeBooleanCompat
+import pt.ipl.isel.leic.ps.androidclient.util.writeUri
 
 class MealIngredient(
-    dbId: Long,
     var dbMealId: Long,
+    val isMeal: Boolean,
+    dbId: Long,
     submissionId: Int,
     name: String,
-    imageUri: Uri?,
-    isFavorite: Boolean,
     carbs: Int,
     amount: Int,
     unit: String,
-    val isMeal: Boolean
-) : MealItem(
+    imageUri: Uri?,
+    source: Source
+) : MealInfo(
     dbId = dbId,
     dbRestaurantId = DbMealItemEntity.DEFAULT_DB_ID,
     submissionId = submissionId,
     restaurantSubmissionId = null,
     name = name,
-    imageUri = imageUri,
-    votes = null,
-    isFavorite = isFavorite,
     carbs = carbs,
     amount = amount,
     unit = unit,
+    votes = null,
+    isFavorite = false,
+    imageUri = imageUri,
+    creationDate = null,
+    ingredientComponents = emptyList(),
+    mealComponents = emptyList(),
+    cuisines = emptyList(),
+    portions = emptyList(),
     isSuggested = false,
-    source = Source.API
+    source = source
 ), Parcelable {
 
     constructor(parcel: Parcel) : this(
-        dbId = parcel.readLong(),
         dbMealId = parcel.readLong(),
+        isMeal = parcel.readBooleanCompat(),
+        dbId = parcel.readLong(),
         submissionId = parcel.readInt(),
         name = parcel.readString()!!,
         carbs = parcel.readInt(),
         amount = parcel.readInt(),
         unit = parcel.readString()!!,
-        isFavorite = readBoolean(parcel),
-        imageUri = readUri(parcel),
-        isMeal = readBoolean(parcel)
+        imageUri = parcel.readUri(),
+        source = Source.values()[parcel.readInt()]
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeLong(dbId)
         parcel.writeLong(dbMealId)
+        parcel.writeBooleanCompat(isMeal)
+        parcel.writeLong(dbId)
         parcel.writeInt(submissionId)
         parcel.writeString(name)
-        parcel.writeInt(carbs!!)
-        parcel.writeInt(amount!!)
+        parcel.writeInt(carbs)
+        parcel.writeInt(amount)
         parcel.writeString(unit)
-        writeBoolean(parcel, isFavorite)
-        writeUri(parcel, imageUri)
-        writeBoolean(parcel, isMeal)
+        parcel.writeUri(imageUri)
+        parcel.writeInt(source.ordinal)
     }
 
     override fun describeContents(): Int {

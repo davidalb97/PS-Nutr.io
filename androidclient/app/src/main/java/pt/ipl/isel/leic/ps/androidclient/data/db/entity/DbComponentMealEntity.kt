@@ -10,8 +10,8 @@ class DbComponentMealEntity(
     val carbs: Int,
     val amount: Int,
     val unit: String,
-    val isFavorite: Boolean,
-    val imageUri: String?
+    val imageUri: String?,
+    val sourceOrdinal: Int
 ) {
     companion object {
         const val DEFAULT_DB_ID: Long = 0

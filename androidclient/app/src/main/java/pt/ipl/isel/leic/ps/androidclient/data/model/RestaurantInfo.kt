@@ -3,7 +3,7 @@ package pt.ipl.isel.leic.ps.androidclient.data.model
 import android.net.Uri
 import android.os.Parcel
 import android.os.Parcelable
-import pt.ipl.isel.leic.ps.androidclient.data.util.*
+import pt.ipl.isel.leic.ps.androidclient.util.*
 
 data class RestaurantInfo(
     var dbId: Long,
@@ -13,7 +13,7 @@ data class RestaurantInfo(
     val longitude: Float,
     val creationDate: TimestampWithTimeZone?,
     val votes: Votes?,
-    val isFavorite: Boolean,
+    var isFavorite: Boolean,
     val imageUri: Uri?,
     val cuisines: List<Cuisine>,
     val meals: List<MealItem>,
@@ -27,13 +27,13 @@ data class RestaurantInfo(
         name = parcel.readString()!!,
         latitude = parcel.readFloat(),
         longitude = parcel.readFloat(),
-        creationDate = readTimestampWithTimeZone(parcel),
+        creationDate = parcel.readTimestampWithTimeZone(),
         votes = parcel.readParcelable(Votes::class.java.classLoader),
-        isFavorite = parcel.readInt() != 0,
-        imageUri = readUri(parcel),
-        cuisines = readList(parcel, Cuisine::class),
-        meals = readList(parcel, MealItem::class),
-        suggestedMeals = readList(parcel, MealItem::class),
+        isFavorite = parcel.readBooleanCompat(),
+        imageUri = parcel.readUri(),
+        cuisines = parcel.readListCompat(Cuisine::class),
+        meals = parcel.readListCompat(MealItem::class),
+        suggestedMeals = parcel.readListCompat(MealItem::class),
         source = Source.values()[parcel.readInt()]
     )
 
@@ -43,10 +43,10 @@ data class RestaurantInfo(
         parcel.writeString(name)
         parcel.writeFloat(latitude)
         parcel.writeFloat(longitude)
-        writeTimestampWithTimeZone(parcel, creationDate)
+        parcel.writeTimestampWithTimeZone(creationDate)
         parcel.writeParcelable(votes, flags)
-        parcel.writeValue(isFavorite)
-        writeUri(parcel, imageUri)
+        parcel.writeBooleanCompat(isFavorite)
+        parcel.writeUri(imageUri)
         parcel.writeList(cuisines)
         parcel.writeList(meals)
         parcel.writeList(suggestedMeals)

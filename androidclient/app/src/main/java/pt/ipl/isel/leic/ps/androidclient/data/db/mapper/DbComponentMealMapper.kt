@@ -3,6 +3,7 @@ package pt.ipl.isel.leic.ps.androidclient.data.db.mapper
 import android.net.Uri
 import pt.ipl.isel.leic.ps.androidclient.data.db.entity.DbComponentMealEntity
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealIngredient
+import pt.ipl.isel.leic.ps.androidclient.data.model.Source
 
 class DbComponentMealMapper {
 
@@ -11,22 +12,22 @@ class DbComponentMealMapper {
         dbMealId = entity.mealKey,
         submissionId = entity.submissionId,
         name = entity.name,
-        isFavorite = entity.isFavorite,
         imageUri = entity.imageUri?.let { Uri.parse(it) },
         carbs = entity.carbs,
         amount = entity.amount,
         unit = entity.unit,
-        isMeal = true
+        isMeal = true,
+        source = Source.values()[entity.sourceOrdinal]
     )
 
     fun mapToEntity(model: MealIngredient) = DbComponentMealEntity(
         submissionId = model.submissionId,
         name = model.name,
-        carbs = model.carbs!!,
-        amount = model.amount!!,
-        unit = model.unit!!,
-        isFavorite = model.isFavorite,
-        imageUri = model.imageUri?.toString()
+        carbs = model.carbs,
+        amount = model.amount,
+        unit = model.unit,
+        imageUri = model.imageUri?.toString(),
+        sourceOrdinal = model.source.ordinal
     ).also { dto ->
         dto.primaryKey = model.dbId
         dto.mealKey = model.dbMealId

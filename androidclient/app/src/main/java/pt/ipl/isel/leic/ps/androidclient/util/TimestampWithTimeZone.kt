@@ -1,4 +1,4 @@
-package pt.ipl.isel.leic.ps.androidclient.data.util
+package pt.ipl.isel.leic.ps.androidclient.util
 
 import java.util.*
 
