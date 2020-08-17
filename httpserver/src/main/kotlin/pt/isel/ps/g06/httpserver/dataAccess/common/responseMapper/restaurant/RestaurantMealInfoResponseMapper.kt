@@ -8,7 +8,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.repo.PortionDbRepository
 import pt.isel.ps.g06.httpserver.model.MealRestaurantInfo
 
 @Component
-class DbRestaurantMealResponseMapper(
+ class DbRestaurantMealInfoResponseMapper(
         private val dbPortionsMapper: DbRestaurantMealPortionsResponseMapper,
         private val dbVotesMapper: DbVotesResponseMapper,
         private val dbMealRepo: MealDbRepository,
