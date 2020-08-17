@@ -16,14 +16,10 @@ class Logger(private val subject: String) {
 
     fun e(throwable: Throwable) {
         Log.e(TAG, "[$subject]: ${throwable.message}", throwable)
-        throwable.printStackTrace()
-        throw throwable
     }
 
     fun e(msg: String, throwable: Throwable) {
         Log.e(TAG, "[$subject]: $msg", throwable)
-        throwable.printStackTrace()
-        throw throwable
     }
 }
 
