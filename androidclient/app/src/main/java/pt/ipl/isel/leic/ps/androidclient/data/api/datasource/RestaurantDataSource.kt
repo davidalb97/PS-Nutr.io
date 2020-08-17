@@ -3,11 +3,16 @@ package pt.ipl.isel.leic.ps.androidclient.data.api.datasource
 import com.android.volley.VolleyError
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.SimplifiedRestaurantInput
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.info.DetailedRestaurantInput
+import pt.ipl.isel.leic.ps.androidclient.data.api.dto.output.FavoriteOutput
+import pt.ipl.isel.leic.ps.androidclient.data.api.dto.output.ReportOutput
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.output.RestaurantOutput
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.output.VoteOutput
-import pt.ipl.isel.leic.ps.androidclient.data.api.request.*
+import pt.ipl.isel.leic.ps.androidclient.data.api.request.HTTPMethod
+import pt.ipl.isel.leic.ps.androidclient.data.api.request.RESTAURANT
+import pt.ipl.isel.leic.ps.androidclient.data.api.request.RequestParser
+import pt.ipl.isel.leic.ps.androidclient.data.api.request.URI_BASE
 import pt.ipl.isel.leic.ps.androidclient.data.model.Cuisine
-import pt.ipl.isel.leic.ps.androidclient.data.model.UserSession
+import pt.ipl.isel.leic.ps.androidclient.data.model.VoteState
 
 private const val LATITUDE_PARAM = ":latitude"
 private const val LONGITUDE_PARAM = ":longitude"
@@ -21,13 +26,9 @@ private const val RESTAURANT_LOCATION_URI = RESTAURANT_URI +
         "&longitude=$LONGITUDE_PARAM" +
         "&skip=$SKIP_PARAM" +
         "&count=$COUNT_PARAM"
-private const val RESTAURANT_REPORT_URI = "$URI_BASE/report/$RESTAURANT_ID_PARAM"
-private const val RESTAURANT_VOTE_URI = "$RESTAURANT_ID_URI/vote"
-private const val RESTAURANT_MEAL_URI = "$RESTAURANT_ID_URI/$MEAL"
-private const val RESTAURANT_MEAL_ID_URI = "$RESTAURANT_MEAL_URI/$MEAL_ID_PARAM"
-private const val RESTAURANT_MEAL_PORTION_URI = "$RESTAURANT_MEAL_ID_URI/portion"
-private const val RESTAURANT_MEAL_REPORT_URI = "$RESTAURANT_MEAL_ID_URI/report"
-private const val RESTAURANT_MEAL_VOTE_URI = "$RESTAURANT_MEAL_ID_URI/vote"
+private const val RESTAURANT_ID_VOTE_URI = "$RESTAURANT_ID_URI/vote"
+private const val RESTAURANT_ID_FAVORITE_URI = "$RESTAURANT_ID_URI/favorite"
+private const val RESTAURANT_ID_REPORT_URI = "$RESTAURANT_ID_URI/report"
 
 
 class RestaurantDataSource(
@@ -37,7 +38,7 @@ class RestaurantDataSource(
     /**
      * ----------------------------- GETs -----------------------------
      */
-    fun getInfoById(
+    fun getRestaurant(
         restaurantId: String,
         success: (DetailedRestaurantInput) -> Unit,
         error: (VolleyError) -> Unit
@@ -57,7 +58,7 @@ class RestaurantDataSource(
         )
     }
 
-    fun getNearby(
+    fun getRestaurants(
         latitude: Double,
         longitude: Double,
         count: Int,
@@ -93,11 +94,11 @@ class RestaurantDataSource(
         longitude: Double,
         cuisines: Iterable<Cuisine>,
         error: (VolleyError) -> Unit,
-        userSession: UserSession
+        jwt: String
 
     ) {
         // Composing the authorization header
-        val reqHeader = buildAuthHeader(userSession.jwt)
+        val reqHeader = buildAuthHeader(jwt)
 
         requestParser.request(
             method = HTTPMethod.POST,
@@ -114,48 +115,82 @@ class RestaurantDataSource(
         )
     }
 
-    fun postReport(
-        id: String,
-        report: String,
-        error: (VolleyError) -> Unit,
-        userSession: UserSession
-    ) {
-        val uri = buildUri(RESTAURANT_REPORT_URI, hashMapOf(Pair(RESTAURANT_ID_PARAM, id)))
-
-        /*requestParser.request(
-            Method.POST,
-            uri,
-            RestaurantOutput(
-                name = name,
-                latitude = latitude,
-                longitude = longitude,
-                cuisines = cuisines.map { it.name }
-            ),
-            error,
-            { }
-        )*/
-    }
-
     /**
      * ----------------------------- PUTs ------------------------------
      */
-    fun updateVote(
+    fun putRestaurantVote(
         restaurant: String,
-        vote: Boolean,
+        vote: VoteState,
         success: () -> Unit,
         error: (VolleyError) -> Unit,
-        userSession: UserSession
+        jwt: String
     ) {
-        val uri = buildUri(RESTAURANT_VOTE_URI, hashMapOf(Pair(RESTAURANT_ID_PARAM, restaurant)))
+        val uri = buildUri(RESTAURANT_ID_VOTE_URI, hashMapOf(Pair(RESTAURANT_ID_PARAM, restaurant)))
 
         // Composing the authorization header
-        val reqHeader = buildAuthHeader(userSession.jwt)
+        val reqHeader = buildAuthHeader(jwt)
 
         requestParser.request(
             method = HTTPMethod.PUT,
             uri = uri,
             reqHeader = reqHeader,
-            reqPayload = VoteOutput(vote = vote),
+            reqPayload = VoteOutput(
+                vote = when (vote) {
+                    VoteState.NOT_VOTED -> null
+                    VoteState.POSITIVE -> true
+                    VoteState.NEGATIVE -> false
+                }
+            ),
+            onError = error,
+            responseConsumer = { success() }
+        )
+    }
+
+    fun putRestaurantFavorite(
+        restaurantId: String,
+        isFavorite: Boolean,
+        success: () -> Unit,
+        error: (VolleyError) -> Unit,
+        jwt: String
+    ) {
+        val uri = buildUri(
+            RESTAURANT_ID_FAVORITE_URI,
+            hashMapOf(Pair(RESTAURANT_ID_PARAM, restaurantId))
+        )
+
+        // Composing the authorization header
+        val reqHeader = buildAuthHeader(jwt)
+
+        requestParser.request(
+            method = HTTPMethod.PUT,
+            uri = uri,
+            reqHeader = reqHeader,
+            reqPayload = FavoriteOutput(isFavorite = isFavorite),
+            onError = error,
+            responseConsumer = { success() }
+        )
+    }
+
+    fun putRestaurantReport(
+        restaurant: String,
+        reportStr: String,
+        success: () -> Unit,
+        error: (VolleyError) -> Unit,
+        jwt: String
+    ) {
+        val uri = buildUri(
+            RESTAURANT_ID_REPORT_URI,
+            hashMapOf(Pair(RESTAURANT_ID_PARAM, restaurant))
+        )
+
+        // Composing the authorization header
+        val reqHeader = buildAuthHeader(jwt)
+
+        requestParser.request(
+            method = HTTPMethod.PUT,
+            uri = uri,
+            reqHeader = reqHeader,
+            reqPayload = ReportOutput(description = reportStr),
             onError = error,
             responseConsumer = { success() }
         )
