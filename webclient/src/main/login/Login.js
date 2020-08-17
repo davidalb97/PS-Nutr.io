@@ -1,9 +1,10 @@
 
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback, useEffect } from 'react'
 import { Switch, Route, Redirect, Link } from "react-router-dom"
 
 import AuthenticationService from './AuthenticationService'
 
+import UserContext from '../authentication/UserContext'
 import LoginPage from './LoginPage'
 import RegisterPage from './RegisterPage'
 
@@ -11,21 +12,23 @@ export default function Login({ children }) {
     const [authenticationService] = useState(AuthenticationService())
     const [isLoggedIn, setLoggedIn] = useState(authenticationService.isLoggedIn())
 
-    const handleLogin = useCallback((username, password) => {
-        if (authenticationService.login(username, password)) {
+    const handleLogin = useCallback((email, password) => {
+        if (authenticationService.login(email, password)) {
             setLoggedIn(true)
         }
-    }, [authenticationService, setLoggedIn])
+    }, [setLoggedIn])
 
-    const handleRegister = useCallback(() => {
-
-    }, [authenticationService])
+    const handleRegister = useCallback((credentials) => {
+        if (authenticationService.register(credentials)) {
+            setLoggedIn(true)
+        }
+    }, [])
 
 
     const handleLogout = useCallback(() => {
         authenticationService.logout()
         setLoggedIn(false)
-    }, [authenticationService, setLoggedIn])
+    }, [setLoggedIn])
 
 
     return (
@@ -46,12 +49,12 @@ export default function Login({ children }) {
                         <Link to="/login"><button>Login</button></Link>
                     </div> :
 
-                    <>
+                    <UserContext.Provider value={{ username: "Pedro", email: "pedro@email.com" }}>
                         <div className={`topnav`}>
                             <button onClick={handleLogout}>Logout</button>
                         </div>
                         {children}
-                    </>
+                    </UserContext.Provider>
                 }
             </Route>
         </Switch >

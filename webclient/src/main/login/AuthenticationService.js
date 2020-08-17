@@ -15,8 +15,14 @@ export default function AuthenticationService() {
          * 
          * @returns {Boolean}, true if login was successful, else false.
          */
-        login: (username, password) => {
-            sessionStorage.setItem(AUTH_TOKEN_KEY, getAuthorizationToken(username, password))
+        login: (email, password) => {
+            sessionStorage.setItem(AUTH_TOKEN_KEY, getAuthorizationToken(email, password))
+            return true
+        },
+
+        register: ({ username, email, password }) => {
+            console.log(username)
+            //TODO Register to servers
             return true
         },
 
