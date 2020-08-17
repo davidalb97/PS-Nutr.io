@@ -8,9 +8,12 @@ import pt.ipl.isel.leic.ps.androidclient.ui.util.Navigation
 
 interface ICalculatorActionButton : ISend, IAction {
 
-    val calculatorButton: ImageButton
+    val calculatorButtonId: Int
+    var calculatorButton: ImageButton
 
     fun setupCalculateAction(view: View) {
+        calculatorButton = view.findViewById(calculatorButtonId)
+
         if (!actions.contains(ItemAction.CALCULATE)) {
             return
         }

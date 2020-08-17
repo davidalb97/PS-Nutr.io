@@ -7,9 +7,12 @@ import pt.ipl.isel.leic.ps.androidclient.ui.modular.IContext
 
 interface IPopupMenuButton : IMenu, IContext {
 
-    val menuButton: ImageButton
+    val menuButtonId: Int
+    var menuButton: ImageButton
 
-    fun setupPopupMenuButton() {
+    fun setupPopupMenuButton(view: View) {
+        menuButton = view.findViewById(menuButtonId)
+
         if (menus.isEmpty()) {
             return
         }

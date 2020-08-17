@@ -44,16 +44,27 @@ class MealInfoFragment :
     }
     override val menus: MutableList<MenuItemFactory> = mutableListOf()
     override lateinit var actions: List<ItemAction>
+    override val imageId: Int = R.id.meal_detail_image
     override lateinit var image: ImageView
+    override val voteCountersLayoutId: Int = R.id.vote_counters_layout
     override lateinit var voteCountersLayout: ViewGroup
+    override val votesBarId: Int = R.id.votesBar
     override lateinit var votesBar: ProgressBar
+    override val voteButtonsLayoutId: Int = R.id.vote_buttons_layout
     override lateinit var voteButtonsLayout: ViewGroup
+    override val upVoteCounterId: Int = R.id.upVoteCounter
     override lateinit var upVoteCounter: TextView
+    override val downVoteCounterId: Int = R.id.downVoteCounter
     override lateinit var downVoteCounter: TextView
+    override val favoriteButtonId: Int = R.id.favorite
     override lateinit var favoriteButton: ImageButton
+    override val calculatorButtonId: Int = R.id.add_to_calc_action
     override lateinit var calculatorButton: ImageButton
+    override val upVoteButtonId: Int = R.id.up_vote_button
     override lateinit var upVoteButton: ImageButton
+    override val downVoteButtonId: Int = R.id.down_vote_button
     override lateinit var downVoteButton: ImageButton
+    override val menuButtonId: Int = R.id.options
     override lateinit var menuButton: ImageButton
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -68,32 +79,18 @@ class MealInfoFragment :
     }
 
     private fun setupView(view: View, receivedMeal: MealInfo) {
-        image = view.findViewById(R.id.meal_detail_image)
         super.setupImage(view, receivedMeal.imageUri)
 
         if (receivedMeal.restaurantSubmissionId != null) {
-            voteCountersLayout = view.findViewById(R.id.vote_counters_layout)
-            votesBar = view.findViewById(R.id.votesBar)
-            upVoteCounter = view.findViewById(R.id.upVoteCounter)
-            downVoteCounter = view.findViewById(R.id.downVoteCounter)
-            super.setupVoteBarCounters(receivedMeal.votes)
-
-            voteButtonsLayout = view.findViewById(R.id.vote_buttons_layout)
-            downVoteButton = view.findViewById(R.id.down_vote_button)
-            upVoteButton = view.findViewById(R.id.up_vote_button)
-            super.setupVoteButtons()
+            super.setupVoteBarCounters(view, receivedMeal.votes)
+            super.setupVoteButtons(view)
         }
 
-        favoriteButton = view.findViewById(R.id.favorite)
-        super.setupFavoriteButton()
-
-        calculatorButton = view.findViewById(R.id.add_to_calc_action)
+        super.setupFavoriteButton(view)
         super.setupCalculateAction(view)
-
-        menuButton = view.findViewById(R.id.options)
         super.setupReportMenuItem()
         super.setupEditMenuItem()
-        super.setupPopupMenuButton()
+        super.setupPopupMenuButton(view)
 
         val title: TextView = view.findViewById(R.id.meal_detail_title)
         title.text = receivedMeal.name

@@ -8,12 +8,21 @@ import pt.ipl.isel.leic.ps.androidclient.data.model.Votes
 
 interface IVoteProgress {
 
-    val voteCountersLayout: ViewGroup
-    val votesBar: ProgressBar
-    val upVoteCounter: TextView
-    val downVoteCounter: TextView
+    val voteCountersLayoutId: Int
+    var voteCountersLayout: ViewGroup
+    val votesBarId: Int
+    var votesBar: ProgressBar
+    val upVoteCounterId: Int
+    var upVoteCounter: TextView
+    val downVoteCounterId: Int
+    var downVoteCounter: TextView
 
-    fun setupVoteBarCounters(votes: Votes?) {
+    fun setupVoteBarCounters(view: View, votes: Votes?) {
+        voteCountersLayout = view.findViewById(voteCountersLayoutId)
+        votesBar = view.findViewById(votesBarId)
+        upVoteCounter = view.findViewById(upVoteCounterId)
+        downVoteCounter = view.findViewById(downVoteCounterId)
+
         votes ?: return
 
         val upVotes = votes.positive

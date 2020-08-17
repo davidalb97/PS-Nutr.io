@@ -3,6 +3,7 @@ package pt.ipl.isel.leic.ps.androidclient.ui.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
@@ -25,7 +26,7 @@ class LoginActivity : AppCompatActivity(), ILogin, IRegister {
     lateinit var viewModel: UserSessionViewModel
 
     //Loading
-    override val loadingCardId = R.id.loadingCard
+    override val loadingCardId: Int = R.id.loadingCard
     override lateinit var loadingCard: CardView
 
     //Register / Login
@@ -35,13 +36,13 @@ class LoginActivity : AppCompatActivity(), ILogin, IRegister {
     override lateinit var userPasswordEditText: EditText
 
     //Login
-    override val loginButtonId = R.id.loginButton
+    override val loginButtonId: Int = R.id.loginButton
     override lateinit var loginButton: Button
 
     //Register
-    override val userEmailEditTextId = R.id.userEmailInput
+    override val userEmailEditTextId: Int = R.id.userEmailInput
     override lateinit var userEmailEditText: EditText
-    override val registerButtonId = R.id.registerButton
+    override val registerButtonId: Int = R.id.registerButton
     override lateinit var registerButton: Button
 
     private fun buildViewModel(savedInstanceState: Bundle?) {
@@ -55,6 +56,7 @@ class LoginActivity : AppCompatActivity(), ILogin, IRegister {
         buildViewModel(savedInstanceState)
         setContentView(R.layout.login_activity)
 
+        val view: View = findViewById(R.id.login_activity_layout)
         setupLoading(view)
         super.setupLogin(view)
         super.setupRegister(view)
@@ -64,6 +66,7 @@ class LoginActivity : AppCompatActivity(), ILogin, IRegister {
             sendToMainActivity()
         }
     }
+
 
     override fun onRegister(
         userRegister: UserRegister,

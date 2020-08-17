@@ -16,23 +16,14 @@ abstract class IngredientRecyclerViewHolder(
     navDestination: Navigation,
     view: View,
     ctx: Context
-) : BaseMealRecyclerViewHolder<MealIngredient>(
+) : BaseMealInfoRecyclerViewHolder<MealIngredient>(
     navDestination = navDestination,
     actions = actions,
     view = view,
     ctx = ctx
-), IMealItemDetail<MealIngredient> {
-
-    override val customMealQuantity: TextView = view.findViewById(R.id.custom_meal_quantity)
-    override val customMealCarbs: TextView = view.findViewById(R.id.custom_meal_carbs_amount)
-
-    override fun bindTo(item: MealIngredient) {
-        super.bindTo(item)
-        setupCustomMeal(ctx, item)
-    }
+) {
 
     override fun onSendToDestination(bundle: Bundle) {
-        super.onSendToDestination(bundle)
         bundle.putMealIngredient(this.item)
     }
 }

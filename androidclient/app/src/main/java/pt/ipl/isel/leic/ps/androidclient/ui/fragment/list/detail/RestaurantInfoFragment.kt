@@ -45,18 +45,27 @@ class RestaurantInfoFragment :
             this.requireContext()
         )
     }
-
     override val menus: MutableList<MenuItemFactory> = mutableListOf()
     override lateinit var actions: List<ItemAction>
+    override val imageId: Int = R.id.restaurant_detail_image
     override lateinit var image: ImageView
+    override val voteCountersLayoutId: Int = R.id.vote_counters_layout
     override lateinit var voteCountersLayout: ViewGroup
+    override val votesBarId: Int = R.id.votesBar
     override lateinit var votesBar: ProgressBar
+    override val voteButtonsLayoutId: Int = R.id.vote_buttons_layout
     override lateinit var voteButtonsLayout: ViewGroup
+    override val upVoteCounterId: Int = R.id.upVoteCounter
     override lateinit var upVoteCounter: TextView
+    override val downVoteCounterId: Int = R.id.downVoteCounter
     override lateinit var downVoteCounter: TextView
+    override val favoriteButtonId: Int = R.id.favorite
     override lateinit var favoriteButton: ImageButton
+    override val upVoteButtonId: Int = R.id.up_vote_button
     override lateinit var upVoteButton: ImageButton
+    override val downVoteButtonId: Int = R.id.down_vote_button
     override lateinit var downVoteButton: ImageButton
+    override val menuButtonId: Int = R.id.options
     override lateinit var menuButton: ImageButton
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -70,28 +79,13 @@ class RestaurantInfoFragment :
     }
 
     private fun setupRestaurantInfoView(view: View, restaurantInfo: RestaurantInfo) {
-
-        image = view.findViewById(R.id.restaurant_detail_image)
         super.setupImage(view, restaurantInfo.imageUri)
-
-        voteCountersLayout = view.findViewById(R.id.vote_counters_layout)
-        votesBar = view.findViewById(R.id.votesBar)
-        upVoteCounter = view.findViewById(R.id.upVoteCounter)
-        downVoteCounter = view.findViewById(R.id.downVoteCounter)
-        super.setupVoteBarCounters(restaurantInfo.votes)
-
-        favoriteButton = view.findViewById(R.id.favorite)
-        super.setupFavoriteButton()
-
-        menuButton = view.findViewById(R.id.options)
+        super.setupVoteBarCounters(view, restaurantInfo.votes)
+        super.setupFavoriteButton(view)
         super.setupReportMenuItem()
         super.setupEditMenuItem()
-        super.setupPopupMenuButton()
-
-        voteButtonsLayout = view.findViewById(R.id.vote_buttons_layout)
-        downVoteButton = view.findViewById(R.id.down_vote_button)
-        upVoteButton = view.findViewById(R.id.up_vote_button)
-        super.setupVoteButtons()
+        super.setupPopupMenuButton(view)
+        super.setupVoteButtons(view)
 
         val title: TextView = view.findViewById(R.id.restaurant_detail_title)
         title.text = restaurantInfo.name

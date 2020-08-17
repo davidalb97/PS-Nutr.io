@@ -11,11 +11,14 @@ import pt.ipl.isel.leic.ps.androidclient.ui.util.changeColor
 
 interface IFavoriteActionButton : IContext, IAction, IUserSession, ILog {
 
-    val favoriteButton: ImageButton
+    val favoriteButtonId: Int
+    var favoriteButton: ImageButton
 
     fun onFavorite(onSuccess: () -> Unit, onError: (Throwable) -> Unit)
 
-    fun setupFavoriteButton() {
+    fun setupFavoriteButton(view: View) {
+        favoriteButton = view.findViewById(favoriteButtonId)
+
         if (!actions.contains(ItemAction.FAVORITE)) {
             return
         }

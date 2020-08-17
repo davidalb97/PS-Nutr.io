@@ -37,16 +37,26 @@ abstract class BaseMealRecyclerViewHolder<T : MealItem>(
 
     private val mealName: TextView = view.findViewById(R.id.mealName)
     override val menus: MutableList<MenuItemFactory> = mutableListOf()
-    override val menuButton: ImageButton = view.findViewById(R.id.options)
-    override val image: ImageView = view.findViewById(R.id.mealImage)
-    override val pressActionView: RelativeLayout = view.findViewById(R.id.actions_layout)
-    override val voteCountersLayout: ViewGroup = view.findViewById(R.id.vote_counters_layout)
-    override val votesBar: ProgressBar = view.findViewById(R.id.votesBar)
-    override val upVoteCounter: TextView = view.findViewById(R.id.upVoteCounter)
-    override val downVoteCounter: TextView = view.findViewById(R.id.downVoteCounter)
-    override val favoriteButton: ImageButton = view.findViewById(R.id.favorite)
-    override val calculatorButton: ImageButton = view.findViewById(R.id.add_to_calc_action)
-    override val deleteButton: ImageButton = view.findViewById(R.id.delete_item_action)
+    override val menuButtonId = R.id.options
+    override lateinit var menuButton: ImageButton
+    override val imageId: Int = R.id.mealImage
+    override lateinit var image: ImageView
+    override val pressActionViewId: Int = R.id.actions_layout
+    override lateinit var pressActionView: RelativeLayout
+    override val voteCountersLayoutId: Int = R.id.vote_counters_layout
+    override lateinit var voteCountersLayout: ViewGroup
+    override val votesBarId: Int = R.id.votesBar
+    override lateinit var votesBar: ProgressBar
+    override val upVoteCounterId: Int = R.id.upVoteCounter
+    override lateinit var upVoteCounter: TextView
+    override val downVoteCounterId: Int = R.id.downVoteCounter
+    override lateinit var downVoteCounter: TextView
+    override val favoriteButtonId: Int = R.id.favorite
+    override lateinit var favoriteButton: ImageButton
+    override val calculatorButtonId: Int = R.id.add_to_calc_action
+    override lateinit var calculatorButton: ImageButton
+    override val deleteButtonId: Int = R.id.delete_item_action
+    override lateinit var deleteButton: ImageButton
 
     override fun bindTo(item: T) {
         super.bindTo(item)
@@ -54,12 +64,12 @@ abstract class BaseMealRecyclerViewHolder<T : MealItem>(
 
         super.setupCalculateAction(view)
         super.setupPressAction(view)
-        super.setupOnDeleteAction(bindingAdapter, layoutPosition)
-        super.setupFavoriteButton()
+        super.setupOnDeleteAction(view, bindingAdapter, layoutPosition)
+        super.setupFavoriteButton(view)
         super.setupImage(view, item.imageUri)
-        super.setupVoteBarCounters(item.votes)
+        super.setupVoteBarCounters(view, item.votes)
         super.setupReportMenuItem()
-        super.setupPopupMenuButton()
+        super.setupPopupMenuButton(view)
     }
 
     override fun onSendToDestination(bundle: Bundle) {

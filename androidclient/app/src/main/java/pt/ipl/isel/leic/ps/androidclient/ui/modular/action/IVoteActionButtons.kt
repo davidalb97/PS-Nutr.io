@@ -15,13 +15,20 @@ import pt.ipl.isel.leic.ps.androidclient.ui.util.changeColor
 
 interface IVoteActionButtons : IVoteProgress, IContext, IAction, IUserSession, ILog {
 
-    val upVoteButton: ImageButton
-    val downVoteButton: ImageButton
-    val voteButtonsLayout: ViewGroup
+    val upVoteButtonId: Int
+    var upVoteButton: ImageButton
+    val downVoteButtonId: Int
+    var downVoteButton: ImageButton
+    val voteButtonsLayoutId: Int
+    var voteButtonsLayout: ViewGroup
 
     fun onVote(voteState: VoteState, onSuccess: () -> Unit, onError: (Throwable) -> Unit)
 
-    fun setupVoteButtons() {
+    fun setupVoteButtons(view: View) {
+        upVoteButton = view.findViewById(upVoteButtonId)
+        downVoteButton = view.findViewById(downVoteButtonId)
+        voteButtonsLayout = view.findViewById(voteButtonsLayoutId)
+
         if (!actions.contains(ItemAction.VOTE) || fetchVotes() == null) {
             return
         }

@@ -8,10 +8,16 @@ import pt.ipl.isel.leic.ps.androidclient.data.model.MealInfo
 
 interface IMealItemDetail<T : MealInfo> {
 
-    val customMealQuantity: TextView
-    val customMealCarbs: TextView
+    val customMealQuantityId: Int
+    var customMealQuantity: TextView
+    val customMealCarbsId: Int
+    var customMealCarbs: TextView
 
-    fun setupCustomMeal(context: Context, mealInfo: MealInfo) {
+    fun setupCustomMeal(view: View, context: Context, mealInfo: MealInfo) {
+
+        customMealQuantity = view.findViewById(customMealQuantityId)
+        customMealCarbs = view.findViewById(customMealCarbsId)
+
         val resources = context.resources
         customMealQuantity.text = String.format(
             resources.getString(R.string.meal_quantity_card),

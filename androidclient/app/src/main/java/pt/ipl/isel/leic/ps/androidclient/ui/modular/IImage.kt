@@ -7,9 +7,12 @@ import com.bumptech.glide.Glide
 
 interface IImage {
 
-    val image: ImageView
+    val imageId: Int
+    var image: ImageView
 
     fun setupImage(view: View, imageUri: Uri?) {
+        image = view.findViewById(imageId)
+
         if (imageUri != null) {
             Glide.with(view)
                 .load(imageUri)

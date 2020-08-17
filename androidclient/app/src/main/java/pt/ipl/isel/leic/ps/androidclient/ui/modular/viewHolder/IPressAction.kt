@@ -6,9 +6,13 @@ import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.IAction
 
 interface IPressAction<T : Any> : IAction, View.OnLongClickListener, IClickListener<T> {
 
-    val pressActionView: RelativeLayout
+    val pressActionViewId: Int
+    var pressActionView: RelativeLayout
 
     fun setupPressAction(view: View) {
+
+        pressActionView = view.findViewById(pressActionViewId)
+
         view.setOnLongClickListener {
             setButtonsVisibility(true)
             true

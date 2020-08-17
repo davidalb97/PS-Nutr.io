@@ -9,11 +9,14 @@ import pt.ipl.isel.leic.ps.androidclient.ui.util.ItemAction
 
 interface IDeleteActionButton<T : Any> : IPressAction<T>, ILog {
 
-    val deleteButton: ImageButton
+    val deleteButtonId: Int
+    var deleteButton: ImageButton
 
     fun onDelete(onSuccess: () -> Unit, onError: (Throwable) -> Unit)
 
-    fun setupOnDeleteAction(adapter: Adapter<*>?, position: Int) {
+    fun setupOnDeleteAction(view: View, adapter: Adapter<*>?, position: Int) {
+        deleteButton = view.findViewById(deleteButtonId)
+
         if (!actions.contains(ItemAction.DELETE)) {
             return
         }

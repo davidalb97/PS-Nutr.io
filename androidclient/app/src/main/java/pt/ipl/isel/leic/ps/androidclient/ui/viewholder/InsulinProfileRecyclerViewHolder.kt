@@ -31,15 +31,17 @@ abstract class InsulinProfileRecyclerViewHolder(
     private val glucoseObjective: TextView = view.findViewById(R.id.profile_glucose_objective_card)
     private val insulinSensitivityFactor: TextView = view.findViewById(R.id.profile_fsi_card)
     private val carboRatio: TextView = view.findViewById(R.id.profile_carbo_ratio_card)
-    override var deleteButton: ImageButton = view.findViewById(R.id.delete_item_action)
-    override val pressActionView: RelativeLayout = view.findViewById(R.id.actions_layout)
+    override var deleteButtonId: Int = R.id.delete_item_action
+    override lateinit var deleteButton: ImageButton
+    override val pressActionViewId: Int = R.id.actions_layout
+    override lateinit var pressActionView: RelativeLayout
 
     override fun bindTo(item: InsulinProfile) {
         super.bindTo(item)
 
         setupTextFields()
         super.setupPressAction(view)
-        super.setupOnDeleteAction(bindingAdapter, layoutPosition)
+        super.setupOnDeleteAction(view, bindingAdapter, layoutPosition)
     }
 
     private fun setupTextFields() {
