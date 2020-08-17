@@ -2,6 +2,7 @@ package pt.ipl.isel.leic.ps.androidclient.ui.fragment.auth
 
 import android.content.Context
 import android.content.Intent
+import android.content.LocusId
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,19 +16,38 @@ import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.UserLogin
 import pt.ipl.isel.leic.ps.androidclient.data.model.UserSession
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.BaseFragment
-import pt.ipl.isel.leic.ps.androidclient.ui.modular.ILogin
+import pt.ipl.isel.leic.ps.androidclient.ui.modular.auth.ILogin
+import pt.ipl.isel.leic.ps.androidclient.ui.modular.auth.ILogout
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.UserProfileVMProviderFactory
+import pt.ipl.isel.leic.ps.androidclient.ui.util.Navigation
 import pt.ipl.isel.leic.ps.androidclient.ui.util.getUsername
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.UserSessionViewModel
 
-class LoginFragment : BaseFragment(), ILogin {
-
-    override lateinit var userNameEditText: EditText
-    override lateinit var userPasswordEditText: EditText
-    override lateinit var loginButton: Button
-    override lateinit var loadingCard: CardView
+class LoginFragment : BaseFragment(), ILogin, ILogout {
 
     private lateinit var viewModel: UserSessionViewModel
+
+    //Loading
+    override val loadingCardId = R.id.loadingCard
+    override lateinit var loadingCard: CardView
+
+    //Login
+    override var userNameEditTextId = R.id.userNameInput
+    override lateinit var userNameEditText: EditText
+    override val userPasswordEditTextId = R.id.userPasswordInput
+    override lateinit var userPasswordEditText: EditText
+    override val loginButtonId = R.id.loginButton
+    override lateinit var loginButton: Button
+
+    //Logout
+    override val nonLogoutViewId = R.id.loginBox
+    override lateinit var nonLogoutView: ViewGroup
+    override val logoutViewId = R.id.logoutBox
+    override lateinit var logoutView: ViewGroup
+    override val alreadyLoggedInTextViewId = R.id.already_logged_in_warning
+    override lateinit var alreadyLoggedInTextView: TextView
+    override val logoutButtonId = R.id.logoutButton
+    override lateinit var logoutButton: Button
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -41,56 +61,9 @@ class LoginFragment : BaseFragment(), ILogin {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        loadingCard = view.findViewById(R.id.loadingCard)
-        super.setupLoading()
-
-        userNameEditText = view.findViewById(R.id.userNameInput)
-        userPasswordEditText = view.findViewById(R.id.userPasswordInput)
-        loginButton = view.findViewById(R.id.loginButton)
-        loadingCard = view.findViewById(R.id.loadingCard)
-        super.setupLogin()
-
-        setupLogout(view)
-    }
-
-    private fun setupSignedWarning(view: View, userName: String) {
-        val signedWarning = view.findViewById<TextView>(R.id.already_logged_in_warning)
-        signedWarning.text = String.format(
-            getString(R.string.already_logged_in_message),
-            userName
-        )
-    }
-
-    private fun statusMessage(message: String) {
-        stopLoading()
-        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-    }
-
-    private fun clearUserData() {
-        encryptedSharedPreferences.edit()
-            .clear()
-            .apply()
-        sharedPreferences.edit()
-            .clear()
-            .apply()
-    }
-
-    private fun setupLogout(view: View) {
-        val signedUser = encryptedSharedPreferences.getUsername() ?: return
-
-        val loginBox = view.findViewById<RelativeLayout>(R.id.loginBox)
-        val logoutBox = view.findViewById<RelativeLayout>(R.id.logoutBox)
-
-        loginBox.visibility = View.GONE
-        logoutBox.visibility = View.VISIBLE
-        setupSignedWarning(view, signedUser)
-
-        val logoutButton: Button = view.findViewById(R.id.logoutButton)
-        logoutButton.setOnClickListener {
-            clearUserData()
-            statusMessage(getString(R.string.logout_success))
-            view.findNavController().navigate(R.id.nav_home)
-        }
+        super.setupLoading(view)
+        super.setupLogin(view)
+        super.setupLogout(view, requireContext())
     }
 
     override fun onLogin(
@@ -102,7 +75,7 @@ class LoginFragment : BaseFragment(), ILogin {
             userLogin = userLogin,
             onSuccess = {
                 onSuccess(it)
-                statusMessage(getString(R.string.login_success))
+                Toast.makeText(context, R.string.login_success, Toast.LENGTH_SHORT).show()
                 requireView().findNavController().navigate(R.id.nav_home)
             },
             onError = onError

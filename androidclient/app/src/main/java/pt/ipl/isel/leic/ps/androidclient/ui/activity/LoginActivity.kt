@@ -8,13 +8,14 @@ import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.lifecycle.ViewModelProvider
+import kotlinx.android.synthetic.main.login_activity.*
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.sharedPreferences
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.UserLogin
 import pt.ipl.isel.leic.ps.androidclient.data.model.UserRegister
 import pt.ipl.isel.leic.ps.androidclient.data.model.UserSession
-import pt.ipl.isel.leic.ps.androidclient.ui.modular.ILogin
-import pt.ipl.isel.leic.ps.androidclient.ui.modular.IRegister
+import pt.ipl.isel.leic.ps.androidclient.ui.modular.auth.ILogin
+import pt.ipl.isel.leic.ps.androidclient.ui.modular.auth.IRegister
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.UserProfileVMProviderFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.util.setIsFirstTime
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.UserSessionViewModel
@@ -22,11 +23,25 @@ import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.UserSessionViewModel
 class LoginActivity : AppCompatActivity(), ILogin, IRegister {
 
     lateinit var viewModel: UserSessionViewModel
+
+    //Loading
+    override val loadingCardId = R.id.loadingCard
     override lateinit var loadingCard: CardView
-    override lateinit var userEmailEditText: EditText
+
+    //Register / Login
+    override val userNameEditTextId = R.id.userNameInput
     override lateinit var userNameEditText: EditText
+    override val userPasswordEditTextId = R.id.userPasswordInput
     override lateinit var userPasswordEditText: EditText
+
+    //Login
+    override val loginButtonId = R.id.loginButton
     override lateinit var loginButton: Button
+
+    //Register
+    override val userEmailEditTextId = R.id.userEmailInput
+    override lateinit var userEmailEditText: EditText
+    override val registerButtonId = R.id.registerButton
     override lateinit var registerButton: Button
 
     private fun buildViewModel(savedInstanceState: Bundle?) {
@@ -40,16 +55,9 @@ class LoginActivity : AppCompatActivity(), ILogin, IRegister {
         buildViewModel(savedInstanceState)
         setContentView(R.layout.login_activity)
 
-        loadingCard = findViewById(R.id.loadingCard)
-        setupLoading()
-
-        userEmailEditText = findViewById(R.id.userEmailInput)
-        userNameEditText = findViewById(R.id.userNameInput)
-        userPasswordEditText = findViewById(R.id.userPasswordInput)
-        loginButton = findViewById(R.id.loginButton)
-        registerButton = findViewById(R.id.registerButton)
-        super.setupLogin()
-        super.setupRegister()
+        setupLoading(view)
+        super.setupLogin(view)
+        super.setupRegister(view)
 
         val skipBtn = findViewById<Button>(R.id.skipButton)
         skipBtn.setOnClickListener {

@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.navigation.findNavController
@@ -16,18 +17,38 @@ import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.UserRegister
 import pt.ipl.isel.leic.ps.androidclient.data.model.UserSession
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.BaseFragment
-import pt.ipl.isel.leic.ps.androidclient.ui.modular.IRegister
+import pt.ipl.isel.leic.ps.androidclient.ui.modular.auth.ILogout
+import pt.ipl.isel.leic.ps.androidclient.ui.modular.auth.IRegister
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.UserProfileVMProviderFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.UserSessionViewModel
 
-class RegisterFragment : BaseFragment(), IRegister {
+class RegisterFragment : BaseFragment(), IRegister, ILogout {
 
     private lateinit var viewModel: UserSessionViewModel
+
+    //Loading
+    override val loadingCardId = R.id.loadingCard
     override lateinit var loadingCard: CardView
+
+    //Register
+    override val userEmailEditTextId = R.id.userEmailInput
     override lateinit var userEmailEditText: EditText
+    override val userNameEditTextId = R.id.userNameInput
     override lateinit var userNameEditText: EditText
+    override val userPasswordEditTextId = R.id.userPasswordInput
     override lateinit var userPasswordEditText: EditText
+    override val registerButtonId = R.id.registerButton
     override lateinit var registerButton: Button
+
+    //Logout
+    override val nonLogoutViewId = R.id.registerBox
+    override lateinit var nonLogoutView: ViewGroup
+    override val logoutViewId = R.id.logoutBox
+    override lateinit var logoutView: ViewGroup
+    override val alreadyLoggedInTextViewId = R.id.already_logged_in_warning
+    override lateinit var alreadyLoggedInTextView: TextView
+    override val logoutButtonId = R.id.logoutButton
+    override lateinit var logoutButton: Button
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -41,14 +62,9 @@ class RegisterFragment : BaseFragment(), IRegister {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        loadingCard = view.findViewById(R.id.loadingCard)
-        super.setupLoading()
-
-        userEmailEditText = view.findViewById(R.id.userEmailInput)
-        userNameEditText = view.findViewById(R.id.userNameInput)
-        userPasswordEditText = view.findViewById(R.id.userPasswordInput)
-        registerButton = view.findViewById(R.id.registerButton)
-        super.setupRegister()
+        super.setupLoading(view)
+        super.setupRegister(view)
+        super.setupLogout(view, requireContext())
     }
 
     private fun statusMessage(message: String) {

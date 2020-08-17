@@ -5,9 +5,11 @@ import androidx.cardview.widget.CardView
 
 interface ILoading {
 
-    val loadingCard: CardView
+    val loadingCardId: Int
+    var loadingCard: CardView
 
-    fun setupLoading() {
+    fun setupLoading(view: View) {
+        loadingCard = view.findViewById(loadingCardId)
         loadingCard.visibility = View.GONE
     }
 

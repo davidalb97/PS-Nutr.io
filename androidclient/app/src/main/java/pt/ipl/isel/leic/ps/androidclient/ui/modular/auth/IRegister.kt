@@ -1,21 +1,34 @@
-package pt.ipl.isel.leic.ps.androidclient.ui.modular
+package pt.ipl.isel.leic.ps.androidclient.ui.modular.auth
 
+import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.UserRegister
 import pt.ipl.isel.leic.ps.androidclient.data.model.UserSession
+import pt.ipl.isel.leic.ps.androidclient.ui.modular.IContext
+import pt.ipl.isel.leic.ps.androidclient.ui.modular.ILoading
 import pt.ipl.isel.leic.ps.androidclient.ui.util.saveSession
 
-interface IRegister : ILoading, IContext {
+interface IRegister : ILoading,
+    IContext {
 
-    val userNameEditText: EditText
-    val userPasswordEditText: EditText
-    val userEmailEditText: EditText
-    val registerButton: Button
+    val userNameEditTextId: Int
+    var userNameEditText: EditText
+    val userPasswordEditTextId: Int
+    var userPasswordEditText: EditText
+    val userEmailEditTextId: Int
+    var userEmailEditText: EditText
+    val registerButtonId: Int
+    var registerButton: Button
 
-    fun setupRegister() {
+    fun setupRegister(view: View) {
+        userNameEditText = view.findViewById(userNameEditTextId)
+        userPasswordEditText = view.findViewById(userPasswordEditTextId)
+        userEmailEditText = view.findViewById(userEmailEditTextId)
+        registerButton = view.findViewById(registerButtonId)
+
         registerButton.setOnClickListener {
             val userName = userNameEditText.text.toString()
             val password = userPasswordEditText.text.toString()

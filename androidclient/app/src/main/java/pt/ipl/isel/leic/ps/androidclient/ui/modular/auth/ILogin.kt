@@ -1,20 +1,31 @@
-package pt.ipl.isel.leic.ps.androidclient.ui.modular
+package pt.ipl.isel.leic.ps.androidclient.ui.modular.auth
 
+import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.UserLogin
 import pt.ipl.isel.leic.ps.androidclient.data.model.UserSession
+import pt.ipl.isel.leic.ps.androidclient.ui.modular.IContext
+import pt.ipl.isel.leic.ps.androidclient.ui.modular.ILoading
 import pt.ipl.isel.leic.ps.androidclient.ui.util.saveSession
 
 interface ILogin : ILoading, IContext {
 
-    val userNameEditText: EditText
-    val userPasswordEditText: EditText
-    val loginButton: Button
+    var userNameEditText: EditText
+    val userNameEditTextId: Int
+    var userPasswordEditText: EditText
+    val userPasswordEditTextId: Int
+    var loginButton: Button
+    val loginButtonId: Int
 
-    fun setupLogin() {
+    fun setupLogin(view: View) {
+
+        userNameEditText = view.findViewById(userNameEditTextId)
+        userPasswordEditText = view.findViewById(userPasswordEditTextId)
+        loginButton = view.findViewById(loginButtonId)
+
         loginButton.setOnClickListener {
             val userName = userNameEditText.text.toString()
             val passWord = userPasswordEditText.text.toString()
