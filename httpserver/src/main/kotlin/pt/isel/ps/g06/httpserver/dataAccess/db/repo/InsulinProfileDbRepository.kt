@@ -6,7 +6,6 @@ import org.springframework.stereotype.Repository
 import pt.isel.ps.g06.httpserver.common.exception.clientError.MissingInsulinProfileException
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.InsulinProfileDao
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbUserInsulinProfileDto
-import java.time.LocalTime
 
 private val isolationLevel = TransactionIsolationLevel.SERIALIZABLE
 private val insulinProfileDaoClass = InsulinProfileDao::class.java
@@ -38,8 +37,8 @@ class InsulinProfileDbRepository(jdbi: Jdbi) : BaseDbRepo(jdbi) {
 
     fun insertProfile(submitterId: Int,
                       profileName: String,
-                      startTime: LocalTime,
-                      endTime: LocalTime,
+                      startTime: String,
+                      endTime: String,
                       glucoseObjective: Int,
                       insulinSensitivityFactor: Int,
                       carbohydrateRatio: Int
