@@ -2,10 +2,12 @@ package pt.isel.ps.g06.httpserver.service
 
 import org.springframework.stereotype.Service
 import pt.isel.ps.g06.httpserver.common.exception.NoSuchApiResponseStatusException
+import pt.isel.ps.g06.httpserver.common.exception.notFound.RestaurantNotFoundException
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.RestaurantApiType
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.mapper.RestaurantApiMapper
 import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.restaurant.RestaurantResponseMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.ApiSubmitterMapper
+import pt.isel.ps.g06.httpserver.dataAccess.db.repo.FavoriteDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.RestaurantDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.RestaurantMealDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.model.RestaurantDto
@@ -21,8 +23,13 @@ class RestaurantService(
         private val dbRestaurantMealRepository: RestaurantMealDbRepository,
         private val restaurantApiMapper: RestaurantApiMapper,
         private val restaurantResponseMapper: RestaurantResponseMapper,
-        private val apiSubmitterMapper: ApiSubmitterMapper
+        private val apiSubmitterMapper: ApiSubmitterMapper,
+        private val dbFavoriteDbRepository: FavoriteDbRepository
 ) {
+
+    fun setFavorite(restaurantId: Int, userId: Int, isFavorite: Boolean): Boolean {
+        return dbFavoriteDbRepository.setFavorite(restaurantId, userId, isFavorite)
+    }
 
     fun getNearbyRestaurants(
             latitude: Float,
@@ -96,6 +103,11 @@ class RestaurantService(
         )
     }
 
+    fun getOrCreateRestaurant(restaurantIdentifier: RestaurantIdentifier): Restaurant {
+        var restaurant = getRestaurant(restaurantIdentifier) ?: throw RestaurantNotFoundException()
+        restaurant = createRestaurantIfAbsent(restaurant)
+        return restaurant
+    }
 
     /**
      * Creates a restaurant on the Database, where the submitter can either be an API or a user.
@@ -128,6 +140,24 @@ class RestaurantService(
         return restaurantResponseMapper.mapTo(createdRestaurant)
     }
 
+    /**
+     * Creates a new database restaurant if it does not exist
+     */
+    fun createRestaurantIfAbsent(restaurant: Restaurant): Restaurant {
+
+        if (!restaurant.identifier.value.isPresentInDatabase()) {
+            return createRestaurant(
+                    submitterId = restaurant.identifier.value.submitterId,
+                    apiId = restaurant.identifier.value.apiId,
+                    restaurantName = restaurant.name,
+                    //TODO use cuisine mapper
+                    cuisines = restaurant.cuisines.map { it.name }.toList(),
+                    latitude = restaurant.latitude,
+                    longitude = restaurant.longitude
+            )
+        }
+        return restaurant
+    }
 
     private fun filterRedundantApiRestaurants(dbRestaurants: Sequence<Restaurant>, apiRestaurants: Sequence<Restaurant>): Sequence<Restaurant> {
         //Join db restaurants with filtered api restaurants

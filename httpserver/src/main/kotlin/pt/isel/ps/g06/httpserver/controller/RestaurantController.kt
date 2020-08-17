@@ -9,6 +9,7 @@ import pt.isel.ps.g06.httpserver.common.exception.authentication.NotAuthenticate
 import pt.isel.ps.g06.httpserver.common.exception.forbidden.NotSubmissionOwnerException
 import pt.isel.ps.g06.httpserver.common.exception.notFound.RestaurantNotFoundException
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.RestaurantApiType
+import pt.isel.ps.g06.httpserver.dataAccess.input.FavoriteInput
 import pt.isel.ps.g06.httpserver.dataAccess.input.RestaurantInput
 import pt.isel.ps.g06.httpserver.dataAccess.input.VoteInput
 import pt.isel.ps.g06.httpserver.dataAccess.output.restaurant.DetailedRestaurantOutput
@@ -141,6 +142,25 @@ class RestaurantController(
         return ResponseEntity
                 .ok()
                 .build()
+    }
+
+    @PutMapping(RESTAURANT_FAVORITE)
+    fun setFavoriteRestaurant(
+            submitter: Submitter?,
+            @PathVariable(RESTAURANT_ID_VALUE) restaurantId: String,
+            @Valid @RequestBody favorite: FavoriteInput
+    ): ResponseEntity<Any> {
+        submitter ?: throw NotAuthenticatedException()
+
+        var restaurant = ensureRestaurantExists(restaurantId)
+        restaurant = restaurantService.createRestaurantIfAbsent(restaurant)
+
+        restaurantService.setFavorite(
+                restaurant.identifier.value.submissionId!!,
+                submitter.identifier,
+                favorite.isFavorite!!
+        )
+        return ResponseEntity.ok().build()
     }
 
     @DeleteMapping(RESTAURANT_VOTE, consumes = [MediaType.ALL_VALUE])
