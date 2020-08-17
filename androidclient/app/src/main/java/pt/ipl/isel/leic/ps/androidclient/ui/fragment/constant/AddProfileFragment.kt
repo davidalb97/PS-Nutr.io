@@ -1,40 +1,34 @@
 package pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant
 
 import android.app.TimePickerDialog
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.app
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.InsulinProfile
-import pt.ipl.isel.leic.ps.androidclient.data.util.TimestampWithTimeZone
+import pt.ipl.isel.leic.ps.androidclient.ui.fragment.BaseFragment
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.InsulinProfilesVMProviderFactory
-import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.InsulinProfilesRecyclerViewModel
+import pt.ipl.isel.leic.ps.androidclient.ui.util.getUserSession
+import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.InsulinProfilesListViewModel
+import pt.ipl.isel.leic.ps.androidclient.util.TimestampWithTimeZone
 import java.text.SimpleDateFormat
 import java.util.*
 
-class AddProfileFragment : Fragment() {
+class AddProfileFragment : BaseFragment() {
 
-    lateinit var viewModel: InsulinProfilesRecyclerViewModel
-
-    private fun buildViewModel(savedInstanceState: Bundle?) {
-        val rootActivity = this.requireActivity()
-        val factory = InsulinProfilesVMProviderFactory(savedInstanceState, rootActivity.intent)
-        viewModel =
-            ViewModelProvider(rootActivity, factory)[InsulinProfilesRecyclerViewModel::class.java]
-    }
+    private lateinit var viewModel: InsulinProfilesListViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        buildViewModel(savedInstanceState)
-        return inflater.inflate(R.layout.add_insulin_profile_fragment, container, false)
+        viewModel = buildViewModel(savedInstanceState, InsulinProfilesListViewModel::class.java)
+        return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -109,7 +103,7 @@ class AddProfileFragment : Fragment() {
                     ).show()
                 } else {
                     viewModel
-                        .addDbInsulinProfile(profile)
+                        .addDbInsulinProfile(profile, getUserSession())
                         .setOnPostExecute { parentFragmentManager.popBackStack() }
                         .execute()
                 }
@@ -180,4 +174,17 @@ class AddProfileFragment : Fragment() {
             true
         )
     }
+
+    override fun getVMProviderFactory(
+        savedInstanceState: Bundle?,
+        intent: Intent
+    ): InsulinProfilesVMProviderFactory {
+        return InsulinProfilesVMProviderFactory(
+            arguments,
+            savedInstanceState,
+            intent
+        )
+    }
+
+    override fun getLayout() = R.layout.add_insulin_profile_fragment
 }

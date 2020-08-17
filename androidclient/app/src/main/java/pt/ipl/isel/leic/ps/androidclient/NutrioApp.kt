@@ -7,7 +7,6 @@ import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
 import android.widget.Toast
-import androidx.fragment.app.Fragment
 import androidx.room.Room
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
@@ -21,12 +20,16 @@ import pt.ipl.isel.leic.ps.androidclient.data.api.request.RequestParser
 import pt.ipl.isel.leic.ps.androidclient.data.db.NutrioDb
 import pt.ipl.isel.leic.ps.androidclient.data.model.UserLogin
 import pt.ipl.isel.leic.ps.androidclient.data.repo.*
-import pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.*
+import pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.PREFERENCES
+import pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.SECRET_PREFERENCES
+import pt.ipl.isel.leic.ps.androidclient.ui.util.getPassWord
+import pt.ipl.isel.leic.ps.androidclient.ui.util.getUsername
+import pt.ipl.isel.leic.ps.androidclient.ui.util.saveSession
 import java.util.concurrent.TimeUnit
 
 const val TAG = "Nutr.io App"
 const val ROOM_DB_NAME = "nutrio-db"
-const val ROOM_DB_VERSION = 25
+const val ROOM_DB_VERSION = 27
 
 /**
  * The application context.
@@ -151,14 +154,14 @@ class NutrioApp : Application() {
 
     private fun authenticateUser() {
 
-        val username = encryptedSharedPreferences.getString(USERNAME, null)
-        val password = encryptedSharedPreferences.getString(PASSWORD, null)
+        val username = encryptedSharedPreferences.getUsername()
+        val password = encryptedSharedPreferences.getPassWord()
 
         if (username != null && password != null) {
             userRepository.loginUser(
-                UserLogin(username, password),
-                { userSession -> saveSession(userSession.jwt, username, password) },
-                {
+                userLogin = UserLogin(username, password),
+                onSuccess = { userSession -> saveSession(userSession.jwt, username, password) },
+                onError = {
                     Toast.makeText(
                         app,
                         getString(R.string.login_error),
@@ -168,25 +171,6 @@ class NutrioApp : Application() {
             )
         }
     }
-}
-
-/**
- * Saves the user credentials into the encrypted shared preferences
- * and the JSON Web Token into the shared preferences.
- *
- * @param jwt - The JSON Web Token
- * @param username - The username
- * @param password - The password
- */
-fun saveSession(jwt: String, username: String, password: String) {
-    NutrioApp.encryptedSharedPreferences
-        .edit()
-        .putString(USERNAME, username)
-        .putString(PASSWORD, password)
-        .apply()
-    NutrioApp.sharedPreferences.edit()
-        .putString(JWT, jwt)
-        .apply()
 }
 
 /**
@@ -206,10 +190,4 @@ fun hasInternetConnection(): Boolean {
     }
 
     return hasInternet
-}
-
-fun Fragment.withCtx(work: () -> Unit) {
-    if (this.isAdded) {
-        work
-    }
 }

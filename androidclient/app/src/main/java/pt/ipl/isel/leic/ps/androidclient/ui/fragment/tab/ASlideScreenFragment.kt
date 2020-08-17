@@ -10,11 +10,8 @@ import com.google.android.material.tabs.TabLayout
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.ui.adapter.TabAdapter
 
-const val CALCULATOR_BUNDLE_FLAG = "calculatorMode"
-
 abstract class ASlideScreenFragment(
-    private val tabs: Map<Fragment, String>,
-    private val calculatorMode: Boolean
+    private val tabs: Map<Fragment, String>
 ) : Fragment() {
 
     lateinit var tabPagerAdapter: TabAdapter
@@ -35,9 +32,7 @@ abstract class ASlideScreenFragment(
 
         //Sets the fragment mode
         tabs.keys.forEach { fragment ->
-            val bundle = Bundle()
-            bundle.putBoolean(CALCULATOR_BUNDLE_FLAG, calculatorMode)
-            fragment.arguments = bundle
+            fragment.arguments = arguments
         }
 
         // Add fragments and tab tiles to show in the tab layout

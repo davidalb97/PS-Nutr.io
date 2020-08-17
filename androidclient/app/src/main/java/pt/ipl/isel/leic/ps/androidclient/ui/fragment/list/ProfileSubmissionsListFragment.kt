@@ -1,4 +1,4 @@
-package pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler.room
+package pt.ipl.isel.leic.ps.androidclient.ui.fragment.list
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import pt.ipl.isel.leic.ps.androidclient.R
 
-class ProfileSubmissionsRecyclerFragment : Fragment() {
+class ProfileSubmissionsListFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater,

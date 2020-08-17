@@ -1,14 +1,13 @@
 package pt.ipl.isel.leic.ps.androidclient.ui.fragment.tab
 
-import pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler.request.MealRecyclerFragment
-import pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler.room.CustomMealRecyclerFragment
-import pt.ipl.isel.leic.ps.androidclient.ui.fragment.recycler.room.FavoriteMealRecyclerFragment
+import pt.ipl.isel.leic.ps.androidclient.ui.fragment.list.CustomMealListFragment
+import pt.ipl.isel.leic.ps.androidclient.ui.fragment.list.FavoriteMealListFragment
+import pt.ipl.isel.leic.ps.androidclient.ui.fragment.list.MealItemListFragment
 
 class AddMealSlideScreenFragment : ASlideScreenFragment(
     mapOf(
-        Pair(MealRecyclerFragment(), "Meals from restaurants"),
-        Pair(FavoriteMealRecyclerFragment(), "Favorite Meals"),
-        Pair(CustomMealRecyclerFragment(), "Custom meals")
-    ),
-    true
+        Pair(MealItemListFragment(), "Meals from restaurants"),
+        Pair(FavoriteMealListFragment(), "Favorite Meals"),
+        Pair(CustomMealListFragment(), "Custom meals")
+    )
 )

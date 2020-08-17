@@ -1,4 +1,4 @@
-package pt.ipl.isel.leic.ps.androidclient
+package pt.ipl.isel.leic.ps.androidclient.ui.activity
 
 import android.content.Intent
 import android.os.Bundle
@@ -18,10 +18,11 @@ import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.navigation.NavigationView
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.encryptedSharedPreferences
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.sharedPreferences
-import pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.DARK_MODE
-import pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.FIRST_TIME
-import pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.USERNAME
+import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.ui.util.Logger
+import pt.ipl.isel.leic.ps.androidclient.ui.util.getIsFirstTime
+import pt.ipl.isel.leic.ps.androidclient.ui.util.getIsNightMode
+import pt.ipl.isel.leic.ps.androidclient.ui.util.getUsername
 
 class MainActivity : AppCompatActivity() {
 
@@ -37,7 +38,7 @@ class MainActivity : AppCompatActivity() {
 
         handler = Handler()
 
-        val isFirstTime: Boolean = sharedPreferences.getBoolean(FIRST_TIME, true)
+        val isFirstTime: Boolean = sharedPreferences.getIsFirstTime()
 
         if (isFirstTime) {
             handler.postDelayed({
@@ -51,7 +52,7 @@ class MainActivity : AppCompatActivity() {
             setSupportActionBar(toolbar)
 
             // Check current theme
-            val isLightMode = sharedPreferences.getBoolean(DARK_MODE, false)
+            val isLightMode = sharedPreferences.getIsNightMode()
 
             if (!isLightMode) {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
@@ -103,7 +104,7 @@ class MainActivity : AppCompatActivity() {
             val username = headerView.findViewById<TextView>(R.id.username)
             val userEmail = headerView.findViewById<TextView>(R.id.userEmail)
 
-            val registeredUser = encryptedSharedPreferences.getString(USERNAME, null)
+            val registeredUser = encryptedSharedPreferences.getUsername()
 
             if (registeredUser != null) {
                 username.text = registeredUser

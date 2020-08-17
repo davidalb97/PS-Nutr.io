@@ -1,103 +1,68 @@
 package pt.ipl.isel.leic.ps.androidclient.ui.fragment.auth
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.cardview.widget.CardView
 import androidx.navigation.findNavController
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.encryptedSharedPreferences
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.sharedPreferences
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.UserLogin
-import pt.ipl.isel.leic.ps.androidclient.saveSession
-import pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.USERNAME
+import pt.ipl.isel.leic.ps.androidclient.data.model.UserSession
+import pt.ipl.isel.leic.ps.androidclient.ui.fragment.BaseFragment
+import pt.ipl.isel.leic.ps.androidclient.ui.modular.ILogin
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.UserProfileVMProviderFactory
-import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.UserProfileViewModel
+import pt.ipl.isel.leic.ps.androidclient.ui.util.getUsername
+import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.UserSessionViewModel
 
-class LoginFragment : Fragment() {
+class LoginFragment : BaseFragment(), ILogin {
 
-    lateinit var viewModel: UserProfileViewModel
+    override lateinit var userNameEditText: EditText
+    override lateinit var userPasswordEditText: EditText
+    override lateinit var loginButton: Button
+    override lateinit var loadingCard: CardView
 
-    private fun buildViewModel(savedInstanceState: Bundle?) {
-        val rootActivity = this.requireActivity()
-        val factory = UserProfileVMProviderFactory(savedInstanceState, rootActivity.intent)
-        viewModel =
-            ViewModelProvider(rootActivity, factory)[UserProfileViewModel::class.java]
-    }
+    private lateinit var viewModel: UserSessionViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        buildViewModel(savedInstanceState)
-        return inflater.inflate(R.layout.login_fragment, container, false)
+        viewModel = buildViewModel(savedInstanceState, UserSessionViewModel::class.java)
+        return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val signedUser = encryptedSharedPreferences.getString(USERNAME, null)
+        loadingCard = view.findViewById(R.id.loadingCard)
+        super.setupLoading()
 
-        val loginBox = view.findViewById<RelativeLayout>(R.id.loginBox)
-        val logoutBox = view.findViewById<RelativeLayout>(R.id.logoutBox)
-        val userNameEditText: EditText = view.findViewById(R.id.userNameInput)
-        val userPasswordEditText: EditText = view.findViewById(R.id.userPasswordInput)
-        val loginBtn = view.findViewById<Button>(R.id.loginButton)
-        viewModel.loadingCard = view.findViewById(R.id.loadingCard)
+        userNameEditText = view.findViewById(R.id.userNameInput)
+        userPasswordEditText = view.findViewById(R.id.userPasswordInput)
+        loginButton = view.findViewById(R.id.loginButton)
+        loadingCard = view.findViewById(R.id.loadingCard)
+        super.setupLogin()
 
-        if (signedUser != null) {
-            loginBox.visibility = View.GONE
-            logoutBox.visibility = View.VISIBLE
+        setupLogout(view)
+    }
 
-            val signedWarning = view.findViewById<TextView>(R.id.already_logged_in_warning)
-            signedWarning.text = String.format(
-                getString(R.string.already_logged_in_message),
-                signedUser
-            )
-
-            val logoutButton = view.findViewById<Button>(R.id.logoutButton)
-
-            logoutButton.setOnClickListener {
-                clearUserData()
-                statusMessage(getString(R.string.logout_success))
-                view.findNavController().navigate(R.id.nav_home)
-            }
-        }
-
-        loginBtn.setOnClickListener {
-            val userName = userNameEditText.text.toString()
-            val password = userPasswordEditText.text.toString()
-            if (listOf(userName, password).all(String::isNotBlank)) {
-                viewModel.startLoading()
-                viewModel.login(
-                    UserLogin(
-                        username = userName,
-                        password = password
-                    ),
-                    onError = {
-                        statusMessage(getString(R.string.login_error))
-                    }
-                ) { userSession ->
-                    //Only saves if the login succeeded
-                    saveSession(
-                        jwt = userSession.jwt,
-                        username = userName,
-                        password = password
-                    )
-
-                    statusMessage(getString(R.string.login_success))
-                    view.findNavController().navigate(R.id.nav_home)
-                }
-            }
-        }
+    private fun setupSignedWarning(view: View, userName: String) {
+        val signedWarning = view.findViewById<TextView>(R.id.already_logged_in_warning)
+        signedWarning.text = String.format(
+            getString(R.string.already_logged_in_message),
+            userName
+        )
     }
 
     private fun statusMessage(message: String) {
-        viewModel.stopLoading()
+        stopLoading()
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
 
@@ -109,4 +74,53 @@ class LoginFragment : Fragment() {
             .clear()
             .apply()
     }
+
+    private fun setupLogout(view: View) {
+        val signedUser = encryptedSharedPreferences.getUsername() ?: return
+
+        val loginBox = view.findViewById<RelativeLayout>(R.id.loginBox)
+        val logoutBox = view.findViewById<RelativeLayout>(R.id.logoutBox)
+
+        loginBox.visibility = View.GONE
+        logoutBox.visibility = View.VISIBLE
+        setupSignedWarning(view, signedUser)
+
+        val logoutButton: Button = view.findViewById(R.id.logoutButton)
+        logoutButton.setOnClickListener {
+            clearUserData()
+            statusMessage(getString(R.string.logout_success))
+            view.findNavController().navigate(R.id.nav_home)
+        }
+    }
+
+    override fun onLogin(
+        userLogin: UserLogin,
+        onSuccess: (UserSession) -> Unit,
+        onError: (Throwable) -> Unit
+    ) {
+        viewModel.login(
+            userLogin = userLogin,
+            onSuccess = {
+                onSuccess(it)
+                statusMessage(getString(R.string.login_success))
+                requireView().findNavController().navigate(R.id.nav_home)
+            },
+            onError = onError
+        )
+    }
+
+    override fun fetchCtx(): Context = requireContext()
+
+    override fun getVMProviderFactory(
+        savedInstanceState: Bundle?,
+        intent: Intent
+    ): UserProfileVMProviderFactory {
+        return UserProfileVMProviderFactory(
+            arguments,
+            savedInstanceState,
+            intent
+        )
+    }
+
+    override fun getLayout() = R.layout.login_fragment
 }
