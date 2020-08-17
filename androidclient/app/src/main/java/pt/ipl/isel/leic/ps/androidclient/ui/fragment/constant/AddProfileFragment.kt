@@ -7,12 +7,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import pt.ipl.isel.leic.ps.androidclient.NutrioApp
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.app
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.InsulinProfile
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.BaseFragment
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.InsulinProfilesVMProviderFactory
+import pt.ipl.isel.leic.ps.androidclient.ui.util.getUnitOrDefault
 import pt.ipl.isel.leic.ps.androidclient.ui.util.getUserSession
+import pt.ipl.isel.leic.ps.androidclient.ui.util.units.GlucoseUnits
+import pt.ipl.isel.leic.ps.androidclient.ui.util.units.WeightUnits
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.InsulinProfilesListViewModel
 import pt.ipl.isel.leic.ps.androidclient.util.TimestampWithTimeZone
 import java.text.SimpleDateFormat
@@ -57,6 +61,9 @@ class AddProfileFragment : BaseFragment() {
             setupTimePickerDialog(endTimeUser, defaultHour, defaultMinute)
                 .show()
         }
+
+        setupGlucoseSpinner()
+        setupCarbohydrateSpinner()
 
         // Get all profiles before the new insertion
         viewModel.update()
@@ -109,11 +116,110 @@ class AddProfileFragment : BaseFragment() {
                 }
             }
         }
+    }
 
+    /**
+     * Setups the glucose spinner to allow the user to choose different measurement units
+     */
+    private fun setupGlucoseSpinner() {
+        val spinner = view?.findViewById<Spinner>(R.id.glucose_measurement_units)
+        val spinnerAdapter: ArrayAdapter<String> = spinner!!.adapter as ArrayAdapter<String>
+
+        val configuredUnit = NutrioApp.sharedPreferences.getUnitOrDefault()
+
+        val spinnerPosition = spinnerAdapter.getPosition(configuredUnit)
+        spinner.setSelection(spinnerPosition)
+
+        // Changes the blood glucose value according to the unit spinner
+        val glucoseObjective = view?.findViewById<EditText>(R.id.glucose_objective)
+        val glucoseAmount = view?.findViewById<EditText>(R.id.glucose_amount)
+
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                throw NotImplementedError("This function is not implemented")
+            }
+
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                if (glucoseObjective!!.text.isNotBlank()) {
+                    convertGlucoseValue(spinner, glucoseObjective)
+                }
+
+                if (glucoseAmount!!.text.isNotBlank()) {
+                    convertGlucoseValue(spinner, glucoseAmount)
+                }
+            }
+        }
+    }
+
+    private fun setupCarbohydrateSpinner() {
+        val spinner = view?.findViewById<Spinner>(R.id.carbohydrate_measurement_units)
+        val spinnerAdapter: ArrayAdapter<String> = spinner!!.adapter as ArrayAdapter<String>
+
+        val configuredUnit = NutrioApp.sharedPreferences.getUnitOrDefault()
+
+        val spinnerPosition = spinnerAdapter.getPosition(configuredUnit)
+        spinner.setSelection(spinnerPosition)
+
+        // Changes the carbohydrate amount value according to the unit spinner
+        val carbohydrateAmount = view?.findViewById<EditText>(R.id.carbo_amount)
+
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                throw NotImplementedError("This function is not implemented")
+            }
+
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                if (carbohydrateAmount!!.text.isNotBlank()) {
+                    convertCarbValue(spinner, carbohydrateAmount)
+                }
+            }
+        }
+    }
+
+    /**
+     * Converts the passed glucose unit, based on the spinner's selected options
+     * @param spinner - The spinner where the selection happens;
+     * @param textBox - The EditText box which holds the value to be converted.
+     */
+    private fun convertGlucoseValue(spinner: Spinner, textBox: EditText) {
+        val newUnit = GlucoseUnits.fromValue(spinner.selectedItem.toString())
+        val oldUnit = when (newUnit) {
+            GlucoseUnits.MILLI_GRAM_PER_DL -> GlucoseUnits.MILLI_MOL_PER_L
+            GlucoseUnits.MILLI_MOL_PER_L -> GlucoseUnits.MILLI_GRAM_PER_DL
+        }
+        val currentValue = textBox.text.toString().toDouble()
+        textBox.setText(oldUnit.convert(newUnit, currentValue).toString())
+    }
+
+    /**
+     * Converts the passed carbohydrate unit, based on the spinner's selected options
+     * @param spinner - The spinner where the selection happens;
+     * @param textBox - The EditText box which holds the value to be converted.
+     */
+    private fun convertCarbValue(spinner: Spinner, textBox: EditText) {
+        val newUnit = WeightUnits.fromValue(spinner.selectedItem.toString())
+        val oldUnit = when (newUnit) {
+            WeightUnits.GRAMS -> WeightUnits.OUNCES
+            WeightUnits.OUNCES -> WeightUnits.GRAMS
+        }
+        val currentValue = textBox.text.toString().toDouble()
+        textBox.setText(oldUnit.convert(newUnit, currentValue).toString())
     }
 
     /**
      * Checks if the time period passed to the time pickers is valid
+     * @param - The insulin profile to be evaluated
+     * @param - The callback that confirms its validation
      */
     private fun profileTimesValidation(
         profileDb: InsulinProfile,

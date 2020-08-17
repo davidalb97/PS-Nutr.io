@@ -49,6 +49,7 @@ Once previously required software is installed, all steps must be followed in gi
    PS_POSTGRES_DB={created database name}
    PS_POSTGRES_USER={database creator name}
    PS_POSTGRES_PASSWORD={database creator password}
+   PS_SERVER_SECRET={server secret password}
    ```
 
    Without these variables, the project's HTTP-based server will be unable to connect to the database and thus fail.

@@ -94,7 +94,6 @@ class ZomatoRestaurantResponseMapper(
         val cuisineNames = dto.cuisines.split(",").asSequence()
         val apiSubmitterId = apiSubmitterMapper.getSubmitter(RestaurantApiType.Zomato)!!
         return Restaurant(
-                //TODO format submitter/submissionId/apiId
                 identifier = lazy {
                     RestaurantIdentifier(
                             apiId = dto.id,

@@ -1,0 +1,125 @@
+\documentclass[a4paper,openright,twoside,11pt]{report}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lipsum}
+\usepackage{indentfirst}
+\usepackage{float}
+\usepackage{natbib}
+\usepackage{graphicx}
+\usepackage{grffile}
+\usepackage{epsfig}
+\usepackage{soul}
+\usepackage{hyperref}
+\usepackage{pdflscape}
+\usepackage{appendix}
+\usepackage[scaled]{helvet}
+\renewcommand\familydefault{\sfdefault} 
+
+% --- Page dimensions ---
+\setlength{\textheight}{24.00cm}
+\setlength{\textwidth}{15.50cm}
+\setlength{\topmargin}{0.35cm}
+\setlength{\headheight}{0cm}
+\setlength{\headsep}{0cm}
+\setlength{\oddsidemargin}{0.25cm}
+\setlength{\evensidemargin}{0.25cm}
+
+% --- Title start ---
+\title{
+    \vspace{-30mm}
+    \LARGE Instituto Superior de Engenharia de Lisboa\\
+    \Large Licenciatura em Engenharia Informática e de Computadores
+    \begin{figure}[H]
+        \includegraphics[scale=0.5]{_figures/logoISEL.png}
+        \centering 
+    \end{figure}    
+    \hrule
+    \vspace{5mm}
+    \Huge Nutr.io - Multi-platform application for diabetics' nutritional choices\\    
+    \vspace{5mm}
+    \huge \textbf{Beta release}
+    \vspace{5mm}
+    \hrule
+    \vspace{15mm} 
+    \begin{center}
+        \Large Authors:             
+        \begin{tabular}{c c c}\\
+            \textbf{Pedro Pires} & \textbf{Miguel Luís} & \textbf{David Albuquerque}\\
+            42206 & 43504 & 43566\\
+            A42206@alunos.isel.pt & A43504@alunos.isel.pt & A43566@alunos.isel.pt\\            
+        \end{tabular}\\
+        \vspace{10mm} 
+        \Large Tutor:\\
+        \textbf{Fernando Miguel Gamboa de Carvalho}\\ 
+        mcarvalho@cc.isel.pt
+    \end{center}
+}
+% --- Title end ---
+
+\date{June 15, 2020}
+
+\begin{document}
+
+    \pagenumbering{roman}
+    \thispagestyle{empty}
+    \maketitle
+
+    \newpage
+    \thispagestyle{empty}
+
+    \cleardoublepage
+    \setcounter{page}{1}
+    % --- Signature page start ---
+    \begin{center}
+        \LARGE Instituto Superior de Engenharia de Lisboa
+        \vspace{30mm}
+        \hrule
+        \vspace{5mm}
+        \Huge Nutr.io - Multi-platform application for diabetics' nutritional choices\\
+        \vspace{5mm}
+        \hrule
+        \vspace{20mm}
+        \large
+        42206 - Pedro Miguel Sequeira Pires\\
+        \vspace{10mm}
+        Signature:\hspace{5mm} \makebox[70mm]{\hrulefill}\\
+        \vspace{15mm}
+        43504 - Miguel Filipe Paiva Luís\\
+        \vspace{10mm}
+        Signature:\hspace{5mm} \makebox[70mm]{\hrulefill}\\
+        \vspace{15mm}
+        43566 - David Alexandre Sousa Gomes Albuquerque\\
+        \vspace{10mm}
+        Signature:\hspace{5mm} \makebox[70mm]{\hrulefill}\\
+        \vspace{25mm}
+
+        Tutor: Fernando Miguel Gamboa de Carvalho\\
+        \vspace{10mm}
+        Signature:\hspace{5mm} \makebox[70mm]{\hrulefill}\\
+        \vspace{15mm}
+    \end{center}
+    % --- Signature page end ---
+
+    % Abstract
+    \cleardoublepage
+    \input{abstract/abstract_chapter.tex}
+
+    \cleardoublepage
+    \tableofcontents\cleardoublepage
+
+    \setcounter{page}{1}
+    \pagenumbering{arabic}
+
+    % Introduction
+    \input{introduction/introduction_chapter.tex}
+    
+    % Development
+    \input{development/development_chapter.tex}
+
+    % Results and Conclusion
+    \input{results/results_chapter.tex}
+
+    % Appendix    
+    \input{appendix/appendix_chapter.tex}
+
+\end{document}
