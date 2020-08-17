@@ -50,6 +50,7 @@ class HereRestaurantResponseMapper(
         return Restaurant(
                 identifier = lazy { RestaurantIdentifier(apiId = dto.id, submitterId = apiSubmitterId) },
                 name = dto.name,
+                ownerId = null,
                 latitude = dto.latitude,
                 longitude = dto.longitude,
                 cuisines = hereCuisineMapper.mapTo(cuisineIds),
@@ -101,6 +102,7 @@ class ZomatoRestaurantResponseMapper(
                     )
                 },
                 name = dto.name,
+                ownerId = null,
                 latitude = dto.latitude,
                 longitude = dto.longitude,
                 cuisines = zomatoCuisineMapper.mapTo(cuisineNames),
@@ -159,6 +161,7 @@ class DbRestaurantResponseMapper(
                     )
                 },
                 name = dto.name,
+                ownerId = dto.ownerId,
                 latitude = dto.latitude,
                 longitude = dto.longitude,
                 cuisines = cuisines,
