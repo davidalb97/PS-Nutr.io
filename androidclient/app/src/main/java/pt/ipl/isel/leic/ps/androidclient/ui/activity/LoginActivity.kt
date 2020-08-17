@@ -42,6 +42,7 @@ class LoginActivity : AppCompatActivity(), ILogin, IRegister {
 
         loadingCard = findViewById(R.id.loadingCard)
         setupLoading()
+
         userEmailEditText = findViewById(R.id.userEmailInput)
         userNameEditText = findViewById(R.id.userNameInput)
         userPasswordEditText = findViewById(R.id.userPasswordInput)

@@ -42,7 +42,7 @@ class RegisterFragment : BaseFragment(), IRegister {
         super.onViewCreated(view, savedInstanceState)
 
         loadingCard = view.findViewById(R.id.loadingCard)
-        super.setupRegister()
+        super.setupLoading()
 
         userEmailEditText = view.findViewById(R.id.userEmailInput)
         userNameEditText = view.findViewById(R.id.userNameInput)
