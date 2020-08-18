@@ -124,7 +124,7 @@ class RestaurantController(
     }
 
     @PutMapping(RESTAURANT_VOTE, consumes = [MediaType.APPLICATION_JSON_VALUE])
-    fun alterRestaurantVote(
+    fun putRestaurantVote(
             @PathVariable(RESTAURANT_ID_VALUE) restaurantId: String,
             @Valid @RequestBody userVote: VoteInput,
             submitter: Submitter?
@@ -136,7 +136,7 @@ class RestaurantController(
         submissionService.alterRestaurantVote(
                 restaurant = restaurant,
                 submitterId = submitter.identifier,
-                vote = userVote.vote!!
+                voteState = userVote.vote
         )
 
         return ResponseEntity
@@ -160,22 +160,6 @@ class RestaurantController(
                 submitter.identifier,
                 favorite.isFavorite!!
         )
-        return ResponseEntity.ok().build()
-    }
-
-    @DeleteMapping(RESTAURANT_VOTE, consumes = [MediaType.ALL_VALUE])
-    fun deleteRestaurantVote(
-            @PathVariable(RESTAURANT_ID_VALUE) restaurantId: String,
-            submitter: Submitter?
-    ): ResponseEntity<Void> {
-        submitter ?: throw NotAuthenticatedException()
-
-        val restaurant = ensureRestaurantExists(restaurantId)
-        submissionService.deleteRestaurantVote(
-                restaurant = restaurant,
-                submitterId = submitter.identifier
-        )
-
         return ResponseEntity.ok().build()
     }
 
