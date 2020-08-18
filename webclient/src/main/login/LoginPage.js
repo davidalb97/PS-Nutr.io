@@ -1,8 +1,13 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import useFetch from '../common/useFetch'
 
-export default function LoginPage({ onLogin }) {
-    const [credentials, setCredentials] = useState({ email: "", password: "" })
+export default function LoginPage({ onLogin, error }) {
+    if (error) {
+        //TODO
+        return <>Error!</>
+    }
 
+    const [credentials, setCredentials] = useState({ username: "", password: "" })
 
     function handleInputChange(event) {
         const newCredentials = { ...credentials }
@@ -15,7 +20,7 @@ export default function LoginPage({ onLogin }) {
         event.preventDefault()
 
         if (isInputValid()) {
-            onLogin(credentials.email, credentials.password)
+            onLogin(credentials)
         }
         else {
             console.log("Some error here!")
@@ -27,12 +32,12 @@ export default function LoginPage({ onLogin }) {
         function isNullOrBlank(str) {
             return !str || str.trim().length === 0
         }
-        return !isNullOrBlank(credentials.email) && !isNullOrBlank(credentials.password)
+        return !isNullOrBlank(credentials.username) && !isNullOrBlank(credentials.password)
     }
 
     return <>
         <form onSubmit={handleSubmit}>
-            <input type='email' name='email' placeholder='Your email' onChange={handleInputChange} />
+            <input type='text' name='username' placeholder='Your username' onChange={handleInputChange} />
             <input type='password' name='password' placeholder='Your password' onChange={handleInputChange} />
             <button type="submit">Login</button>
         </form>

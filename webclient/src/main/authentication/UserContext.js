@@ -1,4 +1,13 @@
 import React from 'react'
 
-const UserContext = React.createContext(null)
+const contextDefaultValue = {
+    authToken: undefined,
+    user: {
+        email: undefined,
+        username: undefined,
+        image: undefined
+    }
+}
+
+const UserContext = React.createContext(contextDefaultValue)
 export default UserContext

@@ -9,7 +9,16 @@ module.exports = merge(common, {
     contentBase: './dist',
     port: 9000,
     proxy: {
-      '/api': 'http://localhost:8080'
+      '/api': {
+        target: {
+          host: "localhost",
+          protocol: 'http:',
+          port: 8080
+        },
+        pathRewrite: {
+          '^/api': ''
+        }
+      }
     },
     before: function (app) {
       const morgan = require('morgan')

@@ -5,7 +5,7 @@ export default function Sidebar() {
     return <nav className="sidebar">
         <SidebarItemContainer containerName="Meal">
             <SidebarItem buttonName="View your custom meals" path="/meals" />
-            <SidebarItem buttonName="Add a custom meal" path="/meals/add" />
+            <SidebarItem buttonName="Add a custom meal" path="/meals/create" />
         </SidebarItemContainer>
 
         <SidebarItemContainer containerName="User">
