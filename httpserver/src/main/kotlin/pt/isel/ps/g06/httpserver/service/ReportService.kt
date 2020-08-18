@@ -21,6 +21,13 @@ class ReportService(
     fun getAllReports() = reportDbRepository.getAll().map(reportDbMapper::mapToModel)
 
     /**
+     * Gets all the reports for a specific submission
+     * @param submissionId - The submission's id
+     */
+    fun getSubmissionReports(submissionId: Int) =
+            reportDbRepository.getAllFromSubmission(submissionId).map(reportDbMapper::mapToModel)
+
+    /**
      * Inserts a report for a specific submission
      * @param reportInput - The user's report
      * @param reportSubmitter - The reporter's submitter id

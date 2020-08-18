@@ -2,9 +2,7 @@ package pt.isel.ps.g06.httpserver.controller
 
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import pt.isel.ps.g06.httpserver.common.AUTH_HEADER
-import pt.isel.ps.g06.httpserver.common.MOD_USER
-import pt.isel.ps.g06.httpserver.common.REPORTS
+import pt.isel.ps.g06.httpserver.common.*
 import pt.isel.ps.g06.httpserver.common.exception.authentication.NotAuthenticatedException
 import pt.isel.ps.g06.httpserver.common.exception.authorization.NotAuthorizedException
 import pt.isel.ps.g06.httpserver.dataAccess.input.ReportInput
@@ -21,8 +19,10 @@ class ReportController(
         private val userService: UserService
 ) {
 
+    // TODO: Argument resolver for mod authorization(?)
+
     @GetMapping(REPORTS)
-    fun getReports(
+    fun getAllReports(
             @RequestHeader(AUTH_HEADER) jwt: String
     ): ResponseEntity<List<Report>> {
         val requester = authenticationService.getEmailFromJwt(jwt).let(userService::getUserFromEmail)
@@ -32,6 +32,20 @@ class ReportController(
         }
 
         return ResponseEntity.ok(reportService.getAllReports().toList())
+    }
+
+    @GetMapping(SUBMISSION_REPORTS)
+    fun getAllReportsFromSubmission(
+            @RequestHeader(AUTH_HEADER) jwt: String,
+            @PathVariable(SUBMISSION_ID_VALUE) submissionId: Int
+    ): ResponseEntity<List<Report>> {
+        val requester = authenticationService.getEmailFromJwt(jwt).let(userService::getUserFromEmail)
+
+        if (requester.role != MOD_USER) {
+            throw NotAuthorizedException()
+        }
+
+        return ResponseEntity.ok(reportService.getSubmissionReports(submissionId).toList())
     }
 
     @PostMapping(REPORTS)

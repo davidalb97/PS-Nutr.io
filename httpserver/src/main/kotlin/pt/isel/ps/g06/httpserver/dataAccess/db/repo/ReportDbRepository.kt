@@ -13,11 +13,15 @@ private val reportDaoClass = ReportDao::class.java
 @Repository
 class ReportDbRepository(jdbi: Jdbi) : BaseDbRepo(jdbi) {
 
-    fun getAll(
-
-    ): Collection<DbReportDto> {
+    fun getAll(): Collection<DbReportDto> {
         return jdbi.inTransaction<Collection<DbReportDto>, Exception>(isolationLevel) {
             return@inTransaction it.attach(reportDaoClass).getAll()
+        }
+    }
+
+    fun getAllFromSubmission(submissionId: Int): Collection<DbReportDto> {
+        return jdbi.inTransaction<Collection<DbReportDto>, Exception>(isolationLevel) {
+            return@inTransaction it.attach(reportDaoClass).getAllBySubmission(submissionId)
         }
     }
 
