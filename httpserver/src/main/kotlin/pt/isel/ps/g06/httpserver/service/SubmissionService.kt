@@ -34,7 +34,7 @@ class SubmissionService(
             throw NotSubmissionOwnerException()
         }
 
-        submissionDbRepository.deleteSubmission(submissionId)
+        submissionDbRepository.deleteSubmissionById(submissionId)
     }
 
     fun alterRestaurantVote(restaurant: Restaurant, submitterId: Int, vote: Boolean) {

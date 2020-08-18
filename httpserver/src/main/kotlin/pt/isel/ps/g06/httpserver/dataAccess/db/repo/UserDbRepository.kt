@@ -34,4 +34,12 @@ class UserDbRepository(jdbi: Jdbi) : BaseDbRepo(jdbi) {
                     .deleteUserByEmail(email)
         }
     }
+
+    fun updateUserBan(isBanned: Boolean): DbUserDto? {
+        return jdbi.inTransaction<DbUserDto, Exception>(isolationLevel) { handle ->
+            return@inTransaction handle
+                    .attach(UserDao::class.java)
+                    .updateUserBan(isBanned)
+        }
+    }
 }

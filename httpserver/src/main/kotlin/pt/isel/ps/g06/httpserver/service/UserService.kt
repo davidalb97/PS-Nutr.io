@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service
 import pt.isel.ps.g06.httpserver.common.exception.authentication.NotAuthenticatedException
 import pt.isel.ps.g06.httpserver.common.exception.notFound.UserNotFoundException
 import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.submitter.SubmitterResponseMapper
+import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbUserDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.SubmitterDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.UserDbRepository
 import pt.isel.ps.g06.httpserver.model.Submitter
@@ -38,12 +39,16 @@ class UserService(
         )
     }
 
+    fun getUserFromEmail(email: String): DbUserDto = userDbRepository.getByEmail(email) ?: throw UserNotFoundException()
+
     fun getSubmitterFromEmail(email: String): Submitter? {
-        val dbUserDto = userDbRepository.getByEmail(email) ?:
-                throw UserNotFoundException()
+
+        val dbUserDto = getUserFromEmail(email)
 
         return submitterDbRepository
                 .getSubmitterBySubmitterId(dbUserDto.submitterId)
                 .let(submitterMapper::mapTo)
     }
+
+    fun updateUserBan(isBanned: Boolean) = userDbRepository.updateUserBan(isBanned)
 }

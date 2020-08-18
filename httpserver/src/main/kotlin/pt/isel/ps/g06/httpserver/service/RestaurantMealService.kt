@@ -83,6 +83,12 @@ class RestaurantMealService(
         dbPortionRepository.insert(submitterId, restaurantMealIdentifier, quantity)
     }
 
+    fun updateRestaurantMealVerification(restaurantId: RestaurantIdentifier, mealId: Int, verified: Boolean) {
+        val restaurantMeal = getRestaurantMeal(restaurantId, mealId)
+        val meal = restaurantMeal.meal
+        val restaurant = restaurantMeal.restaurant
+    }
+
     fun deleteRestaurantMeal(restaurantId: RestaurantIdentifier, mealId: Int, submitterId: Int) {
         val restaurantMeal = getRestaurantMeal(restaurantId, mealId)
         val meal = restaurantMeal.meal

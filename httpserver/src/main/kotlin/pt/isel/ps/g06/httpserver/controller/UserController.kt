@@ -2,10 +2,9 @@ package pt.isel.ps.g06.httpserver.controller
 
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import pt.isel.ps.g06.httpserver.common.AUTH_HEADER
-import pt.isel.ps.g06.httpserver.common.LOGIN
-import pt.isel.ps.g06.httpserver.common.REGISTER
-import pt.isel.ps.g06.httpserver.common.USER_INFO
+import org.springframework.web.util.UriComponentsBuilder
+import pt.isel.ps.g06.httpserver.common.*
+import pt.isel.ps.g06.httpserver.common.exception.authorization.NotAuthorizedException
 import pt.isel.ps.g06.httpserver.dataAccess.input.UserInfoInput
 import pt.isel.ps.g06.httpserver.dataAccess.input.UserLoginInput
 import pt.isel.ps.g06.httpserver.dataAccess.input.UserRegisterInput
@@ -49,5 +48,23 @@ class UserController(private val userService: UserService, private val authentic
         val image = submitter.image
 
         return ResponseEntity.ok(UserInfoOutput(email, username, image))
+    }
+
+    @PutMapping(BAN)
+    fun putBanUser(
+            @RequestHeader(AUTH_HEADER) jwt: String,
+            @RequestBody isBanned: Boolean
+    ): ResponseEntity<Void> {
+
+        val requester = authenticationService.getEmailFromJwt(jwt).let(userService::getUserFromEmail)
+
+        if (requester.role != MOD_USER) {
+            throw NotAuthorizedException()
+        }
+
+        userService.updateUserBan(isBanned)
+
+        // TODO
+        return ResponseEntity.ok().build()
     }
 }

@@ -13,18 +13,26 @@ private val reportDaoClass = ReportDao::class.java
 @Repository
 class ReportDbRepository(jdbi: Jdbi) : BaseDbRepo(jdbi) {
 
+    fun getAll(
+
+    ): Collection<DbReportDto> {
+        return jdbi.inTransaction<Collection<DbReportDto>, Exception>(isolationLevel) {
+            return@inTransaction it.attach(reportDaoClass).getAll()
+        }
+    }
+
     fun insert(
             submitterId: Int,
-            submission_id: Int,
+            submissionId: Int,
             report: String
     ): DbReportDto {
         return jdbi.inTransaction<DbReportDto, Exception>(isolationLevel) {
 
-            // Check if the submission exists and it is votable
+            // Check if the submission exists and it is reportable
             requireContract(submitterId, REPORTABLE, isolationLevel)
 
             return@inTransaction it.attach(reportDaoClass)
-                    .insert(submitterId, submission_id, report)
+                    .insert(submitterId, submissionId, report)
         }
     }
 }

@@ -13,6 +13,9 @@ interface ReportDao {
         const val description = "description"
     }
 
+    @SqlQuery("SELECT * FROM $table")
+    fun getAll(): Collection<DbReportDto>
+
     @SqlQuery("INSERT INTO $table($reporterId, $submissionId, $description) " +
             "VALUES(:reporterSubmitterId, :submissionId, :description) RETURNING *")
     fun insert(@Bind reporterSubmitterId: Int, submissionId: Int, description: String): DbReportDto

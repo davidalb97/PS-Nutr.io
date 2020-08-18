@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*
 import org.springframework.web.util.UriComponentsBuilder
 import pt.isel.ps.g06.httpserver.common.*
 import pt.isel.ps.g06.httpserver.common.exception.authentication.NotAuthenticatedException
+import pt.isel.ps.g06.httpserver.common.exception.authorization.NotAuthorizedException
 import pt.isel.ps.g06.httpserver.common.exception.forbidden.NotSubmissionOwnerException
 import pt.isel.ps.g06.httpserver.common.exception.notFound.MealNotFoundException
 import pt.isel.ps.g06.httpserver.common.exception.notFound.RestaurantNotFoundException
@@ -146,6 +147,34 @@ class RestaurantMealController(
                 submitterId = submitter.identifier,
                 vote = userVote.vote!!
         )
+
+        return ResponseEntity
+                .ok()
+                .build()
+    }
+
+    @PutMapping(RESTAURANT_MEAL)
+    fun putVerifyRestaurantMeal(
+            @RequestHeader(AUTH_HEADER) jwt: String,
+            @PathVariable(RESTAURANT_ID_VALUE) restaurantId: String,
+            @PathVariable(MEAL_ID_VALUE) mealId: Int,
+            @RequestBody verified: Boolean
+    ): ResponseEntity<Void> {
+        /*val requester = authenticationService.getEmailFromJwt(jwt).let(userService::getUserFromEmail)
+
+        if (requester.role != MOD_USER) {
+            throw NotAuthorizedException()
+        }
+
+        val restaurantIdentifier = restaurantIdentifierBuilder.extractIdentifiers(restaurantId)
+        val restaurantMeal = restaurantMealService.getRestaurantMeal(restaurantIdentifier, mealId)
+
+
+        submissionService.alterRestaurantMealVote(
+                restaurantMeal = restaurantMeal,
+                submitterId = submitter.identifier,
+                vote = userVote.vote!!
+        )*/
 
         return ResponseEntity
                 .ok()
