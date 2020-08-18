@@ -7,6 +7,7 @@ import java.time.OffsetDateTime
 data class Restaurant(
         val identifier: Lazy<RestaurantIdentifier>,
         val name: String,
+        val ownerId: Int?,
         val latitude: Float,
         val longitude: Float,
         val image: URI?,

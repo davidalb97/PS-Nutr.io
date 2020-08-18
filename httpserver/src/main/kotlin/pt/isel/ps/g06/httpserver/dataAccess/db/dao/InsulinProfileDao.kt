@@ -4,6 +4,7 @@ import org.jdbi.v3.sqlobject.config.RegisterRowMapper
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbUserInsulinProfileDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.mapper.DbRowInsulinProfileMapper
+import java.time.LocalTime
 
 @RegisterRowMapper(DbRowInsulinProfileMapper::class)
 interface InsulinProfileDao {
@@ -35,7 +36,7 @@ interface InsulinProfileDao {
             ") RETURNING *"
     )
     fun insertProfile(
-            submitterId: Int, profileName: String, startTime: String, endTime: String,
+            submitterId: Int, profileName: String, startTime: LocalTime, endTime: LocalTime,
             glucoseObjective: Int, sensitivityFactor: Int, carbRatio: Int
     ): DbUserInsulinProfileDto
 

@@ -19,14 +19,14 @@ class AuthenticationService(
 
     /**
      * Logins the user generating the token if successful
-     * @param userName - The user's identifier
+     * @param email - The user's email
      * @param password - The user's password
      */
-    fun login(userName: String, password: String): String {
-        val userDetails = User(userName, password, emptyList())
+    fun login(email: String, password: String): String {
+        val userDetails = User(email, password, emptyList())
         try {
             authenticationManager.authenticate(
-                    UsernamePasswordAuthenticationToken(userName, password)
+                    UsernamePasswordAuthenticationToken(email, password)
             )
         } catch (e: AuthenticationException) {
             throw NotAuthenticatedException()
@@ -36,11 +36,11 @@ class AuthenticationService(
     }
 
     /**
-     * Extracts the username from the token
+     * Extracts the user's email from the token
      * @param jwt - the JSON Web Token
      */
-    fun getUsernameByJwt(jwt: String): String {
-        return jwtUtil.getUsername(jwt.removePrefix(BEARER))
+    fun getEmailFromJwt(jwt: String): String {
+        return jwtUtil.getUserEmail(jwt.removePrefix(BEARER))
     }
 
     /**
