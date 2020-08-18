@@ -7,8 +7,8 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionContractType.*
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType.*
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.*
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbRestaurantMealDto
-import pt.isel.ps.g06.httpserver.exception.InvalidInputDomain
-import pt.isel.ps.g06.httpserver.exception.InvalidInputException
+import pt.isel.ps.g06.httpserver.common.exception.clientError.InvalidInputDomain
+import pt.isel.ps.g06.httpserver.common.exception.clientError.InvalidInputException
 import java.util.*
 
 private val isolationLevel = TransactionIsolationLevel.SERIALIZABLE

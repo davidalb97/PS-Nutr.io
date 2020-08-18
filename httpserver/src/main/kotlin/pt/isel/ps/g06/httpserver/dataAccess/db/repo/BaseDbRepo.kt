@@ -8,8 +8,8 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionContractType
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.*
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbCuisineDto
-import pt.isel.ps.g06.httpserver.exception.InvalidInputDomain
-import pt.isel.ps.g06.httpserver.exception.InvalidInputException
+import pt.isel.ps.g06.httpserver.common.exception.clientError.InvalidInputDomain
+import pt.isel.ps.g06.httpserver.common.exception.clientError.InvalidInputException
 import java.time.Clock
 import java.time.Duration
 import java.time.OffsetDateTime
@@ -68,17 +68,23 @@ class BaseDbRepo constructor(internal val jdbi: Jdbi) {
             submissionId: Int,
             contract: SubmissionContractType,
             defaultIsolation: TransactionIsolationLevel = SERIALIZABLE
-    ) {
+    ): Boolean {
+
+        var isContract = true
+
         jdbi.inTransaction<Unit, InvalidInputException>(defaultIsolation) {
 
             // Check if submission is implementing the IS-A contract
-            it.attach(SubmissionContractDao::class.java)
+            val contractSubmission = it.attach(SubmissionContractDao::class.java)
                     .getAllById(submissionId)
                     .let { if (it.none { it.submission_contract == contract.toString() }) null else it }
-                    ?: throw InvalidInputException(InvalidInputDomain.CONTRACT,
-                            "The submission id \"$submissionId\" is not a \"$contract\"."
-                    )
+
+            if (contractSubmission == null) {
+                isContract = false
+            }
         }
+
+        return isContract
     }
 
 
