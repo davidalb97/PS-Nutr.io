@@ -49,7 +49,7 @@
                     android:background="@drawable/textbox_shape"
                     android:drawableStart="@drawable/ic_user"
                     android:drawablePadding="10dp"
-                    android:hint="@string/username"
+                    android:hint="@string/username_sign_activity"
                     android:padding="5dp">
                 </EditText>
 
