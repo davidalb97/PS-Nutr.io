@@ -35,6 +35,8 @@ class UserController(private val userService: UserService, private val authentic
 
         val jwt = authenticationService.login(userLoginInput.email, userLoginInput.password)
 
-        return ResponseEntity.ok(UserLoginOutput(jwt))
+        val username = userService.getSubmitterFromEmail(userLoginInput.email)!!.name
+
+        return ResponseEntity.ok(UserLoginOutput(jwt, username))
     }
 }
