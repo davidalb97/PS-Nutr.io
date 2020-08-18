@@ -4,9 +4,11 @@ import RequestingEntity from '../common/RequestingEntity'
 
 export default function ViewMeals() {
     const request = {
-        url: "http://localhost:8080/api/meals",
+        url: "http://localhost:9000/api/meal",
     }
 
+
+    return <>View custom meals</>
     return <RequestingEntity
         request={request}
         onSuccess={listMeals}
