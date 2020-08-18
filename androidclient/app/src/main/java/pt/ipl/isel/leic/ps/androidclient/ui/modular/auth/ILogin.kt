@@ -9,12 +9,13 @@ import pt.ipl.isel.leic.ps.androidclient.data.model.UserLogin
 import pt.ipl.isel.leic.ps.androidclient.data.model.UserSession
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.IContext
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.ILoading
+import pt.ipl.isel.leic.ps.androidclient.ui.modular.IUserInfo
 import pt.ipl.isel.leic.ps.androidclient.ui.util.saveSession
 
-interface ILogin : ILoading, IContext {
+interface ILogin : IUserInfo, ILoading, IContext {
 
-    var userNameEditText: EditText
-    val userNameEditTextId: Int
+    var userEmailEditText: EditText
+    val userEmailEditTextId: Int
     var userPasswordEditText: EditText
     val userPasswordEditTextId: Int
     var loginButton: Button
@@ -22,26 +23,40 @@ interface ILogin : ILoading, IContext {
 
     fun setupLogin(view: View) {
 
-        userNameEditText = view.findViewById(userNameEditTextId)
+        userEmailEditText = view.findViewById(userEmailEditTextId)
         userPasswordEditText = view.findViewById(userPasswordEditTextId)
         loginButton = view.findViewById(loginButtonId)
 
         loginButton.setOnClickListener {
-            val userName = userNameEditText.text.toString()
+            val userEmail = userEmailEditText.text.toString()
             val passWord = userPasswordEditText.text.toString()
 
-            if (arrayOf(userName, passWord).all { it.isNotBlank() }) {
+            if (arrayOf(userEmail, passWord).all { it.isNotBlank() }) {
                 startLoading()
                 onLogin(
                     userLogin = UserLogin(
-                        userName = userName,
-                        passWord = passWord
+                        email = userEmail,
+                        password = passWord
                     ),
                     onSuccess = { userSession ->
-                        saveSession(
-                            jwt = userSession.jwt,
-                            username = userName,
-                            password = passWord
+                        onRequestUserInfo(
+                            userSession = userSession,
+                            onSuccess = {userInfo ->
+                                saveSession(
+                                    jwt = userSession.jwt,
+                                    email = userInfo.email,
+                                    username = userInfo.username,
+                                    password = passWord
+                                )
+                            },
+                            onError = {
+                                stopLoading()
+                                Toast.makeText(
+                                    fetchCtx(),
+                                    R.string.user_info_error,
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
                         )
                         stopLoading()
                     },

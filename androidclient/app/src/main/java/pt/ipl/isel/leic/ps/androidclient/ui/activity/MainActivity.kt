@@ -19,10 +19,7 @@ import com.google.android.material.navigation.NavigationView
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.encryptedSharedPreferences
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.sharedPreferences
 import pt.ipl.isel.leic.ps.androidclient.R
-import pt.ipl.isel.leic.ps.androidclient.ui.util.Logger
-import pt.ipl.isel.leic.ps.androidclient.ui.util.getIsFirstTime
-import pt.ipl.isel.leic.ps.androidclient.ui.util.getIsNightMode
-import pt.ipl.isel.leic.ps.androidclient.ui.util.getUsername
+import pt.ipl.isel.leic.ps.androidclient.ui.util.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -105,10 +102,11 @@ class MainActivity : AppCompatActivity() {
             val userEmail = headerView.findViewById<TextView>(R.id.userEmail)
 
             val registeredUser = encryptedSharedPreferences.getUsername()
+            val registeredEmail = encryptedSharedPreferences.getEmail()
 
-            if (registeredUser != null) {
+            if (registeredUser != null && registeredEmail != null) {
                 username.text = registeredUser
-                userEmail.visibility = View.INVISIBLE
+                userEmail.text = registeredEmail
             }
 
             headerImage.setOnClickListener {

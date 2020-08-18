@@ -13,6 +13,7 @@ const val FIRST_TIME = "isFirstTime"
 const val USERNAME_KEY = "username"
 const val PASSWORD_KEY = "password"
 const val EMAIL_KEY = "email"
+const val IMAGE_KEY = "image"
 const val JWT_KEY = "jwt"
 const val GLUCOSE_UNITS_KEY = "insulin_units"
 val DEFAULT_GLUCOSE_UNIT = GlucoseUnits.MILLI_GRAM_PER_DL
@@ -27,9 +28,10 @@ val DEFAULT_WEIGHT_UNIT = WeightUnits.GRAMS
  * @param username - The username
  * @param password - The password
  */
-fun saveSession(jwt: String, username: String, password: String) {
+fun saveSession(jwt: String, email: String, username: String, password: String) {
     encryptedSharedPreferences
         .edit()
+        .putString(EMAIL_KEY, email)
         .putString(USERNAME_KEY, username)
         .putString(PASSWORD_KEY, password)
         .apply()
@@ -72,4 +74,7 @@ fun SharedPreferences.getPassWord() = getString(PASSWORD_KEY, null)
 
 fun SharedPreferences.getUsername() = getString(USERNAME_KEY, null)
 
-fun SharedPreferences.getWeightUnitOrDefault() = getString(WEIGHT_UNIT_KEY, DEFAULT_WEIGHT_UNIT.toString())!!
+fun SharedPreferences.getEmail() = getString(EMAIL_KEY, null)
+
+fun SharedPreferences.getWeightUnitOrDefault() =
+    getString(WEIGHT_UNIT_KEY, DEFAULT_WEIGHT_UNIT.toString())!!

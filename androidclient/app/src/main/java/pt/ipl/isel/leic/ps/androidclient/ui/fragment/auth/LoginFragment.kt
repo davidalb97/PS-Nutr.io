@@ -2,7 +2,6 @@ package pt.ipl.isel.leic.ps.androidclient.ui.fragment.auth
 
 import android.content.Context
 import android.content.Intent
-import android.content.LocusId
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,17 +9,14 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.cardview.widget.CardView
 import androidx.navigation.findNavController
-import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.encryptedSharedPreferences
-import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.sharedPreferences
 import pt.ipl.isel.leic.ps.androidclient.R
+import pt.ipl.isel.leic.ps.androidclient.data.model.UserInfo
 import pt.ipl.isel.leic.ps.androidclient.data.model.UserLogin
 import pt.ipl.isel.leic.ps.androidclient.data.model.UserSession
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.BaseFragment
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.auth.ILogin
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.auth.ILogout
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.UserProfileVMProviderFactory
-import pt.ipl.isel.leic.ps.androidclient.ui.util.Navigation
-import pt.ipl.isel.leic.ps.androidclient.ui.util.getUsername
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.UserSessionViewModel
 
 class LoginFragment : BaseFragment(), ILogin, ILogout {
@@ -32,8 +28,8 @@ class LoginFragment : BaseFragment(), ILogin, ILogout {
     override lateinit var loadingCard: CardView
 
     //Login
-    override var userNameEditTextId = R.id.userNameInput
-    override lateinit var userNameEditText: EditText
+    override var userEmailEditTextId = R.id.userEmailInput
+    override lateinit var userEmailEditText: EditText
     override val userPasswordEditTextId = R.id.userPasswordInput
     override lateinit var userPasswordEditText: EditText
     override val loginButtonId = R.id.loginButton
@@ -78,6 +74,18 @@ class LoginFragment : BaseFragment(), ILogin, ILogout {
                 Toast.makeText(context, R.string.login_success, Toast.LENGTH_SHORT).show()
                 requireView().findNavController().navigate(R.id.nav_home)
             },
+            onError = onError
+        )
+    }
+
+    override fun onRequestUserInfo(
+        userSession: UserSession,
+        onSuccess: (UserInfo) -> Unit,
+        onError: (Throwable) -> Unit
+    ) {
+        viewModel.requestUserInfo(
+            userSession = userSession,
+            onSuccess = onSuccess,
             onError = onError
         )
     }

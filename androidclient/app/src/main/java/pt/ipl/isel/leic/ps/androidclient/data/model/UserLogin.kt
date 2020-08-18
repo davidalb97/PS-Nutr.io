@@ -4,8 +4,8 @@ import android.os.Parcel
 import android.os.Parcelable
 
 data class UserLogin(
-    val userName: String,
-    val passWord: String
+    val email: String,
+    val password: String
 ) : Parcelable {
 
     constructor(parcel: Parcel) : this(
@@ -14,8 +14,8 @@ data class UserLogin(
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(userName)
-        parcel.writeString(passWord)
+        parcel.writeString(email)
+        parcel.writeString(password)
     }
 
     override fun describeContents(): Int {

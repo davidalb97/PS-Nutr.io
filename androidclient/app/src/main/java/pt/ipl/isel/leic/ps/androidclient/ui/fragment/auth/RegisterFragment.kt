@@ -14,6 +14,7 @@ import androidx.cardview.widget.CardView
 import androidx.navigation.findNavController
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.app
 import pt.ipl.isel.leic.ps.androidclient.R
+import pt.ipl.isel.leic.ps.androidclient.data.model.UserInfo
 import pt.ipl.isel.leic.ps.androidclient.data.model.UserRegister
 import pt.ipl.isel.leic.ps.androidclient.data.model.UserSession
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.BaseFragment
@@ -84,6 +85,18 @@ class RegisterFragment : BaseFragment(), IRegister, ILogout {
                 statusMessage(getString(R.string.register_success))
                 requireView().findNavController().navigate(R.id.nav_home)
             },
+            onError = onError
+        )
+    }
+
+    override fun onRequestUserInfo(
+        userSession: UserSession,
+        onSuccess: (UserInfo) -> Unit,
+        onError: (Throwable) -> Unit
+    ) {
+        viewModel.requestUserInfo(
+            userSession = userSession,
+            onSuccess = onSuccess,
             onError = onError
         )
     }

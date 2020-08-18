@@ -9,9 +9,10 @@ import pt.ipl.isel.leic.ps.androidclient.data.model.UserRegister
 import pt.ipl.isel.leic.ps.androidclient.data.model.UserSession
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.IContext
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.ILoading
+import pt.ipl.isel.leic.ps.androidclient.ui.modular.IUserInfo
 import pt.ipl.isel.leic.ps.androidclient.ui.util.saveSession
 
-interface IRegister : ILoading,
+interface IRegister : IUserInfo, ILoading,
     IContext {
 
     val userNameEditTextId: Int
@@ -43,10 +44,24 @@ interface IRegister : ILoading,
                         password = password
                     ),
                     onSuccess = { userSession ->
-                        saveSession(
-                            jwt = userSession.jwt,
-                            username = userName,
-                            password = password
+                        onRequestUserInfo(
+                            userSession = userSession,
+                            onSuccess = {userInfo ->
+                                saveSession(
+                                    jwt = userSession.jwt,
+                                    email = userInfo.email,
+                                    username = userInfo.username,
+                                    password = password
+                                )
+                            },
+                            onError = {
+                                stopLoading()
+                                Toast.makeText(
+                                    fetchCtx(),
+                                    R.string.user_info_error,
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
                         )
                         stopLoading()
                     },

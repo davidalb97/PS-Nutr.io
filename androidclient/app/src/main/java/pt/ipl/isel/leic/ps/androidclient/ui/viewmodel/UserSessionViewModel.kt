@@ -3,9 +3,7 @@ package pt.ipl.isel.leic.ps.androidclient.ui.viewmodel
 import androidx.lifecycle.ViewModel
 import com.android.volley.VolleyError
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.userRepository
-import pt.ipl.isel.leic.ps.androidclient.data.model.UserLogin
-import pt.ipl.isel.leic.ps.androidclient.data.model.UserRegister
-import pt.ipl.isel.leic.ps.androidclient.data.model.UserSession
+import pt.ipl.isel.leic.ps.androidclient.data.model.*
 
 class UserSessionViewModel : ViewModel() {
 
@@ -25,6 +23,16 @@ class UserSessionViewModel : ViewModel() {
         onError: (VolleyError) -> Unit
     ) = userRepository.loginUser(
         userLogin = userLogin,
+        onSuccess = onSuccess,
+        onError = onError
+    )
+
+    fun requestUserInfo(
+        userSession: UserSession,
+        onSuccess: (UserInfo) -> Unit,
+        onError: (VolleyError) -> Unit
+    ) = userRepository.requestUserInfo(
+        userSession = userSession,
         onSuccess = onSuccess,
         onError = onError
     )

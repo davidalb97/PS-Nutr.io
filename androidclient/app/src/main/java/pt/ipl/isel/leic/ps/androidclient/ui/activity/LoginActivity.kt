@@ -12,9 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import kotlinx.android.synthetic.main.login_activity.*
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.sharedPreferences
 import pt.ipl.isel.leic.ps.androidclient.R
-import pt.ipl.isel.leic.ps.androidclient.data.model.UserLogin
-import pt.ipl.isel.leic.ps.androidclient.data.model.UserRegister
-import pt.ipl.isel.leic.ps.androidclient.data.model.UserSession
+import pt.ipl.isel.leic.ps.androidclient.data.model.*
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.auth.ILogin
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.auth.IRegister
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.UserProfileVMProviderFactory
@@ -30,18 +28,18 @@ class LoginActivity : AppCompatActivity(), ILogin, IRegister {
     override lateinit var loadingCard: CardView
 
     //Register / Login
+    override val userEmailEditTextId: Int = R.id.userEmailInput
+    override lateinit var userEmailEditText: EditText
     override val userNameEditTextId = R.id.userNameInput
     override lateinit var userNameEditText: EditText
     override val userPasswordEditTextId = R.id.userPasswordInput
     override lateinit var userPasswordEditText: EditText
 
-    //Login
+    //Login button
     override val loginButtonId: Int = R.id.loginButton
     override lateinit var loginButton: Button
 
-    //Register
-    override val userEmailEditTextId: Int = R.id.userEmailInput
-    override lateinit var userEmailEditText: EditText
+    //Register button
     override val registerButtonId: Int = R.id.registerButton
     override lateinit var registerButton: Button
 
@@ -94,6 +92,18 @@ class LoginActivity : AppCompatActivity(), ILogin, IRegister {
                 onSuccess(it)
                 sendToMainActivity()
             },
+            onError = onError
+        )
+    }
+
+    override fun onRequestUserInfo(
+        userSession: UserSession,
+        onSuccess: (UserInfo) -> Unit,
+        onError: (Throwable) -> Unit
+    ) {
+        viewModel.requestUserInfo(
+            userSession = userSession,
+            onSuccess = onSuccess,
             onError = onError
         )
     }

@@ -2,8 +2,10 @@ package pt.ipl.isel.leic.ps.androidclient.data.repo
 
 import com.android.volley.VolleyError
 import pt.ipl.isel.leic.ps.androidclient.data.api.datasource.UserDataSource
+import pt.ipl.isel.leic.ps.androidclient.data.api.mapper.input.InputUserInfoMapper
 import pt.ipl.isel.leic.ps.androidclient.data.api.mapper.input.InputUserLoginMapper
 import pt.ipl.isel.leic.ps.androidclient.data.api.mapper.input.InputUserRegisterMapper
+import pt.ipl.isel.leic.ps.androidclient.data.model.UserInfo
 import pt.ipl.isel.leic.ps.androidclient.data.model.UserLogin
 import pt.ipl.isel.leic.ps.androidclient.data.model.UserRegister
 import pt.ipl.isel.leic.ps.androidclient.data.model.UserSession
@@ -14,6 +16,8 @@ class UserRepository(private val userDataSource: UserDataSource) {
         InputUserLoginMapper()
     private val registerUserMapper =
         InputUserRegisterMapper()
+    private val infoUserMapper =
+        InputUserInfoMapper()
 
     fun registerUser(
         userReg: UserRegister,
@@ -32,9 +36,19 @@ class UserRepository(private val userDataSource: UserDataSource) {
         onSuccess: (UserSession) -> Unit,
         onError: (VolleyError) -> Unit
     ) = userDataSource.login(
-        username = userLogin.userName,
-        password = userLogin.passWord,
+        username = userLogin.email,
+        password = userLogin.password,
         error = onError,
         consumerDto = { onSuccess(loginUserMapper.mapToModel(it)) }
+    )
+
+    fun requestUserInfo(
+        userSession: UserSession,
+        onSuccess: (UserInfo) -> Unit,
+        onError: (VolleyError) -> Unit
+    ) = userDataSource.requestUserInfo(
+        userSession.jwt,
+        error = onError,
+        consumerDto = { onSuccess(infoUserMapper.mapToModel(it)) }
     )
 }

@@ -160,7 +160,26 @@ class NutrioApp : Application() {
         if (username != null && password != null) {
             userRepository.loginUser(
                 userLogin = UserLogin(username, password),
-                onSuccess = { userSession -> saveSession(userSession.jwt, username, password) },
+                onSuccess = { userSession ->
+                    userRepository.requestUserInfo(
+                        userSession = userSession,
+                        onSuccess = {userInfo ->
+                            saveSession(
+                                jwt = userSession.jwt,
+                                email = userInfo.email,
+                                username = userInfo.username,
+                                password = password
+                            )
+                        },
+                        onError = {
+                            Toast.makeText(
+                                app,
+                                R.string.user_info_error,
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    )
+                },
                 onError = {
                     Toast.makeText(
                         app,
