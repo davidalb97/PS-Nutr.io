@@ -38,6 +38,7 @@ class MealController(
      */
     @GetMapping(MEALS)
     fun getMeals(
+            submitter: Submitter?,
             @RequestParam mealTypes: Collection<String>?,
             @RequestParam skip: Int?,
             @RequestParam count: Int?,
@@ -70,7 +71,7 @@ class MealController(
 
         return ResponseEntity
                 .ok()
-                .body(toSimplifiedMealContainer(meals))
+                .body(toSimplifiedMealContainer(meals, submitter?.identifier))
     }
 
     @PutMapping(MEAL_FAVORITE)
@@ -86,12 +87,15 @@ class MealController(
     }
 
     @GetMapping(MEAL)
-    fun getMealInformation(@PathVariable(MEAL_ID_VALUE) mealId: Int): ResponseEntity<DetailedMealOutput> {
+    fun getMealInformation(
+            submitter: Submitter?,
+            @PathVariable(MEAL_ID_VALUE) mealId: Int
+    ): ResponseEntity<DetailedMealOutput> {
         val meal = mealService.getMeal(mealId) ?: throw MealNotFoundException()
 
         return ResponseEntity
                 .ok()
-                .body(toDetailedMealOutput(meal))
+                .body(toDetailedMealOutput(meal, submitter?.identifier))
     }
 
     @PostMapping(MEALS)
@@ -137,6 +141,4 @@ class MealController(
                 .ok()
                 .build()
     }
-
-
 }

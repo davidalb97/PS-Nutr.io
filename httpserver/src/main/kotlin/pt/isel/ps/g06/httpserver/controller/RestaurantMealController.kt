@@ -36,6 +36,7 @@ class RestaurantMealController(
 ) {
     @GetMapping(RESTAURANT_MEALS, consumes = [MediaType.ALL_VALUE])
     fun getMealsForRestaurant(
+            submitter: Submitter?,
             @PathVariable(RESTAURANT_ID_VALUE) restaurantId: String
     ): ResponseEntity<RestaurantMealContainerOutput> {
         val (submitterId, submissionId, apiId) = restaurantIdentifierBuilder.extractIdentifiers(restaurantId)
@@ -46,12 +47,13 @@ class RestaurantMealController(
 
         return ResponseEntity
                 .ok()
-                .body(toRestaurantMealContainerOutput(restaurant))
+                .body(toRestaurantMealContainerOutput(restaurant, submitter?.identifier))
     }
 
 
     @GetMapping(RESTAURANT_MEAL, consumes = [MediaType.ALL_VALUE])
     fun getRestaurantMeal(
+            submitter: Submitter?,
             @PathVariable(RESTAURANT_ID_VALUE) restaurantId: String,
             @PathVariable(MEAL_ID_VALUE) mealId: Int
     ): ResponseEntity<DetailedRestaurantMealOutput> {
@@ -61,7 +63,7 @@ class RestaurantMealController(
 
         return ResponseEntity
                 .ok()
-                .body(toDetailedRestaurantMealOutput(restaurantMeal))
+                .body(toDetailedRestaurantMealOutput(restaurantMeal, submitter?.identifier))
     }
 
 

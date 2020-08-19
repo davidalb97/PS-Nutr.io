@@ -45,6 +45,7 @@ class RestaurantController(
      */
     @GetMapping(RESTAURANTS, consumes = [MediaType.ALL_VALUE])
     fun searchRestaurants(
+            submitter: Submitter?,
             latitude: Float?,
             longitude: Float?,
             name: String?,
@@ -62,21 +63,21 @@ class RestaurantController(
                 radius = radius,
                 apiType = apiType
         )
-
         return ResponseEntity
                 .ok()
-                .body(nearbyRestaurants.map { toSimplifiedRestaurantOutput(it) }.toList())
+                .body(nearbyRestaurants.map { toSimplifiedRestaurantOutput(it, submitter?.identifier) }.toList())
     }
 
     @GetMapping(RESTAURANT, consumes = [MediaType.ALL_VALUE])
     fun getRestaurantInformation(
+            submitter: Submitter?,
             @PathVariable(RESTAURANT_ID_VALUE) restaurantId: String
     ): ResponseEntity<DetailedRestaurantOutput> {
         val restaurant = ensureRestaurantExists(restaurantId)
 
         return ResponseEntity
                 .ok()
-                .body(toDetailedRestaurantOutput(restaurant))
+                .body(toDetailedRestaurantOutput(restaurant, submitter?.identifier))
     }
 
     @PostMapping(RESTAURANTS, consumes = [MediaType.APPLICATION_JSON_VALUE])
