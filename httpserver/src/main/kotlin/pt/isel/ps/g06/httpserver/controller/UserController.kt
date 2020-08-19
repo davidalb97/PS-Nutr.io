@@ -2,14 +2,13 @@ package pt.isel.ps.g06.httpserver.controller
 
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import org.springframework.web.util.UriComponentsBuilder
 import pt.isel.ps.g06.httpserver.common.*
 import pt.isel.ps.g06.httpserver.common.exception.authorization.NotAuthorizedException
 import pt.isel.ps.g06.httpserver.dataAccess.input.BanInput
 import pt.isel.ps.g06.httpserver.dataAccess.input.UserInfoInput
 import pt.isel.ps.g06.httpserver.dataAccess.input.UserLoginInput
 import pt.isel.ps.g06.httpserver.dataAccess.input.UserRegisterInput
-import pt.isel.ps.g06.httpserver.dataAccess.output.security.UserInfoOutput
+import pt.isel.ps.g06.httpserver.dataAccess.output.user.UserInfoOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.security.UserLoginOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.security.UserRegisterOutput
 import pt.isel.ps.g06.httpserver.service.AuthenticationService
