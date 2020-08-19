@@ -11,7 +11,8 @@ open class SimplifiedRestaurantOutput(
         val latitude: Float,
         val longitude: Float,
         val votes: VotesOutput?,
-        val isFavorite: Boolean
+        val isFavorite: Boolean,
+        val isVotable: Boolean
 )
 
 fun toSimplifiedRestaurantOutput(restaurant: Restaurant, userId: Int? = null): SimplifiedRestaurantOutput {
@@ -24,6 +25,7 @@ fun toSimplifiedRestaurantOutput(restaurant: Restaurant, userId: Int? = null): S
                     votes = restaurant.votes,
                     userVote = userId?.let { restaurant.userVote(userId) } ?: VoteState.NOT_VOTED
             ),
-            isFavorite = userId?.let { restaurant.isFavorite(userId) } ?: false
+            isFavorite = userId?.let { restaurant.isFavorite(userId) } ?: false,
+            isVotable = restaurant.isUserRestaurant()
     )
 }
