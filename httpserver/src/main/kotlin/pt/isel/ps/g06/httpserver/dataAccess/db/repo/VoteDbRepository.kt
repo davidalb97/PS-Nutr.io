@@ -3,6 +3,7 @@ package pt.isel.ps.g06.httpserver.dataAccess.db.repo
 import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.transaction.TransactionIsolationLevel
 import org.springframework.stereotype.Repository
+import pt.isel.ps.g06.httpserver.common.exception.clientError.NonVotableSubmissionException
 import pt.isel.ps.g06.httpserver.common.exception.clientError.NotYetVotedException
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionContractType.VOTABLE
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.UserVoteDao
@@ -16,8 +17,11 @@ private val voteDaoClass = UserVoteDao::class.java
 class VoteDbRepository(jdbi: Jdbi) : BaseDbRepo(jdbi) {
     fun insertOrUpdate(voterId: Int, submissionId: Int, vote: Boolean): DbUserVoteDto {
         return jdbi.inTransaction<DbUserVoteDto, Exception>(isolationLevel) {
+
             // Check if the submission exists and it is votable
-            requireContract(submissionId, VOTABLE, isolationLevel)
+            if (!requireContract(submissionId, VOTABLE, isolationLevel)) {
+                throw NonVotableSubmissionException()
+            }
 
             val voteDao = it.attach(voteDaoClass)
             val userVoteForSubmission = voteDao.getUserVoteForSubmission(submissionId, voterId)
@@ -51,8 +55,11 @@ class VoteDbRepository(jdbi: Jdbi) : BaseDbRepo(jdbi) {
 
     fun delete(submitterId: Int, submissionId: Int) {
         jdbi.inTransaction<Unit, Exception>(isolationLevel) {
+
             // Check if the submission exists and it is votable
-            requireContract(submissionId, VOTABLE, isolationLevel)
+            if (!requireContract(submissionId, VOTABLE, isolationLevel)) {
+                throw NonVotableSubmissionException()
+            }
 
             // Check if this submitter already voted this submission
             val userVote = it
