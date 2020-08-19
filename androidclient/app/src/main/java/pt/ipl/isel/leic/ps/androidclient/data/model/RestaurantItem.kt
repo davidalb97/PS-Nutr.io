@@ -16,6 +16,7 @@ data class RestaurantItem(
     val longitude: Float,
     val votes: Votes?,
     var isFavorite: Boolean,
+    val isVotable: Boolean,
     val imageUri: Uri?,
     val source: Source
 ) : Parcelable {
@@ -28,6 +29,7 @@ data class RestaurantItem(
         longitude = parcel.readFloat(),
         votes = parcel.readParcelable<Votes>(Votes::class.java.classLoader),
         isFavorite = parcel.readBooleanCompat(),
+        isVotable = parcel.readBooleanCompat(),
         imageUri = parcel.readUri(),
         source = Source.values()[parcel.readInt()]
     )
@@ -40,6 +42,7 @@ data class RestaurantItem(
         parcel.writeFloat(longitude)
         parcel.writeParcelable(votes, flags)
         parcel.writeBooleanCompat(isFavorite)
+        parcel.writeBooleanCompat(isVotable)
         parcel.writeUri(imageUri)
         parcel.writeInt(source.ordinal)
     }

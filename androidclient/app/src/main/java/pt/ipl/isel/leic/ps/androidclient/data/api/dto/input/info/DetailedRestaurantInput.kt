@@ -12,6 +12,7 @@ class DetailedRestaurantInput(
     longitude: Float,
     votes: VotesInputDto?,
     isFavorite: Boolean,
+    isVotable: Boolean,
     imageUri: Uri?,
     val cuisines: Collection<String>,
     val creationDate: String?,
@@ -24,5 +25,6 @@ class DetailedRestaurantInput(
     longitude = longitude,
     votes = votes,
     isFavorite = isFavorite,
+    isVotable = isVotable,
     imageUri = imageUri
 )

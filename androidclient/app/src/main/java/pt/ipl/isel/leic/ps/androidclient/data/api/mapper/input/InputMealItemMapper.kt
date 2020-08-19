@@ -24,6 +24,7 @@ class InputMealItemMapper(
         name = dto.name,
         votes = inputVotesMapper.mapToModel(dto.votes),
         isFavorite = dto.isFavorite,
+        isVotable = dto.isVotable,
         isSuggested = dto.isSuggested,
         source = Source.API
     )

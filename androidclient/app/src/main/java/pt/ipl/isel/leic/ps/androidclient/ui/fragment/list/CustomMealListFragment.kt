@@ -50,6 +50,7 @@ class CustomMealListFragment
                     imageUri = null,
                     votes = null,
                     isFavorite = false,
+                    isVotable = false,
                     isSuggested = false,
                     source = Source.CUSTOM,
                     creationDate = TimestampWithTimeZone.now(),

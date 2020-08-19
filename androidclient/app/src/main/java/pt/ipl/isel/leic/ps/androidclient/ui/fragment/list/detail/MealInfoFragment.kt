@@ -82,8 +82,8 @@ class MealInfoFragment :
         super.setupImage(view, receivedMeal.imageUri)
 
         if (receivedMeal.restaurantSubmissionId != null) {
-            super.setupVoteBarCounters(view, receivedMeal.votes)
-            super.setupVoteButtons(view)
+            super.setupVoteBarCounters(view, receivedMeal.votes, receivedMeal.isVotable)
+            super.setupVoteButtons(view, receivedMeal.isVotable)
         }
 
         super.setupFavoriteButton(view)

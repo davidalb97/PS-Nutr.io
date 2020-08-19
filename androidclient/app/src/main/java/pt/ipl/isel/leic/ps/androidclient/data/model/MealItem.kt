@@ -20,6 +20,7 @@ open class MealItem(
     val imageUri: Uri?,
     val votes: Votes?,
     var isFavorite: Boolean,
+    var isVotable: Boolean,
     val isSuggested: Boolean,
     var source: Source
 ) : Parcelable {
@@ -36,6 +37,7 @@ open class MealItem(
         imageUri = parcel.readUri(),
         votes = parcel.readParcelable(Votes::class.java.classLoader),
         isFavorite = parcel.readBooleanCompat(),
+        isVotable = parcel.readBooleanCompat(),
         isSuggested = parcel.readBooleanCompat(),
         source = Source.values()[parcel.readInt()]
     )
@@ -52,6 +54,7 @@ open class MealItem(
         parcel.writeUri(imageUri)
         parcel.writeParcelable(votes, flags)
         parcel.writeBooleanCompat(isFavorite)
+        parcel.writeBooleanCompat(isVotable)
         parcel.writeBooleanCompat(isSuggested)
         parcel.writeInt(source.ordinal)
     }

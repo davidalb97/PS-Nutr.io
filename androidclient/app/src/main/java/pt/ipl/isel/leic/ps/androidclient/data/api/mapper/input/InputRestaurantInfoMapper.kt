@@ -21,6 +21,7 @@ class InputRestaurantInfoMapper(
         votes = votesInputMapper.mapToModel(dto.votes),
         creationDate = TimestampWithTimeZone.parse(dto.creationDate),
         isFavorite = dto.isFavorite,
+        isVotable = dto.isVotable,
         cuisines = cuisineInputMapper.mapToListModel(dto.cuisines),
         meals = mealInputMapper.mapToListModel(dto.meals, dto.id),
         suggestedMeals = mealInputMapper.mapToListModel(dto.suggestedMeals, dto.id),

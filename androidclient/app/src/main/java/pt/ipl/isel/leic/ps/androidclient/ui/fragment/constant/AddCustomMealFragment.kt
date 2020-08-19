@@ -267,6 +267,7 @@ class AddCustomMealFragment : BaseFragment() {
         unit = customMealUnitSpinner.selectedItem.toString(),
         votes = null,
         isFavorite = false,
+        isVotable = false,
         imageUri = customImageUrl.text?.toString()?.let { Uri.parse(it) },
         creationDate = TimestampWithTimeZone.now(),
         ingredientComponents = ingredientsViewModel.pickedItems,

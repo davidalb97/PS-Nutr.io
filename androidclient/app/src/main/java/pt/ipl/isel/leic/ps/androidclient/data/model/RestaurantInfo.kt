@@ -14,6 +14,7 @@ data class RestaurantInfo(
     val creationDate: TimestampWithTimeZone?,
     val votes: Votes?,
     var isFavorite: Boolean,
+    var isVotable: Boolean,
     val imageUri: Uri?,
     val cuisines: List<Cuisine>,
     val meals: List<MealItem>,
@@ -30,6 +31,7 @@ data class RestaurantInfo(
         creationDate = parcel.readTimestampWithTimeZone(),
         votes = parcel.readParcelable(Votes::class.java.classLoader),
         isFavorite = parcel.readBooleanCompat(),
+        isVotable = parcel.readBooleanCompat(),
         imageUri = parcel.readUri(),
         cuisines = parcel.readListCompat(Cuisine::class),
         meals = parcel.readListCompat(MealItem::class),
@@ -46,6 +48,7 @@ data class RestaurantInfo(
         parcel.writeTimestampWithTimeZone(creationDate)
         parcel.writeParcelable(votes, flags)
         parcel.writeBooleanCompat(isFavorite)
+        parcel.writeBooleanCompat(isVotable)
         parcel.writeUri(imageUri)
         parcel.writeList(cuisines)
         parcel.writeList(meals)

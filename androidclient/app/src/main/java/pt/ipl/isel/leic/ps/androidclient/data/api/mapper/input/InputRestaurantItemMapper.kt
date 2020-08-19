@@ -17,6 +17,7 @@ class InputRestaurantItemMapper(
         longitude = dto.longitude,
         votes = votesInputMapper.mapToModel(dto.votes),
         isFavorite = dto.isFavorite,
+        isVotable = dto.isVotable,
         imageUri = dto.imageUri,
         source = Source.API
     )

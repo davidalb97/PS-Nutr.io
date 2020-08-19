@@ -11,6 +11,7 @@ data class DbRestaurantInfoEntity(
     val latitude: Float,
     val longitude: Float,
     val isFavorite: Boolean,
+    val isVotable: Boolean,
     val imageUri: String?,
     val hasVote: Boolean,
     val positiveVotes: Int?,

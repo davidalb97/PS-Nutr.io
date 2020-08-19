@@ -17,13 +17,15 @@ interface IVoteProgress {
     val downVoteCounterId: Int
     var downVoteCounter: TextView
 
-    fun setupVoteBarCounters(view: View, votes: Votes?) {
+    fun setupVoteBarCounters(view: View, votes: Votes?, isVotable: Boolean) {
         voteCountersLayout = view.findViewById(voteCountersLayoutId)
         votesBar = view.findViewById(votesBarId)
         upVoteCounter = view.findViewById(upVoteCounterId)
         downVoteCounter = view.findViewById(downVoteCounterId)
 
-        votes ?: return
+        if(!isVotable || votes == null) {
+            return
+        }
 
         val upVotes = votes.positive
         val downVotes = votes.negative

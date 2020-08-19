@@ -13,6 +13,7 @@ open class DbMealInfoEntity(
     val amount: Int,
     val unit: String,
     val isFavorite: Boolean,
+    val isVotable: Boolean,
     val imageUri: String?,
     val hasVote: Boolean,
     val positiveVotes: Int?,

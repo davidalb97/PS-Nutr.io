@@ -16,6 +16,7 @@ open class MealInfo(
     override val unit: String,
     votes: Votes?,
     isFavorite: Boolean,
+    isVotable: Boolean,
     imageUri: Uri?,
     val creationDate: TimestampWithTimeZone?,
     var ingredientComponents: List<MealIngredient>,
@@ -35,6 +36,7 @@ open class MealInfo(
     unit = unit,
     votes = votes,
     isFavorite = isFavorite,
+    isVotable = isVotable,
     imageUri = imageUri,
     isSuggested = isSuggested,
     source = source
@@ -51,6 +53,7 @@ open class MealInfo(
         unit = parcel.readString()!!,
         votes = parcel.readParcelable(Votes::class.java.classLoader),
         isFavorite = parcel.readBooleanCompat(),
+        isVotable = parcel.readBooleanCompat(),
         imageUri = parcel.readUri(),
         creationDate = parcel.readTimestampWithTimeZone(),
         ingredientComponents = parcel.readListCompat(MealIngredient::class),
@@ -72,6 +75,7 @@ open class MealInfo(
         parcel.writeString(unit)
         parcel.writeParcelable(votes, flags)
         parcel.writeBooleanCompat(isFavorite)
+        parcel.writeBooleanCompat(isVotable)
         parcel.writeUri(imageUri)
         parcel.writeTimestampWithTimeZone(creationDate)
         parcel.writeList(ingredientComponents)

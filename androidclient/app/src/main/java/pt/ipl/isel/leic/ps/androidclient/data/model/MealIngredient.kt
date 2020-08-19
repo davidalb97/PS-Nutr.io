@@ -31,6 +31,8 @@ class MealIngredient(
     unit = unit,
     votes = null,
     isFavorite = false,
+    //MealIngredients are never votable
+    isVotable = false,
     imageUri = imageUri,
     creationDate = null,
     ingredientComponents = emptyList(),

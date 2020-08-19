@@ -24,6 +24,7 @@ class InputMealInfoMapper(
         unit = dto.nutritionalInfo.unit,
         votes = inputVotesMapper.mapToModel(dto.votes),
         isFavorite = dto.isFavorite,
+        isVotable = dto.isVotable,
         imageUri = dto.imageUri,
         isSuggested = dto.isSuggested,
         creationDate = TimestampWithTimeZone.parse(dto.creationDate),

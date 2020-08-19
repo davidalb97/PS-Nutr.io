@@ -12,6 +12,7 @@ class DetailedMealInput(
     isFavorite: Boolean,
     votes: VotesInputDto?,
     isSuggested: Boolean,
+    isVotable: Boolean,
     val portions: Collection<Int>?,
     val creationDate: String?,
     val composedBy: MealComposition?,
@@ -23,6 +24,7 @@ class DetailedMealInput(
     name = name,
     imageUri = imageUri,
     isFavorite = isFavorite,
+    isVotable = isVotable,
     votes = votes,
     isSuggested = isSuggested
 )

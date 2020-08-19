@@ -24,12 +24,12 @@ interface IVoteActionButtons : IVoteProgress, IContext, IAction, IUserSession, I
 
     fun onVote(voteState: VoteState, onSuccess: () -> Unit, onError: (Throwable) -> Unit)
 
-    fun setupVoteButtons(view: View) {
+    fun setupVoteButtons(view: View, isVotable: Boolean) {
         upVoteButton = view.findViewById(upVoteButtonId)
         downVoteButton = view.findViewById(downVoteButtonId)
         voteButtonsLayout = view.findViewById(voteButtonsLayoutId)
 
-        if (!actions.contains(ItemAction.VOTE) || fetchVotes() == null) {
+        if (!actions.contains(ItemAction.VOTE) || !isVotable || fetchVotes() == null) {
             return
         }
         upVoteButton.setOnClickListener {

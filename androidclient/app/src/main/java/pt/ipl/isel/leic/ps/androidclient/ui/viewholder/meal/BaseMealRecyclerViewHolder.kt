@@ -67,7 +67,7 @@ abstract class BaseMealRecyclerViewHolder<T : MealItem>(
         super.setupOnDeleteAction(view, bindingAdapter, layoutPosition)
         super.setupFavoriteButton(view)
         super.setupImage(view, item.imageUri)
-        super.setupVoteBarCounters(view, item.votes)
+        super.setupVoteBarCounters(view, item.votes, item.isVotable)
         super.setupReportMenuItem()
         super.setupPopupMenuButton(view)
     }

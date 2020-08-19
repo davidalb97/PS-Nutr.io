@@ -80,12 +80,12 @@ class RestaurantInfoFragment :
 
     private fun setupRestaurantInfoView(view: View, restaurantInfo: RestaurantInfo) {
         super.setupImage(view, restaurantInfo.imageUri)
-        super.setupVoteBarCounters(view, restaurantInfo.votes)
+        super.setupVoteBarCounters(view, restaurantInfo.votes, restaurantInfo.isVotable)
         super.setupFavoriteButton(view)
         super.setupReportMenuItem()
         super.setupEditMenuItem()
         super.setupPopupMenuButton(view)
-        super.setupVoteButtons(view)
+        super.setupVoteButtons(view, restaurantInfo.isVotable)
 
         val title: TextView = view.findViewById(R.id.restaurant_detail_title)
         title.text = restaurantInfo.name
