@@ -20,10 +20,10 @@ import kotlin.collections.HashMap
 class JwtUtil(val serverSecret: ServerSecret) {
 
     /**
-     * Gets the username from the jwt.
+     * Gets the user's email from the jwt.
      * @param token - the JSON Web Token
      */
-    fun getUsername(token: String): String =
+    fun getUserEmail(token: String): String =
             extractClaim<String>(token, Function { obj: Claims -> obj.subject })
 
     /**
@@ -98,8 +98,8 @@ class JwtUtil(val serverSecret: ServerSecret) {
      * @param userDetails - provides the core user information, including its credentials
      */
     fun validateToken(token: String, userDetails: UserDetails): Boolean {
-        val username = getUsername(token)
-        return (username == userDetails.username) && !isTokenExpired(token)
+        val email = getUserEmail(token)
+        return (email == userDetails.username) && !isTokenExpired(token)
     }
 
     /**

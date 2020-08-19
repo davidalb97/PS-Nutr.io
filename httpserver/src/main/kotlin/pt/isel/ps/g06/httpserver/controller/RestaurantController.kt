@@ -91,7 +91,8 @@ class RestaurantController(
                 restaurantName = restaurant.name!!,
                 cuisines = restaurant.cuisines!!,
                 latitude = restaurant.latitude!!,
-                longitude = restaurant.longitude!!
+                longitude = restaurant.longitude!!,
+                ownerId = restaurant.ownerId!!
         )
 
         return ResponseEntity
