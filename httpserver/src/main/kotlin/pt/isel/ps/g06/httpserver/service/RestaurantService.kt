@@ -122,7 +122,7 @@ class RestaurantService(
             cuisines: Collection<String>,
             latitude: Float,
             longitude: Float,
-            ownerId: Int
+            ownerId: Int?
     ): Restaurant {
         if (apiId != null) {
             //Verify is given submitterId belongs to an API
@@ -155,7 +155,8 @@ class RestaurantService(
                     //TODO use cuisine mapper
                     cuisines = restaurant.cuisines.map { it.name }.toList(),
                     latitude = restaurant.latitude,
-                    longitude = restaurant.longitude
+                    longitude = restaurant.longitude,
+                    ownerId = restaurant.ownerId
             )
         }
         return restaurant
