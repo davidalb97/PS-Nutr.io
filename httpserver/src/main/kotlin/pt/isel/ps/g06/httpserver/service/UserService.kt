@@ -10,6 +10,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.submitter.Subm
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbUserDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.SubmitterDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.UserDbRepository
+import pt.isel.ps.g06.httpserver.dataAccess.input.BanInput
 import pt.isel.ps.g06.httpserver.model.Submitter
 
 @Service
@@ -50,5 +51,6 @@ class UserService(
                 .let(submitterMapper::mapTo)
     }
 
-    fun updateUserBan(isBanned: Boolean) = userDbRepository.updateUserBan(isBanned)
+    fun updateUserBan(banInput: BanInput) =
+            userDbRepository.updateUserBan(banInput.submitterId, banInput.isBanned)
 }

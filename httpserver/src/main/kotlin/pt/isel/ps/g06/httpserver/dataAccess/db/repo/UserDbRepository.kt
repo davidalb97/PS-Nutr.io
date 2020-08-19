@@ -35,11 +35,11 @@ class UserDbRepository(jdbi: Jdbi) : BaseDbRepo(jdbi) {
         }
     }
 
-    fun updateUserBan(isBanned: Boolean): DbUserDto? {
+    fun updateUserBan(submitterId: Int, isBanned: Boolean): DbUserDto? {
         return jdbi.inTransaction<DbUserDto, Exception>(isolationLevel) { handle ->
             return@inTransaction handle
                     .attach(UserDao::class.java)
-                    .updateUserBan(isBanned)
+                    .updateUserBan(submitterId, isBanned)
         }
     }
 }

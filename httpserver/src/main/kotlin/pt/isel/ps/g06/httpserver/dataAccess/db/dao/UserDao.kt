@@ -47,6 +47,6 @@ interface UserDao {
     @SqlQuery("DELETE FROM $table WHERE $email=:email RETURNING *")
     fun deleteUserByEmail(email: String): DbUserDto?
 
-    @SqlQuery("UPDATE $table SET $isBanned=:isBanned RETURNING *")
-    fun updateUserBan(isBanned: Boolean): DbUserDto?
+    @SqlQuery("UPDATE $table SET $isBanned=:isBanned WHERE $submitterId = :submitterId RETURNING *")
+    fun updateUserBan(submitterId: Int, isBanned: Boolean): DbUserDto?
 }

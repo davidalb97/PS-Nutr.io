@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*
 import org.springframework.web.util.UriComponentsBuilder
 import pt.isel.ps.g06.httpserver.common.*
 import pt.isel.ps.g06.httpserver.common.exception.authorization.NotAuthorizedException
+import pt.isel.ps.g06.httpserver.dataAccess.input.BanInput
 import pt.isel.ps.g06.httpserver.dataAccess.input.UserInfoInput
 import pt.isel.ps.g06.httpserver.dataAccess.input.UserLoginInput
 import pt.isel.ps.g06.httpserver.dataAccess.input.UserRegisterInput
@@ -53,7 +54,7 @@ class UserController(private val userService: UserService, private val authentic
     @PutMapping(BAN)
     fun putBanUser(
             @RequestHeader(AUTH_HEADER) jwt: String,
-            @RequestBody isBanned: Boolean
+            @RequestBody banInput: BanInput
     ): ResponseEntity<Void> {
 
         val requester = authenticationService.getEmailFromJwt(jwt).let(userService::getUserFromEmail)
@@ -62,9 +63,8 @@ class UserController(private val userService: UserService, private val authentic
             throw NotAuthorizedException()
         }
 
-        userService.updateUserBan(isBanned)
+        userService.updateUserBan(banInput)
 
-        // TODO
         return ResponseEntity.ok().build()
     }
 }
