@@ -67,14 +67,14 @@ fun SharedPreferences.getIsNightMode() = getBoolean(DARK_MODE, false)
 fun SharedPreferences.Editor.setIsNightMode(defaultValue: Boolean): SharedPreferences.Editor =
     putBoolean(DARK_MODE, defaultValue)
 
-fun SharedPreferences.getGlucoseUnitOrDefault(): String =
-    getString(GLUCOSE_UNITS_KEY, DEFAULT_GLUCOSE_UNIT.toString())!!
-
 fun SharedPreferences.getPassWord() = getString(PASSWORD_KEY, null)
 
 fun SharedPreferences.getUsername() = getString(USERNAME_KEY, null)
 
 fun SharedPreferences.getEmail() = getString(EMAIL_KEY, null)
+
+fun SharedPreferences.getGlucoseUnitOrDefault(): String =
+    getString(GLUCOSE_UNITS_KEY, DEFAULT_GLUCOSE_UNIT.toString())!!
 
 fun SharedPreferences.getWeightUnitOrDefault() =
     getString(WEIGHT_UNIT_KEY, DEFAULT_WEIGHT_UNIT.toString())!!

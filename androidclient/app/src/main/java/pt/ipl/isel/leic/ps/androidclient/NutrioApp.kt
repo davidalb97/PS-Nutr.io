@@ -22,9 +22,8 @@ import pt.ipl.isel.leic.ps.androidclient.data.model.UserLogin
 import pt.ipl.isel.leic.ps.androidclient.data.repo.*
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.PREFERENCES
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.SECRET_PREFERENCES
-import pt.ipl.isel.leic.ps.androidclient.ui.util.getPassWord
-import pt.ipl.isel.leic.ps.androidclient.ui.util.getUsername
-import pt.ipl.isel.leic.ps.androidclient.ui.util.saveSession
+import pt.ipl.isel.leic.ps.androidclient.ui.util.*
+import pt.ipl.isel.leic.ps.androidclient.ui.util.Logger
 import java.util.concurrent.TimeUnit
 
 const val TAG = "Nutr.io App"
@@ -37,6 +36,8 @@ const val ROOM_DB_VERSION = 28
  * Starts the application's data source, repositories and services.
  */
 class NutrioApp : Application() {
+
+    private val log = Logger(NutrioApp::class)
 
     companion object {
         /**
@@ -109,7 +110,8 @@ class NutrioApp : Application() {
     }
 
     private fun initSharedPreferences() {
-        sharedPreferences = applicationContext.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE)
+        sharedPreferences =
+            applicationContext.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE)
     }
 
     private fun initEncryptedSharedPreferences() {
@@ -154,16 +156,17 @@ class NutrioApp : Application() {
 
     private fun authenticateUser() {
 
-        val username = encryptedSharedPreferences.getUsername()
+        val email = encryptedSharedPreferences.getEmail()
         val password = encryptedSharedPreferences.getPassWord()
 
-        if (username != null && password != null) {
+        if (email != null && password != null) {
             userRepository.loginUser(
-                userLogin = UserLogin(username, password),
+                userLogin = UserLogin(email, password),
                 onSuccess = { userSession ->
                     userRepository.requestUserInfo(
                         userSession = userSession,
-                        onSuccess = {userInfo ->
+                        onSuccess = { userInfo ->
+                            //TODO only save jwt as email, username, password are already saved
                             saveSession(
                                 jwt = userSession.jwt,
                                 email = userInfo.email,
@@ -172,6 +175,8 @@ class NutrioApp : Application() {
                             )
                         },
                         onError = {
+                            deleteSession()
+                            log.e(it)
                             Toast.makeText(
                                 app,
                                 R.string.user_info_error,
@@ -181,6 +186,8 @@ class NutrioApp : Application() {
                     )
                 },
                 onError = {
+                    log.e(it)
+                    deleteSession()
                     Toast.makeText(
                         app,
                         getString(R.string.login_error),
