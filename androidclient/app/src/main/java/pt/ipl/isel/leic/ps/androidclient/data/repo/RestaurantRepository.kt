@@ -28,11 +28,13 @@ class RestaurantRepository(private val dataSource: RestaurantDataSource) {
 
     fun getRestaurantInfoById(
         restaurantId: String,
+        userSession: UserSession?,
         success: (RestaurantInfo) -> Unit,
         error: (VolleyError) -> Unit
     ) {
         dataSource.getRestaurant(
             restaurantId = restaurantId,
+            jwt = userSession?.jwt,
             success = { restaurantDto ->
                 success(inputRestaurantInfoMapper.mapToModel(restaurantDto))
             },
@@ -45,6 +47,7 @@ class RestaurantRepository(private val dataSource: RestaurantDataSource) {
         longitude: Double,
         count: Int,
         skip: Int,
+        userSession: UserSession?,
         success: (List<RestaurantItem>) -> Unit,
         error: (VolleyError) -> Unit
     ) {
@@ -53,6 +56,7 @@ class RestaurantRepository(private val dataSource: RestaurantDataSource) {
             longitude = longitude,
             count = count,
             skip = skip,
+            jwt = userSession?.jwt,
             success = { restaurantDtos ->
                 success(inputRestaurantItemMapper.mapToListModel(restaurantDtos))
             },

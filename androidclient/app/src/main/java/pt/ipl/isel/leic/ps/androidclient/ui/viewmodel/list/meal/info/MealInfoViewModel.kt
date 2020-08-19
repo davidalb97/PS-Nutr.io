@@ -8,6 +8,7 @@ import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.mealRepository
 import pt.ipl.isel.leic.ps.androidclient.data.model.*
 import pt.ipl.isel.leic.ps.androidclient.ui.util.ItemAction
 import pt.ipl.isel.leic.ps.androidclient.ui.util.Navigation
+import pt.ipl.isel.leic.ps.androidclient.ui.util.getUserSession
 import pt.ipl.isel.leic.ps.androidclient.ui.util.live.LiveDataHandler
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.RestaurantListViewModel
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.meal.MealInfoListViewModel
@@ -66,12 +67,14 @@ open class MealInfoViewModel : MealInfoListViewModel {
                 mealRepository.getApiRestaurantMealInfo(
                     restaurantId = mealItem.restaurantSubmissionId,
                     mealId = mealItem.submissionId,
+                    userSession = getUserSession(),
                     success = mealInfoLiveDataHandler::set,
                     error = onError
                 )
             } else {
                 mealRepository.getApiMealInfo(
                     mealId = mealItem.submissionId,
+                    userSession = getUserSession(),
                     success = mealInfoLiveDataHandler::set,
                     error = onError
                 )

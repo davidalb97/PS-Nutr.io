@@ -8,6 +8,7 @@ import pt.ipl.isel.leic.ps.androidclient.data.model.MealItem
 import pt.ipl.isel.leic.ps.androidclient.data.model.Source
 import pt.ipl.isel.leic.ps.androidclient.ui.util.ItemAction
 import pt.ipl.isel.leic.ps.androidclient.ui.util.Navigation
+import pt.ipl.isel.leic.ps.androidclient.ui.util.getUserSession
 import pt.ipl.isel.leic.ps.androidclient.ui.util.requireUserSession
 import kotlin.reflect.KClass
 
@@ -38,6 +39,7 @@ open class MealItemListViewModel : BaseMealListViewModel<MealItem> {
                             restaurantId = restaurantId,
                             count = count,
                             skip = skip,
+                            userSession = getUserSession(),
                             success = liveDataHandler::add,
                             error = onError
                         )
@@ -46,6 +48,7 @@ open class MealItemListViewModel : BaseMealListViewModel<MealItem> {
                             count = count,
                             skip = skip,
                             cuisines = cuisines,
+                            userSession = getUserSession(),
                             success = liveDataHandler::add,
                             error = onError
                         )

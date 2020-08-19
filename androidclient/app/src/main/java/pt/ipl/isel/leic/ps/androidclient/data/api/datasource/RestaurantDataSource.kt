@@ -39,6 +39,7 @@ class RestaurantDataSource(
      * ----------------------------- GETs -----------------------------
      */
     fun getRestaurant(
+        jwt: String?,
         restaurantId: String,
         success: (DetailedRestaurantInput) -> Unit,
         error: (VolleyError) -> Unit
@@ -52,6 +53,7 @@ class RestaurantDataSource(
         requestParser.requestAndParse(
             method = HTTPMethod.GET,
             uri = uri,
+            reqHeader = jwt?.let { buildAuthHeader(jwt) },
             dtoClass = DetailedRestaurantInput::class.java,
             onSuccess = success,
             onError = error
@@ -59,6 +61,7 @@ class RestaurantDataSource(
     }
 
     fun getRestaurants(
+        jwt: String?,
         latitude: Double,
         longitude: Double,
         count: Int,
@@ -78,6 +81,7 @@ class RestaurantDataSource(
         requestParser.requestAndParse(
             method = HTTPMethod.GET,
             uri = uri,
+            reqHeader = jwt?.let { buildAuthHeader(jwt) },
             dtoClass = Array<SimplifiedRestaurantInput>::class.java,
             onSuccess = success,
             onError = error

@@ -43,6 +43,7 @@ class MealDataSource(
      * Parameter: id is required
      */
     fun getMeals(
+        jwt: String?,
         count: Int = 30,
         skip: Int = 0,
         cuisines: Collection<Cuisine>? = null,    //Optional filter
@@ -64,6 +65,7 @@ class MealDataSource(
         requestParser.requestAndParse(
             method = HTTPMethod.GET,
             uri = uri,
+            reqHeader = jwt?.let { buildAuthHeader(jwt) },
             dtoClass = SimplifiedMealsInput::class.java,
             onSuccess = success,
             onError = error
@@ -74,6 +76,7 @@ class MealDataSource(
      * Parameter: id is required
      */
     fun getRestaurantMeals(
+        jwt: String?,
         restaurantId: String,
         count: Int = 30,
         skip: Int = 0,
@@ -91,6 +94,7 @@ class MealDataSource(
         requestParser.requestAndParse(
             method = HTTPMethod.GET,
             uri = uri,
+            reqHeader = jwt?.let { buildAuthHeader(jwt) },
             dtoClass = SimplifiedRestaurantMealsInput::class.java,
             onSuccess = success,
             onError = error
@@ -103,6 +107,7 @@ class MealDataSource(
      */
     fun getMeal(
         mealId: Int,
+        jwt: String?,
         success: (DetailedMealInput) -> Unit,
         error: (VolleyError) -> Unit
     ) {
@@ -114,6 +119,7 @@ class MealDataSource(
         requestParser.requestAndParse(
             method = HTTPMethod.GET,
             uri = uri,
+            reqHeader = jwt?.let { buildAuthHeader(jwt) },
             dtoClass = INPUT_MEAL_DTO,
             onSuccess = success,
             onError = error
@@ -123,6 +129,7 @@ class MealDataSource(
     fun getRestaurantMeal(
         restaurantId: String,
         mealId: Int,
+        jwt: String?,
         success: (DetailedMealInput) -> Unit,
         error: (VolleyError) -> Unit
     ) {
@@ -136,6 +143,7 @@ class MealDataSource(
         requestParser.requestAndParse(
             method = HTTPMethod.GET,
             uri = uri,
+            reqHeader = jwt?.let { buildAuthHeader(jwt) },
             dtoClass = INPUT_MEAL_DTO,
             onSuccess = success,
             onError = error

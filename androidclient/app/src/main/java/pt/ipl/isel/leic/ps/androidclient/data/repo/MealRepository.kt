@@ -74,12 +74,14 @@ class MealRepository(private val dataSource: MealDataSource) {
     fun getApiRestaurantMealInfo(
         restaurantId: String,
         mealId: Int,
+        userSession: UserSession?,
         success: (MealInfo) -> Unit,
         error: (VolleyError) -> Unit
     ) {
         dataSource.getRestaurantMeal(
             restaurantId = restaurantId,
             mealId = mealId,
+            jwt = userSession?.jwt,
             success = { dtos -> success(inputMealInfoMapper.mapToModel(dtos, restaurantId)) },
             error = error
         )
@@ -103,11 +105,13 @@ class MealRepository(private val dataSource: MealDataSource) {
 
     fun getApiMealInfo(
         mealId: Int,
+        userSession: UserSession?,
         success: (MealInfo) -> Unit,
         error: (VolleyError) -> Unit
     ) {
         dataSource.getMeal(
             mealId = mealId,
+            jwt = userSession?.jwt,
             success = { dtos -> success(inputMealInfoMapper.mapToModel(dtos, null)) },
             error = error
         )
@@ -117,6 +121,7 @@ class MealRepository(private val dataSource: MealDataSource) {
         count: Int = 0,
         skip: Int = 0,
         cuisines: Collection<Cuisine>? = null,
+        userSession: UserSession?,
         success: (List<MealItem>) -> Unit,
         error: (VolleyError) -> Unit
     ) {
@@ -124,6 +129,7 @@ class MealRepository(private val dataSource: MealDataSource) {
             count = count,
             skip = skip,
             cuisines = cuisines,
+            jwt = userSession?.jwt,
             success = {
                 //TODO assuming that no user filter is passed, all meals are suggested
                 success(inputMealItemMapper.mapToListModel(it, null))
@@ -136,6 +142,7 @@ class MealRepository(private val dataSource: MealDataSource) {
         restaurantId: String,
         count: Int = 0,
         skip: Int = 0,
+        userSession: UserSession?,
         success: (List<MealItem>) -> Unit,
         error: (VolleyError) -> Unit
     ) {
@@ -143,6 +150,7 @@ class MealRepository(private val dataSource: MealDataSource) {
             restaurantId = restaurantId,
             count = count,
             skip = skip,
+            jwt = userSession?.jwt,
             success = {
                 success(inputMealItemMapper.mapToListModel(it))
             },

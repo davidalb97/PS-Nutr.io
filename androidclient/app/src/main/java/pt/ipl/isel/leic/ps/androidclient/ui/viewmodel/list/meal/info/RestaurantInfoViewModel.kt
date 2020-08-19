@@ -10,6 +10,7 @@ import pt.ipl.isel.leic.ps.androidclient.data.model.Source
 import pt.ipl.isel.leic.ps.androidclient.data.model.VoteState
 import pt.ipl.isel.leic.ps.androidclient.ui.util.ItemAction
 import pt.ipl.isel.leic.ps.androidclient.ui.util.Navigation
+import pt.ipl.isel.leic.ps.androidclient.ui.util.getUserSession
 import pt.ipl.isel.leic.ps.androidclient.ui.util.live.LiveDataHandler
 import pt.ipl.isel.leic.ps.androidclient.ui.util.requireUserSession
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.meal.MealItemListViewModel
@@ -41,9 +42,10 @@ class RestaurantInfoViewModel : MealItemListViewModel {
     override fun update() {
         if (!restaurantInfoLiveDataHandler.tryRestore()) {
             restaurantRepository.getRestaurantInfoById(
-                restaurantId!!,
-                restaurantInfoLiveDataHandler::set,
-                onError
+                restaurantId = restaurantId!!,
+                userSession = getUserSession(),
+                success = restaurantInfoLiveDataHandler::set,
+                error = onError
             )
         }
     }

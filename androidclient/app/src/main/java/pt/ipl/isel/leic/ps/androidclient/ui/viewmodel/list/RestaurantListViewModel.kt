@@ -6,6 +6,7 @@ import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.restaurantRepositor
 import pt.ipl.isel.leic.ps.androidclient.data.model.RestaurantItem
 import pt.ipl.isel.leic.ps.androidclient.ui.util.ItemAction
 import pt.ipl.isel.leic.ps.androidclient.ui.util.Navigation
+import pt.ipl.isel.leic.ps.androidclient.ui.util.getUserSession
 import pt.ipl.isel.leic.ps.androidclient.ui.util.requireUserSession
 import pt.ipl.isel.leic.ps.androidclient.util.readListCompat
 import kotlin.reflect.KClass
@@ -29,12 +30,13 @@ class RestaurantListViewModel(
 
     override fun update() {
         restaurantRepository.getNearbyRestaurants(
-            latitude!!,
-            longitude!!,
-            count,
-            skip,
-            liveDataHandler::add,
-            onError
+            latitude = latitude!!,
+            longitude = longitude!!,
+            count = count,
+            skip = skip,
+            userSession = getUserSession(),
+            success = liveDataHandler::add,
+            error = onError
         )
     }
 
