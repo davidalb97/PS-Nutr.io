@@ -71,4 +71,17 @@ class RestaurantMealDbRepository(jdbi: Jdbi) : SubmissionDbRepository(jdbi) {
             return@inTransaction restaurantMealDao.insert(submissionId, restaurantId, mealId)
         }
     }
+
+    // TODO
+    fun getVerification() {
+
+    }
+
+    fun putVerification(submissionId: Int, verification: Boolean): DbRestaurantMealDto {
+        return jdbi.inTransaction<DbRestaurantMealDto, Exception>(isolationLevel) {
+            return@inTransaction it
+                    .attach(restaurantMealDao)
+                    .updateRestaurantMealVerification(submissionId, verification)
+        }
+    }
 }

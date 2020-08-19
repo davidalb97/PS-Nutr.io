@@ -14,6 +14,7 @@ interface RestaurantMealDao {
         const val id = "submission_id"
         const val mealId = "meal_submission_id"
         const val restaurantId = "restaurant_submission_id"
+        const val verified = "verified"
     }
 
     @SqlQuery("SELECT * FROM $table WHERE $restaurantId = :restaurantId AND $mealId = :mealId")
@@ -30,9 +31,11 @@ interface RestaurantMealDao {
             " VALUES(:submissionId, :restaurantId, :mealId) RETURNING *")
     fun insert(@Bind submissionId: Int, @Bind restaurantId: Int, @Bind mealId: Int): DbRestaurantMealDto
 
+    @SqlQuery("UPDATE $table SET $verified = :verified WHERE $id = :submissionId  RETURNING *")
+    fun updateRestaurantMealVerification(@Bind submissionId: Int, verified: Boolean): DbRestaurantMealDto
+
     @SqlQuery("DELETE FROM $table WHERE $restaurantId = :restaurantId RETURNING *")
     fun deleteAllByRestaurantId(@Bind restaurantId: Int): List<DbRestaurantMealDto>
-
 
     @SqlQuery("DELETE FROM $table WHERE $id = :submissionId RETURNING *")
     fun deleteById(@Bind submissionId: Int): DbRestaurantMealDto

@@ -155,26 +155,26 @@ class RestaurantMealController(
 
     @PutMapping(RESTAURANT_MEAL)
     fun putVerifyRestaurantMeal(
-            @RequestHeader(AUTH_HEADER) jwt: String,
             @PathVariable(RESTAURANT_ID_VALUE) restaurantId: String,
             @PathVariable(MEAL_ID_VALUE) mealId: Int,
-            @RequestBody verified: Boolean
+            @RequestBody verified: Boolean,
+            submitter: Submitter?
     ): ResponseEntity<Void> {
-        /*val requester = authenticationService.getEmailFromJwt(jwt).let(userService::getUserFromEmail)
+        submitter ?: throw NotAuthenticatedException()
 
-        if (requester.role != MOD_USER) {
+        // Get restaurant ID
+        val restaurantIdentifier = restaurantIdentifierBuilder.extractIdentifiers(restaurantId)
+        // Get restaurant's meal ID
+        val restaurantMeal = restaurantMealService.getRestaurantMeal(restaurantIdentifier, mealId)
+        // Check if the submitter is the restaurant owner
+        val isOwner = restaurantService.getRestaurant(restaurantIdentifier)?.ownerId == submitter.identifier
+
+        if (!isOwner) {
             throw NotAuthorizedException()
         }
 
-        val restaurantIdentifier = restaurantIdentifierBuilder.extractIdentifiers(restaurantId)
-        val restaurantMeal = restaurantMealService.getRestaurantMeal(restaurantIdentifier, mealId)
-
-
-        submissionService.alterRestaurantMealVote(
-                restaurantMeal = restaurantMeal,
-                submitterId = submitter.identifier,
-                vote = userVote.vote!!
-        )*/
+        // Put/remove restaurant meal's verification
+        restaurantMealService.updateRestaurantMealVerification(restaurantIdentifier, mealId, verified)
 
         return ResponseEntity
                 .ok()

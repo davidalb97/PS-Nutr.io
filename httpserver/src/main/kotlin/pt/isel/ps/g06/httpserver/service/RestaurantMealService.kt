@@ -33,7 +33,9 @@ class RestaurantMealService(
             throw RestaurantMealNotFound()
         }
 
-        return RestaurantMeal(restaurant, meal)
+        val restaurantMeal = dbRestaurantMealRepository.getRestaurantMeal(restaurantId.submissionId!!, mealId)
+
+        return RestaurantMeal(restaurantMeal!!.submission_id, restaurant, meal, restaurantMeal.verified)
     }
 
     fun addRestaurantMeal(restaurantId: RestaurantIdentifier, meal: Meal, submitterId: Int? = null): Int {
@@ -84,9 +86,9 @@ class RestaurantMealService(
     }
 
     fun updateRestaurantMealVerification(restaurantId: RestaurantIdentifier, mealId: Int, verified: Boolean) {
-        val restaurantMeal = getRestaurantMeal(restaurantId, mealId)
-        val meal = restaurantMeal.meal
-        val restaurant = restaurantMeal.restaurant
+        val restaurantMealSubmissionId = getRestaurantMeal(restaurantId, mealId).submissionId
+
+        dbRestaurantMealRepository.putVerification(restaurantMealSubmissionId, verified)
     }
 
     fun deleteRestaurantMeal(restaurantId: RestaurantIdentifier, mealId: Int, submitterId: Int) {
