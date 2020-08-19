@@ -41,7 +41,9 @@
                 android:background="@drawable/textbox_shape"
                 android:drawableStart="@drawable/ic_email"
                 android:drawablePadding="10dp"
-                android:hint="@string/email">
+                android:hint="@string/email"
+                android:focusable="true"
+                >
             </EditText>
 
             <EditText
@@ -57,7 +59,9 @@
                 android:drawableStart="@drawable/ic_password"
                 android:drawablePadding="10dp"
                 android:background="@drawable/textbox_shape"
-                android:hint="@string/password">
+                android:hint="@string/password"
+                android:focusable="true"
+                >
             </EditText>
 
             <Button

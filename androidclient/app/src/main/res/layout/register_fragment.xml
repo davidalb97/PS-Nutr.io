@@ -38,7 +38,9 @@
             android:drawableStart="@drawable/ic_email"
             android:drawablePadding="10dp"
             android:hint="@string/email"
-            android:padding="5dp">
+            android:padding="5dp"
+            android:focusable="true"
+            >
         </EditText>
 
         <EditText
@@ -53,7 +55,9 @@
             android:drawableStart="@drawable/ic_user"
             android:drawablePadding="10dp"
             android:hint="@string/username"
-            android:padding="5dp">
+            android:padding="5dp"
+            android:focusable="true"
+            >
         </EditText>
 
         <EditText
@@ -69,7 +73,9 @@
             android:drawableStart="@drawable/ic_password"
             android:drawablePadding="10dp"
             android:hint="@string/password"
-            android:padding="5dp">
+            android:padding="5dp"
+            android:focusable="true"
+            >
         </EditText>
 
         <Button

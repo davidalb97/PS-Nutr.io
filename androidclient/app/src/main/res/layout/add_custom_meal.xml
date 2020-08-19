@@ -32,7 +32,9 @@
             android:background="@drawable/textbox_shape"
             android:hint="@string/add_the_meal_name"
             android:importantForAutofill="no"
-            android:inputType="text" />
+            android:inputType="text"
+            android:focusable="true"
+            />
 
         <TextView
             android:layout_width="wrap_content"
@@ -55,6 +57,7 @@
             android:singleLine="true"
             android:imeActionLabel="Done"
             android:imeOptions="actionDone"
+            android:focusable="true"
             />
 
         <androidx.recyclerview.widget.RecyclerView
@@ -85,6 +88,7 @@
             android:singleLine="true"
             android:imeActionLabel="Done"
             android:imeOptions="actionDone"
+            android:focusable="true"
             />
 
         <androidx.recyclerview.widget.RecyclerView
@@ -151,6 +155,7 @@
                 android:padding="5dp"
                 android:layout_centerVertical="true"
                 android:importantForAutofill="no"
+                android:focusable="true"
                 />
         </RelativeLayout>
 
@@ -179,6 +184,7 @@
                 android:layout_toEndOf="@+id/custom_meal_units_txt"
                 android:layout_centerVertical="true"
                 android:entries="@array/weight_units"
+                android:focusable="true"
                 />
 
         </RelativeLayout>
@@ -210,7 +216,9 @@
                 android:background="@drawable/textbox_shape"
                 android:padding="5dp"
                 android:hint="@string/meal_carbohydrates_amount"
-                android:importantForAutofill="no" />
+                android:importantForAutofill="no"
+                android:focusable="true"
+                />
         </RelativeLayout>
 
         <RelativeLayout
@@ -242,7 +250,9 @@
                 android:padding="5dp"
                 android:layout_centerVertical="true"
                 android:importantForAutofill="no"
-                android:inputType="textUri">
+                android:inputType="textUri"
+                android:focusable="true"
+                >
             </EditText>
         </RelativeLayout>
 
