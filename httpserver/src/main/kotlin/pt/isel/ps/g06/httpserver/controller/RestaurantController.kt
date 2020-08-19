@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*
 import org.springframework.web.util.UriComponentsBuilder
 import pt.isel.ps.g06.httpserver.common.*
 import pt.isel.ps.g06.httpserver.common.exception.authentication.NotAuthenticatedException
+import pt.isel.ps.g06.httpserver.common.exception.authorization.NotAuthorizedException
 import pt.isel.ps.g06.httpserver.common.exception.forbidden.NotSubmissionOwnerException
 import pt.isel.ps.g06.httpserver.common.exception.notFound.RestaurantNotFoundException
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.RestaurantApiType
@@ -17,10 +18,13 @@ import pt.isel.ps.g06.httpserver.dataAccess.output.restaurant.toDetailedRestaura
 import pt.isel.ps.g06.httpserver.dataAccess.output.restaurant.toSimplifiedRestaurantOutput
 import pt.isel.ps.g06.httpserver.common.exception.clientError.InvalidInputDomain
 import pt.isel.ps.g06.httpserver.common.exception.clientError.InvalidInputException
+import pt.isel.ps.g06.httpserver.dataAccess.input.RestaurantOwnerInput
 import pt.isel.ps.g06.httpserver.model.Restaurant
 import pt.isel.ps.g06.httpserver.model.Submitter
+import pt.isel.ps.g06.httpserver.service.AuthenticationService
 import pt.isel.ps.g06.httpserver.service.RestaurantService
 import pt.isel.ps.g06.httpserver.service.SubmissionService
+import pt.isel.ps.g06.httpserver.service.UserService
 import javax.validation.Valid
 
 private const val INVALID_RESTAURANT_SEARCH = "To search nearby restaurants, a geolocation must be given!"
@@ -31,7 +35,9 @@ private const val INVALID_RESTAURANT_SEARCH = "To search nearby restaurants, a g
 class RestaurantController(
         private val restaurantService: RestaurantService,
         private val submissionService: SubmissionService,
-        private val restaurantIdentifierBuilder: RestaurantIdentifierBuilder
+        private val restaurantIdentifierBuilder: RestaurantIdentifierBuilder,
+        private val userService: UserService,
+        private val authenticationService: AuthenticationService
 ) {
     /**
      * Allows to search for Restaurants from both an API (see [RestaurantApiType] for supported APIs) and
@@ -171,5 +177,25 @@ class RestaurantController(
         return restaurantService
                 .getRestaurant(restaurantIdentifier)
                 ?: throw RestaurantNotFoundException()
+    }
+
+    @PutMapping(RESTAURANT)
+    fun addOwner(
+            @RequestHeader(AUTH_HEADER) jwt: String,
+            @PathVariable(RESTAURANT_ID_VALUE) restaurantId: String,
+            @RequestBody restaurantOwnerInput: RestaurantOwnerInput,
+            submitter: Submitter?
+    ): ResponseEntity<Void> {
+        val requester = authenticationService.getEmailFromJwt(jwt).let(userService::getUserFromEmail)
+
+        if (requester.role != MOD_USER) {
+            throw NotAuthorizedException()
+        }
+
+        val restaurantId = ensureRestaurantExists(restaurantId).identifier.value.submissionId!!
+
+        restaurantService.addOwner(restaurantId, restaurantOwnerInput.ownerId)
+
+        return ResponseEntity.ok().build()
     }
 }

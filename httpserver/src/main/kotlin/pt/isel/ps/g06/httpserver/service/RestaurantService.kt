@@ -130,6 +130,10 @@ class RestaurantService(
         return restaurantResponseMapper.mapTo(createdRestaurant)
     }
 
+    fun addOwner(restaurantId: Int, ownerId: Int) {
+        dbRestaurantRepository.addOwner(restaurantId, ownerId)
+    }
+
 
     private fun filterRedundantApiRestaurants(dbRestaurants: Sequence<Restaurant>, apiRestaurants: Sequence<Restaurant>): Sequence<Restaurant> {
         //Join db restaurants with filtered api restaurants

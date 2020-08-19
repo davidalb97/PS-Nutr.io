@@ -90,6 +90,12 @@ class RestaurantDbRepository(jdbi: Jdbi) : SubmissionDbRepository(jdbi) {
         }
     }
 
+    fun addOwner(restaurantId: Int, ownerId: Int): DbRestaurantDto {
+        return jdbi.inTransaction<DbRestaurantDto, Exception>(isolationLevel) {
+            return@inTransaction it.attach(restaurantDaoClass).addOwner(restaurantId, ownerId)
+        }
+    }
+
     private fun insertRestaurantCuisines(it: Handle, submissionId: Int, cuisineNames: Collection<String>) {
         if (cuisineNames.isEmpty()) return
 
