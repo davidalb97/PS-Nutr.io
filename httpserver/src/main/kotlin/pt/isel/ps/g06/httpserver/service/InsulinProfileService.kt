@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service
 import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.InsulinProfileResponseMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.InsulinProfileDbRepository
 import pt.isel.ps.g06.httpserver.model.InsulinProfile
+import java.time.LocalTime
 
 @Service
 class InsulinProfileService(
@@ -22,8 +23,8 @@ class InsulinProfileService(
     fun createProfile(
             submitterId: Int,
             profileName: String,
-            startTime: String,
-            endTime: String,
+            startTime: LocalTime,
+            endTime: LocalTime,
             glucoseObjective: Int,
             insulinSensitivityFactor: Int,
             carbohydrateRatio: Int

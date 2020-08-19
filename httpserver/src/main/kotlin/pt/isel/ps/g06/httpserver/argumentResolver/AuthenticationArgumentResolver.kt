@@ -1,5 +1,6 @@
-package pt.isel.ps.g06.httpserver.common
+package pt.isel.ps.g06.httpserver.argumentResolver
 
+import org.springframework.context.annotation.Lazy
 import org.springframework.core.MethodParameter
 import org.springframework.http.HttpHeaders.AUTHORIZATION
 import org.springframework.stereotype.Component
@@ -13,6 +14,7 @@ import pt.isel.ps.g06.httpserver.service.UserService
 
 @Component
 class AuthenticationArgumentResolver(
+        @Lazy
         private val authenticationService: AuthenticationService,
         private val userService: UserService
 ) : HandlerMethodArgumentResolver {
@@ -29,7 +31,7 @@ class AuthenticationArgumentResolver(
     ): Any? {
         return webRequest
                 .getHeader(AUTHORIZATION)
-                ?.let(authenticationService::getUsernameByJwt)
-                ?.let(userService::getSubmitterFromUsername)
+                ?.let(authenticationService::getEmailFromJwt)
+                ?.let(userService::getSubmitterFromEmail)
     }
 }

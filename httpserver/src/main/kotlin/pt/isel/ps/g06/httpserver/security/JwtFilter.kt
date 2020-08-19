@@ -25,16 +25,16 @@ class JwtFilter(
     override fun doFilterInternal(request: HttpServletRequest, response: HttpServletResponse, filterChain: FilterChain) {
         val authHeader: String? = request.getHeader(AUTH_HEADER)
 
-        var username: String? = null
+        var userEmail: String? = null
         var jwt: String? = null
 
         if (authHeader != null && authHeader.startsWith(BEARER)) {
             jwt = authHeader.substring(7)
-            username = jwtUtil.getUsername(jwt)
+            userEmail = jwtUtil.getUserEmail(jwt)
         }
 
-        if (jwt != null && username != null && SecurityContextHolder.getContext().authentication == null) {
-            val userDetails = this.userService.loadUserByUsername(username)
+        if (jwt != null && userEmail != null && SecurityContextHolder.getContext().authentication == null) {
+            val userDetails = this.userService.loadUserByUsername(userEmail)
 
             if (jwtUtil.validateToken(jwt, userDetails)) {
                 val userPasswordAuthenticationToken = UsernamePasswordAuthenticationToken(

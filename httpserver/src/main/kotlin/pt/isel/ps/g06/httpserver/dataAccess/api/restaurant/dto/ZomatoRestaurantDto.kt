@@ -29,6 +29,7 @@ class ZomatoRestaurantDto(
 ) : RestaurantDto(
         id,
         name,
+        null,
         location.latitude,
         location.longitude,
         //Zomato does not support image

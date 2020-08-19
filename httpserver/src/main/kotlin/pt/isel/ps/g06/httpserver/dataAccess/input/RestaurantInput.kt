@@ -12,5 +12,7 @@ class RestaurantInput(
         @field:NotNull(message = "A longitude must be given!")
         val longitude: Float?,
         @field:NotEmpty(message = "At least one cuisine must be given!")
-        val cuisines: Collection<String>?
+        val cuisines: Collection<String>?,
+        @field:NotEmpty(message = "A restaurant must have an owner!")
+        val ownerId: Int?
 )

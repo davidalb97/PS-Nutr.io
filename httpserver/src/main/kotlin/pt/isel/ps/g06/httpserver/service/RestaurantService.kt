@@ -109,7 +109,8 @@ class RestaurantService(
             restaurantName: String,
             cuisines: Collection<String>,
             latitude: Float,
-            longitude: Float
+            longitude: Float,
+            ownerId: Int
     ): Restaurant {
         if (apiId != null) {
             //Verify is given submitterId belongs to an API
@@ -122,7 +123,8 @@ class RestaurantService(
                 restaurantName = restaurantName,
                 cuisineNames = cuisines,
                 latitude = latitude,
-                longitude = longitude
+                longitude = longitude,
+                ownerId = ownerId
         )
 
         return restaurantResponseMapper.mapTo(createdRestaurant)

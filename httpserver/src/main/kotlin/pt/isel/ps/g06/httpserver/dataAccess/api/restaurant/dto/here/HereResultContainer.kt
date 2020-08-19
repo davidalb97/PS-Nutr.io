@@ -12,6 +12,7 @@ class HereResultItem(
 ) : RestaurantDto(
         id = id,
         name = title,
+        ownerId = null,
         latitude = position.lat,
         longitude = position.lng,
         //Here does not support image for restaurants
