@@ -76,7 +76,9 @@ class RestaurantMealService(
                 submitterId = submitterId,
                 mealId = meal.identifier,
                 //We are sure submissionIdentifier exists because we ensure database restaurant before
-                restaurantId = restaurant.identifier.value.submissionId!!
+                restaurantId = restaurant.identifier.value.submissionId!!,
+                //Default Restaurant meal insertion is false, TODO check with group!
+                verified = false
         )
         return dbRestaurantMealResponseMapper.mapTo(restaurantMeal)
     }
