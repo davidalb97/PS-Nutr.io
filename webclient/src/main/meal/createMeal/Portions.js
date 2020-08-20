@@ -3,56 +3,6 @@ import React, { useRef, useState, useEffect, useCallback, useReducer } from 'rea
 import Form from 'react-bootstrap/Form'
 import ListGroup from 'react-bootstrap/ListGroup'
 import Card from 'react-bootstrap/Card'
-
-//STATIC RESOURCE - DELETE AFTER 
-const a = {
-    ingredients: [
-        {
-            "id": 171,
-            "name": "Apple",
-            "nutritionalInfo": {
-                "carbs": 10,
-                "amount": 85,
-                "unit": "gr"
-            },
-            "userQuantity": {
-                "carbs": 10,
-                "amount": 85,
-                "unit": "gr"
-            }
-        },
-        {
-            "id": 165,
-            "name": "Banana, with peel",
-            "nutritionalInfo": {
-                "carbs": 20,
-                "amount": 130,
-                "unit": "gr"
-            },
-            "userQuantity": {
-                "carbs": 20,
-                "amount": 130,
-                "unit": "gr"
-            }
-        },
-        {
-            "id": 164,
-            "name": "Banana, without peel",
-            "nutritionalInfo": {
-                "carbs": 20,
-                "amount": 85,
-                "unit": "gr"
-            },
-            "userQuantity": {
-                "carbs": 20,
-                "amount": 85,
-                "unit": "gr"
-            }
-        },
-    ]
-}
-
-
 export default function Portions({ setCanAdvance, setMeal, meal }) {
     function updateQuantity(newQuantity) {
         //Where 'this' is Ingredient

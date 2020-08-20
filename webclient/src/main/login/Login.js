@@ -26,11 +26,16 @@ export default function Login({ children }) {
         })
     }
 
-    function onAuthentication({ json }) {
-        if (!json.jwt) return //onError
+    function authenticateUser({ json }) {
+        if (!json.jwt) {
+            //TODO
+            return null
+        }
 
         sessionStorage.setItem(AUTH_TOKEN_KEY, json.jwt)
         setLoginContext({ ...loginContext, authToken: json.jwt })
+
+        return <> </>
     }
 
     if (!loginContext.isLoggedIn) {
@@ -39,13 +44,12 @@ export default function Login({ children }) {
 
             <RequestingEntity
                 request={loginContext.request}
-                onSuccess={onAuthentication}
+                onSuccess={authenticateUser}
             />
         </>
     }
 
-    //TODO Get user information
-    return <UserContext.Provider value={{ authToken: loginContext.authToken, }}>
+    return <UserContext.Provider value={{ authToken: `Bearer ${loginContext.authToken}`, }}>
         {children}
     </UserContext.Provider>
 }
@@ -73,12 +77,3 @@ function displayAuthenticationProviders(handleAuthentication) {
         </Switch >
     </>
 }
-
-
- // if (fetchState == FetchStates.done) {
-    //     console.log(json)
-    //     return <UserContext.Provider value={{ ...loginContext.credentials, authToken: json }} >
-    //         <div className={`topnav`}><button onClick={handleLogout}>Logout</button></div>
-    //         {children}
-    //     </UserContext.Provider>
-    // }

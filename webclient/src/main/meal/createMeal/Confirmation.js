@@ -1,59 +1,9 @@
 import React, { useEffect } from 'react'
 
 import Card from 'react-bootstrap/Card'
-import Accordion from 'react-bootstrap/Accordion'
 import ListGroup from 'react-bootstrap/ListGroup'
 
-const meal = {
-    name: "Salad",
-    quantity: 100,
-    ingredients: [
-        {
-            "id": 171,
-            "name": "Apple",
-            "nutritionalInfo": {
-                "carbs": 10,
-                "amount": 85,
-                "unit": "gr"
-            },
-            "userQuantity": {
-                "carbs": 10,
-                "amount": 85,
-                "unit": "gr"
-            }
-        },
-        {
-            "id": 165,
-            "name": "Banana, with peel",
-            "nutritionalInfo": {
-                "carbs": 20,
-                "amount": 130,
-                "unit": "gr"
-            },
-            "userQuantity": {
-                "carbs": 20,
-                "amount": 130,
-                "unit": "gr"
-            }
-        },
-        {
-            "id": 164,
-            "name": "Banana, without peel",
-            "nutritionalInfo": {
-                "carbs": 20,
-                "amount": 85,
-                "unit": "gr"
-            },
-            "userQuantity": {
-                "carbs": 20,
-                "amount": 85,
-                "unit": "gr"
-            }
-        }
-    ]
-}
-
-export default function Confirmation({ setCanAdvance }) {
+export default function Confirmation({ setCanAdvance, meal }) {
     useEffect(() => { setCanAdvance(true) }, [])
 
     const totalCarbs = meal.ingredients.reduce((total, ingredient) => {

@@ -10,12 +10,13 @@ export default function Sidebar() {
 
         <SidebarItemContainer containerName="User">
             <SidebarItem buttonName="View user" path="/user" />
-            <SidebarItem buttonName="Edit" path="/user/edit" />
-            <SidebarItem buttonName="Insulin profile " path="/user/insulin" />
+            <SidebarItem buttonName="Insulin profiles" path="/user/insulin" />
         </SidebarItemContainer>
 
         <SidebarItemContainer containerName="Moderation">
-
+        <SidebarItem buttonName="View reports" path="/user" />
+        <SidebarItem buttonName="View user" path="/user" />
+        <SidebarItem buttonName="View user" path="/user" />
         </SidebarItemContainer>
     </nav>
 }

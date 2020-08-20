@@ -6,7 +6,7 @@ const contextDefaultValue = {
         email: undefined,
         username: undefined,
         image: undefined
-    }
+    },
 }
 
 const UserContext = React.createContext(contextDefaultValue)
