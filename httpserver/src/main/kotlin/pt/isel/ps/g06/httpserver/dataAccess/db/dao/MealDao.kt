@@ -64,6 +64,11 @@ interface MealDao {
     @SqlQuery("SELECT * FROM $table WHERE $id = :submissionId")
     fun getById(@Bind submissionId: Int): DbMealDto?
 
+    @SqlQuery("SELECT * FROM $table INNER JOIN $SS_table ON " +
+            "$SS_table.$SS_submissionId = $table.$id " +
+            "WHERE $SS_table.$SS_submitterId = :submitterId")
+    fun getAllBySubmitterId(@Bind submitterId: Int): Collection<DbMealDto>
+
     @SqlQuery("SELECT $table.$id, $table.$name, $table.$carbs, $table.$quantity, $table.$unit " +
             "FROM $table " +
             "INNER JOIN $RM_table " +

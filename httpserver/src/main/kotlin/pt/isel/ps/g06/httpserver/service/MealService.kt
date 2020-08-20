@@ -10,25 +10,29 @@ import pt.isel.ps.g06.httpserver.model.Meal
 
 @Service
 class MealService(
-        private val dbMealRepo: MealDbRepository,
-        private val dbFavoriteDbRepository: FavoriteDbRepository,
+        private val dbMealRepository: MealDbRepository,
+        private val dbFavoriteRepository: FavoriteDbRepository,
         private val dbMealResponseMapper: DbMealResponseMapper
 ) {
     fun setFavorite(mealId: Int, userId: Int, isFavorite: Boolean): Boolean {
-        return dbFavoriteDbRepository.setFavorite(mealId, userId, isFavorite)
+        return dbFavoriteRepository.setFavorite(mealId, userId, isFavorite)
     }
 
     fun getMeal(mealId: Int): Meal? {
-        return dbMealRepo
+        return dbMealRepository
                 .getById(mealId)
                 ?.let(dbMealResponseMapper::mapTo)
     }
 
     fun getSuggestedMeals(): Sequence<Meal> {
-        return dbMealRepo
+        return dbMealRepository
                 .getAllSuggestedMeals()
                 .map { dbMealResponseMapper.mapTo(it) }
     }
+
+    fun getUserCustomMeals(submitterId: Int): Sequence<Meal> =
+            dbMealRepository.getBySubmitterId(submitterId).map(dbMealResponseMapper::mapTo)
+
 
     fun createMeal(
             submitterId: Int,
@@ -41,7 +45,7 @@ class MealService(
             throw InvalidMealException("The sum of ingredient quantity must be lower than meal quantity!")
         }
 
-        val createdMeal = dbMealRepo.insert(
+        val createdMeal = dbMealRepository.insert(
                 submitterId = submitterId,
                 mealName = name,
                 cuisines = cuisines,

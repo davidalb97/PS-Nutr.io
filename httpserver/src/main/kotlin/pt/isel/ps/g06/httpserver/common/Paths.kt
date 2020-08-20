@@ -23,6 +23,7 @@ const val RESTAURANT_MEAL_VOTE = "$RESTAURANT_MEAL/vote"
 const val MEALS = "/meal"
 const val MEAL = "$MEALS/{$MEAL_ID_VALUE}"
 const val MEAL_FAVORITE = "$MEAL$FAVORITE"
+const val USER_MEAL = "$MEALS?forUser"
 
 //Cuisines
 const val CUISINES = "/cuisines"
