@@ -19,7 +19,7 @@ class DbMealResponseMapper(
         private val dbCuisineRepo: CuisineDbRepository,
         private val dbFavoriteRepo: FavoriteDbRepository,
         private val dbSubmitterRepo: SubmitterDbRepository,
-        private val restaurantMealResponseMapper: DbRestaurantMealResponseMapper
+        private val restaurantMealResponseMapper: DbRestaurantMealInfoResponseMapper
 ) : ResponseMapper<DbMealDto, Meal> {
     override fun mapTo(dto: DbMealDto): Meal {
         return Meal(

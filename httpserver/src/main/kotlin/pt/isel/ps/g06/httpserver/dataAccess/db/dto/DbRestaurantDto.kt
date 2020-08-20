@@ -5,7 +5,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.model.RestaurantDto
 open class DbRestaurantDto(
         val submission_id: Int,
         restaurant_name: String,
-        ownerId: Int,
+        ownerId: Int?,
         latitude: Float,
         longitude: Float
 ) : RestaurantDto(

@@ -17,6 +17,7 @@ class DetailedRestaurantOutput(
         longitude: Float,
         votes: VotesOutput?,
         isFavorite: Boolean,
+        isVotable: Boolean,
         val cuisines: Collection<String>,
         @JsonSerialize(using = ToStringSerializer::class)
         val creationDate: OffsetDateTime?,
@@ -28,7 +29,8 @@ class DetailedRestaurantOutput(
         latitude = latitude,
         longitude = longitude,
         votes = votes,
-        isFavorite = isFavorite
+        isFavorite = isFavorite,
+        isVotable = isVotable
 )
 
 fun toDetailedRestaurantOutput(restaurant: Restaurant, userId: Int? = null): DetailedRestaurantOutput {
@@ -42,8 +44,8 @@ fun toDetailedRestaurantOutput(restaurant: Restaurant, userId: Int? = null): Det
                     userVote = userId?.let { restaurant.userVote(userId) } ?: VoteState.NOT_VOTED
             ),
             isFavorite = userId?.let { restaurant.isFavorite(userId) } ?: false,
+            isVotable = restaurant.isUserRestaurant(),
             cuisines = restaurant.cuisines.map { it.name }.toList(),
-
             meals = restaurant.meals
                     .map { toSimplifiedRestaurantMealOutput(restaurant.identifier.value, it, userId) }
                     .toList(),
