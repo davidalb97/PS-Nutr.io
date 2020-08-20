@@ -8,6 +8,22 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
+        <RelativeLayout>
+            <ImageButton
+                android:id="@+id/options"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginEnd="5dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_three_dots"
+                android:background="@android:color/transparent"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:visibility="gone"
+                >
+            </ImageButton>
+        </RelativeLayout>
+
         <RelativeLayout
             android:id="@+id/restaurant_general_details"
             android:gravity="center"
@@ -16,25 +32,45 @@
 
             <ImageView
                 android:id="@+id/meal_detail_image"
-                android:visibility="gone"
                 android:layout_width="175dp"
                 android:layout_height="175dp"
-                android:layout_margin="20dp">
+                android:layout_margin="20dp"
+                android:visibility="gone"
+                >
             </ImageView>
 
         </RelativeLayout>
 
-        <TextView
-            android:id="@+id/meal_detail_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <RelativeLayout
             android:layout_marginTop="20dp"
-            android:gravity="center"
-            android:text="@string/meal_example"
-            android:textStyle="bold"
-            android:textColor="?attr/textColor"
-            android:textSize="26sp">
-        </TextView>
+            android:orientation="horizontal"
+            android:layout_marginEnd="10dp"
+            android:id="@+id/meal_detail_title_fav"
+            >
+            <TextView
+                android:layout_centerHorizontal="true"
+                android:id="@+id/meal_detail_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/meal_example"
+                android:textStyle="bold"
+                android:textColor="?attr/textColor"
+                android:textSize="26sp">
+            </TextView>
+
+            <ImageButton
+                android:layout_marginStart="10dp"
+                android:id="@+id/favorite"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:src="@drawable/ic_star"
+                android:scaleType="centerCrop"
+                android:background="@android:color/transparent"
+                android:layout_toEndOf="@+id/meal_detail_title"
+                android:visibility="gone"
+                >
+            </ImageButton>
+        </RelativeLayout>
 
         <RelativeLayout
             android:id="@+id/meal_info_suggested_rl"
@@ -58,64 +94,93 @@
         </RelativeLayout>
 
         <RelativeLayout
-            android:id="@+id/meal_info_votes"
             android:gravity="center"
             android:layout_marginTop="10dp"
-            android:visibility="gone"
             >
 
-            <TextView
-                android:id="@+id/vote_this_meal"
+            <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:gravity="center"
-                android:text="@string/vote_this_meal"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:textColor="@android:color/background_dark"
-                android:layout_marginBottom="30dp"
+                android:id="@+id/vote_counters_layout"
+                android:visibility="gone"
                 >
-            </TextView>
+                <ProgressBar
+                    android:id="@+id/votesBar"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:foregroundGravity="center"
+                    android:progressTint="?attr/colorPrimary"
+                    android:progress="50"
+                    android:secondaryProgressTint="?attr/colorAccent">
+                </ProgressBar>
+
+                <TextView
+                    android:id="@+id/upVoteCounter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignStart="@id/votesBar"
+                    android:layout_below="@+id/votesBar"
+                    android:text="@string/upvotes">
+                </TextView>
+
+                <TextView
+                    android:id="@+id/downVoteCounter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignEnd="@id/votesBar"
+                    android:layout_below="@+id/votesBar"
+                    android:text="@string/downvotes">
+                </TextView>
+
+
+            </RelativeLayout>
 
             <RelativeLayout
                 android:gravity="center"
                 android:layout_marginTop="10dp"
-                android:visibility="visible"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/vote_this_meal"
+                android:layout_below="@+id/vote_counters_layout"
+                android:layout_centerHorizontal="true"
+                android:id="@+id/vote_buttons_layout"
+                android:visibility="gone"
                 >
 
-                <Button
-                    android:id="@+id/meal_info_up_vote"
-                    android:layout_width="100dp"
+                <ImageButton
+                    android:id="@+id/up_vote_button"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="25dp"
                     android:text="@string/upvote"
                     android:textColor="@color/cardview_light_background"
                     android:background="@drawable/rect_material_button_shape"
+                    android:src="@drawable/ic_upvote_ico"
                     >
-                </Button>
+                </ImageButton>
 
-                <Button
-                    android:id="@+id/meal_info_down_vote"
-                    android:layout_width="100dp"
+                <ImageButton
+                    android:id="@+id/down_vote_button"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_toEndOf="@+id/meal_info_up_vote"
+                    android:layout_toEndOf="@+id/up_vote_button"
                     android:text="@string/downvote"
                     android:textColor="@color/cardview_light_background"
-                    android:background="@drawable/rect_material_button_shape">
-                </Button>
+                    android:background="@drawable/rect_material_button_shape"
+                    android:src="@drawable/ic_downvote_ico"
+                    >
+                </ImageButton>
 
             </RelativeLayout>
         </RelativeLayout>
 
         <RelativeLayout
-            android:layout_marginTop="10dp">
+            android:layout_marginTop="10dp"
+
+            >
 
             <ImageButton
-                android:id="@+id/meal_add_button"
+                android:id="@+id/add_to_calc_action"
                 android:background="@drawable/material_button_shape"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
@@ -130,7 +195,7 @@
                 android:text="@string/add_meal_to_calc"
                 android:textSize="18sp"
                 android:textColor="?attr/textColor"
-                android:layout_toEndOf="@+id/meal_add_button"
+                android:layout_toEndOf="@+id/add_to_calc_action"
                 android:gravity="center"
                 android:layout_centerVertical="true">
             </TextView>
@@ -189,26 +254,16 @@
         <RelativeLayout
             android:gravity="center"
             android:layout_marginTop="10dp"
+            android:layout_gravity="center"
+            android:orientation="vertical"
             >
-
-            <Button
-                android:id="@+id/meal_info_show_ingredients_btn"
-                android:layout_width="100dp"
-                android:layout_height="wrap_content"
-                android:text="@string/show_ingredients"
-                android:layout_centerHorizontal="true"
-                android:textColor="@color/cardview_light_background"
-                android:background="@drawable/rect_material_button_shape">
-            </Button>
 
             <RelativeLayout
                 android:id="@+id/meal_info_ingredients_rl"
                 android:gravity="center"
                 android:layout_marginTop="10dp"
-                android:visibility="gone"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:layout_below="@+id/meal_info_show_ingredients_btn"
                 >
 
                 <TextView
@@ -223,47 +278,28 @@
                     android:layout_marginLeft="50dp"
                     android:text="@string/you_don_t_have_any_meal_ingredients"
                     android:textSize="26sp"
-                    android:visibility="gone"
                     >
                 </TextView>
 
-                <RelativeLayout
-                    android:gravity="center"
-                    android:layout_marginTop="10dp"
-                    android:visibility="visible"
-                    android:layout_height="wrap_content"
+                <ProgressBar
+                    android:id="@+id/meal_info_progress_bar"
                     android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:indeterminate="true"
+                    android:layout_centerInParent="true"
+                    android:visibility="visible"
                     >
-                    <ImageButton
-                        android:id="@+id/meal_info_add_ingredients_button"
-                        android:background="@drawable/material_button_shape"
-                        android:layout_centerHorizontal="true"
-                        android:layout_width="60dp"
-                        android:layout_height="60dp"
-                        android:src="@drawable/ic_add"
-                        android:visibility="gone"
-                        android:layout_marginStart="20dp">
-                    </ImageButton>
+                </ProgressBar>
 
-                    <ProgressBar
-                        android:id="@+id/meal_info_progress_bar"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:indeterminate="true"
-                        android:layout_centerInParent="true"
-                        android:visibility="invisible">
-                    </ProgressBar>
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/meal_info_ingredient_item_list"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        tools:listitem="@layout/meal_card"
-                        android:layout_below="@+id/meal_info_add_ingredients_button"
-                        >
-                    </androidx.recyclerview.widget.RecyclerView>
-
-                </RelativeLayout>
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/meal_info_ingredient_item_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    tools:listitem="@layout/meal_card"
+                    android:layout_below="@+id/meal_info_progress_bar"
+                    android:visibility="gone"
+                    >
+                </androidx.recyclerview.widget.RecyclerView>
 
             </RelativeLayout>
         </RelativeLayout>

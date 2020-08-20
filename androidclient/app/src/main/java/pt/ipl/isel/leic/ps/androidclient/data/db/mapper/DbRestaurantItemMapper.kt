@@ -21,6 +21,7 @@ class DbRestaurantItemMapper {
             negative = entity.negativeVotes!!
         ) else null,
         isFavorite = entity.isFavorite,
+        isVotable = entity.isVotable,
         imageUri = Uri.parse(entity.imageUri),
         source = Source.values()[entity.sourceOrdinal]
     )
@@ -31,6 +32,7 @@ class DbRestaurantItemMapper {
         latitude = model.latitude,
         longitude = model.longitude,
         isFavorite = model.isFavorite,
+        isVotable = model.isVotable,
         imageUri = model.imageUri?.toString(),
         positiveVotes = model.votes?.positive,
         negativeVotes = model.votes?.negative,

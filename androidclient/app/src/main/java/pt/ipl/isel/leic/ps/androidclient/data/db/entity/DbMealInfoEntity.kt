@@ -2,7 +2,7 @@ package pt.ipl.isel.leic.ps.androidclient.data.db.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import pt.ipl.isel.leic.ps.androidclient.data.util.TimestampWithTimeZone
+import pt.ipl.isel.leic.ps.androidclient.util.TimestampWithTimeZone
 
 @Entity(tableName = DbMealInfoEntity.tableName)
 open class DbMealInfoEntity(
@@ -13,6 +13,7 @@ open class DbMealInfoEntity(
     val amount: Int,
     val unit: String,
     val isFavorite: Boolean,
+    val isVotable: Boolean,
     val imageUri: String?,
     val hasVote: Boolean,
     val positiveVotes: Int?,

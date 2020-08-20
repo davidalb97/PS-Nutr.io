@@ -50,7 +50,8 @@ class RestaurantDbRepository(jdbi: Jdbi) : SubmissionDbRepository(jdbi) {
             apiId: String? = null,
             cuisineNames: Collection<String> = emptyList(),
             latitude: Float,
-            longitude: Float
+            longitude: Float,
+            ownerId: Int?
     ): DbRestaurantDto {
         return jdbi.inTransaction<DbRestaurantDto, Exception>(isolationLevel) {
             //Insert Submission
@@ -75,7 +76,7 @@ class RestaurantDbRepository(jdbi: Jdbi) : SubmissionDbRepository(jdbi) {
             //Insert Restaurant
             val restaurant = it
                     .attach(RestaurantDao::class.java)
-                    .insert(submissionId, restaurantName, latitude, longitude)
+                    .insert(submissionId, restaurantName, latitude, longitude, ownerId)
 
             //Insert all RestaurantCuisine associations
             insertRestaurantCuisines(it, submissionId, cuisineNames)

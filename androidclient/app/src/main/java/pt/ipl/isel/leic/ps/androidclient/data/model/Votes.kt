@@ -4,7 +4,7 @@ import android.os.Parcel
 import android.os.Parcelable
 
 data class Votes(
-    val userHasVoted: VoteState,
+    var userHasVoted: VoteState,
     val positive: Int,
     val negative: Int
 ) : Parcelable {

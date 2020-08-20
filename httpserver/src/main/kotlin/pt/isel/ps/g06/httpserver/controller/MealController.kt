@@ -9,6 +9,7 @@ import pt.isel.ps.g06.httpserver.common.exception.authentication.NotAuthenticate
 import pt.isel.ps.g06.httpserver.common.exception.clientError.InvalidQueryParameter
 import pt.isel.ps.g06.httpserver.common.exception.forbidden.NotSubmissionOwnerException
 import pt.isel.ps.g06.httpserver.common.exception.notFound.MealNotFoundException
+import pt.isel.ps.g06.httpserver.dataAccess.input.FavoriteInput
 import pt.isel.ps.g06.httpserver.dataAccess.input.MealInput
 import pt.isel.ps.g06.httpserver.dataAccess.output.meal.DetailedMealOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.meal.SimplifiedMealContainer
@@ -37,6 +38,7 @@ class MealController(
      */
     @GetMapping(MEALS)
     fun getMeals(
+            submitter: Submitter?,
             @RequestParam mealTypes: Collection<String>?,
             @RequestParam skip: Int?,
             @RequestParam count: Int?,
@@ -69,17 +71,31 @@ class MealController(
 
         return ResponseEntity
                 .ok()
-                .body(toSimplifiedMealContainer(meals))
+                .body(toSimplifiedMealContainer(meals, submitter?.identifier))
     }
 
+    @PutMapping(MEAL_FAVORITE)
+    fun setFavoriteMeal(
+            submitter: Submitter?,
+            @PathVariable(MEAL_ID_VALUE) mealId: Int,
+            @Valid @RequestBody favorite: FavoriteInput
+    ): ResponseEntity<Any> {
+        submitter ?: throw NotAuthenticatedException()
+
+        mealService.setFavorite(mealId, submitter.identifier, favorite.isFavorite!!)
+        return ResponseEntity.ok().build()
+    }
 
     @GetMapping(MEAL)
-    fun getMealInformation(@PathVariable(MEAL_ID_VALUE) mealId: Int): ResponseEntity<DetailedMealOutput> {
+    fun getMealInformation(
+            submitter: Submitter?,
+            @PathVariable(MEAL_ID_VALUE) mealId: Int
+    ): ResponseEntity<DetailedMealOutput> {
         val meal = mealService.getMeal(mealId) ?: throw MealNotFoundException()
 
         return ResponseEntity
                 .ok()
-                .body(toDetailedMealOutput(meal))
+                .body(toDetailedMealOutput(meal, submitter?.identifier))
     }
 
     @PostMapping(MEALS)

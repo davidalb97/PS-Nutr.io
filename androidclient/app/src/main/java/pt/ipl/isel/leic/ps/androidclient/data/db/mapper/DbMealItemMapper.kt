@@ -24,6 +24,7 @@ class DbMealItemMapper {
             negative = entity.negativeVotes!!
         ) else null,
         isFavorite = entity.isFavorite,
+        isVotable = entity.isVotable,
         imageUri = entity.imageUri?.let { Uri.parse(it) },
         isSuggested = entity.isSuggested,
         source = Source.values()[entity.sourceOrdinal]
@@ -37,6 +38,7 @@ class DbMealItemMapper {
         amount = model.amount,
         unit = model.unit,
         isFavorite = model.isFavorite,
+        isVotable = model.isVotable,
         imageUri = model.imageUri?.toString(),
         positiveVotes = model.votes?.positive,
         negativeVotes = model.votes?.negative,

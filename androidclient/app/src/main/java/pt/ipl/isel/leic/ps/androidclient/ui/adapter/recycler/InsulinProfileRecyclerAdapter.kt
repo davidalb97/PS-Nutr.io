@@ -1,28 +1,38 @@
 package pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler
 
 import android.content.Context
-import android.view.ViewGroup
+import android.view.View
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.InsulinProfile
+import pt.ipl.isel.leic.ps.androidclient.ui.util.Navigation
+import pt.ipl.isel.leic.ps.androidclient.ui.util.getUserSession
 import pt.ipl.isel.leic.ps.androidclient.ui.viewholder.InsulinProfileRecyclerViewHolder
-import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.InsulinProfilesRecyclerViewModel
+import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.InsulinProfilesListViewModel
 
 class InsulinProfileRecyclerAdapter(
-    viewModelInsulin: InsulinProfilesRecyclerViewModel,
+    viewModel: InsulinProfilesListViewModel,
     ctx: Context
-) : ARecyclerAdapter<InsulinProfile, InsulinProfilesRecyclerViewModel, InsulinProfileRecyclerViewHolder>(
-    viewModelInsulin,
-    ctx
+) : BaseRecyclerAdapter
+<InsulinProfile, InsulinProfilesListViewModel, InsulinProfileRecyclerViewHolder>(
+    viewModel = viewModel,
+    ctx = ctx
 ) {
-
-    override fun onBindViewHolder(holder: InsulinProfileRecyclerViewHolder, position: Int) {
-        val item: InsulinProfile = viewModel.items[position]
-        holder.bindTo(item)
-        holder.onDelete = { viewModel.deleteItem(item.profileName) }
-    }
 
     override fun getItemViewId(): Int = R.layout.insulin_profile_card
 
-    override fun newViewHolder(layout: ViewGroup): InsulinProfileRecyclerViewHolder =
-        InsulinProfileRecyclerViewHolder(layout, ctx)
+    override fun newViewHolder(layout: View): InsulinProfileRecyclerViewHolder {
+        return object : InsulinProfileRecyclerViewHolder(
+            navDestination = Navigation.IGNORE,
+            actions = viewModel.actions,
+            view = layout,
+            ctx = ctx
+        ) {
+            override fun onDelete(onSuccess: () -> Unit, onError: (Throwable) -> Unit) {
+                viewModel.deleteItem(item.profileName, getUserSession())
+                    .setOnPostExecute {
+                        onSuccess()
+                    }.execute()
+            }
+        }
+    }
 }

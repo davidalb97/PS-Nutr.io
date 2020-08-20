@@ -42,7 +42,6 @@ class WebSecurityConfig(
     /**
      * Configures what should need authentication.
      * Anything that is included inside 'antMatchers' can be accessed without authentication.
-     * TODO - For now, all endpoints can be used, except the ones that will be created that only belong to the user context
      */
     override fun configure(http: HttpSecurity?) {
         http!!

@@ -2,22 +2,25 @@ package pt.ipl.isel.leic.ps.androidclient.ui.provider
 
 import android.content.Intent
 import android.os.Bundle
-import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.UserProfileViewModel
-
-const val USER_PROFILE_VIEW_STATE: String = "USER_PROFILE_VIEW_STATE"
+import androidx.lifecycle.ViewModel
+import pt.ipl.isel.leic.ps.androidclient.ui.util.Logger
+import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.UserSessionViewModel
 
 class UserProfileVMProviderFactory(
+    arguments: Bundle?,
     savedInstanceState: Bundle?,
     intent: Intent
-) : AViewModelProviderFactory<UserProfileViewModel>(
+) : BaseViewModelProviderFactory(
+    arguments,
     savedInstanceState,
     intent
 ) {
-    override fun getStateName(): String = RESTAURANT_LIST_VIEW_STATE
+    override val logger = Logger(UserProfileVMProviderFactory::class)
 
-    override fun getViewModelClass(): Class<UserProfileViewModel> =
-        UserProfileViewModel::class.java
-
-    override fun newViewModel(): UserProfileViewModel =
-        UserProfileViewModel()
+    override fun <T : ViewModel?> newViewModel(modelClass: Class<T>): ViewModel? {
+        return when (modelClass) {
+            UserSessionViewModel::class.java -> UserSessionViewModel()
+            else -> null
+        }
+    }
 }

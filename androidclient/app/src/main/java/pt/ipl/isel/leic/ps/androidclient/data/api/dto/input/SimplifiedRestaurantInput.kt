@@ -9,5 +9,6 @@ open class SimplifiedRestaurantInput(
     val longitude: Float,
     val votes: VotesInputDto?,
     val isFavorite: Boolean,
+    val isVotable: Boolean,
     val imageUri: Uri?
 )

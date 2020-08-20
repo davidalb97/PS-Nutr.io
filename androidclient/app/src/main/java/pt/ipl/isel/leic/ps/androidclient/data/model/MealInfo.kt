@@ -3,9 +3,9 @@ package pt.ipl.isel.leic.ps.androidclient.data.model
 import android.net.Uri
 import android.os.Parcel
 import android.os.Parcelable
-import pt.ipl.isel.leic.ps.androidclient.data.util.*
+import pt.ipl.isel.leic.ps.androidclient.util.*
 
-class MealInfo(
+open class MealInfo(
     dbId: Long,
     dbRestaurantId: Long,
     submissionId: Int,
@@ -16,10 +16,11 @@ class MealInfo(
     override val unit: String,
     votes: Votes?,
     isFavorite: Boolean,
+    isVotable: Boolean,
     imageUri: Uri?,
     val creationDate: TimestampWithTimeZone?,
-    val ingredientComponents: List<MealIngredient>,
-    val mealComponents: List<MealIngredient>,
+    var ingredientComponents: List<MealIngredient>,
+    var mealComponents: List<MealIngredient>,
     val cuisines: List<Cuisine>,
     val portions: List<Portion>,
     isSuggested: Boolean,
@@ -35,6 +36,7 @@ class MealInfo(
     unit = unit,
     votes = votes,
     isFavorite = isFavorite,
+    isVotable = isVotable,
     imageUri = imageUri,
     isSuggested = isSuggested,
     source = source
@@ -50,14 +52,15 @@ class MealInfo(
         amount = parcel.readInt(),
         unit = parcel.readString()!!,
         votes = parcel.readParcelable(Votes::class.java.classLoader),
-        isFavorite = readBoolean(parcel),
-        imageUri = readUri(parcel),
-        creationDate = readTimestampWithTimeZone(parcel),
-        ingredientComponents = readList(parcel, MealIngredient::class),
-        mealComponents = readList(parcel, MealIngredient::class),
-        cuisines = readList(parcel, Cuisine::class),
-        portions = readList(parcel, Portion::class),
-        isSuggested = readBoolean(parcel),
+        isFavorite = parcel.readBooleanCompat(),
+        isVotable = parcel.readBooleanCompat(),
+        imageUri = parcel.readUri(),
+        creationDate = parcel.readTimestampWithTimeZone(),
+        ingredientComponents = parcel.readListCompat(MealIngredient::class),
+        mealComponents = parcel.readListCompat(MealIngredient::class),
+        cuisines = parcel.readListCompat(Cuisine::class),
+        portions = parcel.readListCompat(Portion::class),
+        isSuggested = parcel.readBooleanCompat(),
         source = Source.values()[parcel.readInt()]
     )
 
@@ -71,14 +74,15 @@ class MealInfo(
         parcel.writeInt(amount)
         parcel.writeString(unit)
         parcel.writeParcelable(votes, flags)
-        writeBoolean(parcel, isFavorite)
-        writeUri(parcel, imageUri)
-        writeTimestampWithTimeZone(parcel, creationDate)
+        parcel.writeBooleanCompat(isFavorite)
+        parcel.writeBooleanCompat(isVotable)
+        parcel.writeUri(imageUri)
+        parcel.writeTimestampWithTimeZone(creationDate)
         parcel.writeList(ingredientComponents)
         parcel.writeList(mealComponents)
         parcel.writeList(cuisines)
         parcel.writeList(portions)
-        writeBoolean(parcel, isSuggested)
+        parcel.writeBooleanCompat(isSuggested)
         parcel.writeInt(source.ordinal)
     }
 

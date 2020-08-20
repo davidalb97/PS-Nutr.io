@@ -2,22 +2,33 @@ package pt.ipl.isel.leic.ps.androidclient.ui.provider
 
 import android.content.Intent
 import android.os.Bundle
-import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.FavoriteMealRecyclerViewModel
-
-const val FAVORITE_MEAL_LIST_VIEW_STATE: String = "FAVORITE_MEAL_LIST_VIEW_STATE"
+import androidx.lifecycle.ViewModel
+import pt.ipl.isel.leic.ps.androidclient.data.model.Source
+import pt.ipl.isel.leic.ps.androidclient.ui.util.*
+import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.meal.MealItemListViewModel
 
 class FavoriteMealRecyclerVMProviderFactory(
+    arguments: Bundle?,
     savedInstanceState: Bundle?,
     intent: Intent
-) : AViewModelProviderFactory<FavoriteMealRecyclerViewModel>(
+) : BaseViewModelProviderFactory(
+    arguments,
     savedInstanceState,
     intent
 ) {
-    override fun getStateName(): String = FAVORITE_MEAL_LIST_VIEW_STATE
+    override val logger = Logger(FavoriteMealRecyclerVMProviderFactory::class)
 
-    override fun getViewModelClass(): Class<FavoriteMealRecyclerViewModel> =
-        FavoriteMealRecyclerViewModel::class.java
-
-    override fun newViewModel(): FavoriteMealRecyclerViewModel =
-        FavoriteMealRecyclerViewModel()
+    override fun <T : ViewModel?> newViewModel(modelClass: Class<T>): ViewModel? {
+        return when (modelClass) {
+            MealItemListViewModel::class.java -> MealItemListViewModel(
+                navDestination = arguments?.getNavigation() ?: Navigation.SEND_TO_RESTAURANT_DETAIL,
+                actions = arguments?.getItemActions() ?: listOf(
+                    ItemAction.DELETE,
+                    ItemAction.CALCULATE
+                ),
+                source = Source.FAVORITE
+            )
+            else -> null
+        }
+    }
 }

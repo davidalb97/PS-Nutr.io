@@ -1,16 +1,13 @@
 package pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant
 
 import android.app.AlertDialog
+import android.content.Intent
 import android.os.Bundle
-import android.text.Editable
-import android.text.SpannableStringBuilder
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.cardview.widget.CardView
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.app
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.sharedPreferences
@@ -18,65 +15,32 @@ import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.db.InsulinCalculator
 import pt.ipl.isel.leic.ps.androidclient.data.model.InsulinProfile
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealInfo
-import pt.ipl.isel.leic.ps.androidclient.data.model.Source
-import pt.ipl.isel.leic.ps.androidclient.ui.provider.*
-import pt.ipl.isel.leic.ps.androidclient.ui.util.closeKeyboard
-import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.InsulinProfilesRecyclerViewModel
-import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.MealInfoViewModel
-import java.math.RoundingMode
+import pt.ipl.isel.leic.ps.androidclient.ui.fragment.BaseFragment
+import pt.ipl.isel.leic.ps.androidclient.ui.provider.CalculatorVMProviderFactory
+import pt.ipl.isel.leic.ps.androidclient.ui.util.*
+import pt.ipl.isel.leic.ps.androidclient.ui.util.units.GlucoseUnits
+import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.InsulinProfilesListViewModel
+import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.meal.info.MealInfoViewModel
 import java.text.SimpleDateFormat
 import java.util.*
 
-const val BUNDLED_MEAL_INFO_TAG = "bundledMeal"
-const val CONVERTION_CONST = 18
-const val MILLIGRAM_PER_DL = "mg / dL"
-const val MILLIMOL_PER_L = "mmol / L"
+class CalculatorFragment : BaseFragment() {
 
-class CalculatorFragment : Fragment() {
-
-    lateinit var viewModelProfiles: InsulinProfilesRecyclerViewModel
-    lateinit var viewModelMeal: MealInfoViewModel
-
+    private lateinit var viewModelProfiles: InsulinProfilesListViewModel
+    private lateinit var viewModelMeal: MealInfoViewModel
     private var receivedMeal: MealInfo? = null
     private var currentProfile: InsulinProfile? = null
     private val calculator = InsulinCalculator()
-
-    private fun buildViewModel(savedInstanceState: Bundle?) {
-        val rootActivity = this.requireActivity()
-        val factoryProfiles =
-            InsulinProfilesVMProviderFactory(savedInstanceState, rootActivity.intent)
-        val factoryMealInfo =
-            MealInfoVMProviderFactory(savedInstanceState, rootActivity.intent, arguments)
-        viewModelProfiles = ViewModelProvider(
-            rootActivity,
-            factoryProfiles
-        )[InsulinProfilesRecyclerViewModel::class.java]
-        viewModelMeal =
-            ViewModelProvider(rootActivity, factoryMealInfo)[MealInfoViewModel::class.java]
-
-        //Read passed info from bundle
-        viewModelMeal.mealInfo = arguments?.getParcelable(BUNDLE_MEAL_INFO)
-        viewModelMeal.source = arguments?.getInt(BUNDLE_MEAL_SOURCE, -1)?.let {
-            if (it == -1) null else Source.values()[it]
-        }
-        viewModelMeal.submissionId = arguments?.getInt(BUNDLE_MEAL_SUBMISSION_ID, -1)?.let {
-            if (it == -1) null else it
-        }
-        viewModelMeal.dbId = arguments?.getLong(BUNDLE_MEAL_DB_ID, -1)?.let {
-            val check: Long = -1
-            if (it == check) null else it
-        }
-
-        viewModelProfiles
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        buildViewModel(savedInstanceState)
-        return inflater.inflate(R.layout.calculator_fragment, container, false)
+        viewModelProfiles =
+            buildViewModel(savedInstanceState, InsulinProfilesListViewModel::class.java)
+        viewModelMeal = buildViewModel(savedInstanceState, MealInfoViewModel::class.java)
+        return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -84,26 +48,15 @@ class CalculatorFragment : Fragment() {
         spinnerSetup()
         searchForBundledMeal()
 
-        val jwt = sharedPreferences.getString(JWT, null)
-
-        if (jwt == null) {
-            Toast.makeText(
-                app,
-                R.string.calculator_login_warning,
-                Toast.LENGTH_LONG
-            ).show()
-        } else {
-            viewModelProfiles.jwt = jwt
-        }
-
         viewModelProfiles.onError = {
+            log.e(it)
             Toast.makeText(app, R.string.profiles_error, Toast.LENGTH_LONG)
                 .show()
         }
 
-        viewModelProfiles.update()
         observeExistingInsulinProfiles()
         setupAddMealButtonListener()
+        viewModelProfiles.update()
     }
 
     /**
@@ -114,15 +67,13 @@ class CalculatorFragment : Fragment() {
         val spinner = view?.findViewById<Spinner>(R.id.measurement_units)
         val spinnerAdapter: ArrayAdapter<String> = spinner!!.adapter as ArrayAdapter<String>
 
-        val defaultUnitKey =
-            sharedPreferences.getString("insulin_units", MILLIGRAM_PER_DL)
+        val configuredUnit = sharedPreferences.getGlucoseUnitOrDefault()
 
-        val spinnerPosition = spinnerAdapter.getPosition(defaultUnitKey)
+        val spinnerPosition = spinnerAdapter.getPosition(configuredUnit)
         spinner.setSelection(spinnerPosition)
 
         // Changes the blood glucose value according to the unit spinner
-        val currentBloodGlucose =
-            view?.findViewById<EditText>(R.id.user_blood_glucose)
+        val currentBloodGlucose = view?.findViewById<EditText>(R.id.user_blood_glucose)
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {
                 throw NotImplementedError("This function is not implemented")
@@ -134,17 +85,15 @@ class CalculatorFragment : Fragment() {
                 position: Int,
                 id: Long
             ) {
-                val value = spinner.selectedItem.toString()
-
                 if (currentBloodGlucose!!.text.isNotBlank()) {
-                    if (value == MILLIGRAM_PER_DL) {
-                        currentBloodGlucose.text = convertToMG(currentBloodGlucose.text.toString())
-                    } else {
-                        currentBloodGlucose.text =
-                            convertToMMOL(currentBloodGlucose.text.toString())
+                    val newUnit = GlucoseUnits.fromValue(spinner.selectedItem.toString())
+                    val oldUnit = when (newUnit) {
+                        GlucoseUnits.MILLI_GRAM_PER_DL -> GlucoseUnits.MILLI_MOL_PER_L
+                        GlucoseUnits.MILLI_MOL_PER_L -> GlucoseUnits.MILLI_GRAM_PER_DL
                     }
+                    val currentValue = currentBloodGlucose.text.toString().toFloat()
+                    currentBloodGlucose.setText(oldUnit.convert(newUnit, currentValue).toString())
                 }
-
             }
         }
     }
@@ -155,14 +104,15 @@ class CalculatorFragment : Fragment() {
      * already selected.
      */
     private fun searchForBundledMeal() {
-        val bundle: Bundle? = this.arguments
-        if (bundle != null) { // || viewModel.hasMeal()
+        if (viewModelMeal.mealInfo != null) {
+            addBundledMealHolder(viewModelMeal.mealInfo!!)
+        } else if (viewModelMeal.mealItem != null) {
             val owner = this
-            viewModelMeal.observe(owner) {
-                receivedMeal = it.first()
-                addBundledMealHolder()
+            viewModelMeal.observeInfo(owner) {
+                addBundledMealHolder(it)
                 viewModelMeal.removeObservers(owner)
             }
+            viewModelMeal.onError = log::e
             viewModelMeal.update()
         }
     }
@@ -170,18 +120,16 @@ class CalculatorFragment : Fragment() {
     /**
      * Setups the CardView in the fragment that will hold the chosen meal.
      */
-    private fun addBundledMealHolder() {
-        val selectedMealCard =
-            view?.findViewById<CardView>(R.id.calc_meal_card)
-        val selectedMealName =
-            view?.findViewById<TextView>(R.id.calc_meal_name)
-        val selectedMealDeleteButton =
-            view?.findViewById<ImageButton>(R.id.remove_meal_from_calc_button)
+    private fun addBundledMealHolder(mealInfo: MealInfo) {
+        this.receivedMeal = mealInfo
+        val selectedMealCard = view?.findViewById<CardView>(R.id.calc_meal_card)
+        val selectedMealName = view?.findViewById<TextView>(R.id.calc_meal_name)
+        val selectedMealDelBtn = view?.findViewById<ImageButton>(R.id.remove_meal_from_calc_button)
 
         selectedMealName?.text = receivedMeal?.name
         selectedMealCard?.visibility = View.VISIBLE
 
-        selectedMealDeleteButton?.setOnClickListener {
+        selectedMealDelBtn?.setOnClickListener {
             cleanBundledMeal(selectedMealCard)
         }
     }
@@ -190,10 +138,11 @@ class CalculatorFragment : Fragment() {
      * Setups the button that allows the user to select meals.
      */
     private fun setupAddMealButtonListener() {
-        val addButton =
-            view?.findViewById<ImageButton>(R.id.meal_add_button)
+        val addButton = view?.findViewById<ImageButton>(R.id.meal_add_button)
         addButton?.setOnClickListener {
-            view?.findNavController()?.navigate(R.id.nav_add_meal_to_calculator)
+            val bundle = Bundle()
+            bundle.putNavigation(Navigation.SEND_TO_CALCULATOR)
+            view?.findNavController()?.navigate(R.id.nav_add_meal_to_calculator, bundle)
         }
     }
 
@@ -228,16 +177,16 @@ class CalculatorFragment : Fragment() {
      * Calculates the insulin dosage that needs to be injected.
      */
     private fun getProfile() {
-        getActualProfile { profile ->
-            currentProfile = profile
-            showActualProfileDetails(profile!!)
+        currentProfile = getActualProfile()
+        if (currentProfile != null) {
+            showActualProfileDetails(currentProfile!!)
         }
     }
 
     /**
      * Searches for a profile that matches the current time
      */
-    private fun getActualProfile(cb: (InsulinProfile?) -> Unit) {
+    private fun getActualProfile(): InsulinProfile? {
 
         // Gets actual time in hh:mm format
         val calendar = Calendar.getInstance()
@@ -246,19 +195,17 @@ class CalculatorFragment : Fragment() {
 
         val profiles = viewModelProfiles.items
         if (profiles.isEmpty()) {
-            cb(null)
             showNoExistingProfilesToast()
-            return
+            return null
         }
 
         val timeInstance = SimpleDateFormat("HH:mm")
-        val now = timeInstance.parse(currentTime)
-        viewModelProfiles.items.forEach { savedProfile ->
+        val now = timeInstance.parse(currentTime)!!
+
+        return viewModelProfiles.items.find { savedProfile ->
             val parsedSavedStartTime = timeInstance.parse(savedProfile.startTime)
             val parsedSavedEndTime = timeInstance.parse(savedProfile.endTime)
-            if (now.after(parsedSavedStartTime) && now.before(parsedSavedEndTime)) {
-                cb(savedProfile)
-            }
+            now.after(parsedSavedStartTime) && now.before(parsedSavedEndTime)
         }
     }
 
@@ -308,11 +255,14 @@ class CalculatorFragment : Fragment() {
 
                 // If the unit is different from default, convert back to the value to pass to
                 // the calculator
-                if (spinner?.selectedItem.toString() == MILLIMOL_PER_L) {
-                    bloodGlucoseValue =
-                        convertToMG(currentBloodGlucose.text.toString())
-                            .toString().toDouble().toInt()
+                val currentUnit = GlucoseUnits.fromValue(spinner?.selectedItem.toString())
+                if (currentUnit != DEFAULT_GLUCOSE_UNIT) {
+                    bloodGlucoseValue = currentUnit.convert(
+                        DEFAULT_GLUCOSE_UNIT,
+                        currentBloodGlucose.text.toString().toFloat()
+                    ).toInt()
                 }
+
                 result =
                     calculator.calculateMealInsulin(
                         currentProfile!!,
@@ -341,30 +291,6 @@ class CalculatorFragment : Fragment() {
     }
 
     /**
-     * Converts blood glucose value from mg / dL to mmol / L.
-     */
-    private fun convertToMMOL(currentValue: String): Editable? =
-        SpannableStringBuilder(
-            (currentValue.toDouble() * CONVERTION_CONST)
-                .toBigDecimal()
-                .setScale(2, RoundingMode.HALF_UP)
-                .toFloat()
-                .toString()
-        )
-
-    /**
-     * Converts blood glucose value from mmol / L to mg / dL.
-     */
-    private fun convertToMG(currentValue: String): Editable? =
-        SpannableStringBuilder(
-            (currentValue.toDouble() / CONVERTION_CONST)
-                .toBigDecimal()
-                .setScale(2, RoundingMode.HALF_UP)
-                .toFloat()
-                .toString()
-        )
-
-    /**
      * Cleans the current blood glucose text field
      */
     private fun cleanCurrentGlucose(textBox: EditText? = null) {
@@ -391,6 +317,19 @@ class CalculatorFragment : Fragment() {
             selectedMealCard?.visibility = View.INVISIBLE
         }
         receivedMeal = null
-        this.arguments?.remove(BUNDLED_MEAL_INFO_TAG)
+        this.arguments?.removeMealInfo()
+    }
+
+    override fun getLayout() = R.layout.calculator_fragment
+
+    override fun getVMProviderFactory(
+        savedInstanceState: Bundle?,
+        intent: Intent
+    ): CalculatorVMProviderFactory {
+        return CalculatorVMProviderFactory(
+            arguments,
+            savedInstanceState,
+            intent
+        )
     }
 }

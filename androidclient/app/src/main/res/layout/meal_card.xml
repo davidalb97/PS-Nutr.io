@@ -6,7 +6,8 @@
     android:layout_height="wrap_content"
     android:layout_margin="4dp"
     android:elevation="10dp"
-    app:cardCornerRadius="15dp">
+    app:cardCornerRadius="15dp"
+    >
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -17,7 +18,9 @@
             android:id="@+id/mealImage"
             android:layout_width="130dp"
             android:layout_height="130dp"
-            android:padding="2dp" />
+            android:padding="2dp"
+            android:visibility="gone"
+            />
 
         <TextView
             android:id="@+id/mealName"
@@ -39,36 +42,111 @@
             android:layout_toEndOf="@+id/mealImage"
             android:textSize="15sp" />
 
-        <ImageButton
-            android:id="@+id/add_meal_to_calc"
-            android:background="@drawable/material_button_shape"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:src="@drawable/ic_calculate"
-            android:layout_marginEnd="10dp"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:visibility="invisible">
-        </ImageButton>
+        <TextView
+            android:id="@+id/custom_meal_quantity"
+            android:layout_toEndOf="@+id/mealImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/mealCuisines"
+            android:text="@string/meal_quantity_card"
+            android:textSize="15sp"
+            android:visibility="gone"
+            />
 
-        <ImageButton
-            android:id="@+id/delete_item_button"
-            android:background="@drawable/material_bin_button_background"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:src="@drawable/ic_delete"
-            android:layout_marginEnd="10dp"
-            android:layout_toStartOf="@+id/add_meal_to_calc"
+        <TextView
+            android:id="@+id/custom_meal_carbs_amount"
+            android:layout_toEndOf="@+id/mealImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/custom_meal_quantity"
+            android:text="@string/carbohydrates_amount_card"
+            android:textSize="15sp"
+            android:visibility="gone"
+            />
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/custom_meal_carbs_amount"
+            android:id="@+id/actions_layout"
             android:layout_centerVertical="true"
-            android:visibility="invisible">
-        </ImageButton>
+            android:visibility="gone"
+            >
+
+            <ImageButton
+                android:id="@+id/add_to_calc_action"
+                android:background="@drawable/material_button_shape"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:src="@drawable/ic_calculate"
+                android:layout_marginEnd="10dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:visibility="gone"
+                >
+            </ImageButton>
+
+            <ImageButton
+                android:id="@+id/delete_item_action"
+                android:background="@drawable/material_bin_button_background"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:src="@drawable/ic_delete"
+                android:layout_marginEnd="10dp"
+                android:layout_toStartOf="@+id/add_to_calc_action"
+                android:layout_centerVertical="true"
+                android:visibility="gone"
+                >
+            </ImageButton>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/vote_counters_layout"
+            android:layout_below="@id/custom_meal_carbs_amount"
+            android:visibility="gone"
+            >
+            <ProgressBar
+                android:id="@+id/votesBar"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:foregroundGravity="center"
+                android:progressTint="?attr/colorPrimary"
+                android:progress="50"
+                android:secondaryProgressTint="?attr/colorAccent">
+            </ProgressBar>
+
+            <TextView
+                android:id="@+id/upVoteCounter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignStart="@id/votesBar"
+                android:layout_below="@+id/votesBar"
+                android:text="@string/upvotes">
+            </TextView>
+
+            <TextView
+                android:id="@+id/downVoteCounter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignEnd="@id/votesBar"
+                android:layout_below="@+id/votesBar"
+                android:text="@string/downvotes">
+            </TextView>
+
+
+        </RelativeLayout>
+
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_alignParentEnd="true">
-
+            android:layout_alignParentEnd="true"
+            android:id="@+id/meal_item_footer_actions"
+            >
             <ImageButton
                 android:id="@+id/favorite"
                 android:layout_width="25dp"
@@ -76,7 +154,9 @@
                 android:layout_marginEnd="10dp"
                 android:src="@drawable/ic_star"
                 android:scaleType="centerCrop"
-                android:background="@android:color/transparent">
+                android:background="@android:color/transparent"
+                android:visibility="gone"
+                >
             </ImageButton>
 
             <ImageButton
@@ -86,7 +166,9 @@
                 android:layout_marginEnd="5dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/ic_three_dots"
-                android:background="@android:color/transparent">
+                android:background="@android:color/transparent"
+                android:visibility="gone"
+                >
             </ImageButton>
 
         </LinearLayout>

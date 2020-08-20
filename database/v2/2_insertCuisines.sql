@@ -216,9 +216,7 @@ BEGIN
 
 	INSERT INTO Api(submitter_id, api_token) VALUES
 	(submitter_id_api_zomato, '456'),
-	(submitter_id_api_here, 'here:123');
-	
-	INSERT INTO _User(submitter_id, email, password) VALUES (3, 'user@email.com', '123');
+	(submitter_id_api_here, 'here:123');	
 	
 	--Insert hardcoded cuisines
 	FOR cuisineIdx in 1 .. array_length(cuisineNames, 1)

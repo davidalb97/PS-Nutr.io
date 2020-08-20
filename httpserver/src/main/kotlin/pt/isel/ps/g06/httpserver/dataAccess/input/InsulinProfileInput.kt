@@ -1,5 +1,7 @@
 package pt.isel.ps.g06.httpserver.dataAccess.input
 
+import com.fasterxml.jackson.annotation.JsonFormat
+import java.time.LocalTime
 import javax.validation.constraints.Min
 import javax.validation.constraints.NotBlank
 import javax.validation.constraints.NotNull
@@ -10,18 +12,12 @@ data class InsulinProfileInput(
         val profileName: String?,
 
         @field:NotNull(message = "A start time must be given!")
-        @field:Pattern(
-                regexp = "^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]\$",
-                message = "Your start time must follow a HH:MM format!"
-        )
-        val startTime: String?,
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
+        val startTime: LocalTime?,
 
         @field:NotNull(message = "An end time must be given!")
-        @field:Pattern(
-                regexp = "^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]\$",
-                message = "Your end time must follow a HH:MM format!"
-        )
-        val endTime: String?,
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
+        val endTime: LocalTime?,
 
         @field:NotNull(message = "A glucose objective must be given!")
         @field:Min(value = 0, message = "Glucose objective must be positive!")

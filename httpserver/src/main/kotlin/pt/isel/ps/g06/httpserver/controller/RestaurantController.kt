@@ -9,6 +9,7 @@ import pt.isel.ps.g06.httpserver.common.exception.authentication.NotAuthenticate
 import pt.isel.ps.g06.httpserver.common.exception.forbidden.NotSubmissionOwnerException
 import pt.isel.ps.g06.httpserver.common.exception.notFound.RestaurantNotFoundException
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.RestaurantApiType
+import pt.isel.ps.g06.httpserver.dataAccess.input.FavoriteInput
 import pt.isel.ps.g06.httpserver.dataAccess.input.RestaurantInput
 import pt.isel.ps.g06.httpserver.dataAccess.input.VoteInput
 import pt.isel.ps.g06.httpserver.dataAccess.output.restaurant.DetailedRestaurantOutput
@@ -44,6 +45,7 @@ class RestaurantController(
      */
     @GetMapping(RESTAURANTS, consumes = [MediaType.ALL_VALUE])
     fun searchRestaurants(
+            submitter: Submitter?,
             latitude: Float?,
             longitude: Float?,
             name: String?,
@@ -61,21 +63,21 @@ class RestaurantController(
                 radius = radius,
                 apiType = apiType
         )
-
         return ResponseEntity
                 .ok()
-                .body(nearbyRestaurants.map { toSimplifiedRestaurantOutput(it) }.toList())
+                .body(nearbyRestaurants.map { toSimplifiedRestaurantOutput(it, submitter?.identifier) }.toList())
     }
 
     @GetMapping(RESTAURANT, consumes = [MediaType.ALL_VALUE])
     fun getRestaurantInformation(
+            submitter: Submitter?,
             @PathVariable(RESTAURANT_ID_VALUE) restaurantId: String
     ): ResponseEntity<DetailedRestaurantOutput> {
         val restaurant = ensureRestaurantExists(restaurantId)
 
         return ResponseEntity
                 .ok()
-                .body(toDetailedRestaurantOutput(restaurant))
+                .body(toDetailedRestaurantOutput(restaurant, submitter?.identifier))
     }
 
     @PostMapping(RESTAURANTS, consumes = [MediaType.APPLICATION_JSON_VALUE])
@@ -90,7 +92,8 @@ class RestaurantController(
                 restaurantName = restaurant.name!!,
                 cuisines = restaurant.cuisines!!,
                 latitude = restaurant.latitude!!,
-                longitude = restaurant.longitude!!
+                longitude = restaurant.longitude!!,
+                ownerId = restaurant.ownerId!!
         )
 
         return ResponseEntity
@@ -123,7 +126,7 @@ class RestaurantController(
     }
 
     @PutMapping(RESTAURANT_VOTE, consumes = [MediaType.APPLICATION_JSON_VALUE])
-    fun alterRestaurantVote(
+    fun putRestaurantVote(
             @PathVariable(RESTAURANT_ID_VALUE) restaurantId: String,
             @Valid @RequestBody userVote: VoteInput,
             submitter: Submitter?
@@ -135,7 +138,7 @@ class RestaurantController(
         submissionService.alterRestaurantVote(
                 restaurant = restaurant,
                 submitterId = submitter.identifier,
-                vote = userVote.vote!!
+                voteState = userVote.vote
         )
 
         return ResponseEntity
@@ -143,19 +146,22 @@ class RestaurantController(
                 .build()
     }
 
-    @DeleteMapping(RESTAURANT_VOTE, consumes = [MediaType.ALL_VALUE])
-    fun deleteRestaurantVote(
+    @PutMapping(RESTAURANT_FAVORITE)
+    fun setFavoriteRestaurant(
+            submitter: Submitter?,
             @PathVariable(RESTAURANT_ID_VALUE) restaurantId: String,
-            submitter: Submitter?
-    ): ResponseEntity<Void> {
+            @Valid @RequestBody favorite: FavoriteInput
+    ): ResponseEntity<Any> {
         submitter ?: throw NotAuthenticatedException()
 
-        val restaurant = ensureRestaurantExists(restaurantId)
-        submissionService.deleteRestaurantVote(
-                restaurant = restaurant,
-                submitterId = submitter.identifier
-        )
+        var restaurant = ensureRestaurantExists(restaurantId)
+        restaurant = restaurantService.createRestaurantIfAbsent(restaurant)
 
+        restaurantService.setFavorite(
+                restaurant.identifier.value.submissionId!!,
+                submitter.identifier,
+                favorite.isFavorite!!
+        )
         return ResponseEntity.ok().build()
     }
 
