@@ -337,11 +337,7 @@ class MealDataSource(
             uri = uri,
             reqHeader = reqHeader,
             reqPayload = VoteOutput(
-                vote = when (vote) {
-                    VoteState.NOT_VOTED -> null
-                    VoteState.POSITIVE -> true
-                    VoteState.NEGATIVE -> false
-                }
+                vote = vote
             ),
             onError = error,
             responseConsumer = { success() }
