@@ -44,7 +44,7 @@ interface IFavoriteActionButton : IContext, IAction, IUserSession, ILog {
         if (isFavorite) {
             favoriteButton.changeColor(fetchCtx(), R.color.colorYellow)
         } else {
-            favoriteButton.changeColor(fetchCtx(), R.color.colorGray)
+            favoriteButton.changeColor(fetchCtx(), R.color.colorBlack)
         }
     }
 
