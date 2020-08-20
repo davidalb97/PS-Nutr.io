@@ -25,4 +25,7 @@ abstract class MealItemDao {
                 " WHERE ${DbMealItemEntity.sourceOrdinalName} = :sourceOrdinal"
     )
     abstract fun deleteAllBySource(sourceOrdinal: Int)
+
+    @Query("DELETE FROM $TABLE WHERE $PRIMARY_KEY = :dbMealId")
+    abstract fun deleteById(dbMealId: Long)
 }

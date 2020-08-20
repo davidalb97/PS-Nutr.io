@@ -2,22 +2,34 @@ package pt.ipl.isel.leic.ps.androidclient.ui.provider
 
 import android.content.Intent
 import android.os.Bundle
-import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.RestaurantRecyclerViewModel
-
-const val RESTAURANT_LIST_VIEW_STATE: String = "RESTAURANT_LIST_VIEW_STATE"
+import androidx.lifecycle.ViewModel
+import pt.ipl.isel.leic.ps.androidclient.ui.util.Logger
+import pt.ipl.isel.leic.ps.androidclient.ui.util.Navigation
+import pt.ipl.isel.leic.ps.androidclient.ui.util.getItemActions
+import pt.ipl.isel.leic.ps.androidclient.ui.util.getNavigation
+import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.RestaurantListViewModel
 
 class RestaurantRecyclerVMProviderFactory(
+    arguments: Bundle?,
     savedInstanceState: Bundle?,
     intent: Intent
-) : AViewModelProviderFactory<RestaurantRecyclerViewModel>(
+) : BaseViewModelProviderFactory(
+    arguments,
     savedInstanceState,
     intent
 ) {
-    override fun getStateName(): String = RESTAURANT_LIST_VIEW_STATE
+    override val logger = Logger(RestaurantRecyclerVMProviderFactory::class)
 
-    override fun getViewModelClass(): Class<RestaurantRecyclerViewModel> =
-        RestaurantRecyclerViewModel::class.java
-
-    override fun newViewModel(): RestaurantRecyclerViewModel =
-        RestaurantRecyclerViewModel()
+    override fun <T : ViewModel?> newViewModel(modelClass: Class<T>): ViewModel? {
+        return when (modelClass) {
+            RestaurantListViewModel::class.java -> {
+                RestaurantListViewModel(
+                    navDestination = arguments?.getNavigation()
+                        ?: Navigation.SEND_TO_RESTAURANT_DETAIL,
+                    actions = arguments?.getItemActions() ?: emptyList()
+                )
+            }
+            else -> null
+        }
+    }
 }

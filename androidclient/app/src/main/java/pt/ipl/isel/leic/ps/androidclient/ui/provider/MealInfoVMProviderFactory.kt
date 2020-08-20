@@ -2,27 +2,44 @@ package pt.ipl.isel.leic.ps.androidclient.ui.provider
 
 import android.content.Intent
 import android.os.Bundle
-import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.MealInfoViewModel
+import androidx.lifecycle.ViewModel
+import pt.ipl.isel.leic.ps.androidclient.ui.util.Logger
+import pt.ipl.isel.leic.ps.androidclient.ui.util.getItemActions
+import pt.ipl.isel.leic.ps.androidclient.ui.util.getMealInfo
+import pt.ipl.isel.leic.ps.androidclient.ui.util.getMealItem
+import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.meal.info.MealInfoViewModel
 
-const val CALCULATOR_VIEW_STATE: String = "CALCULATOR_VIEW_STATE"
-const val BUNDLE_MEAL_INFO = "BUNDLE_MEAL_INFO"
-const val BUNDLE_MEAL_DB_ID = "BUNDLE_MEAL_DB_ID"
-const val BUNDLE_MEAL_SUBMISSION_ID = "BUNDLE_MEAL_DB_SUBMISSION_ID"
-const val BUNDLE_MEAL_RESTAURANT_SUBMISSION_ID = "BUNDLE_MEAL_DB_RESTAURANT_SUBMISSION_ID"
-const val BUNDLE_MEAL_SOURCE = "BUNDLE_MEAL_SOURCE_ORDINAL"
-
-class MealInfoVMProviderFactory(
+open class MealInfoVMProviderFactory(
+    arguments: Bundle?,
     savedInstanceState: Bundle?,
-    intent: Intent,
-    private val arguments: Bundle?
-) : AViewModelProviderFactory<MealInfoViewModel>(
+    intent: Intent
+) : IngredientRecyclerVMProviderFactory(
+    arguments,
     savedInstanceState,
     intent
 ) {
-    override fun getStateName(): String = CALCULATOR_VIEW_STATE
+    override val logger = Logger(MealInfoVMProviderFactory::class)
 
-    override fun getViewModelClass(): Class<MealInfoViewModel> =
-        MealInfoViewModel::class.java
-
-    override fun newViewModel(): MealInfoViewModel = MealInfoViewModel()
+    override fun <T : ViewModel?> newViewModel(modelClass: Class<T>): ViewModel? {
+        return when (modelClass) {
+            MealInfoViewModel::class.java -> {
+                val mealInfo = arguments?.getMealInfo()
+                val mealItem = arguments?.getMealItem()
+                when {
+                    mealInfo != null -> MealInfoViewModel(
+                        mealInfo = mealInfo,
+                        ingredientActions = arguments?.getItemActions() ?: emptyList()
+                    )
+                    mealItem != null -> MealInfoViewModel(
+                        mealItem = mealItem,
+                        ingredientActions = arguments?.getItemActions() ?: emptyList()
+                    )
+                    else -> MealInfoViewModel(
+                        ingredientActions = arguments?.getItemActions() ?: emptyList()
+                    )
+                }
+            }
+            else -> super.newViewModel(modelClass)
+        }
+    }
 }

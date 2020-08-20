@@ -19,7 +19,7 @@ import pt.ipl.isel.leic.ps.androidclient.data.db.entity.*
         DbPortionEntity::class,
         DbRestaurantInfoEntity::class,
         DbRestaurantItemEntity::class,
-        InsulinProfileEntity::class,
+        DbInsulinProfileEntity::class,
         DbCalculationHistoryEntity::class
     ],
     version = ROOM_DB_VERSION

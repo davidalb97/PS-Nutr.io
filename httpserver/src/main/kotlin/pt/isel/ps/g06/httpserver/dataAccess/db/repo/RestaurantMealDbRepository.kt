@@ -27,7 +27,8 @@ class RestaurantMealDbRepository(jdbi: Jdbi) : SubmissionDbRepository(jdbi) {
     fun insert(
             submitterId: Int?,
             mealId: Int,
-            restaurantId: Int
+            restaurantId: Int,
+            verified: Boolean
     ): DbRestaurantMealDto {
         return jdbi.inTransaction<DbRestaurantMealDto, Exception>(isolationLevel) {
             // Check if the mealId is from a Meal
@@ -68,7 +69,7 @@ class RestaurantMealDbRepository(jdbi: Jdbi) : SubmissionDbRepository(jdbi) {
                 )
             })
 
-            return@inTransaction restaurantMealDao.insert(submissionId, restaurantId, mealId)
+            return@inTransaction restaurantMealDao.insert(submissionId, restaurantId, mealId, verified)
         }
     }
 

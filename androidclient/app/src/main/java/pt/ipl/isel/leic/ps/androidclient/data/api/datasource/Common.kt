@@ -12,7 +12,7 @@ const val SUBMITTER_QUERY = "?submitter"
 fun buildAuthHeader(jwt: String): MutableMap<String, String> =
     mutableMapOf(Pair(AUTH_HEADER, "$BEARER $jwt"))
 
-// Builds uris swapping the matching hashmap keys with the respective values
+// Builds uris swapping the matching HashMap keys with the respective values
 fun buildUri(
     baseUri: String,
     parameters: HashMap<String, String>?

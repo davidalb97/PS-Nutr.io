@@ -3,10 +3,10 @@ package pt.ipl.isel.leic.ps.androidclient.data.model
 import android.net.Uri
 import android.os.Parcel
 import android.os.Parcelable
-import pt.ipl.isel.leic.ps.androidclient.data.util.readBoolean
-import pt.ipl.isel.leic.ps.androidclient.data.util.readUri
-import pt.ipl.isel.leic.ps.androidclient.data.util.writeBoolean
-import pt.ipl.isel.leic.ps.androidclient.data.util.writeUri
+import pt.ipl.isel.leic.ps.androidclient.util.readBooleanCompat
+import pt.ipl.isel.leic.ps.androidclient.util.readUri
+import pt.ipl.isel.leic.ps.androidclient.util.writeBooleanCompat
+import pt.ipl.isel.leic.ps.androidclient.util.writeUri
 
 data class RestaurantItem(
     var dbId: Long,
@@ -15,7 +15,8 @@ data class RestaurantItem(
     val latitude: Float,
     val longitude: Float,
     val votes: Votes?,
-    val isFavorite: Boolean,
+    var isFavorite: Boolean,
+    val isVotable: Boolean,
     val imageUri: Uri?,
     val source: Source
 ) : Parcelable {
@@ -27,8 +28,9 @@ data class RestaurantItem(
         latitude = parcel.readFloat(),
         longitude = parcel.readFloat(),
         votes = parcel.readParcelable<Votes>(Votes::class.java.classLoader),
-        isFavorite = readBoolean(parcel),
-        imageUri = readUri(parcel),
+        isFavorite = parcel.readBooleanCompat(),
+        isVotable = parcel.readBooleanCompat(),
+        imageUri = parcel.readUri(),
         source = Source.values()[parcel.readInt()]
     )
 
@@ -36,12 +38,12 @@ data class RestaurantItem(
         parcel.writeLong(dbId)
         parcel.writeString(id)
         parcel.writeString(name)
-        parcel.writeValue(latitude)
-        parcel.writeValue(longitude)
-        //Does not need to close resources, using flag 0
+        parcel.writeFloat(latitude)
+        parcel.writeFloat(longitude)
         parcel.writeParcelable(votes, flags)
-        writeBoolean(parcel, isFavorite)
-        writeUri(parcel, imageUri)
+        parcel.writeBooleanCompat(isFavorite)
+        parcel.writeBooleanCompat(isVotable)
+        parcel.writeUri(imageUri)
         parcel.writeInt(source.ordinal)
     }
 

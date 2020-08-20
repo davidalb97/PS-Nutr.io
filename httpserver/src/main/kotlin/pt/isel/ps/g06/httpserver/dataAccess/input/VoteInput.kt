@@ -1,8 +1,7 @@
 package pt.isel.ps.g06.httpserver.dataAccess.input
 
-import javax.validation.constraints.NotNull
+import pt.isel.ps.g06.httpserver.model.VoteState
 
 data class VoteInput(
-        @field:NotNull(message = "You must provide a vote!")
-        val vote: Boolean?
+        val vote: VoteState
 )

@@ -3,6 +3,7 @@ package pt.isel.ps.g06.httpserver.service
 import org.springframework.stereotype.Service
 import pt.isel.ps.g06.httpserver.common.exception.clientError.InvalidMealException
 import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.restaurant.DbMealResponseMapper
+import pt.isel.ps.g06.httpserver.dataAccess.db.repo.FavoriteDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.MealDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.input.IngredientInput
 import pt.isel.ps.g06.httpserver.model.Meal
@@ -10,10 +11,13 @@ import pt.isel.ps.g06.httpserver.model.Meal
 @Service
 class MealService(
         private val dbMealRepo: MealDbRepository,
-//        private val dbRestaurantMealRepo: RestaurantMealDbRepository,
-//        private val dbRestaurantMealResponseMapper: DbRestaurantMealResponseMapper,
+        private val dbFavoriteDbRepository: FavoriteDbRepository,
         private val dbMealResponseMapper: DbMealResponseMapper
 ) {
+    fun setFavorite(mealId: Int, userId: Int, isFavorite: Boolean): Boolean {
+        return dbFavoriteDbRepository.setFavorite(mealId, userId, isFavorite)
+    }
+
     fun getMeal(mealId: Int): Meal? {
         return dbMealRepo
                 .getById(mealId)

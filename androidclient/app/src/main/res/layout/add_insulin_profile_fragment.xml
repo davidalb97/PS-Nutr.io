@@ -9,33 +9,36 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/profile_name_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:layout_marginRight="30dp"
-            android:layout_marginLeft="30dp"
-            android:text="@string/profile_name_label"
-            android:textColor="?attr/textColor"
-            android:textSize="24sp"
-            android:layout_gravity="center">
-        </TextView>
-
         <EditText
             android:id="@+id/profile_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="200dp"
+            android:layout_height="40dp"
+            android:background="@drawable/textbox_shape"
             android:layout_marginTop="15dp"
             android:layout_gravity="center"
+            android:layout_centerVertical="true"
+            android:gravity="center"
+            android:focusable="true"
             android:hint="@string/add_profile_name_hint" />
+
+        <!--Separator-->
+        <View
+            android:layout_width="match_parent"
+            android:layout_margin="20dp"
+            android:layout_height="1dp"
+            android:background="?attr/separatorColor"/>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+        </RelativeLayout>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
-            android:layout_marginRight="30dp"
-            android:layout_marginLeft="30dp"
+            android:gravity="center"
             android:text="@string/define_the_profile_time_period"
             android:textColor="?attr/textColor"
             android:textSize="24sp"
@@ -94,29 +97,77 @@
 
             </RelativeLayout>
 
+        </RelativeLayout>
+
+        <!--Separator-->
+        <View
+            android:layout_width="match_parent"
+            android:layout_margin="20dp"
+            android:layout_height="1dp"
+            android:background="?attr/separatorColor"/>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/glucose_unit_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginLeft="30dp"
+                android:layout_centerVertical="true"
+                android:text="@string/glucose_unit"
+                android:textColor="?attr/textColor"
+                android:textSize="18sp"
+                android:layout_gravity="center">
+            </TextView>
+
+            <Spinner
+                android:id="@+id/glucose_measurement_units"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/glucose_unit_label"
+                android:textAlignment="center"
+                android:layout_gravity="center"
+                android:layout_marginTop="15dp"
+                android:layout_centerVertical="true"
+                android:entries="@array/calculator_units">
+            </Spinner>
 
         </RelativeLayout>
 
-        <TextView
+        <RelativeLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:layout_marginRight="30dp"
-            android:layout_marginLeft="30dp"
-            android:text="@string/glucose_objective"
-            android:textColor="?attr/textColor"
-            android:textSize="18sp"
-            android:layout_gravity="center">
-        </TextView>
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/glucose_objective_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginLeft="30dp"
+                android:layout_centerVertical="true"
+                android:text="@string/glucose_objective"
+                android:textColor="?attr/textColor"
+                android:textSize="18sp"
+                android:layout_gravity="center">
+            </TextView>
 
-        <EditText
-            android:id="@+id/glucose_objective"
-            android:inputType="number"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:hint="@string/glucose_object_hint">
-        </EditText>
+            <EditText
+                android:id="@+id/glucose_objective"
+                android:inputType="number"
+                android:layout_width="100dp"
+                android:layout_height="30dp"
+                android:background="@drawable/textbox_shape"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@id/glucose_objective_label"
+                android:focusable="true">
+            </EditText>
+        </RelativeLayout>
 
         <TextView
             android:layout_width="wrap_content"
@@ -133,11 +184,22 @@
         <EditText
             android:id="@+id/glucose_amount"
             android:inputType="number"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="100dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/textbox_shape"
             android:layout_gravity="center"
-            android:hint="@string/glucose_amount_hint">
+            android:gravity="center"
+            android:focusable="true">
         </EditText>
+
+        <!--Separator-->
+        <View
+            android:layout_width="match_parent"
+            android:layout_margin="20dp"
+            android:layout_height="1dp"
+            android:background="?attr/separatorColor"/>
+
 
         <TextView
             android:layout_width="wrap_content"
@@ -152,14 +214,33 @@
             android:layout_gravity="center">
         </TextView>
 
-        <EditText
-            android:id="@+id/carbo_amount"
-            android:inputType="number"
+        <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:hint="@string/carbohydrate_amount">
-        </EditText>
+            android:layout_marginTop="10dp">
+
+            <EditText
+                android:id="@+id/carbo_amount"
+                android:inputType="number"
+                android:layout_width="100dp"
+                android:layout_height="30dp"
+                android:background="@drawable/textbox_shape"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:focusable="true">
+            </EditText>
+
+            <Spinner
+                android:id="@+id/carbohydrate_measurement_units"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:layout_gravity="center"
+                android:layout_toEndOf="@+id/carbo_amount"
+                android:layout_centerVertical="true"
+                android:entries="@array/weight_units">
+            </Spinner>
+        </RelativeLayout>
 
         <Button
             android:id="@+id/create_custom_meal"

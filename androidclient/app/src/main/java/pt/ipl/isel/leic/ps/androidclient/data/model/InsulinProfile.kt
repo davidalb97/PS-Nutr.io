@@ -3,38 +3,38 @@ package pt.ipl.isel.leic.ps.androidclient.data.model
 import android.os.Parcel
 import android.os.Parcelable
 import androidx.room.PrimaryKey
-import pt.ipl.isel.leic.ps.androidclient.data.util.TimestampWithTimeZone
-import pt.ipl.isel.leic.ps.androidclient.data.util.readTimestampWithTimeZone
-import pt.ipl.isel.leic.ps.androidclient.data.util.writeTimestampWithTimeZone
+import pt.ipl.isel.leic.ps.androidclient.util.TimestampWithTimeZone
+import pt.ipl.isel.leic.ps.androidclient.util.readTimestampWithTimeZone
+import pt.ipl.isel.leic.ps.androidclient.util.writeTimestampWithTimeZone
 
 data class InsulinProfile(
     @PrimaryKey val profileName: String,
     val startTime: String,
     val endTime: String,
-    val glucoseObjective: Int,
-    val glucoseAmountPerInsulin: Int,
-    val carbsAmountPerInsulin: Int,
+    val glucoseObjective: Float,
+    val glucoseAmountPerInsulin: Float,
+    val carbsAmountPerInsulin: Float,
     val modificationDate: TimestampWithTimeZone?
 ) : Parcelable {
 
     constructor(parcel: Parcel) : this(
         profileName = parcel.readString()!!,
-        modificationDate = readTimestampWithTimeZone(parcel),
+        modificationDate = parcel.readTimestampWithTimeZone(),
         startTime = parcel.readString()!!,
         endTime = parcel.readString()!!,
-        glucoseObjective = parcel.readInt(),
-        glucoseAmountPerInsulin = parcel.readInt(),
-        carbsAmountPerInsulin = parcel.readInt()
+        glucoseObjective = parcel.readFloat(),
+        glucoseAmountPerInsulin = parcel.readFloat(),
+        carbsAmountPerInsulin = parcel.readFloat()
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(profileName)
-        writeTimestampWithTimeZone(parcel, modificationDate)
+        parcel.writeTimestampWithTimeZone(modificationDate)
         parcel.writeString(startTime)
         parcel.writeString(endTime)
-        parcel.writeInt(glucoseObjective)
-        parcel.writeInt(glucoseAmountPerInsulin)
-        parcel.writeInt(carbsAmountPerInsulin)
+        parcel.writeFloat(glucoseObjective)
+        parcel.writeFloat(glucoseAmountPerInsulin)
+        parcel.writeFloat(carbsAmountPerInsulin)
     }
 
     override fun describeContents(): Int {

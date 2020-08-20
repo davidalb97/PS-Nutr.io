@@ -9,72 +9,75 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionContractType.VOTABLE
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.UserVoteDao
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.VotableDao
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbUserVoteDto
+import pt.isel.ps.g06.httpserver.model.VoteState
 
 private val isolationLevel = TransactionIsolationLevel.SERIALIZABLE
 private val voteDaoClass = UserVoteDao::class.java
 
 @Repository
 class VoteDbRepository(jdbi: Jdbi) : BaseDbRepo(jdbi) {
-    fun insertOrUpdate(voterId: Int, submissionId: Int, vote: Boolean): DbUserVoteDto {
-        return jdbi.inTransaction<DbUserVoteDto, Exception>(isolationLevel) {
 
-            // Check if the submission exists and it is votable
-            if (!requireContract(submissionId, VOTABLE, isolationLevel)) {
-                throw NonVotableSubmissionException()
-            }
-
-            val voteDao = it.attach(voteDaoClass)
-            val userVoteForSubmission = voteDao.getUserVoteForSubmission(submissionId, voterId)
-
-            val userVote: DbUserVoteDto
-            val positive: Int
-            val negative: Int
-
-            if (userVoteForSubmission == null) {
-                //User has not voted yet
-                userVote = voteDao.insert(submissionId, voterId, vote)
-                positive = if (vote) 1 else 0
-                negative = if (vote) 0 else 1
-            } else {
-                if (userVoteForSubmission.vote == vote) {
-                    //If vote call is the same has vote intent, no point in updating
-                    return@inTransaction userVoteForSubmission
-                } else {
-                    userVote = voteDao.update(submissionId, voterId, vote)
-                    positive = if (vote) 1 else -1
-                    negative = if (vote) -1 else 1
-                }
-
-            }
-
-            //Update vote number count
-            it.attach(VotableDao::class.java).incrementVotes(submissionId, positive, negative)
-            return@inTransaction userVote
-        }
-    }
-
-    fun delete(submitterId: Int, submissionId: Int) {
-        jdbi.inTransaction<Unit, Exception>(isolationLevel) {
-
+    //It is not required to run exhaustive when for equal states.
+    @Suppress("NON_EXHAUSTIVE_WHEN")
+    fun setVote(voterId: Int, submissionId: Int, newVote: VoteState) {
+        return jdbi.inTransaction<Unit, Exception>(isolationLevel) {
             // Check if the submission exists and it is votable
             if (!requireContract(submissionId, VOTABLE, isolationLevel)) {
                 throw NonVotableSubmissionException()
             }
 
             // Check if this submitter already voted this submission
-            val userVote = it
+            val oldVote = it
                     .attach(UserVoteDao::class.java)
-                    .getUserVoteForSubmission(submissionId, submitterId)
-                    ?: throw NotYetVotedException()
+                    .getUserVoteForSubmission(submissionId, voterId)
+                    ?.let { if(it.vote) VoteState.POSITIVE else VoteState.NEGATIVE }
+                    ?: VoteState.NOT_VOTED
 
-            // Remove the user's vote on that Submission
-            it.attach(voteDaoClass).delete(submissionId, submitterId)
+            val voteDao = it.attach(voteDaoClass)
+
+            if(oldVote == newVote) {
+                return@inTransaction
+            }
+            var positiveOffset = 0
+            var negativeOffset = 0
+
+            when(oldVote) {
+                VoteState.NOT_VOTED -> {
+                    when(newVote) {
+                        VoteState.NEGATIVE -> negativeOffset++
+                        VoteState.POSITIVE -> positiveOffset++
+                    }
+                    voteDao.insert(submissionId, voterId, newVote == VoteState.POSITIVE)
+                }
+                VoteState.NEGATIVE -> when(newVote) {
+                    VoteState.NOT_VOTED -> {
+                        negativeOffset--
+                        voteDao.delete(submissionId, voterId)
+                    }
+                    VoteState.POSITIVE -> {
+                        positiveOffset++
+                        negativeOffset--
+                        voteDao.insert(submissionId, voterId, true)
+                    }
+                }
+                VoteState.POSITIVE -> when(newVote) {
+                    VoteState.NOT_VOTED -> {
+                        positiveOffset--
+                        voteDao.delete(submissionId, voterId)
+                    }
+                    VoteState.NEGATIVE -> {
+                        positiveOffset--
+                        negativeOffset++
+                        voteDao.insert(submissionId, voterId, false)
+                    }
+                }
+            }
 
             //Update vote number count
             it.attach(VotableDao::class.java).incrementVotes(
                     submissionId = submissionId,
-                    positiveOffset = if (userVote.vote) -1 else 0,
-                    negativeOffset = if (userVote.vote) 0 else -1
+                    positiveOffset = positiveOffset,
+                    negativeOffset = negativeOffset
             )
         }
     }

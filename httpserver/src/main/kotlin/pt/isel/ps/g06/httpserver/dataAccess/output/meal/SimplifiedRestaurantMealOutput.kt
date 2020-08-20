@@ -19,6 +19,8 @@ open class SimplifiedRestaurantMealOutput(
         name = name,
         isFavorite = isFavorite,
         isSuggested = isSuggested,
+        //A restaurant meal is always votable
+        isVotable = true,
         imageUri = imageUri
 )
 

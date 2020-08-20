@@ -11,7 +11,7 @@
 
     </PreferenceCategory>
 
-    <PreferenceCategory app:title="Insulin units">
+    <PreferenceCategory app:title="Measurement units">
 
         <ListPreference
             app:key="insulin_units"

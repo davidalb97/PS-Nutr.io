@@ -51,7 +51,7 @@ class RestaurantDbRepository(jdbi: Jdbi) : SubmissionDbRepository(jdbi) {
             cuisineNames: Collection<String> = emptyList(),
             latitude: Float,
             longitude: Float,
-            ownerId: Int
+            ownerId: Int?
     ): DbRestaurantDto {
         return jdbi.inTransaction<DbRestaurantDto, Exception>(isolationLevel) {
             //Insert Submission

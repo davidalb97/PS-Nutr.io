@@ -1,5 +1,6 @@
 package pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant
 
+import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatDelegate
@@ -8,21 +9,20 @@ import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreferenceCompat
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.sharedPreferences
 import pt.ipl.isel.leic.ps.androidclient.R
+import pt.ipl.isel.leic.ps.androidclient.ui.util.getIsNightMode
+import pt.ipl.isel.leic.ps.androidclient.ui.util.setIsNightMode
 
 const val SECRET_PREFERENCES = "encryptedPreferences"
-const val PREFERENCES = "preferences.xml"
+const val PREFERENCES = "preferences"
 const val DARK_MODE = "dark_mode"
 
-// Application shared preferences keys
-const val FIRST_TIME = "isFirstTime"
-const val USERNAME = "username"
-const val PASSWORD = "password"
-const val EMAIL = "email"
-const val JWT = "jwt"
 
 class SettingsFragment : PreferenceFragmentCompat() {
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+        preferenceManager.sharedPreferencesMode = Context.MODE_PRIVATE
+        preferenceManager.sharedPreferencesName = PREFERENCES
+
         addPreferencesFromResource(R.xml.preferences)
         setupDarkModeSwitch()
     }
@@ -30,7 +30,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
     private fun setupDarkModeSwitch() {
         val darkModeSwitch = findPreference<SwitchPreferenceCompat>(DARK_MODE)
 
-        val isLightMode = sharedPreferences.getBoolean(DARK_MODE, false)
+        val isLightMode = sharedPreferences.getIsNightMode()
         val editor: SharedPreferences.Editor = sharedPreferences.edit()
 
         if (!isLightMode) {
@@ -43,11 +43,11 @@ class SettingsFragment : PreferenceFragmentCompat() {
             Preference.OnPreferenceChangeListener { preference: Preference, value: Any ->
                 if (!(value as Boolean)) {
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                    editor.putBoolean(DARK_MODE, false)
+                    editor.setIsNightMode(false)
                     editor.apply()
                 } else {
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-                    editor.putBoolean(DARK_MODE, true)
+                    editor.setIsNightMode(true)
                     editor.apply()
                 }
                 true

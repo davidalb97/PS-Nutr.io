@@ -2,21 +2,34 @@ package pt.ipl.isel.leic.ps.androidclient.ui.provider
 
 import android.content.Intent
 import android.os.Bundle
-import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.MealRecyclerViewModel
-
-const val MEAL_LIST_VIEW_STATE: String = "MEAL_LIST_VIEW_STATE"
+import androidx.lifecycle.ViewModel
+import pt.ipl.isel.leic.ps.androidclient.ui.util.*
+import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.meal.MealItemListViewModel
 
 class MealRecyclerVMProviderFactory(
+    arguments: Bundle?,
     savedInstanceState: Bundle?,
     intent: Intent
-) : AViewModelProviderFactory<MealRecyclerViewModel>(
+) : BaseViewModelProviderFactory(
+    arguments,
     savedInstanceState,
     intent
 ) {
-    override fun getStateName(): String = MEAL_LIST_VIEW_STATE
+    override val logger = Logger(MealRecyclerVMProviderFactory::class)
 
-    override fun getViewModelClass(): Class<MealRecyclerViewModel> =
-        MealRecyclerViewModel::class.java
-
-    override fun newViewModel(): MealRecyclerViewModel = MealRecyclerViewModel()
+    override fun <T : ViewModel?> newViewModel(modelClass: Class<T>): ViewModel? {
+        return when (modelClass) {
+            MealItemListViewModel::class.java -> {
+                MealItemListViewModel(
+                    navDestination = arguments?.getNavigation()
+                        ?: Navigation.SEND_TO_RESTAURANT_DETAIL,
+                    actions = requireNotNull(arguments?.getItemActions()),
+                    source = requireNotNull(arguments?.getSource()),
+                    restaurantId = arguments?.getRestaurantSubmissionId(),
+                    cuisines = arguments?.getCuisines() ?: emptyList()
+                )
+            }
+            else -> null
+        }
+    }
 }

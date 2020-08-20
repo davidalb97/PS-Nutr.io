@@ -55,7 +55,7 @@ interface RestaurantDao {
                @Bind restaurantName: String,
                @Bind latitude: Float,
                @Bind longitude: Float,
-               @Bind ownerId: Int
+               @Bind ownerId: Int?
     ): DbRestaurantDto
 
     @SqlQuery("DELETE FROM $table WHERE $id = :submissionId RETURNING *")

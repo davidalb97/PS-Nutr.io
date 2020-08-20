@@ -30,7 +30,7 @@
             </TextView>
 
             <EditText
-                android:id="@+id/userNameInput"
+                android:id="@+id/userEmailInput"
                 android:padding="5dp"
                 android:layout_centerHorizontal="true"
                 android:layout_width="match_parent"
@@ -39,9 +39,11 @@
                 android:layout_marginTop="10dp"
                 android:layout_below="@+id/loginTitle"
                 android:background="@drawable/textbox_shape"
-                android:drawableStart="@drawable/ic_user"
+                android:drawableStart="@drawable/ic_email"
                 android:drawablePadding="10dp"
-                android:hint="@string/username">
+                android:hint="@string/email"
+                android:focusable="true"
+                >
             </EditText>
 
             <EditText
@@ -49,7 +51,7 @@
                 android:inputType="textPassword"
                 android:padding="5dp"
                 android:layout_marginTop="10dp"
-                android:layout_below="@+id/userNameInput"
+                android:layout_below="@+id/userEmailInput"
                 android:layout_centerHorizontal="true"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -57,7 +59,9 @@
                 android:drawableStart="@drawable/ic_password"
                 android:drawablePadding="10dp"
                 android:background="@drawable/textbox_shape"
-                android:hint="@string/password">
+                android:hint="@string/password"
+                android:focusable="true"
+                >
             </EditText>
 
             <Button

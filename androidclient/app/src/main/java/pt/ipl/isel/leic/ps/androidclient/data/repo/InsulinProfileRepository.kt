@@ -1,16 +1,15 @@
 package pt.ipl.isel.leic.ps.androidclient.data.repo
 
-import androidx.lifecycle.LiveData
 import com.android.volley.VolleyError
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.roomDb
 import pt.ipl.isel.leic.ps.androidclient.data.api.datasource.InsulinProfileDataSource
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.output.InsulinProfileOutput
-import pt.ipl.isel.leic.ps.androidclient.data.api.mapper.InputInsulinProfileMapper
-import pt.ipl.isel.leic.ps.androidclient.data.db.entity.InsulinProfileEntity
+import pt.ipl.isel.leic.ps.androidclient.data.api.mapper.input.InputInsulinProfileMapper
 import pt.ipl.isel.leic.ps.androidclient.data.db.mapper.DbInsulinProfileMapper
 import pt.ipl.isel.leic.ps.androidclient.data.model.InsulinProfile
-import pt.ipl.isel.leic.ps.androidclient.data.util.AsyncWorker
+import pt.ipl.isel.leic.ps.androidclient.data.model.UserSession
 import pt.ipl.isel.leic.ps.androidclient.hasInternetConnection
+import pt.ipl.isel.leic.ps.androidclient.util.AsyncWorker
 
 class InsulinProfileRepository(private val dataSource: InsulinProfileDataSource) {
 
@@ -51,11 +50,15 @@ class InsulinProfileRepository(private val dataSource: InsulinProfileDataSource)
         }
     }*/
 
-    fun addProfile(profileDb: InsulinProfile, jwt: String?, onError: (VolleyError) -> Unit) =
+    fun addProfile(
+        profileDb: InsulinProfile,
+        userSession: UserSession?,
+        onError: (VolleyError) -> Unit
+    ) =
         AsyncWorker<Unit, Unit> {
             roomDb.insulinProfileDao().insert(insulinProfileMapper.mapToRelation(profileDb))
 
-            if (!jwt.isNullOrBlank() && hasInternetConnection()) {
+            if (userSession != null && hasInternetConnection()) {
                 dataSource.postInsulinProfile(
                     InsulinProfileOutput(
                         profileName = profileDb.profileName,
@@ -65,17 +68,20 @@ class InsulinProfileRepository(private val dataSource: InsulinProfileDataSource)
                         insulinSensitivityFactor = profileDb.glucoseAmountPerInsulin,
                         carbohydrateRatio = profileDb.carbsAmountPerInsulin
                     ),
-                    jwt,
+                    userSession.jwt,
                     onError
                 )
             }
         }
 
-    fun deleteProfile(profileName: String, jwt: String?, onError: (VolleyError) -> Unit) =
-        AsyncWorker<Unit, Unit> {
-            if (!jwt.isNullOrBlank() && hasInternetConnection())
-                dataSource.deleteInsulinProfile(profileName, jwt, onError)
-            roomDb.insulinProfileDao().delete(profileName)
-        }
+    fun deleteProfile(
+        profileName: String,
+        userSession: UserSession?,
+        onError: (VolleyError) -> Unit
+    ) = AsyncWorker<Unit, Unit> {
+        if (userSession != null && hasInternetConnection())
+            dataSource.deleteInsulinProfile(profileName, userSession.jwt, onError)
+        roomDb.insulinProfileDao().delete(profileName)
+    }
 }
 

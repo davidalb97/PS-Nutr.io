@@ -27,9 +27,14 @@ interface RestaurantMealDao {
             "WHERE $table.$restaurantId = :restaurantId")
     fun getAllUserMealsByRestaurantId(@Bind restaurantId: Int): Collection<DbRestaurantMealDto>
 
-    @SqlQuery("INSERT INTO $table($id, $restaurantId, $mealId)" +
-            " VALUES(:submissionId, :restaurantId, :mealId) RETURNING *")
-    fun insert(@Bind submissionId: Int, @Bind restaurantId: Int, @Bind mealId: Int): DbRestaurantMealDto
+    @SqlQuery("INSERT INTO $table($id, $restaurantId, $mealId, $verified)" +
+            " VALUES(:submissionId, :restaurantId, :mealId, :verified) RETURNING *")
+    fun insert(
+            @Bind submissionId: Int,
+            @Bind restaurantId: Int,
+            @Bind mealId: Int,
+            @Bind verified: Boolean
+    ): DbRestaurantMealDto
 
     @SqlQuery("UPDATE $table SET $verified = :verified WHERE $id = :submissionId  RETURNING *")
     fun updateRestaurantMealVerification(@Bind submissionId: Int, verified: Boolean): DbRestaurantMealDto

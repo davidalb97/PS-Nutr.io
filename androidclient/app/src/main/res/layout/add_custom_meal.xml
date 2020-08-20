@@ -7,7 +7,8 @@
         android:orientation="vertical"
         android:gravity="center"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        >
         <TextView
             android:id="@+id/meal_name_label"
             android:layout_width="wrap_content"
@@ -29,7 +30,42 @@
             android:layout_gravity="center"
             android:padding="5dp"
             android:background="@drawable/textbox_shape"
-            android:hint="@string/add_the_meal_name" />
+            android:hint="@string/add_the_meal_name"
+            android:importantForAutofill="no"
+            android:inputType="text"
+            android:focusable="true"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:layout_marginRight="30dp"
+            android:layout_marginLeft="30dp"
+            android:text="@string/cuisines"
+            android:textColor="?attr/textColor"
+            android:textSize="24sp"
+            android:layout_gravity="center">
+        </TextView>
+
+        <Spinner
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/custom_meal_cuisines_spinner"
+            android:textSize="30sp"
+            android:inputType="text"
+            android:singleLine="true"
+            android:imeActionLabel="Done"
+            android:imeOptions="actionDone"
+            android:focusable="true"
+            />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:id="@+id/custom_meal_cuisines_list"
+            />
 
         <TextView
             android:layout_width="wrap_content"
@@ -43,8 +79,39 @@
             android:layout_gravity="center">
         </TextView>
 
+        <Spinner
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/custom_meal_ingredients_spinner"
+            android:textSize="30sp"
+            android:inputType="text"
+            android:singleLine="true"
+            android:imeActionLabel="Done"
+            android:imeOptions="actionDone"
+            android:focusable="true"
+            />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:id="@+id/custom_meal_ingredients_list"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:layout_marginRight="30dp"
+            android:layout_marginLeft="30dp"
+            android:text="@string/add_meals"
+            android:textColor="?attr/textColor"
+            android:textSize="24sp"
+            android:layout_gravity="center">
+        </TextView>
+
         <ImageButton
-            android:id="@+id/add_profile"
+            android:id="@+id/add_custom_meal_add_meal_ingredient"
             android:background="@drawable/material_button_shape"
             android:layout_width="60dp"
             android:layout_height="60dp"
@@ -55,54 +122,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:id="@+id/custom_meal_cuisines_list"
-            />
-
-        <Spinner
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/custom_meal_cuisines_spinner"
-            android:textSize="30sp"
-            android:inputType="text"
-            android:singleLine="true"
-            android:imeActionLabel="Done"
-            android:imeOptions="actionDone"
-            />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:id="@+id/custom_meal_ingredients_list"
-            />
-
-        <Spinner
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/custom_meal_ingredients_spinner"
-            android:textSize="30sp"
-            android:inputType="text"
-            android:singleLine="true"
-            android:imeActionLabel="Done"
-            android:imeOptions="actionDone"
-            />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:id="@+id/custom_meal_meals_list"
-            />
-
-        <Spinner
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/custom_meal_meals_spinner"
-            android:textSize="30sp"
-            android:inputType="text"
-            android:singleLine="true"
-            android:imeActionLabel="Done"
-            android:imeOptions="actionDone"
             />
 
         <RelativeLayout
@@ -133,8 +153,10 @@
                 android:hint="@string/portion_quantity"
                 android:background="@drawable/textbox_shape"
                 android:padding="5dp"
-                android:layout_centerVertical="true">
-            </EditText>
+                android:layout_centerVertical="true"
+                android:importantForAutofill="no"
+                android:focusable="true"
+                />
         </RelativeLayout>
 
         <RelativeLayout
@@ -162,6 +184,7 @@
                 android:layout_toEndOf="@+id/custom_meal_units_txt"
                 android:layout_centerVertical="true"
                 android:entries="@array/weight_units"
+                android:focusable="true"
                 />
 
         </RelativeLayout>
@@ -192,8 +215,10 @@
                 android:layout_centerVertical="true"
                 android:background="@drawable/textbox_shape"
                 android:padding="5dp"
-                android:hint="@string/meal_carbohydrates_amount">
-            </EditText>
+                android:hint="@string/meal_carbohydrates_amount"
+                android:importantForAutofill="no"
+                android:focusable="true"
+                />
         </RelativeLayout>
 
         <RelativeLayout
@@ -223,7 +248,11 @@
                 android:hint="@string/custom_meal_url_txt_hint"
                 android:background="@drawable/textbox_shape"
                 android:padding="5dp"
-                android:layout_centerVertical="true">
+                android:layout_centerVertical="true"
+                android:importantForAutofill="no"
+                android:inputType="textUri"
+                android:focusable="true"
+                >
             </EditText>
         </RelativeLayout>
 
