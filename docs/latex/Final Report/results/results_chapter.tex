@@ -115,6 +115,48 @@ The HTTP server uses a Spring MVC implementation, structuring its' code in sever
     \end{center}
 \end{figure}
 
+\subsection{Kotlin sequences}
+
+As previously stated, Kotlin is completely interoperable with Java and, as such, streams are also supported. However Kotlin introduced sequences which bring
+advantages over Java streams. In this subsection it will be presented the reasons why we chose sequences over streams during development.
+
+\subsubsection{Performance}
+
+There are 3 main aspects that affect the performance overhead of sequences and streams:
+ \begin{itemize}
+     \item \textbf{Primitive handling}: Sequences include methods which simplify common actions and thus avoid primitive values autoboxing, even if sequences don't have primitive variants like streams.
+     \item \textbf{Optional values}: Streams create optional wrappers when values might not be present, while sequences use nullable types, being more efficient by not creating optional wrappers.
+     \item \textbf{Lambda creation}: Sequences create fewer lambda instances than streams, resulting in more efficiency.
+ \end{itemize}
+
+ \subsubsection{Simplicity}
+
+ Sequences have more specialized actions and functions making the code more simple and easy to read.
+
+ \subsubsection{Null safety}
+
+ Sequences use Kotlin nullable types so safe usage is enforced at compile time, being safer from a null safety prespective. It becomes more efficient as streams force Optional-wrapping of values which are not present.
+
+ \subsubsection{Overall}
+
+ \textbf{Stream advantages}
+ \begin{itemize}
+     \item Have primitive variants to avoid unnecessary autoboxing;
+     \item Enables easy parallelism via parallel streams.
+ \end{itemize}
+
+ \textbf{Sequence advantages}
+ \begin{itemize}
+     \item Don’t introduce platform types;
+     \item Use compile-time null-safety and scale well with safe-call and Elvis operators;
+     \item Are shorter due to fewer operations;
+     \item Simpler aggregates;
+     \item Simpler terminal operations;
+     \item Don’t create wrapper objects for values that might be missing;
+     \item Create fewer lambda instances and most terminal operations are inlined resulting in improved efficiency;
+ \end{itemize}
+
+
 \subsection{Request lifecycle}
 Each request is received in a spring controller mapping, with input object,
 parameters or path variables as arguments. When receiving an input object \textit{DTO},
