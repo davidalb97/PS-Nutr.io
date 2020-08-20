@@ -25,11 +25,7 @@ class MealInfoRecyclerAdapter(
                 this@MealInfoRecyclerAdapter.onDelete(this.item, onSuccess)
 
             override fun onFavorite(onSuccess: () -> Unit, onError: (Throwable) -> Unit) =
-                this@MealInfoRecyclerAdapter.onFavorite(
-                    mealItem = this.item,
-                    onSuccess = onSuccess,
-                    onError = onError
-                )
+                this@MealInfoRecyclerAdapter.onFavorite(this.item, onSuccess, onError)
 
             override fun onReport(
                 reportStr: String,

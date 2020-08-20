@@ -21,10 +21,7 @@ abstract class BaseMealRecyclerAdapter
     fun onFavorite(mealItem: MealItem, onSuccess: () -> Unit, onError: (Throwable) -> Unit) {
         viewModel.putFavorite(
             mealItem = mealItem,
-            onSuccess = {
-                mealItem.isFavorite = !mealItem.isFavorite
-                onSuccess()
-            },
+            onSuccess = onSuccess,
             onError = onError
         )
     }
