@@ -56,8 +56,8 @@ export default function useFetch({
                 }
 
                 setResponse(resp)
-                setFetchState(resp.ok ? FetchStates.done : FetchStates.error)
                 if (json) setJson(json)
+                setFetchState(resp.ok ? FetchStates.done : FetchStates.error)
 
             } catch (e) {
                 if (!isCancelled) {

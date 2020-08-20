@@ -2,7 +2,6 @@
 import React, { useState, useCallback, useEffect } from 'react'
 import { Switch, Route, Redirect, Link } from "react-router-dom"
 
-import useFetch, { FetchStates } from '../common/useFetch'
 import UserContext from '../authentication/UserContext'
 
 import LoginPage from './LoginPage'

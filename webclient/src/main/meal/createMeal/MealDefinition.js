@@ -4,9 +4,8 @@ import Form from 'react-bootstrap/Form'
 import InputGroup from 'react-bootstrap/InputGroup'
 import DropdownButton from 'react-bootstrap/DropdownButton'
 import Dropdown from 'react-bootstrap/Dropdown'
-export default function MealDefinition({ setCanAdvance, setMeal }) {
-    const [weightUnit, setWeightUnit] = useState("grams")
-    const [mealDefinition, setMealDefinition] = useState({ quantity: undefined, name: undefined })
+export default function MealDefinition({ setCanAdvance, setMeal, meal }) {
+    const [mealDefinition, setMealDefinition] = useState({ quantity: meal.quantity, name: meal.name, unit: meal.unit || "gr" })
 
     //References for form inputs in order to access values
     const mealNameInput = useRef()
@@ -41,6 +40,8 @@ export default function MealDefinition({ setCanAdvance, setMeal }) {
                 ref={mealNameInput}
                 type="text"
                 onChange={() => handleInputChange(mealNameInput.current)}
+                value={mealDefinition.name || ""}
+                autoComplete="off"
             />
         </Form.Group>
 
@@ -50,17 +51,18 @@ export default function MealDefinition({ setCanAdvance, setMeal }) {
                 ref={quantityInput}
                 type="number"
                 onChange={() => handleInputChange(quantityInput.current)}
+                value={mealDefinition.quantity}
             />
 
             <DropdownButton
                 as={InputGroup.Append}
                 variant="outline-secondary"
-                title={weightUnit}
+                title={mealDefinition.unit}
                 id="input-group-dropdown-2"
             >
 
-                <Dropdown.Item onClick={() => setWeightUnit("grams")}>  grams  </Dropdown.Item>
-                <Dropdown.Item onClick={() => setWeightUnit("ounces")}> ounces </Dropdown.Item>
+                <Dropdown.Item onClick={() => setMealDefinition({ ...mealDefinition, unit: "gr" })}>grams </Dropdown.Item>
+                <Dropdown.Item onClick={() => setMealDefinition({ ...mealDefinition, unit: "oz" })}>ounces</Dropdown.Item>
             </DropdownButton>
         </Form.Group>
 

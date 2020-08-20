@@ -21,12 +21,10 @@ export default function RequestingEntity({ request, onLoad, onSuccess, onError, 
         request = { ...request, authToken: user.authToken }
     }
 
-    console.log(`State: ${fetchState}`)
-
     switch (fetchState) {
         case FetchStates.init: return onInit ? onInit() : <> </>
         case FetchStates.fetching: return onLoad ? onLoad() : <> </>
-        case FetchStates.error: return onError ? onError(error) : <> </>
+        case FetchStates.error: return onError ? onError({ error: error, json: json }) : <> </>
         case FetchStates.done: return onSuccess ? onSuccess({ response: response, json: json }) : <> </>
         default: return <> </>
     }

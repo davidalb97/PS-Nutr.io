@@ -33,12 +33,12 @@ const CreationStates = [
 
 function changeProgress(state, nextState) {
     const next = (nextState instanceof Function) ? nextState(state.order) : nextState
-    console.log(Progress.forOrder(next).label)
     return Progress.forOrder(next)
 }
 
 function changeMeal(meal, newFields) {
-    const newMeal = meal
+    //Generate a new object in order to trigger re-render
+    const newMeal = { ...meal }
 
     Object
         .entries(newFields)
@@ -50,13 +50,15 @@ function changeMeal(meal, newFields) {
 export default function CreateMeal() {
     const [currentProgress, setProgress] = useReducer(changeProgress, Progress.forOrder(0))
     const [canAdvance, setCanAdvance] = useState(false)
+
     const [meal, addFieldsToMeal] = useReducer(changeMeal, {})
 
     const onButtonNext = useCallback(() => {
+        //TODO Remove meal dependency when no longer needed for console.log()
         console.log(meal)
         setProgress(idx => idx + 1)
         setCanAdvance(false)
-    }, [setCanAdvance, setProgress])
+    }, [meal, setCanAdvance, setProgress])
 
     const onSetMeal = useCallback((newFields) => {
         addFieldsToMeal(newFields)
@@ -87,7 +89,11 @@ export default function CreateMeal() {
         />
         <br />
 
-        {React.cloneElement(currentProgress.pageView, { setCanAdvance: setCanAdvance, setMeal: onSetMeal })}
+        {React.cloneElement(currentProgress.pageView, {
+            setCanAdvance: setCanAdvance,
+            setMeal: onSetMeal,
+            meal: meal
+        })}
 
         <br />
         {previous}
