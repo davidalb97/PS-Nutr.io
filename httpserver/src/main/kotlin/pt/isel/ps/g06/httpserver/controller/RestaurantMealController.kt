@@ -149,7 +149,6 @@ class RestaurantMealController(
                 restaurantMeal = restaurantMeal,
                 submitterId = submitter.identifier,
                 voteState = userVote.vote
-                vote = userVote.vote!!
         )
 
         return ResponseEntity
@@ -179,27 +178,6 @@ class RestaurantMealController(
 
         // Put/remove restaurant meal's verification
         restaurantMealService.updateRestaurantMealVerification(restaurantIdentifier, mealId, verified)
-
-        return ResponseEntity
-                .ok()
-                .build()
-    }
-
-    @DeleteMapping(RESTAURANT_MEAL_VOTE)
-    fun deleteMealVote(
-            @PathVariable(RESTAURANT_ID_VALUE) restaurantId: String,
-            @PathVariable(MEAL_ID_VALUE) mealId: Int,
-            submitter: Submitter?
-    ): ResponseEntity<Void> {
-        submitter ?: throw NotAuthenticatedException()
-
-        val restaurantIdentifier = restaurantIdentifierBuilder.extractIdentifiers(restaurantId)
-        val restaurantMeal = restaurantMealService.getRestaurantMeal(restaurantIdentifier, mealId)
-
-        submissionService.deleteRestaurantMealVote(
-                restaurantMeal = restaurantMeal,
-                submitterId = submitter.identifier
-        )
 
         return ResponseEntity
                 .ok()

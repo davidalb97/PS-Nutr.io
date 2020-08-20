@@ -20,7 +20,6 @@ private const val MAX_RADIUS = 1000
 @Service
 class RestaurantService(
         private val dbRestaurantRepository: RestaurantDbRepository,
-        private val dbRestaurantMealRepository: RestaurantMealDbRepository,
         private val restaurantApiMapper: RestaurantApiMapper,
         private val restaurantResponseMapper: RestaurantResponseMapper,
         private val apiSubmitterMapper: ApiSubmitterMapper,

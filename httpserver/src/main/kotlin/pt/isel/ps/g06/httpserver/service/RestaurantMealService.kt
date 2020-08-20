@@ -11,7 +11,6 @@ import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.restaurant.DbR
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.FavoriteDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.PortionDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.RestaurantMealDbRepository
-import pt.isel.ps.g06.httpserver.exception.InvalidInputException
 import pt.isel.ps.g06.httpserver.model.Meal
 import pt.isel.ps.g06.httpserver.model.MealRestaurantInfo
 import pt.isel.ps.g06.httpserver.model.RestaurantIdentifier
