@@ -8,5 +8,6 @@ open class SimplifiedMealInput(
     val imageUri: Uri?,
     val votes: VotesInputDto?,
     val isFavorite: Boolean,
+    val isVotable: Boolean,
     val isSuggested: Boolean
 )

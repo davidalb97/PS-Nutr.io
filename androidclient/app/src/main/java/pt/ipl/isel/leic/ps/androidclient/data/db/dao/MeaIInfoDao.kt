@@ -17,7 +17,7 @@ abstract class MealInfoDao {
     abstract fun getByIdAndSource(
         dbId: Long,
         sourceOrdinal: Int
-    ): LiveData<List<DbMealInfoRelation>>
+    ): LiveData<DbMealInfoRelation>
 
     @Transaction
     @Query("SELECT * FROM $TABLE WHERE $SOURCE_ORDINAL = :sourceOrdinal")

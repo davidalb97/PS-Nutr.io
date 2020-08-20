@@ -5,7 +5,9 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:id="@+id/login_activity_layout"
+        >
 
         <TableLayout
             android:layout_width="match_parent"
@@ -33,7 +35,9 @@
                     android:drawableStart="@drawable/ic_email"
                     android:drawablePadding="10dp"
                     android:hint="@string/email_sign_activity"
-                    android:padding="5dp">
+                    android:padding="5dp"
+                    android:focusable="true"
+                    >
                 </EditText>
 
                 <EditText
@@ -47,8 +51,10 @@
                     android:background="@drawable/textbox_shape"
                     android:drawableStart="@drawable/ic_user"
                     android:drawablePadding="10dp"
-                    android:hint="@string/username"
-                    android:padding="5dp">
+                    android:hint="@string/username_sign_activity"
+                    android:padding="5dp"
+                    android:focusable="true"
+                    >
                 </EditText>
 
                 <EditText
@@ -64,7 +70,9 @@
                     android:drawablePadding="10dp"
                     android:hint="@string/password"
                     android:inputType="textPassword"
-                    android:padding="5dp">
+                    android:padding="5dp"
+                    android:focusable="true"
+                    >
                 </EditText>
 
             </RelativeLayout>

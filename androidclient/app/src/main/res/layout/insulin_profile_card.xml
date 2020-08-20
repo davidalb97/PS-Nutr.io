@@ -72,17 +72,26 @@
             android:textColor="?attr/cardTextColor">
         </TextView>
 
-        <ImageButton
-            android:id="@+id/delete_item_button"
-            android:background="@drawable/material_bin_button_background"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:src="@drawable/ic_delete"
-            android:layout_marginEnd="10dp"
-            android:layout_alignParentEnd="true"
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/actions_layout"
             android:layout_centerVertical="true"
-            android:visibility="invisible">
-        </ImageButton>
+            android:visibility="gone"
+            >
+            <ImageButton
+                android:id="@+id/delete_item_action"
+                android:background="@drawable/material_bin_button_background"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:src="@drawable/ic_delete"
+                android:layout_marginEnd="10dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:visibility="gone"
+                >
+            </ImageButton>
+        </RelativeLayout>
 
     </RelativeLayout>
 

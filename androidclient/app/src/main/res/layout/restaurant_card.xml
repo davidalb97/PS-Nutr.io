@@ -14,18 +14,20 @@
         android:layout_margin="4dp">
 
         <ImageView
-            android:id="@+id/mealImage"
+            android:id="@+id/restaurantImage"
             android:layout_width="130dp"
             android:layout_height="130dp"
-            android:padding="2dp" />
+            android:padding="2dp"
+            android:visibility="gone"
+            />
 
         <TextView
-            android:id="@+id/mealName"
+            android:id="@+id/restaurantName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_marginTop="1dp"
-            android:layout_toEndOf="@+id/mealImage"
+            android:layout_toEndOf="@+id/restaurantImage"
             android:text="@string/item_name"
             android:textColor="?attr/cardTextAccentColor"
             android:textSize="20sp"
@@ -35,17 +37,17 @@
             android:id="@+id/mealCuisines"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/mealName"
-            android:layout_toEndOf="@+id/mealImage"
+            android:layout_below="@+id/restaurantName"
+            android:layout_toEndOf="@+id/restaurantImage"
             android:text="@string/item_cuisines"
             android:textSize="15sp" />
 
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@+id/mealImage"
+            android:layout_toEndOf="@+id/restaurantImage"
             android:layout_below="@+id/mealCuisines"
-            android:id="@+id/restaurant_card_votes_rl"
+            android:id="@+id/restaurant_card_votes_bar"
             android:visibility="gone"
             >
             <ProgressBar
@@ -65,7 +67,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignStart="@id/votesBar"
                 android:layout_below="@+id/votesBar"
-                android:text="Upvotes">
+                android:text="@string/upvotes">
             </TextView>
 
             <TextView
@@ -74,7 +76,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignEnd="@id/votesBar"
                 android:layout_below="@+id/votesBar"
-                android:text="Downvotes">
+                android:text="@string/downvotes">
             </TextView>
 
 
@@ -95,7 +97,9 @@
                 android:layout_marginEnd="10dp"
                 android:src="@drawable/ic_star"
                 android:scaleType="centerCrop"
-                android:background="@android:color/transparent">
+                android:background="@android:color/transparent"
+                android:visibility="gone"
+                >
             </ImageButton>
 
             <ImageButton
@@ -105,7 +109,9 @@
                 android:layout_marginEnd="5dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/ic_three_dots"
-                android:background="@android:color/transparent">
+                android:background="@android:color/transparent"
+                android:visibility="gone"
+                >
             </ImageButton>
 
         </LinearLayout>

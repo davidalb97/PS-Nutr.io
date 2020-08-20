@@ -28,6 +28,7 @@ class DbRestaurantInfoMapper(
                 negative = relation.entity.negativeVotes!!
             ) else null,
             isFavorite = relation.entity.isFavorite,
+            isVotable = relation.entity.isVotable,
             imageUri = Uri.parse(relation.entity.imageUri),
             cuisines = cuisinesMapper.mapToListModel(relation.cuisines),
             meals = meals.filter { !it.isSuggested },
@@ -44,6 +45,7 @@ class DbRestaurantInfoMapper(
             longitude = model.longitude,
             creationDate = model.creationDate,
             isFavorite = model.isFavorite,
+            isVotable = model.isVotable,
             imageUri = model.imageUri?.toString(),
             positiveVotes = model.votes?.positive,
             negativeVotes = model.votes?.negative,

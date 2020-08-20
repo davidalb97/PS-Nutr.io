@@ -30,6 +30,7 @@ class DbMealInfoMapper(
             negative = relation.entity.negativeVotes!!
         ) else null,
         isFavorite = relation.entity.isFavorite,
+        isVotable = relation.entity.isVotable,
         imageUri = relation.entity.imageUri?.let { Uri.parse(it) },
         creationDate = relation.entity.creationDate,
         mealComponents = componentMealMapper.mapToListModel(relation.componentMeals),
@@ -49,6 +50,7 @@ class DbMealInfoMapper(
             amount = model.amount,
             unit = model.unit,
             isFavorite = model.isFavorite,
+            isVotable = model.isVotable,
             imageUri = model.imageUri?.toString(),
             positiveVotes = model.votes?.positive,
             negativeVotes = model.votes?.negative,
