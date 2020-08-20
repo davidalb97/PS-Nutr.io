@@ -93,14 +93,17 @@ class RestaurantMealService(
      * @return The resulting [MealRestaurantInfo] from the (existing) association.
      */
     fun getOrAddRestaurantMeal(restaurantId: RestaurantIdentifier, mealId: Int, submitterId: Int): MealRestaurantInfo {
-        val restaurant = restaurantService
-                .getRestaurant(restaurantId.submitterId, restaurantId.submissionId, restaurantId.apiId)
-                ?: throw RestaurantNotFoundException()
+        val restaurant = restaurantService.getOrCreateRestaurant(restaurantId)
 
         val meal = mealService.getMeal(mealId) ?: throw MealNotFound()
 
         if (meal.isRestaurantMeal(restaurant)) {
-           return meal.getMealRestaurantInfo(restaurantId)!!
+            val restaurantMeal = meal.getMealRestaurantInfo(restaurant.identifier.value)
+
+            //Suggested meals are restaurant meals but might not be inserted yet
+            if(restaurantMeal != null) {
+                return restaurantMeal
+            }
         }
 
         return addRestaurantMeal(restaurantId, meal, submitterId)
