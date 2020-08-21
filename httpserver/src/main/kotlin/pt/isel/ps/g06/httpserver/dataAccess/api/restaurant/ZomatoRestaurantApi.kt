@@ -4,9 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Repository
-import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.dto.RestaurantSearchResultDtoMapper
-import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.dto.ZomatoErrorDto
-import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.dto.ZomatoRestaurantDto
+import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.dto.zomato.RestaurantSearchResultDtoMapper
+import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.dto.zomato.ZomatoErrorDto
+import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.dto.zomato.ZomatoRestaurantDto
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.exception.ZomatoBadGatewayException
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.exception.ZomatoBadRequestException
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.uri.ZomatoUriBuilder

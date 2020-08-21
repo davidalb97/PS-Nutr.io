@@ -1,4 +1,4 @@
-package pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.dto
+package pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.dto.zomato
 
 data class ZomatoErrorDto(
         val code: Int,

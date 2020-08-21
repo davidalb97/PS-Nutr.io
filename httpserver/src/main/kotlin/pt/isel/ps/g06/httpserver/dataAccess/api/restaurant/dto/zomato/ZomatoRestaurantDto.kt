@@ -1,4 +1,4 @@
-package pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.dto
+package pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.dto.zomato
 
 import pt.isel.ps.g06.httpserver.dataAccess.common.dto.RestaurantDto
 
