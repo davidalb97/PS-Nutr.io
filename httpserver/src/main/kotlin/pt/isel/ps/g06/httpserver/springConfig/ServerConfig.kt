@@ -30,7 +30,7 @@ class ServerConfig {
     fun handleInsulinProfilesServerSecret(
             @Valid insulinProfilesConfigDto: InsulinProfilesConfigDto
     ): InsulinProfilesSecret {
-        if (insulinProfilesConfigDto.secret.isNullOrBlank() || insulinProfilesConfigDto.secret == "\${PS_SERVER_SECRET}") {
+        if (insulinProfilesConfigDto.secret.isNullOrBlank() || insulinProfilesConfigDto.secret == "\${PS_INSULIN_PROFILES_SECRET}") {
             throw SecretEnvVariableNotSetupException()
         }
         return InsulinProfilesSecret(insulinProfilesConfigDto.secret!!)
