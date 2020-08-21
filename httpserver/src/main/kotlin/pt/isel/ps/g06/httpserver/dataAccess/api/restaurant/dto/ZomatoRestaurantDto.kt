@@ -1,6 +1,6 @@
 package pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.dto
 
-import pt.isel.ps.g06.httpserver.dataAccess.model.RestaurantDto
+import pt.isel.ps.g06.httpserver.dataAccess.common.dto.RestaurantDto
 
 data class RestaurantSearchResultDtoMapper(val restaurants: Array<RestaurantContainerDto>) {
     override fun equals(other: Any?): Boolean {

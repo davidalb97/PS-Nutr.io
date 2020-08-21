@@ -8,7 +8,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.ResponseMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.ApiSubmitterMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbRestaurantDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.*
-import pt.isel.ps.g06.httpserver.dataAccess.model.RestaurantDto
+import pt.isel.ps.g06.httpserver.dataAccess.common.dto.RestaurantDto
 import pt.isel.ps.g06.httpserver.model.Restaurant
 import pt.isel.ps.g06.httpserver.model.RestaurantIdentifier
 import pt.isel.ps.g06.httpserver.model.Submitter

@@ -1,6 +1,6 @@
 package pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.dto.here
 
-import pt.isel.ps.g06.httpserver.dataAccess.model.RestaurantDto
+import pt.isel.ps.g06.httpserver.dataAccess.common.dto.RestaurantDto
 
 data class HereResultContainer(val items: Collection<HereResultItem>)
 

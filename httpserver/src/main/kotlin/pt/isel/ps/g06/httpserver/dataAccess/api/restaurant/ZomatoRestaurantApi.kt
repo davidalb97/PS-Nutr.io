@@ -10,7 +10,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.dto.ZomatoRestaurantD
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.exception.ZomatoBadGatewayException
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.exception.ZomatoBadRequestException
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.uri.ZomatoUriBuilder
-import pt.isel.ps.g06.httpserver.dataAccess.model.RestaurantDto
+import pt.isel.ps.g06.httpserver.dataAccess.common.dto.RestaurantDto
 import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest

@@ -9,7 +9,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.dto.here.HereResultIt
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.exception.HereBadGatewayException
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.exception.HereBadRequestException
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.uri.HereUriBuilder
-import pt.isel.ps.g06.httpserver.dataAccess.model.RestaurantDto
+import pt.isel.ps.g06.httpserver.dataAccess.common.dto.RestaurantDto
 import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
