@@ -1,17 +1,10 @@
 package pt.ipl.isel.leic.ps.androidclient.data.api.datasource
 
+import android.net.Uri
 import com.android.volley.VolleyError
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.InsulinProfileInput
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.output.InsulinProfileOutput
-import pt.ipl.isel.leic.ps.androidclient.data.api.request.HTTPMethod
-import pt.ipl.isel.leic.ps.androidclient.data.api.request.INSULIN_PROFILE
-import pt.ipl.isel.leic.ps.androidclient.data.api.request.RequestParser
-import pt.ipl.isel.leic.ps.androidclient.data.api.request.URI_BASE
-
-private const val INSULIN_PROFILE_PARAM = ":profileName"
-
-private const val INSULIN_PROFILES_URI = "$URI_BASE/$USER/$INSULIN_PROFILE"
-private const val INSULIN_PROFILE_URI = "$INSULIN_PROFILES_URI/$INSULIN_PROFILE_PARAM"
+import pt.ipl.isel.leic.ps.androidclient.data.api.request.*
 
 class InsulinProfileDataSource(
     private val requestParser: RequestParser
@@ -23,10 +16,16 @@ class InsulinProfileDataSource(
         onError: (VolleyError) -> Unit
     ) {
         requestParser.requestAndParse(
-            HTTPMethod.GET,
-            INSULIN_PROFILES_URI,
-            buildAuthHeader(jwt),
-            Array<InsulinProfileInput>::class.java,
+            method = HTTPMethod.GET,
+            uri = Uri.Builder()
+                .scheme(SCHEME)
+                .authority(ADDRESS_PORT)
+                .appendPath(USER)
+                .appendPath(INSULIN_PROFILE_PATH)
+                .build()
+                .toString(),
+            reqHeader = buildAuthHeader(jwt),
+            dtoClass = Array<InsulinProfileInput>::class.java,
             onSuccess = onSuccess,
             onError = onError
         )
@@ -38,14 +37,18 @@ class InsulinProfileDataSource(
         onSuccess: (InsulinProfileInput) -> Unit,
         onError: (VolleyError) -> Unit
     ) {
-
-        val uri = buildUri(INSULIN_PROFILE_URI, hashMapOf(Pair(INSULIN_PROFILE_PARAM, name)))
-
         requestParser.requestAndParse(
-            HTTPMethod.GET,
-            uri,
-            buildAuthHeader(jwt),
-            InsulinProfileInput::class.java,
+            method = HTTPMethod.GET,
+            uri = Uri.Builder()
+                .scheme(SCHEME)
+                .authority(ADDRESS_PORT)
+                .appendPath(USER)
+                .appendPath(INSULIN_PROFILE_PATH)
+                .appendPath(name)
+                .build()
+                .toString(),
+            reqHeader = buildAuthHeader(jwt),
+            dtoClass = InsulinProfileInput::class.java,
             onSuccess = onSuccess,
             onError = onError
         )
@@ -57,10 +60,16 @@ class InsulinProfileDataSource(
         onError: (VolleyError) -> Unit
     ) {
         requestParser.request(
-            HTTPMethod.POST,
-            INSULIN_PROFILES_URI,
-            buildAuthHeader(jwt),
-            insulinProfileOutput,
+            method = HTTPMethod.POST,
+            uri = Uri.Builder()
+                .scheme(SCHEME)
+                .authority(ADDRESS_PORT)
+                .appendPath(USER)
+                .appendPath(INSULIN_PROFILE_PATH)
+                .build()
+                .toString(),
+            reqHeader = buildAuthHeader(jwt),
+            reqPayload = insulinProfileOutput,
             onError = onError,
             responseConsumer = {}
         )
@@ -71,11 +80,16 @@ class InsulinProfileDataSource(
         jwt: String,
         onError: (VolleyError) -> Unit
     ) {
-        val uri = buildUri(INSULIN_PROFILE_URI, hashMapOf(Pair(INSULIN_PROFILE_PARAM, profileName)))
-
         requestParser.request(
             HTTPMethod.DELETE,
-            uri,
+            Uri.Builder()
+                .scheme(SCHEME)
+                .authority(ADDRESS_PORT)
+                .appendPath(USER)
+                .appendPath(INSULIN_PROFILE_PATH)
+                .appendPath(profileName)
+                .build()
+                .toString(),
             buildAuthHeader(jwt),
             null,
             onError = onError,

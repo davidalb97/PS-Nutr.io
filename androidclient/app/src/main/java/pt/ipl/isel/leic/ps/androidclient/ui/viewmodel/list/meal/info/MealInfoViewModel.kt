@@ -66,21 +66,21 @@ open class MealInfoViewModel : MealInfoListViewModel {
             if (mealItem.restaurantSubmissionId != null) {
                 mealRepository.getApiRestaurantMealInfo(
                     restaurantId = mealItem.restaurantSubmissionId,
-                    mealId = mealItem.submissionId,
+                    mealId = requireNotNull(mealItem.submissionId),
                     userSession = getUserSession(),
                     success = mealInfoLiveDataHandler::set,
                     error = onError
                 )
             } else {
                 mealRepository.getApiMealInfo(
-                    mealId = mealItem.submissionId,
+                    mealId = requireNotNull(mealItem.submissionId),
                     userSession = getUserSession(),
                     success = mealInfoLiveDataHandler::set,
                     error = onError
                 )
             }
         } else {
-            fetchDbBySource(mealItem.dbId, requireNotNull(source) {
+            fetchDbBySource(requireNotNull(mealItem.dbId), requireNotNull(source) {
                 "Cannot find meal info from db without a source!"
             })
         }
@@ -118,8 +118,8 @@ open class MealInfoViewModel : MealInfoListViewModel {
         onError: (VolleyError) -> Unit
     ) {
         mealRepository.putVote(
-            restaurantId = mealInfo!!.restaurantSubmissionId!!,
-            mealId = mealInfo!!.submissionId,
+            restaurantId = requireNotNull(mealInfo!!.restaurantSubmissionId),
+            mealId = requireNotNull(mealInfo!!.submissionId),
             vote = vote,
             success = {
                 mealInfo?.votes?.userHasVoted = vote

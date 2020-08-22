@@ -61,8 +61,8 @@ abstract class BaseMealListViewModel<M : Parcelable> : BaseListViewModel<M> {
         onSuccess: () -> Unit,
         onError: (Throwable) -> Unit
     ) = mealRepository.report(
-        restaurantId = mealItem.restaurantSubmissionId!!,
-        mealId = mealItem.submissionId,
+        restaurantId = requireNotNull(mealItem.restaurantSubmissionId),
+        mealId = requireNotNull(mealItem.submissionId),
         reportMsg = reportStr,
         success = onSuccess,
         error = onError,
@@ -73,10 +73,9 @@ abstract class BaseMealListViewModel<M : Parcelable> : BaseListViewModel<M> {
         mealItem: MealItem,
         onSuccess: () -> Unit,
         onError: (Throwable) -> Unit
-    ) =
-        mealRepository.putFavorite(
+    ) = mealRepository.putFavorite(
             restaurantId = mealItem.restaurantSubmissionId!!,
-            submissionId = mealItem.submissionId,
+            submissionId = requireNotNull(mealItem.submissionId),
             isFavorite = !mealItem.isFavorite,
             success = {
                 mealItem.isFavorite = !mealItem.isFavorite

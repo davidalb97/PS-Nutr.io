@@ -4,7 +4,13 @@ import androidx.lifecycle.LiveData
 import com.android.volley.VolleyError
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.roomDb
 import pt.ipl.isel.leic.ps.androidclient.data.api.datasource.MealDataSource
+import pt.ipl.isel.leic.ps.androidclient.data.api.dto.output.FavoriteOutput
+import pt.ipl.isel.leic.ps.androidclient.data.api.dto.output.ReportOutput
 import pt.ipl.isel.leic.ps.androidclient.data.api.mapper.input.*
+import pt.ipl.isel.leic.ps.androidclient.data.api.mapper.output.OutputCuisineMapper
+import pt.ipl.isel.leic.ps.androidclient.data.api.mapper.output.OutputCustomMealMapper
+import pt.ipl.isel.leic.ps.androidclient.data.api.mapper.output.OutputIngredientMapper
+import pt.ipl.isel.leic.ps.androidclient.data.api.mapper.output.OutputVoteMapper
 import pt.ipl.isel.leic.ps.androidclient.data.db.entity.DbMealItemEntity
 import pt.ipl.isel.leic.ps.androidclient.data.db.mapper.*
 import pt.ipl.isel.leic.ps.androidclient.data.db.relation.DbMealInfoRelation
@@ -18,10 +24,10 @@ class MealRepository(private val dataSource: MealDataSource) {
     private val dbCuisinesMapper = DbCuisineMapper()
     private val dbPortionMapper = DbPortionMapper()
     val dbMealInfoMapper = DbMealInfoMapper(
-        dbComponentIngredientMapper,
-        dbComponentMealMapper,
-        dbCuisinesMapper,
-        dbPortionMapper
+        componentIngredientMapper = dbComponentIngredientMapper,
+        componentMealMapper = dbComponentMealMapper,
+        cuisinesMapper = dbCuisinesMapper,
+        portionMapper = dbPortionMapper
     )
     val dbMealItemMapper = DbMealItemMapper()
     private val inputVotesMapper = InputVotesMapper()
@@ -29,13 +35,20 @@ class MealRepository(private val dataSource: MealDataSource) {
     private val inputMealIngredientMapper = InputMealIngredientMapper()
     private val inputPortionMapper = InputPortionMapper()
     private val inputMealInfoMapper = InputMealInfoMapper(
-            inputVotesMapper = inputVotesMapper,
-            inputCuisineMapper = inputCuisineMapper,
-            inputMealIngredientMapper = inputMealIngredientMapper,
-            inputPortionMapper = inputPortionMapper
-        )
+        inputVotesMapper = inputVotesMapper,
+        inputCuisineMapper = inputCuisineMapper,
+        inputMealIngredientMapper = inputMealIngredientMapper,
+        inputPortionMapper = inputPortionMapper
+    )
     private val inputMealItemMapper = InputMealItemMapper(
         inputVotesMapper = inputVotesMapper
+    )
+    private val outputVoteMapper = OutputVoteMapper()
+    private val cuisineOutputMapper = OutputCuisineMapper()
+    private val outputIngredientMapper = OutputIngredientMapper()
+    private val outputCustomMealMapper = OutputCustomMealMapper(
+        cuisineMapper = cuisineOutputMapper,
+        ingredientMapper = outputIngredientMapper
     )
 
     fun getByIdAndSource(dbId: Long, source: Source) =
@@ -89,8 +102,8 @@ class MealRepository(private val dataSource: MealDataSource) {
 
     fun getFavoriteMeals(
         userSession: UserSession,
-        skip: Int = 0,
-        count: Int = 30,
+        skip: Int? = 0,
+        count: Int? = 30,
         success: (List<MealItem>) -> Unit,
         error: (VolleyError) -> Unit
     ) {
@@ -118,8 +131,8 @@ class MealRepository(private val dataSource: MealDataSource) {
     }
 
     fun getMealItems(
-        count: Int = 0,
-        skip: Int = 0,
+        count: Int? = 0,
+        skip: Int? = 0,
         cuisines: Collection<Cuisine>? = null,
         userSession: UserSession?,
         success: (List<MealItem>) -> Unit,
@@ -140,8 +153,8 @@ class MealRepository(private val dataSource: MealDataSource) {
 
     fun getRestaurantMealItems(
         restaurantId: String,
-        count: Int = 0,
-        skip: Int = 0,
+        count: Int? = 0,
+        skip: Int? = 0,
         userSession: UserSession?,
         success: (List<MealItem>) -> Unit,
         error: (VolleyError) -> Unit
@@ -158,20 +171,12 @@ class MealRepository(private val dataSource: MealDataSource) {
         )
     }
 
-    fun postMeal(
-        name: String,
-        quantity: Int,
-        unit: String,
-        ingredients: Iterable<MealIngredient>,
-        cuisines: Iterable<Cuisine>,
+    fun addCustomMeal(
+        customMeal: CustomMeal,
         error: (VolleyError) -> Unit,
         userSession: UserSession
     ) = dataSource.postMeal(
-        name = name,
-        quantity = quantity,
-        unit = unit,
-        ingredients = ingredients,
-        cuisines = cuisines,
+        customMealOutput = outputCustomMealMapper.mapToOutputModel(restaurant = customMeal),
         error = error,
         jwt = userSession.jwt
     )
@@ -187,7 +192,7 @@ class MealRepository(private val dataSource: MealDataSource) {
     ) = dataSource.putRestaurantMealVote(
         restaurantId = restaurantId,
         mealId = mealId,
-        vote = vote,
+        voteOutput = outputVoteMapper.mapToOutputModel(model = vote),
         success = success,
         error = error,
         jwt = userSession.jwt
@@ -204,7 +209,7 @@ class MealRepository(private val dataSource: MealDataSource) {
         dataSource.putRestaurantMealFavorite(
             restaurantId = restaurantId,
             mealId = submissionId,
-            isFavorite = isFavorite,
+            favoriteOutput = FavoriteOutput(isFavorite = isFavorite),
             success = success,
             error = error,
             jwt = userSession.jwt
@@ -222,7 +227,7 @@ class MealRepository(private val dataSource: MealDataSource) {
         dataSource.putRestaurantMealReport(
             restaurantId = restaurantId,
             mealId = mealId,
-            reportStr = reportMsg,
+            reportOutput = ReportOutput(description = reportMsg),
             success = success,
             error = error,
             jwt = userSession.jwt

@@ -7,19 +7,6 @@ import com.android.volley.VolleyError
 import com.fasterxml.jackson.databind.ObjectMapper
 import pt.ipl.isel.leic.ps.androidclient.TAG
 
-const val ADDRESS = "10.0.2.2" // Loopback for the host machine
-const val PORT = "8080"
-const val URI_BASE = "http://$ADDRESS:$PORT"
-const val SKIP = "&skip="
-const val COUNT = "&count="
-
-const val MEAL = "meal"
-const val RESTAURANT = "restaurant"
-const val CUISINES = "cuisines"
-const val URI_END = "$SKIP=:skip$COUNT=:count"
-const val INGREDIENTS = "ingredients"
-const val INSULIN_PROFILE = "profile"
-
 /**
  * This class makes asynchronous HTTP requests and parses
  * the received data to objects (DTOs), as specified by
