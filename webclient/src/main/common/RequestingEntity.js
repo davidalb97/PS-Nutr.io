@@ -8,16 +8,13 @@ import UserContext from '../authentication/UserContext'
  * 
  * @param {Object} request - Necessary object to send an HTTP request with following fields:
  *  - url (mandatory)
- *  - authToken (optional, defaults to UserContext token)
  *  - contentType (optional, defaults to 'application/json')
  *  - method (optional, defaults to 'GET')
  *  - body (optional)
  */
 export default function RequestingEntity({ request, onLoad, onSuccess, onError, onInit }) {
-    if (!request.authToken) {
-        const user = useContext(UserContext)
-        request.authToken = user.authToken
-    }
+    const user = useContext(UserContext)
+    request.authToken = user.authToken
 
     const [fetchState, response, json, error] = useFetch(request)
 

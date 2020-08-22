@@ -16,7 +16,7 @@ export default function Sidebar() {
         <SidebarItemContainer containerName="Moderation">
         <SidebarItem buttonName="View reports" path="/user" />
         <SidebarItem buttonName="View user" path="/user" />
-        <SidebarItem buttonName="View user" path="/user" />
+        <SidebarItem buttonName="Testing purposes" path="/test" />
         </SidebarItemContainer>
     </nav>
 }
