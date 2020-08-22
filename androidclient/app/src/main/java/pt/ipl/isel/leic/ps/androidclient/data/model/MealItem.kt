@@ -9,11 +9,11 @@ import pt.ipl.isel.leic.ps.androidclient.util.writeBooleanCompat
 import pt.ipl.isel.leic.ps.androidclient.util.writeUri
 
 open class MealItem(
-    var dbId: Long,
-    var dbRestaurantId: Long,
-    val name: String,
-    val submissionId: Int,
+    var dbId: Long?,
+    var dbRestaurantId: Long?,
+    val submissionId: Int?,
     val restaurantSubmissionId: String?,
+    val name: String,
     open val carbs: Int?,
     open val amount: Int?,
     open val unit: String?,
@@ -26,9 +26,9 @@ open class MealItem(
 ) : Parcelable {
 
     constructor(parcel: Parcel) : this(
-        dbId = parcel.readLong(),
-        dbRestaurantId = parcel.readLong(),
-        submissionId = parcel.readInt(),
+        dbId = parcel.readSerializable() as Long?,
+        dbRestaurantId = parcel.readSerializable() as Long?,
+        submissionId = parcel.readSerializable() as Int?,
         restaurantSubmissionId = parcel.readString(),
         name = parcel.readString()!!,
         carbs = parcel.readSerializable() as Int?,
@@ -43,9 +43,9 @@ open class MealItem(
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeLong(dbId)
-        parcel.writeLong(dbRestaurantId)
-        parcel.writeInt(submissionId)
+        parcel.writeSerializable(dbId)
+        parcel.writeSerializable(dbRestaurantId)
+        parcel.writeSerializable(submissionId)
         parcel.writeString(restaurantSubmissionId)
         parcel.writeString(name)
         parcel.writeSerializable(carbs)

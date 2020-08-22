@@ -255,42 +255,47 @@ class AddCustomMealFragment : BaseFragment() {
         }
     }
 
-    private fun getMealInfo() = MealInfo(
-        dbId = DbMealInfoEntity.DEFAULT_DB_ID,
-        dbRestaurantId = DbMealInfoEntity.DEFAULT_DB_ID,
-        restaurantSubmissionId = null,
-        //Custom meal does not have submissionId
-        submissionId = MealInfo.DEFAULT_SUBMISSION_ID,
-        name = customMealName.text.toString(),
-        carbs = customMealCarbsAmount.text.toString().toInt(),
-        amount = customMealAmount.text.toString().toInt(),
-        unit = customMealUnitSpinner.selectedItem.toString(),
-        votes = null,
-        isFavorite = false,
-        isVotable = false,
-        imageUri = customImageUrl.text?.toString()?.let { Uri.parse(it) },
-        creationDate = TimestampWithTimeZone.now(),
-        ingredientComponents = ingredientsViewModel.pickedItems,
-        mealComponents = mealsViewModel.pickedItems.map { mealComponent ->
-            MealIngredient(
-                dbMealId = DbMealInfoEntity.DEFAULT_DB_ID,
-                isMeal = true,
-                dbId = DbComponentMealEntity.DEFAULT_DB_ID,
-                submissionId = mealComponent.submissionId,
-                name = mealComponent.name,
-                carbs = mealComponent.carbs,
-                amount = mealComponent.amount,
-                unit = mealComponent.unit,
-                imageUri = mealComponent.imageUri,
-                source = mealComponent.source
-            )
-        },
-        cuisines = cuisinesViewModel.pickedItems,
-        //Custom meal does not have portions
-        portions = emptyList(),
-        isSuggested = false,
-        source = Source.CUSTOM
-    )
+    private fun getMealInfo(): MealInfo {
+
+        return MealInfo(
+            dbId = viewModel.dbId,
+            dbRestaurantId = DbMealInfoEntity.DEFAULT_DB_ID,
+            restaurantSubmissionId = null,
+            //Custom meal does not have submissionId
+            submissionId = MealInfo.DEFAULT_SUBMISSION_ID,
+            name = customMealName.text.toString(),
+            carbs = customMealCarbsAmount.text.toString().toInt(),
+            amount = customMealAmount.text.toString().toInt(),
+            unit = customMealUnitSpinner.selectedItem.toString(),
+            votes = null,
+            isFavorite = false,
+            isVotable = false,
+            imageUri = customImageUrl.text?.toString()?.let { Uri.parse(it) },
+            creationDate = TimestampWithTimeZone.now(),
+            ingredientComponents = mealsViewModel.pickedItems.filter { it.isMeal },
+            mealComponents = mealsViewModel.pickedItems.map { toMealIngredient(it, true) },
+            cuisines = cuisinesViewModel.pickedItems,
+            //Custom meal does not have portions
+            portions = emptyList(),
+            isSuggested = false,
+            source = Source.CUSTOM
+        )
+    }
+
+    private fun toMealIngredient(mealComponent: MealInfo, isMeal: Boolean): MealIngredient {
+        return MealIngredient(
+            dbMealId = viewModel.dbId,
+            isMeal = isMeal,
+            dbId = mealComponent.dbId,
+            submissionId = mealComponent.submissionId,
+            name = mealComponent.name,
+            carbs = mealComponent.carbs,
+            amount = mealComponent.amount,
+            unit = mealComponent.unit,
+            imageUri = mealComponent.imageUri,
+            source = mealComponent.source
+        )
+    }
 
     /**
      * Setups the measurement units spinner following the shared preferences.

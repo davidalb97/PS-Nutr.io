@@ -8,8 +8,8 @@ import pt.ipl.isel.leic.ps.androidclient.util.readUri
 import pt.ipl.isel.leic.ps.androidclient.util.writeBooleanCompat
 import pt.ipl.isel.leic.ps.androidclient.util.writeUri
 
-data class RestaurantItem(
-    var dbId: Long,
+open class RestaurantItem(
+    var dbId: Long?,
     val id: String,
     val name: String,
     val latitude: Float,
@@ -22,7 +22,7 @@ data class RestaurantItem(
 ) : Parcelable {
 
     constructor(parcel: Parcel) : this(
-        dbId = parcel.readLong(),
+        dbId = parcel.readSerializable() as Long?,
         id = parcel.readString()!!,
         name = parcel.readString()!!,
         latitude = parcel.readFloat(),
@@ -35,7 +35,7 @@ data class RestaurantItem(
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeLong(dbId)
+        parcel.writeSerializable(dbId)
         parcel.writeString(id)
         parcel.writeString(name)
         parcel.writeFloat(latitude)
