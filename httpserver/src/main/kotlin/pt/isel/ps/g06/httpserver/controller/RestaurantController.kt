@@ -193,7 +193,7 @@ class RestaurantController(
     ): ResponseEntity<Void> {
         val requester = authenticationService.getEmailFromJwt(jwt).let(userService::getUserFromEmail)
 
-        if (requester.role != MOD_USER) {
+        if (requester.userRole != MOD_USER) {
             throw NotAuthorizedException()
         }
 

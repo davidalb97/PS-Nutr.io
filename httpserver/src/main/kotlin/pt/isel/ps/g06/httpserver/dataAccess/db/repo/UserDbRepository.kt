@@ -11,6 +11,14 @@ private val isolationLevel = TransactionIsolationLevel.SERIALIZABLE
 @Repository
 class UserDbRepository(jdbi: Jdbi) : BaseDbRepo(jdbi) {
 
+    fun getBySubmitter(submitterId: Int): DbUserDto? {
+        return jdbi.inTransaction<DbUserDto, Exception>(isolationLevel) { handle ->
+            return@inTransaction handle
+                    .attach(UserDao::class.java)
+                    .findBySubmitterId(submitterId)
+        }
+    }
+
     fun getByEmail(email: String): DbUserDto? {
         return jdbi.inTransaction<DbUserDto, Exception>(isolationLevel) { handle ->
             return@inTransaction handle

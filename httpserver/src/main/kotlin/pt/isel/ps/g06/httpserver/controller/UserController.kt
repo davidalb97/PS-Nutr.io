@@ -3,6 +3,7 @@ package pt.isel.ps.g06.httpserver.controller
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import pt.isel.ps.g06.httpserver.common.*
+import pt.isel.ps.g06.httpserver.common.exception.authentication.NotAuthenticatedException
 import pt.isel.ps.g06.httpserver.common.exception.authorization.NotAuthorizedException
 import pt.isel.ps.g06.httpserver.dataAccess.input.BanInput
 import pt.isel.ps.g06.httpserver.dataAccess.input.UserInfoInput
@@ -11,6 +12,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.input.UserRegisterInput
 import pt.isel.ps.g06.httpserver.dataAccess.output.user.UserInfoOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.security.UserLoginOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.security.UserRegisterOutput
+import pt.isel.ps.g06.httpserver.model.Submitter
 import pt.isel.ps.g06.httpserver.service.AuthenticationService
 import pt.isel.ps.g06.httpserver.service.UserService
 import javax.validation.Valid
@@ -39,12 +41,13 @@ class UserController(private val userService: UserService, private val authentic
         return ResponseEntity.ok(UserLoginOutput(jwt))
     }
 
-    @GetMapping(USER_INFO)
-    fun getUserInfo(@RequestHeader (AUTH_HEADER) userInfoInput: UserInfoInput): ResponseEntity<UserInfoOutput> {
+    @GetMapping(USER)
+    fun getUserInfo(submitter: Submitter?): ResponseEntity<UserInfoOutput> {
 
-        val email = authenticationService.getEmailFromJwt(userInfoInput.jwt)
-        val submitter = userService.getSubmitterFromEmail(email)
-        val username = submitter!!.name
+        submitter ?: throw NotAuthenticatedException()
+
+        val email = userService.getEmailFromSubmitter(submitter.identifier).userEmail
+        val username = submitter.name
         val image = submitter.image
 
         return ResponseEntity.ok(UserInfoOutput(email, username, image))
@@ -58,7 +61,7 @@ class UserController(private val userService: UserService, private val authentic
 
         val requester = authenticationService.getEmailFromJwt(jwt).let(userService::getUserFromEmail)
 
-        if (requester.role != MOD_USER) {
+        if (requester.userRole != MOD_USER) {
             throw NotAuthorizedException()
         }
 

@@ -6,8 +6,8 @@ import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.stereotype.Service
 import pt.isel.ps.g06.httpserver.common.exception.authentication.NotAuthenticatedException
 import pt.isel.ps.g06.httpserver.common.exception.notFound.UserNotFoundException
+import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.UserResponseMapper
 import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.submitter.SubmitterResponseMapper
-import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbUserDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.SubmitterDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.UserDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.input.BanInput
@@ -17,7 +17,8 @@ import pt.isel.ps.g06.httpserver.model.Submitter
 class UserService(
         private val userDbRepository: UserDbRepository,
         private val submitterDbRepository: SubmitterDbRepository,
-        private val submitterMapper: SubmitterResponseMapper
+        private val submitterMapper: SubmitterResponseMapper,
+        private val userMapper: UserResponseMapper
 ) : UserDetailsService {
 
     override fun loadUserByUsername(email: String): UserDetails {
@@ -40,14 +41,22 @@ class UserService(
         )
     }
 
-    fun getUserFromEmail(email: String): DbUserDto = userDbRepository.getByEmail(email) ?: throw UserNotFoundException()
+    fun getEmailFromSubmitter(submitterId: Int): pt.isel.ps.g06.httpserver.model.User =
+            userDbRepository
+                    .getBySubmitter(submitterId)
+                    .let { dto -> userMapper.mapToModel(dto ?: throw UserNotFoundException()) }
+
+    fun getUserFromEmail(email: String): pt.isel.ps.g06.httpserver.model.User =
+            userDbRepository
+                    .getByEmail(email)
+                    .let { dto -> userMapper.mapToModel(dto ?: throw UserNotFoundException()) }
 
     fun getSubmitterFromEmail(email: String): Submitter? {
 
-        val dbUserDto = getUserFromEmail(email)
+        val user = getUserFromEmail(email)
 
         return submitterDbRepository
-                .getSubmitterBySubmitterId(dbUserDto.submitterId)
+                .getSubmitterBySubmitterId(user.identifier)
                 .let(submitterMapper::mapTo)
     }
 
