@@ -1,5 +1,7 @@
 package pt.isel.ps.g06.httpserver.dataAccess.output.meal
 
+import pt.isel.ps.g06.httpserver.dataAccess.output.NutritionalInfoOutput
+import pt.isel.ps.g06.httpserver.dataAccess.output.toNutritionalInfoOutput
 import pt.isel.ps.g06.httpserver.model.Meal
 import java.net.URI
 
@@ -8,6 +10,7 @@ open class BaseMealOutput(
         val name: String,
         val isFavorite: Boolean,
         val isSuggested: Boolean,
+        val nutritionalInfo: NutritionalInfoOutput,
         val isVotable: Boolean,
         val imageUri: URI?
 )
@@ -18,8 +21,8 @@ fun toBaseMealOutput(meal: Meal, userId: Int? = null): BaseMealOutput {
             name = meal.name,
             isFavorite = userId?.let { meal.isFavorite(userId) } ?: false,
             isSuggested = !meal.isUserMeal(),
-            //A suggested/custom meal is not votable
-            isVotable = false,
+            nutritionalInfo = toNutritionalInfoOutput(meal.nutritionalValues),
+            isVotable = false, //A suggested/custom meal is not votable
             imageUri = meal.imageUri
     )
 }
