@@ -6,7 +6,7 @@ import androidx.lifecycle.LifecycleOwner
 import pt.ipl.isel.leic.ps.androidclient.ui.util.live.LiveDataListHandler
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.BaseListViewModel
 
-abstract class ItemPickerViewModel<M : Parcelable> : BaseListViewModel<M> {
+abstract class BaseItemPickerViewModel<M : Parcelable> : BaseListViewModel<M> {
 
     val pickedLiveDataHandler =
         LiveDataListHandler<M>()
@@ -14,9 +14,8 @@ abstract class ItemPickerViewModel<M : Parcelable> : BaseListViewModel<M> {
 
     constructor() : super()
 
-    constructor(parcel: Parcel) {
+    constructor(parcel: Parcel): super(parcel) {
         pickedLiveDataHandler.restoreFromParcel(parcel, this.getModelClass())
-        super.restoreFromParcel(parcel)
     }
 
     override fun tryRestore(): Boolean {

@@ -6,7 +6,7 @@ import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.ingredientRepositor
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealIngredient
 import kotlin.reflect.KClass
 
-class IngredientPickViewModel : ItemPickerViewModel<MealIngredient> {
+class IngredientPickViewModel : BaseItemPickerViewModel<MealIngredient> {
 
     constructor(parcel: Parcel) : super(parcel)
 

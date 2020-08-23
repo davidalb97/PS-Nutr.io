@@ -11,29 +11,25 @@ import android.widget.*
 import android.widget.AdapterView.OnItemSelectedListener
 import androidx.annotation.IdRes
 import androidx.navigation.findNavController
-import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.flexbox.FlexboxLayoutManager
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.sharedPreferences
 import pt.ipl.isel.leic.ps.androidclient.R
-import pt.ipl.isel.leic.ps.androidclient.data.db.entity.DbComponentMealEntity
 import pt.ipl.isel.leic.ps.androidclient.data.db.entity.DbMealInfoEntity
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealInfo
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealIngredient
 import pt.ipl.isel.leic.ps.androidclient.data.model.Source
 import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.pick.CuisinePickRecyclerAdapter
-import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.pick.IngredientPickRecyclerAdapter
 import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.pick.MealInfoPickRecyclerAdapter
 import pt.ipl.isel.leic.ps.androidclient.ui.adapter.spinner.pick.CuisinePickSpinnerAdapter
-import pt.ipl.isel.leic.ps.androidclient.ui.adapter.spinner.pick.IngredientPickSpinnerAdapter
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.BaseFragment
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.AddCustomMealRecyclerVMProviderFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.util.*
 import pt.ipl.isel.leic.ps.androidclient.ui.util.units.WeightUnits
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.AddCustomMealViewModel
+import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.pick.BaseItemPickerViewModel
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.pick.CuisinePickViewModel
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.pick.IngredientPickViewModel
-import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.pick.ItemPickerViewModel
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.pick.MealInfoPickViewModel
 import pt.ipl.isel.leic.ps.androidclient.util.TimestampWithTimeZone
 
@@ -49,17 +45,6 @@ class AddCustomMealFragment : BaseFragment() {
     private lateinit var mealsImgButton: ImageButton
     private val mealsRecyclerAdapter by lazy {
         MealInfoPickRecyclerAdapter(mealsViewModel, requireContext())
-    }
-
-    //Ingredients
-    private val ingredientsRecyclerViewId: Int = R.id.custom_meal_ingredients_list
-    private val ingredientsSpinnerId: Int = R.id.custom_meal_ingredients_spinner
-    private lateinit var ingredientsViewModel: IngredientPickViewModel
-    private val ingredientsSpinnerAdapter by lazy {
-        IngredientPickSpinnerAdapter(ingredientsViewModel, requireContext())
-    }
-    private val ingredientsRecyclerAdapter: IngredientPickRecyclerAdapter by lazy {
-        IngredientPickRecyclerAdapter(ingredientsViewModel, requireContext())
     }
 
     //Cuisines
@@ -118,7 +103,6 @@ class AddCustomMealFragment : BaseFragment() {
 
         setupUnitSpinner(view)
         setupMeals(view)
-        setupIngredients(view)
         setupCuisines(view)
         setupSubmit()
     }
@@ -154,30 +138,6 @@ class AddCustomMealFragment : BaseFragment() {
         }
     }
 
-    private fun setupIngredients(view: View) {
-
-        initRecyclerView(
-            view = view,
-            recyclerViewId = ingredientsRecyclerViewId,
-            adapter = ingredientsRecyclerAdapter,
-            pickerViewModel = ingredientsViewModel
-        )
-        initSpinner(
-            view = view,
-            spinnerId = ingredientsSpinnerId,
-            adapter = ingredientsSpinnerAdapter,
-            pickerViewModel = ingredientsViewModel
-        )
-        when {
-            viewModel.editMeal?.ingredientComponents != null -> {
-                val ingredients = viewModel.editMeal!!.ingredientComponents
-                ingredientsViewModel.tryRestore()
-                ingredientsViewModel.pickedLiveDataHandler.add(ingredients)
-            }
-            else -> ingredientsViewModel.update()
-        }
-    }
-
     private fun setupCuisines(view: View) {
 
         initRecyclerView(
@@ -194,11 +154,11 @@ class AddCustomMealFragment : BaseFragment() {
         )
         when {
             viewModel.editMeal?.cuisines != null -> {
-                val ingredients = viewModel.editMeal!!.cuisines
+                val cuisines = viewModel.editMeal!!.cuisines
                 cuisinesViewModel.tryRestore()
-                cuisinesViewModel.pickedLiveDataHandler.add(ingredients)
+                cuisinesViewModel.pickedLiveDataHandler.add(cuisines)
             }
-            else -> ingredientsViewModel.update()
+            else -> cuisinesViewModel.update()
         }
     }
 
@@ -207,13 +167,11 @@ class AddCustomMealFragment : BaseFragment() {
             val noneFieldBlank =
                 listOf(
                     customMealName,
-                    customMealAmount,
-                    customMealCarbsAmount
+                    customMealAmount
                 ).none { it.text.isBlank() }
 
             val noneEmpty = listOf(
                 cuisinesViewModel,
-                ingredientsViewModel,
                 mealsViewModel
             ).none { it.pickedItems.isEmpty() }
 
@@ -232,12 +190,12 @@ class AddCustomMealFragment : BaseFragment() {
         view: View,
         @IdRes recyclerViewId: Int,
         adapter: RecyclerView.Adapter<*>,
-        pickerViewModel: ItemPickerViewModel<M>
+        pickerViewModel: BaseItemPickerViewModel<M>
     ) {
         val recyclerView: RecyclerView = view.findViewById(recyclerViewId)
         recyclerView.adapter = adapter
         recyclerView.layoutManager = FlexboxLayoutManager(requireActivity())
-        pickerViewModel.observeRemaining(this) {
+        pickerViewModel.observePicked(this) {
             adapter.notifyDataSetChanged()
         }
     }
@@ -246,7 +204,7 @@ class AddCustomMealFragment : BaseFragment() {
         view: View,
         @IdRes spinnerId: Int,
         adapter: ArrayAdapter<M>,
-        pickerViewModel: ItemPickerViewModel<M>
+        pickerViewModel: BaseItemPickerViewModel<M>
     ) {
         val spinner: Spinner = view.findViewById(spinnerId)
         spinner.adapter = adapter
