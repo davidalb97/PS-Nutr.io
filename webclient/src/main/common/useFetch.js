@@ -96,7 +96,7 @@ function setupRequest({
 
     //Add auth token to authorization header if exists
     if (authToken) {
-        result.requestInit.headers['Authorization'] = authToken
+        result.requestInit.headers['Authorization'] = `Bearer ${authToken}`
     }
 
     //Add body if exists

@@ -53,7 +53,9 @@ function FoodList({ request, listName, foodMapper, onFoodSelect }) {
 
                 <Accordion.Collapse eventKey="0">
                     <ListGroup>
-                        {foods}
+                        <div className="ingredient overflow" >
+                            {foods}
+                        </div>
                     </ListGroup>
                 </Accordion.Collapse>
             </Card>
