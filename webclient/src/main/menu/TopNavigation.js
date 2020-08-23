@@ -5,22 +5,30 @@ import Navbar from 'react-bootstrap/Navbar'
 import Nav from 'react-bootstrap/Nav'
 import NavDropdown from 'react-bootstrap/NavDropdown'
 import Button from 'react-bootstrap/Button'
+import { LinkContainer } from 'react-router-bootstrap'
 
 import UserContext from '../authentication/UserContext'
 export default function TopNavigation() {
     const [init, setInit] = useState(false)
-    const user = useContext(UserContext)
+    const userContext = useContext(UserContext)
 
     useEffect(() => { if (!init) setInit(true) }, [init])
 
-
     if (!init) return <> </>
 
-    //Props for navbar
-    const disabled = user.notInitialized
-    const authenticationContext = user.notInitialized ?
-        <> <Button variant="primary">Login</Button> <br /> <Button variant="primary">Register</Button></> :
-        <> <Navbar.Text>Signed in as: {`${user.username}`}</Navbar.Text> </>
+    console.log(userContext)
+
+    const disabled = !userContext.initialized || (userContext.initialized && !userContext.user)
+    //If user was still not obtained from server, do not display Login/Register buttons
+    const authenticationContext = !userContext.initialized ? <> </> : userContext.user ?
+        //Logged in, display info
+        <Navbar.Text>Signed in as: {`${userContext.user.username}`}</Navbar.Text> :
+        //----
+        //Not signed in, but tried to obtain from server
+        <>
+            <LinkContainer to="/login"><Button variant="primary">Login</Button></LinkContainer>
+            <LinkContainer to="/register"><Button variant="primary">Register</Button></LinkContainer>
+        </>
 
     return <Navbar bg="dark" variant="dark" expand="lg" fixed="top">
         <Navbar.Brand><Link to="/" />Nutr.io</Navbar.Brand>
@@ -40,7 +48,7 @@ export default function TopNavigation() {
                 </NavDropdown>
                 {/* MODERATION */}
                 <NavDropdown title="Moderation" id="collasible-nav-dropdown" disabled={disabled}>
-                    <NavDropdown.Item><Link to="/moderation/addFood">Food creator</Link></NavDropdown.Item>
+                    <NavDropdown.Item><Link to="/moderation/newFood">Food creator</Link></NavDropdown.Item>
                 </NavDropdown>
 
                 {authenticationContext}

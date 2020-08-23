@@ -16,13 +16,11 @@ ReactDOM.render(
   <BrowserRouter>
     <UserProvider>
       {/* Top menu */}
-      <Container>
-        <TopNavigation />
+      <TopNavigation />
 
-        {/* Body of the page */}
+      <Container>
         <RouteRenderer />
       </Container>
-
     </UserProvider>
   </BrowserRouter>,
   document.getElementById('container')

@@ -15,10 +15,10 @@ export default function useFetch({
     method,
     body
 }) {
-    const [fetchState, setFetchState] = useState()
-    const [response, setResponse] = useState()
-    const [json, setJson] = useState()
-    const [error, setError] = useState()
+    const [fetchState, setFetchState] = useState(null)
+    const [response, setResponse] = useState(null)
+    const [json, setJson] = useState(null)
+    const [error, setError] = useState(null)
 
     useEffect(() => {
         let isCancelled = false
@@ -82,7 +82,6 @@ function setupRequest({
     method,
     body
 }) {
-
     let result = {
         url: url,
         requestInit: {

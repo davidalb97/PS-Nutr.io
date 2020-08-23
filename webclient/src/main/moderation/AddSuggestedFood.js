@@ -52,25 +52,31 @@ export default function AddSuggestedFood() {
                     </Col>
                 </Row>
 
-                <Form.Group controlId="formFoodName">
-                    <Form.Label>Quantity</Form.Label>
-                    <Form.Control
-                        onChange={() => onInput(quantity.current)}
-                        ref={quantity}
-                        type="number"
-                        label={"gr"}
-                    />
-                </Form.Group>
+                <Row>
+                    <Col>
+                        <Form.Group controlId="formFoodName">
+                            <Form.Label>Quantity</Form.Label>
+                            <Form.Control
+                                onChange={() => onInput(quantity.current)}
+                                ref={quantity}
+                                type="number"
+                                label={"gr"}
+                            />
+                        </Form.Group>
+                    </Col>
+                    <Col>
+                        <Form.Group controlId="formFoodName">
+                            <Form.Label>Carbohydrates</Form.Label>
+                            <Form.Control
+                                onChange={() => onInput(carbs.current)}
+                                ref={carbs}
+                                type="number"
+                            />
+                        </Form.Group>
+                    </Col>
+                </Row>
 
-                <Form.Group controlId="formFoodName">
-                    <Form.Label>Carbohydrates</Form.Label>
-                    <Form.Control
-                        onChange={() => onInput(carbs.current)}
-                        ref={carbs}
-                        type="number"
-                    />
-                </Form.Group>
-
+                
             </Form>
         </Card.Body>
     </Card>

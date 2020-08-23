@@ -14,7 +14,7 @@ import UserContext from '../authentication/UserContext'
  */
 export default function RequestingEntity({ request, onLoad, onSuccess, onError, onInit }) {
     const user = useContext(UserContext)
-    request.authToken = user.authToken
+    request.authToken = request.authToken || user.authToken
 
     const [fetchState, response, json, error] = useFetch(request)
 
