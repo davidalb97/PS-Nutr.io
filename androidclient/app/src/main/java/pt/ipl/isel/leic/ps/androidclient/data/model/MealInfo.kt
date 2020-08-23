@@ -3,13 +3,14 @@ package pt.ipl.isel.leic.ps.androidclient.data.model
 import android.net.Uri
 import android.os.Parcel
 import android.os.Parcelable
-import pt.ipl.isel.leic.ps.androidclient.util.*
+import pt.ipl.isel.leic.ps.androidclient.util.TimestampWithTimeZone
+import pt.ipl.isel.leic.ps.androidclient.util.readListCompat
+import pt.ipl.isel.leic.ps.androidclient.util.readTimestampWithTimeZone
+import pt.ipl.isel.leic.ps.androidclient.util.writeTimestampWithTimeZone
 
 open class MealInfo : MealItem {
 
-    final override val carbs: Int
-    final override val amount: Int
-    final override val unit: String
+    val submissionOwner: SubmissionOwner?
     val creationDate: TimestampWithTimeZone?
     var ingredientComponents: List<MealIngredient>
     var mealComponents: List<MealIngredient>
@@ -35,7 +36,8 @@ open class MealInfo : MealItem {
         cuisines: List<Cuisine>,
         portions: List<Portion>,
         isSuggested: Boolean,
-        source: Source
+        source: Source,
+        submissionOwner: SubmissionOwner?
     ) : super(
         dbId = dbId,
         dbRestaurantId = dbRestaurantId,
@@ -52,37 +54,31 @@ open class MealInfo : MealItem {
         isSuggested = isSuggested,
         source = source
     ) {
-        this.carbs = carbs
-        this.amount = amount
-        this.unit = unit
         this.creationDate = creationDate
         this.ingredientComponents = ingredientComponents
         this.mealComponents = mealComponents
         this.cuisines = cuisines
         this.portions = portions
+        this.submissionOwner = submissionOwner
     }
 
     constructor(parcel: Parcel) : super(parcel) {
-        this.carbs = parcel.readInt()
-        this.amount = parcel.readInt()
-        this.unit = parcel.readString()!!
         this.creationDate = parcel.readTimestampWithTimeZone()
         this.ingredientComponents = parcel.readListCompat(MealIngredient::class)
         this.mealComponents = parcel.readListCompat(MealIngredient::class)
         this.cuisines = parcel.readListCompat(Cuisine::class)
         this.portions = parcel.readListCompat(Portion::class)
+        this.submissionOwner = parcel.readParcelable(SubmissionOwner::class.java.classLoader)
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         super.writeToParcel(parcel, flags)
-        parcel.writeInt(carbs)
-        parcel.writeInt(amount)
-        parcel.writeString(unit)
         parcel.writeTimestampWithTimeZone(creationDate)
         parcel.writeList(ingredientComponents)
         parcel.writeList(mealComponents)
         parcel.writeList(cuisines)
         parcel.writeList(portions)
+        parcel.writeParcelable(submissionOwner, flags)
     }
 
     override fun describeContents(): Int {

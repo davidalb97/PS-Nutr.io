@@ -1,6 +1,7 @@
 package pt.ipl.isel.leic.ps.androidclient.data.api.dto.input
 
 import android.net.Uri
+import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.info.NutritionalInfoInput
 
 open class SimplifiedMealInput(
     val mealIdentifier: Int,
@@ -9,5 +10,6 @@ open class SimplifiedMealInput(
     val votes: VotesInputDto?,
     val isFavorite: Boolean,
     val isVotable: Boolean,
-    val isSuggested: Boolean
+    val isSuggested: Boolean,
+    val nutritionalInfo: NutritionalInfoInput
 )

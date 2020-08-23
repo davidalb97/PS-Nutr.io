@@ -3,10 +3,7 @@ package pt.ipl.isel.leic.ps.androidclient.data.db.mapper
 import android.net.Uri
 import pt.ipl.isel.leic.ps.androidclient.data.db.entity.DbMealInfoEntity
 import pt.ipl.isel.leic.ps.androidclient.data.db.relation.DbMealInfoRelation
-import pt.ipl.isel.leic.ps.androidclient.data.model.MealInfo
-import pt.ipl.isel.leic.ps.androidclient.data.model.Source
-import pt.ipl.isel.leic.ps.androidclient.data.model.VoteState
-import pt.ipl.isel.leic.ps.androidclient.data.model.Votes
+import pt.ipl.isel.leic.ps.androidclient.data.model.*
 
 class DbMealInfoMapper(
     private val componentIngredientMapper: DbComponentIngredientMapper,
@@ -17,7 +14,7 @@ class DbMealInfoMapper(
 
     fun mapToModel(relation: DbMealInfoRelation) = MealInfo(
         dbId = relation.entity.primaryKey,
-        dbRestaurantId = DbMealInfoEntity.DEFAULT_DB_ID,
+        dbRestaurantId = relation.entity.restaurantKey,
         submissionId = relation.entity.submissionId,
         restaurantSubmissionId = relation.entity.restaurantSubmissionId,
         name = relation.entity.name,
@@ -38,8 +35,38 @@ class DbMealInfoMapper(
         cuisines = cuisinesMapper.mapToListModel(relation.cuisines),
         portions = portionMapper.mapToListModel(relation.portions),
         isSuggested = relation.entity.isSuggested,
-        source = Source.values()[relation.entity.sourceOrdinal]
+        source = Source.values()[relation.entity.sourceOrdinal],
+        submissionOwner = relation.entity.ownerId?.let { ownerId ->
+            relation.entity.ownerName?.let { ownerName ->
+                SubmissionOwner(
+                    username = ownerName,
+                    id = ownerId
+                )
+            }
+        }
     )
+    /*
+    if(relation.entity.ownerId != null && relation.entity.ownerName != null) {
+        SubmissionOwner(
+            username = relation.entity.ownerName,
+            id = relation.entity.ownerId
+        )
+    } else null
+    if(listOf(relation.entity.ownerName, relation.entity.ownerId).all { it == null }) {
+        SubmissionOwner(
+            username = relation.entity.ownerName!!,
+            id = relation.entity.ownerId!!
+        )
+    } else null
+
+    relation.entity.ownerId?.let { ownerId ->
+        relation.entity.ownerName?.let { ownerName ->
+            SubmissionOwner(
+                username = ownerName,
+                id = ownerId
+            )
+        }
+    }*/
 
     fun mapToRelation(model: MealInfo) = DbMealInfoRelation(
         entity = DbMealInfoEntity(
@@ -58,14 +85,17 @@ class DbMealInfoMapper(
             hasVote = model.votes != null,
             creationDate = model.creationDate,
             isSuggested = model.isSuggested,
-            sourceOrdinal = model.source.ordinal
+            sourceOrdinal = model.source.ordinal,
+            ownerId = model.submissionOwner?.id,
+            ownerName = model.submissionOwner?.username,
         ),
         componentMeals = componentMealMapper.mapToListEntity(model.mealComponents),
         componentIngredients = componentIngredientMapper.mapToListEntity(model.ingredientComponents),
         cuisines = cuisinesMapper.mapToListEntity(model.cuisines),
         portions = portionMapper.mapToListEntity(model.portions)
     ).also { dto ->
-        dto.entity.primaryKey = model.dbId
+        dto.entity.primaryKey = model.dbId ?: DbMealInfoEntity.DEFAULT_DB_ID
+        dto.entity.restaurantKey = model.dbRestaurantId ?: DbMealInfoEntity.DEFAULT_DB_ID
     }
 
     fun mapToListModel(relations: List<DbMealInfoRelation>) = relations.map(this::mapToModel)

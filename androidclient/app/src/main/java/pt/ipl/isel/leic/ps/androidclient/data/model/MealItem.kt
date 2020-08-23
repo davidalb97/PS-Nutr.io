@@ -14,9 +14,9 @@ open class MealItem(
     val submissionId: Int?,
     val restaurantSubmissionId: String?,
     val name: String,
-    open val carbs: Int?,
-    open val amount: Int?,
-    open val unit: String?,
+    val carbs: Int,
+    val amount: Int,
+    val unit: String,
     val imageUri: Uri?,
     val votes: Votes?,
     var isFavorite: Boolean,
@@ -31,9 +31,9 @@ open class MealItem(
         submissionId = parcel.readSerializable() as Int?,
         restaurantSubmissionId = parcel.readString(),
         name = parcel.readString()!!,
-        carbs = parcel.readSerializable() as Int?,
-        amount = parcel.readSerializable() as Int?,
-        unit = parcel.readString(),
+        carbs = parcel.readInt(),
+        amount = parcel.readInt(),
+        unit = parcel.readString()!!,
         imageUri = parcel.readUri(),
         votes = parcel.readParcelable(Votes::class.java.classLoader),
         isFavorite = parcel.readBooleanCompat(),
@@ -48,8 +48,8 @@ open class MealItem(
         parcel.writeSerializable(submissionId)
         parcel.writeString(restaurantSubmissionId)
         parcel.writeString(name)
-        parcel.writeSerializable(carbs)
-        parcel.writeSerializable(amount)
+        parcel.writeInt(carbs)
+        parcel.writeInt(amount)
         parcel.writeString(unit)
         parcel.writeUri(imageUri)
         parcel.writeParcelable(votes, flags)

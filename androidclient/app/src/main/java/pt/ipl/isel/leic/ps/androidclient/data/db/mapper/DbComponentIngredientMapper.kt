@@ -2,6 +2,7 @@ package pt.ipl.isel.leic.ps.androidclient.data.db.mapper
 
 import android.net.Uri
 import pt.ipl.isel.leic.ps.androidclient.data.db.entity.DbComponentIngredientEntity
+import pt.ipl.isel.leic.ps.androidclient.data.db.entity.DbMealItemEntity
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealIngredient
 import pt.ipl.isel.leic.ps.androidclient.data.model.Source
 
@@ -29,8 +30,8 @@ class DbComponentIngredientMapper {
         imageUri = model.imageUri?.toString(),
         sourceOrdinal = model.source.ordinal
     ).also { dto ->
-        dto.primaryKey = model.dbId
-        dto.mealKey = model.dbMealId
+        dto.primaryKey = model.dbId ?: DbComponentIngredientEntity.DEFAULT_DB_ID
+        dto.mealKey = model.dbMealId ?: DbMealItemEntity.DEFAULT_DB_ID
     }
 
     fun mapToListModel(relations: List<DbComponentIngredientEntity>) =

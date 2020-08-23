@@ -47,8 +47,8 @@ class DbMealItemMapper {
         isSuggested = model.isSuggested,
         sourceOrdinal = model.source.ordinal
     ).also { dto ->
-        dto.primaryKey = model.dbId
-        dto.restaurantKey = model.dbRestaurantId
+        dto.primaryKey = model.dbId ?: DbMealItemEntity.DEFAULT_DB_ID
+        dto.restaurantKey = model.dbRestaurantId ?: DbMealItemEntity.DEFAULT_DB_ID
     }
 
     fun mapToListModel(entities: List<DbMealItemEntity>) = entities.map(this::mapToModel)

@@ -53,7 +53,7 @@ class DbRestaurantInfoMapper(
             hasVote = model.votes != null,
             sourceOrdinal = model.source.ordinal
         ).also { dto ->
-            dto.primaryKey = model.dbId
+            dto.primaryKey = model.dbId ?: DbRestaurantInfoEntity.DEFAULT_DB_ID
         },
         meals = mealsMapper.mapToListEntity(model.meals.plus(model.suggestedMeals)),
         cuisines = cuisinesMapper.mapToListEntity(model.cuisines)

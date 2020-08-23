@@ -10,7 +10,8 @@ class InputMealInfoMapper(
     private val inputVotesMapper: InputVotesMapper,
     private val inputCuisineMapper: InputCuisineMapper,
     private val inputMealIngredientMapper: InputMealIngredientMapper,
-    private val inputPortionMapper: InputPortionMapper
+    private val inputPortionMapper: InputPortionMapper,
+    private val inputUserMapper: InputSubmissionOwnerMapper
 ) {
 
     fun mapToModel(dto: DetailedMealInput, restaurantId: String?) = MealInfo(
@@ -37,7 +38,8 @@ class InputMealInfoMapper(
         cuisines = dto.cuisines?.let { inputCuisineMapper.mapToListModel(dto.cuisines) }
             ?: emptyList(),
         portions = dto.portions?.let { inputPortionMapper.mapToListModel(it) } ?: emptyList(),
-        source = Source.API
+        source = Source.API,
+        submissionOwner = dto.createdBy?.let(inputUserMapper::mapToModel)
     )
 
     fun mapToListModel(dtos: Iterable<DetailedMealInput>, restaurantId: String?): List<MealInfo> =
