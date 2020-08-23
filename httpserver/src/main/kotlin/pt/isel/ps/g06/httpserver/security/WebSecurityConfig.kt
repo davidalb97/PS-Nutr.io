@@ -55,7 +55,7 @@ class WebSecurityConfig(
                         "/meal",
                         "/meal/*",
                         "/cuisines",
-                        "/ingredients"
+                        "/ingredient"
                 ).permitAll()
                 .antMatchers(HttpMethod.POST,
                         "/user/login",

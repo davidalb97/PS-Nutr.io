@@ -29,7 +29,7 @@ const val USER_MEAL = "$MEALS?forUser"
 const val CUISINES = "/cuisines"
 
 //Ingredients
-const val INGREDIENTS = "/ingredients"
+const val INGREDIENTS = "/ingredient"
 
 //User
 const val USER = "/user"

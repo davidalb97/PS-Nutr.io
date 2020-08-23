@@ -5,7 +5,6 @@ import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.transaction.TransactionIsolationLevel
 import org.springframework.stereotype.Repository
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionContractType.FAVORABLE
-import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType.MEAL
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.*
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbMealCuisineDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbMealDto
@@ -13,6 +12,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbMealIngredientDto
 import pt.isel.ps.g06.httpserver.dataAccess.input.IngredientInput
 import pt.isel.ps.g06.httpserver.common.exception.clientError.InvalidInputDomain
 import pt.isel.ps.g06.httpserver.common.exception.clientError.InvalidInputException
+import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType
 
 private val isolationLevel = TransactionIsolationLevel.SERIALIZABLE
 private val mealDaoClass = MealDao::class.java
@@ -132,17 +132,18 @@ class MealDbRepository(jdbi: Jdbi) : SubmissionDbRepository(jdbi) {
     @Throws(InvalidInputException::class)
     fun insert(
             submitterId: Int,
+            submissionType: SubmissionType,
             mealName: String,
             quantity: Int,
             cuisines: Collection<String>,
             ingredients: Collection<IngredientInput>
     ): DbMealDto {
         if (cuisines.isEmpty()) {
-            throw InvalidInputException(InvalidInputDomain.CUISINE, "A meal must have at least a cuisine!")
+            throw InvalidInputException("A meal must have at least a cuisine!")
         }
 
         if (ingredients.isEmpty()) {
-            throw InvalidInputException(InvalidInputDomain.INGREDIENT, "A meal must have at least one ingredient!")
+            throw InvalidInputException("A meal must have at least one ingredient!")
         }
 
         return jdbi.inTransaction<DbMealDto, Exception>(isolationLevel) {
@@ -152,15 +153,12 @@ class MealDbRepository(jdbi: Jdbi) : SubmissionDbRepository(jdbi) {
                     .getAllIngredientsByIds(ingredients.map { ingredient -> ingredient.identifier!! })
 
             if (databaseIngredients.size != ingredients.size) {
-                throw InvalidInputException(
-                        InvalidInputDomain.INGREDIENT,
-                        "Not all ingredients belong to the database!"
-                )
+                throw InvalidInputException("Not all ingredients belong to the database!")
             }
 
             //Insert submission
             val mealSubmissionId = it.attach(SubmissionDao::class.java)
-                    .insert(MEAL.toString())
+                    .insert(submissionType.name)
                     .submission_id
 
             //Insert contract FAVORABLE

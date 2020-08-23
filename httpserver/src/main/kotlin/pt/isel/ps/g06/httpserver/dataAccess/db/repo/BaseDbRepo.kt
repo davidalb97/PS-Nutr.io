@@ -4,12 +4,11 @@ import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.transaction.TransactionIsolationLevel
 import org.jdbi.v3.core.transaction.TransactionIsolationLevel.SERIALIZABLE
 import org.springframework.stereotype.Repository
+import pt.isel.ps.g06.httpserver.common.exception.clientError.InvalidInputException
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionContractType
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.*
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbCuisineDto
-import pt.isel.ps.g06.httpserver.common.exception.clientError.InvalidInputDomain
-import pt.isel.ps.g06.httpserver.common.exception.clientError.InvalidInputException
 import java.time.Clock
 import java.time.Duration
 import java.time.OffsetDateTime
@@ -31,9 +30,7 @@ class BaseDbRepo constructor(internal val jdbi: Jdbi) {
             it.attach(SubmissionDao::class.java)
                     .getById(submissionId)
                     ?.let { if (it.submission_type != submissionType.toString()) null else it }
-                    ?: throw InvalidInputException(InvalidInputDomain.SUBMISSION,
-                            "Invalid $submissionType submission id \"$submissionId\"."
-                    )
+                    ?: throw InvalidInputException("Invalid $submissionType submission id \"$submissionId\".")
         }
     }
 
@@ -52,7 +49,7 @@ class BaseDbRepo constructor(internal val jdbi: Jdbi) {
                     .getAllBySubmissionId(submissionId)
                     .map { it.submitter_id }
             if (!submitterIds.contains(submitterId)) {
-                throw InvalidInputException(InvalidInputDomain.SUBMISSION_SUBMITTER,
+                throw InvalidInputException(
                         "The specified submitter with id \"$submitterId\" " +
                                 "does not own submission with id \"$submissionId\"."
                 )
@@ -98,7 +95,11 @@ class BaseDbRepo constructor(internal val jdbi: Jdbi) {
     /**
      * @throws InvalidInputException If submission change timed out.
      */
-    protected fun requireEditable(submissionId: Int, timeout: Duration, defaultIsolation: TransactionIsolationLevel = SERIALIZABLE) {
+    protected fun requireEditable(
+            submissionId: Int,
+            timeout: Duration,
+            defaultIsolation: TransactionIsolationLevel = SERIALIZABLE
+    ) {
         return jdbi.inTransaction<Unit, Exception>(defaultIsolation) {
             val creationDate = it.attach(SubmissionDao::class.java)
                     .getById(submissionId)!!.submission_date
@@ -106,22 +107,21 @@ class BaseDbRepo constructor(internal val jdbi: Jdbi) {
             val seconds = Duration.between(creationDate, currentTime).seconds
 
             if (seconds > timeout.seconds) {
-                throw InvalidInputException(InvalidInputDomain.TIMEOUT,
-                        "Submission update timed out!"
-                )
+                throw InvalidInputException("Submission update timed out!")
             }
         }
     }
 
     protected fun requireFromUser(submissionId: Int, isolationLevel: TransactionIsolationLevel = SERIALIZABLE) {
         if (isFromApi(submissionId, isolationLevel)) {
-            throw InvalidInputException(InvalidInputDomain.API,
-                    "The submission id \"$submissionId\" is not an API submission."
-            )
+            throw InvalidInputException("The submission id \"$submissionId\" is not an API submission.")
         }
     }
 
-    protected fun getCuisinesByNames(cuisineNames: Collection<String>, isolationLevel: TransactionIsolationLevel = SERIALIZABLE): Collection<DbCuisineDto> {
+    protected fun getCuisinesByNames(
+            cuisineNames: Collection<String>,
+            isolationLevel: TransactionIsolationLevel = SERIALIZABLE
+    ): Collection<DbCuisineDto> {
         return jdbi.inTransaction<Collection<DbCuisineDto>, Exception>(isolationLevel) {
             val cuisineDtos = it.attach(CuisineDao::class.java)
                     .getAllByNames(cuisineNames)
@@ -129,7 +129,7 @@ class BaseDbRepo constructor(internal val jdbi: Jdbi) {
                 val invalidCuisines = cuisineNames.filter { name ->
                     cuisineDtos.none { it.cuisine_name == name }
                 }
-                throw InvalidInputException(InvalidInputDomain.CUISINE,
+                throw InvalidInputException(
                         "Invalid cuisines: " + invalidCuisines.joinToString(",", "[", "]")
                 )
             }

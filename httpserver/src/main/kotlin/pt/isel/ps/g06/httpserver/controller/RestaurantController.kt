@@ -60,7 +60,7 @@ class RestaurantController(
             apiType: String?
     ): ResponseEntity<Collection<SimplifiedRestaurantOutput>> {
         if (latitude == null || longitude == null) {
-            throw InvalidInputException(InvalidInputDomain.SEARCH_RESTAURANT, INVALID_RESTAURANT_SEARCH)
+            throw InvalidInputException(INVALID_RESTAURANT_SEARCH)
         }
 
         val nearbyRestaurants = restaurantService.getNearbyRestaurants(

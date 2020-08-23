@@ -44,9 +44,7 @@ class RestaurantMealDbRepository(jdbi: Jdbi) : SubmissionDbRepository(jdbi) {
                     .getByRestaurantAndMealId(restaurantId, mealId)
 
             if (existingRestaurantMeal != null) {
-                throw InvalidInputException(InvalidInputDomain.RESTAURANT_MEAL,
-                        "The restaurant with id $restaurantId already has a meal with id $mealId!"
-                )
+                throw InvalidInputException("The restaurant with id $restaurantId already has a meal with id $mealId!")
             }
 
             val submissionId = it
