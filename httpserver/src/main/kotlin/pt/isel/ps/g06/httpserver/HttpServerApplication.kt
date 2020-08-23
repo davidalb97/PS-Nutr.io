@@ -7,7 +7,7 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver
 import org.springframework.web.servlet.config.annotation.EnableWebMvc
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
-import pt.isel.ps.g06.httpserver.argumentResolver.AuthenticationArgumentResolver
+import pt.isel.ps.g06.httpserver.argumentResolver.UserAuthenticationArgumentResolver
 import pt.isel.ps.g06.httpserver.interceptor.LoggerInterceptor
 
 @EnableWebMvc
@@ -25,10 +25,10 @@ class InterceptorConfig(
 
 @Configuration
 class ArgumentResolverConfig(
-        private val authenticationArgumentResolver: AuthenticationArgumentResolver
+        private val userAuthenticationArgumentResolver: UserAuthenticationArgumentResolver
 ) : WebMvcConfigurer {
     override fun addArgumentResolvers(resolvers: MutableList<HandlerMethodArgumentResolver>) {
-        resolvers.add(authenticationArgumentResolver)
+        resolvers.add(userAuthenticationArgumentResolver)
     }
 }
 

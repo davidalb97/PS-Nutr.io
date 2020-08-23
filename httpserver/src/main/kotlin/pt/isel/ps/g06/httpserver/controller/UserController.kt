@@ -13,6 +13,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.output.user.UserInfoOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.security.UserLoginOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.security.UserRegisterOutput
 import pt.isel.ps.g06.httpserver.model.Submitter
+import pt.isel.ps.g06.httpserver.model.User
 import pt.isel.ps.g06.httpserver.service.AuthenticationService
 import pt.isel.ps.g06.httpserver.service.UserService
 import javax.validation.Valid
@@ -52,16 +53,9 @@ class UserController(private val userService: UserService, private val authentic
 
     @PutMapping(BAN)
     fun putBanUser(
-            @RequestHeader(AUTH_HEADER) jwt: String,
+            user: User,
             @RequestBody banInput: BanInput
     ): ResponseEntity<Void> {
-
-        val requester = authenticationService.getEmailFromJwt(jwt).let(userService::getUserFromEmail)
-
-        if (requester.userRole != MOD_USER) {
-            throw NotAuthorizedException()
-        }
-
         userService.updateUserBan(banInput)
 
         return ResponseEntity.ok().build()

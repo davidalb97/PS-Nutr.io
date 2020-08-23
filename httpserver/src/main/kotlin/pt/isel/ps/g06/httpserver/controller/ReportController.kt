@@ -8,6 +8,7 @@ import pt.isel.ps.g06.httpserver.common.exception.authorization.NotAuthorizedExc
 import pt.isel.ps.g06.httpserver.dataAccess.input.ReportInput
 import pt.isel.ps.g06.httpserver.model.Report
 import pt.isel.ps.g06.httpserver.model.Submitter
+import pt.isel.ps.g06.httpserver.model.User
 import pt.isel.ps.g06.httpserver.service.AuthenticationService
 import pt.isel.ps.g06.httpserver.service.ReportService
 import pt.isel.ps.g06.httpserver.service.UserService
@@ -23,6 +24,7 @@ class ReportController(
 
     @GetMapping(REPORTS)
     fun getAllReports(
+            user: User,
             @RequestHeader(AUTH_HEADER) jwt: String
     ): ResponseEntity<List<Report>> {
         val requester = authenticationService.getEmailFromJwt(jwt).let(userService::getUserFromEmail)
@@ -36,6 +38,7 @@ class ReportController(
 
     @GetMapping(SUBMISSION_REPORTS)
     fun getAllReportsFromSubmission(
+            user: User,
             @RequestHeader(AUTH_HEADER) jwt: String,
             @PathVariable(SUBMISSION_ID_VALUE) submissionId: Int
     ): ResponseEntity<List<Report>> {
