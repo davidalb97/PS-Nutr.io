@@ -2,13 +2,14 @@ package pt.isel.ps.g06.httpserver.argumentResolver
 
 import org.springframework.context.annotation.Lazy
 import org.springframework.core.MethodParameter
-import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpHeaders.AUTHORIZATION
 import org.springframework.stereotype.Component
 import org.springframework.web.bind.support.WebDataBinderFactory
 import org.springframework.web.context.request.NativeWebRequest
 import org.springframework.web.method.support.HandlerMethodArgumentResolver
 import org.springframework.web.method.support.ModelAndViewContainer
 import pt.isel.ps.g06.httpserver.common.MOD_USER
+import pt.isel.ps.g06.httpserver.common.exception.authentication.NotAuthenticatedException
 import pt.isel.ps.g06.httpserver.common.exception.authorization.NotAuthorizedException
 import pt.isel.ps.g06.httpserver.model.User
 import pt.isel.ps.g06.httpserver.service.AuthenticationService
@@ -35,11 +36,12 @@ class ModAuthorizationArgumentResolver(
             binderFactory: WebDataBinderFactory?
     ): Any? {
         val requester = webRequest
-                .getHeader(HttpHeaders.AUTHORIZATION)
+                .getHeader(AUTHORIZATION)
                 ?.let(authenticationService::getEmailFromJwt)
                 ?.let(userService::getUserFromEmail)
+                ?: throw NotAuthenticatedException()
 
-        if (requester?.userRole != MOD_USER) {
+        if (requester.userRole != MOD_USER) {
             throw NotAuthorizedException()
         }
 
