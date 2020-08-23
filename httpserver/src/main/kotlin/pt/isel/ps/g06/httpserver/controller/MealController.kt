@@ -74,8 +74,7 @@ class MealController(
     }
 
     @GetMapping(USER_MEAL)
-    fun getCustomMealsFromUser(submitter: Submitter?): ResponseEntity<List<Meal>> {
-        submitter ?: throw NotAuthenticatedException()
+    fun getCustomMealsFromUser(submitter: Submitter): ResponseEntity<List<Meal>> {
 
         val userCustomMeals = mealService
                 .getUserCustomMeals(submitter.identifier)
@@ -87,12 +86,10 @@ class MealController(
 
     @PutMapping(MEAL_FAVORITE)
     fun setFavoriteMeal(
-            submitter: Submitter?,
+            submitter: Submitter,
             @PathVariable(MEAL_ID_VALUE) mealId: Int,
             @Valid @RequestBody favorite: FavoriteInput
     ): ResponseEntity<Any> {
-        submitter ?: throw NotAuthenticatedException()
-
         mealService.setFavorite(mealId, submitter.identifier, favorite.isFavorite!!)
         return ResponseEntity.ok().build()
     }
@@ -112,10 +109,8 @@ class MealController(
     @PostMapping(MEALS)
     fun createMeal(
             @Valid @RequestBody meal: MealInput,
-            submitter: Submitter?
+            submitter: Submitter
     ): ResponseEntity<Void> {
-        submitter ?: throw NotAuthenticatedException()
-
         //Due to validators we are sure fields are never null
         val createdMeal = mealService.createMeal(
                 name = meal.name!!,
@@ -136,10 +131,8 @@ class MealController(
     @DeleteMapping(MEAL)
     fun deleteMeal(
             @PathVariable(MEAL_ID_VALUE) mealId: Int,
-            submitter: Submitter?
+            submitter: Submitter
     ): ResponseEntity<Void> {
-        submitter ?: throw NotAuthenticatedException()
-
         val meal = mealService.getMeal(mealId) ?: throw MealNotFoundException()
 
         if (!meal.isUserMeal() || meal.submitterInfo.value!!.identifier != submitter.identifier) {

@@ -42,10 +42,7 @@ class UserController(private val userService: UserService, private val authentic
     }
 
     @GetMapping(USER)
-    fun getUserInfo(submitter: Submitter?): ResponseEntity<UserInfoOutput> {
-
-        submitter ?: throw NotAuthenticatedException()
-
+    fun getUserInfo(submitter: Submitter): ResponseEntity<UserInfoOutput> {
         val email = userService.getEmailFromSubmitter(submitter.identifier).userEmail
         val username = submitter.name
         val image = submitter.image

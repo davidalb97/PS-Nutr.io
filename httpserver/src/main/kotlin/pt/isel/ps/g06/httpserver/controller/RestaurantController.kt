@@ -26,6 +26,7 @@ import pt.isel.ps.g06.httpserver.service.AuthenticationService
 import pt.isel.ps.g06.httpserver.service.RestaurantService
 import pt.isel.ps.g06.httpserver.service.SubmissionService
 import pt.isel.ps.g06.httpserver.service.UserService
+import java.util.*
 import javax.validation.Valid
 
 private const val INVALID_RESTAURANT_SEARCH = "To search nearby restaurants, a geolocation must be given!"
@@ -89,9 +90,8 @@ class RestaurantController(
     @PostMapping(RESTAURANTS, consumes = [MediaType.APPLICATION_JSON_VALUE])
     fun createRestaurant(
             @Valid @RequestBody restaurant: RestaurantInput,
-            submitter: Submitter?
+            submitter: Submitter
     ): ResponseEntity<Void> {
-        submitter ?: throw NotAuthenticatedException()
 
         val createdRestaurant = restaurantService.createRestaurant(
                 submitterId = submitter.identifier,
@@ -113,9 +113,8 @@ class RestaurantController(
     @DeleteMapping(RESTAURANT, consumes = [MediaType.ALL_VALUE])
     fun deleteRestaurant(
             @PathVariable(RESTAURANT_ID_VALUE) restaurantId: String,
-            submitter: Submitter?
+            submitter: Submitter
     ): ResponseEntity<Void> {
-        submitter ?: throw NotAuthenticatedException()
 
         val restaurant = ensureRestaurantExists(restaurantId)
 
@@ -135,9 +134,8 @@ class RestaurantController(
     fun putRestaurantVote(
             @PathVariable(RESTAURANT_ID_VALUE) restaurantId: String,
             @Valid @RequestBody userVote: VoteInput,
-            submitter: Submitter?
+            submitter: Submitter
     ): ResponseEntity<Void> {
-        submitter ?: throw NotAuthenticatedException()
 
         val restaurant = ensureRestaurantExists(restaurantId)
 
@@ -154,11 +152,10 @@ class RestaurantController(
 
     @PutMapping(RESTAURANT_FAVORITE)
     fun setFavoriteRestaurant(
-            submitter: Submitter?,
+            submitter: Submitter,
             @PathVariable(RESTAURANT_ID_VALUE) restaurantId: String,
             @Valid @RequestBody favorite: FavoriteInput
     ): ResponseEntity<Any> {
-        submitter ?: throw NotAuthenticatedException()
 
         var restaurant = ensureRestaurantExists(restaurantId)
         restaurant = restaurantService.createRestaurantIfAbsent(restaurant)
@@ -189,7 +186,7 @@ class RestaurantController(
             @RequestHeader(AUTH_HEADER) jwt: String,
             @PathVariable(RESTAURANT_ID_VALUE) restaurantId: String,
             @RequestBody restaurantOwnerInput: RestaurantOwnerInput,
-            submitter: Submitter?
+            submitter: Submitter
     ): ResponseEntity<Void> {
         val requester = authenticationService.getEmailFromJwt(jwt).let(userService::getUserFromEmail)
 

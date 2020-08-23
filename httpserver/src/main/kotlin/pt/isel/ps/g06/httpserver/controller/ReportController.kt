@@ -50,11 +50,9 @@ class ReportController(
 
     @PostMapping(REPORTS)
     fun postReport(
-            submitter: Submitter?,
+            submitter: Submitter,
             @RequestBody reportInput: ReportInput
     ) {
-        submitter ?: throw NotAuthenticatedException()
-
         reportService.insertReport(reportInput, submitter.identifier)
     }
 }

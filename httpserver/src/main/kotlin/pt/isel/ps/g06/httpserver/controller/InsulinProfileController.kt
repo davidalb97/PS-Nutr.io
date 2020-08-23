@@ -20,24 +20,20 @@ import javax.validation.Valid
 class InsulinProfileController(private val insulinProfileService: InsulinProfileService) {
 
     @GetMapping(INSULIN_PROFILES)
-    fun getAllUserInsulinProfiles(submitter: Submitter?): ResponseEntity<Collection<InsulinProfileOutput>> {
-        submitter ?: throw NotAuthenticatedException()
+    fun getAllUserInsulinProfiles(submitter: Submitter): ResponseEntity<Collection<InsulinProfileOutput>> =
+            ResponseEntity.ok(
+                    insulinProfileService
+                            .getAllProfilesFromUser(submitter.identifier)
+                            .map(::toInsulinProfileOutput)
+                            .toList()
+            )
 
-        return ResponseEntity.ok(
-                insulinProfileService
-                        .getAllProfilesFromUser(submitter.identifier)
-                        .map(::toInsulinProfileOutput)
-                        .toList()
-        )
-    }
 
     @GetMapping(INSULIN_PROFILE)
     fun getUserInsulinProfile(
             @PathVariable(PROFILE_NAME_VALUE) profileName: String,
-            submitter: Submitter?
+            submitter: Submitter
     ): ResponseEntity<InsulinProfileOutput> {
-        submitter ?: throw NotAuthenticatedException()
-
         val userProfile = insulinProfileService.getProfileFromUser(submitter.identifier, profileName)
 
         return ResponseEntity.ok(toInsulinProfileOutput(userProfile))
@@ -46,10 +42,8 @@ class InsulinProfileController(private val insulinProfileService: InsulinProfile
     @PostMapping(INSULIN_PROFILES)
     fun createInsulinProfile(
             @Valid @RequestBody insulinProfile: InsulinProfileInput,
-            submitter: Submitter?
+            submitter: Submitter
     ): ResponseEntity<Void> {
-        submitter ?: throw NotAuthenticatedException()
-
         val profile = insulinProfileService.createProfile(
                 submitter.identifier,
                 insulinProfile.profileName!!,
@@ -71,9 +65,8 @@ class InsulinProfileController(private val insulinProfileService: InsulinProfile
     @DeleteMapping(INSULIN_PROFILE)
     fun deleteInsulinProfile(
             @PathVariable(PROFILE_NAME_VALUE) profileName: String,
-            submitter: Submitter?
+            submitter: Submitter
     ): ResponseEntity<Void> {
-        submitter ?: throw NotAuthenticatedException()
 
         insulinProfileService.deleteProfile(submitter.identifier, profileName)
 

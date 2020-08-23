@@ -81,10 +81,8 @@ class RestaurantMealController(
     fun addRestaurantMeal(
             @PathVariable(RESTAURANT_ID_VALUE) id: String,
             @Valid @RequestBody restaurantMeal: RestaurantMealInput,
-            submitter: Submitter?
+            submitter: Submitter
     ): ResponseEntity<Void> {
-        submitter ?: throw NotAuthenticatedException()
-
         val restaurantIdentifier = restaurantIdentifierBuilder.extractIdentifiers(id)
 
         val restaurant = restaurantService
@@ -115,10 +113,8 @@ class RestaurantMealController(
             @PathVariable(RESTAURANT_ID_VALUE) restaurantId: String,
             @PathVariable(MEAL_ID_VALUE) mealId: Int,
             @Valid @RequestBody portion: PortionInput,
-            submitter: Submitter?
+            submitter: Submitter
     ): ResponseEntity<Void> {
-        submitter ?: throw NotAuthenticatedException()
-
         val restaurantIdentifier = restaurantIdentifierBuilder.extractIdentifiers(restaurantId)
 
         restaurantMealService.addRestaurantMealPortion(
@@ -138,10 +134,8 @@ class RestaurantMealController(
             @PathVariable(RESTAURANT_ID_VALUE) restaurantId: String,
             @PathVariable(MEAL_ID_VALUE) mealId: Int,
             @Valid @RequestBody userVote: VoteInput,
-            submitter: Submitter?
+            submitter: Submitter
     ): ResponseEntity<Void> {
-        submitter ?: throw NotAuthenticatedException()
-
         val restaurantIdentifier = restaurantIdentifierBuilder.extractIdentifiers(restaurantId)
         val restaurantMeal = restaurantMealService.getRestaurantMeal(restaurantIdentifier, mealId)
 
@@ -161,10 +155,8 @@ class RestaurantMealController(
             @PathVariable(RESTAURANT_ID_VALUE) restaurantId: String,
             @PathVariable(MEAL_ID_VALUE) mealId: Int,
             @RequestBody verified: Boolean,
-            submitter: Submitter?
+            submitter: Submitter
     ): ResponseEntity<Void> {
-        submitter ?: throw NotAuthenticatedException()
-
         // Get restaurant ID
         val restaurantIdentifier = restaurantIdentifierBuilder.extractIdentifiers(restaurantId)
         // Get restaurant's meal ID
@@ -188,10 +180,8 @@ class RestaurantMealController(
     fun deleteMealPortion(
             @PathVariable(RESTAURANT_ID_VALUE) restaurantId: String,
             @PathVariable(MEAL_ID_VALUE) mealId: Int,
-            submitter: Submitter?
+            submitter: Submitter
     ): ResponseEntity<Void> {
-        submitter ?: throw NotAuthenticatedException()
-
         val restaurantIdentifier = restaurantIdentifierBuilder.extractIdentifiers(restaurantId)
 
         restaurantMealService.deleteUserPortion(restaurantIdentifier, mealId, submitter.identifier)
@@ -205,10 +195,8 @@ class RestaurantMealController(
     fun deleteRestaurantMeal(
             @PathVariable(RESTAURANT_ID_VALUE) restaurantId: String,
             @PathVariable(MEAL_ID_VALUE) mealId: Int,
-            submitter: Submitter?
+            submitter: Submitter
     ): ResponseEntity<Void> {
-        submitter ?: throw NotAuthenticatedException()
-
         val restaurantIdentifier = restaurantIdentifierBuilder.extractIdentifiers(restaurantId)
 
         restaurantMealService.deleteRestaurantMeal(restaurantIdentifier, mealId, submitter.identifier)
