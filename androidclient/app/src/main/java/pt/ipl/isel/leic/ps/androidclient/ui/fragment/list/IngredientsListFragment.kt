@@ -4,17 +4,17 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import pt.ipl.isel.leic.ps.androidclient.R
-import pt.ipl.isel.leic.ps.androidclient.data.model.MealInfo
-import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.meal.MealInfoRecyclerAdapter
+import pt.ipl.isel.leic.ps.androidclient.data.model.MealItem
+import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.meal.MealItemRecyclerAdapter
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.BaseViewModelProviderFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.IngredientRecyclerVMProviderFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.meal.IngredientListViewModel
 
 open class IngredientsListFragment
-    : BaseListFragment<MealInfo, IngredientListViewModel, MealInfoRecyclerAdapter>() {
+    : BaseListFragment<MealItem, IngredientListViewModel, MealItemRecyclerAdapter>() {
 
     override val recyclerAdapter by lazy {
-        MealInfoRecyclerAdapter(
+        MealItemRecyclerAdapter(
             recyclerViewModel,
             this.requireContext()
         )

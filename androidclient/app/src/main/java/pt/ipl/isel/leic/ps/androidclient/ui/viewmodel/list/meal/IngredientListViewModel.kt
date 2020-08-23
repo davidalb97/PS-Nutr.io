@@ -7,7 +7,7 @@ import pt.ipl.isel.leic.ps.androidclient.data.model.Source
 import pt.ipl.isel.leic.ps.androidclient.ui.util.ItemAction
 import pt.ipl.isel.leic.ps.androidclient.ui.util.Navigation
 
-open class IngredientListViewModel : MealInfoListViewModel {
+open class IngredientListViewModel : MealItemListViewModel {
 
     constructor(
         navDestination: Navigation,

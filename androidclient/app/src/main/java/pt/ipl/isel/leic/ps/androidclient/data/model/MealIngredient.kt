@@ -9,7 +9,7 @@ import pt.ipl.isel.leic.ps.androidclient.util.readUri
 import pt.ipl.isel.leic.ps.androidclient.util.writeBooleanCompat
 import pt.ipl.isel.leic.ps.androidclient.util.writeUri
 
-class MealIngredient : MealInfo, Parcelable {
+class MealIngredient : MealItem, Parcelable {
 
     var dbMealId: Long?
     var isMeal: Boolean
@@ -38,11 +38,6 @@ class MealIngredient : MealInfo, Parcelable {
         isFavorite = false,
         isVotable = false,
         imageUri = imageUri,
-        creationDate = null,
-        ingredientComponents = emptyList(),
-        mealComponents = emptyList(),
-        cuisines = emptyList(),
-        portions = emptyList(),
         isSuggested = false,
         source = source
     ) {
