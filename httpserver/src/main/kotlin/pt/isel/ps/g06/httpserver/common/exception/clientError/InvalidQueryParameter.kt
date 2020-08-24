@@ -5,5 +5,5 @@ import pt.isel.ps.g06.httpserver.common.exception.BaseResponseStatusException
 
 class InvalidQueryParameter(detail: String) : BaseResponseStatusException(
         status = HttpStatus.BAD_REQUEST,
-        detail = detail
+        title = detail
 )

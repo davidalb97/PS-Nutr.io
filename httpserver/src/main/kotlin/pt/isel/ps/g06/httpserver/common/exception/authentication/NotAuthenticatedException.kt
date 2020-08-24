@@ -5,5 +5,5 @@ import pt.isel.ps.g06.httpserver.common.exception.BaseResponseStatusException
 
 class NotAuthenticatedException : BaseResponseStatusException(
         status = HttpStatus.UNAUTHORIZED,
-        detail = "You are not authenticated and as thus cannot access this resource."
+        title = "You are not authenticated and as thus cannot access this resource."
 )

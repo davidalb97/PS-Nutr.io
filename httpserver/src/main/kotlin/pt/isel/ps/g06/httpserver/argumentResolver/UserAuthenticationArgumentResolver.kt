@@ -10,8 +10,13 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver
 import org.springframework.web.method.support.ModelAndViewContainer
 import pt.isel.ps.g06.httpserver.common.exception.authentication.NotAuthenticatedException
 import pt.isel.ps.g06.httpserver.model.Submitter
+import pt.isel.ps.g06.httpserver.security.JwtValidator
 import pt.isel.ps.g06.httpserver.service.AuthenticationService
 import pt.isel.ps.g06.httpserver.service.UserService
+import javax.servlet.http.HttpServletRequest
+
+
+
 
 /**
  * Intercepts each request, verifying if the user is authenticated by checking its Json Web Token
@@ -20,7 +25,8 @@ import pt.isel.ps.g06.httpserver.service.UserService
 class UserAuthenticationArgumentResolver(
         @Lazy
         private val authenticationService: AuthenticationService,
-        private val userService: UserService
+        private val userService: UserService,
+        private val jwtValidator: JwtValidator
 ) : HandlerMethodArgumentResolver {
 
     override fun supportsParameter(parameter: MethodParameter): Boolean =
@@ -32,8 +38,10 @@ class UserAuthenticationArgumentResolver(
             webRequest: NativeWebRequest,
             binderFactory: WebDataBinderFactory?
     ): Any? {
+        val httpServletRequest = webRequest.getNativeRequest(HttpServletRequest::class.java)!!
         val submitter = webRequest
                 .getHeader(AUTHORIZATION)
+                ?.also { jwtValidator.authenticate(httpServletRequest) }
                 ?.let(authenticationService::getEmailFromJwt)
                 ?.let(userService::getSubmitterFromEmail)
 

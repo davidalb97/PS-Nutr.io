@@ -3,6 +3,7 @@ package pt.isel.ps.g06.httpserver.dataAccess.db.repo
 import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.transaction.TransactionIsolationLevel
 import org.springframework.stereotype.Repository
+import pt.isel.ps.g06.httpserver.common.exception.clientError.DuplicateInsulinProfileException
 import pt.isel.ps.g06.httpserver.common.exception.clientError.MissingInsulinProfileException
 import pt.isel.ps.g06.httpserver.dataAccess.db.DbInsulinProfileDtoMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.InsulinProfileDao
@@ -48,6 +49,9 @@ class InsulinProfileDbRepository(
         }
     }
 
+    /**
+     * @throws DuplicateInsulinProfileException If an insulin profile with the name [profileName] already exists.
+     */
     fun insertProfile(
             submitterId: Int,
             profileName: String,
@@ -58,6 +62,12 @@ class InsulinProfileDbRepository(
             carbohydrateRatio: Int
     ): DbUserInsulinProfileDto {
         return jdbi.inTransaction<DbUserInsulinProfileDto, Exception>(isolationLevel) { handle ->
+            val insulinProfileDao = handle.attach(insulinProfileDaoClass)
+
+            insulinProfileDao.getFromUser(submitterId, profileName)?.also {
+                throw DuplicateInsulinProfileException()
+            }
+
             val encProfileName = columnCryptoConverter.convertToDatabaseColumn(profileName)
             val encStartTime = columnCryptoConverter.convertToDatabaseColumn(startTime.toString())
             val encEndTime = columnCryptoConverter.convertToDatabaseColumn(endTime.toString())
@@ -66,8 +76,7 @@ class InsulinProfileDbRepository(
             val encCarbohydrateRatio = columnCryptoConverter.convertToDatabaseColumn(carbohydrateRatio.toString())
             val encModificationDate = columnCryptoConverter.convertToDatabaseColumn(OffsetDateTime.now().toString())
 
-            return@inTransaction handle
-                    .attach(insulinProfileDaoClass)
+            return@inTransaction insulinProfileDao
                     .insertProfile(
                             submitterId = submitterId,
                             profileName = encProfileName,
