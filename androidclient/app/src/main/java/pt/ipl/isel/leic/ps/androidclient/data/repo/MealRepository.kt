@@ -34,11 +34,13 @@ class MealRepository(private val dataSource: MealDataSource) {
     private val inputCuisineMapper = InputCuisineMapper()
     private val inputMealIngredientMapper = InputMealIngredientMapper()
     private val inputPortionMapper = InputPortionMapper()
+    private val inputUserMapper = InputSubmissionOwnerMapper()
     private val inputMealInfoMapper = InputMealInfoMapper(
         inputVotesMapper = inputVotesMapper,
         inputCuisineMapper = inputCuisineMapper,
         inputMealIngredientMapper = inputMealIngredientMapper,
-        inputPortionMapper = inputPortionMapper
+        inputPortionMapper = inputPortionMapper,
+        inputUserMapper = inputUserMapper
     )
     private val inputMealItemMapper = InputMealItemMapper(
         inputVotesMapper = inputVotesMapper
