@@ -1,4 +1,4 @@
-package pt.isel.ps.g06.httpserver.dataAccess.model
+package pt.isel.ps.g06.httpserver.dataAccess.common.dto
 
 open class VotesDto(
         val positive: Int,

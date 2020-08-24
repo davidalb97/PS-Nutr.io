@@ -5,7 +5,7 @@ data class DailyMenuDtoMapper(
         val code: Int?,
         val status: String?,
         val message: String?
-) : DtoMapper<List<String>> {
+) : ApiDtoMapper<List<String>> {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
