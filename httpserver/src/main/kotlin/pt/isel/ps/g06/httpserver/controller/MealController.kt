@@ -94,10 +94,14 @@ class MealController(
     }
 
     @GetMapping(MEALS_CUSTOM)
-    fun getCustomMealsFromUser(submitter: Submitter): ResponseEntity<List<Meal>> {
+    fun getCustomMealsFromUser(
+            submitter: Submitter,
+            count: Int?,
+            skip: Int?
+    ): ResponseEntity<List<Meal>> {
 
         val userCustomMeals = mealService
-                .getUserCustomMeals(submitter.identifier)
+                .getUserCustomMeals(submitter.identifier, count, skip)
                 //.map { CustomMealOutput() }
                 .toList()
 

@@ -38,7 +38,9 @@ class RestaurantMealController(
     @GetMapping(RESTAURANT_MEALS, consumes = [MediaType.ALL_VALUE])
     fun getMealsForRestaurant(
             submitter: Submitter?,
-            @PathVariable(RESTAURANT_ID_VALUE) restaurantId: String
+            @PathVariable(RESTAURANT_ID_VALUE) restaurantId: String,
+            count: Int?,
+            skip: Int?
     ): ResponseEntity<RestaurantMealContainerOutput> {
         val (submitterId, submissionId, apiId) = restaurantIdentifierBuilder.extractIdentifiers(restaurantId)
 

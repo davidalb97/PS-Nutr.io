@@ -57,7 +57,9 @@ class RestaurantController(
             longitude: Float?,
             name: String?,
             radius: Int?,
-            apiType: String?
+            apiType: String?,
+            count: Int?,
+            skip: Int?
     ): ResponseEntity<Collection<SimplifiedRestaurantOutput>> {
         if (latitude == null || longitude == null) {
             throw InvalidInputException(INVALID_RESTAURANT_SEARCH)
@@ -68,7 +70,9 @@ class RestaurantController(
                 longitude = longitude,
                 name = name,
                 radius = radius,
-                apiType = apiType
+                apiType = apiType,
+                count = count,
+                skip = skip
         )
         return ResponseEntity
                 .ok()

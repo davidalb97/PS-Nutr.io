@@ -35,7 +35,9 @@ class RestaurantService(
             longitude: Float,
             name: String?,
             radius: Int?,
-            apiType: String?
+            apiType: String?,
+            count: Int?,
+            skip: Int?
     ): Sequence<Restaurant> {
         val chosenRadius = if (radius != null && radius <= MAX_RADIUS) radius else MAX_RADIUS
         val type = RestaurantApiType.getOrDefault(apiType)

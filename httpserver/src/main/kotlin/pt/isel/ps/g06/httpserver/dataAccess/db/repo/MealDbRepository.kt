@@ -3,6 +3,7 @@ package pt.isel.ps.g06.httpserver.dataAccess.db.repo
 import org.jdbi.v3.core.Handle
 import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.transaction.TransactionIsolationLevel
+import org.jdbi.v3.sqlobject.customizer.Bind
 import org.springframework.stereotype.Repository
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionContractType.FAVORABLE
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.*
@@ -26,11 +27,11 @@ class MealDbRepository(jdbi: Jdbi) : SubmissionDbRepository(jdbi) {
         }
     }
 
-    fun getBySubmitterId(submitterId: Int): Sequence<DbMealDto> {
+    fun getBySubmitterId(submitterId: Int, count: Int?, skip: Int?): Sequence<DbMealDto> {
         val meals = lazy {
             jdbi.inTransaction<Collection<DbMealDto>, Exception>(isolationLevel) { handle ->
                 return@inTransaction handle.attach(mealDaoClass)
-                        .getAllBySubmitterId(submitterId)
+                        .getAllBySubmitterId(submitterId, count, skip)
             }
         }
 

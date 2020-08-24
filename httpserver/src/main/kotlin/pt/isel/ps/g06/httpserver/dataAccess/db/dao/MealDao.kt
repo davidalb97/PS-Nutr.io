@@ -66,8 +66,9 @@ interface MealDao {
 
     @SqlQuery("SELECT * FROM $table INNER JOIN $SS_table ON " +
             "$SS_table.$SS_submissionId = $table.$id " +
-            "WHERE $SS_table.$SS_submitterId = :submitterId")
-    fun getAllBySubmitterId(@Bind submitterId: Int): Collection<DbMealDto>
+            "WHERE $SS_table.$SS_submitterId = :submitterId " +
+            "LIMIT :count OFFSET :skip")
+    fun getAllBySubmitterId(@Bind submitterId: Int, @Bind count: Int?, @Bind skip: Int?): Collection<DbMealDto>
 
     @SqlQuery("SELECT $table.$id, $table.$name, $table.$carbs, $table.$quantity, $table.$unit " +
             "FROM $table " +
