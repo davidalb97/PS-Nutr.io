@@ -10,10 +10,10 @@ import pt.isel.ps.g06.httpserver.common.exception.BaseResponseStatusException
  * @param detail provides extra information about what parameter(s) are missing.
  */
 class InvalidInputException(
-        detail: String
+        title: String
 ) : BaseResponseStatusException(
         status = HttpStatus.BAD_REQUEST,
-        detail = detail
+        title = title
 )
 
 enum class InvalidInputDomain(val domain: String) {

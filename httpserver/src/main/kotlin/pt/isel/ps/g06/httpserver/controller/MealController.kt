@@ -115,7 +115,7 @@ class MealController(
             submitter: Submitter
     ): ResponseEntity<Void> {
         //Due to validators we are sure fields are never null
-        val createdMeal = mealService.createSuggestedMeal(
+        val createdMeal = mealService.createCustomMeal(
                 name = meal.name!!,
                 ingredients = meal.ingredients!!,
                 cuisines = meal.cuisines!!,

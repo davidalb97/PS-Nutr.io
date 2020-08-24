@@ -46,7 +46,7 @@ class MealService(
     ): Meal {
         validateMealQuantity(ingredients, quantity)
 
-        val createdMeal = dbMealRepository.insert(
+        val createdMeal = dbMealRepository.insertCustom(
                 submitterId = submitterId,
                 submissionType = SubmissionType.MEAL,
                 mealName = name,
