@@ -3,6 +3,7 @@ package pt.isel.ps.g06.httpserver.dataAccess.db.repo
 import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.transaction.TransactionIsolationLevel
 import org.springframework.stereotype.Repository
+import pt.isel.ps.g06.httpserver.common.exception.clientError.DuplicateInsulinProfileException
 import pt.isel.ps.g06.httpserver.common.exception.clientError.MissingInsulinProfileException
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.InsulinProfileDao
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbUserInsulinProfileDto
@@ -36,6 +37,9 @@ class InsulinProfileDbRepository(jdbi: Jdbi) : BaseDbRepo(jdbi) {
         }
     }
 
+    /**
+     * @throws DuplicateInsulinProfileException If an insulin profile with the name [profileName] already exists.
+     */
     fun insertProfile(submitterId: Int,
                       profileName: String,
                       startTime: LocalTime,
@@ -45,9 +49,14 @@ class InsulinProfileDbRepository(jdbi: Jdbi) : BaseDbRepo(jdbi) {
                       carbohydrateRatio: Int
     ): DbUserInsulinProfileDto {
         return jdbi.inTransaction<DbUserInsulinProfileDto, Exception>(isolationLevel) { handle ->
-            return@inTransaction handle
-                    .attach(insulinProfileDaoClass)
-                    .insertProfile(
+
+            val insulinProfileDao = handle.attach(insulinProfileDaoClass)
+
+            insulinProfileDao.getFromUser(submitterId, profileName)?.also {
+                throw DuplicateInsulinProfileException()
+            }
+
+            return@inTransaction insulinProfileDao.insertProfile(
                             submitterId = submitterId,
                             profileName = profileName,
                             startTime = startTime,
