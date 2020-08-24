@@ -1,4 +1,4 @@
-package pt.isel.ps.g06.httpserver.dataAccess.model
+package pt.isel.ps.g06.httpserver.model
 
 import pt.isel.ps.g06.httpserver.model.Meal
 import pt.isel.ps.g06.httpserver.model.MealIngredient
