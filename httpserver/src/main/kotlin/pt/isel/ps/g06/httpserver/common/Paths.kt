@@ -26,7 +26,7 @@ const val MEAL_FAVORITE = "$MEAL$FAVORITE"
 const val USER_MEAL = "$MEALS?forUser"
 
 //Cuisines
-const val CUISINES = "/cuisines"
+const val CUISINES = "/cuisine"
 
 //Ingredients
 const val INGREDIENTS = "/ingredient"

@@ -158,7 +158,7 @@ class MealDbRepository(jdbi: Jdbi) : SubmissionDbRepository(jdbi) {
 
             //Insert submission
             val mealSubmissionId = it.attach(SubmissionDao::class.java)
-                    .insert(submissionType.name)
+                    .insert(submissionType.toString())
                     .submission_id
 
             //Insert contract FAVORABLE

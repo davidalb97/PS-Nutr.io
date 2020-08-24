@@ -378,7 +378,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"TestIngredient\",\r\n    \"quantity\": 100,\r\n    \"unit\": \"gr\",\r\n    \"ingredients\": [\r\n        {\r\n            \"identifier\": 143,\r\n            \"quantity\": 100\r\n        }\r\n    ],\r\n    \"cuisines\": [\"italian\"]\r\n}",
+							"raw": "{\r\n    \"name\": \"TestIngredient\",\r\n    \"quantity\": 100,\r\n    \"unit\": \"gr\",\r\n    \"ingredients\": [\r\n        {\r\n            \"identifier\": 143,\r\n            \"quantity\": 100\r\n        }\r\n    ],\r\n    \"cuisines\": [\"Filipino\"]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -412,7 +412,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"TestMeal\",\r\n    \"quantity\": 100,\r\n    \"unit\": \"gr\",\r\n    \"ingredients\": [\r\n        {\r\n            \"identifier\": 143,\r\n            \"quantity\": 100\r\n        }\r\n    ],\r\n    \"cuisines\": [\"italian\"]\r\n}",
+							"raw": "{\r\n    \"name\": \"TestMeal\",\r\n    \"quantity\": 100,\r\n    \"unit\": \"gr\",\r\n    \"ingredients\": [\r\n        {\r\n            \"identifier\": 143,\r\n            \"quantity\": 100\r\n        }\r\n    ],\r\n    \"cuisines\": [\"Italian\"]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
