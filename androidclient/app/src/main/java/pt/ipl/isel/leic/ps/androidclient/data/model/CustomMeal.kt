@@ -13,7 +13,10 @@ class CustomMeal : MealInfo, Parcelable {
         carbs: Int,
         amount: Int,
         unit: String,
-        imageUri: Uri?
+        imageUri: Uri?,
+        ingredientComponents: List<MealIngredient>,
+        mealComponents: List<MealIngredient>,
+        cuisines: List<Cuisine>
     ) : super(
         dbId = dbId,
         dbRestaurantId = null,
@@ -28,12 +31,14 @@ class CustomMeal : MealInfo, Parcelable {
         isVotable = false,
         imageUri = imageUri,
         creationDate = null,
-        ingredientComponents = emptyList(),
-        mealComponents = emptyList(),
-        cuisines = emptyList(),
+        ingredientComponents = ingredientComponents,
+        mealComponents = mealComponents,
+        cuisines = cuisines,
         portions = emptyList(),
         isSuggested = false,
-        source = Source.CUSTOM
+        source = Source.CUSTOM,
+        //TODO pass owner to custom meal ctor
+        submissionOwner = null
     )
 
     constructor(parcel: Parcel) : super(parcel)
