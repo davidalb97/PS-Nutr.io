@@ -14,13 +14,13 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
+import pt.isel.ps.g06.httpserver.common.INSULIN_PROFILES
 import pt.isel.ps.g06.httpserver.service.UserService
 
 @Configuration
 @EnableWebSecurity
 class WebSecurityConfig(
-        private val userService: UserService,
-        private val jwtFilter: JwtFilter
+        private val userService: UserService
 ) : WebSecurityConfigurerAdapter() {
 
     @Bean
@@ -48,28 +48,13 @@ class WebSecurityConfig(
                 .csrf()
                 .disable()
                 .authorizeRequests()
-                .antMatchers(HttpMethod.GET,
-                        "/",
-                        "/restaurant",
-                        "/restaurant/**",
-                        "/meal",
-                        "/meal/*",
-                        "/cuisines",
-                        "/ingredients"
-                ).permitAll()
-                .antMatchers(HttpMethod.POST,
-                        "/user/login",
-                        "/user/register"
-                ).permitAll()
                 .anyRequest()
-                .authenticated()
+                .permitAll()
                 .and()
                 .exceptionHandling()
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-
-        http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter::class.java)
     }
 
     @Bean

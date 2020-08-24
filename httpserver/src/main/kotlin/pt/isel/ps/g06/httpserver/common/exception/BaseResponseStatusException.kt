@@ -11,7 +11,7 @@ import pt.isel.ps.g06.httpserver.common.interceptor.BaseExceptionHandler
  */
 open class BaseResponseStatusException(
         status: HttpStatus,
-        val type: String = status.reasonPhrase,
-        val detail: String,
-        val title: String = "about:blank"
-) : ResponseStatusException(status, detail)
+        val type: String = "about:blank",
+        val detail: String? = null,
+        val title: String
+) : ResponseStatusException(status, title)

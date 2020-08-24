@@ -5,5 +5,5 @@ import pt.isel.ps.g06.httpserver.common.exception.BaseResponseStatusException
 
 class SubmissionNotFavoritableException(detail: String = "Given submission cannot be favored!") : BaseResponseStatusException(
         status = HttpStatus.BAD_REQUEST,
-        detail = detail
+        title = detail
 )
