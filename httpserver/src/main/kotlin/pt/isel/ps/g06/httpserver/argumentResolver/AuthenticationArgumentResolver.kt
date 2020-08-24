@@ -9,14 +9,20 @@ import org.springframework.web.context.request.NativeWebRequest
 import org.springframework.web.method.support.HandlerMethodArgumentResolver
 import org.springframework.web.method.support.ModelAndViewContainer
 import pt.isel.ps.g06.httpserver.model.Submitter
+import pt.isel.ps.g06.httpserver.security.JwtValidator
 import pt.isel.ps.g06.httpserver.service.AuthenticationService
 import pt.isel.ps.g06.httpserver.service.UserService
+import javax.servlet.http.HttpServletRequest
+
+
+
 
 @Component
 class AuthenticationArgumentResolver(
         @Lazy
         private val authenticationService: AuthenticationService,
-        private val userService: UserService
+        private val userService: UserService,
+        private val jwtValidator: JwtValidator
 ) : HandlerMethodArgumentResolver {
 
     override fun supportsParameter(parameter: MethodParameter): Boolean {
@@ -29,8 +35,10 @@ class AuthenticationArgumentResolver(
             webRequest: NativeWebRequest,
             binderFactory: WebDataBinderFactory?
     ): Any? {
+        val httpServletRequest = webRequest.getNativeRequest(HttpServletRequest::class.java)!!
         return webRequest
                 .getHeader(AUTHORIZATION)
+                ?.also { jwtValidator.authenticate(httpServletRequest) }
                 ?.let(authenticationService::getEmailFromJwt)
                 ?.let(userService::getSubmitterFromEmail)
     }
