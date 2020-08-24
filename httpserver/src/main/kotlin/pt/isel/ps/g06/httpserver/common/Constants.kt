@@ -6,3 +6,6 @@ const val JWT_EXPIRATION = 1000 * 60 * 60 * 10 // 10 hours
 // User roles
 const val NORMAL_USER = "normal"
 const val MOD_USER = "mod"
+
+// Pagination
+const val COUNT = 15

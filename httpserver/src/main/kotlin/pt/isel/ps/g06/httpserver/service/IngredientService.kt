@@ -20,7 +20,7 @@ class IngredientService(
                 .map(ingredientResponseMapper::mapTo)
     }
 
-    fun insertIngredient(submitterId: Int, mealIngredientInput: MealInput): MealIngredient {
+    fun insertSuggestedIngredient(submitterId: Int, mealIngredientInput: MealInput): MealIngredient {
         return mealDbRepository
                 .insert(
                         submitterId = submitterId,

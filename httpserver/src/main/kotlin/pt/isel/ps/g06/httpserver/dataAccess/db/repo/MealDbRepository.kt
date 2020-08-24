@@ -103,12 +103,12 @@ class MealDbRepository(jdbi: Jdbi) : SubmissionDbRepository(jdbi) {
         return Sequence { collection.value.iterator() }
     }
 
-    fun getAllSuggestedMeals(): Sequence<DbMealDto> {
+    fun getAllSuggestedMeals(count: Int?, skip: Int?, cuisines: Collection<String>?): Sequence<DbMealDto> {
         val collection = lazy {
             jdbi.inTransaction<Collection<DbMealDto>, Exception>(isolationLevel) { handle ->
                 return@inTransaction handle
                         .attach(MealDao::class.java)
-                        .getAllSuggestedMeals()
+                        .getAllSuggestedMeals(count, skip, cuisines)
             }
         }
         return Sequence { collection.value.iterator() }
@@ -123,6 +123,69 @@ class MealDbRepository(jdbi: Jdbi) : SubmissionDbRepository(jdbi) {
             }
         }
         return Sequence { collection.value.iterator() }
+    }
+
+    fun insertCustom(
+            submitterId: Int,
+            submissionType: SubmissionType,
+            mealName: String,
+            quantity: Int,
+            cuisines: Collection<String>,
+            ingredients: Collection<IngredientInput>
+    ): DbMealDto {
+        if (cuisines.isEmpty()) {
+            throw InvalidInputException("A meal must have at least a cuisine!")
+        }
+
+        if (ingredients.isEmpty()) {
+            throw InvalidInputException("A meal must have at least one ingredient!")
+        }
+
+        return jdbi.inTransaction<DbMealDto, Exception>(isolationLevel) {
+            //Validate given ingredients to see if they are all in the database
+            val databaseIngredients = it
+                    .attach(MealDao::class.java)
+                    .getAllIngredientsByIds(ingredients.map { ingredient -> ingredient.identifier!! })
+
+            if (databaseIngredients.size != ingredients.size) {
+                throw InvalidInputException("Not all ingredients belong to the database!")
+            }
+
+            //Insert submission
+            val mealSubmissionId = it.attach(SubmissionDao::class.java)
+                    .insert(submissionType.toString())
+                    .submission_id
+
+            //Insert SubmissionSubmitter associations for user
+            it.attach(SubmissionSubmitterDao::class.java).insert(mealSubmissionId, submitterId)
+
+
+            //Calculate meal carbs from adding each ingredient carb for given input quantity
+            val carbs = databaseIngredients
+                    .zip(ingredients, this::getCarbsForInputQuantity)
+                    .sum()
+                    .toInt()
+
+            //Insert Meal
+            val mealDto = it
+                    .attach(mealDaoClass)
+                    .insert(mealSubmissionId, mealName, carbs, quantity)
+
+            //Insert all MealCuisine associations
+            insertMealCuisines(it, mealSubmissionId, cuisines)
+
+            //Insert meal's ingredients
+            it.attach(MealIngredientDao::class.java).insertAll(ingredients.map { ingredientInput ->
+                DbMealIngredientDto(
+                        //We know fields are not null due to validation checks
+                        meal_submission_id = mealSubmissionId,
+                        ingredient_submission_id = ingredientInput.identifier!!,
+                        quantity = ingredientInput.quantity!!
+                )
+            })
+
+            return@inTransaction mealDto
+        }
     }
 
     /**

@@ -120,9 +120,14 @@ interface MealDao {
             " ON $SS_table.$SS_submissionId = $table.$id" +
             " WHERE $SS_table.$SS_submissionId IS NULL" +
             " AND $S_table.$S_submission_type = '$MEAL_TYPE'" +
-            " ORDER BY $table.$name ASC"
+            " ORDER BY $table.$name ASC" +
+            " LIMIT :count OFFSET :skip"
     )
-    fun getAllSuggestedMeals(): Collection<DbMealDto>
+    fun getAllSuggestedMeals(
+            @Bind count: Int?,
+            @Bind skip: Int?,
+            @Bind cuisines: Collection<String>?
+    ): Collection<DbMealDto>
 
     @SqlQuery("INSERT INTO $table($id, $name, $carbs, $quantity, $unit) " +
             "VALUES(:submissionId, :mealName, :carbs, :quantity, :unit) " +
@@ -151,7 +156,7 @@ interface MealDao {
             "LIMIT :limit " +
             "OFFSET :skip"
     )
-    fun getAllIngredients(skip: Int = 0, limit: Int? = null): Collection<DbMealDto>
+    fun getAllIngredients(skip: Int = 0, limit: Int? = 10): Collection<DbMealDto>
 
     @SqlQuery("SELECT $table.$id, $table.$name, $table.$carbs, $table.$quantity, $table.$unit " +
             "FROM $table " +

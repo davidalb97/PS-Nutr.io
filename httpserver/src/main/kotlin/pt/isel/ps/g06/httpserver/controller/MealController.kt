@@ -5,18 +5,19 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.util.UriComponentsBuilder
 import pt.isel.ps.g06.httpserver.common.*
-import pt.isel.ps.g06.httpserver.common.exception.authentication.NotAuthenticatedException
-import pt.isel.ps.g06.httpserver.common.exception.clientError.InvalidQueryParameter
 import pt.isel.ps.g06.httpserver.common.exception.forbidden.NotSubmissionOwnerException
 import pt.isel.ps.g06.httpserver.common.exception.notFound.MealNotFoundException
 import pt.isel.ps.g06.httpserver.dataAccess.input.FavoriteInput
 import pt.isel.ps.g06.httpserver.dataAccess.input.MealInput
-import pt.isel.ps.g06.httpserver.dataAccess.output.meal.*
+import pt.isel.ps.g06.httpserver.dataAccess.output.meal.DetailedMealOutput
+import pt.isel.ps.g06.httpserver.dataAccess.output.meal.SimplifiedMealContainer
+import pt.isel.ps.g06.httpserver.dataAccess.output.meal.toDetailedMealOutput
+import pt.isel.ps.g06.httpserver.dataAccess.output.meal.toSimplifiedMealContainer
 import pt.isel.ps.g06.httpserver.model.Meal
 import pt.isel.ps.g06.httpserver.model.Submitter
+import pt.isel.ps.g06.httpserver.model.User
 import pt.isel.ps.g06.httpserver.service.MealService
 import pt.isel.ps.g06.httpserver.service.SubmissionService
-import pt.isel.ps.g06.httpserver.service.UserService
 import javax.validation.Valid
 
 @Suppress("MVCPathVariableInspection")
@@ -35,23 +36,20 @@ class MealController(
      * @param cuisines filters obtained meals by specific cuisine(s).
      * An empty collection will not filter any meal.
      */
-    @GetMapping(MEALS)
+    @GetMapping(MEALS_SUGGESTED)
     fun getMeals(
             submitter: Submitter?,
-            @RequestParam mealTypes: Collection<String>?,
-            @RequestParam skip: Int?,
             @RequestParam count: Int?,
+            @RequestParam skip: Int?,
             @RequestParam cuisines: Collection<String>?
     ): ResponseEntity<SimplifiedMealContainer> {
-        val types = if (mealTypes == null || mealTypes.isEmpty()) listOf(suggested)
-        else mealTypes
 
-        if (types.any { !allowedMealTypes.contains(it) }) {
-            //Make sure all type filters are allowed
-            throw InvalidQueryParameter("Invalid query parameter! Allowed ones are: $allowedMealTypes")
-        }
-
-        var meals = mealService.getSuggestedMeals()
+        // TODO - should filter by cuisines inside DB
+        var meals = mealService.getSuggestedMeals(
+                count = count,
+                skip = skip,
+                cuisines = cuisines
+        )
 
         if (cuisines != null && cuisines.isNotEmpty()) {
             //Filter by user cuisines
@@ -73,7 +71,29 @@ class MealController(
                 .body(toSimplifiedMealContainer(meals, submitter?.identifier))
     }
 
-    @GetMapping(USER_MEAL)
+    @PostMapping(MEALS_SUGGESTED)
+    fun createSuggestedMeal(
+            @Valid @RequestBody meal: MealInput,
+            user: User
+    ): ResponseEntity<Void> {
+        //Due to validators we are sure fields are never null
+        val createdMeal = mealService.createSuggestedMeal(
+                name = meal.name!!,
+                ingredients = meal.ingredients!!,
+                cuisines = meal.cuisines!!,
+                quantity = meal.quantity!!,
+                submitterId = user.identifier
+        )
+
+        return ResponseEntity.created(
+                UriComponentsBuilder
+                        .fromUriString(MEAL)
+                        .buildAndExpand(createdMeal.identifier)
+                        .toUri()
+        ).build()
+    }
+
+    @GetMapping(MEALS_CUSTOM)
     fun getCustomMealsFromUser(submitter: Submitter): ResponseEntity<List<Meal>> {
 
         val userCustomMeals = mealService
@@ -82,6 +102,29 @@ class MealController(
                 .toList()
 
         return ResponseEntity.ok().body(userCustomMeals)
+    }
+
+    // TODO - has different repo method
+    @PostMapping(MEALS_CUSTOM)
+    fun createCustomMeal(
+            @Valid @RequestBody meal: MealInput,
+            submitter: Submitter
+    ): ResponseEntity<Void> {
+        //Due to validators we are sure fields are never null
+        val createdMeal = mealService.createSuggestedMeal(
+                name = meal.name!!,
+                ingredients = meal.ingredients!!,
+                cuisines = meal.cuisines!!,
+                quantity = meal.quantity!!,
+                submitterId = submitter.identifier
+        )
+
+        return ResponseEntity.created(
+                UriComponentsBuilder
+                        .fromUriString(MEAL)
+                        .buildAndExpand(createdMeal.identifier)
+                        .toUri()
+        ).build()
     }
 
     @PutMapping(MEAL_FAVORITE)
@@ -101,31 +144,13 @@ class MealController(
     ): ResponseEntity<DetailedMealOutput> {
         val meal = mealService.getMeal(mealId) ?: throw MealNotFoundException()
 
+        if (meal.isMealOwner(submitter)) {
+            throw NotSubmissionOwnerException()
+        }
+
         return ResponseEntity
                 .ok()
                 .body(toDetailedMealOutput(meal, submitter?.identifier))
-    }
-
-    @PostMapping(MEALS)
-    fun createMeal(
-            @Valid @RequestBody meal: MealInput,
-            submitter: Submitter
-    ): ResponseEntity<Void> {
-        //Due to validators we are sure fields are never null
-        val createdMeal = mealService.createMeal(
-                name = meal.name!!,
-                ingredients = meal.ingredients!!,
-                cuisines = meal.cuisines!!,
-                quantity = meal.quantity!!,
-                submitterId = submitter.identifier
-        )
-
-        return ResponseEntity.created(
-                UriComponentsBuilder
-                        .fromUriString(MEAL)
-                        .buildAndExpand(createdMeal.identifier)
-                        .toUri()
-        ).build()
     }
 
     @DeleteMapping(MEAL)
@@ -135,7 +160,7 @@ class MealController(
     ): ResponseEntity<Void> {
         val meal = mealService.getMeal(mealId) ?: throw MealNotFoundException()
 
-        if (!meal.isUserMeal() || meal.submitterInfo.value!!.identifier != submitter.identifier) {
+        if (meal.isMealOwner(submitter)) {
             throw NotSubmissionOwnerException()
         }
 

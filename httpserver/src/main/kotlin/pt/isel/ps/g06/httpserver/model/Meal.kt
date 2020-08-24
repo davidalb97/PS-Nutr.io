@@ -1,5 +1,6 @@
 package pt.isel.ps.g06.httpserver.model
 
+import pt.isel.ps.g06.httpserver.common.exception.forbidden.NotSubmissionOwnerException
 import pt.isel.ps.g06.httpserver.dataAccess.model.Cuisine
 import pt.isel.ps.g06.httpserver.dataAccess.model.MealComposition
 import java.net.URI
@@ -28,6 +29,9 @@ data class Meal(
     fun isUserMeal(): Boolean {
         return submitterInfo.value != null
     }
+
+    fun isMealOwner(submitter: Submitter?) : Boolean =
+        submitter != null && isUserMeal() && submitter.identifier != submitterInfo.value?.identifier
 
     fun isRestaurantMeal(restaurant: Restaurant): Boolean {
         return if (isUserMeal()) {

@@ -5,7 +5,6 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.util.UriComponentsBuilder
 import pt.isel.ps.g06.httpserver.common.INGREDIENTS
-import pt.isel.ps.g06.httpserver.common.MEAL
 import pt.isel.ps.g06.httpserver.dataAccess.input.MealInput
 import pt.isel.ps.g06.httpserver.dataAccess.output.ingredient.IngredientsContainerOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.ingredient.toIngredientsContainerOutput
@@ -43,12 +42,12 @@ class IngredientController(private val ingredientService: IngredientService) {
      * @param   ingredientInput    The ingredient to be inserted
      */
     @PostMapping
-    fun createIngredient(
+    fun createSuggestedIngredient(
             user: User,
             @RequestBody mealIngredientInput: MealInput
     ): ResponseEntity<IngredientsContainerOutput> {
 
-        val createdIngredient = ingredientService.insertIngredient(user.identifier, mealIngredientInput)
+        val createdIngredient = ingredientService.insertSuggestedIngredient(user.identifier, mealIngredientInput)
 
         return ResponseEntity
                 .created(
