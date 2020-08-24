@@ -12,9 +12,10 @@ import pt.ipl.isel.leic.ps.androidclient.ui.modular.IVoteProgress
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.ICalculatorActionButton
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.IDeleteActionButton
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.IFavoriteActionButton
-import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.menu.MenuItemFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.menu.IPopupMenuButton
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.menu.IReportMenuItem
+import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.menu.MenuItemFactory
+import pt.ipl.isel.leic.ps.androidclient.ui.modular.viewHolder.IMealItemDetail
 import pt.ipl.isel.leic.ps.androidclient.ui.util.*
 import pt.ipl.isel.leic.ps.androidclient.ui.viewholder.BaseRecyclerViewHolder
 
@@ -33,9 +34,14 @@ abstract class BaseMealRecyclerViewHolder<T : MealItem>(
     IDeleteActionButton<T>,
     IFavoriteActionButton,
     IPopupMenuButton,
-    IReportMenuItem {
+    IReportMenuItem,
+    IMealItemDetail<T> {
 
     private val mealName: TextView = view.findViewById(R.id.mealName)
+    override val customMealQuantityId: Int = R.id.custom_meal_quantity
+    override lateinit var customMealQuantity: TextView
+    override val customMealCarbsId: Int = R.id.custom_meal_carbs_amount
+    override lateinit var customMealCarbs: TextView
     override val menus: MutableList<MenuItemFactory> = mutableListOf()
     override val menuButtonId = R.id.options
     override lateinit var menuButton: ImageButton
@@ -61,7 +67,7 @@ abstract class BaseMealRecyclerViewHolder<T : MealItem>(
     override fun bindTo(item: T) {
         super.bindTo(item)
         mealName.text = item.name
-
+        super.setupCustomMeal(view, ctx, item)
         super.setupCalculateAction(view)
         super.setupPressAction(view)
         super.setupOnDeleteAction(view, bindingAdapter, layoutPosition)

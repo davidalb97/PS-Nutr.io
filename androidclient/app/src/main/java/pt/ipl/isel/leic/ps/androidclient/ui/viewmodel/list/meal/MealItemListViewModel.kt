@@ -17,7 +17,7 @@ open class MealItemListViewModel : BaseMealListViewModel<MealItem> {
     constructor(
         navDestination: Navigation,
         actions: List<ItemAction>,
-        source: Source,
+        source: Source?,
         restaurantId: String? = null,
         cuisines: List<Cuisine> = emptyList()
     ) : super(
