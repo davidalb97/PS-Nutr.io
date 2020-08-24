@@ -7,11 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import pt.ipl.isel.leic.ps.androidclient.R
-import pt.ipl.isel.leic.ps.androidclient.data.model.MealInfo
-import pt.ipl.isel.leic.ps.androidclient.data.model.Source
-import pt.ipl.isel.leic.ps.androidclient.data.model.VoteState
-import pt.ipl.isel.leic.ps.androidclient.data.model.Votes
+import pt.ipl.isel.leic.ps.androidclient.data.model.*
 import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.meal.MealInfoRecyclerAdapter
+import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.meal.MealItemRecyclerAdapter
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.list.BaseListFragment
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.IImage
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.ICalculatorActionButton
@@ -27,7 +25,7 @@ import pt.ipl.isel.leic.ps.androidclient.ui.util.*
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.meal.info.MealInfoViewModel
 
 class MealInfoFragment :
-    BaseListFragment<MealInfo, MealInfoViewModel, MealInfoRecyclerAdapter>(),
+    BaseListFragment<MealItem, MealInfoViewModel, MealItemRecyclerAdapter>(),
     IVoteActionButtons,
     ICalculatorActionButton,
     IImage,
@@ -37,7 +35,7 @@ class MealInfoFragment :
     IEditMenuItem {
 
     override val recyclerAdapter by lazy {
-        MealInfoRecyclerAdapter(
+        MealItemRecyclerAdapter(
             recyclerViewModel,
             this.requireContext()
         )
