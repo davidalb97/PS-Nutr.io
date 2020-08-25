@@ -139,10 +139,11 @@ class RestaurantMealController(
             user: User
     ): ResponseEntity<Void> {
         val restaurantIdentifier = restaurantIdentifierBuilder.extractIdentifiers(restaurantId)
-        val restaurantMeal = restaurantMealService.getRestaurantMeal(restaurantIdentifier, mealId)
+        val restaurantMeal = restaurantMealService.getOrAddRestaurantMeal(restaurantIdentifier, mealId, user.identifier)
+
 
         submissionService.alterRestaurantMealVote(
-                restaurantMeal = restaurantMeal,
+                mealRestaurantInfo = restaurantMeal,
                 submitterId = user.identifier,
                 voteState = userVote.vote
         )
@@ -199,11 +200,11 @@ class RestaurantMealController(
     fun deleteMealPortion(
             @PathVariable(RESTAURANT_ID_VALUE) restaurantId: String,
             @PathVariable(MEAL_ID_VALUE) mealId: Int,
-            submitter: Submitter
+            user: User
     ): ResponseEntity<Void> {
         val restaurantIdentifier = restaurantIdentifierBuilder.extractIdentifiers(restaurantId)
 
-        restaurantMealService.deleteUserPortion(restaurantIdentifier, mealId, submitter.identifier)
+        restaurantMealService.deleteUserPortion(restaurantIdentifier, mealId, user.identifier)
 
         return ResponseEntity
                 .ok()
@@ -214,11 +215,11 @@ class RestaurantMealController(
     fun deleteRestaurantMeal(
             @PathVariable(RESTAURANT_ID_VALUE) restaurantId: String,
             @PathVariable(MEAL_ID_VALUE) mealId: Int,
-            submitter: Submitter
+            user: User
     ): ResponseEntity<Void> {
         val restaurantIdentifier = restaurantIdentifierBuilder.extractIdentifiers(restaurantId)
 
-        restaurantMealService.deleteRestaurantMeal(restaurantIdentifier, mealId, submitter.identifier)
+        restaurantMealService.deleteRestaurantMeal(restaurantIdentifier, mealId, user.identifier)
 
         return ResponseEntity
                 .ok()
@@ -227,19 +228,17 @@ class RestaurantMealController(
 
     @PutMapping(RESTAURANT_MEAL_FAVORITE)
     fun setFavoriteRestaurant(
-            submitter: Submitter?,
             @PathVariable(RESTAURANT_ID_VALUE) restaurantId: String,
             @PathVariable(MEAL_ID_VALUE) mealId: Int,
-            @Valid @RequestBody favorite: FavoriteInput
+            @Valid @RequestBody favorite: FavoriteInput,
+            user: User
     ): ResponseEntity<Any> {
-        submitter ?: throw NotAuthenticatedException()
-
         val restaurantIdentifier = restaurantIdentifierBuilder.extractIdentifiers(restaurantId)
 
         restaurantMealService.setFavorite(
                 restaurantIdentifier,
                 mealId,
-                submitter.identifier,
+                user.identifier,
                 favorite.isFavorite!!
         )
         return ResponseEntity.ok().build()

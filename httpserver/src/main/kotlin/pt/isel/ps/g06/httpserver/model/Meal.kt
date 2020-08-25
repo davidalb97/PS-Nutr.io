@@ -31,13 +31,9 @@ data class Meal(
             user != null && isUserMeal() && user.identifier != submitterInfo.value?.identifier
 
     fun isRestaurantMeal(restaurant: Restaurant): Boolean {
-        return if (isUserMeal()) {
-            getMealRestaurantInfo(restaurant.identifier.value)
-                    ?.let { true }
-                    ?: false
-        } else {
-            isSuggestedMeal(restaurant)
-        }
+        return getMealRestaurantInfo(restaurant.identifier.value)
+                ?.let { true }
+                ?: isSuggestedMeal(restaurant)
     }
 
 

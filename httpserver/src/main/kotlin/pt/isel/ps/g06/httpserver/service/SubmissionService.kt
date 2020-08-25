@@ -6,8 +6,8 @@ import pt.isel.ps.g06.httpserver.common.exception.forbidden.NotSubmissionOwnerEx
 import pt.isel.ps.g06.httpserver.common.exception.notFound.SubmissionNotFoundException
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.SubmissionDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.VoteDbRepository
+import pt.isel.ps.g06.httpserver.model.MealRestaurantInfo
 import pt.isel.ps.g06.httpserver.model.Restaurant
-import pt.isel.ps.g06.httpserver.model.RestaurantMeal
 import pt.isel.ps.g06.httpserver.model.VoteState
 
 /**
@@ -45,10 +45,10 @@ class SubmissionService(
         setSubmissionVote(restaurant.identifier.value.submissionId!!, submitterId, voteState)
     }
 
-    fun alterRestaurantMealVote(restaurantMeal: RestaurantMeal, submitterId: Int, voteState: VoteState) {
-        val mealRestaurantInfo = (restaurantMeal
+    fun alterRestaurantMealVote(mealRestaurantInfo: MealRestaurantInfo, submitterId: Int, voteState: VoteState) {
+        /*val mealRestaurantInfo = (restaurantMeal
                 .getRestaurantMealInfo()
-                ?: throw SubmissionNotVotableException("Only restaurant meals created by users can have votes!"))
+                ?: throw SubmissionNotVotableException("Only restaurant meals created by users can have votes!"))*/
 
         setSubmissionVote(
                 submissionId = mealRestaurantInfo.restaurantMealIdentifier,
