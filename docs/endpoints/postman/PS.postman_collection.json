@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "1b96ceeb-0d65-4171-a769-fd3f0cd2b4e1",
+		"_postman_id": "3ef62674-1c8d-49cb-97f7-152a4fde148e",
 		"name": "PS",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -26,7 +26,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"david@email.com\",\r\n    \"password\": \"apple\"\r\n}",
+							"raw": "{\r\n    \"email\": \"123@123\",\r\n    \"password\": \"123\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -66,7 +66,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"david@email.com\",\r\n    \"username\": \"david\",\r\n    \"password\": \"apple\"\r\n}",
+							"raw": "{\r\n    \"email\": \"123@123\",\r\n    \"username\": \"123\",\r\n    \"password\": \"123\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -124,7 +124,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"admin@email.com\",\r\n    \"username\": \"admin\",\r\n    \"password\": \"memes\"\r\n}",
+							"raw": "{\r\n    \"email\": \"1234@1234\",\r\n    \"username\": \"1234\",\r\n    \"password\": \"1234\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -153,7 +153,7 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "{{USER_JWT}}",
+								"value": "Bearer {{USER_JWT}}",
 								"type": "text"
 							}
 						],
@@ -184,7 +184,7 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "{{USER_JWT}}",
+								"value": "Bearer {{USER_JWT}}",
 								"type": "text"
 							}
 						],
@@ -210,7 +210,7 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "{{USER_JWT}}",
+								"value": "Bearer {{USER_JWT}}",
 								"type": "text"
 							}
 						],
@@ -237,7 +237,7 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "{{USER_JWT}}",
+								"value": "Bearer {{USER_JWT}}",
 								"type": "text"
 							}
 						],
@@ -279,7 +279,7 @@
 							{
 								"key": "Authorization",
 								"type": "text",
-								"value": "{{MOD_JWT}}"
+								"value": "Bearer {{MOD_JWT}}"
 							}
 						],
 						"body": {
@@ -313,7 +313,7 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "{{MOD_JWT}}",
+								"value": "Bearer {{MOD_JWT}}",
 								"type": "text"
 							}
 						],
@@ -338,7 +338,7 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "{{MOD_JWT}}",
+								"value": "Bearer {{MOD_JWT}}",
 								"type": "text"
 							}
 						],
@@ -372,7 +372,7 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "{{MOD_JWT}}",
+								"value": "Bearer {{MOD_JWT}}",
 								"type": "text"
 							}
 						],
@@ -398,6 +398,38 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "reportId",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{MOD_JWT}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/report/:reportId",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"report",
+								":reportId"
+							],
+							"variable": [
+								{
+									"key": "reportId",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
 				}
 			],
 			"protocolProfileBehavior": {}
@@ -412,7 +444,7 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "{{USER_JWT}}",
+								"value": "Bearer {{USER_JWT}}",
 								"type": "text"
 							}
 						],
@@ -444,7 +476,7 @@
 							{
 								"key": "Authorization",
 								"type": "text",
-								"value": "{{USER_JWT}}"
+								"value": "Bearer {{USER_JWT}}"
 							}
 						],
 						"url": {
@@ -479,7 +511,7 @@
 							{
 								"key": "Authorization",
 								"type": "text",
-								"value": "{{USER_JWT}}"
+								"value": "Bearer {{USER_JWT}}"
 							}
 						],
 						"body": {
@@ -520,7 +552,7 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "{{USER_JWT}}",
+								"value": "Bearer {{USER_JWT}}",
 								"type": "text"
 							}
 						],
@@ -562,7 +594,7 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "{{USER_JWT}}",
+								"value": "Bearer {{USER_JWT}}",
 								"type": "text"
 							}
 						],
@@ -595,7 +627,7 @@
 			"name": "restaurantMeal",
 			"item": [
 				{
-					"name": "mealsFromRestaurant",
+					"name": "restaurantMeal",
 					"protocolProfileBehavior": {
 						"disabledSystemHeaders": {
 							"accept": true
@@ -616,7 +648,7 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "{{USER_JWT}}",
+								"value": "Bearer {{USER_JWT}}",
 								"type": "text"
 							}
 						],
@@ -655,13 +687,68 @@
 					"response": []
 				},
 				{
+					"name": "mealsFromRestaurant",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"accept": true
+						}
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{USER_JWT}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/restaurant/:restaurant_id/meal",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"restaurant",
+								":restaurant_id",
+								"meal"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							],
+							"variable": [
+								{
+									"key": "restaurant_id",
+									"value": "2+237+here:pds:place:620eyckr-1026ddfdac9a4373aeb2b500345fad98"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "reportRestaurantMeal",
 					"request": {
 						"method": "PUT",
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "{{USER_JWT}}",
+								"value": "Bearer {{USER_JWT}}",
 								"type": "text"
 							}
 						],
@@ -709,7 +796,7 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "{{USER_JWT}}",
+								"value": "Bearer {{USER_JWT}}",
 								"type": "text"
 							}
 						],
@@ -757,7 +844,7 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "{{USER_JWT}}",
+								"value": "Bearer {{USER_JWT}}",
 								"type": "text"
 							}
 						],
@@ -812,7 +899,7 @@
 							{
 								"key": "Authorization",
 								"type": "text",
-								"value": "{{USER_JWT}}"
+								"value": "Bearer {{USER_JWT}}"
 							}
 						],
 						"url": {
@@ -847,7 +934,7 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "{{USER_JWT}}",
+								"value": "Bearer {{USER_JWT}}",
 								"type": "text"
 							}
 						],
@@ -873,7 +960,7 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "{{USER_JWT}}",
+								"value": "Bearer {{USER_JWT}}",
 								"type": "text"
 							}
 						],
@@ -908,7 +995,7 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "{{USER_JWT}}",
+								"value": "Bearer {{USER_JWT}}",
 								"type": "text"
 							}
 						],
@@ -956,7 +1043,7 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "{{USER_JWT}}",
+								"value": "Bearer {{USER_JWT}}",
 								"type": "text"
 							}
 						],
@@ -997,7 +1084,7 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "{{USER_JWT}}",
+								"value": "Bearer {{USER_JWT}}",
 								"type": "text"
 							}
 						],
