@@ -6,7 +6,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.ResponseMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.ApiSubmitterMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbCuisineDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.CuisineDbRepository
-import pt.isel.ps.g06.httpserver.dataAccess.model.Cuisine
+import pt.isel.ps.g06.httpserver.model.Cuisine
 
 @Component
 class DbCuisineResponseMapper : ResponseMapper<DbCuisineDto, Cuisine> {

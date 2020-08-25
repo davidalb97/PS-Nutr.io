@@ -3,7 +3,9 @@ package pt.isel.ps.g06.httpserver.common.exception.clientError
 import org.springframework.http.HttpStatus
 import pt.isel.ps.g06.httpserver.common.exception.BaseResponseStatusException
 
-class InvalidMealException(detail: String) : BaseResponseStatusException(
+class DuplicateInsulinProfileException(
+        title: String = "Given insulin profile already exists!"
+) : BaseResponseStatusException(
         status = HttpStatus.BAD_REQUEST,
-        title = detail
+        title = title
 )

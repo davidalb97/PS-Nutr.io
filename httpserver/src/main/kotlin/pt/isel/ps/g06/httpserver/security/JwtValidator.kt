@@ -4,25 +4,20 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource
 import org.springframework.stereotype.Component
-import org.springframework.web.filter.OncePerRequestFilter
 import pt.isel.ps.g06.httpserver.common.BEARER
 import pt.isel.ps.g06.httpserver.service.UserService
-import javax.servlet.FilterChain
 import javax.servlet.http.HttpServletRequest
-import javax.servlet.http.HttpServletResponse
 
-private const val AUTH_HEADER = "Authorization"
+const val AUTH_HEADER = "Authorization"
 
-/***
- * The JwtUtil filters the request, checking if the jwt in the authorization header is valid.
- */
 @Component
-class JwtFilter(
+class JwtValidator(
         private val jwtUtil: JwtUtil,
         private val userService: UserService
-) : OncePerRequestFilter() {
+) {
 
-    override fun doFilterInternal(request: HttpServletRequest, response: HttpServletResponse, filterChain: FilterChain) {
+    fun authenticate(request: HttpServletRequest) {
+
         val authHeader: String? = request.getHeader(AUTH_HEADER)
 
         var userEmail: String? = null
@@ -47,8 +42,6 @@ class JwtFilter(
 
                 SecurityContextHolder.getContext().authentication = userPasswordAuthenticationToken
             }
-
         }
-        filterChain.doFilter(request, response)
     }
 }

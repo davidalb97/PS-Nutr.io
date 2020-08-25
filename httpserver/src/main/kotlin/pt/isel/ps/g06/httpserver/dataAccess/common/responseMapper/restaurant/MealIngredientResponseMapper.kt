@@ -5,7 +5,7 @@ import pt.isel.ps.g06.httpserver.common.nutrition.calculateCarbsFromBase
 import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.ResponseMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbMealDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.*
-import pt.isel.ps.g06.httpserver.dataAccess.model.MealComposition
+import pt.isel.ps.g06.httpserver.model.MealComposition
 import pt.isel.ps.g06.httpserver.model.Meal
 import pt.isel.ps.g06.httpserver.model.MealIngredient
 import pt.isel.ps.g06.httpserver.model.NutritionalValues
