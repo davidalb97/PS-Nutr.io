@@ -125,7 +125,6 @@ export default function AddFoodForm({ cuisines }) {
 
                 {/* ---------------------------- */}
                 <hr />
-                <p />
                 <RequestButton />
             </Form>
         </Card.Body>

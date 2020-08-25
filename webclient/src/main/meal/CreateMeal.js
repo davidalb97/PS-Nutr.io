@@ -2,6 +2,11 @@ import React, { useReducer, useState, useCallback } from 'react'
 
 import ProgressBar from 'react-bootstrap/ProgressBar'
 import Button from 'react-bootstrap/Button'
+import Card from 'react-bootstrap/Card'
+import Container from 'react-bootstrap/Container'
+import Row from 'react-bootstrap/Row'
+import Col from 'react-bootstrap/Col'
+
 
 import MealDefinition from './createMeal/MealDefinition'
 import Confirmation from './createMeal/Confirmation'
@@ -68,11 +73,12 @@ export default function CreateMeal() {
     let next
 
     if (currentProgress.order > 0) {
-        previous = <Button variant="primary" onClick={() => setProgress(idx => idx - 1)}>Previous</Button>
+        previous = <Button variant="primary" block onClick={() => setProgress(idx => idx - 1)}>Previous</Button>
     }
 
     if (currentProgress.order < CreationStates.length - 1) {
         next = <Button
+            block
             variant="primary"
             onClick={onButtonNext}
             disabled={!canAdvance}
@@ -81,24 +87,27 @@ export default function CreateMeal() {
         </Button>
     }
 
-    return <>
-        <ProgressBar
-            now={((currentProgress.order + 1) / (CreationStates.length - 1)) * 100}
-            label={currentProgress.label}
-            max={CreationStates.length * 25}
-        />
-        <br />
+    return <Card >
+        <Card.Header as="h1">Custom meal creation</Card.Header>
+        <Card.Body>
+            <ProgressBar
+                now={((currentProgress.order + 1) / (CreationStates.length - 1)) * 100}
+                label={currentProgress.label}
+                max={CreationStates.length * 25}
+            />
+            <hr />
 
-        {React.cloneElement(currentProgress.pageView, {
-            setCanAdvance: setCanAdvance,
-            setMeal: onSetMeal,
-            meal: meal
-        })}
+            {React.cloneElement(currentProgress.pageView, {
+                setCanAdvance: setCanAdvance,
+                setMeal: onSetMeal,
+                meal: meal
+            })}
 
-        <br />
-        {previous}
-        {next}
-    </>
+            <hr />
+            {previous}
+            {next}
+        </Card.Body>
+    </Card>
 }
 
 // {currentProgress.pageView({ setCanAdvance: setCanAdvance, setMeal: onSetMeal })}

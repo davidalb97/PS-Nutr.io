@@ -4,6 +4,9 @@ import Form from 'react-bootstrap/Form'
 import InputGroup from 'react-bootstrap/InputGroup'
 import DropdownButton from 'react-bootstrap/DropdownButton'
 import Dropdown from 'react-bootstrap/Dropdown'
+import Row from 'react-bootstrap/Row'
+import Col from 'react-bootstrap/Col'
+
 export default function MealDefinition({ setCanAdvance, setMeal, meal }) {
     const [mealDefinition, setMealDefinition] = useState({ quantity: meal.quantity, name: meal.name, unit: meal.unit || "gr" })
 
@@ -47,23 +50,25 @@ export default function MealDefinition({ setCanAdvance, setMeal, meal }) {
 
         <Form.Group controlId="quantity">
             <Form.Label>Quantity</Form.Label>
-            <Form.Control
-                ref={quantityInput}
-                type="number"
-                onChange={() => handleInputChange(quantityInput.current)}
-                value={mealDefinition.quantity}
-            />
+            <InputGroup>
+                <Form.Control
+                    ref={quantityInput}
+                    type="number"
+                    onChange={() => handleInputChange(quantityInput.current)}
+                    value={mealDefinition.quantity}
+                />
 
-            <DropdownButton
-                as={InputGroup.Append}
-                variant="outline-secondary"
-                title={mealDefinition.unit}
-                id="input-group-dropdown-2"
-            >
+                <DropdownButton
+                    as={InputGroup.Append}
+                    variant="outline-secondary"
+                    title={mealDefinition.unit}
+                    id="input-group-dropdown-2"
+                >
 
-                <Dropdown.Item onClick={() => setMealDefinition({ ...mealDefinition, unit: "gr" })}>grams </Dropdown.Item>
-                <Dropdown.Item onClick={() => setMealDefinition({ ...mealDefinition, unit: "oz" })}>ounces</Dropdown.Item>
-            </DropdownButton>
+                    <Dropdown.Item onClick={() => setMealDefinition({ ...mealDefinition, unit: "gr" })}>grams </Dropdown.Item>
+                    <Dropdown.Item onClick={() => setMealDefinition({ ...mealDefinition, unit: "oz" })}>ounces</Dropdown.Item>
+                </DropdownButton>
+            </InputGroup>
         </Form.Group>
 
     </Form>

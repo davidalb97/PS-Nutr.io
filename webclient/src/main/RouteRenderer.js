@@ -39,6 +39,10 @@ export default function RouteRenderer() {
             <RegisterPage />
         </Route>
 
+        <Route path="/contactUs">
+            Contact us
+        </Route>
+
         <Route exact path='/'>
             <>
                 Homepage
