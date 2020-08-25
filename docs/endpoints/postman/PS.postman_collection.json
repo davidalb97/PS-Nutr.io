@@ -243,7 +243,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"profileName\": \"MyProfile3\",\r\n    \"startTime\": \"21:10\",\r\n    \"endTime\": \"23:10\",\r\n    \"glucoseObjective\": 110,\r\n    \"insulinSensitivityFactor\": 25,\r\n    \"carbohydrateRatio\": 15\r\n}",
+							"raw": "{\r\n    \"profileName\": \"Profile1\",\r\n    \"startTime\": \"21:10\",\r\n    \"endTime\": \"23:10\",\r\n    \"glucoseObjective\": 110,\r\n    \"insulinSensitivityFactor\": 25,\r\n    \"carbohydrateRatio\": 15\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -589,14 +589,25 @@
 							}
 						],
 						"url": {
-							"raw": "http://localhost:8080/meal",
+							"raw": "http://localhost:8080/meal/suggested?count=10&skip=0",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
-								"meal"
+								"meal",
+								"suggested"
+							],
+							"query": [
+								{
+									"key": "count",
+									"value": "10"
+								},
+								{
+									"key": "skip",
+									"value": "0"
+								}
 							]
 						}
 					},
@@ -620,7 +631,7 @@
 							}
 						],
 						"url": {
-							"raw": "http://localhost:8080/ingredient",
+							"raw": "http://localhost:8080/ingredient?count=10&skip=0",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -628,6 +639,16 @@
 							"port": "8080",
 							"path": [
 								"ingredient"
+							],
+							"query": [
+								{
+									"key": "count",
+									"value": "10"
+								},
+								{
+									"key": "skip",
+									"value": "0"
+								}
 							]
 						}
 					},
