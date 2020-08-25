@@ -264,96 +264,6 @@
 						}
 					},
 					"response": []
-				},
-				{
-					"name": "reportRestaurant",
-					"request": {
-						"method": "PUT",
-						"header": [
-							{
-								"key": "Authorization",
-								"type": "text",
-								"value": "{{USER_JWT}}"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"description\": \"Test: this restaurant does not exist!\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:8080/restaurant/:restaurantIdentifier/report",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"restaurant",
-								":restaurantIdentifier",
-								"report"
-							],
-							"variable": [
-								{
-									"key": "restaurantIdentifier",
-									"value": "2+237+here:pds:place:620eyckr-1026ddfdac9a4373aeb2b500345fad98"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "reportRestaurantMeal",
-					"request": {
-						"method": "PUT",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "{{USER_JWT}}",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"description\": \"Test: this restaurant meal does not exist!\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:8080/restaurant/:restaurantIdentifier/meal/:mealId/report",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"restaurant",
-								":restaurantIdentifier",
-								"meal",
-								":mealId",
-								"report"
-							],
-							"variable": [
-								{
-									"key": "restaurantIdentifier",
-									"value": "2+237+here:pds:place:620eyckr-1026ddfdac9a4373aeb2b500345fad98"
-								},
-								{
-									"key": "mealId",
-									"value": "187"
-								}
-							]
-						}
-					},
-					"response": []
 				}
 			],
 			"protocolProfileBehavior": {}
@@ -560,6 +470,123 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "reportRestaurant",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{USER_JWT}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"description\": \"Test: this restaurant does not exist!\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/restaurant/:restaurantIdentifier/report",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"restaurant",
+								":restaurantIdentifier",
+								"report"
+							],
+							"variable": [
+								{
+									"key": "restaurantIdentifier",
+									"value": "2+237+here:pds:place:620eyckr-1026ddfdac9a4373aeb2b500345fad98"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "favoriteRestaurant",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{USER_JWT}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"isFavorite\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/restaurant/:restaurantIdentifier/favorite",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"restaurant",
+								":restaurantIdentifier",
+								"favorite"
+							],
+							"variable": [
+								{
+									"key": "restaurantIdentifier",
+									"value": "2++here:pds:place:620eyckr-c667200476bd439eb10f81f0469d2f7d"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "restaurant",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{USER_JWT}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"MockRestaurant2\",\r\n    \"latitude\": 9.45481,\r\n    \"longitude\": 75.64455,\r\n    \"cuisines\": [\"Italian\"],\r\n    \"ownerId\": null\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/restaurant",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"restaurant"
+							]
+						}
+					},
+					"response": []
 				}
 			],
 			"protocolProfileBehavior": {}
@@ -616,11 +643,155 @@
 							"variable": [
 								{
 									"key": "restaurant_id",
-									"value": ""
+									"value": "2+237+here:pds:place:620eyckr-1026ddfdac9a4373aeb2b500345fad98"
 								},
 								{
 									"key": "meal_id",
-									"value": ""
+									"value": "187"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "reportRestaurantMeal",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{USER_JWT}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"description\": \"Test: this restaurant meal does not exist!\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/restaurant/:restaurantIdentifier/meal/:mealId/report",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"restaurant",
+								":restaurantIdentifier",
+								"meal",
+								":mealId",
+								"report"
+							],
+							"variable": [
+								{
+									"key": "restaurantIdentifier",
+									"value": "2++here:pds:place:620eyckr-c667200476bd439eb10f81f0469d2f7d"
+								},
+								{
+									"key": "mealId",
+									"value": "200"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "voteRestaurantMeal",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{USER_JWT}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"vote\": \"POSITIVE\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/restaurant/:restaurantIdentifier/meal/:mealId/vote",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"restaurant",
+								":restaurantIdentifier",
+								"meal",
+								":mealId",
+								"vote"
+							],
+							"variable": [
+								{
+									"key": "restaurantIdentifier",
+									"value": "2++here:pds:place:620eyckr-c667200476bd439eb10f81f0469d2f7d"
+								},
+								{
+									"key": "mealId",
+									"value": "200"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "favoriteRestaurantMeal",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{USER_JWT}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"isFavorite\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/restaurant/:restaurantIdentifier/meal/:mealId/favorite",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"restaurant",
+								":restaurantIdentifier",
+								"meal",
+								":mealId",
+								"favorite"
+							],
+							"variable": [
+								{
+									"key": "restaurantIdentifier",
+									"value": "2++here:pds:place:620eyckr-c667200476bd439eb10f81f0469d2f7d"
+								},
+								{
+									"key": "mealId",
+									"value": "200"
 								}
 							]
 						}
@@ -663,6 +834,109 @@
 								{
 									"key": "skip",
 									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "customMeals",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{USER_JWT}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/meal/custom",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"meal",
+								"custom"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "customMeal",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{USER_JWT}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"TestCustomMeal\",\r\n    \"quantity\": 100,\r\n    \"unit\": \"gr\",\r\n    \"ingredients\":  [\r\n        {\r\n            \"identifier\": 143,\r\n            \"quantity\": 100\r\n        }\r\n    ],\r\n    \"cuisines\": [\"Italian\"]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/meal/custom",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"meal",
+								"custom"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "favoriteMeal",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{USER_JWT}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"isFavorite\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/meal/:mealId/favorite",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"meal",
+								":mealId",
+								"favorite"
+							],
+							"variable": [
+								{
+									"key": "mealId",
+									"value": "200"
 								}
 							]
 						}
