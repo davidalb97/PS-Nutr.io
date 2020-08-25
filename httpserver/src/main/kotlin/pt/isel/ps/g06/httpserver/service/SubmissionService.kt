@@ -46,9 +46,6 @@ class SubmissionService(
     }
 
     fun alterRestaurantMealVote(mealRestaurantInfo: MealRestaurantInfo, submitterId: Int, voteState: VoteState) {
-        /*val mealRestaurantInfo = (restaurantMeal
-                .getRestaurantMealInfo()
-                ?: throw SubmissionNotVotableException("Only restaurant meals created by users can have votes!"))*/
 
         setSubmissionVote(
                 submissionId = mealRestaurantInfo.restaurantMealIdentifier,
