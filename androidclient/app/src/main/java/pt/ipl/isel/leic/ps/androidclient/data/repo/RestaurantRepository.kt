@@ -58,7 +58,7 @@ class RestaurantRepository(private val dataSource: RestaurantDataSource) {
         dataSource.getRestaurants(
             latitude = latitude,
             longitude = longitude,
-            cuisines = cuisines,
+            cuisines = cuisines?.let(cuisineOutputMapper::mapToOutputModelCollection),
             count = count,
             skip = skip,
             jwt = userSession?.jwt,

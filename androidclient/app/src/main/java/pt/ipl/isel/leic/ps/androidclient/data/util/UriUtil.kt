@@ -20,12 +20,11 @@ fun Uri.Builder.appendPath(path: Int): Uri.Builder {
 
 fun <T> Uri.Builder.appendQueryNotNullListParameter(
     key: String,
-    list: Collection<T>?,
-    mapper: (T) -> String = { it.toString() }
+    list: Collection<T>?
 ): Uri.Builder {
     return if (list?.isNotEmpty() == true) this.appendQueryParameter(
         key,
-        list.joinToString(separator = ",", transform = mapper)
+        list.joinToString(separator = ",")
     )
     else this
 }

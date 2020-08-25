@@ -53,7 +53,7 @@ class RestaurantDataSource(
         longitude: Double,
         count: Int?,
         skip: Int?,
-        cuisines: Collection<Cuisine>?,
+        cuisines: Collection<String>?,
         success: (Array<SimplifiedRestaurantInput>) -> Unit,
         error: (VolleyError) -> Unit
     ) {

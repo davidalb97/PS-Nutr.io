@@ -106,6 +106,7 @@ class MealRepository(private val dataSource: MealDataSource) {
         userSession: UserSession,
         skip: Int? = 0,
         count: Int? = 30,
+        cuisines: Collection<Cuisine>? = null,
         success: (List<MealItem>) -> Unit,
         error: (VolleyError) -> Unit
     ) {
@@ -113,6 +114,7 @@ class MealRepository(private val dataSource: MealDataSource) {
             jwt = userSession.jwt,
             skip = skip,
             count = count,
+            cuisines = cuisines?.let(cuisineOutputMapper::mapToOutputModelCollection),
             success = { dtos -> success(inputMealItemMapper.mapToListModel(dtos)) },
             error = error
         )
@@ -132,6 +134,22 @@ class MealRepository(private val dataSource: MealDataSource) {
         )
     }
 
+    fun getCustomMeals(
+        userSession: UserSession,
+        skip: Int? = 0,
+        count: Int? = 30,
+        success: (List<MealItem>) -> Unit,
+        error: (VolleyError) -> Unit
+    ) {
+        dataSource.getCustomMeals(
+            jwt = userSession.jwt,
+            skip = skip,
+            count = count,
+            success = { dtos -> success(inputMealItemMapper.mapToListModel(dtos)) },
+            error = error
+        )
+    }
+
     fun getMealItems(
         count: Int? = 0,
         skip: Int? = 0,
@@ -140,10 +158,10 @@ class MealRepository(private val dataSource: MealDataSource) {
         success: (List<MealItem>) -> Unit,
         error: (VolleyError) -> Unit
     ) {
-        dataSource.getMeals(
+        dataSource.getSuggestedMeals(
             count = count,
             skip = skip,
-            cuisines = cuisines,
+            cuisines = cuisines?.let(cuisineOutputMapper::mapToOutputModelCollection),
             jwt = userSession?.jwt,
             success = {
                 //TODO assuming that no user filter is passed, all meals are suggested
@@ -177,12 +195,23 @@ class MealRepository(private val dataSource: MealDataSource) {
         customMeal: CustomMeal,
         error: (VolleyError) -> Unit,
         userSession: UserSession
-    ) = dataSource.postMeal(
+    ) = dataSource.postCustomMeal(
         customMealOutput = outputCustomMealMapper.mapToOutputModel(restaurant = customMeal),
         error = error,
         jwt = userSession.jwt
     )
 
+    fun editCustomMeal(
+        submissionId: Int,
+        customMeal: CustomMeal,
+        error: (VolleyError) -> Unit,
+        userSession: UserSession
+    ) = dataSource.putMeal(
+        submissionId = submissionId,
+        customMealOutput = outputCustomMealMapper.mapToOutputModel(restaurant = customMeal),
+        error = error,
+        jwt = userSession.jwt
+    )
 
     fun putVote(
         restaurantId: String,
@@ -201,21 +230,31 @@ class MealRepository(private val dataSource: MealDataSource) {
     )
 
     fun putFavorite(
-        restaurantId: String,
+        restaurantId: String?,
         submissionId: Int,
         isFavorite: Boolean,
         success: () -> Unit,
         error: (VolleyError) -> Unit,
         userSession: UserSession
     ) {
-        dataSource.putRestaurantMealFavorite(
-            restaurantId = restaurantId,
-            mealId = submissionId,
-            favoriteOutput = FavoriteOutput(isFavorite = isFavorite),
-            success = success,
-            error = error,
-            jwt = userSession.jwt
-        )
+        if(restaurantId == null) {
+            dataSource.putMealFavorite(
+                mealId = submissionId,
+                favoriteOutput = FavoriteOutput(isFavorite = isFavorite),
+                success = success,
+                error = error,
+                jwt = userSession.jwt
+            )
+        } else {
+            dataSource.putRestaurantMealFavorite(
+                restaurantId = restaurantId,
+                mealId = submissionId,
+                favoriteOutput = FavoriteOutput(isFavorite = isFavorite),
+                success = success,
+                error = error,
+                jwt = userSession.jwt
+            )
+        }
     }
 
     fun report(

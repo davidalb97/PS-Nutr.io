@@ -7,6 +7,8 @@ const val BEARER = "Bearer"
 const val COUNT_PARAM = "count"
 const val SKIP_PARAM = "skip"
 const val CUISINES_PARAM = "cuisines"
+const val CUSTOM_PATH = "custom"
+const val SUGGESTED_PATH = "suggested"
 
 const val FAVORITE_PATH = "favorite"
 const val VOTE_PATH = "vote"

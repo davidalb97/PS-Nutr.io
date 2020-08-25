@@ -6,7 +6,9 @@ import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.SimplifiedMealsInput
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.SimplifiedRestaurantMealsInput
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.info.DetailedMealInput
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.output.*
-import pt.ipl.isel.leic.ps.androidclient.data.api.request.*
+import pt.ipl.isel.leic.ps.androidclient.data.api.request.HTTPMethod
+import pt.ipl.isel.leic.ps.androidclient.data.api.request.PayloadResponse
+import pt.ipl.isel.leic.ps.androidclient.data.api.request.RequestParser
 import pt.ipl.isel.leic.ps.androidclient.data.model.Cuisine
 import pt.ipl.isel.leic.ps.androidclient.data.util.appendPath
 import pt.ipl.isel.leic.ps.androidclient.data.util.appendQueryNotNullListParameter
@@ -20,11 +22,11 @@ class MealDataSource(
      * ----------------------------- GETs -----------------------------
      */
 
-    fun getMeals(
+    fun getSuggestedMeals(
         jwt: String?,
         count: Int? = 30,
         skip: Int? = 0,
-        cuisines: Collection<Cuisine>? = null,    //Optional filter
+        cuisines: Collection<String>? = null,
         success: (SimplifiedMealsInput) -> Unit,
         error: (VolleyError) -> Unit
     ) {
@@ -34,9 +36,10 @@ class MealDataSource(
                 .scheme(SCHEME)
                 .authority(ADDRESS_PORT)
                 .appendPath(MEAL_PATH)
+                .appendPath(SUGGESTED_PATH)
                 .appendQueryNotNullParameter(COUNT_PARAM, count)
                 .appendQueryNotNullParameter(SKIP_PARAM, skip)
-                .appendQueryNotNullListParameter(CUISINES_PARAM, cuisines, Cuisine::name)
+                .appendQueryNotNullListParameter(CUISINES_PARAM, cuisines)
                 .build()
                 .toString(),
             reqHeader = jwt?.let { buildAuthHeader(jwt) },
@@ -124,6 +127,7 @@ class MealDataSource(
         jwt: String,
         count: Int? = 30,
         skip: Int? = 0,
+        cuisines: Collection<String>? = null,
         success: (SimplifiedRestaurantMealsInput) -> Unit,
         error: (VolleyError) -> Unit
     ) {
@@ -136,6 +140,34 @@ class MealDataSource(
                 .appendPath(FAVORITE_PATH)
                 .appendQueryNotNullParameter(COUNT_PARAM, count)
                 .appendQueryNotNullParameter(SKIP_PARAM, skip)
+                .appendQueryNotNullListParameter(CUISINES_PARAM, cuisines)
+                .build()
+                .toString(),
+            reqHeader = buildAuthHeader(jwt),
+            dtoClass = SimplifiedRestaurantMealsInput::class.java,
+            onSuccess = success,
+            onError = error
+        )
+    }
+
+    fun getCustomMeals(
+        jwt: String,
+        count: Int? = 30,
+        skip: Int? = 0,
+        cuisines: Collection<String>? = null,
+        success: (SimplifiedRestaurantMealsInput) -> Unit,
+        error: (VolleyError) -> Unit
+    ) {
+        requestParser.requestAndParse(
+            method = HTTPMethod.GET,
+            uri = Uri.Builder()
+                .scheme(SCHEME)
+                .authority(ADDRESS_PORT)
+                .appendPath(MEAL_PATH)
+                .appendPath(CUSTOM_PATH)
+                .appendQueryNotNullParameter(COUNT_PARAM, count)
+                .appendQueryNotNullParameter(SKIP_PARAM, skip)
+                .appendQueryNotNullListParameter(CUISINES_PARAM, cuisines)
                 .build()
                 .toString(),
             reqHeader = buildAuthHeader(jwt),
@@ -148,7 +180,7 @@ class MealDataSource(
     /**
      * ----------------------------- POSTs -----------------------------
      */
-    fun postMeal(
+    fun postCustomMeal(
         customMealOutput: CustomMealOutput,
         error: (VolleyError) -> Unit,
         jwt: String
@@ -159,6 +191,7 @@ class MealDataSource(
                 .scheme(SCHEME)
                 .authority(ADDRESS_PORT)
                 .appendPath(MEAL_PATH)
+                .appendPath(CUSTOM_PATH)
                 .build()
                 .toString(),
             reqHeader = buildAuthHeader(jwt),
@@ -247,6 +280,52 @@ class MealDataSource(
      * ----------------------------- PUTs ------------------------------
      */
 
+    fun putMeal(
+        submissionId: Int,
+        customMealOutput: CustomMealOutput,
+        error: (VolleyError) -> Unit,
+        jwt: String
+    ) {
+        requestParser.request(
+            method = HTTPMethod.POST,
+            uri = Uri.Builder()
+                .scheme(SCHEME)
+                .authority(ADDRESS_PORT)
+                .appendPath(MEAL_PATH)
+                .appendPath(submissionId)
+                .build()
+                .toString(),
+            reqHeader = buildAuthHeader(jwt),
+            reqPayload = customMealOutput,
+            onError = error,
+            responseConsumer = { }
+        )
+    }
+
+    fun putMealFavorite(
+        mealId: Int,
+        favoriteOutput: FavoriteOutput,
+        success: () -> Unit,
+        error: (VolleyError) -> Unit,
+        jwt: String
+    ) {
+        requestParser.request(
+            method = HTTPMethod.PUT,
+            uri = Uri.Builder()
+                .scheme(SCHEME)
+                .authority(ADDRESS_PORT)
+                .appendPath(MEAL_PATH)
+                .appendPath(mealId)
+                .appendPath(FAVORITE_PATH)
+                .build()
+                .toString(),
+            reqHeader = buildAuthHeader(jwt),
+            reqPayload = favoriteOutput,
+            onError = error,
+            responseConsumer = { success() }
+        )
+    }
+
     fun putRestaurantMealVote(
         restaurantId: String,
         mealId: Int,
@@ -269,30 +348,6 @@ class MealDataSource(
                 .toString(),
             reqHeader = buildAuthHeader(jwt),
             reqPayload = voteOutput,
-            onError = error,
-            responseConsumer = { success() }
-        )
-    }
-
-    fun putMealFavorite(
-        mealId: Int,
-        favoriteOutput: FavoriteOutput,
-        success: () -> Unit,
-        error: (VolleyError) -> Unit,
-        jwt: String
-    ) {
-        requestParser.request(
-            method = HTTPMethod.PUT,
-            uri = Uri.Builder()
-                .scheme(SCHEME)
-                .authority(ADDRESS_PORT)
-                .appendPath(MEAL_PATH)
-                .appendPath(mealId)
-                .appendPath(VOTE_PATH)
-                .build()
-                .toString(),
-            reqHeader = buildAuthHeader(jwt),
-            reqPayload = favoriteOutput,
             onError = error,
             responseConsumer = { success() }
         )
