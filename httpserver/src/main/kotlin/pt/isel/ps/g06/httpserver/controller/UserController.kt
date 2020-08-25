@@ -13,8 +13,6 @@ import pt.isel.ps.g06.httpserver.dataAccess.input.UserRegisterInput
 import pt.isel.ps.g06.httpserver.dataAccess.output.security.UserLoginOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.security.UserRegisterOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.user.UserInfoOutput
-import pt.isel.ps.g06.httpserver.model.Moderator
-import pt.isel.ps.g06.httpserver.model.Submitter
 import pt.isel.ps.g06.httpserver.model.User
 import pt.isel.ps.g06.httpserver.service.AuthenticationService
 import pt.isel.ps.g06.httpserver.service.UserService
@@ -62,9 +60,13 @@ class UserController(private val userService: UserService, private val authentic
 
     @PutMapping(BAN)
     fun putBanUser(
-            moderator: Moderator,
+            user: User,
             @RequestBody banInput: BanInput
     ): ResponseEntity<Void> {
+
+        // Check if the user is a moderator
+        userService.ensureModerator(user)
+
         userService.updateUserBan(banInput)
 
         return ResponseEntity.ok().build()

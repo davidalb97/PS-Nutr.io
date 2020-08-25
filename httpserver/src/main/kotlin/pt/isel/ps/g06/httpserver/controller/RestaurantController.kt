@@ -5,20 +5,18 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.util.UriComponentsBuilder
 import pt.isel.ps.g06.httpserver.common.*
-import pt.isel.ps.g06.httpserver.common.exception.authorization.NotAuthorizedException
+import pt.isel.ps.g06.httpserver.common.exception.clientError.InvalidInputException
 import pt.isel.ps.g06.httpserver.common.exception.forbidden.NotSubmissionOwnerException
 import pt.isel.ps.g06.httpserver.common.exception.notFound.RestaurantNotFoundException
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.RestaurantApiType
 import pt.isel.ps.g06.httpserver.dataAccess.input.FavoriteInput
 import pt.isel.ps.g06.httpserver.dataAccess.input.RestaurantInput
+import pt.isel.ps.g06.httpserver.dataAccess.input.RestaurantOwnerInput
 import pt.isel.ps.g06.httpserver.dataAccess.input.VoteInput
 import pt.isel.ps.g06.httpserver.dataAccess.output.restaurant.DetailedRestaurantOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.restaurant.SimplifiedRestaurantOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.restaurant.toDetailedRestaurantOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.restaurant.toSimplifiedRestaurantOutput
-import pt.isel.ps.g06.httpserver.common.exception.clientError.InvalidInputException
-import pt.isel.ps.g06.httpserver.dataAccess.input.RestaurantOwnerInput
-import pt.isel.ps.g06.httpserver.model.Moderator
 import pt.isel.ps.g06.httpserver.model.Restaurant
 import pt.isel.ps.g06.httpserver.model.User
 import pt.isel.ps.g06.httpserver.service.AuthenticationService
@@ -186,11 +184,14 @@ class RestaurantController(
 
     @PutMapping(RESTAURANT)
     fun addOwner(
-            @RequestHeader(AUTH_HEADER) jwt: String,
             @PathVariable(RESTAURANT_ID_VALUE) restaurantId: String,
             @RequestBody restaurantOwnerInput: RestaurantOwnerInput,
-            moderator: Moderator
+            user: User
     ): ResponseEntity<Void> {
+
+        // Check if the user is a moderator
+        userService.ensureModerator(user)
+
         val restaurantId = ensureRestaurantExists(restaurantId).identifier.value.submissionId!!
 
         restaurantService.addOwner(restaurantId, restaurantOwnerInput.ownerId)

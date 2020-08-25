@@ -4,7 +4,6 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import pt.isel.ps.g06.httpserver.common.*
 import pt.isel.ps.g06.httpserver.dataAccess.input.ReportInput
-import pt.isel.ps.g06.httpserver.model.Moderator
 import pt.isel.ps.g06.httpserver.model.Report
 import pt.isel.ps.g06.httpserver.model.User
 import pt.isel.ps.g06.httpserver.service.AuthenticationService
@@ -21,7 +20,7 @@ class ReportController(
     @GetMapping(REPORTS)
     fun getAllReports(
             @RequestHeader(AUTH_HEADER) jwt: String,
-            moderator: Moderator
+            user: User
     ): ResponseEntity<List<Report>> =
             ResponseEntity.ok(reportService.getAllReports().toList())
 
@@ -30,16 +29,20 @@ class ReportController(
     fun getAllReportsFromSubmission(
             @RequestHeader(AUTH_HEADER) jwt: String,
             @PathVariable(SUBMISSION_ID_VALUE) submissionId: Int,
-            moderator: Moderator
+            user: User
     ): ResponseEntity<List<Report>> =
             ResponseEntity.ok(reportService.getSubmissionReports(submissionId).toList())
 
     // TODO add report for each controller
-    /*@PostMapping(REPORTS)
+    @PostMapping(REPORTS)
     fun postReport(
             @RequestBody reportInput: ReportInput,
             user: User
     ) {
+
+        // Check if the user is a moderator
+        userService.ensureModerator(user)
+
         reportService.insertReport(reportInput, user.identifier)
-    }*/
+    }
 }

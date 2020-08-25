@@ -14,10 +14,10 @@ import pt.isel.ps.g06.httpserver.dataAccess.output.meal.SimplifiedMealContainer
 import pt.isel.ps.g06.httpserver.dataAccess.output.meal.toDetailedMealOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.meal.toSimplifiedMealContainer
 import pt.isel.ps.g06.httpserver.model.Meal
-import pt.isel.ps.g06.httpserver.model.Moderator
 import pt.isel.ps.g06.httpserver.model.User
 import pt.isel.ps.g06.httpserver.service.MealService
 import pt.isel.ps.g06.httpserver.service.SubmissionService
+import pt.isel.ps.g06.httpserver.service.UserService
 import javax.validation.Valid
 
 @Suppress("MVCPathVariableInspection")
@@ -25,7 +25,8 @@ import javax.validation.Valid
 @RequestMapping(produces = [MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_PROBLEM_JSON_VALUE])
 class MealController(
         private val mealService: MealService,
-        private val submissionService: SubmissionService
+        private val submissionService: SubmissionService,
+        private val userService: UserService
 ) {
     /**
      * Obtains all meals present in the database, filtered down by query parameters
@@ -74,15 +75,19 @@ class MealController(
     @PostMapping(MEALS_SUGGESTED)
     fun createSuggestedMeal(
             @Valid @RequestBody meal: MealInput,
-            moderator: Moderator
+            user: User
     ): ResponseEntity<Void> {
+
+        // Check if the user is a moderator
+        userService.ensureModerator(user)
+
         //Due to validators we are sure fields are never null
         val createdMeal = mealService.createSuggestedMeal(
                 name = meal.name!!,
                 ingredients = meal.ingredients!!,
                 cuisines = meal.cuisines!!,
                 quantity = meal.quantity!!,
-                submitterId = moderator.identifier
+                submitterId = user.identifier
         )
 
         return ResponseEntity.created(
