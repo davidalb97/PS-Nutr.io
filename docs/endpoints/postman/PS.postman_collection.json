@@ -266,9 +266,9 @@
 					"response": []
 				},
 				{
-					"name": "report",
+					"name": "reportRestaurant",
 					"request": {
-						"method": "POST",
+						"method": "PUT",
 						"header": [
 							{
 								"key": "Authorization",
@@ -278,7 +278,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"submissionId\": 187,\r\n    \"description\": \"This submission is voided!\"\r\n}",
+							"raw": "{\r\n    \"description\": \"Test: this restaurant does not exist!\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -286,14 +286,70 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/report",
+							"raw": "http://localhost:8080/restaurant/:restaurantIdentifier/report",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
+								"restaurant",
+								":restaurantIdentifier",
 								"report"
+							],
+							"variable": [
+								{
+									"key": "restaurantIdentifier",
+									"value": "2+237+here:pds:place:620eyckr-1026ddfdac9a4373aeb2b500345fad98"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "reportRestaurantMeal",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{USER_JWT}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"description\": \"Test: this restaurant meal does not exist!\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/restaurant/:restaurantIdentifier/meal/:mealId/report",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"restaurant",
+								":restaurantIdentifier",
+								"meal",
+								":mealId",
+								"report"
+							],
+							"variable": [
+								{
+									"key": "restaurantIdentifier",
+									"value": "2+237+here:pds:place:620eyckr-1026ddfdac9a4373aeb2b500345fad98"
+								},
+								{
+									"key": "mealId",
+									"value": "187"
+								}
 							]
 						}
 					},
@@ -463,7 +519,7 @@
 							"variable": [
 								{
 									"key": "id",
-									"value": "134"
+									"value": "2+237+here:pds:place:620eyckr-1026ddfdac9a4373aeb2b500345fad98"
 								}
 							]
 						}
