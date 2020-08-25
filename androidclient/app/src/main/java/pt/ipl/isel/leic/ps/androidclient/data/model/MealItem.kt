@@ -8,20 +8,21 @@ import pt.ipl.isel.leic.ps.androidclient.util.readUri
 import pt.ipl.isel.leic.ps.androidclient.util.writeBooleanCompat
 import pt.ipl.isel.leic.ps.androidclient.util.writeUri
 
+//TODO replace var to val when fields are not changed
 open class MealItem(
     var dbId: Long?,
     var dbRestaurantId: Long?,
-    val submissionId: Int?,
-    val restaurantSubmissionId: String?,
-    val name: String,
-    val carbs: Int,
-    val amount: Int,
-    val unit: String,
-    val imageUri: Uri?,
-    val votes: Votes?,
+    var submissionId: Int?,
+    var restaurantSubmissionId: String?,
+    var name: String,
+    var carbs: Int,
+    var amount: Int,
+    var unit: String,
+    var imageUri: Uri?,
+    var votes: Votes?,
     var isFavorite: Boolean,
     var isVotable: Boolean,
-    val isSuggested: Boolean,
+    var isSuggested: Boolean,
     var source: Source
 ) : Parcelable {
 

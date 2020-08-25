@@ -10,12 +10,13 @@ import pt.ipl.isel.leic.ps.androidclient.util.writeTimestampWithTimeZone
 
 open class MealInfo : MealItem {
 
-    val submissionOwner: SubmissionOwner?
-    val creationDate: TimestampWithTimeZone?
+    //TODO replace var to val when fields are not changed
+    var submissionOwner: SubmissionOwner?
+    var creationDate: TimestampWithTimeZone?
     var ingredientComponents: List<MealIngredient>
     var mealComponents: List<MealIngredient>
-    val cuisines: List<Cuisine>
-    val portions: List<Portion>
+    var cuisines: List<Cuisine>
+    var portions: List<Portion>
 
     constructor(
         dbId: Long?,
