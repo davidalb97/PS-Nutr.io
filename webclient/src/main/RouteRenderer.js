@@ -9,6 +9,7 @@ import RegisterPage from '../main/authentication/register/RegisterPage'
 import UserContext from './authentication/UserContext'
 //Moderation
 import AddFoodPage from '../main/moderation/addFood/AddFoodPage'
+import Reports from '../main/moderation/reports/ReportPage'
 export default function RouteRenderer() {
     const userContext = useContext(UserContext)
 
@@ -29,6 +30,9 @@ export default function RouteRenderer() {
 
         <Route path="/moderation/newFood">
             <AddFoodPage />
+        </Route>
+        <Route path="/moderation/reports">
+            <Reports />
         </Route>
 
         <Route path="/login">

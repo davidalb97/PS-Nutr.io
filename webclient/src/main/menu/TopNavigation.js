@@ -5,6 +5,9 @@ import Navbar from 'react-bootstrap/Navbar'
 import Nav from 'react-bootstrap/Nav'
 import NavDropdown from 'react-bootstrap/NavDropdown'
 import Button from 'react-bootstrap/Button'
+import Row from 'react-bootstrap/Row'
+import Col from 'react-bootstrap/Col'
+
 import { LinkContainer } from 'react-router-bootstrap'
 
 import UserContext from '../authentication/UserContext'
@@ -29,12 +32,11 @@ export default function TopNavigation() {
         </>
 
     return <Navbar bg="dark" variant="dark" expand="lg" fixed="top">
-        <Navbar.Brand><Link to="/" />Nutr.io</Navbar.Brand>
+        <Navbar.Brand><Link to="/" >Nutr.io</Link></Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="mr-auto">
                 {/* MEALS */}
-
                 <NavDropdown title="Meal" id="collasible-nav-dropdown" disabled={disabled}>
                     <NavDropdown.Item><Link to="/meals">View custom meals</Link></NavDropdown.Item>
                     <NavDropdown.Item><Link to="/meals/create">Add custom meal</Link></NavDropdown.Item>
@@ -47,6 +49,7 @@ export default function TopNavigation() {
                 {/* MODERATION */}
                 <NavDropdown title="Moderation" id="collasible-nav-dropdown" disabled={disabled}>
                     <NavDropdown.Item><Link to="/moderation/newFood">Food creator</Link></NavDropdown.Item>
+                    <NavDropdown.Item><Link to="/moderation/reports">Reports</Link></NavDropdown.Item>
                 </NavDropdown>
 
                 {authenticationContext}
