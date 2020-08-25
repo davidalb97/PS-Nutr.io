@@ -22,7 +22,7 @@ class IngredientDataSource(
             method = HTTPMethod.GET,
             uri = Uri.Builder()
                 .scheme(SCHEME)
-                .authority(ADDRESS_PORT)
+                .encodedAuthority(ADDRESS_PORT)
                 .appendPath(INGREDIENTS_PATH)
                 .appendQueryNotNullParameter(COUNT_PARAM, count)
                 .appendQueryNotNullParameter(SKIP_PARAM, skip)
@@ -43,7 +43,7 @@ class IngredientDataSource(
             method = HTTPMethod.GET,
             uri = Uri.Builder()
                 .scheme(SCHEME)
-                .authority(ADDRESS_PORT)
+                .encodedAuthority(ADDRESS_PORT)
                 .appendPath(INGREDIENTS_PATH)
                 .appendPath(ingredientId)
                 .build()

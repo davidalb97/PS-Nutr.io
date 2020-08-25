@@ -35,7 +35,7 @@ class RestaurantDataSource(
             method = HTTPMethod.GET,
             uri = Uri.Builder()
                 .scheme(SCHEME)
-                .authority(ADDRESS_PORT)
+                .encodedAuthority(ADDRESS_PORT)
                 .appendPath(RESTAURANT_PATH)
                 .appendPath(restaurantId)
                 .build()
@@ -61,7 +61,7 @@ class RestaurantDataSource(
             method = HTTPMethod.GET,
             uri = Uri.Builder()
                 .scheme(SCHEME)
-                .authority(ADDRESS_PORT)
+                .encodedAuthority(ADDRESS_PORT)
                 .appendPath(RESTAURANT_PATH)
                 .appendQueryParameter(LATITUDE_PARAM, latitude)
                 .appendQueryParameter(LONGITUDE_PARAM, longitude)
@@ -90,7 +90,7 @@ class RestaurantDataSource(
             method = HTTPMethod.POST,
             uri = Uri.Builder()
                 .scheme(SCHEME)
-                .authority(ADDRESS_PORT)
+                .encodedAuthority(ADDRESS_PORT)
                 .appendPath(RESTAURANT_PATH)
                 .build()
                 .toString(),
@@ -115,7 +115,7 @@ class RestaurantDataSource(
             method = HTTPMethod.PUT,
             uri = Uri.Builder()
                 .scheme(SCHEME)
-                .authority(ADDRESS_PORT)
+                .encodedAuthority(ADDRESS_PORT)
                 .appendPath(RESTAURANT_PATH)
                 .appendPath(restaurantId)
                 .appendPath(VOTE_PATH)
@@ -139,7 +139,7 @@ class RestaurantDataSource(
             method = HTTPMethod.PUT,
             uri = Uri.Builder()
                 .scheme(SCHEME)
-                .authority(ADDRESS_PORT)
+                .encodedAuthority(ADDRESS_PORT)
                 .appendPath(RESTAURANT_PATH)
                 .appendPath(restaurantId)
                 .appendPath(FAVORITE_PATH)
@@ -163,7 +163,7 @@ class RestaurantDataSource(
             method = HTTPMethod.PUT,
             uri = Uri.Builder()
                 .scheme(SCHEME)
-                .authority(ADDRESS_PORT)
+                .encodedAuthority(ADDRESS_PORT)
                 .appendPath(RESTAURANT_PATH)
                 .appendPath(restaurantId)
                 .appendPath(REPORT_PATH)
@@ -190,7 +190,7 @@ class RestaurantDataSource(
             method = HTTPMethod.DELETE,
             uri = Uri.Builder()
                 .scheme(SCHEME)
-                .authority(ADDRESS_PORT)
+                .encodedAuthority(ADDRESS_PORT)
                 .appendPath(RESTAURANT_PATH)
                 .appendPath(restaurantId)
                 .build()

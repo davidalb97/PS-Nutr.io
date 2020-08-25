@@ -23,7 +23,7 @@ class CuisineDataSource(
             method = HTTPMethod.GET,
             uri = Uri.Builder()
                 .scheme(SCHEME)
-                .authority(ADDRESS_PORT)
+                .encodedAuthority(ADDRESS_PORT)
                 .appendPath(CUISINES_PATH)
                 .appendQueryNotNullParameter(COUNT_PARAM, count)
                 .appendQueryNotNullParameter(SKIP_PARAM, skip)

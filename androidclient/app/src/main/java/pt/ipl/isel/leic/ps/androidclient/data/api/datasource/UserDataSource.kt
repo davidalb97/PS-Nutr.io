@@ -32,7 +32,7 @@ class UserDataSource(
             method = HTTPMethod.POST,
             uri = Uri.Builder()
                 .scheme(SCHEME)
-                .authority(ADDRESS_PORT)
+                .encodedAuthority(ADDRESS_PORT)
                 .appendPath(USER)
                 .appendPath(REGISTER_PATH)
                 .build()
@@ -53,7 +53,7 @@ class UserDataSource(
             method = HTTPMethod.POST,
             uri = Uri.Builder()
                 .scheme(SCHEME)
-                .authority(ADDRESS_PORT)
+                .encodedAuthority(ADDRESS_PORT)
                 .appendPath(USER)
                 .appendPath(LOGIN_PATH)
                 .build()
@@ -74,7 +74,7 @@ class UserDataSource(
             method = HTTPMethod.GET,
             uri = Uri.Builder()
                 .scheme(SCHEME)
-                .authority(ADDRESS_PORT)
+                .encodedAuthority(ADDRESS_PORT)
                 .appendPath(USER)
                 .appendPath(INFO_PATH)
                 .build()

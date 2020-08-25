@@ -34,7 +34,7 @@ class MealDataSource(
             method = HTTPMethod.GET,
             uri = Uri.Builder()
                 .scheme(SCHEME)
-                .authority(ADDRESS_PORT)
+                .encodedAuthority(ADDRESS_PORT)
                 .appendPath(MEAL_PATH)
                 .appendPath(SUGGESTED_PATH)
                 .appendQueryNotNullParameter(COUNT_PARAM, count)
@@ -61,7 +61,7 @@ class MealDataSource(
             method = HTTPMethod.GET,
             uri = Uri.Builder()
                 .scheme(SCHEME)
-                .authority(ADDRESS_PORT)
+                .encodedAuthority(ADDRESS_PORT)
                 .appendPath(RESTAURANT_PATH)
                 .appendPath(restaurantId)
                 .appendPath(MEAL_PATH)
@@ -86,7 +86,7 @@ class MealDataSource(
             method = HTTPMethod.GET,
             uri = Uri.Builder()
                 .scheme(SCHEME)
-                .authority(ADDRESS_PORT)
+                .encodedAuthority(ADDRESS_PORT)
                 .appendPath(MEAL_PATH)
                 .appendPath(mealId)
                 .build()
@@ -109,7 +109,7 @@ class MealDataSource(
             method = HTTPMethod.GET,
             uri = Uri.Builder()
                 .scheme(SCHEME)
-                .authority(ADDRESS_PORT)
+                .encodedAuthority(ADDRESS_PORT)
                 .appendPath(RESTAURANT_PATH)
                 .appendPath(restaurantId)
                 .appendPath(MEAL_PATH)
@@ -135,7 +135,7 @@ class MealDataSource(
             method = HTTPMethod.GET,
             uri = Uri.Builder()
                 .scheme(SCHEME)
-                .authority(ADDRESS_PORT)
+                .encodedAuthority(ADDRESS_PORT)
                 .appendPath(MEAL_PATH)
                 .appendPath(FAVORITE_PATH)
                 .appendQueryNotNullParameter(COUNT_PARAM, count)
@@ -162,7 +162,7 @@ class MealDataSource(
             method = HTTPMethod.GET,
             uri = Uri.Builder()
                 .scheme(SCHEME)
-                .authority(ADDRESS_PORT)
+                .encodedAuthority(ADDRESS_PORT)
                 .appendPath(MEAL_PATH)
                 .appendPath(CUSTOM_PATH)
                 .appendQueryNotNullParameter(COUNT_PARAM, count)
@@ -189,7 +189,7 @@ class MealDataSource(
             method = HTTPMethod.POST,
             uri = Uri.Builder()
                 .scheme(SCHEME)
-                .authority(ADDRESS_PORT)
+                .encodedAuthority(ADDRESS_PORT)
                 .appendPath(MEAL_PATH)
                 .appendPath(CUSTOM_PATH)
                 .build()
@@ -212,7 +212,7 @@ class MealDataSource(
             method = HTTPMethod.POST,
             uri = Uri.Builder()
                 .scheme(SCHEME)
-                .authority(ADDRESS_PORT)
+                .encodedAuthority(ADDRESS_PORT)
                 .appendPath(RESTAURANT_PATH)
                 .appendPath(restaurantId)
                 .appendPath(MEAL_PATH)
@@ -240,7 +240,7 @@ class MealDataSource(
             method = HTTPMethod.DELETE,
             uri = Uri.Builder()
                 .scheme(SCHEME)
-                .authority(ADDRESS_PORT)
+                .encodedAuthority(ADDRESS_PORT)
                 .appendPath(MEAL_PATH)
                 .appendPath(mealId)
                 .build()
@@ -262,7 +262,7 @@ class MealDataSource(
             method = HTTPMethod.DELETE,
             uri = Uri.Builder()
                 .scheme(SCHEME)
-                .authority(ADDRESS_PORT)
+                .encodedAuthority(ADDRESS_PORT)
                 .appendPath(RESTAURANT_PATH)
                 .appendPath(restaurantId)
                 .appendPath(MEAL_PATH)
@@ -290,7 +290,7 @@ class MealDataSource(
             method = HTTPMethod.POST,
             uri = Uri.Builder()
                 .scheme(SCHEME)
-                .authority(ADDRESS_PORT)
+                .encodedAuthority(ADDRESS_PORT)
                 .appendPath(MEAL_PATH)
                 .appendPath(submissionId)
                 .build()
@@ -313,7 +313,7 @@ class MealDataSource(
             method = HTTPMethod.PUT,
             uri = Uri.Builder()
                 .scheme(SCHEME)
-                .authority(ADDRESS_PORT)
+                .encodedAuthority(ADDRESS_PORT)
                 .appendPath(MEAL_PATH)
                 .appendPath(mealId)
                 .appendPath(FAVORITE_PATH)
@@ -338,7 +338,7 @@ class MealDataSource(
             method = HTTPMethod.PUT,
             uri = Uri.Builder()
                 .scheme(SCHEME)
-                .authority(ADDRESS_PORT)
+                .encodedAuthority(ADDRESS_PORT)
                 .appendPath(RESTAURANT_PATH)
                 .appendPath(restaurantId)
                 .appendPath(MEAL_PATH)
@@ -365,7 +365,7 @@ class MealDataSource(
             method = HTTPMethod.PUT,
             uri = Uri.Builder()
                 .scheme(SCHEME)
-                .authority(ADDRESS_PORT)
+                .encodedAuthority(ADDRESS_PORT)
                 .appendPath(RESTAURANT_PATH)
                 .appendPath(restaurantId)
                 .appendPath(MEAL_PATH)
@@ -392,7 +392,7 @@ class MealDataSource(
             method = HTTPMethod.PUT,
             uri = Uri.Builder()
                 .scheme(SCHEME)
-                .authority(ADDRESS_PORT)
+                .encodedAuthority(ADDRESS_PORT)
                 .appendPath(RESTAURANT_PATH)
                 .appendPath(restaurantId)
                 .appendPath(MEAL_PATH)

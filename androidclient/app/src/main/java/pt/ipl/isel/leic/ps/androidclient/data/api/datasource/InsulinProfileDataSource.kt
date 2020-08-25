@@ -19,7 +19,7 @@ class InsulinProfileDataSource(
             method = HTTPMethod.GET,
             uri = Uri.Builder()
                 .scheme(SCHEME)
-                .authority(ADDRESS_PORT)
+                .encodedAuthority(ADDRESS_PORT)
                 .appendPath(USER)
                 .appendPath(INSULIN_PROFILE_PATH)
                 .build()
@@ -41,7 +41,7 @@ class InsulinProfileDataSource(
             method = HTTPMethod.GET,
             uri = Uri.Builder()
                 .scheme(SCHEME)
-                .authority(ADDRESS_PORT)
+                .encodedAuthority(ADDRESS_PORT)
                 .appendPath(USER)
                 .appendPath(INSULIN_PROFILE_PATH)
                 .appendPath(name)
@@ -63,7 +63,7 @@ class InsulinProfileDataSource(
             method = HTTPMethod.POST,
             uri = Uri.Builder()
                 .scheme(SCHEME)
-                .authority(ADDRESS_PORT)
+                .encodedAuthority(ADDRESS_PORT)
                 .appendPath(USER)
                 .appendPath(INSULIN_PROFILE_PATH)
                 .build()
@@ -84,7 +84,7 @@ class InsulinProfileDataSource(
             HTTPMethod.DELETE,
             Uri.Builder()
                 .scheme(SCHEME)
-                .authority(ADDRESS_PORT)
+                .encodedAuthority(ADDRESS_PORT)
                 .appendPath(USER)
                 .appendPath(INSULIN_PROFILE_PATH)
                 .appendPath(profileName)
