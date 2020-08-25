@@ -16,8 +16,6 @@ export default function TopNavigation() {
 
     if (!init) return <> </>
 
-    console.log(userContext)
-
     const disabled = !userContext.initialized || (userContext.initialized && !userContext.user)
     //If user was still not obtained from server, do not display Login/Register buttons
     const authenticationContext = !userContext.initialized ? <> </> : userContext.user ?

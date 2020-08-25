@@ -2,11 +2,10 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import { BrowserRouter } from 'react-router-dom'
 
-import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/css/bootstrap.min.css'
 import '../resources/main.css'
 
 import Container from 'react-bootstrap/Container'
-import Row from 'react-bootstrap/Row'
 
 import RouteRenderer from './main/RouteRenderer'
 import TopNavigation from './main/menu/TopNavigation'

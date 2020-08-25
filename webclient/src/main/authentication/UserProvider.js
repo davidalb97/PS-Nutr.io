@@ -10,7 +10,9 @@ export default function UserProvider({ children }) {
     const authToken = getAuthToken()
 
     //No need to trigger a request if no session cookie is present
-    const request = authToken ? { url: "http://localhost:9000/api/user/info", authToken: authToken } : {}
+    if (!authToken) return provideUserContext({ error: true })
+
+    const request = { url: "http://localhost:9000/api/user/info", authToken: authToken }
 
     return <RequestingEntity
         request={request}
@@ -25,7 +27,7 @@ export default function UserProvider({ children }) {
 
         if (json && !error) user = { authToken: authToken, user: json, initialized: true }
         if (error) user = { ...defaultUser, initialized: true }
-       
+
         return <UserContext.Provider value={user}> {children} </UserContext.Provider>
     }
 }

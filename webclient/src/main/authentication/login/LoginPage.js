@@ -13,14 +13,15 @@ export default function LoginPage() {
     const [credentials, setCredentials] = useState({ email: "", password: "" })
     const [request, triggerRequest] = useReducer(buildRequest, {})
     const [fetchState, response, json, error] = useFetch(request)
-    const user = useContext(UserContext)
+    const userContext = useContext(UserContext)
 
     const email = useRef()
     const password = useRef()
 
     useEffect(() => { if (fetchState === FetchStates.done && json) setAuthToken({ value: json.jwt }) }, [fetchState, json])
 
-    if (!user.notInitialized) return <Redirect to="/" />
+    if (userContext.user) return <Redirect to="/" />
+    if (fetchState === FetchStates.done && json) return <Redirect to="/" />
 
     return <Container className="login">
         <Form>
