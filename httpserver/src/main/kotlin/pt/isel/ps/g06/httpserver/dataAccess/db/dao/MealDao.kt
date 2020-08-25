@@ -47,6 +47,13 @@ private const val MI_table = MealIngredientDao.table
 private const val INGREDIENT_TYPE = "Ingredient"
 private const val MEAL_TYPE = "Meal"
 
+private const val MEAL_ATTRIBUTES =
+        "${MealDao.table}.${MealDao.id}," +
+                " ${MealDao.table}.${MealDao.name}," +
+                " ${MealDao.table}.${MealDao.carbs}," +
+                " ${MealDao.table}.${MealDao.quantity}," +
+                " ${MealDao.table}.${MealDao.unit}"
+
 interface MealDao {
 
     companion object {
@@ -64,13 +71,14 @@ interface MealDao {
     @SqlQuery("SELECT * FROM $table WHERE $id = :submissionId")
     fun getById(@Bind submissionId: Int): DbMealDto?
 
-    @SqlQuery("SELECT * FROM $table INNER JOIN $SS_table ON " +
-            "$SS_table.$SS_submissionId = $table.$id " +
+    @SqlQuery("SELECT $MEAL_ATTRIBUTES FROM $table " +
+            "INNER JOIN $SS_table " +
+            "ON $SS_table.$SS_submissionId = $table.$id " +
             "WHERE $SS_table.$SS_submitterId = :submitterId " +
             "LIMIT :count OFFSET :skip")
     fun getAllBySubmitterId(@Bind submitterId: Int, @Bind count: Int?, @Bind skip: Int?): Collection<DbMealDto>
 
-    @SqlQuery("SELECT $table.$id, $table.$name, $table.$carbs, $table.$quantity, $table.$unit " +
+    @SqlQuery("SELECT $MEAL_ATTRIBUTES " +
             "FROM $table " +
             "INNER JOIN $RM_table " +
             "ON $table.$id = $RM_table.$RM_mealId " +
@@ -78,7 +86,7 @@ interface MealDao {
     )
     fun getAllByRestaurantId(@Bind restaurantId: Int): Collection<DbMealDto>
 
-    @SqlQuery("SELECT $table.$id, $table.$name, $table.$carbs, $table.$quantity, $table.$unit" +
+    @SqlQuery("SELECT $MEAL_ATTRIBUTES" +
             " FROM $table" +
             " INNER JOIN $MC_table" +
             " ON $table.$id = $MC_table.$MC_mealId" +
@@ -92,7 +100,7 @@ interface MealDao {
     )
     fun getAllSuggestedForCuisineNames(@BindList cuisineNames: Collection<String>): Collection<DbMealDto>
 
-    @SqlQuery("SELECT DISTINCT ON ($table.$name) $table.$id, $table.$name, $table.$carbs, $table.$quantity, $table.$unit" +
+    @SqlQuery("SELECT DISTINCT ON ($table.$name) $MEAL_ATTRIBUTES" +
             " FROM $C_table" +
             " INNER JOIN $AC_table" +
             " ON $C_table.$C_cuisineId = $AC_table.$AC_cuisineId" +
@@ -113,7 +121,7 @@ interface MealDao {
             @BindList apiIds: Collection<String>
     ): Collection<DbMealDto>
 
-    @SqlQuery("SELECT $table.$id, $table.$name, $table.$carbs, $table.$quantity, $table.$unit" +
+    @SqlQuery("SELECT $MEAL_ATTRIBUTES" +
             " FROM $table" +
             " INNER JOIN $S_table" +
             " ON $S_table.$S_submission_id = $table.$id" +
@@ -148,7 +156,7 @@ interface MealDao {
     @SqlQuery("UPDATE $table SET $name = :new_name WHERE $id = :submissionId RETURNING *")
     fun updateName(@Bind submissionId: Int, new_name: String): DbMealDto
 
-    @SqlQuery("SELECT $table.$id, $table.$name, $table.$carbs, $table.$quantity, $table.$unit " +
+    @SqlQuery("SELECT $MEAL_ATTRIBUTES " +
             "FROM $table " +
             "INNER JOIN $S_table " +
             "ON $S_table.$S_submission_id = $table.$id " +
@@ -159,7 +167,7 @@ interface MealDao {
     )
     fun getAllIngredients(skip: Int = 0, limit: Int? = 10): Collection<DbMealDto>
 
-    @SqlQuery("SELECT $table.$id, $table.$name, $table.$carbs, $table.$quantity, $table.$unit " +
+    @SqlQuery("SELECT $MEAL_ATTRIBUTES " +
             "FROM $table " +
             "INNER JOIN $S_table " +
             "ON $S_table.$S_submission_id = $table.$id " +
@@ -169,7 +177,7 @@ interface MealDao {
     )
     fun getAllIngredientsByIds(@BindList submissionIds: Collection<Int>): Collection<DbMealDto>
 
-    @SqlQuery("SELECT $table.$id, $table.$name, $table.$carbs, $table.$quantity, $table.$unit " +
+    @SqlQuery("SELECT $MEAL_ATTRIBUTES " +
             "FROM $table " +
             "INNER JOIN $RM_table " +
             "ON $RM_table.$RM_mealId = $table.$id " +

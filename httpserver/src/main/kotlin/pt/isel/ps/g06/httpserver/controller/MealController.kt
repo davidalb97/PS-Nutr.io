@@ -9,10 +9,7 @@ import pt.isel.ps.g06.httpserver.common.exception.forbidden.NotSubmissionOwnerEx
 import pt.isel.ps.g06.httpserver.common.exception.notFound.MealNotFoundException
 import pt.isel.ps.g06.httpserver.dataAccess.input.FavoriteInput
 import pt.isel.ps.g06.httpserver.dataAccess.input.MealInput
-import pt.isel.ps.g06.httpserver.dataAccess.output.meal.DetailedMealOutput
-import pt.isel.ps.g06.httpserver.dataAccess.output.meal.SimplifiedMealContainer
-import pt.isel.ps.g06.httpserver.dataAccess.output.meal.toDetailedMealOutput
-import pt.isel.ps.g06.httpserver.dataAccess.output.meal.toSimplifiedMealContainer
+import pt.isel.ps.g06.httpserver.dataAccess.output.meal.*
 import pt.isel.ps.g06.httpserver.model.Meal
 import pt.isel.ps.g06.httpserver.model.User
 import pt.isel.ps.g06.httpserver.service.MealService
@@ -45,7 +42,6 @@ class MealController(
             @RequestParam cuisines: Collection<String>?
     ): ResponseEntity<SimplifiedMealContainer> {
 
-        // TODO - should filter by cuisines inside DB
         var meals = mealService.getSuggestedMeals(
                 count = count,
                 skip = skip,
@@ -107,7 +103,6 @@ class MealController(
 
         val userCustomMeals = mealService
                 .getUserCustomMeals(user.identifier, count, skip)
-                //.map { CustomMealOutput() }
                 .toList()
 
         return ResponseEntity.ok().body(userCustomMeals)
@@ -121,11 +116,11 @@ class MealController(
     ): ResponseEntity<Void> {
         //Due to validators we are sure fields are never null
         val createdMeal = mealService.createCustomMeal(
+                submitterId = user.identifier,
                 name = meal.name!!,
-                ingredients = meal.ingredients!!,
-                cuisines = meal.cuisines!!,
                 quantity = meal.quantity!!,
-                submitterId = user.identifier
+                ingredients = meal.ingredients!!,
+                cuisines = meal.cuisines!!
         )
 
         return ResponseEntity.created(

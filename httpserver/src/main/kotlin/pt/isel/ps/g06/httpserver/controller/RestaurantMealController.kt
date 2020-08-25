@@ -24,7 +24,6 @@ import pt.isel.ps.g06.httpserver.service.RestaurantService
 import pt.isel.ps.g06.httpserver.service.SubmissionService
 import javax.validation.Valid
 
-// TODO add report for restaurant meal
 @Suppress("MVCPathVariableInspection")
 @RestController
 @RequestMapping(produces = [MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_PROBLEM_JSON_VALUE])

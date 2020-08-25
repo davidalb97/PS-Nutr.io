@@ -24,7 +24,6 @@ import javax.validation.Valid
 
 private const val INVALID_RESTAURANT_SEARCH = "To search nearby restaurants, a geolocation must be given!"
 
-// TODO add report for restaurant
 @Suppress("MVCPathVariableInspection") //False positive for IntelliJ
 @RestController
 @RequestMapping(produces = [MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_PROBLEM_JSON_VALUE])
