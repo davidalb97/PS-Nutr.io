@@ -36,17 +36,17 @@ class UserAuthenticationArgumentResolver(
             binderFactory: WebDataBinderFactory?
     ): Any? {
         val httpServletRequest = webRequest.getNativeRequest(HttpServletRequest::class.java)!!
-        val submitter = webRequest
+        val user = webRequest
                 .getHeader(AUTHORIZATION)
                 ?.also { jwtValidator.authenticate(httpServletRequest) }
                 ?.let(authenticationService::getEmailFromJwt)
                 ?.let(userService::getUserFromEmail)
 
-        if (!parameter.isOptional && submitter == null) {
+        if (!parameter.isOptional && user == null) {
             throw NotAuthenticatedException()
         }
 
-        return submitter
+        return user
     }
 
 }
