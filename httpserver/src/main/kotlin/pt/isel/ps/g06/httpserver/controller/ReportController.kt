@@ -3,7 +3,6 @@ package pt.isel.ps.g06.httpserver.controller
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import pt.isel.ps.g06.httpserver.common.*
-import pt.isel.ps.g06.httpserver.dataAccess.input.ReportInput
 import pt.isel.ps.g06.httpserver.model.Report
 import pt.isel.ps.g06.httpserver.model.User
 import pt.isel.ps.g06.httpserver.service.AuthenticationService
@@ -18,10 +17,7 @@ class ReportController(
 ) {
 
     @GetMapping(REPORTS)
-    fun getAllReports(
-            @RequestHeader(AUTH_HEADER) jwt: String,
-            user: User
-    ): ResponseEntity<List<Report>> {
+    fun getAllReports(user: User): ResponseEntity<List<Report>> {
 
         // Check if the user is a moderator
         userService.ensureModerator(user)
@@ -30,9 +26,8 @@ class ReportController(
     }
 
 
-    @GetMapping(SUBMISSION_REPORTS)
+    @GetMapping(SUBMISSION_REPORT)
     fun getAllReportsFromSubmission(
-            @RequestHeader(AUTH_HEADER) jwt: String,
             @PathVariable(SUBMISSION_ID_VALUE) submissionId: Int,
             user: User
     ): ResponseEntity<List<Report>>  {
@@ -41,5 +36,19 @@ class ReportController(
         userService.ensureModerator(user)
 
         return ResponseEntity.ok(reportService.getSubmissionReports(submissionId).toList())
+    }
+
+    @DeleteMapping(REPORT)
+    fun deleteReport(
+            @PathVariable(REPORT_ID_VALUE) submissionId: Int,
+            user: User
+    ): ResponseEntity<Void>  {
+
+        // Check if the user is a moderator
+        userService.ensureModerator(user)
+
+        reportService.deleteReport(submissionId)
+
+        return ResponseEntity.ok().build()
     }
 }

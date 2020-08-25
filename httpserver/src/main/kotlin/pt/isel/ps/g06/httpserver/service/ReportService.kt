@@ -26,4 +26,7 @@ class ReportService(
      */
     fun getSubmissionReports(submissionId: Int) =
             reportDbRepository.getAllFromSubmission(submissionId).map(reportDbMapper::mapToModel)
+
+    fun deleteReport(reportId: Int) =
+            reportDbRepository.delete(reportId).let(reportDbMapper::mapToModel)
 }

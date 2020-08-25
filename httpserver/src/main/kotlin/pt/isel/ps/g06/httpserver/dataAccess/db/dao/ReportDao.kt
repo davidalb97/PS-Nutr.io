@@ -8,6 +8,7 @@ interface ReportDao {
 
     companion object {
         const val table = "Report"
+        const val reportId = "report_id"
         const val submissionId = "submission_id"
         const val reporterId = "submitter_id"
         const val description = "description"
@@ -23,6 +24,6 @@ interface ReportDao {
             "VALUES(:reporterSubmitterId, :submissionId, :description) RETURNING *")
     fun insert(@Bind reporterSubmitterId: Int, submissionId: Int, description: String): DbReportDto
 
-    @SqlQuery("DELETE FROM $table WHERE $submissionId = :submissionId RETURNING *")
-    fun deleteAllBySubmissionId(submissionId: Int): List<DbReportDto>
+    @SqlQuery("DELETE FROM $table WHERE $reportId = :reportId RETURNING *")
+    fun deleteById(reportId: Int): DbReportDto
 }
