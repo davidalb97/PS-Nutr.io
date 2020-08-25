@@ -18,7 +18,6 @@ const val ADDRESS = "10.0.2.2" // Loopback for the host machine
 const val PORT = "8080"
 const val SCHEME = "http"
 const val ADDRESS_PORT = "$ADDRESS:$PORT"
-const val URI_BASE = "http://$ADDRESS:$PORT"
 
 const val MEAL_PATH = "meal"
 const val RESTAURANT_PATH = "restaurant"
