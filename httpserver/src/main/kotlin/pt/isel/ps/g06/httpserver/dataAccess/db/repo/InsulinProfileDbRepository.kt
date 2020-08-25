@@ -41,11 +41,8 @@ class InsulinProfileDbRepository(
             return@inTransaction handle
                     .attach(insulinProfileDaoClass)
                     .getFromUser(submitterId, profileName)
-                    .let { encInsulinProfileDto ->
-                        dbInsulinProfileDtoMapper.toDbUserInsulinProfileDto(
-                                encInsulinProfileDto ?: throw MissingInsulinProfileException(profileName)
-                        )
-                    }
+                    ?.let(dbInsulinProfileDtoMapper::toDbUserInsulinProfileDto)
+                    ?: throw MissingInsulinProfileException(profileName)
         }
     }
 

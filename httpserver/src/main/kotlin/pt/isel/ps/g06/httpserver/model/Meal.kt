@@ -27,8 +27,8 @@ data class Meal(
         return submitterInfo.value != null
     }
 
-    fun isMealOwner(submitter: Submitter?): Boolean =
-            submitter != null && isUserMeal() && submitter.identifier != submitterInfo.value?.identifier
+    fun isMealOwner(user: User?): Boolean =
+            user != null && isUserMeal() && user.identifier != submitterInfo.value?.identifier
 
     fun isRestaurantMeal(restaurant: Restaurant): Boolean {
         return if (isUserMeal()) {

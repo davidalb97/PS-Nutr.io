@@ -6,14 +6,15 @@ import org.springframework.http.HttpHeaders.AUTHORIZATION
 import org.springframework.stereotype.Component
 import org.springframework.web.bind.support.WebDataBinderFactory
 import org.springframework.web.context.request.NativeWebRequest
-import org.springframework.web.method.support.HandlerMethodArgumentResolver
 import org.springframework.web.method.support.ModelAndViewContainer
 import pt.isel.ps.g06.httpserver.common.MOD_USER
 import pt.isel.ps.g06.httpserver.common.exception.authentication.NotAuthenticatedException
 import pt.isel.ps.g06.httpserver.common.exception.authorization.NotAuthorizedException
-import pt.isel.ps.g06.httpserver.model.User
+import pt.isel.ps.g06.httpserver.model.Moderator
+import pt.isel.ps.g06.httpserver.security.JwtValidator
 import pt.isel.ps.g06.httpserver.service.AuthenticationService
 import pt.isel.ps.g06.httpserver.service.UserService
+import javax.servlet.http.HttpServletRequest
 
 /**
  * Intercepts each request, verifying if the user is authenticated by checking its Json Web Token
@@ -23,28 +24,28 @@ import pt.isel.ps.g06.httpserver.service.UserService
 class ModAuthorizationArgumentResolver(
         @Lazy
         private val authenticationService: AuthenticationService,
-        private val userService: UserService
-) : HandlerMethodArgumentResolver {
+        private val userService: UserService,
+        private val jwtValidator: JwtValidator
+) : BaseAuthorizationArgumentResolver<Moderator>(
+        authenticationService = authenticationService,
+        userService = userService,
+        jwtValidator = jwtValidator
+) {
 
     override fun supportsParameter(parameter: MethodParameter): Boolean =
-            parameter.parameterType == User::class.java
+            parameter.parameterType == Moderator::class.java
 
-    override fun resolveArgument(
-            parameter: MethodParameter,
-            mavContainer: ModelAndViewContainer?,
-            webRequest: NativeWebRequest,
-            binderFactory: WebDataBinderFactory?
-    ): Any? {
-        val requester = webRequest
-                .getHeader(AUTHORIZATION)
-                ?.let(authenticationService::getEmailFromJwt)
-                ?.let(userService::getUserFromEmail)
-                ?: throw NotAuthenticatedException()
+    override fun getTarget(jwt: String): Moderator? =
+        jwt.let(authenticationService::getEmailFromJwt).let(userService::getModeratorFromEmail)
 
-        if (requester.userRole != MOD_USER) {
+
+    override fun validate(parameter: MethodParameter, target: Moderator?) {
+        target ?: throw NotAuthenticatedException()
+
+        if (target.userRole != MOD_USER) {
             throw NotAuthorizedException()
         }
-
-        return requester
     }
+
+
 }

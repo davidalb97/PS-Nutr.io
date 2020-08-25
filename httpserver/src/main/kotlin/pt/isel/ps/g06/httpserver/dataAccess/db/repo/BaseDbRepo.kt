@@ -61,7 +61,7 @@ class BaseDbRepo constructor(internal val jdbi: Jdbi) {
      * @throws InvalidInputException If the submission does not meet the IS-A contract or
      * if the submission does not exist.
      */
-    protected fun requireContract(
+    protected fun hasContract(
             submissionId: Int,
             contract: SubmissionContractType,
             defaultIsolation: TransactionIsolationLevel = SERIALIZABLE

@@ -5,6 +5,7 @@ import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource
 import org.springframework.stereotype.Component
 import pt.isel.ps.g06.httpserver.common.BEARER
+import pt.isel.ps.g06.httpserver.common.exception.authorization.NotAuthorizedException
 import pt.isel.ps.g06.httpserver.service.UserService
 import javax.servlet.http.HttpServletRequest
 
@@ -28,20 +29,31 @@ class JwtValidator(
             userEmail = jwtUtil.getUserEmail(jwt)
         }
 
-        if (jwt != null && userEmail != null && SecurityContextHolder.getContext().authentication == null) {
-            val userDetails = this.userService.loadUserByUsername(userEmail)
+        if (jwt != null && userEmail != null) {
 
-            if (jwtUtil.validateToken(jwt, userDetails)) {
-                val userPasswordAuthenticationToken = UsernamePasswordAuthenticationToken(
-                        userDetails,
-                        null,
-                        userDetails.authorities
-                )
+            val user = userService.getUserFromEmail(userEmail)
 
-                userPasswordAuthenticationToken.details = WebAuthenticationDetailsSource().buildDetails(request)
-
-                SecurityContextHolder.getContext().authentication = userPasswordAuthenticationToken
+            if (user.isUserBanned) {
+                throw NotAuthorizedException()
             }
+
+            if (SecurityContextHolder.getContext().authentication == null) {
+
+                val userDetails = this.userService.loadUserByUsername(userEmail)
+
+                if (jwtUtil.validateToken(jwt, userDetails)) {
+                    val userPasswordAuthenticationToken = UsernamePasswordAuthenticationToken(
+                            userDetails,
+                            null,
+                            userDetails.authorities
+                    )
+
+                    userPasswordAuthenticationToken.details = WebAuthenticationDetailsSource().buildDetails(request)
+
+                    SecurityContextHolder.getContext().authentication = userPasswordAuthenticationToken
+                }
+            }
+
         }
     }
 }

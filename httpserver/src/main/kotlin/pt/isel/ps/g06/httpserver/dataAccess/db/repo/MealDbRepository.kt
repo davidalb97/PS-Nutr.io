@@ -160,7 +160,7 @@ class MealDbRepository(jdbi: Jdbi) : SubmissionDbRepository(jdbi) {
             //Insert SubmissionSubmitter associations for user
             it.attach(SubmissionSubmitterDao::class.java).insert(mealSubmissionId, submitterId)
 
-
+            // TODO: Logic should be isolated on the service and passed to repo as a parameter
             //Calculate meal carbs from adding each ingredient carb for given input quantity
             val carbs = databaseIngredients
                     .zip(ingredients, this::getCarbsForInputQuantity)
@@ -235,6 +235,7 @@ class MealDbRepository(jdbi: Jdbi) : SubmissionDbRepository(jdbi) {
             it.attach(SubmissionSubmitterDao::class.java).insert(mealSubmissionId, submitterId)
 
 
+            // TODO: Logic should be isolated on the service and passed to repo as a parameter
             //Calculate meal carbs from adding each ingredient carb for given input quantity
             val carbs = databaseIngredients
                     .zip(ingredients, this::getCarbsForInputQuantity)

@@ -12,6 +12,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.input.InsulinProfileInput
 import pt.isel.ps.g06.httpserver.dataAccess.output.InsulinProfileOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.toInsulinProfileOutput
 import pt.isel.ps.g06.httpserver.model.Submitter
+import pt.isel.ps.g06.httpserver.model.User
 import pt.isel.ps.g06.httpserver.service.InsulinProfileService
 import javax.validation.Valid
 
@@ -20,10 +21,10 @@ import javax.validation.Valid
 class InsulinProfileController(private val insulinProfileService: InsulinProfileService) {
 
     @GetMapping(INSULIN_PROFILES)
-    fun getAllUserInsulinProfiles(submitter: Submitter): ResponseEntity<Collection<InsulinProfileOutput>> =
+    fun getAllUserInsulinProfiles(user: User): ResponseEntity<Collection<InsulinProfileOutput>> =
             ResponseEntity.ok(
                     insulinProfileService
-                            .getAllProfilesFromUser(submitter.identifier)
+                            .getAllProfilesFromUser(user.identifier)
                             .map(::toInsulinProfileOutput)
                             .toList()
             )
@@ -32,9 +33,9 @@ class InsulinProfileController(private val insulinProfileService: InsulinProfile
     @GetMapping(INSULIN_PROFILE)
     fun getUserInsulinProfile(
             @PathVariable(PROFILE_NAME_VALUE) profileName: String,
-            submitter: Submitter
+            user: User
     ): ResponseEntity<InsulinProfileOutput> {
-        val userProfile = insulinProfileService.getProfileFromUser(submitter.identifier, profileName)
+        val userProfile = insulinProfileService.getProfileFromUser(user.identifier, profileName)
 
         return ResponseEntity.ok(toInsulinProfileOutput(userProfile))
     }
@@ -42,10 +43,10 @@ class InsulinProfileController(private val insulinProfileService: InsulinProfile
     @PostMapping(INSULIN_PROFILES)
     fun createInsulinProfile(
             @Valid @RequestBody insulinProfile: InsulinProfileInput,
-            submitter: Submitter
+            user: User
     ): ResponseEntity<Void> {
         val profile = insulinProfileService.createProfile(
-                submitter.identifier,
+                user.identifier,
                 insulinProfile.profileName!!,
                 insulinProfile.startTime!!,
                 insulinProfile.endTime!!,
@@ -65,10 +66,10 @@ class InsulinProfileController(private val insulinProfileService: InsulinProfile
     @DeleteMapping(INSULIN_PROFILE)
     fun deleteInsulinProfile(
             @PathVariable(PROFILE_NAME_VALUE) profileName: String,
-            submitter: Submitter
+            user: User
     ): ResponseEntity<Void> {
 
-        insulinProfileService.deleteProfile(submitter.identifier, profileName)
+        insulinProfileService.deleteProfile(user.identifier, profileName)
 
         return ResponseEntity
                 .ok()

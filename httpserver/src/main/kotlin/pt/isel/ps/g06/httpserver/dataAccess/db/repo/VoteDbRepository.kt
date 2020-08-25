@@ -4,11 +4,9 @@ import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.transaction.TransactionIsolationLevel
 import org.springframework.stereotype.Repository
 import pt.isel.ps.g06.httpserver.common.exception.clientError.NonVotableSubmissionException
-import pt.isel.ps.g06.httpserver.common.exception.clientError.NotYetVotedException
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionContractType.VOTABLE
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.UserVoteDao
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.VotableDao
-import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbUserVoteDto
 import pt.isel.ps.g06.httpserver.model.VoteState
 
 private val isolationLevel = TransactionIsolationLevel.SERIALIZABLE
@@ -22,7 +20,7 @@ class VoteDbRepository(jdbi: Jdbi) : BaseDbRepo(jdbi) {
     fun setVote(voterId: Int, submissionId: Int, newVote: VoteState) {
         return jdbi.inTransaction<Unit, Exception>(isolationLevel) {
             // Check if the submission exists and it is votable
-            if (!requireContract(submissionId, VOTABLE, isolationLevel)) {
+            if (!hasContract(submissionId, VOTABLE, isolationLevel)) {
                 throw NonVotableSubmissionException()
             }
 

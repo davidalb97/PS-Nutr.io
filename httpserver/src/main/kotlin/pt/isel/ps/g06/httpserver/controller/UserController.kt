@@ -13,6 +13,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.input.UserRegisterInput
 import pt.isel.ps.g06.httpserver.dataAccess.output.security.UserLoginOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.security.UserRegisterOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.user.UserInfoOutput
+import pt.isel.ps.g06.httpserver.model.Moderator
 import pt.isel.ps.g06.httpserver.model.Submitter
 import pt.isel.ps.g06.httpserver.model.User
 import pt.isel.ps.g06.httpserver.service.AuthenticationService
@@ -50,8 +51,9 @@ class UserController(private val userService: UserService, private val authentic
     }
 
     @GetMapping(USER)
-    fun getUserInfo(submitter: Submitter): ResponseEntity<UserInfoOutput> {
-        val email = userService.getEmailFromSubmitter(submitter.identifier).userEmail
+    fun getUserInfo(user: User): ResponseEntity<UserInfoOutput> {
+        val email = user.userEmail
+        val submitter = userService.getSubmitterFromEmail(email)!!
         val username = submitter.name
         val image = submitter.image
 
@@ -60,7 +62,7 @@ class UserController(private val userService: UserService, private val authentic
 
     @PutMapping(BAN)
     fun putBanUser(
-            user: User,
+            moderator: Moderator,
             @RequestBody banInput: BanInput
     ): ResponseEntity<Void> {
         userService.updateUserBan(banInput)

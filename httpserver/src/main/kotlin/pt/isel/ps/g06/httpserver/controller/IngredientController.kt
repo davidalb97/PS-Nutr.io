@@ -5,9 +5,11 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.util.UriComponentsBuilder
 import pt.isel.ps.g06.httpserver.common.INGREDIENTS
+import pt.isel.ps.g06.httpserver.common.exception.clientError.InvalidInputException
 import pt.isel.ps.g06.httpserver.dataAccess.input.MealInput
 import pt.isel.ps.g06.httpserver.dataAccess.output.ingredient.IngredientsContainerOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.ingredient.toIngredientsContainerOutput
+import pt.isel.ps.g06.httpserver.model.Moderator
 import pt.isel.ps.g06.httpserver.model.User
 import pt.isel.ps.g06.httpserver.service.IngredientService
 
@@ -22,6 +24,7 @@ class IngredientController(private val ingredientService: IngredientService) {
      * Obtain a list of ingredients.
      * @param   skip    Number of pages to be skipped
      * @param   limit   Page limit
+     * @return  [ResponseEntity]<[IngredientsContainerOutput]>
      */
     @GetMapping
     fun getIngredients(
@@ -40,14 +43,16 @@ class IngredientController(private val ingredientService: IngredientService) {
      * Create a hardcoded ingredient as moderator
      * @param   user    ModAuthorizationArgumentResolver's parameter
      * @param   ingredientInput    The ingredient to be inserted
+     * @return  [ResponseEntity]<[IngredientsContainerOutput]>
+     * @throws InvalidInputException On invalid cuisines passed
      */
     @PostMapping
     fun createSuggestedIngredient(
-            user: User,
-            @RequestBody mealIngredientInput: MealInput
+            @RequestBody mealIngredientInput: MealInput,
+            moderator: Moderator
     ): ResponseEntity<IngredientsContainerOutput> {
 
-        val createdIngredient = ingredientService.insertSuggestedIngredient(user.identifier, mealIngredientInput)
+        val createdIngredient = ingredientService.insertSuggestedIngredient(moderator.identifier, mealIngredientInput)
 
         return ResponseEntity
                 .created(

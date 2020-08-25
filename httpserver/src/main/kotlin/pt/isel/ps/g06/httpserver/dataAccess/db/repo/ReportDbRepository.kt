@@ -6,7 +6,6 @@ import org.springframework.stereotype.Repository
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionContractType.REPORTABLE
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.ReportDao
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbReportDto
-import pt.isel.ps.g06.httpserver.common.exception.clientError.InvalidInputDomain
 import pt.isel.ps.g06.httpserver.common.exception.clientError.NonReportableSubmissionException
 
 private val isolationLevel = TransactionIsolationLevel.SERIALIZABLE
@@ -35,7 +34,7 @@ class ReportDbRepository(jdbi: Jdbi) : BaseDbRepo(jdbi) {
         return jdbi.inTransaction<DbReportDto, Exception>(isolationLevel) {
 
             // Check if the submission exists and it is reportable
-            if (!requireContract(submitterId, REPORTABLE, isolationLevel)) {
+            if (!hasContract(submitterId, REPORTABLE, isolationLevel)) {
                 throw NonReportableSubmissionException()
             }
 
