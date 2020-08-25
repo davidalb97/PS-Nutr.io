@@ -47,12 +47,12 @@ CREATE TABLE _User(
 CREATE TABLE InsulinProfile(
 	submitter_id integer,
 	profile_name varchar(30),
-	start_time time without time zone,
-	end_time time without time zone,
-	glucose_objective integer,
-	insulin_sensitivity_factor integer,
-	carbohydrate_ratio integer,
-	modification_date timestamp with time zone default CURRENT_TIMESTAMP,
+	start_time varchar(30),
+	end_time varchar(30),
+	glucose_objective varchar(30),
+	insulin_sensitivity_factor varchar(30),
+	carbohydrate_ratio varchar(30),
+	modification_date varchar(100),
 	PRIMARY KEY(submitter_id, profile_name),
 	FOREIGN KEY(submitter_id) REFERENCES _User(submitter_id)
 );

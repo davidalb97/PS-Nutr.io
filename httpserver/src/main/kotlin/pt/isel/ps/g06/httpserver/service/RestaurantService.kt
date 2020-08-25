@@ -9,8 +9,8 @@ import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.restaurant.Res
 import pt.isel.ps.g06.httpserver.dataAccess.db.ApiSubmitterMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.FavoriteDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.RestaurantDbRepository
-import pt.isel.ps.g06.httpserver.dataAccess.db.repo.RestaurantMealDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.common.dto.RestaurantDto
+import pt.isel.ps.g06.httpserver.dataAccess.db.repo.ReportDbRepository
 import pt.isel.ps.g06.httpserver.model.Restaurant
 import pt.isel.ps.g06.httpserver.model.RestaurantIdentifier
 import pt.isel.ps.g06.httpserver.util.log
@@ -20,11 +20,11 @@ private const val MAX_RADIUS = 1000
 @Service
 class RestaurantService(
         private val dbRestaurantRepository: RestaurantDbRepository,
-        private val dbRestaurantMealRepository: RestaurantMealDbRepository,
         private val restaurantApiMapper: RestaurantApiMapper,
         private val restaurantResponseMapper: RestaurantResponseMapper,
         private val apiSubmitterMapper: ApiSubmitterMapper,
-        private val dbFavoriteDbRepository: FavoriteDbRepository
+        private val dbFavoriteDbRepository: FavoriteDbRepository,
+        private val dbReportDbRepository: ReportDbRepository
 ) {
 
     fun setFavorite(restaurantId: Int, userId: Int, isFavorite: Boolean): Boolean {
@@ -36,7 +36,9 @@ class RestaurantService(
             longitude: Float,
             name: String?,
             radius: Int?,
-            apiType: String?
+            apiType: String?,
+            count: Int?,
+            skip: Int?
     ): Sequence<Restaurant> {
         val chosenRadius = if (radius != null && radius <= MAX_RADIUS) radius else MAX_RADIUS
         val type = RestaurantApiType.getOrDefault(apiType)
@@ -161,6 +163,17 @@ class RestaurantService(
         }
         return restaurant
     }
+
+    fun addReport(submitterId: Int, restaurantIdentifier: RestaurantIdentifier, report: String) {
+        val restaurant = getOrCreateRestaurant(restaurantIdentifier)
+
+        dbReportDbRepository.insert(submitterId, restaurant.identifier.value.submissionId!!, report)
+    }
+
+    fun addOwner(restaurantId: Int, ownerId: Int) {
+        dbRestaurantRepository.addOwner(restaurantId, ownerId)
+    }
+
 
     private fun filterRedundantApiRestaurants(dbRestaurants: Sequence<Restaurant>, apiRestaurants: Sequence<Restaurant>): Sequence<Restaurant> {
         //Join db restaurants with filtered api restaurants

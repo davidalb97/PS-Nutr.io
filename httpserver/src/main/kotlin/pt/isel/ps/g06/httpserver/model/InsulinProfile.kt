@@ -2,7 +2,7 @@ package pt.isel.ps.g06.httpserver.model
 
 import java.time.OffsetDateTime
 
-data class InsulinProfile(
+class InsulinProfile(
         val submitterId: Int,
         val profileName: String,
         val startTime: String,

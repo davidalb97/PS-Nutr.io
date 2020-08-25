@@ -1,4 +1,4 @@
-package pt.isel.ps.g06.httpserver.dataAccess.output.security
+package pt.isel.ps.g06.httpserver.dataAccess.output.user
 
 import java.net.URI
 
