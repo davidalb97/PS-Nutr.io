@@ -9,10 +9,7 @@ import pt.isel.ps.g06.httpserver.common.exception.clientError.InvalidInputExcept
 import pt.isel.ps.g06.httpserver.common.exception.forbidden.NotSubmissionOwnerException
 import pt.isel.ps.g06.httpserver.common.exception.notFound.RestaurantNotFoundException
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.RestaurantApiType
-import pt.isel.ps.g06.httpserver.dataAccess.input.FavoriteInput
-import pt.isel.ps.g06.httpserver.dataAccess.input.RestaurantInput
-import pt.isel.ps.g06.httpserver.dataAccess.input.RestaurantOwnerInput
-import pt.isel.ps.g06.httpserver.dataAccess.input.VoteInput
+import pt.isel.ps.g06.httpserver.dataAccess.input.*
 import pt.isel.ps.g06.httpserver.dataAccess.output.restaurant.DetailedRestaurantOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.restaurant.SimplifiedRestaurantOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.restaurant.toDetailedRestaurantOutput
@@ -34,9 +31,9 @@ private const val INVALID_RESTAURANT_SEARCH = "To search nearby restaurants, a g
 class RestaurantController(
         private val restaurantService: RestaurantService,
         private val submissionService: SubmissionService,
-        private val restaurantIdentifierBuilder: RestaurantIdentifierBuilder,
         private val userService: UserService,
-        private val authenticationService: AuthenticationService
+        private val authenticationService: AuthenticationService,
+        private val restaurantIdentifierBuilder: RestaurantIdentifierBuilder
 ) {
     /**
      * Allows to search for Restaurants from both an API (see [RestaurantApiType] for supported APIs) and
@@ -169,17 +166,20 @@ class RestaurantController(
         return ResponseEntity.ok().build()
     }
 
-    /**
-     * Helper method to avoid boilerplate code that ensures that a Restaurant exists.
-     *
-     * @throws RestaurantNotFoundException if it doesn't.
-     */
-    private fun ensureRestaurantExists(restaurantId: String): Restaurant {
+    @PutMapping(RESTAURANT_REPORT)
+    fun addReport(
+            @PathVariable(RESTAURANT_ID_VALUE) restaurantId: String,
+            @RequestBody reportInput: ReportInput,
+            user: User
+    ): ResponseEntity<Void> {
+
         val restaurantIdentifier = restaurantIdentifierBuilder.extractIdentifiers(restaurantId)
 
-        return restaurantService
-                .getRestaurant(restaurantIdentifier)
-                ?: throw RestaurantNotFoundException()
+        restaurantService.addReport(user.identifier, restaurantIdentifier, reportInput.description)
+
+        return ResponseEntity
+                .ok()
+                .build()
     }
 
     @PutMapping(RESTAURANT)
@@ -197,5 +197,18 @@ class RestaurantController(
         restaurantService.addOwner(restaurantId, restaurantOwnerInput.ownerId)
 
         return ResponseEntity.ok().build()
+    }
+
+    /**
+     * Helper method to avoid boilerplate code that ensures that a Restaurant exists.
+     *
+     * @throws RestaurantNotFoundException if it doesn't.
+     */
+    private fun ensureRestaurantExists(restaurantId: String): Restaurant {
+        val restaurantIdentifier = restaurantIdentifierBuilder.extractIdentifiers(restaurantId)
+
+        return restaurantService
+                .getRestaurant(restaurantIdentifier)
+                ?: throw RestaurantNotFoundException()
     }
 }

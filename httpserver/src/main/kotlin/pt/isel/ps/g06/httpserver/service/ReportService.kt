@@ -26,22 +26,4 @@ class ReportService(
      */
     fun getSubmissionReports(submissionId: Int) =
             reportDbRepository.getAllFromSubmission(submissionId).map(reportDbMapper::mapToModel)
-
-    /**
-     * Inserts a report for a specific submission
-     * @param reportInput - The user's report
-     * @param reportSubmitter - The reporter's submitter id
-     */
-    fun insertReport(reportInput: ReportInput, reportSubmitter: Int) {
-
-        val dbSubmissionDto = submissionDbRepository.getSubmissionById(reportInput.submissionId)
-                ?: throw SubmissionNotFoundException()
-
-        reportDbRepository.insert(
-                submitterId = reportSubmitter,
-                submissionId = dbSubmissionDto.submission_id,
-                report = reportInput.description
-        )
-    }
-
 }

@@ -10,6 +10,7 @@ import pt.isel.ps.g06.httpserver.common.exception.notFound.RestaurantNotFoundExc
 import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.restaurant.DbRestaurantMealInfoResponseMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.FavoriteDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.PortionDbRepository
+import pt.isel.ps.g06.httpserver.dataAccess.db.repo.ReportDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.RestaurantMealDbRepository
 import pt.isel.ps.g06.httpserver.model.Meal
 import pt.isel.ps.g06.httpserver.model.MealRestaurantInfo
@@ -24,6 +25,7 @@ class RestaurantMealService(
         private val dbRestaurantMealRepository: RestaurantMealDbRepository,
         private val dbPortionRepository: PortionDbRepository,
         private val dbFavoriteDbRepository: FavoriteDbRepository,
+        private val dbReportDbRepository: ReportDbRepository,
         private val dbRestaurantMealResponseMapper: DbRestaurantMealInfoResponseMapper
 ) {
 
@@ -129,6 +131,11 @@ class RestaurantMealService(
         dbPortionRepository.insert(submitterId, restaurantMeal.restaurantMealIdentifier, quantity)
     }
 
+    fun addReport(submitterId: Int, restaurantIdentifier: RestaurantIdentifier, mealId: Int, report: String) {
+        val restaurantInfo = getOrAddRestaurantMeal(restaurantIdentifier, mealId, submitterId)
+
+        dbReportDbRepository.insert(submitterId, restaurantInfo.restaurantMealIdentifier, report)
+    }
 
     fun updateRestaurantMealVerification(restaurantId: RestaurantIdentifier, mealId: Int, verified: Boolean) {
         val restaurantMealSubmissionId = getRestaurantMeal(restaurantId, mealId).submissionId

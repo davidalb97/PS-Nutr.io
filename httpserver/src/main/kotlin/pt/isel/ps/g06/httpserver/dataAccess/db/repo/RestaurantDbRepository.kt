@@ -81,7 +81,7 @@ class RestaurantDbRepository(jdbi: Jdbi) : SubmissionDbRepository(jdbi) {
             //Insert all RestaurantCuisine associations
             insertRestaurantCuisines(it, submissionId, cuisineNames)
 
-            //Insert contracts (VOTABLE,  API if there is an apiId, REPORTABLE if it doesn't)
+            //Insert contracts (REPORTABLE, API if there is an apiId, VOTABLE if it doesn't)
             it
                     .attach(SubmissionContractDao::class.java)
                     .insertAll(contracts.map { contract -> SubmissionContractParam(submissionId, contract.toString()) })

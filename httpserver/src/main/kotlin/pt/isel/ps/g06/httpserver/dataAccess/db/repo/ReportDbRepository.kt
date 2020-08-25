@@ -34,7 +34,7 @@ class ReportDbRepository(jdbi: Jdbi) : BaseDbRepo(jdbi) {
         return jdbi.inTransaction<DbReportDto, Exception>(isolationLevel) {
 
             // Check if the submission exists and it is reportable
-            if (!hasContract(submitterId, REPORTABLE, isolationLevel)) {
+            if (!hasContract(submissionId, REPORTABLE, isolationLevel)) {
                 throw NonReportableSubmissionException()
             }
 

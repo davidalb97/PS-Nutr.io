@@ -21,8 +21,13 @@ class ReportController(
     fun getAllReports(
             @RequestHeader(AUTH_HEADER) jwt: String,
             user: User
-    ): ResponseEntity<List<Report>> =
-            ResponseEntity.ok(reportService.getAllReports().toList())
+    ): ResponseEntity<List<Report>> {
+
+        // Check if the user is a moderator
+        userService.ensureModerator(user)
+
+        return ResponseEntity.ok(reportService.getAllReports().toList())
+    }
 
 
     @GetMapping(SUBMISSION_REPORTS)
@@ -30,19 +35,11 @@ class ReportController(
             @RequestHeader(AUTH_HEADER) jwt: String,
             @PathVariable(SUBMISSION_ID_VALUE) submissionId: Int,
             user: User
-    ): ResponseEntity<List<Report>> =
-            ResponseEntity.ok(reportService.getSubmissionReports(submissionId).toList())
-
-    // TODO add report for each controller
-    @PostMapping(REPORTS)
-    fun postReport(
-            @RequestBody reportInput: ReportInput,
-            user: User
-    ) {
+    ): ResponseEntity<List<Report>>  {
 
         // Check if the user is a moderator
         userService.ensureModerator(user)
 
-        reportService.insertReport(reportInput, user.identifier)
+        return ResponseEntity.ok(reportService.getSubmissionReports(submissionId).toList())
     }
 }

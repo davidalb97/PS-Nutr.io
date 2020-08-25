@@ -10,14 +10,12 @@ import pt.isel.ps.g06.httpserver.common.exception.authorization.NotAuthorizedExc
 import pt.isel.ps.g06.httpserver.common.exception.forbidden.NotSubmissionOwnerException
 import pt.isel.ps.g06.httpserver.common.exception.notFound.MealNotFoundException
 import pt.isel.ps.g06.httpserver.common.exception.notFound.RestaurantNotFoundException
-import pt.isel.ps.g06.httpserver.dataAccess.input.FavoriteInput
-import pt.isel.ps.g06.httpserver.dataAccess.input.PortionInput
-import pt.isel.ps.g06.httpserver.dataAccess.input.RestaurantMealInput
-import pt.isel.ps.g06.httpserver.dataAccess.input.VoteInput
+import pt.isel.ps.g06.httpserver.dataAccess.input.*
 import pt.isel.ps.g06.httpserver.dataAccess.output.meal.DetailedRestaurantMealOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.meal.RestaurantMealContainerOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.meal.toDetailedRestaurantMealOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.meal.toRestaurantMealContainerOutput
+import pt.isel.ps.g06.httpserver.model.RestaurantIdentifier
 import pt.isel.ps.g06.httpserver.model.Submitter
 import pt.isel.ps.g06.httpserver.model.User
 import pt.isel.ps.g06.httpserver.service.MealService
@@ -174,6 +172,23 @@ class RestaurantMealController(
 
         // Put/remove restaurant meal's verification
         restaurantMealService.updateRestaurantMealVerification(restaurantIdentifier, mealId, verified)
+
+        return ResponseEntity
+                .ok()
+                .build()
+    }
+
+    @PutMapping(RESTAURANT_MEAL_REPORT)
+    fun addReport(
+            @PathVariable(RESTAURANT_ID_VALUE) restaurantId: String,
+            @PathVariable(MEAL_ID_VALUE) mealId: Int,
+            @RequestBody reportInput: ReportInput,
+            user: User
+    ): ResponseEntity<Void> {
+
+        val restaurantIdentifier: RestaurantIdentifier = restaurantIdentifierBuilder.extractIdentifiers(restaurantId)
+
+        restaurantMealService.addReport(user.identifier, restaurantIdentifier, mealId, reportInput.description)
 
         return ResponseEntity
                 .ok()

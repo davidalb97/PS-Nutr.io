@@ -66,22 +66,13 @@ class BaseDbRepo constructor(internal val jdbi: Jdbi) {
             contract: SubmissionContractType,
             defaultIsolation: TransactionIsolationLevel = SERIALIZABLE
     ): Boolean {
-
-        var isContract = true
-
-        jdbi.inTransaction<Unit, InvalidInputException>(defaultIsolation) {
+        return jdbi.inTransaction<Boolean, InvalidInputException>(defaultIsolation) {
 
             // Check if submission is implementing the IS-A contract
-            val contractSubmission = it.attach(SubmissionContractDao::class.java)
+            return@inTransaction it.attach(SubmissionContractDao::class.java)
                     .getAllById(submissionId)
-                    .let { if (it.none { it.submission_contract == contract.toString() }) null else it }
-
-            if (contractSubmission == null) {
-                isContract = false
-            }
+                    .any { it.submission_contract == contract.toString() }
         }
-
-        return isContract
     }
 
 
