@@ -1,13 +1,12 @@
 #container{padding-top:100px; padding-bottom: 100px; margin-left: 3%; margin-right: 3%;}
 
 .body{background-color: aquamarine; }
+.overflow{overflow:scroll;}
 
 .mealCreation{padding-top:20px; padding-bottom: 20px;}
 
 .ingredient{ width:100%; height:480px;}
 
-.overflow{overflow:scroll;}
-
-.nav-tab{height: 200px;}
+.nav-tab{height: 480px; width: 100%;}
 
 .test{background-color: rgb(125, 125, 126);}
