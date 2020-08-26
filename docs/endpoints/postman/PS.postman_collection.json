@@ -1030,6 +1030,32 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "favoriteMeals",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{USER_JWT}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/meal/favorite",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"meal",
+								"favorite"
+							]
+						}
+					},
+					"response": []
 				}
 			],
 			"protocolProfileBehavior": {}
