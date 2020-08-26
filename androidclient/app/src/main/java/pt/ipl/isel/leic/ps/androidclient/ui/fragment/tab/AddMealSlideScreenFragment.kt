@@ -19,7 +19,7 @@ import pt.ipl.isel.leic.ps.androidclient.ui.provider.IngredientRecyclerVMProvide
 import pt.ipl.isel.leic.ps.androidclient.ui.util.*
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.meal.IngredientListViewModel
 
-class AddMealSlideScreenFragment : BaseSlideScreenFragment(), ISend {
+class AddMealSlideScreenFragment : BaseSlideScreenFragment(propagateArguments = false), ISend {
 
     private lateinit var ingredientsListFragment: IngredientsListFragment
     private lateinit var mealItemListFragment: MealItemListFragment

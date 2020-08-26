@@ -10,7 +10,7 @@ import com.google.android.material.tabs.TabLayout
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.ui.adapter.TabAdapter
 
-abstract class BaseSlideScreenFragment: Fragment() {
+abstract class BaseSlideScreenFragment(private val propagateArguments: Boolean): Fragment() {
 
     private lateinit var tabPagerAdapter: TabAdapter
     private lateinit var viewPager: ViewPager
@@ -33,8 +33,10 @@ abstract class BaseSlideScreenFragment: Fragment() {
         addFragments(tabs)
 
         //Sets the fragment mode
-        tabs.keys.forEach { fragment ->
-            fragment.arguments = arguments
+        if(propagateArguments) {
+            tabs.keys.forEach { fragment ->
+                fragment.arguments = arguments
+            }
         }
 
         // Add fragments and tab tiles to show in the tab layout

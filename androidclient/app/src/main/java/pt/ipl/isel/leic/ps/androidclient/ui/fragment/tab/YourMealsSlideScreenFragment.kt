@@ -6,7 +6,7 @@ import pt.ipl.isel.leic.ps.androidclient.ui.fragment.list.FavoriteMealListFragme
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.list.MealItemListFragment
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.list.RestaurantListFragment
 
-class YourMealsSlideScreenFragment : BaseSlideScreenFragment() {
+class YourMealsSlideScreenFragment : BaseSlideScreenFragment(propagateArguments = true) {
 
     override fun addFragments(fragments: HashMap<Fragment, String>) {
         fragments[CustomMealListFragment()] = "Custom Meals"
