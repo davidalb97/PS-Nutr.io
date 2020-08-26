@@ -53,7 +53,7 @@ fun getUserSession(): UserSession? = NutrioApp.sharedPreferences
     .getJwt()
     ?.let(::UserSession)
 
-fun requireUserSession() = getUserSession()!!
+fun requireUserSession() = requireNotNull(getUserSession())
 
 fun SharedPreferences.getJwt() = getString(JWT_KEY, null)
 
