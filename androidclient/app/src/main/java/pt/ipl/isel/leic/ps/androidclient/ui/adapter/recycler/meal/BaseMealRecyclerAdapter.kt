@@ -57,7 +57,7 @@ abstract class BaseMealRecyclerAdapter
 
     fun setupOnClick(viewHolder: BaseMealRecyclerViewHolder<T>) {
         if (onClickListener != null) {
-            viewHolder.onClickListener?.appendListener(onClickListener)
+            viewHolder.onClickListener = viewHolder.onClickListener?.appendListener(onClickListener)
         }
     }
 
