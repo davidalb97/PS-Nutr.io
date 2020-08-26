@@ -17,13 +17,15 @@ open class MealInfoListViewModel : BaseMealListViewModel<MealInfo> {
         actions: List<ItemAction>,
         source: Source?,
         restaurantId: String? = null,
-        cuisines: List<Cuisine> = emptyList()
+        cuisines: List<Cuisine> = emptyList(),
+        checkedItems: List<MealInfo> = emptyList()
     ) : super(
         navDestination = navDestination,
         actions = actions,
         source = source,
         restaurantId = restaurantId,
-        cuisines = cuisines
+        cuisines = cuisines,
+        checkedItems = checkedItems
     )
 
     constructor(parcel: Parcel) : super(parcel)
@@ -47,8 +49,6 @@ open class MealInfoListViewModel : BaseMealListViewModel<MealInfo> {
         }
     }
 
-    override fun getModelClass(): KClass<MealInfo> = MealInfo::class
-
     override fun describeContents(): Int {
         TODO("Not yet implemented")
     }
@@ -66,5 +66,7 @@ open class MealInfoListViewModel : BaseMealListViewModel<MealInfo> {
         }
 
     }
+
+    override fun getModelClass(): KClass<MealInfo> = MealInfo::class
 
 }

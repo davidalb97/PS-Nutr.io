@@ -5,7 +5,8 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.IContext
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.ISend
-import pt.ipl.isel.leic.ps.androidclient.ui.modular.viewHolder.IClickListener
+import pt.ipl.isel.leic.ps.androidclient.ui.modular.listener.click.IItemClickListener
+import pt.ipl.isel.leic.ps.androidclient.ui.modular.listener.click.IItemClickListenerOwner
 import pt.ipl.isel.leic.ps.androidclient.ui.util.Logger
 import pt.ipl.isel.leic.ps.androidclient.ui.util.Navigation
 
@@ -16,19 +17,19 @@ abstract class BaseRecyclerViewHolder<T : Any>(
     val navDestination: Navigation,
     val view: View,
     val ctx: Context
-) : RecyclerView.ViewHolder(view), ISend, IContext, IClickListener<T> {
+) : RecyclerView.ViewHolder(view), ISend, IContext, IItemClickListenerOwner<T> {
 
     val log: Logger by lazy { Logger(javaClass) }
     lateinit var item: T
 
-    override var onClickListener: ((v: View) -> Unit)? = {
+    override var onClickListener: IItemClickListener<T>? = IItemClickListener { model, idx ->
+        log.v("Clicked item at index $layoutPosition")
         sendToDestination(view, navDestination)
     }
 
     init {
         view.setOnClickListener {
-            log.v("Clicked item at index $layoutPosition")
-            onClickListener?.invoke(it)
+            onClickListener?.onClick(item, layoutPosition)
         }
     }
 

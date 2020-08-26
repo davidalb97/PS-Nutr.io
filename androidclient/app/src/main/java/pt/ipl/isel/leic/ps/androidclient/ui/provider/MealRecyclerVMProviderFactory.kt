@@ -22,11 +22,12 @@ class MealRecyclerVMProviderFactory(
             MealItemListViewModel::class.java -> {
                 MealItemListViewModel(
                     navDestination = arguments?.getNavigation()
-                        ?: Navigation.SEND_TO_RESTAURANT_DETAIL,
+                        ?: Navigation.SEND_TO_MEAL_DETAIL,
                     actions = requireNotNull(arguments?.getItemActions()),
                     source = requireNotNull(arguments?.getSource()),
                     restaurantId = arguments?.getRestaurantSubmissionId(),
-                    cuisines = arguments?.getCuisines() ?: emptyList()
+                    cuisines = arguments?.getCuisines() ?: emptyList(),
+                    checkedItems = arguments?.getMealItems() ?: emptyList()
                 )
             }
             else -> null

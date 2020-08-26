@@ -33,8 +33,8 @@ abstract class BasePickSpinnerAdapter<M : Parcelable, VM : BaseItemPickerViewMod
     }
 
     protected fun setOnClickHandler(viewHolder: BaseRecyclerViewHolder<M>) {
-        viewHolder.onClickListener = {
-            viewModel.pick(viewHolder.item)
+        viewHolder.onClickListener = viewHolder.onClickListener?.appendListener { model, idx ->
+            viewModel.pick(model)
         }
     }
 }

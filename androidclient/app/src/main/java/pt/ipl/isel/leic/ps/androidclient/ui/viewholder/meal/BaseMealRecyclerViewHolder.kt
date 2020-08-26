@@ -12,9 +12,10 @@ import pt.ipl.isel.leic.ps.androidclient.ui.modular.IVoteProgress
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.ICalculatorActionButton
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.IDeleteActionButton
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.IFavoriteActionButton
+import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.menu.MenuItemFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.menu.IPopupMenuButton
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.menu.IReportMenuItem
-import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.menu.MenuItemFactory
+import pt.ipl.isel.leic.ps.androidclient.ui.modular.listener.check.ICheckBox
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.viewHolder.IMealItemDetail
 import pt.ipl.isel.leic.ps.androidclient.ui.util.*
 import pt.ipl.isel.leic.ps.androidclient.ui.viewholder.BaseRecyclerViewHolder
@@ -35,9 +36,12 @@ abstract class BaseMealRecyclerViewHolder<T : MealItem>(
     IFavoriteActionButton,
     IPopupMenuButton,
     IReportMenuItem,
-    IMealItemDetail<T> {
+    IMealItemDetail<T>,
+    ICheckBox<T> {
 
     private val mealName: TextView = view.findViewById(R.id.mealName)
+    override val checkBoxId: Int = R.id.meal_card_checkbox;
+    override lateinit var checkBox: CheckBox
     override val customMealQuantityId: Int = R.id.custom_meal_quantity
     override lateinit var customMealQuantity: TextView
     override val customMealCarbsId: Int = R.id.custom_meal_carbs_amount
@@ -67,6 +71,8 @@ abstract class BaseMealRecyclerViewHolder<T : MealItem>(
     override fun bindTo(item: T) {
         super.bindTo(item)
         mealName.text = item.name
+
+        super.setupCheckBox(view, item)
         super.setupCustomMeal(view, ctx, item)
         super.setupCalculateAction(view)
         super.setupPressAction(view)

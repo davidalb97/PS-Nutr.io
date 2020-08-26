@@ -29,7 +29,8 @@ class IngredientPickSpinnerAdapter(
             init {
                 this@IngredientPickSpinnerAdapter.setOnClickHandler(this)
             }
-
+            override fun onCheck(isChecked: Boolean) {}
+            override fun isAlreadyChecked(): Boolean  = false
             override fun onDelete(onSuccess: () -> Unit, onError: (Throwable) -> Unit) {}
             override fun onFavorite(onSuccess: () -> Unit, onError: (Throwable) -> Unit) {}
             override fun onReport(
@@ -38,6 +39,8 @@ class IngredientPickSpinnerAdapter(
                 onError: (Throwable) -> Unit
             ) {
             }
+
+
         }
     }
 }

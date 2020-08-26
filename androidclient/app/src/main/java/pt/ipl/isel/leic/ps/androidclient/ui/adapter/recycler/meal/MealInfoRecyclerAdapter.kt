@@ -3,15 +3,21 @@ package pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.meal
 import android.content.Context
 import android.view.View
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealInfo
+import pt.ipl.isel.leic.ps.androidclient.ui.modular.listener.check.ICheckListener
+import pt.ipl.isel.leic.ps.androidclient.ui.modular.listener.click.IItemClickListener
 import pt.ipl.isel.leic.ps.androidclient.ui.viewholder.meal.MealInfoRecyclerViewHolder
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.meal.MealInfoListViewModel
 
 class MealInfoRecyclerAdapter(
     viewModel: MealInfoListViewModel,
-    ctx: Context
+    ctx: Context,
+    onCheckListener: ICheckListener<MealInfo>? = null,
+    onClickListener: IItemClickListener<MealInfo>? = null
 ) : BaseMealRecyclerAdapter<MealInfo, MealInfoListViewModel, MealInfoRecyclerViewHolder>(
     viewModel = viewModel,
-    ctx = ctx
+    ctx = ctx,
+    onCheckListener = onCheckListener,
+    onClickListener = onClickListener
 ) {
 
     override fun newViewHolder(layout: View): MealInfoRecyclerViewHolder {
@@ -21,6 +27,10 @@ class MealInfoRecyclerAdapter(
             view = layout,
             ctx = ctx
         ) {
+            init {
+                this@MealInfoRecyclerAdapter.setupOnClick(this)
+            }
+
             override fun onDelete(onSuccess: () -> Unit, onError: (Throwable) -> Unit) =
                 this@MealInfoRecyclerAdapter.onDelete(this.item, onSuccess)
 
@@ -37,6 +47,16 @@ class MealInfoRecyclerAdapter(
                 onSuccess = onSuccess,
                 onError = onError
             )
+
+            override fun onCheck(isChecked: Boolean) {
+                this@MealInfoRecyclerAdapter.onCheckListener?.onCheckChange(
+                    item = item,
+                    isChecked = isChecked
+                )
+            }
+
+            override fun isAlreadyChecked(): Boolean =
+                this@MealInfoRecyclerAdapter.isAlreadyChecked(item)
         }
     }
 }

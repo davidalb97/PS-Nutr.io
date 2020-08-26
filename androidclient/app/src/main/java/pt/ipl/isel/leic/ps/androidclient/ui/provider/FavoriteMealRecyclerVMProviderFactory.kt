@@ -26,7 +26,8 @@ class FavoriteMealRecyclerVMProviderFactory(
                     ItemAction.DELETE,
                     ItemAction.CALCULATE
                 ),
-                source = Source.FAVORITE
+                source = Source.FAVORITE,
+                checkedItems = arguments?.getMealItems() ?: emptyList()
             )
             else -> null
         }

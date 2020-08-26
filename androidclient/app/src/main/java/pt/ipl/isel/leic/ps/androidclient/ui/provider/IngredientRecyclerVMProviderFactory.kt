@@ -25,7 +25,7 @@ open class IngredientRecyclerVMProviderFactory(
             IngredientListViewModel(
                 navDestination = arguments?.getNavigation() ?: Navigation.IGNORE,
                 actions = arguments?.getItemActions() ?: emptyList(),
-                source = requireNotNull(arguments?.getSource())
+                checkedItems = arguments?.getMealItems() ?: emptyList()
             ).also { viewModel ->
                 val mealIngredients = arguments?.getMealIngredients()
                 if (mealIngredients != null) {

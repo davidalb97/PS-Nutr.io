@@ -12,6 +12,7 @@ import pt.ipl.isel.leic.ps.androidclient.ui.util.getUserSession
 import pt.ipl.isel.leic.ps.androidclient.ui.util.live.LiveDataHandler
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.RestaurantListViewModel
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.meal.MealItemListViewModel
+import kotlin.reflect.KClass
 
 open class MealInfoViewModel : MealItemListViewModel {
 
@@ -65,7 +66,7 @@ open class MealInfoViewModel : MealItemListViewModel {
         if (mealItem!!.source == Source.API || mealItem.source == Source.FAVORITE) {
             if (mealItem.restaurantSubmissionId != null) {
                 mealRepository.getApiRestaurantMealInfo(
-                    restaurantId = mealItem.restaurantSubmissionId,
+                    restaurantId = mealItem.restaurantSubmissionId!!,
                     mealId = requireNotNull(mealItem.submissionId),
                     userSession = getUserSession(),
                     success = mealInfoLiveDataHandler::set,
@@ -135,6 +136,8 @@ open class MealInfoViewModel : MealItemListViewModel {
         dest?.writeParcelable(mealItem, flags)
         mealInfoLiveDataHandler.writeToParcel(dest, flags)
     }
+
+    override fun getModelClass(): KClass<MealItem> = MealItem::class
 
     override fun describeContents(): Int {
         return 0
