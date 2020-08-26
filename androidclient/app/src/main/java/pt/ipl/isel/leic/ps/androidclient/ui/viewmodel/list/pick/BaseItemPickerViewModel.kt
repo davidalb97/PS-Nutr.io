@@ -8,8 +8,7 @@ import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.BaseListViewModel
 
 abstract class BaseItemPickerViewModel<M : Parcelable> : BaseListViewModel<M> {
 
-    val pickedLiveDataHandler =
-        LiveDataListHandler<M>()
+    val pickedLiveDataHandler = LiveDataListHandler<M>()
     val pickedItems: List<M> get() = pickedLiveDataHandler.mapped
 
     constructor() : super()
