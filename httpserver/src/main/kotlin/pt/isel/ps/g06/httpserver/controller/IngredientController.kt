@@ -35,7 +35,7 @@ class IngredientController(
     @GetMapping
     fun getIngredients(
             @RequestParam skip: Int?,
-            @RequestParam(defaultValue = COUNT.toString()) @Min(0) @Max(COUNT) count: Int?
+            @RequestParam @Min(0)  count: Int?
     ): ResponseEntity<IngredientsContainerOutput> {
 
         val ingredients = ingredientService.getIngredients(skip, count)

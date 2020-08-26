@@ -29,7 +29,7 @@ class CuisinesController(private val cuisinesService: CuisinesService) {
     @GetMapping
     fun getCuisinesHandler(
             @RequestParam skip: Int?,
-            @RequestParam(defaultValue = COUNT.toString()) @Min(0) @Max(COUNT) count: Int?
+            @RequestParam @Min(0) count: Int?
     ): ResponseEntity<CuisinesOutput> {
 
         val availableCuisines = cuisinesService.getAvailableCuisines(skip, count)

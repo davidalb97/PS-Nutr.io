@@ -40,7 +40,7 @@ class MealController(
             user: User?,
             @RequestParam cuisines: Collection<String>?,
             @RequestParam skip: Int?,
-            @RequestParam(defaultValue = COUNT.toString()) @Min(0) @Max(COUNT) count: Int?
+            @RequestParam @Min(0) count: Int?
     ): ResponseEntity<SimplifiedMealContainer> {
 
         var meals = mealService.getSuggestedMeals(
@@ -100,7 +100,7 @@ class MealController(
     fun getCustomMealsFromUser(
             user: User,
             @RequestParam skip: Int?,
-            @RequestParam(defaultValue = COUNT.toString()) @Min(0) @Max(COUNT) count: Int?
+            @RequestParam @Min(0) count: Int?
     ): ResponseEntity<SimplifiedMealContainer> {
 
         val userCustomMeals = mealService
