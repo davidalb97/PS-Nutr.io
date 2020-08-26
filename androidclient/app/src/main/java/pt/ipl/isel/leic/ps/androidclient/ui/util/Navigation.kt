@@ -7,6 +7,7 @@ enum class Navigation(@IdRes private val _navId: Int?) {
     IGNORE(null),
     SEND_TO_ADD_CUSTOM_MEAL(R.id.nav_add_custom_meal),
     SEND_TO_ADD_CUSTOM_RESTAURANT(null),//TODO add/edit restaurant
+    SEND_TO_ADD_MEALS(R.id.nav_add_meal_to_calculator),
     SEND_TO_CALCULATOR(R.id.nav_calculator),
     SEND_TO_HISTORY(R.id.nav_history),
     SEND_TO_HOME(R.id.nav_home),
