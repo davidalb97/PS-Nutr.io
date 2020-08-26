@@ -18,7 +18,7 @@ abstract class BaseListFragment<
         > : BaseFragment() {
 
     protected lateinit var recyclerViewModel: VM
-    private lateinit var recyclerHandler: RecyclerHandler<M, VM, A>
+    protected lateinit var recyclerHandler: RecyclerHandler<M, VM, A>
     abstract val recyclerAdapter: A
 
     @IdRes

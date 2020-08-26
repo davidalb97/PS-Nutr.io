@@ -8,6 +8,7 @@ import androidx.navigation.findNavController
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealItem
 import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.meal.MealItemRecyclerAdapter
+import pt.ipl.isel.leic.ps.androidclient.ui.modular.IUserSession
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.listener.check.ICheckListener
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.listener.check.ICheckListenerOwner
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.listener.click.IItemClickListener
@@ -19,7 +20,8 @@ import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.meal.MealItemListView
 class CustomMealListFragment
     : BaseListFragment<MealItem, MealItemListViewModel, MealItemRecyclerAdapter>(),
     ICheckListenerOwner<MealItem>,
-    IItemClickListenerOwner<MealItem> {
+    IItemClickListenerOwner<MealItem>,
+    IUserSession {
 
     override var onCheckListener: ICheckListener<MealItem>? = null
     override var onClickListener: IItemClickListener<MealItem>? = null
@@ -35,15 +37,19 @@ class CustomMealListFragment
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val addButton = view.findViewById<ImageButton>(R.id.add_meal)
+        ensureUserSession(requireContext(), failConsumer = {
+            super.recyclerHandler.onNoRecyclerItems()
+        }) {
+            val addButton = view.findViewById<ImageButton>(R.id.add_meal)
 
-        if (recyclerViewModel.navDestination != Navigation.SEND_TO_CALCULATOR) {
-            addButton.visibility = View.VISIBLE
-            addButton.setOnClickListener {
-                view.findNavController().navigate(R.id.nav_add_custom_meal)
+            if (recyclerViewModel.navDestination != Navigation.SEND_TO_CALCULATOR) {
+                addButton.visibility = View.VISIBLE
+                addButton.setOnClickListener {
+                    view.findNavController().navigate(R.id.nav_add_custom_meal)
+                }
             }
+            recyclerViewModel.update()
         }
-        recyclerViewModel.update()
     }
 
     override fun getVMProviderFactory(
