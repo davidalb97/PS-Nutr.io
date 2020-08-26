@@ -138,7 +138,7 @@ class RestaurantMealController(
             user: User
     ): ResponseEntity<Void> {
         val restaurantIdentifier = restaurantIdentifierBuilder.extractIdentifiers(restaurantId)
-        val restaurantMeal = restaurantMealService.getOrAddRestaurantMeal(restaurantIdentifier, mealId, user.identifier)
+        val restaurantMeal = restaurantMealService.getOrAddRestaurantMeal(restaurantIdentifier, mealId)
 
 
         submissionService.alterRestaurantMealVote(
@@ -161,8 +161,7 @@ class RestaurantMealController(
     ): ResponseEntity<Void> {
         // Get restaurant ID
         val restaurantIdentifier = restaurantIdentifierBuilder.extractIdentifiers(restaurantId)
-        // Get restaurant's meal ID
-        val restaurantMeal = restaurantMealService.getRestaurantMeal(restaurantIdentifier, mealId)
+
         // Check if the submitter is the restaurant owner
         val isOwner = restaurantService.getRestaurant(restaurantIdentifier)?.ownerId == user.identifier
 
