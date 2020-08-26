@@ -21,8 +21,8 @@ const val ADDRESS_PORT = "$ADDRESS:$PORT"
 
 const val MEAL_PATH = "meal"
 const val RESTAURANT_PATH = "restaurant"
-const val CUISINES_PATH = "cuisines"
-const val INGREDIENTS_PATH = "ingredients"
+const val CUISINES_PATH = "cuisine"
+const val INGREDIENTS_PATH = "ingredient"
 const val INSULIN_PROFILE_PATH = "profile"
 
 // Returns the authorization header
