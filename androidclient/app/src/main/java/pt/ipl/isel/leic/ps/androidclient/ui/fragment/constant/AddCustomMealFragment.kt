@@ -118,7 +118,7 @@ class AddCustomMealFragment : BaseFragment() {
         mealsImgButton.setOnClickListener {
             val bundle = Bundle()
             bundle.putNavigation(Navigation.SEND_TO_ADD_CUSTOM_MEAL)
-            bundle.putMealIngredients(ingredientsViewModel.pickedItems)
+            bundle.putMealItems(ingredientsViewModel.pickedItems)
             view.findNavController().navigate(Navigation.SEND_TO_ADD_MEALS.navId, bundle)
         }
         if (!ingredientsViewModel.tryRestore()) {
