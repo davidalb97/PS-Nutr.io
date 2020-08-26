@@ -15,12 +15,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.flexbox.FlexboxLayoutManager
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.sharedPreferences
 import pt.ipl.isel.leic.ps.androidclient.R
-import pt.ipl.isel.leic.ps.androidclient.data.db.entity.DbMealInfoEntity
-import pt.ipl.isel.leic.ps.androidclient.data.model.MealInfo
-import pt.ipl.isel.leic.ps.androidclient.data.model.MealIngredient
-import pt.ipl.isel.leic.ps.androidclient.data.model.Source
+import pt.ipl.isel.leic.ps.androidclient.data.model.CustomMeal
 import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.pick.CuisinePickRecyclerAdapter
-import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.pick.MealInfoPickRecyclerAdapter
+import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.pick.IngredientPickRecyclerAdapter
 import pt.ipl.isel.leic.ps.androidclient.ui.adapter.spinner.pick.CuisinePickSpinnerAdapter
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.BaseFragment
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.AddCustomMealRecyclerVMProviderFactory
@@ -30,8 +27,6 @@ import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.AddCustomMealViewModel
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.pick.BaseItemPickerViewModel
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.pick.CuisinePickViewModel
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.pick.IngredientPickViewModel
-import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.pick.MealInfoPickViewModel
-import pt.ipl.isel.leic.ps.androidclient.util.TimestampWithTimeZone
 
 
 class AddCustomMealFragment : BaseFragment() {
@@ -41,10 +36,10 @@ class AddCustomMealFragment : BaseFragment() {
 
     //Meals
     private val mealsRecyclerViewId: Int = R.id.custom_meal_meals_list
-    private lateinit var mealsViewModel: MealInfoPickViewModel
+    private lateinit var ingredientsViewModel: IngredientPickViewModel
     private lateinit var mealsImgButton: ImageButton
     private val mealsRecyclerAdapter by lazy {
-        MealInfoPickRecyclerAdapter(mealsViewModel, requireContext())
+        IngredientPickRecyclerAdapter(ingredientsViewModel, requireContext())
     }
 
     //Cuisines
@@ -61,7 +56,7 @@ class AddCustomMealFragment : BaseFragment() {
     private lateinit var customMealName: EditText
     private lateinit var customMealAmount: EditText
     private lateinit var customMealUnitSpinner: Spinner
-    private lateinit var customMealCarbsAmount: EditText
+    private lateinit var mealCarbs: TextView
     private lateinit var customImageUrl: EditText
     private lateinit var createButton: Button
 
@@ -71,8 +66,7 @@ class AddCustomMealFragment : BaseFragment() {
         savedInstanceState: Bundle?
     ): View? {
         viewModel = buildViewModel(savedInstanceState, AddCustomMealViewModel::class.java)
-        viewModel.addedIngredient = arguments?.getMealInfo()
-        mealsViewModel = buildViewModel(savedInstanceState, MealInfoPickViewModel::class.java)
+        viewModel.addedIngredients = arguments?.getMealIngredients()
         ingredientsViewModel =
             buildViewModel(savedInstanceState, IngredientPickViewModel::class.java)
         cuisinesViewModel = buildViewModel(savedInstanceState, CuisinePickViewModel::class.java)
@@ -95,46 +89,51 @@ class AddCustomMealFragment : BaseFragment() {
         customMealAmount = view.findViewById(R.id.meal_portion_quantity)
         customMealAmount.setText(viewModel.editMeal?.amount?.toString())
 
-        customMealCarbsAmount = view.findViewById(R.id.carbs_amount)
-        customMealCarbsAmount.setText(viewModel.editMeal?.carbs?.toString())
+        mealCarbs = view.findViewById(R.id.meal_carbs)
+        val restoredCarbs = viewModel.editMeal?.carbs?.toString() ?: 0
+
+        mealCarbs.text = String.format(
+            getString(R.string.custom_meal_total_carbohydrates_amount),
+            restoredCarbs
+        )
 
         customImageUrl = view.findViewById(R.id.custom_meal_image_url)
         createButton = view.findViewById(R.id.create_custom_meal_button)
 
         setupUnitSpinner(view)
-        setupMeals(view)
+        setupIngredients(view)
         setupCuisines(view)
         setupSubmit()
     }
 
-    private fun setupMeals(view: View) {
+    private fun setupIngredients(view: View) {
 
         initRecyclerView(
             view = view,
             recyclerViewId = mealsRecyclerViewId,
             adapter = mealsRecyclerAdapter,
-            pickerViewModel = mealsViewModel
+            pickerViewModel = ingredientsViewModel
         )
         mealsImgButton = view.findViewById(R.id.add_custom_meal_add_meal_ingredient)
         mealsImgButton.setOnClickListener {
             val bundle = Bundle()
             bundle.putNavigation(Navigation.SEND_TO_ADD_CUSTOM_MEAL)
-            bundle.putItemActions()
-            bundle.putSource(Source.CUSTOM)
-            view.findNavController().navigate(R.id.nav_tab_meals, bundle)
+            bundle.putMealIngredients(ingredientsViewModel.pickedItems)
+            view.findNavController().navigate(Navigation.SEND_TO_ADD_MEALS.navId, bundle)
         }
-        when {
-            viewModel.editMeal?.mealComponents != null -> {
-                val meals = viewModel.editMeal!!.mealComponents
-                mealsViewModel.tryRestore()
-                mealsViewModel.pickedLiveDataHandler.add(meals)
+        if (!ingredientsViewModel.tryRestore()) {
+            val editMeal = viewModel.editMeal
+            when {
+                viewModel.addedIngredients != null -> {
+                    ingredientsViewModel.pickedLiveDataHandler.set(viewModel.addedIngredients!!)
+                    viewModel.addedIngredients = null
+                }
+                editMeal != null -> {
+                    val ingredients = editMeal.mealComponents.plus(editMeal.ingredientComponents)
+                    ingredientsViewModel.pickedLiveDataHandler.set(ingredients)
+                }
+                else -> ingredientsViewModel.update()
             }
-            viewModel.addedIngredient != null -> {
-                mealsViewModel.tryRestore()
-                mealsViewModel.pick(viewModel.addedIngredient!!)
-                viewModel.addedIngredient = null
-            }
-            else -> mealsViewModel.update()
         }
     }
 
@@ -172,16 +171,21 @@ class AddCustomMealFragment : BaseFragment() {
 
             val noneEmpty = listOf(
                 cuisinesViewModel,
-                mealsViewModel
+                ingredientsViewModel
             ).none { it.pickedItems.isEmpty() }
 
             if (noneFieldBlank && noneEmpty) {
-
-                viewModel.addCustomMeal(
-                    getMealInfo()
-                ).setOnPostExecute {
-                    parentFragmentManager.popBackStack()
-                }.execute()
+                val customMeal = getCurrentCustomMeal()
+                val editMeal = viewModel.editMeal
+                if (editMeal == null) {
+                    viewModel.addCustomMeal(customMeal = customMeal, error = log::e)
+                } else {
+                    viewModel.editCustomMeal(
+                        submission = requireNotNull(editMeal.submissionId),
+                        customMeal = customMeal,
+                        error = log::e
+                    )
+                }
             }
         }
     }
@@ -213,45 +217,19 @@ class AddCustomMealFragment : BaseFragment() {
         }
     }
 
-    private fun getMealInfo(): MealInfo {
-
-        return MealInfo(
-            dbId = viewModel.dbId,
-            dbRestaurantId = DbMealInfoEntity.DEFAULT_DB_ID,
-            restaurantSubmissionId = null,
-            //Custom meal does not have submissionId
-            submissionId = MealInfo.DEFAULT_SUBMISSION_ID,
+    private fun getCurrentCustomMeal(): CustomMeal {
+        return CustomMeal(
+            dbId = viewModel.editMeal?.dbId,
+            submissionId = viewModel.editMeal?.submissionId,
             name = customMealName.text.toString(),
-            carbs = customMealCarbsAmount.text.toString().toInt(),
+            carbs = ingredientsViewModel.items.sumBy { it.carbs },
+            //TODO fix amout to be above sum of ingredients ammount
             amount = customMealAmount.text.toString().toInt(),
             unit = customMealUnitSpinner.selectedItem.toString(),
-            votes = null,
-            isFavorite = false,
-            isVotable = false,
             imageUri = customImageUrl.text?.toString()?.let { Uri.parse(it) },
-            creationDate = TimestampWithTimeZone.now(),
-            ingredientComponents = mealsViewModel.pickedItems.filter { it.isMeal },
-            mealComponents = mealsViewModel.pickedItems.map { toMealIngredient(it, true) },
-            cuisines = cuisinesViewModel.pickedItems,
-            //Custom meal does not have portions
-            portions = emptyList(),
-            isSuggested = false,
-            source = Source.CUSTOM
-        )
-    }
-
-    private fun toMealIngredient(mealComponent: MealInfo, isMeal: Boolean): MealIngredient {
-        return MealIngredient(
-            dbMealId = viewModel.dbId,
-            isMeal = isMeal,
-            dbId = mealComponent.dbId,
-            submissionId = mealComponent.submissionId,
-            name = mealComponent.name,
-            carbs = mealComponent.carbs,
-            amount = mealComponent.amount,
-            unit = mealComponent.unit,
-            imageUri = mealComponent.imageUri,
-            source = mealComponent.source
+            ingredientComponents = ingredientsViewModel.items.filter { !it.isMeal },
+            mealComponents = ingredientsViewModel.items.filter { it.isMeal },
+            cuisines = cuisinesViewModel.pickedItems
         )
     }
 
@@ -263,7 +241,7 @@ class AddCustomMealFragment : BaseFragment() {
         val spinner = view.findViewById<Spinner>(R.id.custom_meal_units_spinner)
         val spinnerAdapter: ArrayAdapter<String> = spinner!!.adapter as ArrayAdapter<String>
 
-        val defaultUnitKey = viewModel.unit ?: sharedPreferences.getWeightUnitOrDefault()
+        val defaultUnitKey = viewModel.editMeal?.unit ?: sharedPreferences.getWeightUnitOrDefault()
 
         val spinnerPosition = spinnerAdapter.getPosition(defaultUnitKey)
         spinner.setSelection(spinnerPosition)

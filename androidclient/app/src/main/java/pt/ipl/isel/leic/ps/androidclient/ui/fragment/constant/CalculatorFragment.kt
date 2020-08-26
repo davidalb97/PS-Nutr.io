@@ -286,7 +286,7 @@ class CalculatorFragment : BaseFragment() {
         val builder = AlertDialog.Builder(requireContext())
         builder.setTitle(getString(R.string.results_title_dialog))
         builder.setMessage("You need to inject $result insulin doses")
-        builder.setPositiveButton(view?.context?.getString(R.string.Dialog_Ok)) { _, _ -> }
+        builder.setPositiveButton(view?.context?.getString(R.string.ok)) { _, _ -> }
         builder.create().show()
     }
 
