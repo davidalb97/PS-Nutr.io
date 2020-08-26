@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import android.widget.*
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.*
-import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.meal.MealInfoRecyclerAdapter
 import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.meal.MealItemRecyclerAdapter
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.list.BaseListFragment
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.IImage
