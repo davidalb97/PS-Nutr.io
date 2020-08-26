@@ -98,11 +98,8 @@ class InsulinProfileDbRepository(
             return@inTransaction handle
                     .attach(insulinProfileDaoClass)
                     .deleteProfile(submitterId, encProfileName)
-                    .let { encInsulinProfileDto ->
-                        dbInsulinProfileDtoMapper.toDbUserInsulinProfileDto(
-                                encInsulinProfileDto ?: throw MissingInsulinProfileException(profileName)
-                        )
-                    }
+                    ?.let(dbInsulinProfileDtoMapper::toDbUserInsulinProfileDto)
+                    ?: throw MissingInsulinProfileException(profileName)
         }
     }
 }
