@@ -36,8 +36,7 @@ class UserController(private val userService: UserService, private val authentic
 
     @PostMapping(LOGIN)
     fun login(@Valid @RequestBody userLoginInput: UserLoginInput): ResponseEntity<UserLoginOutput> {
-
-        val user = userService.getUserFromEmail(userLoginInput.email)
+        val user = userService.requireUserFromEmail(userLoginInput.email)
 
         if (user.isUserBanned) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build()
@@ -49,14 +48,13 @@ class UserController(private val userService: UserService, private val authentic
     }
 
     @GetMapping(USER)
-    fun getUserInfo(user: User): ResponseEntity<UserInfoOutput> {
-        val email = user.userEmail
-        val submitter = userService.getSubmitterFromEmail(email)!!
-        val username = submitter.name
-        val image = submitter.image
+    fun getUserAdditionalInfo(user: User): ResponseEntity<UserInfoOutput> =
+            ResponseEntity.ok(
+                    userService
+                            .getUserSubmitterInfo(user)
+                            .let { submitter -> UserInfoOutput(user.userEmail, submitter.name, submitter.image) }
+            )
 
-        return ResponseEntity.ok(UserInfoOutput(email, username, image))
-    }
 
     @PutMapping(BAN)
     fun putBanUser(

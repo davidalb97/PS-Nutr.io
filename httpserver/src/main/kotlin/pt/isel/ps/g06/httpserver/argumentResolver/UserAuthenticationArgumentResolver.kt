@@ -40,7 +40,7 @@ class UserAuthenticationArgumentResolver(
                 .getHeader(AUTHORIZATION)
                 ?.also { jwtValidator.authenticate(httpServletRequest) }
                 ?.let(authenticationService::getEmailFromJwt)
-                ?.let(userService::getUserFromEmail)
+                ?.let(userService::requireUserFromEmail)
 
         if (!parameter.isOptional && user == null) {
             throw NotAuthenticatedException()

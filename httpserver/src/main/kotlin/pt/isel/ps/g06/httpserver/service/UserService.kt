@@ -43,24 +43,16 @@ class UserService(
         )
     }
 
-    fun getEmailFromSubmitter(submitterId: Int): pt.isel.ps.g06.httpserver.model.User =
-            userDbRepository
-                    .getBySubmitter(submitterId)
-                    .let { dto -> userMapper.mapToModel(dto ?: throw UserNotFoundException()) }
+    fun requireUserFromEmail(email: String): pt.isel.ps.g06.httpserver.model.User =
+            userDbRepository.getByEmail(email)
+                    ?.let(userMapper::mapToModel)
+                    ?: throw UserNotFoundException()
 
-    fun getUserFromEmail(email: String): pt.isel.ps.g06.httpserver.model.User =
-            userDbRepository
-                    .getByEmail(email)
-                    .let { dto -> userMapper.mapToModel(dto ?: throw UserNotFoundException()) }
+    fun getUserSubmitterInfo(user: pt.isel.ps.g06.httpserver.model.User): Submitter =
+            submitterDbRepository
+                    .getSubmitterBySubmitterId(user.identifier)
+                    .let(submitterMapper::mapTo)
 
-    fun getSubmitterFromEmail(email: String): Submitter? {
-
-        val user = getUserFromEmail(email)
-
-        return submitterDbRepository
-                .getSubmitterBySubmitterId(user.identifier)
-                .let(submitterMapper::mapTo)
-    }
 
     fun updateUserBan(banInput: BanInput) =
             userDbRepository.updateUserBan(banInput.submitterId, banInput.isBanned)

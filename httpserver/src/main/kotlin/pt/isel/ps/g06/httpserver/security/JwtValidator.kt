@@ -31,7 +31,7 @@ class JwtValidator(
 
         if (jwt != null && userEmail != null) {
 
-            val user = userService.getUserFromEmail(userEmail)
+            val user = userService.requireUserFromEmail(userEmail)
 
             if (user.isUserBanned) {
                 throw NotAuthorizedException()
