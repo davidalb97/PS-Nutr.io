@@ -4,16 +4,16 @@ import android.content.Context
 import android.view.View
 import android.widget.TextView
 import pt.ipl.isel.leic.ps.androidclient.R
-import pt.ipl.isel.leic.ps.androidclient.data.model.MealInfo
+import pt.ipl.isel.leic.ps.androidclient.data.model.MealItem
 
-interface IMealItemDetail<T : MealInfo> {
+interface IMealItemDetail<T : MealItem> {
 
     val customMealQuantityId: Int
     var customMealQuantity: TextView
     val customMealCarbsId: Int
     var customMealCarbs: TextView
 
-    fun setupCustomMeal(view: View, context: Context, mealInfo: MealInfo) {
+    fun setupCustomMeal(view: View, context: Context, mealInfo: MealItem) {
 
         customMealQuantity = view.findViewById(customMealQuantityId)
         customMealCarbs = view.findViewById(customMealCarbsId)
