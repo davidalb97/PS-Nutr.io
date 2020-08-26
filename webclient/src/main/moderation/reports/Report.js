@@ -1,8 +1,6 @@
 import React, { useReducer } from 'react'
-import { Redirect } from 'react-router'
-import useFetch, { FetchStates } from '../../common/useFetch'
+import { Link } from 'react-router-dom'
 import RequestingEntity from '../../common/RequestingEntity'
-
 
 import ListGroup from 'react-bootstrap/ListGroup'
 import Button from 'react-bootstrap/Button'
@@ -12,11 +10,39 @@ import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import Loading from '../../bootstrap-common/Loading'
 
-export default function Report({ report }) {
-    const [request, setRequest] = useReducer((req, url) => { return { url: url, method: "DELETE" } }, {})
-    const [redirect, setRedirect] = useReducer(_ => true, false)
-    const isdetailed = report.reports
+const report = {
+    submissionIdentifier: 1,
+    reportIdentifier: 2,
+    submitterIdentifier: 1,
+    name: "Some report",
+    reports: ["Bad language", "Wrong place"]
+}
 
+const ACTIONS = {
+    BAN: submitter => {
+        return {
+            url: `http://localhost:9000/api/user`,
+            method: `PUT`,
+            body: { submitterId: submitter.submitterIdentifier, isBanned: true }
+        }
+    },
+    DISMISS: submitter => {
+        return {
+            url: `http://localhost:9000/api/report/${submitter.reportIdentifier}`,
+            method: `DELETE`
+        }
+    },
+    REMOVE: submitter => {
+        return {
+            url: `http://localhost:9000/api/submission/${submitter.submissionIdentifier}`,
+            method: `DELETE`
+        }
+    }
+}
+
+export default function Report({ }) {
+    const [request, setRequest] = useReducer((req, action) => action(report), {})
+    const hasInfoButton = report.reports
 
     return < RequestingEntity
         request={request}
@@ -37,54 +63,44 @@ export default function Report({ report }) {
 
     function DisplayReport() {
         return <>
-            {redirect ? <Redirect to={`/moderation/reports/${1}`} /> : undefined}
             <Row>
                 {/* Submission detail */}
                 <Col >
-                    <strong>Name:</strong> Some submission <p />
-                    <strong>Reports:</strong> 10
-            </Col>
-
-                {/* Loading spinner */}
-                {fetchState !== FetchStates.loading ? undefined : <Col> <Loading /> </Col>}
+                    <strong>Name:</strong> {report.name}<p />
+                    {!report.reportCount ? undefined : <p><strong>Reports:</strong> 10</p>}
+                </Col>
 
                 <Col xs sm md="auto">
                     <ButtonGroup aria-label="Action buttons">
-                        {!isDetailed ? undefined :
-                            <Button
-                                variant="outline-info"
-                                onClick={setRedirect}
-                                disabled={fetchState === FetchStates.loading || fetchState === FetchStates.error}
-                            >
-                                Info
-                    </Button>}
+                        {hasInfoButton ? undefined :
+                            <Link to={`/moderation/reports/${report.submissionIdentifier}`}>
+                                <Button variant="outline-info">  Info </Button>
+                            </Link>
+                        }
 
                         <Button
                             variant="outline-danger"
-                            onClick={() => setRequest("http://localhost:9000/api")}
-                            disabled={fetchState === FetchStates.loading || fetchState === FetchStates.error}
+                            onClick={() => setRequest(ACTIONS.REMOVE)}
                         >
                             Remove
-                    </Button>
+                        </Button>
 
                         <Button
                             variant="outline-danger"
-                            onClick={() => setRequest("http://localhost:9000/api")}
-                            disabled={fetchState === FetchStates.loading || fetchState === FetchStates.error}
+                            onClick={() => setRequest(ACTIONS.BAN)}
                         >
                             Ban
-                    </Button>
+                        </Button>
 
                         <Button
                             variant="outline-danger"
-                            disabled={fetchState === FetchStates.loading || fetchState === FetchStates.error}
+                            onClick={() => setRequest(ACTIONS.DISMISS)}
                         >
                             Dismiss
-                    </Button>
+                        </Button>
                     </ButtonGroup>
                 </Col>
             </Row>
         </>
     }
-
 }

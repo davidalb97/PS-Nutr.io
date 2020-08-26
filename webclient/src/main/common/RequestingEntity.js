@@ -12,17 +12,24 @@ import UserContext from '../authentication/UserContext'
  *  - method (optional, defaults to 'GET')
  *  - body (optional)
  */
-export default function RequestingEntity({ request, onLoad, onSuccess, onError, onInit, onDefault = () => <> </> }) {
+export default function RequestingEntity({
+    request,
+    onLoad: Load,
+    onSuccess: Success,
+    onError: Error,
+    onInit: Init,
+    onDefault: Default = () => <> </>
+}) {
     const user = useContext(UserContext)
     request.authToken = request.authToken || user.authToken
 
     const [fetchState, response, json, error] = useFetch(request)
 
     switch (fetchState) {
-        case FetchStates.init: return onInit ? onInit() : onDefault()
-        case FetchStates.fetching: return onLoad ? onLoad() : onDefault()
-        case FetchStates.error: return onError ? onError({ error: error, json: json }) : onDefault()
-        case FetchStates.done: return onSuccess ? onSuccess({ response: response, json: json }) : onDefault()
-        default: return onDefault()
+        case FetchStates.init: return Init ? <Init /> : <Default />
+        case FetchStates.fetching: return Load ? <Load /> : <Default />
+        case FetchStates.error: return Error ? <Error error={error} json={json} /> : <Default />
+        case FetchStates.done: return Success ? <Success response={response} json={json} /> : <Default />
+        default: return <Default />
     }
 }

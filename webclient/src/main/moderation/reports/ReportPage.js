@@ -1,20 +1,18 @@
 import React, { useState } from 'react'
-import useFetch, { FetchState } from '../../common/useFetch'
 import RequestingEntity from '../../common/RequestingEntity'
 
 
 import Card from 'react-bootstrap/Card'
 import Tabs from 'react-bootstrap/Tabs'
 import Tab from 'react-bootstrap/Tab'
+import Alert from 'react-bootstrap/Alert'
 import ListGroup from 'react-bootstrap/ListGroup'
 
 import Loading from '../../bootstrap-common/Loading'
 import Report from './Report'
 
 export default function ReportPage() {
-    const [request, setRequest] = useState({})
     const [tabKey, setTabKey] = useState('restaurants')
-
 
     return <Card>
         <Card.Header as="h1">Reports</Card.Header>
@@ -29,17 +27,13 @@ export default function ReportPage() {
             >
                 <Tab className="tab-item-wrapper" eventKey="restaurants" title="Restaurants">
                     <Card.Body>
-                        <ListGroup variant="flush">
-                            <Reports url="http://localhost:9000/api/report?type=RESTAURANT" />
-                        </ListGroup>
+                        <Reports url="http://localhost:9000/api/report?type=RESTAURANT" />
                     </Card.Body>
                 </Tab>
 
                 <Tab eventKey="meals" title="Meals">
                     <Card.Body>
-                        <ListGroup variant="flush">
-                            <Reports url="http://localhost:9000/api/report?type=RESTAURANT_MEAL" />
-                        </ListGroup>
+                        <Reports url="http://localhost:9000/api/report?type=RESTAURANT_MEAL" />
                     </Card.Body>
                 </Tab>
             </Tabs>
@@ -47,22 +41,27 @@ export default function ReportPage() {
     </Card >
 }
 
+function Error() {
+    return <Alert variant="danger">Unable to obtain reports! Please try again later.</Alert>
+}
 
 function Reports({ url }) {
     return <RequestingEntity
         request={{ url: url }}
         onDefault={Loading}
-        onError={}
-        onSuccess={displayReports}
+        onSuccess={displayResult}
+        onError={Error}
     />
 
-    function displayReports({ json }) {
-        return <ListGroup variant="flush">
-            {json.reports.map((report, idx) => <>
-                <ListGroup.Item>
-                    <Report key={idx} report={report} />
-                </ListGroup.Item>
-            </>)}
-        </ListGroup>
+    function displayResult({ json }) {
+        if (json || json.lenght <= 0) {
+            return <>There are currently no reports.</>
+        }
+
+        const items = json.map((report, idx) => {
+            return <ListGroup.Item> <Report key={idx} report={report} /> </ListGroup.Item>
+        })
+
+        return <ListGroup variant="flush" >{items}</ListGroup >
     }
 }
