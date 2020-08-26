@@ -26,9 +26,9 @@ class MealService(
                 ?.let(dbMealResponseMapper::mapTo)
     }
 
-    fun getSuggestedMeals(count: Int?, skip: Int?, cuisines: Collection<String>?): Sequence<Meal> {
+    fun getSuggestedMeals(skip: Int?, count: Int?, cuisines: Collection<String>?): Sequence<Meal> {
         return dbMealRepository
-                .getAllSuggestedMeals(count, skip, cuisines)
+                .getAllSuggestedMeals(skip, count, cuisines)
                 .map { dbMealResponseMapper.mapTo(it) }
     }
 

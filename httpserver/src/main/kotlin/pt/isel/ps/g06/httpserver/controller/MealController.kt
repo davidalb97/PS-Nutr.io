@@ -19,7 +19,6 @@ import pt.isel.ps.g06.httpserver.service.UserService
 import javax.validation.Valid
 import javax.validation.constraints.Max
 import javax.validation.constraints.Min
-
 @Suppress("MVCPathVariableInspection")
 @RestController
 @RequestMapping(produces = [MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_PROBLEM_JSON_VALUE])
@@ -39,14 +38,14 @@ class MealController(
     @GetMapping(MEALS_SUGGESTED)
     fun getMeals(
             user: User?,
-            @RequestParam count: Int?,
+            @RequestParam cuisines: Collection<String>?,
             @RequestParam skip: Int?,
-            @RequestParam cuisines: Collection<String>?
+            @RequestParam(defaultValue = COUNT.toString()) @Min(0) @Max(COUNT) count: Int?
     ): ResponseEntity<SimplifiedMealContainer> {
 
         var meals = mealService.getSuggestedMeals(
-                count = count,
                 skip = skip,
+                count = count,
                 cuisines = cuisines
         )
 
@@ -192,3 +191,4 @@ class MealController(
                 .build()
     }
 }
+

@@ -139,8 +139,8 @@ interface MealDao {
             " LIMIT :count OFFSET :skip"
     )
     fun getAllSuggestedMeals(
-            @Bind count: Int?,
             @Bind skip: Int?,
+            @Bind count: Int?,
             @Bind cuisines: Collection<String>?
     ): Collection<DbMealDto>
 

@@ -114,12 +114,12 @@ class MealDbRepository(jdbi: Jdbi) : SubmissionDbRepository(jdbi) {
         return Sequence { collection.value.iterator() }
     }
 
-    fun getAllSuggestedMeals(count: Int?, skip: Int?, cuisines: Collection<String>?): Sequence<DbMealDto> {
+    fun getAllSuggestedMeals(skip: Int?, count: Int?, cuisines: Collection<String>?): Sequence<DbMealDto> {
         val collection = lazy {
             jdbi.inTransaction<Collection<DbMealDto>, Exception>(isolationLevel) { handle ->
                 return@inTransaction handle
                         .attach(MealDao::class.java)
-                        .getAllSuggestedMeals(count, skip, cuisines)
+                        .getAllSuggestedMeals(skip, count, cuisines)
             }
         }
         return Sequence { collection.value.iterator() }
