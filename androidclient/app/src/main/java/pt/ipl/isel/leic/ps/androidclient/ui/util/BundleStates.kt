@@ -56,10 +56,10 @@ fun Bundle.getSource() = getInt(BUNDLE_MEAL_SOURCE, -1)
 
 fun Bundle.putSource(source: Source) = putInt(BUNDLE_MEAL_SOURCE, source.ordinal)
 
-fun Bundle.getMealSubmissionId() = getInt(BUNDLE_SUBMISSION_ID, -1)
-    .let { if (it == -1) null else it }
+fun Bundle.getMealSubmissionId() = getSerializable(BUNDLE_SUBMISSION_ID) as Int?
 
-fun Bundle.putMealSubmissionId(submissionId: Int) = putInt(BUNDLE_SUBMISSION_ID, submissionId)
+fun Bundle.putMealSubmissionId(submissionId: Int?) =
+    putSerializable(BUNDLE_SUBMISSION_ID, submissionId)
 
 fun Bundle.getRestaurantSubmissionId() = getString(BUNDLE_RESTAURANT_SUBMISSION_ID)
 
@@ -86,13 +86,9 @@ fun Bundle.getCuisines() = getParcelableArrayList<Cuisine>(BUNDLE_CUISINES_LIST)
 fun Bundle.putCuisines(cuisines: ArrayList<Cuisine>) =
     putParcelableArrayList(BUNDLE_CUISINES_LIST, cuisines)
 
-fun Bundle.getDbId() = getLong(BUNDLE_MEAL_DB_ID, -1)
-    .let {
-        val check: Long = -1
-        if (it == check) null else it
-    }
+fun Bundle.getDbId() = getSerializable(BUNDLE_MEAL_DB_ID) as Long?
 
-fun Bundle.putDbId(bdId: Long) = putLong(BUNDLE_MEAL_DB_ID, bdId)
+fun Bundle.putDbId(bdId: Long?) = putSerializable(BUNDLE_MEAL_DB_ID, bdId)
 
 fun Bundle.getItemActions() = this.getIntegerArrayList(BUNDLE_ACTIONS_LIST)
     ?.let { indexes ->
