@@ -189,7 +189,7 @@ interface MealDao {
             "INNER JOIN $RM_table " +
             "ON $RM_table.$RM_mealId = $table.$id " +
             "WHERE $RM_table.$RM_restaurantId = :restaurantId " +
-            "AND $table.$type = $MEAL_TYPE_CUSTOM"
+            "AND $table.$type = '$MEAL_TYPE_CUSTOM'"
     )
     fun getAllUserMealsByRestaurantId(@Bind restaurantId: Int): Collection<DbMealDto>
 }
