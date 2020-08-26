@@ -5,7 +5,6 @@ import pt.isel.ps.g06.httpserver.common.exception.clientError.InvalidInputExcept
 import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.ReportResponseMapper
 import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.SimpleReportResponseMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.REPORTABLE_TYPES
-import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.ReportDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.SubmissionDbRepository
 import pt.isel.ps.g06.httpserver.model.SimplifiedReport
@@ -22,19 +21,19 @@ class ReportService(
     /**
      * Gets all the reports inside the database
      */
-    fun getAllReports() = reportDbRepository.getAll().map(reportDbMapper::mapToModel)
+    fun getAllReports(skip: Int?, count: Int?) = reportDbRepository.getAll(skip, count).map(reportDbMapper::mapToModel)
 
     /**
      * Gets all the reports inside the database
      */
-    fun getAllReportsBySubmissionType(submissionType: String): Collection<SimplifiedReport> {
+    fun getAllReportsBySubmissionType(submissionType: String, skip: Int?, count: Int?): Collection<SimplifiedReport> {
         if (REPORTABLE_TYPES.all { it != submissionType }) {
             throw InvalidInputException(
                     "This type of submission can not be reported and thus there are no reports for this"
             )
         }
 
-        return reportDbRepository.getAllBySubmissionType(submissionType).map(simpleReportDbMapper::mapTo)
+        return reportDbRepository.getAllBySubmissionType(submissionType, skip, count).map(simpleReportDbMapper::mapTo)
     }
 
     /**
