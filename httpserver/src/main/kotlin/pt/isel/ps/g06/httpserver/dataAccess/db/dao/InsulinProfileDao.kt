@@ -20,8 +20,8 @@ interface InsulinProfileDao {
         const val carbRatio = "carbohydrate_ratio"
     }
 
-    @SqlQuery("SELECT * FROM $table WHERE $submitterId = :submitterId")
-    fun getAllFromUser(submitterId: Int): Collection<DbUserEncInsulinProfileDto>
+    @SqlQuery("SELECT * FROM $table WHERE $submitterId = :submitterId LIMIT :count OFFSET :skip")
+    fun getAllFromUser(submitterId: Int, count: Int?, skip: Int?): Collection<DbUserEncInsulinProfileDto>
 
     @SqlQuery("SELECT * FROM $table WHERE $submitterId = :submitterId AND $profileName = :profileName")
     fun getFromUser(submitterId: Int, profileName: String): DbUserEncInsulinProfileDto?

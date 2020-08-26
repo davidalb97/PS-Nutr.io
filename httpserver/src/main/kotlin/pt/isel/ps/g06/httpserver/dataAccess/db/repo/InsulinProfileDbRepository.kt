@@ -22,12 +22,12 @@ class InsulinProfileDbRepository(
         jdbi: Jdbi
 ) : BaseDbRepo(jdbi) {
 
-    fun getAllFromUser(submitterId: Int): Sequence<DbUserInsulinProfileDto> {
+    fun getAllFromUser(submitterId: Int, count: Int?, skip: Int?): Sequence<DbUserInsulinProfileDto> {
         val userInsulinProfiles = lazy {
             jdbi.inTransaction<Collection<DbUserInsulinProfileDto>, Exception>(isolationLevel) { handle ->
                 return@inTransaction handle
                         .attach(insulinProfileDaoClass)
-                        .getAllFromUser(submitterId)
+                        .getAllFromUser(submitterId, count, skip)
                         .map(dbInsulinProfileDtoMapper::toDbUserInsulinProfileDto)
 
             }
