@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModelProvider
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealIngredient
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealItem
+import pt.ipl.isel.leic.ps.androidclient.data.model.Source
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.list.*
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.ISend
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.listener.check.ICheckListener
@@ -65,6 +66,7 @@ class AddMealSlideScreenFragment : BaseSlideScreenFragment(propagateArguments = 
         //Configure checkbox module activation
         val bundle = Bundle()
         bundle.putItemActions(ItemAction.CHECK)
+        bundle.putSource(Source.API)
         bundle.putMealItems(viewModel.checkedItems)
         fragment.arguments = bundle
 
