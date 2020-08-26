@@ -100,13 +100,12 @@ class MealController(
             user: User,
             count: Int?,
             skip: Int?
-    ): ResponseEntity<List<Meal>> {
+    ): ResponseEntity<SimplifiedMealContainer> {
 
         val userCustomMeals = mealService
                 .getUserCustomMeals(user.identifier, count, skip)
-                .toList()
 
-        return ResponseEntity.ok().body(userCustomMeals)
+        return ResponseEntity.ok().body(toSimplifiedMealContainer(userCustomMeals, user.identifier))
     }
 
     // TODO - has different repo method
