@@ -26,11 +26,11 @@ class MealDbRepository(jdbi: Jdbi) : SubmissionDbRepository(jdbi) {
         }
     }
 
-    fun getBySubmitterId(submitterId: Int, count: Int?, skip: Int?): Sequence<DbMealDto> {
+    fun getBySubmitterId(submitterId: Int, skip: Int?, count: Int?): Sequence<DbMealDto> {
         val meals = lazy {
             jdbi.inTransaction<Collection<DbMealDto>, Exception>(isolationLevel) { handle ->
                 return@inTransaction handle.attach(mealDaoClass)
-                        .getAllBySubmitterIdAndType(submitterId, MealType.CUSTOM.toString(), count, skip)
+                        .getAllBySubmitterIdAndType(submitterId, MealType.CUSTOM.toString(), skip, count)
             }
         }
 

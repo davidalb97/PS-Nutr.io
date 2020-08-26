@@ -80,8 +80,8 @@ interface MealDao {
     fun getAllBySubmitterIdAndType(
             @Bind submitterId: Int,
             @Bind type: String,
-            @Bind count: Int?,
-            @Bind skip: Int?
+            @Bind skip: Int?,
+            @Bind count: Int?
     ): Collection<DbMealDto>
 
     @SqlQuery("SELECT $attributes " +

@@ -32,9 +32,9 @@ class MealService(
                 .map { dbMealResponseMapper.mapTo(it) }
     }
 
-    fun getUserCustomMeals(submitterId: Int, count: Int?, skip: Int?): Sequence<Meal> =
+    fun getUserCustomMeals(submitterId: Int, skip: Int?, count: Int?): Sequence<Meal> =
             dbMealRepository
-                    .getBySubmitterId(submitterId, count, skip)
+                    .getBySubmitterId(submitterId, skip, count)
                     .map(dbMealResponseMapper::mapTo)
 
     fun getUserFavoriteMeals(submitterId: Int, count: Int?, skip: Int?): Sequence<Meal> =

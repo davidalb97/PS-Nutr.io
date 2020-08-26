@@ -17,6 +17,8 @@ import pt.isel.ps.g06.httpserver.service.MealService
 import pt.isel.ps.g06.httpserver.service.SubmissionService
 import pt.isel.ps.g06.httpserver.service.UserService
 import javax.validation.Valid
+import javax.validation.constraints.Max
+import javax.validation.constraints.Min
 
 @Suppress("MVCPathVariableInspection")
 @RestController
@@ -98,12 +100,12 @@ class MealController(
     @GetMapping(MEALS_CUSTOM)
     fun getCustomMealsFromUser(
             user: User,
-            @RequestParam count: Int?,
-            @RequestParam skip: Int?
+            @RequestParam skip: Int?,
+            @RequestParam(defaultValue = COUNT.toString()) @Min(0) @Max(COUNT) count: Int?
     ): ResponseEntity<SimplifiedMealContainer> {
 
         val userCustomMeals = mealService
-                .getUserCustomMeals(user.identifier, count, skip)
+                .getUserCustomMeals(user.identifier, skip, count)
 
         return ResponseEntity.ok().body(toSimplifiedMealContainer(userCustomMeals, user.identifier))
     }
