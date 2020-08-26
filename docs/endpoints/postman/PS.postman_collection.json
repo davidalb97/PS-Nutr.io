@@ -386,14 +386,15 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/meal",
+							"raw": "http://localhost:8080/meal/suggested",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
-								"meal"
+								"meal",
+								"suggested"
 							]
 						}
 					},
@@ -675,11 +676,11 @@
 							"variable": [
 								{
 									"key": "restaurant_id",
-									"value": "2+237+here:pds:place:620eyckr-1026ddfdac9a4373aeb2b500345fad98"
+									"value": "2++here:pds:place:620aabd1-06ab55432064055a739de11c3bc12038"
 								},
 								{
 									"key": "meal_id",
-									"value": "187"
+									"value": "186"
 								}
 							]
 						}
@@ -734,7 +735,7 @@
 							"variable": [
 								{
 									"key": "restaurant_id",
-									"value": "2+237+here:pds:place:620eyckr-1026ddfdac9a4373aeb2b500345fad98"
+									"value": "2++here:pds:place:620aabd1-06ab55432064055a739de11c3bc12038"
 								}
 							]
 						}
@@ -778,11 +779,11 @@
 							"variable": [
 								{
 									"key": "restaurantIdentifier",
-									"value": "2++here:pds:place:620eyckr-c667200476bd439eb10f81f0469d2f7d"
+									"value": "2++here:pds:place:620aabd1-06ab55432064055a739de11c3bc12038"
 								},
 								{
 									"key": "mealId",
-									"value": "200"
+									"value": "186"
 								}
 							]
 						}
@@ -826,11 +827,11 @@
 							"variable": [
 								{
 									"key": "restaurantIdentifier",
-									"value": "2++here:pds:place:620eyckr-c667200476bd439eb10f81f0469d2f7d"
+									"value": "2++here:pds:place:620aabd1-06ab55432064055a739de11c3bc12038"
 								},
 								{
 									"key": "mealId",
-									"value": "200"
+									"value": "186"
 								}
 							]
 						}
@@ -874,11 +875,11 @@
 							"variable": [
 								{
 									"key": "restaurantIdentifier",
-									"value": "2++here:pds:place:620eyckr-c667200476bd439eb10f81f0469d2f7d"
+									"value": "2++here:pds:place:620aabd1-06ab55432064055a739de11c3bc12038"
 								},
 								{
 									"key": "mealId",
-									"value": "200"
+									"value": "186"
 								}
 							]
 						}
