@@ -2,6 +2,7 @@ package pt.isel.ps.g06.httpserver.service
 
 import org.springframework.stereotype.Service
 import pt.isel.ps.g06.httpserver.common.exception.clientError.DuplicateMealException
+import pt.isel.ps.g06.httpserver.common.exception.clientError.InvalidInputException
 import pt.isel.ps.g06.httpserver.common.exception.forbidden.NotSubmissionOwnerException
 import pt.isel.ps.g06.httpserver.common.exception.notFound.MealNotFound
 import pt.isel.ps.g06.httpserver.common.exception.notFound.PortionNotFoundException
@@ -10,12 +11,9 @@ import pt.isel.ps.g06.httpserver.common.exception.notFound.RestaurantNotFoundExc
 import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.restaurant.DbRestaurantMealInfoResponseMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.FavoriteDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.PortionDbRepository
+import pt.isel.ps.g06.httpserver.dataAccess.db.repo.ReportDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.RestaurantMealDbRepository
-import pt.isel.ps.g06.httpserver.exception.InvalidInputException
-import pt.isel.ps.g06.httpserver.model.Meal
-import pt.isel.ps.g06.httpserver.model.MealRestaurantInfo
-import pt.isel.ps.g06.httpserver.model.RestaurantIdentifier
-import pt.isel.ps.g06.httpserver.model.RestaurantMeal
+import pt.isel.ps.g06.httpserver.model.*
 
 @Service
 class RestaurantMealService(
@@ -25,22 +23,22 @@ class RestaurantMealService(
         private val dbRestaurantMealRepository: RestaurantMealDbRepository,
         private val dbPortionRepository: PortionDbRepository,
         private val dbFavoriteDbRepository: FavoriteDbRepository,
+        private val dbReportDbRepository: ReportDbRepository,
         private val dbRestaurantMealResponseMapper: DbRestaurantMealInfoResponseMapper
 ) {
 
     /**
      * Returns a meal that is associated with a restaurant.
+     * This will not insert the restaurant nor the restaurant meal, although it requires the meal to be inserted.
      * @param restaurantId The [RestaurantIdentifier] from the existing restaurant.
      * @param mealId The meal submission id.
      * @throws RestaurantNotFoundException If the restaurant does not exist.
      * @throws MealNotFound If the meal does not exist.
-     * @throws RestaurantMealNotFound If the meal does not exist or the meal is not associated with the restaurant.
+     * @throws RestaurantMealNotFound If the meal is not associated with the restaurant.
      * @return The [RestaurantMeal] that resulted from the restaurant - meal association.
      */
     fun getRestaurantMeal(restaurantId: RestaurantIdentifier, mealId: Int): RestaurantMeal {
-        val restaurant = restaurantService
-                .getRestaurant(restaurantId.submitterId, restaurantId.submissionId, restaurantId.apiId)
-                ?: throw RestaurantNotFoundException()
+        val restaurant = restaurantService.getRestaurant(restaurantId) ?: throw RestaurantNotFoundException()
 
         val meal = mealService.getMeal(mealId) ?: throw MealNotFound()
 
@@ -50,7 +48,17 @@ class RestaurantMealService(
             throw RestaurantMealNotFound()
         }
 
-        return RestaurantMeal(restaurant, meal)
+        //If the restaurant is inserted, get restaurant meal (if restaurant - meal is associated)
+        val restaurantMeal = restaurantId.submissionId?.let {
+            dbRestaurantMealRepository.getRestaurantMeal(restaurantId.submissionId, mealId)
+        }
+
+        return RestaurantMeal(
+                restaurantMeal?.submission_id,
+                restaurant = restaurant,
+                meal = meal,
+                verified = false
+        )
     }
 
     /**
@@ -65,7 +73,7 @@ class RestaurantMealService(
      * @return The resulting [MealRestaurantInfo] from the association.
      */
     fun addRestaurantMeal(restaurantId: RestaurantIdentifier, meal: Meal, submitterId: Int? = null): MealRestaurantInfo {
-        val restaurant = restaurantService.getOrCreateRestaurant(restaurantId)
+        val restaurant = restaurantService.getOrInsertRestaurant(restaurantId)
 
         if (meal.getMealRestaurantInfo(restaurantId) != null) {
             //Given meal already is in given restaurant
@@ -87,15 +95,14 @@ class RestaurantMealService(
      * Gets or adds a new restaurant meal association.
      * @param restaurantId The existing restaurant identifier.
      * @param mealId The existing [Meal] identifier.
-     * @param submitterId The submitter of this restaurant meal.
      * @throws RestaurantNotFoundException If the restaurant does not exist.
      * @throws MealNotFound If the meal does not exist.
      * @throws InvalidInputException If the [mealId] is not from a meal or
      * the [restaurantId]'s submission id is not from a restaurant.
      * @return The resulting [MealRestaurantInfo] from the (existing) association.
      */
-    fun getOrAddRestaurantMeal(restaurantId: RestaurantIdentifier, mealId: Int, submitterId: Int): MealRestaurantInfo {
-        val restaurant = restaurantService.getOrCreateRestaurant(restaurantId)
+    fun getOrAddRestaurantMeal(restaurantId: RestaurantIdentifier, mealId: Int): MealRestaurantInfo {
+        val restaurant = restaurantService.getOrInsertRestaurant(restaurantId)
 
         val meal = mealService.getMeal(mealId) ?: throw MealNotFound()
 
@@ -108,7 +115,7 @@ class RestaurantMealService(
             }
         }
 
-        return addRestaurantMeal(restaurantId, meal, submitterId)
+        return addRestaurantMeal(restaurantId, meal, null)
     }
 
     /**
@@ -123,17 +130,28 @@ class RestaurantMealService(
      * the [restaurantId]'s submission id is not from a restaurant.
      */
     fun addRestaurantMealPortion(restaurantId: RestaurantIdentifier, mealId: Int, submitterId: Int, quantity: Int) {
-        val restaurantMeal = getOrAddRestaurantMeal(restaurantId, mealId, submitterId)
+        val restaurantMeal = getOrAddRestaurantMeal(restaurantId, mealId)
 
         dbPortionRepository.insert(submitterId, restaurantMeal.restaurantMealIdentifier, quantity)
     }
 
+    fun addReport(submitterId: Int, restaurantIdentifier: RestaurantIdentifier, mealId: Int, report: String) {
+        val restaurantInfo = getOrAddRestaurantMeal(restaurantIdentifier, mealId)
 
-    fun deleteRestaurantMeal(restaurantId: RestaurantIdentifier, mealId: Int, submitterId: Int) {
+        dbReportDbRepository.insert(submitterId, restaurantInfo.restaurantMealIdentifier, report)
+    }
+
+    fun updateRestaurantMealVerification(restaurantId: RestaurantIdentifier, mealId: Int, verified: Boolean) {
+        val restaurantMealSubmissionId = getOrAddRestaurantMeal(restaurantId, mealId).restaurantMealIdentifier
+
+        dbRestaurantMealRepository.putVerification(restaurantMealSubmissionId, verified)
+    }
+
+    fun deleteRestaurantMeal(restaurantId: RestaurantIdentifier, mealId: Int, user: User) {
         val restaurantMeal = getRestaurantMeal(restaurantId, mealId)
         val meal = restaurantMeal.meal
 
-        if (!meal.isUserMeal() || meal.submitterInfo.value!!.identifier != submitterId) {
+        if (!meal.isUserMeal() || meal.submitterInfo.value!!.identifier != user.identifier) {
             throw NotSubmissionOwnerException()
         }
 
@@ -141,23 +159,23 @@ class RestaurantMealService(
                 .getMealRestaurantInfo(restaurantMeal.restaurant.identifier.value)
                 ?: throw IllegalStateException("Expected RestaurantInfo for given RestaurantMeal, but none was found!")
 
-        submissionService.deleteSubmission(restaurantInfo.restaurantMealIdentifier, submitterId)
+        submissionService.deleteSubmission(restaurantInfo.restaurantMealIdentifier, user)
     }
 
-    fun deleteUserPortion(restaurantId: RestaurantIdentifier, mealId: Int, submitterId: Int) {
+    fun deleteUserPortion(restaurantId: RestaurantIdentifier, mealId: Int, user: User) {
         val restaurantMeal = getRestaurantMeal(restaurantId, mealId)
         val userPortion = restaurantMeal.getRestaurantMealInfo()
-                ?.let { it.userPortion(submitterId) }
+                ?.let { it.userPortion(user.identifier) }
                 ?: throw PortionNotFoundException()
 
-        submissionService.deleteSubmission(userPortion.identifier, submitterId)
+        submissionService.deleteSubmission(userPortion.identifier, user)
     }
 
     /**
      *
      */
     fun setFavorite(restaurantId: RestaurantIdentifier, mealId: Int, submitterId: Int, isFavorite: Boolean) {
-        val restaurantMeal = getOrAddRestaurantMeal(restaurantId, mealId, submitterId)
+        val restaurantMeal = getOrAddRestaurantMeal(restaurantId, mealId)
 
         dbFavoriteDbRepository.setFavorite(restaurantMeal.restaurantMealIdentifier, submitterId, isFavorite)
     }

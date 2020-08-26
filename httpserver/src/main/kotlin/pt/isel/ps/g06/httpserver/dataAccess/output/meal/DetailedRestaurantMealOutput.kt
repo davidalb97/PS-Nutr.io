@@ -20,9 +20,9 @@ class DetailedRestaurantMealOutput(
         votes: VotesOutput?,
         isFavorite: Boolean,
         isSuggested: Boolean,
+        nutritionalInfo: NutritionalInfoOutput,
         val creationDate: OffsetDateTime?,
         val composedBy: MealCompositionOutput?,
-        val nutritionalInfo: NutritionalInfoOutput,
         val portions: Collection<Int>,
         @JsonSerialize(using = ToStringSerializer::class)
         val createdBy: SimplifiedUserOutput?
@@ -32,7 +32,8 @@ class DetailedRestaurantMealOutput(
         isFavorite = isFavorite,
         imageUri = imageUri,
         isSuggested = isSuggested,
-        votes = votes
+        votes = votes,
+        nutritionalInfo = nutritionalInfo
 )
 
 fun toDetailedRestaurantMealOutput(restaurantMeal: RestaurantMeal, userId: Int? = null): DetailedRestaurantMealOutput {

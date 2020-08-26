@@ -57,11 +57,17 @@ class SubmissionDbRepository(jdbi: Jdbi) : BaseDbRepo(jdbi) {
         }
     }
 
+    fun getSubmissionById(submissionId: Int): DbSubmissionDto? {
+        return jdbi.inTransaction<DbSubmissionDto, Exception>(isolationLevel) {
+            it.attach(SubmissionDao::class.java).getById(submissionId)
+        }
+    }
+
     /**
      * Deletes given Submission from the database.
      * This deletion is cascading, so **any other tuples depending on given submission will be affected!**
      */
-    fun deleteSubmission(submissionId: Int): DbSubmissionDto {
+    fun deleteSubmissionById(submissionId: Int): DbSubmissionDto {
         return jdbi.inTransaction<DbSubmissionDto, Exception>(isolationLevel) {
             it.attach(SubmissionDao::class.java).delete(submissionId)
         }

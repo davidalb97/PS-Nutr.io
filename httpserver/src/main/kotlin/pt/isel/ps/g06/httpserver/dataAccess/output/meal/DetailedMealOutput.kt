@@ -15,17 +15,18 @@ class DetailedMealOutput(
         name: String,
         imageUri: URI?,
         isFavorite: Boolean,
+        nutritionalInfo: NutritionalInfoOutput,
         isSuggested: Boolean,
         isVotable: Boolean,
         @JsonSerialize(using = ToStringSerializer::class)
         val creationDate: OffsetDateTime?,
         val composedBy: MealCompositionOutput?,
-        val nutritionalInfo: NutritionalInfoOutput,
         val createdBy: SimplifiedUserOutput?
 ) : BaseMealOutput(
         mealIdentifier = mealIdentifier,
         name = name,
         imageUri = imageUri,
+        nutritionalInfo = nutritionalInfo,
         isSuggested = isSuggested,
         isFavorite = isFavorite,
         isVotable = isVotable
