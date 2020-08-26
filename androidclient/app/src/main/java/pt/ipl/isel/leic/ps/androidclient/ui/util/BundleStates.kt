@@ -31,10 +31,14 @@ fun Bundle.getMealIngredients() =
 fun Bundle.putMealIngredients(ingredients: ArrayList<MealIngredient>) =
     putParcelableArrayList(BUNDLE_MEAL_INGREDIENT_LIST, ingredients)
 
+fun Bundle.putMealIngredients(meals: List<MealIngredient>) = putMealIngredients(ArrayList(meals))
+
 fun Bundle.getMealItems() = getParcelableArrayList<MealItem>(BUNDLE_MEAL_LIST)
 
 fun Bundle.putMealItems(meals: ArrayList<MealItem>) =
     putParcelableArrayList(BUNDLE_MEAL_LIST, meals)
+
+fun Bundle.putMealItems(meals: List<MealItem>) = putMealItems(ArrayList(meals))
 
 fun Bundle.getMealItem() = getParcelable<MealItem>(BUNDLE_MEAL_ITEM)
 
