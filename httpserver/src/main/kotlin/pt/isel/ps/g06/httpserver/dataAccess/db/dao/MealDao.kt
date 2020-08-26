@@ -169,10 +169,10 @@ interface MealDao {
             "ON $S_table.$S_submission_id = $table.$id " +
             "WHERE $S_table.$S_submission_type = '$INGREDIENT_TYPE' " +
             "ORDER BY $table.$name ASC " +
-            "LIMIT :limit " +
+            "LIMIT :count " +
             "OFFSET :skip"
     )
-    fun getAllIngredients(skip: Int?, limit: Int?): Collection<DbMealDto>
+    fun getAllIngredients(skip: Int?, count: Int?): Collection<DbMealDto>
 
     @SqlQuery("SELECT $attributes " +
             "FROM $table " +

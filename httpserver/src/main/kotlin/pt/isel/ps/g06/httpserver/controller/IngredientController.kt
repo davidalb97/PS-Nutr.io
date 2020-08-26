@@ -4,6 +4,7 @@ import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.util.UriComponentsBuilder
+import pt.isel.ps.g06.httpserver.common.COUNT
 import pt.isel.ps.g06.httpserver.common.INGREDIENTS
 import pt.isel.ps.g06.httpserver.common.exception.clientError.InvalidInputException
 import pt.isel.ps.g06.httpserver.dataAccess.input.MealInput
@@ -12,6 +13,8 @@ import pt.isel.ps.g06.httpserver.dataAccess.output.ingredient.toIngredientsConta
 import pt.isel.ps.g06.httpserver.model.User
 import pt.isel.ps.g06.httpserver.service.IngredientService
 import pt.isel.ps.g06.httpserver.service.UserService
+import javax.validation.constraints.Max
+import javax.validation.constraints.Min
 
 @RestController
 @RequestMapping(INGREDIENTS,
@@ -32,10 +35,10 @@ class IngredientController(
     @GetMapping
     fun getIngredients(
             @RequestParam skip: Int?,
-            @RequestParam limit: Int?
+            @RequestParam(defaultValue = COUNT.toString()) @Min(0) @Max(COUNT) count: Int?
     ): ResponseEntity<IngredientsContainerOutput> {
 
-        val ingredients = ingredientService.getIngredients(skip, limit)
+        val ingredients = ingredientService.getIngredients(skip, count)
 
         return ResponseEntity
                 .ok()
