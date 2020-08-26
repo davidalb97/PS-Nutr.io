@@ -6,10 +6,12 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.Observer
+import pt.ipl.isel.leic.ps.androidclient.ui.util.Logger
 import kotlin.reflect.KClass
 
 class LiveDataListHandler<M : Parcelable> {
 
+    private val log = Logger(LiveDataListHandler::class)
     private val _monitor = Object()
     private val mediatorLiveData: MediatorLiveData<List<M>> = MediatorLiveData()
     private val prevLiveData: LiveData<*>? = null
@@ -31,6 +33,7 @@ class LiveDataListHandler<M : Parcelable> {
         synchronized(_monitor) {
             removeLastSource()
             mediatorLiveData.addSource(newLiveData) { newList ->
+                log.v("Changing ${newList.size} items")
                 consumer(newList.map(mapper))
             }
         }
@@ -44,6 +47,7 @@ class LiveDataListHandler<M : Parcelable> {
      */
     fun <T> set(newLiveData: LiveData<List<T>>, mapper: (T) -> M) {
         observeExternal(newLiveData, mapper) {
+            log.v("Setting ${it.size} items")
             set(it)
         }
     }
@@ -53,6 +57,7 @@ class LiveDataListHandler<M : Parcelable> {
      * @param newList The list of items to set.
      */
     fun set(newList: List<M>) {
+        log.v("Setting ${newList.size} items")
         mediatorLiveData.value = newList
     }
 
@@ -65,6 +70,7 @@ class LiveDataListHandler<M : Parcelable> {
      */
     fun <T> add(newLiveData: LiveData<List<T>>, mapper: (T) -> M) {
         observeExternal(newLiveData, mapper) {
+            log.v("Adding ${it.size} items")
             add(it)
         }
     }
@@ -74,6 +80,7 @@ class LiveDataListHandler<M : Parcelable> {
      * @param newList The list of items to add.
      */
     fun add(newList: List<M>) {
+        log.v("Adding ${newList.size} items")
         mediatorLiveData.value = mapped.plus(newList)
     }
 
@@ -82,6 +89,7 @@ class LiveDataListHandler<M : Parcelable> {
      * @param item The item to add.
      */
     fun add(item: M) {
+        log.v("Adding 1 item")
         mediatorLiveData.value = mapped.plus(item)
     }
 
