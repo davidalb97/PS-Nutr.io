@@ -1,7 +1,6 @@
 package pt.isel.ps.g06.httpserver.service
 
 import org.springframework.stereotype.Service
-import pt.isel.ps.g06.httpserver.common.MEAL
 import pt.isel.ps.g06.httpserver.common.exception.clientError.InvalidMealException
 import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.restaurant.DbMealResponseMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.MealType
@@ -36,6 +35,11 @@ class MealService(
     fun getUserCustomMeals(submitterId: Int, count: Int?, skip: Int?): Sequence<Meal> =
             dbMealRepository
                     .getBySubmitterId(submitterId, count, skip)
+                    .map(dbMealResponseMapper::mapTo)
+
+    fun getUserFavoriteMeals(submitterId: Int, count: Int?, skip: Int?): Sequence<Meal> =
+            dbMealRepository
+                    .getAllUserFavorites(submitterId, count, skip)
                     .map(dbMealResponseMapper::mapTo)
 
     fun createMeal(

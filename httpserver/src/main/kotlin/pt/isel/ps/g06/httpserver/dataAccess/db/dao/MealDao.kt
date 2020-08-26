@@ -44,6 +44,11 @@ private const val S_table = SubmissionDao.table
 private const val S_submission_id = SubmissionDao.id
 private const val S_submission_type = SubmissionDao.type
 
+//Favorite constants
+private const val F_table = FavoriteDao.table
+private const val F_submitter_id = FavoriteDao.submitterId
+private const val F_submission_id = FavoriteDao.submissionId
+
 private const val INGREDIENT_TYPE = "Ingredient"
 
 interface MealDao {
@@ -75,6 +80,18 @@ interface MealDao {
     fun getAllBySubmitterIdAndType(
             @Bind submitterId: Int,
             @Bind type: String,
+            @Bind count: Int?,
+            @Bind skip: Int?
+    ): Collection<DbMealDto>
+
+    @SqlQuery("SELECT $attributes " +
+            "FROM $table " +
+            "INNER JOIN $F_table " +
+            "ON $F_table.$F_submission_id = $table.$id " +
+            "WHERE $F_table.$F_submitter_id = :submitterId " +
+            "LIMIT :count OFFSET :skip")
+    fun getAllUserFavorites(
+            @Bind submitterId: Int,
             @Bind count: Int?,
             @Bind skip: Int?
     ): Collection<DbMealDto>

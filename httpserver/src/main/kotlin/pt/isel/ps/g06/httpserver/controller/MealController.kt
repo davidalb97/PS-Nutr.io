@@ -29,7 +29,6 @@ class MealController(
     /**
      * Obtains all meals present in the database, filtered down by query parameters
      *
-     * @param mealTypes filters by meal type. View [allowedMealTypes] to see possible values;
      * Defaults to [suggested]
      *
      * @param cuisines filters obtained meals by specific cuisine(s).
@@ -132,6 +131,20 @@ class MealController(
                         .buildAndExpand(createdMeal.identifier)
                         .toUri()
         ).build()
+    }
+
+    @GetMapping(MEALS_FAVORITE)
+    fun getFavoriteMealsFromUser(
+            user: User,
+            count: Int?,
+            skip: Int?
+    ): ResponseEntity<SimplifiedMealContainer> {
+
+        val userCustomMeals = mealService
+                .getUserFavoriteMeals(user.identifier, count, skip)
+
+        return ResponseEntity.ok()
+                .body(toSimplifiedMealContainer(userCustomMeals, user.identifier))
     }
 
     @PutMapping(MEAL_FAVORITE)

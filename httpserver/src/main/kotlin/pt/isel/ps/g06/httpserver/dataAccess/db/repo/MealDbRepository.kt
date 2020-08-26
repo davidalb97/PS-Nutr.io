@@ -37,6 +37,17 @@ class MealDbRepository(jdbi: Jdbi) : SubmissionDbRepository(jdbi) {
         return Sequence { meals.value.iterator() }
     }
 
+    fun getAllUserFavorites(submitterId: Int, count: Int?, skip: Int?): Sequence<DbMealDto> {
+        val meals = lazy {
+            jdbi.inTransaction<Collection<DbMealDto>, Exception>(isolationLevel) { handle ->
+                return@inTransaction handle.attach(mealDaoClass)
+                        .getAllUserFavorites(submitterId, count, skip)
+            }
+        }
+
+        return Sequence { meals.value.iterator() }
+    }
+
     fun getMealIngredients(mealId: Int): Sequence<DbMealIngredientDto> {
         val ingredients = lazy {
             jdbi.inTransaction<Collection<DbMealIngredientDto>, Exception>(isolationLevel) { handle ->
