@@ -128,7 +128,7 @@ class MealDataSource(
         count: Int? = 30,
         skip: Int? = 0,
         cuisines: Collection<String>? = null,
-        success: (SimplifiedRestaurantMealsInput) -> Unit,
+        success: (SimplifiedMealsInput) -> Unit,
         error: (VolleyError) -> Unit
     ) {
         requestParser.requestAndParse(
@@ -144,7 +144,7 @@ class MealDataSource(
                 .build()
                 .toString(),
             reqHeader = buildAuthHeader(jwt),
-            dtoClass = SimplifiedRestaurantMealsInput::class.java,
+            dtoClass = SimplifiedMealsInput::class.java,
             onSuccess = success,
             onError = error
         )
@@ -155,7 +155,7 @@ class MealDataSource(
         count: Int? = 30,
         skip: Int? = 0,
         cuisines: Collection<String>? = null,
-        success: (SimplifiedRestaurantMealsInput) -> Unit,
+        success: (SimplifiedMealsInput) -> Unit,
         error: (VolleyError) -> Unit
     ) {
         requestParser.requestAndParse(
@@ -171,7 +171,7 @@ class MealDataSource(
                 .build()
                 .toString(),
             reqHeader = buildAuthHeader(jwt),
-            dtoClass = SimplifiedRestaurantMealsInput::class.java,
+            dtoClass = SimplifiedMealsInput::class.java,
             onSuccess = success,
             onError = error
         )

@@ -33,7 +33,7 @@ class InputMealItemMapper(
     fun mapToListModel(dtos: Array<SimplifiedMealInput>, restaurantId: String?) =
         dtos.map { mapToModel(it, restaurantId) }
 
-    fun mapToListModel(dto: SimplifiedMealsInput, restaurantId: String?) =
+    fun mapToListModel(dto: SimplifiedMealsInput, restaurantId: String? = null) =
         mapToListModel(dto.meals, restaurantId)
 
     fun mapToListModel(dto: SimplifiedRestaurantMealsInput) =
