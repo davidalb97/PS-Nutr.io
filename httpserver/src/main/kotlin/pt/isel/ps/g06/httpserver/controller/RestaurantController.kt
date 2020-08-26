@@ -21,6 +21,8 @@ import pt.isel.ps.g06.httpserver.service.RestaurantService
 import pt.isel.ps.g06.httpserver.service.SubmissionService
 import pt.isel.ps.g06.httpserver.service.UserService
 import javax.validation.Valid
+import javax.validation.constraints.Max
+import javax.validation.constraints.Min
 
 private const val INVALID_RESTAURANT_SEARCH = "To search nearby restaurants, a geolocation must be given!"
 
@@ -50,8 +52,8 @@ class RestaurantController(
             name: String?,
             radius: Int?,
             apiType: String?,
-            count: Int?,
-            skip: Int?,
+            @RequestParam skip: Int?,
+            @RequestParam(defaultValue = COUNT.toString()) @Min(0) @Max(COUNT) count: Int?,
             user: User?
     ): ResponseEntity<Collection<SimplifiedRestaurantOutput>> {
         if (latitude == null || longitude == null) {
@@ -64,8 +66,8 @@ class RestaurantController(
                 name = name,
                 radius = radius,
                 apiType = apiType,
-                count = count,
-                skip = skip
+                skip = skip,
+                count = count
         )
         return ResponseEntity
                 .ok()

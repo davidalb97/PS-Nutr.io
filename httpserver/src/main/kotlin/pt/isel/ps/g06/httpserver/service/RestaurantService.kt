@@ -37,8 +37,8 @@ class RestaurantService(
             name: String?,
             radius: Int?,
             apiType: String?,
-            count: Int?,
-            skip: Int?
+            skip: Int?,
+            count: Int?
     ): Sequence<Restaurant> {
         val chosenRadius = if (radius != null && radius <= MAX_RADIUS) radius else MAX_RADIUS
         val type = RestaurantApiType.getOrDefault(apiType)
@@ -46,7 +46,7 @@ class RestaurantService(
 
         //Get API restaurants
         val apiRestaurants =
-                restaurantApi.searchNearbyRestaurants(latitude, longitude, chosenRadius, name)
+                restaurantApi.searchNearbyRestaurants(latitude, longitude, chosenRadius, name, skip, count)
                         .thenApply {
                             it.map(restaurantResponseMapper::mapTo)
                         }
