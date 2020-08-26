@@ -37,10 +37,13 @@ class InsulinProfileDbRepository(
     }
 
     fun getFromUser(submitterId: Int, profileName: String): DbUserInsulinProfileDto {
+
+        val encProfileName = columnCryptoConverter.convertToDatabaseColumn(profileName)
+
         return jdbi.inTransaction<DbUserInsulinProfileDto, Exception>(isolationLevel) { handle ->
             return@inTransaction handle
                     .attach(insulinProfileDaoClass)
-                    .getFromUser(submitterId, profileName)
+                    .getFromUser(submitterId, encProfileName)
                     ?.let(dbInsulinProfileDtoMapper::toDbUserInsulinProfileDto)
                     ?: throw MissingInsulinProfileException(profileName)
         }
@@ -88,15 +91,15 @@ class InsulinProfileDbRepository(
     }
 
     fun deleteProfile(submitterId: Int, profileName: String): DbUserInsulinProfileDto {
+
+        val encProfileName = columnCryptoConverter.convertToDatabaseColumn(profileName)
+
         return jdbi.inTransaction<DbUserInsulinProfileDto, Exception>(isolationLevel) { handle ->
             return@inTransaction handle
                     .attach(insulinProfileDaoClass)
-                    .deleteProfile(submitterId, profileName)
-                    .let { encInsulinProfileDto ->
-                        dbInsulinProfileDtoMapper.toDbUserInsulinProfileDto(
-                                encInsulinProfileDto ?: throw MissingInsulinProfileException(profileName)
-                        )
-                    }
+                    .deleteProfile(submitterId, encProfileName)
+                    ?.let(dbInsulinProfileDtoMapper::toDbUserInsulinProfileDto)
+                    ?: throw MissingInsulinProfileException(profileName)
         }
     }
 }

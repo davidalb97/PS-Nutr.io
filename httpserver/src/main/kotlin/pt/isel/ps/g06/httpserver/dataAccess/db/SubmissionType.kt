@@ -7,6 +7,7 @@ const val SUBMISSION_TYPE_INGREDIENT = "Ingredient"
 const val SUBMISSION_TYPE_CUISINE = "Cuisine"
 const val SUBMISSION_TYPE_API_CUISINE = "ApiCuisine"
 const val SUBMISSION_TYPE_RESTAURANT_MEAL = "RestaurantMeal"
+val REPORTABLE_TYPES = listOf(SubmissionType.RESTAURANT_MEAL.toString(), SubmissionType.RESTAURANT.toString())
 
 enum class SubmissionType(private val type: String) {
     RESTAURANT(SUBMISSION_TYPE_RESTAURANT),

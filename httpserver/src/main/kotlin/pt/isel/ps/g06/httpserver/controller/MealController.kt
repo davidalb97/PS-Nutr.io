@@ -98,8 +98,8 @@ class MealController(
     @GetMapping(MEALS_CUSTOM)
     fun getCustomMealsFromUser(
             user: User,
-            count: Int?,
-            skip: Int?
+            @RequestParam count: Int?,
+            @RequestParam skip: Int?
     ): ResponseEntity<SimplifiedMealContainer> {
 
         val userCustomMeals = mealService
@@ -183,7 +183,7 @@ class MealController(
             throw NotSubmissionOwnerException()
         }
 
-        submissionService.deleteSubmission(meal.identifier, user.identifier)
+        submissionService.deleteSubmission(meal.identifier, user)
 
         return ResponseEntity
                 .ok()

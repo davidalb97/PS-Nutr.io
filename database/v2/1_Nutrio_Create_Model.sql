@@ -105,10 +105,12 @@ CREATE TABLE SubmissionContract(
 );
 
 CREATE TABLE Report(
+	report_id serial,
 	submitter_id integer,
 	submission_id integer,
 	description varchar(500) NOT NULL,
-	PRIMARY KEY(submitter_id, submission_id),
+	UNIQUE(submitter_id, submission_id),
+	PRIMARY KEY(report_id),
 	FOREIGN KEY(submission_id) REFERENCES Submission(submission_id) ON DELETE CASCADE,
 	FOREIGN KEY(submitter_id) REFERENCES Submitter(submitter_id)
 );

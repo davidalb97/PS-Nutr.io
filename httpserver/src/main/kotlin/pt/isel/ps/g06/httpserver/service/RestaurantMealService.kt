@@ -13,10 +13,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.repo.FavoriteDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.PortionDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.ReportDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.RestaurantMealDbRepository
-import pt.isel.ps.g06.httpserver.model.Meal
-import pt.isel.ps.g06.httpserver.model.MealRestaurantInfo
-import pt.isel.ps.g06.httpserver.model.RestaurantIdentifier
-import pt.isel.ps.g06.httpserver.model.RestaurantMeal
+import pt.isel.ps.g06.httpserver.model.*
 
 @Service
 class RestaurantMealService(
@@ -150,11 +147,11 @@ class RestaurantMealService(
         dbRestaurantMealRepository.putVerification(restaurantMealSubmissionId, verified)
     }
 
-    fun deleteRestaurantMeal(restaurantId: RestaurantIdentifier, mealId: Int, submitterId: Int) {
+    fun deleteRestaurantMeal(restaurantId: RestaurantIdentifier, mealId: Int, user: User) {
         val restaurantMeal = getRestaurantMeal(restaurantId, mealId)
         val meal = restaurantMeal.meal
 
-        if (!meal.isUserMeal() || meal.submitterInfo.value!!.identifier != submitterId) {
+        if (!meal.isUserMeal() || meal.submitterInfo.value!!.identifier != user.identifier) {
             throw NotSubmissionOwnerException()
         }
 
@@ -162,16 +159,16 @@ class RestaurantMealService(
                 .getMealRestaurantInfo(restaurantMeal.restaurant.identifier.value)
                 ?: throw IllegalStateException("Expected RestaurantInfo for given RestaurantMeal, but none was found!")
 
-        submissionService.deleteSubmission(restaurantInfo.restaurantMealIdentifier, submitterId)
+        submissionService.deleteSubmission(restaurantInfo.restaurantMealIdentifier, user)
     }
 
-    fun deleteUserPortion(restaurantId: RestaurantIdentifier, mealId: Int, submitterId: Int) {
+    fun deleteUserPortion(restaurantId: RestaurantIdentifier, mealId: Int, user: User) {
         val restaurantMeal = getRestaurantMeal(restaurantId, mealId)
         val userPortion = restaurantMeal.getRestaurantMealInfo()
-                ?.let { it.userPortion(submitterId) }
+                ?.let { it.userPortion(user.identifier) }
                 ?: throw PortionNotFoundException()
 
-        submissionService.deleteSubmission(userPortion.identifier, submitterId)
+        submissionService.deleteSubmission(userPortion.identifier, user)
     }
 
     /**
