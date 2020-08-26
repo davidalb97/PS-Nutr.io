@@ -22,10 +22,6 @@ import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.meal.IngredientListVi
 
 class AddMealSlideScreenFragment : BaseSlideScreenFragment(propagateArguments = false), ISend {
 
-    private lateinit var ingredientsListFragment: IngredientsListFragment
-    private lateinit var mealItemListFragment: MealItemListFragment
-    private lateinit var favoriteMealListFragment: FavoriteMealListFragment
-    private lateinit var customMealListFragment: CustomMealListFragment
     private lateinit var okButton: Button
     private lateinit var viewModel: IngredientListViewModel
 
@@ -36,11 +32,6 @@ class AddMealSlideScreenFragment : BaseSlideScreenFragment(propagateArguments = 
         val intent = requireActivity().intent
         val factory = IngredientRecyclerVMProviderFactory(arguments, savedInstanceState, intent)
         viewModel = ViewModelProvider(this, factory)[IngredientListViewModel::class.java]
-
-        ingredientsListFragment = setCheckArguments(IngredientsListFragment())
-        mealItemListFragment = setCheckArguments(MealItemListFragment())
-        favoriteMealListFragment = setCheckArguments(FavoriteMealListFragment())
-        customMealListFragment = setCheckArguments(CustomMealListFragment())
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -54,10 +45,10 @@ class AddMealSlideScreenFragment : BaseSlideScreenFragment(propagateArguments = 
     }
 
     override fun addFragments(fragments: HashMap<Fragment, String>) {
-        fragments[ingredientsListFragment] = "Meal Ingredients"
-        fragments[mealItemListFragment] = "Suggested Meals"
-        fragments[favoriteMealListFragment] = "Favorite Meals"
-        fragments[customMealListFragment] = "Custom meals"
+        fragments[setCheckArguments(IngredientsListFragment())] = "Meal Ingredients"
+        fragments[setCheckArguments(MealItemListFragment())] = "Suggested Meals"
+        fragments[setCheckArguments(FavoriteMealListFragment())] = "Favorite Meals"
+        fragments[setCheckArguments(CustomMealListFragment())] = "Custom meals"
     }
 
     private fun <M: MealItem, F> setCheckArguments(fragment: F): F
@@ -73,16 +64,31 @@ class AddMealSlideScreenFragment : BaseSlideScreenFragment(propagateArguments = 
         //Configure checkbox module listener
         fragment.onCheckListener = ICheckListener { item, isChecked ->
             val mealIngredient = toMealIngredient(item)
+            //Add checked item to list
             if (isChecked) {
+                //Change button state if it's the first item
                 if (viewModel.items.isEmpty()) {
                     okButton.text = getString(R.string.ok)
                 }
+                //Ignore already checked items (list restore)
+                else if(viewModel.items.any { it.submissionId == item.submissionId }) {
+                    return@ICheckListener
+                }
                 viewModel.liveDataHandler.add(mealIngredient)
-            } else {
+            }
+            //Remove checked item from list
+            else {
+                //Change button state if it's last item
                 if (viewModel.items.size == 1) {
                     okButton.text = getString(R.string.cancel)
                 }
-                viewModel.liveDataHandler.remove(mealIngredient)
+                //Find item to remove based on submission id
+                //This will avoid failed removals when
+                //the object is not the same after restoring checked items
+                val itemToRemove = viewModel.items.first {
+                    it.submissionId == mealIngredient.submissionId
+                }
+                viewModel.liveDataHandler.remove(itemToRemove)
             }
         }
         //Configure checkbox module listener
