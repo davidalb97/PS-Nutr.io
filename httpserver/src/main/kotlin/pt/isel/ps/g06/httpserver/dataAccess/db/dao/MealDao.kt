@@ -75,7 +75,7 @@ interface MealDao {
             "INNER JOIN $SS_table " +
             "ON $SS_table.$SS_submissionId = $table.$id " +
             "WHERE $SS_table.$SS_submitterId = :submitterId " +
-            "AND $table.$type = :type" +
+            "AND $table.$type = :type " +
             "LIMIT :count OFFSET :skip")
     fun getAllBySubmitterIdAndType(
             @Bind submitterId: Int,
