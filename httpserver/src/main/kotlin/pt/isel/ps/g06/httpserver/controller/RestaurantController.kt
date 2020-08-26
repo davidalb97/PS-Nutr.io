@@ -115,12 +115,16 @@ class RestaurantController(
 
         val restaurant = ensureRestaurantExists(restaurantId)
 
-        if (!restaurant.isPresentInDatabase() || restaurant.submitterInfo.value.identifier != user.identifier) {
+        if (!restaurant.isPresentInDatabase()) {
             //If Restaurant is not in database, owner is an API
             throw NotSubmissionOwnerException()
         }
 
-        submissionService.deleteSubmission(restaurant.identifier.value.submissionId!!, user.identifier)
+        submissionService.deleteSubmission(
+                restaurant.identifier.value.submissionId!!,
+                user.identifier,
+                user.userRole == MOD_USER
+        )
 
         return ResponseEntity
                 .ok()

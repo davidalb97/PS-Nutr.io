@@ -24,13 +24,15 @@ class SubmissionService(
      * Deletes given submission and all of it's attributes (votes, reports, etc),
      * if given user was the creator.
      */
-    fun deleteSubmission(submissionId: Int, userId: Int) {
-        val submitter = submissionDbRepository
-                .getSubmitterForSubmissionId(submissionId)
-                ?: throw SubmissionNotFoundException()
+    fun deleteSubmission(submissionId: Int, userId: Int, isMod: Boolean) {
+        if (!isMod) {
+            val submitter = submissionDbRepository
+                    .getSubmitterForSubmissionId(submissionId)
+                    ?: throw SubmissionNotFoundException()
 
-        if (submitter.submitter_id != userId) {
-            throw NotSubmissionOwnerException()
+            if (submitter.submitter_id != userId) {
+                throw NotSubmissionOwnerException()
+            }
         }
 
         submissionDbRepository.deleteSubmissionById(submissionId)

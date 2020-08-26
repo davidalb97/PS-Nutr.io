@@ -155,7 +155,7 @@ class RestaurantMealService(
                 .getMealRestaurantInfo(restaurantMeal.restaurant.identifier.value)
                 ?: throw IllegalStateException("Expected RestaurantInfo for given RestaurantMeal, but none was found!")
 
-        submissionService.deleteSubmission(restaurantInfo.restaurantMealIdentifier, submitterId)
+        submissionService.deleteSubmission(restaurantInfo.restaurantMealIdentifier, submitterId, false)
     }
 
     fun deleteUserPortion(restaurantId: RestaurantIdentifier, mealId: Int, submitterId: Int) {
@@ -164,7 +164,7 @@ class RestaurantMealService(
                 ?.let { it.userPortion(submitterId) }
                 ?: throw PortionNotFoundException()
 
-        submissionService.deleteSubmission(userPortion.identifier, submitterId)
+        submissionService.deleteSubmission(userPortion.identifier, submitterId, false)
     }
 
     /**

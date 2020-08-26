@@ -7,6 +7,7 @@ import pt.isel.ps.g06.httpserver.common.exception.clientError.InvalidReportSubmi
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionContractType.REPORTABLE
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.ReportDao
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbReportDto
+import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbSimplifiedReportDto
 
 private val isolationLevel = TransactionIsolationLevel.SERIALIZABLE
 private val reportDaoClass = ReportDao::class.java
@@ -17,6 +18,12 @@ class ReportDbRepository(jdbi: Jdbi) : BaseDbRepo(jdbi) {
     fun getAll(): Collection<DbReportDto> {
         return jdbi.inTransaction<Collection<DbReportDto>, Exception>(isolationLevel) {
             return@inTransaction it.attach(reportDaoClass).getAll()
+        }
+    }
+
+    fun getAllBySubmissionType(submissionType: String): Collection<DbSimplifiedReportDto> {
+        return jdbi.inTransaction<Collection<DbSimplifiedReportDto>, Exception>(isolationLevel) {
+            return@inTransaction it.attach(reportDaoClass).getAllBySubmissionAndType(submissionType)
         }
     }
 

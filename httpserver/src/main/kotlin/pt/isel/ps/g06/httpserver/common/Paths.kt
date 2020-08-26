@@ -1,8 +1,10 @@
 package pt.isel.ps.g06.httpserver.common
 
 const val SUBMISSION_ID_VALUE = "submissionId"
+const val SUBMISSION_TYPE = "submissionId"
 const val RESTAURANT_ID_VALUE = "restaurantId"
 const val MEAL_ID_VALUE = "mealId"
+const val INGREDIENT_ID_VALUE = "mealId"
 const val PROFILE_NAME_VALUE = "profileName"
 const val REPORT_ID_VALUE = "reportId"
 const val USER_EMAIL_VALUE = "userEmail"
@@ -35,6 +37,7 @@ const val CUISINES = "/cuisine"
 
 //Ingredients
 const val INGREDIENTS = "/ingredient"
+const val INGREDIENT = "/ingredient/{$INGREDIENT_ID_VALUE}"
 
 //User
 const val USER = "/user"
