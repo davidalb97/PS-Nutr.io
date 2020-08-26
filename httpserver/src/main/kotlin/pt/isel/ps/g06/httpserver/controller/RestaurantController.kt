@@ -120,11 +120,7 @@ class RestaurantController(
             throw NotSubmissionOwnerException()
         }
 
-        submissionService.deleteSubmission(
-                restaurant.identifier.value.submissionId!!,
-                user.identifier,
-                user.userRole == MOD_USER
-        )
+        submissionService.deleteSubmission(restaurant.identifier.value.submissionId!!, user)
 
         return ResponseEntity
                 .ok()

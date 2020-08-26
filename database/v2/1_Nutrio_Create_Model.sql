@@ -109,6 +109,7 @@ CREATE TABLE Report(
 	submitter_id integer,
 	submission_id integer,
 	description varchar(500) NOT NULL,
+	UNIQUE(submitter_id, submission_id),
 	PRIMARY KEY(report_id),
 	FOREIGN KEY(submission_id) REFERENCES Submission(submission_id) ON DELETE CASCADE,
 	FOREIGN KEY(submitter_id) REFERENCES Submitter(submitter_id)

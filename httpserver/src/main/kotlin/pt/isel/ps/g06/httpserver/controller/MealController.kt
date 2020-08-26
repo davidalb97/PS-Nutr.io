@@ -183,7 +183,7 @@ class MealController(
             throw NotSubmissionOwnerException()
         }
 
-        submissionService.deleteSubmission(meal.identifier, user.identifier, false)
+        submissionService.deleteSubmission(meal.identifier, user)
 
         return ResponseEntity
                 .ok()

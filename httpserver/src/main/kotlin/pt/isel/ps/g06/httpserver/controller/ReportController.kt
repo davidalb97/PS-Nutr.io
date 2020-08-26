@@ -13,7 +13,6 @@ import pt.isel.ps.g06.httpserver.service.UserService
 
 @RestController
 class ReportController(
-        private val authenticationService: AuthenticationService,
         private val reportService: ReportService,
         private val userService: UserService
 ) {
@@ -22,7 +21,7 @@ class ReportController(
     fun getReports(
             user: User,
             @RequestParam type: SubmissionType?
-    ): ResponseEntity<List<*>> {
+    ): ResponseEntity<Collection<*>> {
 
         // Check if the user is a moderator
         userService.ensureModerator(user)
@@ -37,7 +36,7 @@ class ReportController(
     fun getAllReportsFromSubmission(
             @PathVariable(SUBMISSION_ID_VALUE) submissionId: Int,
             user: User
-    ): ResponseEntity<List<Report>>  {
+    ): ResponseEntity<Collection<Report>>  {
 
         // Check if the user is a moderator
         userService.ensureModerator(user)
