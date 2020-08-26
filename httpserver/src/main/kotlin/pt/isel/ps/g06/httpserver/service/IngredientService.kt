@@ -2,6 +2,7 @@ package pt.isel.ps.g06.httpserver.service
 
 import org.springframework.stereotype.Service
 import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.restaurant.DbIngredientResponseMapper
+import pt.isel.ps.g06.httpserver.dataAccess.db.MealType
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.MealDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.input.IngredientInput
@@ -28,7 +29,8 @@ class IngredientService(
                         mealName = mealIngredientInput.name!!,
                         quantity = mealIngredientInput.quantity!!,
                         cuisines = mealIngredientInput.cuisines!!,
-                        ingredients = mealIngredientInput.ingredients!!
+                        ingredients = mealIngredientInput.ingredients!!,
+                        type = MealType.SUGGESTED
                 ).let(ingredientResponseMapper::mapTo)
     }
 }

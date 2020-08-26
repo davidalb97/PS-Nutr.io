@@ -158,6 +158,10 @@ CREATE TABLE Meal(
 	carbs integer NOT NULL,
 	quantity integer NOT NULL,
 	unit varchar(10) CHECK(unit = 'gr'),
+	meal_type varchar(10) CHECK(
+		meal_type = 'Suggested' OR
+		meal_type = 'Custom'
+	),
 	FOREIGN KEY(submission_id) REFERENCES Submission(submission_id) ON DELETE CASCADE
 );
 

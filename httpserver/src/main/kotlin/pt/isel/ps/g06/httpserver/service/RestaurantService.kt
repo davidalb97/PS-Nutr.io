@@ -105,7 +105,7 @@ class RestaurantService(
         )
     }
 
-    fun getOrCreateRestaurant(restaurantIdentifier: RestaurantIdentifier): Restaurant {
+    fun getOrInsertRestaurant(restaurantIdentifier: RestaurantIdentifier): Restaurant {
         var restaurant = getRestaurant(restaurantIdentifier) ?: throw RestaurantNotFoundException()
         restaurant = createRestaurantIfAbsent(restaurant)
         return restaurant
@@ -165,7 +165,7 @@ class RestaurantService(
     }
 
     fun addReport(submitterId: Int, restaurantIdentifier: RestaurantIdentifier, report: String) {
-        val restaurant = getOrCreateRestaurant(restaurantIdentifier)
+        val restaurant = getOrInsertRestaurant(restaurantIdentifier)
 
         dbReportDbRepository.insert(submitterId, restaurant.identifier.value.submissionId!!, report)
     }

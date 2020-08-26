@@ -1,9 +1,9 @@
 package pt.isel.ps.g06.httpserver.service
 
 import org.springframework.stereotype.Service
-import pt.isel.ps.g06.httpserver.common.MEAL
 import pt.isel.ps.g06.httpserver.common.exception.clientError.InvalidMealException
 import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.restaurant.DbMealResponseMapper
+import pt.isel.ps.g06.httpserver.dataAccess.db.MealType
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.FavoriteDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.MealDbRepository
@@ -37,35 +37,19 @@ class MealService(
                     .getBySubmitterId(submitterId, count, skip)
                     .map(dbMealResponseMapper::mapTo)
 
-    fun createCustomMeal(
+    fun getUserFavoriteMeals(submitterId: Int, count: Int?, skip: Int?): Sequence<Meal> =
+            dbMealRepository
+                    .getAllUserFavorites(submitterId, count, skip)
+                    .map(dbMealResponseMapper::mapTo)
+
+    fun createMeal(
             submitterId: Int,
             name: String,
             quantity: Int,
             ingredients: Collection<IngredientInput>,
-            cuisines: Collection<String>
+            cuisines: Collection<String>,
+            mealType: MealType
     ): Meal {
-        validateMealQuantity(ingredients, quantity)
-
-        val createdMeal = dbMealRepository.insertCustom(
-                submitterId = submitterId,
-                submissionType = SubmissionType.MEAL,
-                mealName = name,
-                cuisines = cuisines,
-                ingredients = ingredients,
-                quantity = quantity
-        )
-
-        return dbMealResponseMapper.mapTo(createdMeal)
-    }
-
-    fun createSuggestedMeal(
-            submitterId: Int,
-            name: String,
-            quantity: Int,
-            ingredients: Collection<IngredientInput>,
-            cuisines: Collection<String>
-    ): Meal {
-
         validateMealQuantity(ingredients, quantity)
 
         val createdMeal = dbMealRepository.insert(
@@ -74,7 +58,8 @@ class MealService(
                 mealName = name,
                 cuisines = cuisines,
                 ingredients = ingredients,
-                quantity = quantity
+                quantity = quantity,
+                type = mealType
         )
 
         return dbMealResponseMapper.mapTo(createdMeal)

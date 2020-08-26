@@ -7,6 +7,7 @@ import org.springframework.web.util.UriComponentsBuilder
 import pt.isel.ps.g06.httpserver.common.*
 import pt.isel.ps.g06.httpserver.common.exception.forbidden.NotSubmissionOwnerException
 import pt.isel.ps.g06.httpserver.common.exception.notFound.MealNotFoundException
+import pt.isel.ps.g06.httpserver.dataAccess.db.MealType
 import pt.isel.ps.g06.httpserver.dataAccess.input.FavoriteInput
 import pt.isel.ps.g06.httpserver.dataAccess.input.MealInput
 import pt.isel.ps.g06.httpserver.dataAccess.output.meal.*
@@ -28,7 +29,6 @@ class MealController(
     /**
      * Obtains all meals present in the database, filtered down by query parameters
      *
-     * @param mealTypes filters by meal type. View [allowedMealTypes] to see possible values;
      * Defaults to [suggested]
      *
      * @param cuisines filters obtained meals by specific cuisine(s).
@@ -78,12 +78,13 @@ class MealController(
         userService.ensureModerator(user)
 
         //Due to validators we are sure fields are never null
-        val createdMeal = mealService.createSuggestedMeal(
+        val createdMeal = mealService.createMeal(
                 name = meal.name!!,
                 ingredients = meal.ingredients!!,
                 cuisines = meal.cuisines!!,
                 quantity = meal.quantity!!,
-                submitterId = user.identifier
+                submitterId = user.identifier,
+                mealType = MealType.SUGGESTED
         )
 
         return ResponseEntity.created(
@@ -99,13 +100,12 @@ class MealController(
             user: User,
             @RequestParam count: Int?,
             @RequestParam skip: Int?
-    ): ResponseEntity<List<Meal>> {
+    ): ResponseEntity<SimplifiedMealContainer> {
 
         val userCustomMeals = mealService
                 .getUserCustomMeals(user.identifier, count, skip)
-                .toList()
 
-        return ResponseEntity.ok().body(userCustomMeals)
+        return ResponseEntity.ok().body(toSimplifiedMealContainer(userCustomMeals, user.identifier))
     }
 
     // TODO - has different repo method
@@ -115,12 +115,13 @@ class MealController(
             user: User
     ): ResponseEntity<Void> {
         //Due to validators we are sure fields are never null
-        val createdMeal = mealService.createCustomMeal(
+        val createdMeal = mealService.createMeal(
                 submitterId = user.identifier,
                 name = meal.name!!,
                 quantity = meal.quantity!!,
                 ingredients = meal.ingredients!!,
-                cuisines = meal.cuisines!!
+                cuisines = meal.cuisines!!,
+                mealType = MealType.SUGGESTED
         )
 
         return ResponseEntity.created(
@@ -129,6 +130,20 @@ class MealController(
                         .buildAndExpand(createdMeal.identifier)
                         .toUri()
         ).build()
+    }
+
+    @GetMapping(MEALS_FAVORITE)
+    fun getFavoriteMealsFromUser(
+            user: User,
+            count: Int?,
+            skip: Int?
+    ): ResponseEntity<SimplifiedMealContainer> {
+
+        val userCustomMeals = mealService
+                .getUserFavoriteMeals(user.identifier, count, skip)
+
+        return ResponseEntity.ok()
+                .body(toSimplifiedMealContainer(userCustomMeals, user.identifier))
     }
 
     @PutMapping(MEAL_FAVORITE)
