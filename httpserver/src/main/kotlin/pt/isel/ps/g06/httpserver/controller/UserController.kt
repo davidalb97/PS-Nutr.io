@@ -13,6 +13,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.input.UserRegisterInput
 import pt.isel.ps.g06.httpserver.dataAccess.output.security.UserLoginOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.security.UserRegisterOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.user.UserInfoOutput
+import pt.isel.ps.g06.httpserver.dataAccess.output.user.mapUserToOutput
 import pt.isel.ps.g06.httpserver.model.User
 import pt.isel.ps.g06.httpserver.service.AuthenticationService
 import pt.isel.ps.g06.httpserver.service.UserService
@@ -52,7 +53,7 @@ class UserController(private val userService: UserService, private val authentic
             ResponseEntity.ok(
                     userService
                             .getUserSubmitterInfo(user)
-                            .let { submitter -> UserInfoOutput(user.userEmail, submitter.name, submitter.image) }
+                            .let { submitter -> mapUserToOutput(user.userEmail, submitter) }
             )
 
 
