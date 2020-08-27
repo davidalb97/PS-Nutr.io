@@ -51,11 +51,12 @@ class RestaurantMealDbRepository(jdbi: Jdbi) : SubmissionDbRepository(jdbi) {
                     .insert(RESTAURANT_MEAL.toString())
                     .submission_id
 
-            val contracts = EnumSet.of(FAVORABLE)
+            //TODO check if all contracts should be reportable & votable
+            val contracts = EnumSet.of(FAVORABLE, REPORTABLE, VOTABLE)
             if (submitterId != null) {
                 it.attach(SubmissionSubmitterDao::class.java).insert(submissionId, submitterId)
-                contracts.add(REPORTABLE)
-                contracts.add(VOTABLE)
+//                contracts.add(REPORTABLE)
+//                contracts.add(VOTABLE)
             }
 
             //Insert all needed contracts
