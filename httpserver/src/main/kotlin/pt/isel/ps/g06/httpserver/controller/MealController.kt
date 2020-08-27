@@ -139,8 +139,8 @@ class MealController(
     @GetMapping(MEALS_FAVORITE)
     fun getFavoriteMealsFromUser(
             user: User,
-            @RequestParam @Min(0) @Max(MAX_COUNT) count: Int?,
-            @RequestParam @Min(0) skip: Int?
+            @RequestParam @Min(0) skip: Int?,
+            @RequestParam @Min(0) @Max(MAX_COUNT) count: Int?
     ): ResponseEntity<SimplifiedMealContainer> {
 
         val userCustomMeals = mealService
