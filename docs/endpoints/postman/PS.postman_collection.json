@@ -9,6 +9,31 @@
 			"name": "auth",
 			"item": [
 				{
+					"name": "userInfo",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{USER_JWT}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/user",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "loginUser",
 					"protocolProfileBehavior": {
 						"disabledSystemHeaders": {
@@ -141,31 +166,6 @@
 							"path": [
 								"user",
 								"register"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "userInfo",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{USER_JWT}}",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "http://localhost:8080/user",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"user"
 							]
 						}
 					},
@@ -305,41 +305,6 @@
 			"name": "moderation",
 			"item": [
 				{
-					"name": "userBan",
-					"request": {
-						"method": "PUT",
-						"header": [
-							{
-								"key": "Authorization",
-								"type": "text",
-								"value": "Bearer {{MOD_JWT}}"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"submitterId\": 4,\r\n    \"isBanned\": false\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:8080/user/ban",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"user",
-								"ban"
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "allReports",
 					"request": {
 						"method": "GET",
@@ -459,6 +424,82 @@
 							"path": [
 								"meal",
 								"suggested"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "userBan",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{MOD_JWT}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"submitterId\": 4,\r\n    \"isBanned\": false\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/user/ban",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"user",
+								"ban"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "restaurantOwner",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{MOD_JWT}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ownerId\": 4\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/restaurant/:restaurantId",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"restaurant",
+								":restaurantId"
+							],
+							"variable": [
+								{
+									"key": "restaurantId",
+									"value": "4+232+"
+								}
 							]
 						}
 					},
@@ -977,6 +1018,53 @@
 								"meal",
 								":mealId",
 								"favorite"
+							],
+							"variable": [
+								{
+									"key": "restaurantIdentifier",
+									"value": "4+232+"
+								},
+								{
+									"key": "mealId",
+									"value": "233"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "verifyRestaurantMeal",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{USER_JWT}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"verified\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/restaurant/:restaurantIdentifier/meal/:mealId",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"restaurant",
+								":restaurantIdentifier",
+								"meal",
+								":mealId"
 							],
 							"variable": [
 								{
