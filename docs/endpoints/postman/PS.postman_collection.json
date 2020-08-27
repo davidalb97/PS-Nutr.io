@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "3ef62674-1c8d-49cb-97f7-152a4fde148e",
+		"_postman_id": "29f04da4-274a-4b6d-8f4b-5e3674a8ca0d",
 		"name": "PS",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -95,7 +95,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"admin@email.com\",\r\n    \"password\": \"memes\"\r\n}",
+							"raw": "{\r\n    \"email\": \"1234@1234\",\r\n    \"password\": \"1234\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -215,7 +215,7 @@
 							}
 						],
 						"url": {
-							"raw": "http://localhost:8080/user/profile/profile1",
+							"raw": "http://localhost:8080/user/profile/Profile1",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -224,7 +224,7 @@
 							"path": [
 								"user",
 								"profile",
-								"profile1"
+								"Profile1"
 							]
 						}
 					},
@@ -260,6 +260,39 @@
 							"path": [
 								"user",
 								"profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "insulinProfile",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{USER_JWT}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/user/profile/:profileName",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"user",
+								"profile",
+								":profileName"
+							],
+							"variable": [
+								{
+									"key": "profileName",
+									"value": "Profile1"
+								}
 							]
 						}
 					},
@@ -326,6 +359,37 @@
 							"port": "8080",
 							"path": [
 								"report"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "allReportsByType",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{MOD_JWT}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/report?type=RESTAURANT",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"report"
+							],
+							"query": [
+								{
+									"key": "type",
+									"value": "RESTAURANT"
+								}
 							]
 						}
 					},
@@ -505,6 +569,39 @@
 					"response": []
 				},
 				{
+					"name": "restaurant",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{USER_JWT}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"MockRestaurant\",\r\n    \"latitude\": 9.45481,\r\n    \"longitude\": 75.64455,\r\n    \"cuisines\": [\"Italian\"],\r\n    \"ownerId\": null\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/restaurant",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"restaurant"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "reportRestaurant",
 					"request": {
 						"method": "PUT",
@@ -583,39 +680,6 @@
 									"key": "restaurantIdentifier",
 									"value": "2++here:pds:place:620eyckr-c667200476bd439eb10f81f0469d2f7d"
 								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "restaurant",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{USER_JWT}}",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"MockRestaurant2\",\r\n    \"latitude\": 9.45481,\r\n    \"longitude\": 75.64455,\r\n    \"cuisines\": [\"Italian\"],\r\n    \"ownerId\": null\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "localhost:8080/restaurant",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"restaurant"
 							]
 						}
 					},
@@ -743,6 +807,48 @@
 					"response": []
 				},
 				{
+					"name": "mealForRestaurant",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{USER_JWT}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"mealId\": 233\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/restaurant/:restaurant_id/meal",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"restaurant",
+								":restaurant_id",
+								"meal"
+							],
+							"variable": [
+								{
+									"key": "restaurant_id",
+									"value": "4+232+"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "reportRestaurantMeal",
 					"request": {
 						"method": "PUT",
@@ -779,11 +885,11 @@
 							"variable": [
 								{
 									"key": "restaurantIdentifier",
-									"value": "2++here:pds:place:620aabd1-06ab55432064055a739de11c3bc12038"
+									"value": "4+232+"
 								},
 								{
 									"key": "mealId",
-									"value": "186"
+									"value": "233"
 								}
 							]
 						}
@@ -827,11 +933,11 @@
 							"variable": [
 								{
 									"key": "restaurantIdentifier",
-									"value": "2++here:pds:place:620aabd1-06ab55432064055a739de11c3bc12038"
+									"value": "4+232+"
 								},
 								{
 									"key": "mealId",
-									"value": "186"
+									"value": "233"
 								}
 							]
 						}
@@ -875,11 +981,11 @@
 							"variable": [
 								{
 									"key": "restaurantIdentifier",
-									"value": "2++here:pds:place:620aabd1-06ab55432064055a739de11c3bc12038"
+									"value": "4+232+"
 								},
 								{
 									"key": "mealId",
-									"value": "186"
+									"value": "233"
 								}
 							]
 						}
@@ -892,6 +998,32 @@
 		{
 			"name": "meal",
 			"item": [
+				{
+					"name": "favoriteMeals",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{USER_JWT}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/meal/favorite",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"meal",
+								"favorite"
+							]
+						}
+					},
+					"response": []
+				},
 				{
 					"name": "meals",
 					"request": {
@@ -1030,32 +1162,6 @@
 						}
 					},
 					"response": []
-				},
-				{
-					"name": "favoriteMeals",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{USER_JWT}}",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "http://localhost:8080/meal/favorite",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"meal",
-								"favorite"
-							]
-						}
-					},
-					"response": []
 				}
 			],
 			"protocolProfileBehavior": {}
@@ -1075,7 +1181,7 @@
 							}
 						],
 						"url": {
-							"raw": "http://localhost:8080/ingredient?count=10&skip=0",
+							"raw": "http://localhost:8080/ingredient",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -1083,16 +1189,6 @@
 							"port": "8080",
 							"path": [
 								"ingredient"
-							],
-							"query": [
-								{
-									"key": "count",
-									"value": "10"
-								},
-								{
-									"key": "skip",
-									"value": "0"
-								}
 							]
 						}
 					},
@@ -1123,6 +1219,44 @@
 							"port": "8080",
 							"path": [
 								"cuisine"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "submission",
+			"item": [
+				{
+					"name": "submission",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{USER_JWT}}"
+							}
+						],
+						"url": {
+							"raw": "localhost:8080/submission/:submissionId",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"submission",
+								":submissionId"
+							],
+							"variable": [
+								{
+									"key": "submissionId",
+									"type": "string",
+									"value": "227"
+								}
 							]
 						}
 					},
