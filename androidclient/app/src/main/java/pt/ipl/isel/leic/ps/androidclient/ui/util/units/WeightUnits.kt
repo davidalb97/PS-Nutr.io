@@ -7,7 +7,7 @@ private const val GRAM_OUNCE_RATIO = 0.035274
 
 
 enum class WeightUnits(private val str: String) {
-    GRAMS("grams"),
+    GRAMS("gr"),
     OUNCES("ounces");
 
     fun convert(targetUnit: WeightUnits, value: Float): Float {

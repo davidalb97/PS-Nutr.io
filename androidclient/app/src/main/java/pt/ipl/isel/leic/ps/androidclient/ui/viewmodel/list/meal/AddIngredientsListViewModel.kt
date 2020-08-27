@@ -4,51 +4,47 @@ import android.os.Parcel
 import android.os.Parcelable
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.ingredientRepository
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealIngredient
+import pt.ipl.isel.leic.ps.androidclient.data.model.MealItem
 import pt.ipl.isel.leic.ps.androidclient.data.model.Source
 import pt.ipl.isel.leic.ps.androidclient.ui.util.ItemAction
 import pt.ipl.isel.leic.ps.androidclient.ui.util.Navigation
+import pt.ipl.isel.leic.ps.androidclient.util.readListCompat
 import kotlin.reflect.KClass
 
-open class IngredientListViewModel : BaseMealListViewModel<MealIngredient> {
+open class AddIngredientsListViewModel : IngredientListViewModel {
 
     constructor(
         navDestination: Navigation,
-        actions: List<ItemAction>
+        actions: List<ItemAction>,
+        checkedItems: List<MealIngredient> = emptyList()
     ) : super(
         navDestination = navDestination,
-        actions = actions,
-        source = Source.API
-    )
+        actions = actions
+    ) {
+        if(checkedItems.isNotEmpty()) {
+            liveDataHandler.restoreFromValues(checkedItems)
+        }
+    }
 
     constructor(parcel: Parcel) : super(parcel)
 
     override fun update() {
-        if (!tryRestore()) {
-            when (source) {
-                Source.API -> ingredientRepository.getIngredients(
-                    count = count,
-                    skip = skip,
-                    success = liveDataHandler::add,
-                    error = onError
-                )
-                else -> throw UnsupportedOperationException("Can only obtain ingredients from API!")
-            }
-        }
+        tryRestore()
     }
 
     override fun describeContents(): Int {
         TODO("Not yet implemented")
     }
 
-    companion object CREATOR : Parcelable.Creator<IngredientListViewModel> {
+    companion object CREATOR : Parcelable.Creator<AddIngredientsListViewModel> {
 
-        override fun createFromParcel(parcel: Parcel): IngredientListViewModel {
-            return IngredientListViewModel(
+        override fun createFromParcel(parcel: Parcel): AddIngredientsListViewModel {
+            return AddIngredientsListViewModel(
                 parcel
             )
         }
 
-        override fun newArray(size: Int): Array<IngredientListViewModel?> {
+        override fun newArray(size: Int): Array<AddIngredientsListViewModel?> {
             return arrayOfNulls(size)
         }
 

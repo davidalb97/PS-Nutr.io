@@ -6,7 +6,6 @@ import pt.ipl.isel.leic.ps.androidclient.data.model.MealItem
 import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.BaseRecyclerAdapter
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.listener.check.ICheckListener
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.listener.click.IItemClickListener
-import pt.ipl.isel.leic.ps.androidclient.ui.util.getMealItems
 import pt.ipl.isel.leic.ps.androidclient.ui.viewholder.meal.BaseMealRecyclerViewHolder
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.meal.BaseMealListViewModel
 
@@ -14,6 +13,7 @@ abstract class BaseMealRecyclerAdapter
 <T : MealItem, VM : BaseMealListViewModel<T>, VH : BaseMealRecyclerViewHolder<T>>(
     viewModel: VM,
     ctx: Context,
+    val itemCheckPredicator: ((T) -> Boolean)? = null,
     val onCheckListener: ICheckListener<T>? = null,
     val onClickListener: IItemClickListener<T>? = null
 ) : BaseRecyclerAdapter<T, VM, VH>(
@@ -51,8 +51,10 @@ abstract class BaseMealRecyclerAdapter
         )
     }
 
-    fun onCheck(item: T, isChecked: Boolean) {
-        onCheckListener?.onCheckChange(item, isChecked)
+    fun onCheck(viewHolder: BaseMealRecyclerViewHolder<T>, isChecked: Boolean) {
+        onCheckListener?.onCheckChange(viewHolder.item, isChecked) {
+            viewHolder.bindingAdapter?.notifyItemChanged(viewHolder.layoutPosition)
+        }
     }
 
     fun setupOnClick(viewHolder: BaseMealRecyclerViewHolder<T>) {
@@ -61,7 +63,5 @@ abstract class BaseMealRecyclerAdapter
         }
     }
 
-    fun isAlreadyChecked(item: T) = viewModel.checkedItems.any {
-        it.submissionId == item.submissionId
-    }
+    fun isAlreadyChecked(item: T) = itemCheckPredicator?.invoke(item) ?: false
 }

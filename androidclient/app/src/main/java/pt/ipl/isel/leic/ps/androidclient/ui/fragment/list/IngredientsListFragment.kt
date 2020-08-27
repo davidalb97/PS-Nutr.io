@@ -19,12 +19,14 @@ open class IngredientsListFragment
     ICheckListenerOwner<MealIngredient>,
     IItemClickListenerOwner<MealIngredient> {
 
+    override var restoredItemPredicator: ((MealIngredient) -> Boolean)? = null
     override var onCheckListener: ICheckListener<MealIngredient>? = null
     override var onClickListener: IItemClickListener<MealIngredient>? = null
     override val recyclerAdapter by lazy {
         MealIngredientRecyclerAdapter(
             recyclerViewModel,
             this.requireContext(),
+            restoredItemPredicator,
             onCheckListener,
             onClickListener
         )

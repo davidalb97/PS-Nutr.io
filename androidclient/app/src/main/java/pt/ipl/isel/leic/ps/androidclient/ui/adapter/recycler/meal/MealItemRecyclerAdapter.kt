@@ -11,11 +11,13 @@ import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.meal.MealItemListView
 class MealItemRecyclerAdapter(
     viewModel: MealItemListViewModel,
     ctx: Context,
+    itemCheckPredicator: ((MealItem) -> Boolean)? = null,
     onCheckListener: ICheckListener<MealItem>? = null,
     onClickListener: IItemClickListener<MealItem>? = null
 ) : BaseMealRecyclerAdapter<MealItem, MealItemListViewModel, MealItemRecyclerViewHolder>(
     viewModel = viewModel,
     ctx = ctx,
+    itemCheckPredicator = itemCheckPredicator,
     onCheckListener = onCheckListener,
     onClickListener = onClickListener
 ) {
@@ -45,11 +47,11 @@ class MealItemRecyclerAdapter(
 
             override fun onCheck(isChecked: Boolean) =
                 this@MealItemRecyclerAdapter.onCheck(
-                    item = item,
+                    viewHolder = this,
                     isChecked = isChecked
                 )
 
-            override fun isAlreadyChecked(): Boolean =
+            override fun isRestored(): Boolean =
                 this@MealItemRecyclerAdapter.isAlreadyChecked(item)
         }
     }

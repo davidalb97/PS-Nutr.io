@@ -83,6 +83,12 @@ class AddCustomMealFragment : BaseFragment() {
      * Setups all the other elements inside the fragment
      */
     private fun fragmentElementsSetup(view: View) {
+
+        setupUnitSpinner(view)
+        setupIngredients(view)
+        setupCuisines(view)
+        setupSubmit(view)
+
         customMealName = view.findViewById(R.id.meal_name)
         customMealName.setText(viewModel.editMeal?.name)
 
@@ -90,20 +96,17 @@ class AddCustomMealFragment : BaseFragment() {
         customMealAmount.setText(viewModel.editMeal?.amount?.toString())
 
         mealCarbs = view.findViewById(R.id.meal_carbs)
-        val restoredCarbs = viewModel.editMeal?.carbs?.toString() ?: 0
+        val totalCarbs = ingredientsViewModel.pickedItems.sumBy { it.carbs } +
+                (viewModel.editMeal?.carbs ?: 0)
+        val totalAmount = ingredientsViewModel.pickedItems.sumBy { it.amount }
 
         mealCarbs.text = String.format(
             getString(R.string.custom_meal_total_carbohydrates_amount),
-            restoredCarbs
+            totalCarbs
         )
 
         customImageUrl = view.findViewById(R.id.custom_meal_image_url)
-        createButton = view.findViewById(R.id.create_custom_meal_button)
-
-        setupUnitSpinner(view)
-        setupIngredients(view)
-        setupCuisines(view)
-        setupSubmit()
+        customImageUrl.setText(viewModel.editMeal?.imageUri?.toString())
     }
 
     private fun setupIngredients(view: View) {
@@ -118,7 +121,7 @@ class AddCustomMealFragment : BaseFragment() {
         mealsImgButton.setOnClickListener {
             val bundle = Bundle()
             bundle.putNavigation(Navigation.SEND_TO_ADD_CUSTOM_MEAL)
-            bundle.putMealItems(ingredientsViewModel.pickedItems)
+            bundle.putMealIngredients(ingredientsViewModel.pickedItems)
             view.findNavController().navigate(Navigation.SEND_TO_ADD_MEALS.navId, bundle)
         }
         if (!ingredientsViewModel.tryRestore()) {
@@ -161,7 +164,8 @@ class AddCustomMealFragment : BaseFragment() {
         }
     }
 
-    private fun setupSubmit() {
+    private fun setupSubmit(view: View) {
+        createButton = view.findViewById(R.id.create_custom_meal_button)
         createButton.setOnClickListener {
             val noneFieldBlank =
                 listOf(

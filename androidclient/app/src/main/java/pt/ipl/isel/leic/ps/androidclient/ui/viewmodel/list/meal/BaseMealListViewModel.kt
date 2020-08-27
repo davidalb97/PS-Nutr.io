@@ -20,22 +20,19 @@ abstract class BaseMealListViewModel<M : Parcelable> : BaseListViewModel<M> {
     val source: Source?
     val restaurantId: String?
     val cuisines: List<Cuisine>
-    val checkedItems: List<MealItem>
 
     constructor(
         navDestination: Navigation,
         actions: List<ItemAction>,
         source: Source?,
         restaurantId: String? = null,
-        cuisines: List<Cuisine> = emptyList(),
-        checkedItems: List<MealItem> = emptyList()
+        cuisines: List<Cuisine> = emptyList()
     ) : super() {
         this.navDestination = navDestination
         this.actions = actions
         this.source = source
         this.restaurantId = restaurantId
         this.cuisines = cuisines
-        this.checkedItems = checkedItems
     }
 
     constructor(parcel: Parcel) : super(parcel) {
@@ -44,7 +41,6 @@ abstract class BaseMealListViewModel<M : Parcelable> : BaseListViewModel<M> {
         this.source = (parcel.readSerializable() as Int?)?.let { Source.values()[it] }
         this.restaurantId = parcel.readString()
         this.cuisines = parcel.readListCompat(Cuisine::class)
-        this.checkedItems = parcel.readListCompat(MealItem::class)
     }
 
     fun insertInfo(mealInfo: MealInfo) = mealRepository.insertInfo(mealInfo)
@@ -96,6 +92,5 @@ abstract class BaseMealListViewModel<M : Parcelable> : BaseListViewModel<M> {
         dest?.writeSerializable(source?.ordinal)
         dest?.writeString(restaurantId)
         dest?.writeList(cuisines)
-        dest?.writeList(checkedItems)
     }
 }

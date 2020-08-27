@@ -4,4 +4,5 @@ interface ICheckListenerOwner<T> {
 
     var onCheckListener: ICheckListener<T>?
 
+    var restoredItemPredicator: ((T) -> Boolean)?
 }

@@ -12,7 +12,7 @@ interface ICheckBox<T> : IAction {
 
     fun onCheck(isChecked: Boolean)
 
-    fun isAlreadyChecked(): Boolean
+    fun isRestored(): Boolean
 
     fun setupCheckBox(view: View, item: T) {
         if(!actions.contains(ItemAction.CHECK)) {
@@ -22,7 +22,7 @@ interface ICheckBox<T> : IAction {
         checkBox.setOnCheckedChangeListener { _, isChecked ->
             onCheck(isChecked)
         }
-        if(isAlreadyChecked()) {
+        if(isRestored()) {
             checkBox.isChecked = true
         }
         checkBox.visibility = View.VISIBLE

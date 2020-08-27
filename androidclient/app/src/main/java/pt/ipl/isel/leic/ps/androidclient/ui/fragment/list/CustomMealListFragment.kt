@@ -23,12 +23,15 @@ class CustomMealListFragment
     IItemClickListenerOwner<MealItem>,
     IUserSession {
 
+    override var restoredItemPredicator: ((MealItem) -> Boolean)? = null
     override var onCheckListener: ICheckListener<MealItem>? = null
     override var onClickListener: IItemClickListener<MealItem>? = null
+
     override val recyclerAdapter by lazy {
         MealItemRecyclerAdapter(
             recyclerViewModel,
             this.requireContext(),
+            restoredItemPredicator,
             onCheckListener,
             onClickListener
         )

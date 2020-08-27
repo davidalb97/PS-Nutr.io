@@ -29,13 +29,17 @@ abstract class BaseRecyclerViewHolder<T : Any>(
 
     init {
         view.setOnClickListener {
-            onClickListener?.onClick(item, layoutPosition)
+            onClickListener?.onClick(item) {
+                reRender()
+            }
         }
     }
 
     open fun bindTo(item: T) {
         this.item = item
     }
+
+    fun reRender() = bindingAdapter?.notifyItemChanged(layoutPosition)
 
     override fun fetchCtx(): Context = ctx
 }

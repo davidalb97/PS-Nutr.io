@@ -20,15 +20,13 @@ open class MealItemListViewModel : BaseMealListViewModel<MealItem> {
         actions: List<ItemAction>,
         source: Source?,
         restaurantId: String? = null,
-        cuisines: List<Cuisine> = emptyList(),
-        checkedItems: List<MealItem> = emptyList()
+        cuisines: List<Cuisine> = emptyList()
     ) : super(
         navDestination = navDestination,
         actions = actions,
         source = source,
         restaurantId = restaurantId,
-        cuisines = cuisines,
-        checkedItems = checkedItems
+        cuisines = cuisines
     )
 
     constructor(parcel: Parcel) : super(parcel)

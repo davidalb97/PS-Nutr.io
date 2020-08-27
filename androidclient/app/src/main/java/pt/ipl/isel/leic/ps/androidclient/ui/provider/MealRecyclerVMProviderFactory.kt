@@ -26,8 +26,7 @@ class MealRecyclerVMProviderFactory(
                     actions = requireNotNull(arguments?.getItemActions()),
                     source = requireNotNull(arguments?.getSource()),
                     restaurantId = arguments?.getRestaurantSubmissionId(),
-                    cuisines = arguments?.getCuisines() ?: emptyList(),
-                    checkedItems = arguments?.getMealItems() ?: emptyList()
+                    cuisines = arguments?.getCuisines() ?: emptyList()
                 )
             }
             else -> null
