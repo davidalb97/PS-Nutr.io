@@ -23,8 +23,8 @@ class ReportController(
     fun getReports(
             user: User,
             @RequestParam type: SubmissionType?,
-            @RequestParam skip: Int?,
-            @RequestParam(defaultValue = COUNT.toString()) @Min(0) @Max(COUNT) count: Int?
+            @RequestParam @Min(0) skip: Int?,
+            @RequestParam @Min(0) @Max(MAX_COUNT) count: Int?
     ): ResponseEntity<Collection<*>> {
 
         // Check if the user is a moderator

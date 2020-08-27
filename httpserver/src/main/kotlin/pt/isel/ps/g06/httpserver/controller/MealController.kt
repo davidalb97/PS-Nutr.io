@@ -2,6 +2,7 @@ package pt.isel.ps.g06.httpserver.controller
 
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
+import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.util.UriComponentsBuilder
 import pt.isel.ps.g06.httpserver.common.*
@@ -19,6 +20,8 @@ import pt.isel.ps.g06.httpserver.service.UserService
 import javax.validation.Valid
 import javax.validation.constraints.Max
 import javax.validation.constraints.Min
+
+@Validated
 @Suppress("MVCPathVariableInspection")
 @RestController
 @RequestMapping(produces = [MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_PROBLEM_JSON_VALUE])
@@ -39,8 +42,8 @@ class MealController(
     fun getMeals(
             user: User?,
             @RequestParam cuisines: Collection<String>?,
-            @RequestParam skip: Int?,
-            @RequestParam @Min(0) count: Int?
+            @RequestParam @Min(0) skip: Int?,
+            @RequestParam @Min(0) @Max(MAX_COUNT) count: Int?
     ): ResponseEntity<SimplifiedMealContainer> {
 
         var meals = mealService.getSuggestedMeals(
@@ -49,6 +52,7 @@ class MealController(
                 cuisines = cuisines
         )
 
+        //TODO cuisine filtering should happen in database as it breaks count param
         if (cuisines != null && cuisines.isNotEmpty()) {
             //Filter by user cuisines
             meals = meals.filter {
@@ -99,8 +103,8 @@ class MealController(
     @GetMapping(MEALS_CUSTOM)
     fun getCustomMealsFromUser(
             user: User,
-            @RequestParam skip: Int?,
-            @RequestParam @Min(0) count: Int?
+            @RequestParam @Min(0) skip: Int?,
+            @RequestParam @Min(0) @Max(MAX_COUNT) count: Int?
     ): ResponseEntity<SimplifiedMealContainer> {
 
         val userCustomMeals = mealService
@@ -136,8 +140,8 @@ class MealController(
     @GetMapping(MEALS_FAVORITE)
     fun getFavoriteMealsFromUser(
             user: User,
-            count: Int?,
-            skip: Int?
+            @RequestParam @Min(0) @Max(MAX_COUNT) count: Int?,
+            @RequestParam @Min(0) skip: Int?
     ): ResponseEntity<SimplifiedMealContainer> {
 
         val userCustomMeals = mealService

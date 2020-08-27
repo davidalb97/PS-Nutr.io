@@ -21,6 +21,8 @@ import pt.isel.ps.g06.httpserver.service.RestaurantMealService
 import pt.isel.ps.g06.httpserver.service.RestaurantService
 import pt.isel.ps.g06.httpserver.service.SubmissionService
 import javax.validation.Valid
+import javax.validation.constraints.Max
+import javax.validation.constraints.Min
 
 @Suppress("MVCPathVariableInspection")
 @RestController
@@ -35,8 +37,8 @@ class RestaurantMealController(
     @GetMapping(RESTAURANT_MEALS, consumes = [MediaType.ALL_VALUE])
     fun getMealsForRestaurant(
             @PathVariable(RESTAURANT_ID_VALUE) restaurantId: String,
-            count: Int?,
-            skip: Int?,
+            @Min(0) @Max(MAX_COUNT) count: Int?,
+            @Min(0) skip: Int?,
             user: User?
     ): ResponseEntity<RestaurantMealContainerOutput> {
         val (submitterId, submissionId, apiId) = restaurantIdentifierBuilder.extractIdentifiers(restaurantId)
