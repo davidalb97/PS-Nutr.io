@@ -69,7 +69,6 @@ CREATE TABLE Submission(
 		submission_type = 'Restaurant' OR
 		submission_type = 'Portion' OR
 		submission_type = 'Meal' OR
-		submission_type = 'Ingredient' OR 
 		submission_type = 'Cuisine' OR
 		submission_type = 'ApiCuisine' OR
 		submission_type = 'RestaurantMeal'
@@ -160,8 +159,9 @@ CREATE TABLE Meal(
 	quantity integer NOT NULL,
 	unit varchar(10) CHECK(unit = 'gr'),
 	meal_type varchar(10) CHECK(
-		meal_type = 'Suggested' OR
-		meal_type = 'Custom'
+		meal_type = 'I' OR
+		meal_type = 'MS' OR
+		meal_type = 'MC'
 	),
 	FOREIGN KEY(submission_id) REFERENCES Submission(submission_id) ON DELETE CASCADE
 );
