@@ -12,7 +12,6 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.MealType
 import pt.isel.ps.g06.httpserver.dataAccess.input.FavoriteInput
 import pt.isel.ps.g06.httpserver.dataAccess.input.MealInput
 import pt.isel.ps.g06.httpserver.dataAccess.output.meal.*
-import pt.isel.ps.g06.httpserver.model.Meal
 import pt.isel.ps.g06.httpserver.model.User
 import pt.isel.ps.g06.httpserver.service.MealService
 import pt.isel.ps.g06.httpserver.service.SubmissionService
@@ -89,7 +88,7 @@ class MealController(
                 cuisines = meal.cuisines!!,
                 quantity = meal.quantity!!,
                 submitterId = user.identifier,
-                mealType = MealType.SUGGESTED
+                mealType = MealType.SUGGESTED_MEAL
         )
 
         return ResponseEntity.created(

@@ -4,7 +4,7 @@ import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.customizer.BindList
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import pt.isel.ps.g06.httpserver.dataAccess.db.MEAL_TYPE_CUSTOM
-import pt.isel.ps.g06.httpserver.dataAccess.db.MEAL_TYPE_SUGGESTED
+import pt.isel.ps.g06.httpserver.dataAccess.db.MEAL_TYPE_SUGGESTED_MEAL
 import pt.isel.ps.g06.httpserver.dataAccess.db.SUBMISSION_TYPE_MEAL
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbMealDto
 
@@ -49,8 +49,6 @@ private const val F_table = FavoriteDao.table
 private const val F_submitter_id = FavoriteDao.submitterId
 private const val F_submission_id = FavoriteDao.submissionId
 
-private const val INGREDIENT_TYPE = "Ingredient"
-
 interface MealDao {
 
     companion object {
@@ -60,8 +58,8 @@ interface MealDao {
         const val carbs = "carbs"
         const val quantity = "quantity"
         const val unit = "unit"
-        const val type = "meal_type"
-        const val attributes = "$table.$id, $table.$name, $table.$carbs, $table.$quantity, $table.$unit, $table.$type"
+        const val meal_type = "meal_type"
+        const val attributes = "$table.$id, $table.$name, $table.$carbs, $table.$quantity, $table.$unit, $table.$meal_type"
     }
 
     @SqlQuery("SELECT * FROM $table")
@@ -75,11 +73,11 @@ interface MealDao {
             "INNER JOIN $SS_table " +
             "ON $SS_table.$SS_submissionId = $table.$id " +
             "WHERE $SS_table.$SS_submitterId = :submitterId " +
-            "AND $table.$type = :type " +
+            "AND $table.$meal_type = :mealType " +
             "LIMIT :count OFFSET :skip")
     fun getAllBySubmitterIdAndType(
             @Bind submitterId: Int,
-            @Bind type: String,
+            @Bind mealType: String,
             @Bind skip: Int?,
             @Bind count: Int?
     ): Collection<DbMealDto>
@@ -102,7 +100,7 @@ interface MealDao {
             " ON $table.$id = $MC_table.$MC_mealId" +
             " INNER JOIN $C_table" +
             " ON $MC_table.$MC_cuisineId = $C_table.$C_cuisineId" +
-            " WHERE $table.$type = '$MEAL_TYPE_SUGGESTED'" +
+            " WHERE $table.$meal_type = '$MEAL_TYPE_SUGGESTED_MEAL'" +
             " AND $C_table.$C_name IN (<cuisineNames>)" +
             " ORDER BY $table.$name ASC"
     )
@@ -122,7 +120,7 @@ interface MealDao {
             " ON $table.$id = $MC_table.$MC_mealId" +
             " WHERE $SS_table.$SS_submitterId = :submitterId" +
             " AND $AS_table.$AS_apiId IN (<apiIds>)" +
-            " AND $table.$type = '$MEAL_TYPE_SUGGESTED'" +
+            " AND $table.$meal_type = '$MEAL_TYPE_SUGGESTED_MEAL'" +
             " ORDER BY $table.$name ASC"
     )
     fun getAllSuggestedForApiCuisines(
@@ -132,9 +130,7 @@ interface MealDao {
 
     @SqlQuery("SELECT $attributes" +
             " FROM $table" +
-            " INNER JOIN $S_table" +
-            " ON $S_table.$S_submission_id = $table.$id" +
-            " WHERE $S_table.$S_submission_type = '$SUBMISSION_TYPE_MEAL'" +
+            " WHERE $table.$meal_type = '$MEAL_TYPE_SUGGESTED_MEAL'" +
             " ORDER BY $table.$name ASC" +
             " LIMIT :count OFFSET :skip"
     )
@@ -144,8 +140,8 @@ interface MealDao {
             @Bind cuisines: Collection<String>?
     ): Collection<DbMealDto>
 
-    @SqlQuery("INSERT INTO $table($id, $name, $carbs, $quantity, $unit, $type) " +
-            "VALUES(:submissionId, :mealName, :carbs, :quantity, :unit, :type) " +
+    @SqlQuery("INSERT INTO $table($id, $name, $carbs, $quantity, $unit, $meal_type) " +
+            "VALUES(:submissionId, :mealName, :carbs, :quantity, :unit, :mealType) " +
             "RETURNING *"
     )
     fun insert(
@@ -154,32 +150,24 @@ interface MealDao {
             @Bind carbs: Int,
             @Bind quantity: Int,
             @Bind unit: String = "gr",
-            @Bind type: String
+            @Bind mealType: String
     ): DbMealDto
 
     @SqlQuery("DELETE FROM $table WHERE $id = :submissionId RETURNING *")
     fun delete(@Bind submissionId: Int): DbMealDto
 
-    @SqlQuery("UPDATE $table SET $name = :new_name WHERE $id = :submissionId RETURNING *")
-    fun updateName(@Bind submissionId: Int, new_name: String): DbMealDto
-
     @SqlQuery("SELECT $attributes " +
             "FROM $table " +
-            "INNER JOIN $S_table " +
-            "ON $S_table.$S_submission_id = $table.$id " +
-            "WHERE $S_table.$S_submission_type = '$INGREDIENT_TYPE' " +
+            "WHERE $table.$meal_type = :mealType " +
             "ORDER BY $table.$name ASC " +
             "LIMIT :count " +
             "OFFSET :skip"
     )
-    fun getAllIngredients(skip: Int?, count: Int?): Collection<DbMealDto>
+    fun getAllByType(@Bind mealType: String, @Bind skip: Int?, @Bind count: Int?): Collection<DbMealDto>
 
     @SqlQuery("SELECT $attributes " +
             "FROM $table " +
-            "INNER JOIN $S_table " +
-            "ON $S_table.$S_submission_id = $table.$id " +
-            "WHERE $S_table.$S_submission_type = '$INGREDIENT_TYPE' " +
-            "AND $table.$id IN (<submissionIds>) " +
+            "WHERE $table.$id IN (<submissionIds>) " +
             "ORDER BY $table.$name ASC "
     )
     fun getAllIngredientsByIds(@BindList submissionIds: Collection<Int>): Collection<DbMealDto>
@@ -189,7 +177,7 @@ interface MealDao {
             "INNER JOIN $RM_table " +
             "ON $RM_table.$RM_mealId = $table.$id " +
             "WHERE $RM_table.$RM_restaurantId = :restaurantId " +
-            "AND $table.$type = '$MEAL_TYPE_CUSTOM'"
+            "AND $table.$meal_type = '$MEAL_TYPE_CUSTOM'"
     )
     fun getAllUserMealsByRestaurantId(@Bind restaurantId: Int): Collection<DbMealDto>
 }

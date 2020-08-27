@@ -5,9 +5,7 @@ import org.springframework.web.bind.annotation.*
 import pt.isel.ps.g06.httpserver.common.*
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType
 import pt.isel.ps.g06.httpserver.model.Report
-import pt.isel.ps.g06.httpserver.model.SimplifiedReport
 import pt.isel.ps.g06.httpserver.model.User
-import pt.isel.ps.g06.httpserver.service.AuthenticationService
 import pt.isel.ps.g06.httpserver.service.ReportService
 import pt.isel.ps.g06.httpserver.service.UserService
 import javax.validation.constraints.Max
