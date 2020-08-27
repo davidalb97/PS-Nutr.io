@@ -20,9 +20,9 @@ class DatabaseExceptionHandler {
         val status = HttpStatus.INTERNAL_SERVER_ERROR
         return toResponseEntity(
                 status = status,
-                type = status.reasonPhrase,
-                detail = "An unexpected database error occurred.",
-                title = "about:blank"
+                type = "about:blank",
+                detail = null,
+                title = "An unexpected database error occurred."
         )
     }
 }

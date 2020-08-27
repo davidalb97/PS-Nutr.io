@@ -16,9 +16,9 @@ class InvalidCountExceptionHandler {
         val status = HttpStatus.BAD_REQUEST
         return toResponseEntity(
                 status = status,
-                type = status.reasonPhrase,
-                detail = "Invalid count value",
-                title = "about:blank"
+                type = "about:blank",
+                detail = null,
+                title = "Invalid count value"
         )
     }
 }
