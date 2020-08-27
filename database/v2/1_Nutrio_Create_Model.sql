@@ -81,7 +81,7 @@ CREATE TABLE ApiSubmission(
 	submission_id integer,
 	apiId varchar(100),	
 	PRIMARY KEY(submission_id, apiId),
-	FOREIGN KEY(submission_id) REFERENCES Submission(submission_id)
+	FOREIGN KEY(submission_id) REFERENCES Submission(submission_id) ON DELETE CASCADE
 );
 
 CREATE TABLE SubmissionSubmitter(	
@@ -149,7 +149,7 @@ CREATE TABLE Cuisine(
 CREATE TABLE ApiCuisine(
 	submission_id integer PRIMARY KEY,
 	cuisine_submission_id integer,
-	FOREIGN KEY(submission_id) REFERENCES Submission(submission_id),
+	FOREIGN KEY(submission_id) REFERENCES Submission(submission_id) ON DELETE CASCADE,
 	FOREIGN KEY(cuisine_submission_id) REFERENCES Cuisine(submission_id)
 );
 
