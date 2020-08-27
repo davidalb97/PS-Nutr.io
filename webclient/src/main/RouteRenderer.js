@@ -3,10 +3,14 @@ import { Redirect, Route, Switch } from 'react-router-dom'
 
 import ViewMeals from '../main/meal/ViewMeals'
 import CreateMeal from '../main/meal/CreateMeal'
-import InsulinProfile from '../main/user/insulinProfile/InsulinProfile'
 import LoginPage from '../main/authentication/login/LoginPage'
 import RegisterPage from '../main/authentication/register/RegisterPage'
 import UserContext from './authentication/UserContext'
+
+//User
+import ProfilePage from '../main/user/profile/ProfilePage'
+import InsulinProfile from '../main/user/insulinProfile/InsulinProfile'
+
 //Moderation
 import AddFoodPage from '../main/moderation/addFood/AddFoodPage'
 import Reports from '../main/moderation/reports/ReportPage'
@@ -26,7 +30,7 @@ export default function RouteRenderer() {
             <InsulinProfile />
         </Route>
         <Route path="/user">
-            User
+            <ProfilePage />
         </Route>
 
         <Route path="/moderation/newFood">

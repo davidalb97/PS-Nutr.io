@@ -68,6 +68,7 @@ function Meal({ onMealDelete }) {
             <p><strong>Quantity:</strong> {nutritionalInfo.amount} {nutritionalInfo.unit}</p>
             <p><strong>Carbohydrates:</strong> {nutritionalInfo.carbs} gr</p>
 
+
             <Tabs defaultActiveKey="meals">
                 <Tab eventKey="meals" title="Meals">
                     <Card.Body>
@@ -84,7 +85,6 @@ function Meal({ onMealDelete }) {
                     </Card.Body>
                 </Tab>
             </Tabs>
-            <p />
             <Button variant="danger" block onClick={deleteMeal}>Delete</Button>
         </Card.Body>
     </>

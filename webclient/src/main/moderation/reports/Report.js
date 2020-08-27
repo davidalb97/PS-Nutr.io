@@ -2,7 +2,6 @@ import React, { useReducer } from 'react'
 import { Link } from 'react-router-dom'
 import RequestingEntity from '../../common/RequestingEntity'
 
-import ListGroup from 'react-bootstrap/ListGroup'
 import Button from 'react-bootstrap/Button'
 import ButtonGroup from 'react-bootstrap/ButtonGroup'
 import Alert from 'react-bootstrap/Alert'

@@ -6,7 +6,7 @@ import Spinner from 'react-bootstrap/Spinner'
 import AddFoodForm from './AddFoodForm'
 import ServerOffline from '../../errors/ServerOffline'
 export default function AddFoodPage() {
-    const [request] = useState({ url: "http://localhost:9000/api/cuisines" })
+    const [request] = useState({ url: "http://localhost:9000/api/cuisine" })
     const [cuisines, setCuisines] = useState(undefined)
     const [fetchState, response, json, error] = useFetch(request)
 
