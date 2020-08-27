@@ -7,7 +7,7 @@ import pt.isel.ps.g06.httpserver.common.BAN
 import pt.isel.ps.g06.httpserver.common.LOGIN
 import pt.isel.ps.g06.httpserver.common.REGISTER
 import pt.isel.ps.g06.httpserver.common.USER
-import pt.isel.ps.g06.httpserver.common.exception.authentication.UnauthorizedException
+import pt.isel.ps.g06.httpserver.common.exception.problemJson.unauthorized.UnauthorizedException
 import pt.isel.ps.g06.httpserver.dataAccess.input.BanInput
 import pt.isel.ps.g06.httpserver.dataAccess.input.UserLoginInput
 import pt.isel.ps.g06.httpserver.dataAccess.input.UserRegisterInput

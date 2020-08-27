@@ -1,7 +1,7 @@
 package pt.isel.ps.g06.httpserver.dataAccess.db
 
 import org.springframework.stereotype.Repository
-import pt.isel.ps.g06.httpserver.common.exception.InvalidApplicationStartupException
+import pt.isel.ps.g06.httpserver.common.exception.server.InvalidApplicationStartupException
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.RestaurantApiType
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbSubmitterDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.SubmitterDbRepository

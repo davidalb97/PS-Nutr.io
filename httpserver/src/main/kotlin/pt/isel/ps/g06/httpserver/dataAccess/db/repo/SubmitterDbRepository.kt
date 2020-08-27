@@ -3,7 +3,7 @@ package pt.isel.ps.g06.httpserver.dataAccess.db.repo
 import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.transaction.TransactionIsolationLevel
 import org.springframework.stereotype.Repository
-import pt.isel.ps.g06.httpserver.common.exception.clientError.DuplicateSubmitterException
+import pt.isel.ps.g06.httpserver.common.exception.problemJson.conflict.DuplicateSubmitterException
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.SubmitterDao
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbSubmitterDto
 

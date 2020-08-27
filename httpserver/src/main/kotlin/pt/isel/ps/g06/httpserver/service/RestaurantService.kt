@@ -1,9 +1,8 @@
 package pt.isel.ps.g06.httpserver.service
 
 import org.springframework.stereotype.Service
-import pt.isel.ps.g06.httpserver.common.exception.NoSuchApiResponseStatusException
-import pt.isel.ps.g06.httpserver.common.exception.clientError.DuplicateReportException
-import pt.isel.ps.g06.httpserver.common.exception.notFound.RestaurantNotFoundException
+import pt.isel.ps.g06.httpserver.common.exception.problemJson.badRequest.NoSuchApiResponseStatusException
+import pt.isel.ps.g06.httpserver.common.exception.problemJson.notFound.RestaurantNotFoundException
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.RestaurantApiType
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.mapper.RestaurantApiMapper
 import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.restaurant.RestaurantResponseMapper

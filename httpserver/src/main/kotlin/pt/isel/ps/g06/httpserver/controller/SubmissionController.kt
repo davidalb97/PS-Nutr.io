@@ -8,8 +8,8 @@ import pt.isel.ps.g06.httpserver.common.ID_SEPARATOR
 import pt.isel.ps.g06.httpserver.common.RestaurantIdentifierBuilder
 import pt.isel.ps.g06.httpserver.common.SUBMISSION
 import pt.isel.ps.g06.httpserver.common.SUBMISSION_ID_VALUE
-import pt.isel.ps.g06.httpserver.common.exception.clientError.InvalidInputException
-import pt.isel.ps.g06.httpserver.common.exception.notFound.SubmissionNotFoundException
+import pt.isel.ps.g06.httpserver.common.exception.problemJson.badRequest.InvalidInputException
+import pt.isel.ps.g06.httpserver.common.exception.problemJson.notFound.SubmissionNotFoundException
 import pt.isel.ps.g06.httpserver.model.User
 import pt.isel.ps.g06.httpserver.service.SubmissionService
 

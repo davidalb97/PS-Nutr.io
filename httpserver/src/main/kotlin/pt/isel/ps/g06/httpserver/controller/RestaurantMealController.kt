@@ -5,10 +5,10 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.util.UriComponentsBuilder
 import pt.isel.ps.g06.httpserver.common.*
-import pt.isel.ps.g06.httpserver.common.exception.forbidden.ForbiddenException
-import pt.isel.ps.g06.httpserver.common.exception.forbidden.NotSubmissionOwnerException
-import pt.isel.ps.g06.httpserver.common.exception.notFound.MealNotFoundException
-import pt.isel.ps.g06.httpserver.common.exception.notFound.RestaurantNotFoundException
+import pt.isel.ps.g06.httpserver.common.exception.problemJson.forbidden.BaseForbiddenException
+import pt.isel.ps.g06.httpserver.common.exception.problemJson.forbidden.NotSubmissionOwnerException
+import pt.isel.ps.g06.httpserver.common.exception.problemJson.notFound.MealNotFoundException
+import pt.isel.ps.g06.httpserver.common.exception.problemJson.notFound.RestaurantNotFoundException
 import pt.isel.ps.g06.httpserver.dataAccess.input.*
 import pt.isel.ps.g06.httpserver.dataAccess.output.meal.DetailedRestaurantMealOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.meal.RestaurantMealContainerOutput
@@ -164,7 +164,7 @@ class RestaurantMealController(
         val isOwner = restaurantService.getRestaurant(restaurantIdentifier)?.ownerId == user.identifier
 
         if (!isOwner) {
-            throw ForbiddenException()
+            throw BaseForbiddenException()
         }
 
         // Put/remove restaurant meal's verification
