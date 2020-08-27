@@ -8,4 +8,4 @@ const val NORMAL_USER = "normal"
 const val MOD_USER = "mod"
 
 // Pagination
-const val COUNT = 15
+const val COUNT: Long = 15

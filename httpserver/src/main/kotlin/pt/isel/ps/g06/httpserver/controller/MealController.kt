@@ -17,7 +17,8 @@ import pt.isel.ps.g06.httpserver.service.MealService
 import pt.isel.ps.g06.httpserver.service.SubmissionService
 import pt.isel.ps.g06.httpserver.service.UserService
 import javax.validation.Valid
-
+import javax.validation.constraints.Max
+import javax.validation.constraints.Min
 @Suppress("MVCPathVariableInspection")
 @RestController
 @RequestMapping(produces = [MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_PROBLEM_JSON_VALUE])
@@ -37,14 +38,14 @@ class MealController(
     @GetMapping(MEALS_SUGGESTED)
     fun getMeals(
             user: User?,
-            @RequestParam count: Int?,
+            @RequestParam cuisines: Collection<String>?,
             @RequestParam skip: Int?,
-            @RequestParam cuisines: Collection<String>?
+            @RequestParam @Min(0) count: Int?
     ): ResponseEntity<SimplifiedMealContainer> {
 
         var meals = mealService.getSuggestedMeals(
-                count = count,
                 skip = skip,
+                count = count,
                 cuisines = cuisines
         )
 
@@ -98,12 +99,12 @@ class MealController(
     @GetMapping(MEALS_CUSTOM)
     fun getCustomMealsFromUser(
             user: User,
-            @RequestParam count: Int?,
-            @RequestParam skip: Int?
+            @RequestParam skip: Int?,
+            @RequestParam @Min(0) count: Int?
     ): ResponseEntity<SimplifiedMealContainer> {
 
         val userCustomMeals = mealService
-                .getUserCustomMeals(user.identifier, count, skip)
+                .getUserCustomMeals(user.identifier, skip, count)
 
         return ResponseEntity.ok().body(toSimplifiedMealContainer(userCustomMeals, user.identifier))
     }
@@ -190,3 +191,4 @@ class MealController(
                 .build()
     }
 }
+

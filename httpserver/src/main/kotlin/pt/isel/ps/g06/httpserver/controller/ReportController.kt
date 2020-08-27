@@ -10,6 +10,8 @@ import pt.isel.ps.g06.httpserver.model.User
 import pt.isel.ps.g06.httpserver.service.AuthenticationService
 import pt.isel.ps.g06.httpserver.service.ReportService
 import pt.isel.ps.g06.httpserver.service.UserService
+import javax.validation.constraints.Max
+import javax.validation.constraints.Min
 
 @RestController
 class ReportController(
@@ -20,15 +22,17 @@ class ReportController(
     @GetMapping(REPORTS)
     fun getReports(
             user: User,
-            @RequestParam type: SubmissionType?
+            @RequestParam type: SubmissionType?,
+            @RequestParam skip: Int?,
+            @RequestParam(defaultValue = COUNT.toString()) @Min(0) @Max(COUNT) count: Int?
     ): ResponseEntity<Collection<*>> {
 
         // Check if the user is a moderator
         userService.ensureModerator(user)
 
-        type ?: return ResponseEntity.ok(reportService.getAllReports().toList())
+        type ?: return ResponseEntity.ok(reportService.getAllReports(skip, count).toList())
 
-        return ResponseEntity.ok(reportService.getAllReportsBySubmissionType(type.toString()))
+        return ResponseEntity.ok(reportService.getAllReportsBySubmissionType(type.toString(), skip, count))
     }
 
 

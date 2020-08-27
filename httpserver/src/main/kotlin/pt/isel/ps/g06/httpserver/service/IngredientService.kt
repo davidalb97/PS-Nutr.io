@@ -15,9 +15,9 @@ class IngredientService(
         private val ingredientResponseMapper: DbIngredientResponseMapper
 ) {
 
-    fun getIngredients(skip: Int?, limit: Int?): Sequence<MealIngredient> {
+    fun getIngredients(skip: Int?, count: Int?): Sequence<MealIngredient> {
         return mealDbRepository
-                .getAllIngredients(skip, limit)
+                .getAllIngredients(skip, count)
                 .map(ingredientResponseMapper::mapTo)
     }
 

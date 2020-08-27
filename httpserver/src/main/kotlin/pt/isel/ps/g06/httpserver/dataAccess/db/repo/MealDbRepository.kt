@@ -26,11 +26,11 @@ class MealDbRepository(jdbi: Jdbi) : SubmissionDbRepository(jdbi) {
         }
     }
 
-    fun getBySubmitterId(submitterId: Int, count: Int?, skip: Int?): Sequence<DbMealDto> {
+    fun getBySubmitterId(submitterId: Int, skip: Int?, count: Int?): Sequence<DbMealDto> {
         val meals = lazy {
             jdbi.inTransaction<Collection<DbMealDto>, Exception>(isolationLevel) { handle ->
                 return@inTransaction handle.attach(mealDaoClass)
-                        .getAllBySubmitterIdAndType(submitterId, MealType.CUSTOM.toString(), count, skip)
+                        .getAllBySubmitterIdAndType(submitterId, MealType.CUSTOM.toString(), skip, count)
             }
         }
 
@@ -72,12 +72,12 @@ class MealDbRepository(jdbi: Jdbi) : SubmissionDbRepository(jdbi) {
         return Sequence { ingredients.value.iterator() }
     }
 
-    fun getAllIngredients(skip: Int?, limit: Int?): Sequence<DbMealDto> {
+    fun getAllIngredients(skip: Int?, count: Int?): Sequence<DbMealDto> {
         val ingredients = lazy {
             jdbi.inTransaction<Collection<DbMealDto>, Exception>(isolationLevel) { handle ->
                 return@inTransaction handle
                         .attach(MealDao::class.java)
-                        .getAllIngredients(skip, limit)
+                        .getAllIngredients(skip, count)
             }
         }
 
@@ -114,12 +114,12 @@ class MealDbRepository(jdbi: Jdbi) : SubmissionDbRepository(jdbi) {
         return Sequence { collection.value.iterator() }
     }
 
-    fun getAllSuggestedMeals(count: Int?, skip: Int?, cuisines: Collection<String>?): Sequence<DbMealDto> {
+    fun getAllSuggestedMeals(skip: Int?, count: Int?, cuisines: Collection<String>?): Sequence<DbMealDto> {
         val collection = lazy {
             jdbi.inTransaction<Collection<DbMealDto>, Exception>(isolationLevel) { handle ->
                 return@inTransaction handle
                         .attach(MealDao::class.java)
-                        .getAllSuggestedMeals(count, skip, cuisines)
+                        .getAllSuggestedMeals(skip, count, cuisines)
             }
         }
         return Sequence { collection.value.iterator() }

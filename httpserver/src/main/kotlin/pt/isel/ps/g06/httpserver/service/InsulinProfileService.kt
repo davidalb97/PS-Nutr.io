@@ -12,8 +12,8 @@ class InsulinProfileService(
         private val insulinProfileMapper: InsulinProfileResponseMapper
 ) {
 
-    fun getAllProfilesFromUser(submitterId: Int): Sequence<InsulinProfile> {
-        return insulinProfileDbRepository.getAllFromUser(submitterId)
+    fun getAllProfilesFromUser(submitterId: Int, count: Int?, skip: Int?): Sequence<InsulinProfile> {
+        return insulinProfileDbRepository.getAllFromUser(submitterId, count, skip)
                 .map(insulinProfileMapper::mapToModel)
     }
 

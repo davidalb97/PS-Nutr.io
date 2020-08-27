@@ -26,15 +26,15 @@ class MealService(
                 ?.let(dbMealResponseMapper::mapTo)
     }
 
-    fun getSuggestedMeals(count: Int?, skip: Int?, cuisines: Collection<String>?): Sequence<Meal> {
+    fun getSuggestedMeals(skip: Int?, count: Int?, cuisines: Collection<String>?): Sequence<Meal> {
         return dbMealRepository
-                .getAllSuggestedMeals(count, skip, cuisines)
+                .getAllSuggestedMeals(skip, count, cuisines)
                 .map { dbMealResponseMapper.mapTo(it) }
     }
 
-    fun getUserCustomMeals(submitterId: Int, count: Int?, skip: Int?): Sequence<Meal> =
+    fun getUserCustomMeals(submitterId: Int, skip: Int?, count: Int?): Sequence<Meal> =
             dbMealRepository
-                    .getBySubmitterId(submitterId, count, skip)
+                    .getBySubmitterId(submitterId, skip, count)
                     .map(dbMealResponseMapper::mapTo)
 
     fun getUserFavoriteMeals(submitterId: Int, count: Int?, skip: Int?): Sequence<Meal> =

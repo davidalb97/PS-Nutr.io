@@ -18,9 +18,9 @@ class JwtExceptionHandler {
         val status = HttpStatus.INTERNAL_SERVER_ERROR
         return toResponseEntity(
                 status = status,
-                type = status.reasonPhrase,
-                detail = "Argument does not represent an Claims JWS.",
-                title = "about:blank"
+                type = "about:blank",
+                detail = null,
+                title = "Argument does not represent an Claims JWS."
         )
     }
 
@@ -28,9 +28,9 @@ class JwtExceptionHandler {
         val status = HttpStatus.BAD_REQUEST
         return toResponseEntity(
                 status = status,
-                type = status.reasonPhrase,
-                detail = "$AUTH_HEADER value is not a valid JWS.",
-                title = "about:blank"
+                type = "about:blank",
+                detail = null,
+                title = "$AUTH_HEADER value is not a valid JWS."
         )
     }
 
@@ -38,9 +38,9 @@ class JwtExceptionHandler {
         val status = HttpStatus.UNAUTHORIZED
         return toResponseEntity(
                 status = status,
-                type = status.reasonPhrase,
-                detail = "JWS signature validation failed.",
-                title = "about:blank"
+                type = "about:blank",
+                detail = null,
+                title = "JWS signature validation failed."
         )
     }
 
@@ -49,8 +49,8 @@ class JwtExceptionHandler {
         return toResponseEntity(
                 status = status,
                 type = "about:blank",
-                detail = "The jwt token has expired.",
-                title = status.reasonPhrase
+                detail = null,
+                title = "The jwt token has expired."
         )
     }
 }
