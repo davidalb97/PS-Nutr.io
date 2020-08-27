@@ -33,6 +33,12 @@ class ReportDbRepository(jdbi: Jdbi) : BaseDbRepo(jdbi) {
         }
     }
 
+    fun getReportFromSubmitter(submitterId: Int, submissionId: Int): DbReportDto? {
+        return jdbi.inTransaction<DbReportDto, Exception>(isolationLevel) {
+            return@inTransaction it.attach(reportDaoClass).getReportFromSubmitter(submitterId, submissionId)
+        }
+    }
+
     fun insert(
             submitterId: Int,
             submissionId: Int,

@@ -2,6 +2,7 @@ package pt.isel.ps.g06.httpserver.service
 
 import org.springframework.stereotype.Service
 import pt.isel.ps.g06.httpserver.common.exception.NoSuchApiResponseStatusException
+import pt.isel.ps.g06.httpserver.common.exception.clientError.DuplicateReportException
 import pt.isel.ps.g06.httpserver.common.exception.notFound.RestaurantNotFoundException
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.RestaurantApiType
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.mapper.RestaurantApiMapper
@@ -166,12 +167,21 @@ class RestaurantService(
 
     fun addReport(submitterId: Int, restaurantIdentifier: RestaurantIdentifier, report: String) {
         val restaurant = getOrInsertRestaurant(restaurantIdentifier)
+        val restaurantSubmissionId = restaurant.identifier.value.submissionId!!
 
-        dbReportDbRepository.insert(submitterId, restaurant.identifier.value.submissionId!!, report)
+        ensureIsNotAlreadyReported(submitterId, restaurantSubmissionId)
+
+        dbReportDbRepository.insert(submitterId, restaurantSubmissionId, report)
     }
 
     fun addOwner(restaurantId: Int, ownerId: Int) {
         dbRestaurantRepository.addOwner(restaurantId, ownerId)
+    }
+
+    private fun ensureIsNotAlreadyReported(submitterId: Int, submissionId: Int) {
+        if (dbReportDbRepository.getReportFromSubmitter(submitterId, submissionId) != null) {
+            throw DuplicateReportException()
+        }
     }
 
 
