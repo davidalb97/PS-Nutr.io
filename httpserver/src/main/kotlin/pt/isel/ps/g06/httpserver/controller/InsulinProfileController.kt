@@ -7,11 +7,9 @@ import org.springframework.web.util.UriComponentsBuilder
 import pt.isel.ps.g06.httpserver.common.INSULIN_PROFILE
 import pt.isel.ps.g06.httpserver.common.INSULIN_PROFILES
 import pt.isel.ps.g06.httpserver.common.PROFILE_NAME_VALUE
-import pt.isel.ps.g06.httpserver.common.exception.authentication.NotAuthenticatedException
 import pt.isel.ps.g06.httpserver.dataAccess.input.InsulinProfileInput
 import pt.isel.ps.g06.httpserver.dataAccess.output.InsulinProfileOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.toInsulinProfileOutput
-import pt.isel.ps.g06.httpserver.model.Submitter
 import pt.isel.ps.g06.httpserver.model.User
 import pt.isel.ps.g06.httpserver.service.InsulinProfileService
 import javax.validation.Valid
