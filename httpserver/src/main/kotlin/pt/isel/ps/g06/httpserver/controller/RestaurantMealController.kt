@@ -154,7 +154,7 @@ class RestaurantMealController(
     fun putVerifyRestaurantMeal(
             @PathVariable(RESTAURANT_ID_VALUE) restaurantId: String,
             @PathVariable(MEAL_ID_VALUE) mealId: Int,
-            @RequestBody verified: Boolean,
+            @RequestBody verifyInput: VerifyInput,
             user: User
     ): ResponseEntity<Void> {
         // Get restaurant ID
@@ -168,7 +168,7 @@ class RestaurantMealController(
         }
 
         // Put/remove restaurant meal's verification
-        restaurantMealService.updateRestaurantMealVerification(restaurantIdentifier, mealId, verified)
+        restaurantMealService.updateRestaurantMealVerification(restaurantIdentifier, mealId, verifyInput.verified)
 
         return ResponseEntity
                 .ok()

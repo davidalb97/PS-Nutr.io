@@ -9,6 +9,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.dao.*
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbRestaurantMealDto
 import pt.isel.ps.g06.httpserver.common.exception.clientError.InvalidInputDomain
 import pt.isel.ps.g06.httpserver.common.exception.clientError.InvalidInputException
+import pt.isel.ps.g06.httpserver.common.exception.notFound.RestaurantMealNotFound
 import java.util.*
 
 private val isolationLevel = TransactionIsolationLevel.SERIALIZABLE
@@ -16,11 +17,12 @@ private val restaurantMealDao = RestaurantMealDao::class.java
 
 @Repository
 class RestaurantMealDbRepository(jdbi: Jdbi) : SubmissionDbRepository(jdbi) {
-    fun getRestaurantMeal(restaurantId: Int, mealId: Int): DbRestaurantMealDto? {
+    fun getRestaurantMeal(restaurantId: Int, mealId: Int): DbRestaurantMealDto {
         return jdbi.inTransaction<DbRestaurantMealDto, Exception>(isolationLevel) {
             return@inTransaction it
                     .attach(restaurantMealDao)
                     .getByRestaurantAndMealId(restaurantId, mealId)
+                    ?: throw RestaurantMealNotFound()
         }
     }
 

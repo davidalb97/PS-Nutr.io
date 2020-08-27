@@ -49,15 +49,15 @@ class RestaurantMealService(
         }
 
         //If the restaurant is inserted, get restaurant meal (if restaurant - meal is associated)
-        val restaurantMeal = restaurantId.submissionId?.let {
+        val restaurantMeal = restaurantId.submissionId!!.let {
             dbRestaurantMealRepository.getRestaurantMeal(restaurantId.submissionId, mealId)
         }
 
         return RestaurantMeal(
-                restaurantMeal?.submission_id,
+                submissionId = restaurantMeal.submission_id,
                 restaurant = restaurant,
                 meal = meal,
-                verified = false
+                verified = restaurantMeal.verified
         )
     }
 
