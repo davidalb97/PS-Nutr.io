@@ -122,7 +122,7 @@ class MealController(
                 quantity = meal.quantity!!,
                 ingredients = meal.ingredients!!,
                 cuisines = meal.cuisines!!,
-                mealType = MealType.SUGGESTED
+                mealType = MealType.CUSTOM
         )
 
         return ResponseEntity.created(

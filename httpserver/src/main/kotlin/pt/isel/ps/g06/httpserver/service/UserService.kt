@@ -5,8 +5,8 @@ import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.stereotype.Service
 import pt.isel.ps.g06.httpserver.common.MOD_USER
-import pt.isel.ps.g06.httpserver.common.exception.authentication.NotAuthenticatedException
-import pt.isel.ps.g06.httpserver.common.exception.authorization.NotAuthorizedException
+import pt.isel.ps.g06.httpserver.common.exception.authentication.UnauthorizedException
+import pt.isel.ps.g06.httpserver.common.exception.forbidden.ForbiddenException
 import pt.isel.ps.g06.httpserver.common.exception.notFound.UserNotFoundException
 import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.UserResponseMapper
 import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.submitter.SubmitterResponseMapper
@@ -25,7 +25,7 @@ class UserService(
 
     override fun loadUserByUsername(email: String): UserDetails {
         val userDto = userDbRepository.getByEmail(email)
-                ?: throw NotAuthenticatedException()
+                ?: throw UnauthorizedException()
         return User(email, userDto.password, emptyList())
     }
 
@@ -43,31 +43,22 @@ class UserService(
         )
     }
 
-    fun getEmailFromSubmitter(submitterId: Int): pt.isel.ps.g06.httpserver.model.User =
-            userDbRepository
-                    .getBySubmitter(submitterId)
-                    .let { dto -> userMapper.mapToModel(dto ?: throw UserNotFoundException()) }
+    fun getUserFromEmail(email: String): pt.isel.ps.g06.httpserver.model.User? =
+            userDbRepository.getByEmail(email)
+                    ?.let(userMapper::mapToModel)
 
-    fun getUserFromEmail(email: String): pt.isel.ps.g06.httpserver.model.User =
-            userDbRepository
-                    .getByEmail(email)
-                    .let { dto -> userMapper.mapToModel(dto ?: throw UserNotFoundException()) }
+    fun getUserSubmitterInfo(user: pt.isel.ps.g06.httpserver.model.User): Submitter =
+            submitterDbRepository
+                    .getSubmitterBySubmitterId(user.identifier)
+                    .let(submitterMapper::mapTo)
 
-    fun getSubmitterFromEmail(email: String): Submitter? {
-
-        val user = getUserFromEmail(email)
-
-        return submitterDbRepository
-                .getSubmitterBySubmitterId(user.identifier)
-                .let(submitterMapper::mapTo)
-    }
 
     fun updateUserBan(banInput: BanInput) =
             userDbRepository.updateUserBan(banInput.submitterId, banInput.isBanned)
 
     fun ensureModerator(user: pt.isel.ps.g06.httpserver.model.User) {
         if (user.userRole != MOD_USER) {
-            throw NotAuthorizedException()
+            throw ForbiddenException()
         }
     }
 }
