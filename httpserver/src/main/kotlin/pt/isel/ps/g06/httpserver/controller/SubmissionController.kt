@@ -4,16 +4,19 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RestController
+import pt.isel.ps.g06.httpserver.common.ID_SEPARATOR
+import pt.isel.ps.g06.httpserver.common.RestaurantIdentifierBuilder
 import pt.isel.ps.g06.httpserver.common.SUBMISSION
 import pt.isel.ps.g06.httpserver.common.SUBMISSION_ID_VALUE
+import pt.isel.ps.g06.httpserver.common.exception.clientError.InvalidInputException
+import pt.isel.ps.g06.httpserver.common.exception.notFound.SubmissionNotFoundException
 import pt.isel.ps.g06.httpserver.model.User
-import pt.isel.ps.g06.httpserver.service.RestaurantService
 import pt.isel.ps.g06.httpserver.service.SubmissionService
 
 @RestController
 class SubmissionController(
         private val submissionService: SubmissionService,
-        private val restaurantService: RestaurantService
+        private val restaurantIdentifierBuilder: RestaurantIdentifierBuilder
 ) {
 
     @DeleteMapping(SUBMISSION)
@@ -22,7 +25,7 @@ class SubmissionController(
             user: User
     ): ResponseEntity<Void> {
 
-        val parsedSubmissionId = checkAndParseId(submissionId)
+        val parsedSubmissionId = parseId(submissionId)
 
         submissionService.deleteSubmission(parsedSubmissionId, user)
 
@@ -32,13 +35,13 @@ class SubmissionController(
     /**
      * If the submissionId is from a restaurant then parsing will occur,
      * if not just convert to int and return
-     * @param   submissionId    Submission's identifier
+     * @param   identifier    Submission's identifier
      */
-    private fun checkAndParseId(submissionId: String): Int {
-        if (submissionId.contains("+")) {
-            return submissionId.split("+")[1].toInt()
+    private fun parseId(identifier: String): Int {
+        if (identifier.contains(ID_SEPARATOR)) {
+            return restaurantIdentifierBuilder
+                    .extractIdentifiers(identifier).submissionId ?: throw SubmissionNotFoundException()
         }
-
-        return submissionId.toInt()
+        return identifier.toIntOrNull() ?: throw InvalidInputException("The passed identifier is invalid")
     }
 }
