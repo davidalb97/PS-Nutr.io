@@ -167,23 +167,13 @@ class RestaurantService(
 
     fun addReport(submitterId: Int, restaurantIdentifier: RestaurantIdentifier, report: String) {
         val restaurant = getOrInsertRestaurant(restaurantIdentifier)
-        val restaurantSubmissionId = restaurant.identifier.value.submissionId!!
 
-        ensureIsNotAlreadyReported(submitterId, restaurantSubmissionId)
-
-        dbReportDbRepository.insert(submitterId, restaurantSubmissionId, report)
+        dbReportDbRepository.insert(submitterId, restaurant.identifier.value.submissionId!!, report)
     }
 
     fun addOwner(restaurantId: Int, ownerId: Int) {
         dbRestaurantRepository.addOwner(restaurantId, ownerId)
     }
-
-    private fun ensureIsNotAlreadyReported(submitterId: Int, submissionId: Int) {
-        if (dbReportDbRepository.getReportFromSubmitter(submitterId, submissionId) != null) {
-            throw DuplicateReportException()
-        }
-    }
-
 
     private fun filterRedundantApiRestaurants(dbRestaurants: Sequence<Restaurant>, apiRestaurants: Sequence<Restaurant>): Sequence<Restaurant> {
         //Join db restaurants with filtered api restaurants
