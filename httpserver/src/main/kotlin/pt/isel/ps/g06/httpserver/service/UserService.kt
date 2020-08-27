@@ -43,10 +43,9 @@ class UserService(
         )
     }
 
-    fun requireUserFromEmail(email: String): pt.isel.ps.g06.httpserver.model.User =
+    fun getUserFromEmail(email: String): pt.isel.ps.g06.httpserver.model.User? =
             userDbRepository.getByEmail(email)
                     ?.let(userMapper::mapToModel)
-                    ?: throw UserNotFoundException()
 
     fun getUserSubmitterInfo(user: pt.isel.ps.g06.httpserver.model.User): Submitter =
             submitterDbRepository

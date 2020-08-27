@@ -7,9 +7,9 @@ import io.jsonwebtoken.UnsupportedJwtException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ControllerAdvice
+import pt.isel.ps.g06.httpserver.common.AUTH_HEADER
 import pt.isel.ps.g06.httpserver.common.hypermedia.ProblemJson
 import pt.isel.ps.g06.httpserver.common.hypermedia.toResponseEntity
-import pt.isel.ps.g06.httpserver.security.AUTH_HEADER
 
 @ControllerAdvice
 class JwtExceptionHandler {
