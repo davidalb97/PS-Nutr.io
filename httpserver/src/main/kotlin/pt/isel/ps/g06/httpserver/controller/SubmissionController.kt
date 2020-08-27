@@ -8,7 +8,6 @@ import pt.isel.ps.g06.httpserver.common.SUBMISSION
 import pt.isel.ps.g06.httpserver.common.SUBMISSION_ID_VALUE
 import pt.isel.ps.g06.httpserver.model.User
 import pt.isel.ps.g06.httpserver.service.SubmissionService
-import pt.isel.ps.g06.httpserver.service.UserService
 
 @RestController
 class SubmissionController(
