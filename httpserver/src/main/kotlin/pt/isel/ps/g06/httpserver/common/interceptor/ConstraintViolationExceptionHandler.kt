@@ -9,7 +9,7 @@ import pt.isel.ps.g06.httpserver.common.hypermedia.toResponseEntity
 import javax.validation.ConstraintViolationException
 
 @ControllerAdvice
-class InvalidCountExceptionHandler {
+class ConstraintViolationExceptionHandler {
 
     @ExceptionHandler
     fun handleConstraintViolationException(ex: ConstraintViolationException): ResponseEntity<ProblemJson> {
@@ -17,8 +17,8 @@ class InvalidCountExceptionHandler {
         return toResponseEntity(
                 status = status,
                 type = "about:blank",
-                detail = null,
-                title = "Invalid count value"
+                detail = "Constraint violators: ${ex.constraintViolations.joinToString(", ")}",
+                title = "Value violates constraint"
         )
     }
 }
