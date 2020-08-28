@@ -18,7 +18,12 @@ export default function LoginPage() {
     const email = useRef()
     const password = useRef()
 
-    useEffect(() => { if (fetchState === FetchStates.done && json) setAuthToken({ value: json.jwt }) }, [fetchState, json])
+    useEffect(() => {
+        if (fetchState === FetchStates.done && json) {
+            setAuthToken({ value: json.jwt })
+            userContext.onLogin(json.jwt)
+        }
+    }, [fetchState, json])
 
     if (userContext.user) return <Redirect to="/" />
     if (fetchState === FetchStates.done && json) return <Redirect to="/" />

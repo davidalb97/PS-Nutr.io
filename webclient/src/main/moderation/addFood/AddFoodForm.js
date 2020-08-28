@@ -166,7 +166,6 @@ export default function AddFoodForm({ cuisines }) {
 
 
     function triggerRequest() {
-        console.log(body)
         if (!allFieldsAreValid) return setDisplayErrors(true)
     }
 }

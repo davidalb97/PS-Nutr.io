@@ -6,6 +6,7 @@ const contextDefaultValue = {
     authToken: undefined,
     user: undefined,
     initialized: false,
+    onLogin: undefined,
 }
 
 const UserContext = React.createContext(contextDefaultValue)

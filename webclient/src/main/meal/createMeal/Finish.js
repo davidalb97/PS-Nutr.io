@@ -11,7 +11,7 @@ import Confirmation from './Confirmation'
 export default function Finish({ meal, setCanAdvance }) {
     const [shouldRedirectHomepage, setshouldRedirectHomepage] = useState(false)
     const [request] = useState({
-        url: "http://localhost:9000/api/meal",
+        url: "http://localhost:9000/api/meal/custom",
         method: "POST",
         body: buildRequestBody(meal)
     })

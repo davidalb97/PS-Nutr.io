@@ -96,7 +96,9 @@ export default function CreateMeal() {
                 max={CreationStates.length * 25}
             />
             <hr />
-
+            Create a new custom meal linked to your account that can be viewed any time and added to a restaurant
+            on mobile for other users to see.
+            <hr />
             {React.cloneElement(currentProgress.pageView, {
                 setCanAdvance: setCanAdvance,
                 setMeal: onSetMeal,

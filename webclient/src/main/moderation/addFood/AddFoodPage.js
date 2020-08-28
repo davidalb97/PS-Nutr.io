@@ -1,28 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import useFetch, { FetchStates } from '../../common/useFetch'
-
-import Spinner from 'react-bootstrap/Spinner'
+import RequestingEntity from '../../common/RequestingEntity'
 
 import AddFoodForm from './AddFoodForm'
-import ServerOffline from '../../errors/ServerOffline'
+import Loading from '../../bootstrap-common/Loading'
 export default function AddFoodPage() {
-    const [request] = useState({ url: "http://localhost:9000/api/cuisine" })
-    const [cuisines, setCuisines] = useState(undefined)
-    const [fetchState, response, json, error] = useFetch(request)
-
-    //TODO Check if user is allowed to view resource
-
-    //Update cuisines on valid response
-    useEffect(() => {
-        if (json && fetchState === FetchStates.done) {
-            setCuisines(json.cuisines)
-        }
-    }, [fetchState])
-
-    if (fetchState === FetchStates.error) return <ServerOffline />
-
-    return cuisines ? <AddFoodForm cuisines={cuisines} /> :
-        <Spinner animation="border" role="status">
-            <span className="sr-only">Loading...</span>
-        </Spinner>
+    return <RequestingEntity
+        request={{ url: "http://localhost:9000/api/cuisine" }}
+        onDefault={Loading}
+        onSuccess={({ json }) => <AddFoodForm cuisines={json.cuisines} />}
+    />
 }

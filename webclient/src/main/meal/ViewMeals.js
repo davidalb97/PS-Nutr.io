@@ -2,12 +2,12 @@ import React, { useContext } from 'react'
 import { Link } from 'react-router-dom'
 
 import Card from 'react-bootstrap/Card'
-import ListGroup from 'react-bootstrap/ListGroup'
+import Button from 'react-bootstrap/Button'
 
 import RequestingEntity from '../common/RequestingEntity'
 
 import MealList from './common/MealList'
-
+import Loading from '../bootstrap-common/Loading'
 export default function ViewMeals() {
     // const user = useContext(UserContext)
     // const [fetchState, response, json, error] = useFetch({ url: "", authToken: user.authToken })
@@ -21,21 +21,21 @@ export default function ViewMeals() {
             <p />
             Want to create a new one? Head over to<Link to="/meals/create"> meal creation.</Link>
             <hr />
-            <MealList />
+            <RequestingEntity
+                request={{ url: "http://localhost:9000/api/meal/custom" }}
+                onSuccess={handleResult}
+                onDefault={Loading}
+            />
         </Card.Body>
-        {/* <RequestingEntity
-            request={request}
-            onSuccess={MealList}
-            onLoad={handleLoad}
-        /> */}
     </Card>
-    //TODO - CHECK IF MEAL RESULT IS EMPTY AND DISPLAY PROPER RESULT
 
-    function displayLoading() {
+    function handleResult({ json }) {
+        if (!json.meals || json.meals.length <= 0) {
+            return <Link to="/meals/create">
+                <Button variant="info" block>You have no meals! Let's start by creating one</Button>
+            </Link>
+        }
 
-    }
-
-    function displayError() {
-
+        return <MealList />
     }
 }

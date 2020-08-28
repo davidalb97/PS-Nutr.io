@@ -5,9 +5,9 @@ import ViewMeals from '../main/meal/ViewMeals'
 import CreateMeal from '../main/meal/CreateMeal'
 import LoginPage from '../main/authentication/login/LoginPage'
 import RegisterPage from '../main/authentication/register/RegisterPage'
-import UserContext from './authentication/UserContext'
 
 //User
+import UserContext from './authentication/UserContext'
 import ProfilePage from '../main/user/profile/ProfilePage'
 import InsulinProfile from '../main/user/insulinProfile/InsulinProfile'
 
@@ -17,6 +17,8 @@ import Reports from '../main/moderation/reports/ReportPage'
 import DetailedReport from '../main/moderation/reports/DetailedReportPage'
 export default function RouteRenderer() {
     const userContext = useContext(UserContext)
+
+    if (!userContext.initialized) return <> </>
 
     return <Switch>
         <Route path="/meals/create" >

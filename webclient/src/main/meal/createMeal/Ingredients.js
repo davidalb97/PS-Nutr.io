@@ -1,86 +1,139 @@
 import React, { useState, useReducer, useEffect, useCallback } from 'react'
 
-import Accordion from 'react-bootstrap/Accordion'
-import Card from 'react-bootstrap/Card'
-import ListGroup from 'react-bootstrap/ListGroup'
+import InputGroup from 'react-bootstrap/InputGroup'
+import Row from 'react-bootstrap/Row'
+import Col from 'react-bootstrap/Col'
 
-import RequestingEntity from '../../common/RequestingEntity'
-export default function Ingredients({ setCanAdvance, setMeal }) {
-    function reducer(list, food) {
-        const newList = { ...list }
-        newList[food.id] ? delete newList[food.id] : newList[food.id] = food
-        return newList
-    }
+import useFetch, { FetchStates } from '../../common/useFetch'
+import MultiSelect from "react-multi-select-component";
 
-    const [foods, addFood] = useReducer(reducer, {})
+export default function Ingredients({ setCanAdvance, setMeal, meal }) {
+    const [ingredientContext, setIngredientContext] = useState({
+        options: meal.ingredientOptions || [],
+        request: meal.ingredientOptions ? {} : { url: "http://localhost:9000/api/ingredient", shouldCancel: false },
+        selected: meal.ingredients || [],
+        onFetch: result => { setIngredientContext({ ...ingredientContext, options: result }); setMeal({ ingredientOptions: result }) },
+        foodMapper: json => json.ingredients
+    })
+
+    const [mealContext, setMealContext] = useState({
+        options: meal.mealOptions || [],
+        request: meal.mealOptions ? {} : { url: "http://localhost:9000/api/meal/suggested", shouldCancel: false },
+        selected: meal.meals || [],
+        onFetch: result => { setMealContext({ ...mealContext, options: result }); setMeal({ mealOptions: result }) },
+        foodMapper: json => json.meals
+    })
+
 
     useEffect(() => {
-        const canAdvance = Object.keys(foods).length > 0
+        function buildUserQuantity(components) {
+            const defaultQuantity = {
+                unit: meal.unit,
+                amount: 0,
+                carbs: 0
+            }
+
+            return components.map(component => {
+                return {
+                    ...component,
+                    userQuantity: component.userQuantity || defaultQuantity
+                }
+            })
+        }
+
+        const canAdvance = ingredientContext.selected.length > 0 || mealContext.selected.length > 0
 
         setCanAdvance(canAdvance)
-        if (canAdvance) setMeal({ ingredients: Object.values(foods) })
-
-    }, [foods, setCanAdvance, setMeal])
+        if (canAdvance) {
+            setMeal({
+                ingredients: buildUserQuantity(ingredientContext.selected),
+                meals: buildUserQuantity(mealContext.selected)
+            })
+        }
+    }, [ingredientContext, mealContext, setCanAdvance, setMeal])
 
 
     return <>
-        Choose meal composition:
+        {/* Ingredients */}
+        <Row>
+            <Col xs sm md={"auto"}>
+                <InputGroup.Append>
+                    <InputGroup.Text >Ingredients</InputGroup.Text>
+                </InputGroup.Append>
+            </Col>
+            <Col>
+                <FoodList
+                    context={ingredientContext}
+                    onFoodSelect={list => setIngredientContext({ ...ingredientContext, selected: list })}
+                />
+            </Col>
+        </Row>
+        {/* Meals */}
+        <Row>
+            <Col xs sm md={"auto"}>
+                <InputGroup.Append>
+                    <InputGroup.Text>Meals</InputGroup.Text>
+                </InputGroup.Append>
+            </Col>
+            <Col >
+                <FoodList
+                    context={mealContext}
+                    onFoodSelect={list => setMealContext({ ...mealContext, selected: list })}
+                />
+            </Col>
+        </Row>
+    </>
+}
 
-        <FoodList
-            request={{ url: "http://localhost:9000/api/ingredients" }}
-            listName="Ingredients"
-            foodMapper={(json) => json.ingredients}
-            onFoodSelect={addFood}
+function FoodList({ context, onFoodSelect }) {
+    const [fetchState, response, json, error] = useFetch(context.request)
+
+    useEffect(() => {
+        if (fetchState === FetchStates.error || !json) return
+
+        const options = context.foodMapper(json).map(food => {
+            return {
+                value: food,
+                label: food.name,
+            }
+        })
+
+        context.onFetch(options)
+    }, [json])
+
+    return <>
+        <MultiSelect
+            options={context.options}
+            value={context.selected}
+            onChange={onFoodSelect}
+            hasSelectAll={false}
+            isLoading={context.options.length <= 0}
+            valueRenderer={foodValueRenderer}
+            ItemRenderer={foodItemRenderer}
         />
     </>
 }
 
-function FoodList({ request, listName, foodMapper, onFoodSelect }) {
-    function listResult({ json }) {
-        const foods = foodMapper(json).map((food, idx) => {
-            return <Food
-                key={idx}
-                food={{ ...food, userQuantity: food.nutritionalInfo }}
-                onFoodSelect={onFoodSelect}
+function foodValueRenderer(selected) {
+    return selected.length ? `${selected.length} components selected` : "No items selected"
+}
+
+function foodItemRenderer({ checked, option, onClick, disabled }) {
+    const food = option.value
+    const info = food.nutritionalInfo
+
+    return (
+        <div
+            className={`item-renderer ${disabled && "disabled"}`}
+        >
+            <input
+                type="checkbox"
+                onChange={onClick}
+                checked={checked}
+                tabIndex={-1}
+                disabled={disabled}
             />
-        })
-
-        return <Accordion>
-            <Card>
-                <Accordion.Toggle as={Card.Header} eventKey="0">
-                    {listName}
-                </Accordion.Toggle>
-
-                <Accordion.Collapse eventKey="0">
-                    <ListGroup>
-                        <div className="ingredient overflow" >
-                            {foods}
-                        </div>
-                    </ListGroup>
-                </Accordion.Collapse>
-            </Card>
-        </Accordion >
-    }
-
-    return <RequestingEntity
-        request={request}
-        onSuccess={listResult}
-    />
-}
-
-//TODO When success and on click, background "green" doesn't go back to "light"
-function Food({ food, onFoodSelect }) {
-    const [isActive, setIsActive] = useState(false)
-
-    function onClick() {
-        setIsActive(!isActive)
-        onFoodSelect(food)
-    }
-
-    return <ListGroup.Item onClick={onClick}>
-        <Card bg={isActive ? "success" : "light"}>
-            <Card.Title as="h1">{food.name}</Card.Title>
-            <Card.Body>{food.id}</Card.Body>
-        </Card>
-    </ListGroup.Item>
-}
+            <span> {`${info.amount}${info.unit}`} of <strong>{food.name}</strong> with {info.carbs}g of carbs</span>
+        </div>
+    );
+}   

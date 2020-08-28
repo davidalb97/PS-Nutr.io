@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react'
+import useFetch, { FetchStates } from '../../common/useFetch'
 
 import Form from 'react-bootstrap/Form'
 import InputGroup from 'react-bootstrap/InputGroup'
@@ -7,8 +8,20 @@ import Dropdown from 'react-bootstrap/Dropdown'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 
+import MultiSelect from "react-multi-select-component"
+import FetchError from '../../bootstrap-common/FetchError'
+import Loading from '../../bootstrap-common/Loading'
+
+import { isNotEmpty, isPositive } from '../../forms/Validations'
+
 export default function MealDefinition({ setCanAdvance, setMeal, meal }) {
-    const [mealDefinition, setMealDefinition] = useState({ quantity: meal.quantity, name: meal.name, unit: meal.unit || "gr" })
+    const [mealDefinition, setMealDefinition] = useState({
+        quantity: meal.quantity,
+        name: meal.name,
+        unit: meal.unit || "gr",
+        cuisines: meal.cuisines || []
+    })
+    const [fetchState, response, json, error] = useFetch({ url: "http://localhost:9000/api/cuisine" })
 
     //References for form inputs in order to access values
     const mealNameInput = useRef()
@@ -22,20 +35,12 @@ export default function MealDefinition({ setCanAdvance, setMeal, meal }) {
 
     }, [mealDefinition])
 
-    function handleInputChange(event) {
-        const newDefinition = { ...mealDefinition }
-        newDefinition[event.id] = event.value
-        setMealDefinition(newDefinition)
-    }
-
-    /**
-     * Returns true if all field values are defined
-     */
-    function allInputsValid() {
-        return !Object.values(mealDefinition).some(field => !field || field === '')
-    }
-
     //TODO Add ounce <-> gram conversion
+
+    if (fetchState === FetchStates.error) return <FetchError json={json} error={error} />
+    if (fetchState === FetchStates.fetching || !json) return <Loading />
+
+    const options = json.cuisines.map(cuisine => { return { label: cuisine, value: cuisine } })
     return <Form>
         <Form.Group controlId="name">
             <Form.Label>Meal name</Form.Label>
@@ -71,5 +76,35 @@ export default function MealDefinition({ setCanAdvance, setMeal, meal }) {
             </InputGroup>
         </Form.Group>
 
+        <Row>
+            <Col xs sm md={"auto"}>
+                <InputGroup.Append>
+                    <InputGroup.Text id="basic-addon2">Cuisines</InputGroup.Text>
+                </InputGroup.Append>
+            </Col>
+            <Col>
+                <MultiSelect
+                    options={options}
+                    value={mealDefinition.cuisines}
+                    onChange={(selected) => setMealDefinition({ ...mealDefinition, cuisines: selected })}
+                    labelledBy={"Select..."}
+                />
+            </Col>
+        </Row>
     </Form>
+
+    function handleInputChange(event) {
+        const newDefinition = { ...mealDefinition }
+        newDefinition[event.id] = event.value
+        setMealDefinition(newDefinition)
+    }
+
+    /**
+     * Returns true if all field values are defined
+     */
+    function allInputsValid() {
+        return isNotEmpty(mealDefinition.name) &&
+            isPositive(mealDefinition.quantity) &&
+            mealDefinition.cuisines.length > 0
+    }
 }

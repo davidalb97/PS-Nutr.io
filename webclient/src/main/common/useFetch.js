@@ -13,8 +13,9 @@ export default function useFetch({
     authToken,
     contentType,
     method,
-    body
-}) {
+    body,
+    shouldCancel = true
+} = {}) {
     const [fetchState, setFetchState] = useState(null)
     const [response, setResponse] = useState(null)
     const [json, setJson] = useState(null)
@@ -69,7 +70,7 @@ export default function useFetch({
         }
 
         get()
-        return () => { isCancelled = true }
+        return () => { isCancelled = shouldCancel }
     }, [url, authToken, contentType, method, body, setFetchState, setResponse, setJson, setError])
 
     return [fetchState, response, json, error]

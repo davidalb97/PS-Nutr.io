@@ -2,6 +2,7 @@ import React, { useContext } from 'react'
 import useFetch, { FetchStates } from './useFetch'
 
 import UserContext from '../authentication/UserContext'
+import FetchError from '../bootstrap-common/FetchError'
 
 /**
  * Generic component responsible for sending an HTTP request and acting on it based on its' response.
@@ -28,7 +29,7 @@ export default function RequestingEntity({
     switch (fetchState) {
         case FetchStates.init: return Init ? <Init /> : <Default />
         case FetchStates.fetching: return Load ? <Load /> : <Default />
-        case FetchStates.error: return Error ? <Error error={error} json={json} /> : <Default />
+        case FetchStates.error: return Error ? <Error error={error} json={json} /> : <FetchError error={error} json={json} />
         case FetchStates.done: return Success ? <Success response={response} json={json} /> : <Default />
         default: return <Default />
     }

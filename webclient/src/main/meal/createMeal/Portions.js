@@ -1,51 +1,55 @@
-import React, { useRef, useState, useEffect, useCallback, useReducer } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
 
 import Form from 'react-bootstrap/Form'
 import ListGroup from 'react-bootstrap/ListGroup'
 import Card from 'react-bootstrap/Card'
 export default function Portions({ setCanAdvance, setMeal, meal }) {
-    function updateQuantity(newQuantity) {
-        //Where 'this' is Ingredient
-        this.userQuantity = newQuantity
-        setMeal(meal)
-    }
+    const [components] = useState(meal.ingredients.concat(meal.meals))
 
     useEffect(() => {
-        function reducer(sumQuantity, ingredient) {
-            return + ingredient.userQuantity.amount + sumQuantity
+        function reducer(sumQuantity, component) {
+            return + component.userQuantity.amount + sumQuantity
         }
-        const canAdvance = meal.ingredients.reduce(reducer, 0) <= meal.quantity
-        setCanAdvance(canAdvance)
+        const quantitySum = components.reduce(reducer, 0)
 
+        const canAdvance = quantitySum <= meal.quantity && quantitySum > 0
+        setCanAdvance(canAdvance)
     }, [meal, setCanAdvance])
 
-
-    const ingredients = meal.ingredients.map((ingredient, idx) => {
-        return <IngredientPortion
+    const componentList = components.map((component, idx) => {
+        return <ComponentPortion
             key={idx}
-            ingredient={ingredient}
-            onChange={updateQuantity.bind(ingredient)}
+            component={component}
+            onChange={updateQuantity.bind(component)}
             maxQuantity={meal.quantity}
         />
     })
 
     return <>
-        Set the quantity that each meal will have:
+        <h4>Set the quantity that each component will have:</h4>
+        <p />
         <ListGroup>
-            {ingredients}
+            {componentList}
         </ListGroup>
     </>
+
+
+    function updateQuantity(newQuantity) {
+        //Where 'this' is food component
+        this.userQuantity = newQuantity
+        setMeal(meal)
+    }
 }
 
-function IngredientPortion({ ingredient, onChange, maxQuantity }) {
-    const [nutritionalInfo, setNutritionalInfo] = useState(ingredient.userQuantity)
+function ComponentPortion({ component, onChange, maxQuantity }) {
+    const [nutritionalInfo, setNutritionalInfo] = useState(component.userQuantity)
     const quantity = useRef()
 
     function onQuantityChange() {
         const newNutrition = {
             unit: nutritionalInfo.unit,
             amount: quantity.current.value,
-            carbs: carbTool(ingredient.nutritionalInfo.carbs, ingredient.nutritionalInfo.amount, quantity.current.value)
+            carbs: carbTool(component.nutritionalInfo.carbs, component.nutritionalInfo.amount, quantity.current.value)
         }
 
         setNutritionalInfo(newNutrition)
@@ -54,10 +58,10 @@ function IngredientPortion({ ingredient, onChange, maxQuantity }) {
 
     return <ListGroup.Item>
         <Card>
-            <Card.Title> {ingredient.name} </Card.Title>
+            <Card.Title> {component.name} </Card.Title>
             <Card.Body>
                 Carbs: {nutritionalInfo.carbs}
-                <Form.Group controlId={ingredient.id}>
+                <Form.Group controlId={component.id}>
                     <Form.Label>Quantity: {nutritionalInfo.amount}</Form.Label>
                     <Form.Control
                         ref={quantity}

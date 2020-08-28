@@ -7,7 +7,8 @@ import { get as getAuthToken } from './CookieService'
 
 export default function UserProvider({ children }) {
     const defaultUser = useContext(UserContext)
-    const authToken = getAuthToken()
+    const [authToken, setAuthToken] = useState(getAuthToken())
+    // const authToken = getAuthToken()
 
     //No need to trigger a request if no session cookie is present
     if (!authToken) return provideUserContext({ error: true })
@@ -26,7 +27,7 @@ export default function UserProvider({ children }) {
         let user = defaultUser
 
         if (json && !error) user = { authToken: authToken, user: json, initialized: true }
-        if (error) user = { ...defaultUser, initialized: true }
+        if (error) user = { ...defaultUser, initialized: true, onLogin: setAuthToken }
 
         return <UserContext.Provider value={user}> {children} </UserContext.Provider>
     }
