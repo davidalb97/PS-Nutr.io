@@ -46,15 +46,15 @@ class RestaurantMealService(
         }
 
         //If the restaurant is inserted, get restaurant meal (if restaurant - meal is associated)
-        val restaurantMeal = restaurantId.submissionId!!.let {
-            dbRestaurantMealRepository.getRestaurantMeal(restaurantId.submissionId, mealId)
+        val restaurantMeal = restaurantId.submissionId?.let {
+            dbRestaurantMealRepository.getRestaurantMeal(it, mealId)
         }
 
         return RestaurantMeal(
-                submissionId = restaurantMeal.submission_id,
+                submissionId = restaurantMeal?.submission_id,
                 restaurant = restaurant,
                 meal = meal,
-                verified = restaurantMeal.verified
+                verified = restaurantMeal?.verified ?: false
         )
     }
 
@@ -129,19 +129,19 @@ class RestaurantMealService(
     fun addRestaurantMealPortion(restaurantId: RestaurantIdentifier, mealId: Int, submitterId: Int, quantity: Int) {
         val restaurantMeal = getOrAddRestaurantMeal(restaurantId, mealId)
 
-        dbPortionRepository.insert(submitterId, restaurantMeal.restaurantMealIdentifier, quantity)
+        dbPortionRepository.insert(submitterId, restaurantMeal.restaurantMealIdentifier!!, quantity)
     }
 
     fun addReport(submitterId: Int, restaurantIdentifier: RestaurantIdentifier, mealId: Int, report: String) {
         val restaurantInfo = getOrAddRestaurantMeal(restaurantIdentifier, mealId)
 
-        dbReportDbRepository.insert(submitterId, restaurantInfo.restaurantMealIdentifier, report)
+        dbReportDbRepository.insert(submitterId, restaurantInfo.restaurantMealIdentifier!!, report)
     }
 
     fun updateRestaurantMealVerification(restaurantId: RestaurantIdentifier, mealId: Int, verified: Boolean) {
         val restaurantMealSubmissionId = getOrAddRestaurantMeal(restaurantId, mealId).restaurantMealIdentifier
 
-        dbRestaurantMealRepository.putVerification(restaurantMealSubmissionId, verified)
+        dbRestaurantMealRepository.putVerification(restaurantMealSubmissionId!!, verified)
     }
 
     fun deleteRestaurantMeal(restaurantId: RestaurantIdentifier, mealId: Int, user: User) {
@@ -156,7 +156,7 @@ class RestaurantMealService(
                 .getMealRestaurantInfo(restaurantMeal.restaurant.identifier.value)
                 ?: throw IllegalStateException("Expected RestaurantInfo for given RestaurantMeal, but none was found!")
 
-        submissionService.deleteSubmission(restaurantInfo.restaurantMealIdentifier, user)
+        submissionService.deleteSubmission(restaurantInfo.restaurantMealIdentifier!!, user)
     }
 
     fun deleteUserPortion(restaurantId: RestaurantIdentifier, mealId: Int, user: User) {
@@ -174,6 +174,6 @@ class RestaurantMealService(
     fun setFavorite(restaurantId: RestaurantIdentifier, mealId: Int, submitterId: Int, isFavorite: Boolean) {
         val restaurantMeal = getOrAddRestaurantMeal(restaurantId, mealId)
 
-        dbFavoriteDbRepository.setFavorite(restaurantMeal.restaurantMealIdentifier, submitterId, isFavorite)
+        dbFavoriteDbRepository.setFavorite(restaurantMeal.restaurantMealIdentifier!!, submitterId, isFavorite)
     }
 }

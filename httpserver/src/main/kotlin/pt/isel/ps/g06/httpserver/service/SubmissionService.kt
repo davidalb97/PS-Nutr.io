@@ -49,10 +49,10 @@ class SubmissionService(
         setSubmissionVote(restaurant.identifier.value.submissionId!!, submitterId, voteState)
     }
 
-    fun alterRestaurantMealVote(mealRestaurantInfo: MealRestaurantInfo, submitterId: Int, voteState: VoteState) {
+    fun alterRestaurantMealVote(restaurantMealId: Int, submitterId: Int, voteState: VoteState) {
 
         setSubmissionVote(
-                submissionId = mealRestaurantInfo.restaurantMealIdentifier,
+                submissionId = restaurantMealId,
                 submitterId = submitterId,
                 voteState = voteState
         )

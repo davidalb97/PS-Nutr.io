@@ -16,12 +16,11 @@ private val restaurantMealDao = RestaurantMealDao::class.java
 
 @Repository
 class RestaurantMealDbRepository(jdbi: Jdbi) : SubmissionDbRepository(jdbi) {
-    fun getRestaurantMeal(restaurantId: Int, mealId: Int): DbRestaurantMealDto {
+    fun getRestaurantMeal(restaurantId: Int, mealId: Int): DbRestaurantMealDto? {
         return jdbi.inTransaction<DbRestaurantMealDto, Exception>(isolationLevel) {
             return@inTransaction it
                     .attach(restaurantMealDao)
                     .getByRestaurantAndMealId(restaurantId, mealId)
-                    ?: throw RestaurantMealNotFound()
         }
     }
 

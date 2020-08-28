@@ -140,7 +140,7 @@ class RestaurantMealController(
 
 
         submissionService.alterRestaurantMealVote(
-                mealRestaurantInfo = restaurantMeal,
+                restaurantMealId = restaurantMeal.restaurantMealIdentifier!!,
                 submitterId = user.identifier,
                 voteState = userVote.vote
         )
