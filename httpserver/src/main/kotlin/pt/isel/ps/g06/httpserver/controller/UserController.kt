@@ -55,7 +55,7 @@ class UserController(private val userService: UserService, private val authentic
             ResponseEntity.ok(
                     userService
                             .getUserSubmitterInfo(user)
-                            .let { submitter -> mapUserToOutput(user.userEmail, submitter) }
+                            .let { submitter -> mapUserToOutput(user.userEmail, user.userRole, submitter) }
             )
 
     @DeleteMapping(USER)

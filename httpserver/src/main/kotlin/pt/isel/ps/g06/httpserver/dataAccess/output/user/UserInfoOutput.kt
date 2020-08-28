@@ -6,12 +6,14 @@ import java.net.URI
 class UserInfoOutput(
         val email: String,
         val username: String,
+        val userRole: String,
         val userImage: URI?
 )
 
-fun mapUserToOutput(email: String, model: Submitter): UserInfoOutput =
+fun mapUserToOutput(email: String, userRole: String, model: Submitter): UserInfoOutput =
         UserInfoOutput(
                 email = email,
                 username = model.name,
+                userRole = userRole,
                 userImage = model.image
         )
