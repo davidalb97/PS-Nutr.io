@@ -37,6 +37,9 @@ interface InsulinProfileDao {
             glucoseObjective: String, sensitivityFactor: String, carbRatio: String, modificationDate: String
     ): DbUserEncInsulinProfileDto
 
+    @SqlQuery("DELETE FROM $table WHERE $submitterId = :submitterId RETURNING *")
+    fun deleteAllBySubmitterId(submitterId: Int): Collection<DbUserEncInsulinProfileDto>?
+
     @SqlQuery("DELETE FROM $table WHERE $submitterId = :submitterId AND $profileName = :profileName RETURNING *")
     fun deleteProfile(submitterId: Int, profileName: String): DbUserEncInsulinProfileDto?
 }
