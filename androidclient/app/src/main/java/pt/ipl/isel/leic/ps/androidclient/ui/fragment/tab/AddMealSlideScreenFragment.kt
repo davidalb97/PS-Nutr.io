@@ -111,14 +111,13 @@ class AddMealSlideScreenFragment : BaseSlideScreenFragment(propagateArguments = 
                     ctx = requireContext(),
                     layoutInflater = layoutInflater,
                     baseCarbs = item.carbs.toFloat(),
-                    baseAmountGrams = item.amount.toFloat(),
-                    mealUnit = WeightUnits.fromValue(item.unit)
+                    baseAmountGrams = item.amount,
+                    mealUnit = item.unit
                 ) { preciseGrams, preciseCarbs ->
-                    val roundedGrams = preciseGrams.toInt()
                     val roundedCarbs = preciseCarbs.toInt()
-                    item.amount = roundedGrams
+                    item.amount = preciseGrams
                     item.carbs = roundedCarbs
-                    mealIngredient.amount = roundedGrams
+                    mealIngredient.amount = preciseGrams
                     mealIngredient.carbs = roundedCarbs
                     viewModel.pick(mealIngredient)
                     onChangeCallback()
@@ -147,14 +146,13 @@ class AddMealSlideScreenFragment : BaseSlideScreenFragment(propagateArguments = 
                     ctx = requireContext(),
                     layoutInflater = layoutInflater,
                     baseCarbs = mealIngredient.carbs.toFloat(),
-                    baseAmountGrams = mealIngredient.amount.toFloat(),
-                    mealUnit = WeightUnits.fromValue(item.unit)
+                    baseAmountGrams = mealIngredient.amount,
+                    mealUnit = item.unit
                 ) { preciseGrams, preciseCarbs ->
-                    val roundedGrams = preciseGrams.toInt()
                     val roundedCarbs = preciseCarbs.toInt()
-                    item.amount = roundedGrams
+                    item.amount = preciseGrams
                     item.carbs = roundedCarbs
-                    mealIngredient.amount = roundedGrams
+                    mealIngredient.amount = preciseGrams
                     mealIngredient.carbs = roundedCarbs
                     onChangeCallback()
                 }

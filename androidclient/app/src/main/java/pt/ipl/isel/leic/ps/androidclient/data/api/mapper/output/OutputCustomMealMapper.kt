@@ -14,8 +14,8 @@ class OutputCustomMealMapper(
 
     fun mapToOutputModel(restaurant: CustomMeal) = CustomMealOutput(
         name = restaurant.name,
-        quantity = restaurant.amount,
-        unit = restaurant.unit,
+        quantity = restaurant.amount.toInt(),
+        unit = restaurant.unit.toString(),
         ingredients = ingredientMapper.mapToOutputModelCollection(restaurant.mealComponents.plus(restaurant.ingredientComponents)),
         cuisines = cuisineMapper.mapToOutputModelCollection(restaurant.cuisines),
         imageUri = restaurant.imageUri

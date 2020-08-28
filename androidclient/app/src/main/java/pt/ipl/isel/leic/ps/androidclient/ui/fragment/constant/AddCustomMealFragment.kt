@@ -14,6 +14,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.flexbox.FlexboxLayoutManager
+import kotlinx.android.synthetic.main.profile_fragment.*
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.sharedPreferences
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.CustomMeal
@@ -67,7 +68,6 @@ class AddCustomMealFragment : BaseFragment() {
         savedInstanceState: Bundle?
     ): View? {
         viewModel = buildViewModel(savedInstanceState, AddCustomMealViewModel::class.java)
-        viewModel.addedIngredients = arguments?.getMealIngredients()
         cuisinesViewModel = buildViewModel(savedInstanceState, CuisinePickViewModel::class.java)
         return super.onCreateView(inflater, container, savedInstanceState)
     }
@@ -85,11 +85,6 @@ class AddCustomMealFragment : BaseFragment() {
             ingredientsViewModel.ingredientsChanged = false
             mealsRecyclerAdapter.notifyDataSetChanged()
         }
-    }
-
-    override fun onDetach() {
-        super.onDetach()
-
     }
 
     /**
@@ -111,7 +106,9 @@ class AddCustomMealFragment : BaseFragment() {
         mealCarbs = view.findViewById(R.id.meal_carbs)
         val totalCarbs = ingredientsViewModel.pickedItems.sumBy { it.carbs } +
                 (viewModel.editMeal?.carbs ?: 0)
-        val totalAmount = ingredientsViewModel.pickedItems.sumBy { it.amount }
+//        val totalAmount: Float = ingredientsViewModel.pickedItems.fold(0.0F) { sum, it ->
+//            sum + it.unit.convert(, it.amount)
+//        }
 
         mealCarbs.text = String.format(
             getString(R.string.custom_meal_total_carbohydrates_amount),
@@ -241,8 +238,8 @@ class AddCustomMealFragment : BaseFragment() {
             name = customMealName.text.toString(),
             carbs = ingredientsViewModel.items.sumBy { it.carbs },
             //TODO fix amout to be above sum of ingredients ammount
-            amount = customMealAmount.text.toString().toInt(),
-            unit = customMealUnitSpinner.selectedItem.toString(),
+            amount = customMealAmount.text.toString().toFloat(),
+            unit = WeightUnits.fromValue(customMealUnitSpinner.selectedItem.toString()),
             imageUri = customImageUrl.text?.toString()?.let { Uri.parse(it) },
             ingredientComponents = ingredientsViewModel.items.filter { !it.isMeal },
             mealComponents = ingredientsViewModel.items.filter { it.isMeal },
@@ -258,7 +255,7 @@ class AddCustomMealFragment : BaseFragment() {
         val spinner = view.findViewById<Spinner>(R.id.custom_meal_units_spinner)
         val spinnerAdapter: ArrayAdapter<String> = spinner!!.adapter as ArrayAdapter<String>
 
-        val defaultUnitKey = viewModel.editMeal?.unit ?: sharedPreferences.getWeightUnitOrDefault()
+        val defaultUnitKey = sharedPreferences.getWeightUnitOrDefault()
 
         val spinnerPosition = spinnerAdapter.getPosition(defaultUnitKey)
         spinner.setSelection(spinnerPosition)

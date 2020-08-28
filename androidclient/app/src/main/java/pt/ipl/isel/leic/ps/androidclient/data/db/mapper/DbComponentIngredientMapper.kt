@@ -5,6 +5,7 @@ import pt.ipl.isel.leic.ps.androidclient.data.db.entity.DbComponentIngredientEnt
 import pt.ipl.isel.leic.ps.androidclient.data.db.entity.DbMealItemEntity
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealIngredient
 import pt.ipl.isel.leic.ps.androidclient.data.model.Source
+import pt.ipl.isel.leic.ps.androidclient.ui.util.units.WeightUnits
 
 class DbComponentIngredientMapper {
 
@@ -16,7 +17,7 @@ class DbComponentIngredientMapper {
         imageUri = entity.imageUri?.let { Uri.parse(it) },
         carbs = entity.carbs,
         amount = entity.amount,
-        unit = entity.unit,
+        unit = WeightUnits.values()[entity.unit],
         isMeal = false,
         source = Source.values()[entity.sourceOrdinal]
     )
@@ -26,7 +27,7 @@ class DbComponentIngredientMapper {
         name = model.name,
         carbs = model.carbs,
         amount = model.amount,
-        unit = model.unit,
+        unit = model.unit.ordinal,
         imageUri = model.imageUri?.toString(),
         sourceOrdinal = model.source.ordinal
     ).also { dto ->

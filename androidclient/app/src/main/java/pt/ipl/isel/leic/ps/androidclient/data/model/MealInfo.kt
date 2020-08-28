@@ -3,6 +3,7 @@ package pt.ipl.isel.leic.ps.androidclient.data.model
 import android.net.Uri
 import android.os.Parcel
 import android.os.Parcelable
+import pt.ipl.isel.leic.ps.androidclient.ui.util.units.WeightUnits
 import pt.ipl.isel.leic.ps.androidclient.util.TimestampWithTimeZone
 import pt.ipl.isel.leic.ps.androidclient.util.readListCompat
 import pt.ipl.isel.leic.ps.androidclient.util.readTimestampWithTimeZone
@@ -25,8 +26,8 @@ open class MealInfo : MealItem {
         restaurantSubmissionId: String?,
         name: String,
         carbs: Int,
-        amount: Int,
-        unit: String,
+        amount: Float,
+        unit: WeightUnits,
         votes: Votes?,
         isFavorite: Boolean,
         isVotable: Boolean,

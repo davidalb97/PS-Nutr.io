@@ -27,7 +27,7 @@ interface IMealItemDetail<T : MealItem> {
         val configuredUnit = WeightUnits.fromValue(sharedPreferences.getWeightUnitOrDefault())
         customMealQuantity.text = String.format(
             resources.getString(R.string.meal_quantity_card),
-            WeightUnits.fromValue(mealInfo.unit).convert(configuredUnit, mealInfo.amount.toFloat()),
+            mealInfo.unit.convert(configuredUnit, mealInfo.amount),
             configuredUnit
         )
 

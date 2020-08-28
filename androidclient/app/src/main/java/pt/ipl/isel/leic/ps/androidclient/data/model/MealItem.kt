@@ -3,10 +3,8 @@ package pt.ipl.isel.leic.ps.androidclient.data.model
 import android.net.Uri
 import android.os.Parcel
 import android.os.Parcelable
-import pt.ipl.isel.leic.ps.androidclient.util.readBooleanCompat
-import pt.ipl.isel.leic.ps.androidclient.util.readUri
-import pt.ipl.isel.leic.ps.androidclient.util.writeBooleanCompat
-import pt.ipl.isel.leic.ps.androidclient.util.writeUri
+import pt.ipl.isel.leic.ps.androidclient.ui.util.units.WeightUnits
+import pt.ipl.isel.leic.ps.androidclient.util.*
 
 //TODO replace var to val when fields are not changed
 open class MealItem(
@@ -16,8 +14,8 @@ open class MealItem(
     var restaurantSubmissionId: String?,
     var name: String,
     var carbs: Int,
-    var amount: Int,
-    var unit: String,
+    var amount: Float,
+    var unit: WeightUnits,
     var imageUri: Uri?,
     var votes: Votes?,
     var isFavorite: Boolean,
@@ -33,8 +31,8 @@ open class MealItem(
         restaurantSubmissionId = parcel.readString(),
         name = parcel.readString()!!,
         carbs = parcel.readInt(),
-        amount = parcel.readInt(),
-        unit = parcel.readString()!!,
+        amount = parcel.readFloat(),
+        unit = parcel.readWeightUnit(),
         imageUri = parcel.readUri(),
         votes = parcel.readParcelable(Votes::class.java.classLoader),
         isFavorite = parcel.readBooleanCompat(),
@@ -50,8 +48,8 @@ open class MealItem(
         parcel.writeString(restaurantSubmissionId)
         parcel.writeString(name)
         parcel.writeInt(carbs)
-        parcel.writeInt(amount)
-        parcel.writeString(unit)
+        parcel.writeFloat(amount)
+        parcel.writeWeightUnit(unit)
         parcel.writeUri(imageUri)
         parcel.writeParcelable(votes, flags)
         parcel.writeBooleanCompat(isFavorite)

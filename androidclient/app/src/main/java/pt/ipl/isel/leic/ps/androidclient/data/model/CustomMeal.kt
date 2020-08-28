@@ -3,6 +3,7 @@ package pt.ipl.isel.leic.ps.androidclient.data.model
 import android.net.Uri
 import android.os.Parcel
 import android.os.Parcelable
+import pt.ipl.isel.leic.ps.androidclient.ui.util.units.WeightUnits
 
 class CustomMeal : MealInfo, Parcelable {
 
@@ -11,8 +12,8 @@ class CustomMeal : MealInfo, Parcelable {
         submissionId: Int?,
         name: String,
         carbs: Int,
-        amount: Int,
-        unit: String,
+        amount: Float,
+        unit: WeightUnits,
         imageUri: Uri?,
         ingredientComponents: List<MealIngredient>,
         mealComponents: List<MealIngredient>,

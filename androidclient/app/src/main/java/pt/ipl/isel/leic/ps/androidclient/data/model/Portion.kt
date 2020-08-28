@@ -6,19 +6,19 @@ import android.os.Parcelable
 data class Portion(
     var dbId: Long,
     var dbMealId: Long,
-    val amount: Int
+    val amount: Float
 ) : Parcelable {
 
     constructor(parcel: Parcel) : this(
         dbId = parcel.readLong(),
         dbMealId = parcel.readLong(),
-        amount = parcel.readInt()
+        amount = parcel.readFloat()
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeLong(dbId)
         parcel.writeLong(dbMealId)
-        parcel.writeInt(amount)
+        parcel.writeFloat(amount)
     }
 
     override fun describeContents(): Int {

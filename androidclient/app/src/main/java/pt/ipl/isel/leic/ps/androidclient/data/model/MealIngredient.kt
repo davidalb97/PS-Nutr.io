@@ -4,6 +4,7 @@ import android.net.Uri
 import android.os.Parcel
 import android.os.Parcelable
 import pt.ipl.isel.leic.ps.androidclient.data.db.entity.DbMealItemEntity
+import pt.ipl.isel.leic.ps.androidclient.ui.util.units.WeightUnits
 import pt.ipl.isel.leic.ps.androidclient.util.readBooleanCompat
 import pt.ipl.isel.leic.ps.androidclient.util.readUri
 import pt.ipl.isel.leic.ps.androidclient.util.writeBooleanCompat
@@ -21,8 +22,8 @@ class MealIngredient : MealItem, Parcelable {
         submissionId: Int?,
         name: String,
         carbs: Int,
-        amount: Int,
-        unit: String,
+        amount: Float,
+        unit: WeightUnits,
         imageUri: Uri?,
         source: Source
     ) : super(

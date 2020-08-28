@@ -6,6 +6,7 @@ import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.SimplifiedRestaurant
 import pt.ipl.isel.leic.ps.androidclient.data.db.entity.DbMealItemEntity
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealItem
 import pt.ipl.isel.leic.ps.androidclient.data.model.Source
+import pt.ipl.isel.leic.ps.androidclient.ui.util.units.WeightUnits
 
 class InputMealItemMapper(
     private val inputVotesMapper: InputVotesMapper
@@ -16,8 +17,8 @@ class InputMealItemMapper(
         submissionId = dto.mealIdentifier,
         restaurantSubmissionId = restaurantId,
         carbs = dto.nutritionalInfo.carbs,
-        amount = dto.nutritionalInfo.amount,
-        unit = dto.nutritionalInfo.unit,
+        amount = dto.nutritionalInfo.amount.toFloat(),
+        unit = WeightUnits.fromValue(dto.nutritionalInfo.unit),
         imageUri = dto.imageUri,
         name = dto.name,
         votes = inputVotesMapper.mapToModel(dto.votes),

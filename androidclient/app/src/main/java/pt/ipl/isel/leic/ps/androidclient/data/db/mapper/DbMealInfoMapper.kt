@@ -4,6 +4,7 @@ import android.net.Uri
 import pt.ipl.isel.leic.ps.androidclient.data.db.entity.DbMealInfoEntity
 import pt.ipl.isel.leic.ps.androidclient.data.db.relation.DbMealInfoRelation
 import pt.ipl.isel.leic.ps.androidclient.data.model.*
+import pt.ipl.isel.leic.ps.androidclient.ui.util.units.WeightUnits
 
 class DbMealInfoMapper(
     private val componentIngredientMapper: DbComponentIngredientMapper,
@@ -20,7 +21,7 @@ class DbMealInfoMapper(
         name = relation.entity.name,
         carbs = relation.entity.carbs,
         amount = relation.entity.amount,
-        unit = relation.entity.unit,
+        unit = WeightUnits.values()[relation.entity.unit],
         votes = if (relation.entity.hasVote) Votes(
             userHasVoted = VoteState.values()[relation.entity.userVoteOrdinal!!],
             positive = relation.entity.positiveVotes!!,
@@ -45,28 +46,6 @@ class DbMealInfoMapper(
             }
         }
     )
-    /*
-    if(relation.entity.ownerId != null && relation.entity.ownerName != null) {
-        SubmissionOwner(
-            username = relation.entity.ownerName,
-            id = relation.entity.ownerId
-        )
-    } else null
-    if(listOf(relation.entity.ownerName, relation.entity.ownerId).all { it == null }) {
-        SubmissionOwner(
-            username = relation.entity.ownerName!!,
-            id = relation.entity.ownerId!!
-        )
-    } else null
-
-    relation.entity.ownerId?.let { ownerId ->
-        relation.entity.ownerName?.let { ownerName ->
-            SubmissionOwner(
-                username = ownerName,
-                id = ownerId
-            )
-        }
-    }*/
 
     fun mapToRelation(model: MealInfo) = DbMealInfoRelation(
         entity = DbMealInfoEntity(
@@ -75,7 +54,7 @@ class DbMealInfoMapper(
             name = model.name,
             carbs = model.carbs,
             amount = model.amount,
-            unit = model.unit,
+            unit = model.unit.ordinal,
             isFavorite = model.isFavorite,
             isVotable = model.isVotable,
             imageUri = model.imageUri?.toString(),

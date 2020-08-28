@@ -8,7 +8,7 @@ class OutputIngredientMapper {
 
     fun mapToOutputModel(model: MealIngredient) = IngredientOutput(
         identifier = requireNotNull(model.submissionId),
-        quantity = model.amount
+        quantity = model.amount.toInt()
     )
 
     fun mapToOutputModelCollection(models: Collection<MealIngredient>) =
