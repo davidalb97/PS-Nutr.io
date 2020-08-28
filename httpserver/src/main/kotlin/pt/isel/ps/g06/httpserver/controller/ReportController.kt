@@ -3,8 +3,9 @@ package pt.isel.ps.g06.httpserver.controller
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import pt.isel.ps.g06.httpserver.common.*
+import pt.isel.ps.g06.httpserver.common.exception.problemJson.notFound.SubmissionNotFoundException
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType
-import pt.isel.ps.g06.httpserver.model.Report
+import pt.isel.ps.g06.httpserver.dataAccess.output.report.*
 import pt.isel.ps.g06.httpserver.model.User
 import pt.isel.ps.g06.httpserver.service.ReportService
 import pt.isel.ps.g06.httpserver.service.UserService
@@ -23,14 +24,17 @@ class ReportController(
             @RequestParam type: SubmissionType?,
             @RequestParam @Min(0) skip: Int?,
             @RequestParam @Min(0) @Max(MAX_COUNT) count: Int?
-    ): ResponseEntity<Collection<*>> {
+    ): ResponseEntity<*> {
 
         // Check if the user is a moderator
         userService.ensureModerator(user)
+        val body = type?.let {
+            toReportedSubmissionsOutputContainer(
+                    reportService.getAllReportedSubmissionsBySubmissionType(type.toString(), skip, count)
+            )
+        } ?: toGenericReportsOutputContainer(reportService.getAllReports(skip, count).toList())
 
-        type ?: return ResponseEntity.ok(reportService.getAllReports(skip, count).toList())
-
-        return ResponseEntity.ok(reportService.getAllReportsBySubmissionType(type.toString(), skip, count))
+        return ResponseEntity.ok(body)
     }
 
 
@@ -38,12 +42,22 @@ class ReportController(
     fun getAllReportsFromSubmission(
             @PathVariable(SUBMISSION_ID_VALUE) submissionId: Int,
             user: User
-    ): ResponseEntity<Collection<Report>>  {
+    ): ResponseEntity<SubmissionReportsContainerOutput>  {
 
         // Check if the user is a moderator
         userService.ensureModerator(user)
 
-        return ResponseEntity.ok(reportService.getSubmissionReports(submissionId).toList())
+        val reportedSubmissionDetail = reportService.getReportedSubmissionDetail(submissionId)
+                ?: throw SubmissionNotFoundException()
+
+        val submissionReports = reportService.getSubmissionReports(submissionId)
+
+        return ResponseEntity.ok(
+                toSubmissionReportsContainerOutput(
+                        reportedSubmissionDetail,
+                        submissionReports
+                )
+        )
     }
 
     @DeleteMapping(REPORT)
