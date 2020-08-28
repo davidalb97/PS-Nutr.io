@@ -2,7 +2,9 @@ package pt.isel.ps.g06.httpserver.dataAccess.db.dao
 
 import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.statement.SqlQuery
+import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbDetailedReportDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbReportDto
+import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbReportSubmissionNameDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbSimplifiedReportDto
 
 //Submission constants
@@ -54,8 +56,20 @@ interface ReportDao {
                     "LIMIT :count OFFSET :skip")
     fun getAllBySubmissionAndType(submissionType: String, skip: Int?, count: Int?): Collection<DbSimplifiedReportDto>
 
-    @SqlQuery("SELECT * FROM $table WHERE $submissionId = :submissionId")
-    fun getAllBySubmission(submissionId: Int): Collection<DbReportDto>
+    @SqlQuery("SELECT $table.$reportId, $table.$reporterId, $table.$description " +
+            "FROM $table WHERE $table.$submissionId = :submissionId")
+    fun getAllBySubmission(submissionId: Int): Collection<DbDetailedReportDto>
+
+    @SqlQuery("SELECT DISTINCT COALESCE($R_table.$R_restaurant_name, _RestaurantMeal.meal_name) " +
+                    "AS _restaurant_name FROM $table " +
+                    "INNER JOIN $S_table ON $S_table.$S_submission_id = $table.$submissionId " +
+                    "FULL OUTER JOIN $R_table ON $R_table.$R_submission_id = $table.$submissionId " +
+                    "FULL OUTER JOIN (SELECT $RM_table.$RM_submission_id, $M_table.$M_meal_name FROM $RM_table " +
+                    "INNER JOIN $M_table ON $M_table.$M_submission_id = $RM_table.$RM_restaurant_meal_id) as _RestaurantMeal " +
+                    "ON _RestaurantMeal.submission_id = $S_table.$S_submission_id " +
+                    "WHERE $S_table.$S_submission_id = :submissionId"
+    )
+    fun getReportedSubmissionName(submissionId: Int): DbReportSubmissionNameDto?
 
     @SqlQuery("SELECT * FROM $table WHERE $reporterId = :submitterId AND $submissionId = :submissionId")
     fun getReportFromSubmitter(submitterId: Int, submissionId: Int): DbReportDto?

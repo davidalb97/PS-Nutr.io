@@ -2,11 +2,15 @@ package pt.isel.ps.g06.httpserver.service
 
 import org.springframework.stereotype.Service
 import pt.isel.ps.g06.httpserver.common.exception.problemJson.badRequest.InvalidInputException
+import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.DetailedReportResponseMapper
 import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.ReportResponseMapper
+import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.ReportSubmissionNameMapper
 import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.SimpleReportResponseMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.REPORTABLE_TYPES
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.ReportDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.SubmissionDbRepository
+import pt.isel.ps.g06.httpserver.model.DetailedReport
+import pt.isel.ps.g06.httpserver.model.ReportSubmissionName
 import pt.isel.ps.g06.httpserver.model.SimplifiedReport
 
 @Service
@@ -17,6 +21,8 @@ class ReportService(
 
     val reportDbMapper = ReportResponseMapper()
     val simpleReportDbMapper = SimpleReportResponseMapper()
+    val detailedReportMapper = DetailedReportResponseMapper()
+    val reportSubmissionNameMapper = ReportSubmissionNameMapper()
 
     /**
      * Gets all the reports inside the database
@@ -40,8 +46,11 @@ class ReportService(
      * Gets all the reports for a specific submission
      * @param submissionId - The submission's id
      */
-    fun getSubmissionReports(submissionId: Int) =
-            reportDbRepository.getAllFromSubmission(submissionId).map(reportDbMapper::mapToModel)
+    fun getSubmissionReports(submissionId: Int): Collection<DetailedReport> =
+            reportDbRepository.getAllFromSubmission(submissionId).map(detailedReportMapper::mapTo)
+
+    fun getReportedSubmissionName(submissionId: Int): ReportSubmissionName? =
+            reportDbRepository.getReportedSubmissionName(submissionId).let(reportSubmissionNameMapper::mapTo)
 
     fun deleteReport(reportId: Int) =
             reportDbRepository.delete(reportId).let(reportDbMapper::mapToModel)

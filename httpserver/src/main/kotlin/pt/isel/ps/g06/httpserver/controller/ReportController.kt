@@ -4,6 +4,9 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import pt.isel.ps.g06.httpserver.common.*
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType
+import pt.isel.ps.g06.httpserver.dataAccess.output.report.DetailedReportContainer
+import pt.isel.ps.g06.httpserver.dataAccess.output.report.toDetailedReportContainer
+import pt.isel.ps.g06.httpserver.model.DetailedReport
 import pt.isel.ps.g06.httpserver.model.Report
 import pt.isel.ps.g06.httpserver.model.User
 import pt.isel.ps.g06.httpserver.service.ReportService
@@ -38,12 +41,19 @@ class ReportController(
     fun getAllReportsFromSubmission(
             @PathVariable(SUBMISSION_ID_VALUE) submissionId: Int,
             user: User
-    ): ResponseEntity<Collection<Report>>  {
+    ): ResponseEntity<DetailedReportContainer>  {
 
         // Check if the user is a moderator
         userService.ensureModerator(user)
 
-        return ResponseEntity.ok(reportService.getSubmissionReports(submissionId).toList())
+        val reportedSubmissionName = reportService.getReportedSubmissionName(submissionId)
+        val submissionReports = reportService.getSubmissionReports(submissionId)
+
+        return ResponseEntity.ok(
+                toDetailedReportContainer(
+                        reportedSubmissionName?.restaurantName,
+                        submissionReports)
+        )
     }
 
     @DeleteMapping(REPORT)

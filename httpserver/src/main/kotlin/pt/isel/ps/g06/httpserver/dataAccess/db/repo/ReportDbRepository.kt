@@ -7,7 +7,9 @@ import pt.isel.ps.g06.httpserver.common.exception.problemJson.conflict.Duplicate
 import pt.isel.ps.g06.httpserver.common.exception.problemJson.badRequest.InvalidReportSubmissionException
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionContractType.REPORTABLE
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.ReportDao
+import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbDetailedReportDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbReportDto
+import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbReportSubmissionNameDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbSimplifiedReportDto
 
 private val isolationLevel = TransactionIsolationLevel.SERIALIZABLE
@@ -28,9 +30,15 @@ class ReportDbRepository(jdbi: Jdbi) : BaseDbRepo(jdbi) {
         }
     }
 
-    fun getAllFromSubmission(submissionId: Int): Collection<DbReportDto> {
-        return jdbi.inTransaction<Collection<DbReportDto>, Exception>(isolationLevel) {
+    fun getAllFromSubmission(submissionId: Int): Collection<DbDetailedReportDto> {
+        return jdbi.inTransaction<Collection<DbDetailedReportDto>, Exception>(isolationLevel) {
             return@inTransaction it.attach(reportDaoClass).getAllBySubmission(submissionId)
+        }
+    }
+
+    fun getReportedSubmissionName(submissionId: Int): DbReportSubmissionNameDto? {
+        return jdbi.inTransaction<DbReportSubmissionNameDto, Exception>(isolationLevel) {
+            return@inTransaction it.attach(reportDaoClass).getReportedSubmissionName(submissionId)
         }
     }
 
