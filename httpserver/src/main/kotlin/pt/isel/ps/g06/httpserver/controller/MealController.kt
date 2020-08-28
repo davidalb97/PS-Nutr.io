@@ -17,6 +17,7 @@ import pt.isel.ps.g06.httpserver.service.MealService
 import pt.isel.ps.g06.httpserver.service.SubmissionService
 import pt.isel.ps.g06.httpserver.service.UserService
 import javax.validation.Valid
+import javax.validation.constraints.Max
 import javax.validation.constraints.Min
 
 @Validated

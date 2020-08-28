@@ -8,8 +8,6 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType.*
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.*
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbRestaurantMealDto
 import pt.isel.ps.g06.httpserver.common.exception.problemJson.badRequest.InvalidInputException
-import pt.isel.ps.g06.httpserver.common.exception.problemJson.notFound.RestaurantMealNotFound
-import pt.isel.ps.g06.httpserver.common.exception.clientError.InvalidInputException
 import java.util.*
 
 private val isolationLevel = TransactionIsolationLevel.SERIALIZABLE
