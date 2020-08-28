@@ -20,6 +20,7 @@ class DetailedRestaurantMealOutput(
         votes: VotesOutput?,
         isFavorite: Boolean,
         isSuggested: Boolean,
+        isVerified: Boolean,
         nutritionalInfo: NutritionalInfoOutput,
         val creationDate: OffsetDateTime?,
         val composedBy: MealCompositionOutput?,
@@ -32,6 +33,7 @@ class DetailedRestaurantMealOutput(
         isFavorite = isFavorite,
         imageUri = imageUri,
         isSuggested = isSuggested,
+        isVerified = isVerified,
         votes = votes,
         nutritionalInfo = nutritionalInfo
 )
@@ -60,6 +62,7 @@ fun toDetailedRestaurantMealOutput(restaurantMeal: RestaurantMeal, userId: Int? 
             createdBy = meal.submitterInfo.value?.let { toSimplifiedUserOutput(it) },
             votes = votes,
             isSuggested = !meal.isUserMeal(),
+            isVerified = restaurantMeal.verified!!, // TODO: CHECK nullable type
             portions = restaurantMealInfo
                     ?.portions
                     ?.map { portion -> portion.amount }

@@ -6,7 +6,7 @@ import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.util.UriComponentsBuilder
 import pt.isel.ps.g06.httpserver.common.*
-import pt.isel.ps.g06.httpserver.dataAccess.input.InsulinProfileInput
+import pt.isel.ps.g06.httpserver.dataAccess.input.insulin.InsulinProfileInput
 import pt.isel.ps.g06.httpserver.dataAccess.output.InsulinProfileOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.toInsulinProfileOutput
 import pt.isel.ps.g06.httpserver.model.User

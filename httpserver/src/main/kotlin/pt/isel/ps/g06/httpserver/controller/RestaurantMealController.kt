@@ -5,11 +5,16 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.util.UriComponentsBuilder
 import pt.isel.ps.g06.httpserver.common.*
-import pt.isel.ps.g06.httpserver.common.exception.forbidden.ForbiddenException
-import pt.isel.ps.g06.httpserver.common.exception.forbidden.NotSubmissionOwnerException
-import pt.isel.ps.g06.httpserver.common.exception.notFound.MealNotFoundException
-import pt.isel.ps.g06.httpserver.common.exception.notFound.RestaurantNotFoundException
-import pt.isel.ps.g06.httpserver.dataAccess.input.*
+import pt.isel.ps.g06.httpserver.common.exception.problemJson.forbidden.BaseForbiddenException
+import pt.isel.ps.g06.httpserver.common.exception.problemJson.forbidden.NotSubmissionOwnerException
+import pt.isel.ps.g06.httpserver.common.exception.problemJson.notFound.MealNotFoundException
+import pt.isel.ps.g06.httpserver.common.exception.problemJson.notFound.RestaurantNotFoundException
+import pt.isel.ps.g06.httpserver.dataAccess.input.userActions.FavoriteInput
+import pt.isel.ps.g06.httpserver.dataAccess.input.restaurantMeal.PortionInput
+import pt.isel.ps.g06.httpserver.dataAccess.input.restaurantMeal.RestaurantMealInput
+import pt.isel.ps.g06.httpserver.dataAccess.input.moderation.VerifyInput
+import pt.isel.ps.g06.httpserver.dataAccess.input.userActions.ReportInput
+import pt.isel.ps.g06.httpserver.dataAccess.input.userActions.VoteInput
 import pt.isel.ps.g06.httpserver.dataAccess.output.meal.DetailedRestaurantMealOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.meal.RestaurantMealContainerOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.meal.toDetailedRestaurantMealOutput
@@ -142,7 +147,7 @@ class RestaurantMealController(
 
 
         submissionService.alterRestaurantMealVote(
-                mealRestaurantInfo = restaurantMeal,
+                restaurantMealId = restaurantMeal.restaurantMealIdentifier!!,
                 submitterId = user.identifier,
                 voteState = userVote.vote
         )
@@ -156,7 +161,7 @@ class RestaurantMealController(
     fun putVerifyRestaurantMeal(
             @PathVariable(RESTAURANT_ID_VALUE) restaurantId: String,
             @PathVariable(MEAL_ID_VALUE) mealId: Int,
-            @RequestBody verified: Boolean,
+            @RequestBody verifyInput: VerifyInput,
             user: User
     ): ResponseEntity<Void> {
         // Get restaurant ID
@@ -166,11 +171,11 @@ class RestaurantMealController(
         val isOwner = restaurantService.getRestaurant(restaurantIdentifier)?.ownerId == user.identifier
 
         if (!isOwner) {
-            throw ForbiddenException()
+            throw BaseForbiddenException()
         }
 
         // Put/remove restaurant meal's verification
-        restaurantMealService.updateRestaurantMealVerification(restaurantIdentifier, mealId, verified)
+        restaurantMealService.updateRestaurantMealVerification(restaurantIdentifier, mealId, verifyInput.verified)
 
         return ResponseEntity
                 .ok()

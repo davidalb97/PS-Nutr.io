@@ -11,8 +11,8 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver
 import org.springframework.web.method.support.ModelAndViewContainer
 import pt.isel.ps.g06.httpserver.common.AUTH_HEADER
 import pt.isel.ps.g06.httpserver.common.BEARER
-import pt.isel.ps.g06.httpserver.common.exception.authentication.UnauthorizedException
-import pt.isel.ps.g06.httpserver.common.exception.forbidden.ForbiddenException
+import pt.isel.ps.g06.httpserver.common.exception.problemJson.unauthorized.UnauthorizedException
+import pt.isel.ps.g06.httpserver.common.exception.problemJson.forbidden.BaseForbiddenException
 import pt.isel.ps.g06.httpserver.model.User
 import pt.isel.ps.g06.httpserver.security.JwtUtil
 import pt.isel.ps.g06.httpserver.service.UserService
@@ -62,7 +62,7 @@ class UserAuthenticationArgumentResolver(
         val user = userService.getUserFromEmail(userEmail) ?: return null
 
         if (user.isUserBanned) {
-            throw ForbiddenException()
+            throw BaseForbiddenException()
         }
 
         if (SecurityContextHolder.getContext().authentication == null) {

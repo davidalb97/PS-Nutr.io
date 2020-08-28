@@ -57,6 +57,9 @@ interface ReportDao {
     @SqlQuery("SELECT * FROM $table WHERE $submissionId = :submissionId")
     fun getAllBySubmission(submissionId: Int): Collection<DbReportDto>
 
+    @SqlQuery("SELECT * FROM $table WHERE $reporterId = :submitterId AND $submissionId = :submissionId")
+    fun getReportFromSubmitter(submitterId: Int, submissionId: Int): DbReportDto?
+
     @SqlQuery("INSERT INTO $table($reporterId, $submissionId, $description) " +
             "VALUES(:reporterSubmitterId, :submissionId, :description) RETURNING *")
     fun insert(@Bind reporterSubmitterId: Int, submissionId: Int, description: String): DbReportDto

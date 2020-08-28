@@ -10,6 +10,7 @@ open class BaseMealOutput(
         val name: String,
         val isFavorite: Boolean,
         val isSuggested: Boolean,
+        val isVerified: Boolean,
         val nutritionalInfo: NutritionalInfoOutput,
         val isVotable: Boolean,
         val imageUri: URI?
@@ -23,6 +24,7 @@ fun toBaseMealOutput(meal: Meal, userId: Int? = null): BaseMealOutput {
             isSuggested = !meal.isUserMeal(),
             nutritionalInfo = toNutritionalInfoOutput(meal.nutritionalValues),
             isVotable = false, //A suggested/custom meal is not votable
+            isVerified = false, //A suggested/custom meal is not verified
             imageUri = meal.imageUri
     )
 }

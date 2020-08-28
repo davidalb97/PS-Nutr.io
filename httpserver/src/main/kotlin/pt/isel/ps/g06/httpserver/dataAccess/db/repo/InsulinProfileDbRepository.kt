@@ -3,10 +3,11 @@ package pt.isel.ps.g06.httpserver.dataAccess.db.repo
 import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.transaction.TransactionIsolationLevel
 import org.springframework.stereotype.Repository
-import pt.isel.ps.g06.httpserver.common.exception.clientError.DuplicateInsulinProfileException
-import pt.isel.ps.g06.httpserver.common.exception.clientError.MissingInsulinProfileException
+import pt.isel.ps.g06.httpserver.common.exception.problemJson.conflict.DuplicateInsulinProfileException
+import pt.isel.ps.g06.httpserver.common.exception.problemJson.notFound.MissingInsulinProfileException
 import pt.isel.ps.g06.httpserver.dataAccess.db.DbInsulinProfileDtoMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.InsulinProfileDao
+import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbUserEncInsulinProfileDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbUserInsulinProfileDto
 import pt.isel.ps.g06.httpserver.security.converter.ColumnCryptoConverter
 import java.time.LocalTime
@@ -87,6 +88,14 @@ class InsulinProfileDbRepository(
                             carbRatio = encCarbohydrateRatio,
                             modificationDate = encModificationDate
                     ).let(dbInsulinProfileDtoMapper::toDbUserInsulinProfileDto)
+        }
+    }
+
+    fun deleteAllBySubmitter(submitterId: Int): Collection<DbUserEncInsulinProfileDto> {
+        return jdbi.inTransaction<Collection<DbUserEncInsulinProfileDto>, Exception>(isolationLevel) { handle ->
+            return@inTransaction handle
+                    .attach(insulinProfileDaoClass)
+                    .deleteAllBySubmitterId(submitterId)
         }
     }
 
