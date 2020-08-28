@@ -11,6 +11,7 @@ class UserResponseMapper {
             User(
                     identifier = dto.submitterId,
                     userEmail = dto.email,
+                    userName = dto.username,
                     userPassword = dto.password,
                     userRole = dto.role,
                     isUserBanned = dto.isBanned

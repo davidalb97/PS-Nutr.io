@@ -12,19 +12,6 @@ private val isolationLevel = TransactionIsolationLevel.SERIALIZABLE
 @Repository
 class SubmitterDbRepository(jdbi: Jdbi) : BaseDbRepo(jdbi) {
 
-    fun getSubmitterByName(name: String): DbSubmitterDto? {
-        return jdbi.inTransaction<DbSubmitterDto, Exception> {
-            return@inTransaction it.attach(SubmitterDao::class.java)
-                    .getSubmitterByName(name)
-        }
-    }
-
-    fun getApiSubmittersByName(names: Collection<String>): Collection<DbSubmitterDto> {
-        return jdbi.inTransaction<Collection<DbSubmitterDto>, Exception> {
-            return@inTransaction it.attach(SubmitterDao::class.java).getApiSubmittersByName(names)
-        }
-    }
-
     fun getSubmitterBySubmitterId(submitterId: Int): DbSubmitterDto {
         return jdbi.inTransaction<DbSubmitterDto, Exception> {
             return@inTransaction it.attach(SubmitterDao::class.java).getSubmitterBySubmitterId(submitterId)
@@ -39,15 +26,13 @@ class SubmitterDbRepository(jdbi: Jdbi) : BaseDbRepo(jdbi) {
         }
     }
 
-    fun insertSubmitter(name: String, type: String): DbSubmitterDto {
+    fun insertSubmitter(type: String): DbSubmitterDto {
         return jdbi.inTransaction<DbSubmitterDto, Exception>(isolationLevel) { handle ->
 
             val submitterDao = handle.attach(SubmitterDao::class.java)
-            if(submitterDao.getSubmitterByName(name) != null) {
-                throw DuplicateSubmitterException()
-            }
+
             return@inTransaction submitterDao
-                    .insertSubmitter(name, type)
+                    .insertSubmitter(type)
         }
     }
 }

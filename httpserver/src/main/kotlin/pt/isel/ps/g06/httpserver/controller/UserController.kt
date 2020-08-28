@@ -54,8 +54,9 @@ class UserController(private val userService: UserService, private val authentic
     fun getUserAdditionalInfo(user: User): ResponseEntity<UserInfoOutput> =
             ResponseEntity.ok(
                     userService
-                            .getUserSubmitterInfo(user)
-                            .let { submitter -> mapUserToOutput(user.userEmail, submitter) }
+                            .getUserFromEmail(user.userEmail)
+                            ?.let(::mapUserToOutput)
+                            ?: throw NotImplementedError() //TODO
             )
 
     @DeleteMapping(USER)
