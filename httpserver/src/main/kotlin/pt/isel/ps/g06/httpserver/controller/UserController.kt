@@ -59,8 +59,16 @@ class UserController(private val userService: UserService, private val authentic
             )
 
     @DeleteMapping(USER)
-    fun removeAccount(user: User): ResponseEntity<UserInfoOutput> {
-        throw NotImplementedError()
+    fun removeAccount(@Valid @RequestBody userLoginInput: UserLoginInput): ResponseEntity<Void> {
+
+        val userEmail = userLoginInput.email
+
+        // Authenticates the user, throwing UnauthorizedException if the credentials are wrong
+        authenticationService.login(userEmail, userLoginInput.password)
+
+        userService.deleteUser(userEmail)
+
+        return ResponseEntity.ok().build()
     }
 
 

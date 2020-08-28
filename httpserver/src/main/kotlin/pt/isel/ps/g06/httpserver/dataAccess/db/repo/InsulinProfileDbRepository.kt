@@ -7,6 +7,7 @@ import pt.isel.ps.g06.httpserver.common.exception.problemJson.conflict.Duplicate
 import pt.isel.ps.g06.httpserver.common.exception.problemJson.notFound.MissingInsulinProfileException
 import pt.isel.ps.g06.httpserver.dataAccess.db.DbInsulinProfileDtoMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.InsulinProfileDao
+import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbUserEncInsulinProfileDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbUserInsulinProfileDto
 import pt.isel.ps.g06.httpserver.security.converter.ColumnCryptoConverter
 import java.time.LocalTime
@@ -87,6 +88,14 @@ class InsulinProfileDbRepository(
                             carbRatio = encCarbohydrateRatio,
                             modificationDate = encModificationDate
                     ).let(dbInsulinProfileDtoMapper::toDbUserInsulinProfileDto)
+        }
+    }
+
+    fun deleteAllBySubmitter(submitterId: Int): Collection<DbUserEncInsulinProfileDto> {
+        return jdbi.inTransaction<Collection<DbUserEncInsulinProfileDto>, Exception>(isolationLevel) { handle ->
+            return@inTransaction handle
+                    .attach(insulinProfileDaoClass)
+                    .deleteAllBySubmitterId(submitterId)
         }
     }
 
