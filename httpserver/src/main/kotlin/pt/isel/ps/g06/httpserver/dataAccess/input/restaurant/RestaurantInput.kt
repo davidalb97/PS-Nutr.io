@@ -1,4 +1,4 @@
-package pt.isel.ps.g06.httpserver.dataAccess.input
+package pt.isel.ps.g06.httpserver.dataAccess.input.restaurant
 
 import javax.validation.constraints.NotBlank
 import javax.validation.constraints.NotEmpty

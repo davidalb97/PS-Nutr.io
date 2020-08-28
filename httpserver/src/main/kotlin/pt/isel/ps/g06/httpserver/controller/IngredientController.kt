@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*
 import org.springframework.web.util.UriComponentsBuilder
 import pt.isel.ps.g06.httpserver.common.INGREDIENTS
 import pt.isel.ps.g06.httpserver.common.exception.problemJson.badRequest.InvalidInputException
-import pt.isel.ps.g06.httpserver.dataAccess.input.MealInput
+import pt.isel.ps.g06.httpserver.dataAccess.input.meal.MealInput
 import pt.isel.ps.g06.httpserver.dataAccess.output.ingredient.IngredientsContainerOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.ingredient.toIngredientsContainerOutput
 import pt.isel.ps.g06.httpserver.model.User

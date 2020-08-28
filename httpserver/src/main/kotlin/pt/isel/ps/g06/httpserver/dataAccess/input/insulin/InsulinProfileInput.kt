@@ -1,4 +1,4 @@
-package pt.isel.ps.g06.httpserver.dataAccess.input
+package pt.isel.ps.g06.httpserver.dataAccess.input.insulin
 
 import com.fasterxml.jackson.annotation.JsonFormat
 import java.time.LocalTime

@@ -1,4 +1,4 @@
-package pt.isel.ps.g06.httpserver.dataAccess.input
+package pt.isel.ps.g06.httpserver.dataAccess.input.restaurantMeal
 
 import javax.validation.constraints.Min
 import javax.validation.constraints.Pattern

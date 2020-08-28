@@ -1,5 +1,6 @@
-package pt.isel.ps.g06.httpserver.dataAccess.input
+package pt.isel.ps.g06.httpserver.dataAccess.input.meal
 
+import pt.isel.ps.g06.httpserver.dataAccess.input.ingredient.IngredientInput
 import javax.validation.constraints.Min
 import javax.validation.constraints.NotBlank
 import javax.validation.constraints.NotEmpty

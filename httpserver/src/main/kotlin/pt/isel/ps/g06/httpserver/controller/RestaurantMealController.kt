@@ -9,7 +9,12 @@ import pt.isel.ps.g06.httpserver.common.exception.problemJson.forbidden.BaseForb
 import pt.isel.ps.g06.httpserver.common.exception.problemJson.forbidden.NotSubmissionOwnerException
 import pt.isel.ps.g06.httpserver.common.exception.problemJson.notFound.MealNotFoundException
 import pt.isel.ps.g06.httpserver.common.exception.problemJson.notFound.RestaurantNotFoundException
-import pt.isel.ps.g06.httpserver.dataAccess.input.*
+import pt.isel.ps.g06.httpserver.dataAccess.input.userActions.FavoriteInput
+import pt.isel.ps.g06.httpserver.dataAccess.input.restaurantMeal.PortionInput
+import pt.isel.ps.g06.httpserver.dataAccess.input.restaurantMeal.RestaurantMealInput
+import pt.isel.ps.g06.httpserver.dataAccess.input.moderation.VerifyInput
+import pt.isel.ps.g06.httpserver.dataAccess.input.userActions.ReportInput
+import pt.isel.ps.g06.httpserver.dataAccess.input.userActions.VoteInput
 import pt.isel.ps.g06.httpserver.dataAccess.output.meal.DetailedRestaurantMealOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.meal.RestaurantMealContainerOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.meal.toDetailedRestaurantMealOutput

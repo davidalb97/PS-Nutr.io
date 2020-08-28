@@ -1,4 +1,4 @@
-package pt.isel.ps.g06.httpserver.dataAccess.input
+package pt.isel.ps.g06.httpserver.dataAccess.input.user
 
 import javax.validation.constraints.NotNull
 import javax.validation.constraints.Pattern

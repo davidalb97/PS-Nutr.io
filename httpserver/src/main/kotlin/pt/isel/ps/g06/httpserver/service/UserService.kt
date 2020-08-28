@@ -11,7 +11,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.UserResponseMa
 import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.submitter.SubmitterResponseMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.SubmitterDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.UserDbRepository
-import pt.isel.ps.g06.httpserver.dataAccess.input.BanInput
+import pt.isel.ps.g06.httpserver.dataAccess.input.moderation.BanInput
 import pt.isel.ps.g06.httpserver.model.Submitter
 
 @Service
