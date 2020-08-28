@@ -7,10 +7,7 @@ import pt.isel.ps.g06.httpserver.common.exception.problemJson.conflict.Duplicate
 import pt.isel.ps.g06.httpserver.common.exception.problemJson.badRequest.InvalidReportSubmissionException
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionContractType.REPORTABLE
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.ReportDao
-import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbDetailedReportDto
-import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbReportDto
-import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbReportSubmissionNameDto
-import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbSimplifiedReportDto
+import pt.isel.ps.g06.httpserver.dataAccess.db.dto.*
 
 private val isolationLevel = TransactionIsolationLevel.SERIALIZABLE
 private val reportDaoClass = ReportDao::class.java
@@ -18,27 +15,40 @@ private val reportDaoClass = ReportDao::class.java
 @Repository
 class ReportDbRepository(jdbi: Jdbi) : BaseDbRepo(jdbi) {
 
-    fun getAll(skip: Int?, count: Int?): Collection<DbReportDto> {
-        return jdbi.inTransaction<Collection<DbReportDto>, Exception>(isolationLevel) {
-            return@inTransaction it.attach(reportDaoClass).getAll(skip, count)
+    fun getAll(skip: Int?, count: Int?): Collection<DbReportSubmissionDto> {
+        return jdbi.inTransaction<Collection<DbReportSubmissionDto>, Exception>(isolationLevel) {
+            val dao = it.attach(reportDaoClass)
+            val allReports = dao.getAll(skip, count)
+
+            return@inTransaction allReports.map { reportDto ->
+                val reportDetail = dao.getReportedSubmissionDetail(reportDto.submission_id)
+                DbReportSubmissionDto(
+                        report_id = reportDto.report_id,
+                        submitter_id = reportDto.submitter_id,
+                        submission_id = reportDto.submission_id,
+                        description = reportDto.description,
+                        _submission_name = reportDetail!!._submission_name,
+                        submission_submitter = reportDetail.submitter_id
+                )
+            }
         }
     }
 
-    fun getAllBySubmissionType(submissionType: String, skip: Int?, count: Int?): Collection<DbSimplifiedReportDto> {
-        return jdbi.inTransaction<Collection<DbSimplifiedReportDto>, Exception>(isolationLevel) {
-            return@inTransaction it.attach(reportDaoClass).getAllBySubmissionAndType(submissionType, skip, count)
+    fun getAllBySubmissionType(submissionType: String, skip: Int?, count: Int?): Collection<DbReportedSubmissionDto> {
+        return jdbi.inTransaction<Collection<DbReportedSubmissionDto>, Exception>(isolationLevel) {
+            return@inTransaction it.attach(reportDaoClass).getAllReportedSubmissionsByType(submissionType, skip, count)
         }
     }
 
-    fun getAllFromSubmission(submissionId: Int): Collection<DbDetailedReportDto> {
-        return jdbi.inTransaction<Collection<DbDetailedReportDto>, Exception>(isolationLevel) {
+    fun getAllFromSubmission(submissionId: Int): Collection<DbSubmissionReportDto> {
+        return jdbi.inTransaction<Collection<DbSubmissionReportDto>, Exception>(isolationLevel) {
             return@inTransaction it.attach(reportDaoClass).getAllBySubmission(submissionId)
         }
     }
 
-    fun getReportedSubmissionName(submissionId: Int): DbReportSubmissionNameDto? {
-        return jdbi.inTransaction<DbReportSubmissionNameDto, Exception>(isolationLevel) {
-            return@inTransaction it.attach(reportDaoClass).getReportedSubmissionName(submissionId)
+    fun getReportedSubmissionDetail(submissionId: Int): DbReportSubmissionDetailDto? {
+        return jdbi.inTransaction<DbReportSubmissionDetailDto, Exception>(isolationLevel) {
+            return@inTransaction it.attach(reportDaoClass).getReportedSubmissionDetail(submissionId)
         }
     }
 
