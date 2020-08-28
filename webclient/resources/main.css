@@ -1,7 +1,21 @@
-#container{padding-top:100px; padding-bottom: 100px; margin-left: 3%; margin-right: 3%;}
+#container{
+    max-width: 1024px;
+    position: relative;
+    top: 90px;
+    margin: 0 auto;
+    padding: 0 30px;
+}
 
 .body{background-color: aquamarine; }
 .overflow{overflow:scroll;}
+
+.panel-content {height: 170px;}
+.multiselect-cta {max-width: 140px; display: block; text-align: center;}
+.ingredients-cta {width: 180px;}
+.profile-delete-cta {width: 200px}
+
+.spacer {height: 100px; display: block;}
+.spacer-20 {height: 20px; display: block;}
 
 .mealCreation{padding-top:20px; padding-bottom: 20px;}
 
@@ -9,4 +23,16 @@
 
 .nav-tab{height: 480px; width: 100%;}
 
-.test{background-color: rgb(125, 125, 126);}
+/* .test{background-color: rgb(125, 125, 126);} */
+
+
+.footer-text {
+  text-align: center;
+}
+
+
+@media only screen and (max-width: 600px) {
+  body {
+    background-color: lightblue;
+  }
+}

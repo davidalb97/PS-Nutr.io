@@ -11,3 +11,7 @@ export function set({ name, value }) {
     const cookieName = name || AUTH_TOKEN_KEY
     document.cookie = `${cookieName}=${value}`
 }
+
+export function deleteCookie({ name }) {
+    set({ name: name, value: `; Max-Age=-99999;` })
+}

@@ -3,7 +3,6 @@ import React, { useReducer, useState, useCallback } from 'react'
 import ProgressBar from 'react-bootstrap/ProgressBar'
 import Button from 'react-bootstrap/Button'
 import Card from 'react-bootstrap/Card'
-import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 
@@ -73,18 +72,22 @@ export default function CreateMeal() {
     let next
 
     if (currentProgress.order > 0) {
-        previous = <Button variant="primary" block onClick={() => setProgress(idx => idx - 1)}>Previous</Button>
+        previous = <Col>
+            <Button variant="primary" block onClick={() => setProgress(idx => idx - 1)}>Previous</Button>
+        </Col>
     }
 
     if (currentProgress.order < CreationStates.length - 1) {
-        next = <Button
-            block
-            variant="primary"
-            onClick={onButtonNext}
-            disabled={!canAdvance}
-        >
-            Next
-        </Button>
+        next = <Col>
+            <Button
+                block
+                variant="primary"
+                onClick={onButtonNext}
+                disabled={!canAdvance}
+            >
+                Next
+            </Button>
+        </Col>
     }
 
     return <Card >
@@ -106,8 +109,10 @@ export default function CreateMeal() {
             })}
 
             <hr />
-            {previous}
-            {next}
+            <Row>
+                {previous}
+                {next}
+            </Row>
         </Card.Body>
     </Card>
 }

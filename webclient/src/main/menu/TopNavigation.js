@@ -23,7 +23,7 @@ export default function TopNavigation() {
     //If user was still not obtained from server, do not display Login/Register buttons
     const authenticationContext = !userContext.initialized ? <> </> : userContext.user ?
         //Logged in, display info
-        <Navbar.Text>Signed in as: {`${userContext.user.username}`}</Navbar.Text> :
+        <Navbar.Text>Signed in as: <Link to="/user">{`${userContext.user.username}`}</Link></Navbar.Text> :
         //----
         //Not signed in, but tried to obtain from server
         <>

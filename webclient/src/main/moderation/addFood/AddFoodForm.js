@@ -108,13 +108,13 @@ export default function AddFoodForm({ cuisines }) {
 
                 <p />
                 <Row>
-                    <Col xs md={"auto"}>
-                        <InputGroup.Append>
-                            <InputGroup.Text id="basic-addon2">Cuisines</InputGroup.Text>
+                    <Col className="col-2">
+                        <InputGroup.Append className="multiselect-cta">
+                            <InputGroup.Text className="justify-content-center">Cuisines</InputGroup.Text>
                         </InputGroup.Append>
                     </Col>
 
-                    <Col>
+                    <Col className="col-10">
                         <MultiSelectWrapper
                             id="cuisines"
                             options={options}

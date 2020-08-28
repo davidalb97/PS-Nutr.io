@@ -4,7 +4,11 @@ import Form from 'react-bootstrap/Form'
 import ListGroup from 'react-bootstrap/ListGroup'
 import Card from 'react-bootstrap/Card'
 export default function Portions({ setCanAdvance, setMeal, meal }) {
-    const [components] = useState(meal.ingredients.concat(meal.meals))
+    const [components] = useState(meal
+        .ingredients
+        .concat(meal.meals)
+        .map(component => component.value)
+    )
 
     useEffect(() => {
         function reducer(sumQuantity, component) {
@@ -57,23 +61,20 @@ function ComponentPortion({ component, onChange, maxQuantity }) {
     }
 
     return <ListGroup.Item>
-        <Card>
-            <Card.Title> {component.name} </Card.Title>
-            <Card.Body>
-                Carbs: {nutritionalInfo.carbs}
-                <Form.Group controlId={component.id}>
-                    <Form.Label>Quantity: {nutritionalInfo.amount}</Form.Label>
-                    <Form.Control
-                        ref={quantity}
-                        type="range"
-                        value={nutritionalInfo.amount}
-                        onChange={onQuantityChange}
-                        max={Number(maxQuantity)}
-                    />
-                </Form.Group>
-            </Card.Body>
-
-        </Card>
+        <Card.Title> {component.name} </Card.Title>
+        <Card.Body>
+            Carbs: {nutritionalInfo.carbs}
+            <Form.Group controlId={component.id}>
+                <Form.Label>Quantity: {nutritionalInfo.amount}</Form.Label>
+                <Form.Control
+                    ref={quantity}
+                    type="range"
+                    value={nutritionalInfo.amount}
+                    onChange={onQuantityChange}
+                    max={Number(maxQuantity)}
+                />
+            </Form.Group>
+        </Card.Body>
     </ListGroup.Item>
 }
 

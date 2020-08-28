@@ -77,12 +77,12 @@ export default function MealDefinition({ setCanAdvance, setMeal, meal }) {
         </Form.Group>
 
         <Row>
-            <Col xs sm md={"auto"}>
-                <InputGroup.Append>
-                    <InputGroup.Text id="basic-addon2">Cuisines</InputGroup.Text>
+            <Col className="col-2">
+                <InputGroup.Append className="multiselect-cta">
+                    <InputGroup.Text className="justify-content-center">Cuisines</InputGroup.Text>
                 </InputGroup.Append>
             </Col>
-            <Col>
+            <Col className="col-10">
                 <MultiSelect
                     options={options}
                     value={mealDefinition.cuisines}

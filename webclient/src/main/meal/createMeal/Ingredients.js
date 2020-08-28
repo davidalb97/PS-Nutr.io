@@ -8,11 +8,25 @@ import useFetch, { FetchStates } from '../../common/useFetch'
 import MultiSelect from "react-multi-select-component";
 
 export default function Ingredients({ setCanAdvance, setMeal, meal }) {
+    const defaultQuantity = {
+        unit: meal.unit || "gr",
+        amount: 0,
+        carbs: 0
+    }
+
     const [ingredientContext, setIngredientContext] = useState({
         options: meal.ingredientOptions || [],
         request: meal.ingredientOptions ? {} : { url: "http://localhost:9000/api/ingredient", shouldCancel: false },
         selected: meal.ingredients || [],
-        onFetch: result => { setIngredientContext({ ...ingredientContext, options: result }); setMeal({ ingredientOptions: result }) },
+        onFetch: result => {
+            const options = result.map(component => {
+                component.value = { ...component.value, userQuantity: component.userQuantity || defaultQuantity }
+                return component
+            })
+
+            setIngredientContext({ ...ingredientContext, options: options });
+            setMeal({ ingredientOptions: options })
+        },
         foodMapper: json => json.ingredients
     })
 
@@ -20,34 +34,27 @@ export default function Ingredients({ setCanAdvance, setMeal, meal }) {
         options: meal.mealOptions || [],
         request: meal.mealOptions ? {} : { url: "http://localhost:9000/api/meal/suggested", shouldCancel: false },
         selected: meal.meals || [],
-        onFetch: result => { setMealContext({ ...mealContext, options: result }); setMeal({ mealOptions: result }) },
+        onFetch: result => {
+            const options = result.map(component => {
+                component.value = { ...component.value, userQuantity: component.userQuantity || defaultQuantity }
+                return component
+            })
+
+            setMealContext({ ...mealContext, options: options });
+            setMeal({ mealOptions: options })
+        },
         foodMapper: json => json.meals
     })
 
 
     useEffect(() => {
-        function buildUserQuantity(components) {
-            const defaultQuantity = {
-                unit: meal.unit,
-                amount: 0,
-                carbs: 0
-            }
-
-            return components.map(component => {
-                return {
-                    ...component,
-                    userQuantity: component.userQuantity || defaultQuantity
-                }
-            })
-        }
-
         const canAdvance = ingredientContext.selected.length > 0 || mealContext.selected.length > 0
 
         setCanAdvance(canAdvance)
         if (canAdvance) {
             setMeal({
-                ingredients: buildUserQuantity(ingredientContext.selected),
-                meals: buildUserQuantity(mealContext.selected)
+                ingredients: ingredientContext.selected,
+                meals: mealContext.selected
             })
         }
     }, [ingredientContext, mealContext, setCanAdvance, setMeal])
@@ -56,12 +63,12 @@ export default function Ingredients({ setCanAdvance, setMeal, meal }) {
     return <>
         {/* Ingredients */}
         <Row>
-            <Col xs sm md={"auto"}>
+            <Col className="col-2">
                 <InputGroup.Append>
-                    <InputGroup.Text >Ingredients</InputGroup.Text>
+                    <InputGroup.Text className="list-cta ingredients-cta justify-content-center">Ingredients</InputGroup.Text>
                 </InputGroup.Append>
             </Col>
-            <Col>
+            <Col className="col-10">
                 <FoodList
                     context={ingredientContext}
                     onFoodSelect={list => setIngredientContext({ ...ingredientContext, selected: list })}
@@ -70,12 +77,12 @@ export default function Ingredients({ setCanAdvance, setMeal, meal }) {
         </Row>
         {/* Meals */}
         <Row>
-            <Col xs sm md={"auto"}>
+            <Col className="col-2">
                 <InputGroup.Append>
-                    <InputGroup.Text>Meals</InputGroup.Text>
+                    <InputGroup.Text className="list-cta ingredients-cta justify-content-center">Meals</InputGroup.Text>
                 </InputGroup.Append>
             </Col>
-            <Col >
+            <Col className="col-10">
                 <FoodList
                     context={mealContext}
                     onFoodSelect={list => setMealContext({ ...mealContext, selected: list })}

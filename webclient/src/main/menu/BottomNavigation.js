@@ -14,11 +14,10 @@ export default function TopNavigation() {
 
     return <Row>
         <Col>
-            <Navbar bg="dark" variant="dark" expand="lg" fixed="bottom">
-                <Navbar.Toggle />
-                <Navbar.Collapse className="justify-content-center">
-                    <Navbar.Text>Are you a restaurant owner? <Link to="/contactUs">Contact us</Link></Navbar.Text>
-                </Navbar.Collapse>
+            <Navbar bg="dark" variant="dark" expand="lg" fixed="bottom" className="justify-content-center">
+                <Navbar.Text className="footer-text">
+                    Are you a restaurant owner? <Link to="/contactUs">Contact us</Link>
+                </Navbar.Text>
             </Navbar >
         </Col>
     </Row>
