@@ -8,6 +8,8 @@ import kotlin.reflect.KClass
 
 class IngredientPickViewModel : BaseItemPickerViewModel<MealIngredient> {
 
+    var ingredientsChanged = false
+
     constructor(parcel: Parcel) : super(parcel)
 
     constructor() : super()

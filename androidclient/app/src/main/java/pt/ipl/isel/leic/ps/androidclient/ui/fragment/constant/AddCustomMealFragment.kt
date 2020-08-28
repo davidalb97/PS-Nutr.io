@@ -11,6 +11,7 @@ import android.widget.*
 import android.widget.AdapterView.OnItemSelectedListener
 import androidx.annotation.IdRes
 import androidx.navigation.findNavController
+import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.flexbox.FlexboxLayoutManager
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.sharedPreferences
@@ -36,7 +37,7 @@ class AddCustomMealFragment : BaseFragment() {
 
     //Meals
     private val mealsRecyclerViewId: Int = R.id.custom_meal_meals_list
-    private lateinit var ingredientsViewModel: IngredientPickViewModel
+    private val ingredientsViewModel: IngredientPickViewModel by navGraphViewModels(R.id.nav_custom_meal_nested)
     private lateinit var mealsImgButton: ImageButton
     private val mealsRecyclerAdapter by lazy {
         IngredientPickRecyclerAdapter(ingredientsViewModel, requireContext())
@@ -67,8 +68,6 @@ class AddCustomMealFragment : BaseFragment() {
     ): View? {
         viewModel = buildViewModel(savedInstanceState, AddCustomMealViewModel::class.java)
         viewModel.addedIngredients = arguments?.getMealIngredients()
-        ingredientsViewModel =
-            buildViewModel(savedInstanceState, IngredientPickViewModel::class.java)
         cuisinesViewModel = buildViewModel(savedInstanceState, CuisinePickViewModel::class.java)
         return super.onCreateView(inflater, container, savedInstanceState)
     }
@@ -77,6 +76,20 @@ class AddCustomMealFragment : BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         fragmentElementsSetup(view)
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        if(ingredientsViewModel.ingredientsChanged) {
+            ingredientsViewModel.ingredientsChanged = false
+            mealsRecyclerAdapter.notifyDataSetChanged()
+        }
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+
     }
 
     /**
@@ -120,9 +133,9 @@ class AddCustomMealFragment : BaseFragment() {
         mealsImgButton = view.findViewById(R.id.add_custom_meal_add_meal_ingredient)
         mealsImgButton.setOnClickListener {
             val bundle = Bundle()
-            bundle.putNavigation(Navigation.SEND_TO_ADD_CUSTOM_MEAL)
-            bundle.putMealIngredients(ingredientsViewModel.pickedItems)
-            view.findNavController().navigate(Navigation.SEND_TO_ADD_MEALS.navId, bundle)
+            bundle.putNavigation(Navigation.BACK_TO_CUSTOM_MEAL)
+            bundle.putParentNavigation(Navigation.SEND_TO_ADD_CUSTOM_MEAL)
+            view.findNavController().navigate(Navigation.SEND_TO_PICK_CUSTOM_MEAL_INGREDIENTS.navId, bundle)
         }
         if (!ingredientsViewModel.tryRestore()) {
             val editMeal = viewModel.editMeal

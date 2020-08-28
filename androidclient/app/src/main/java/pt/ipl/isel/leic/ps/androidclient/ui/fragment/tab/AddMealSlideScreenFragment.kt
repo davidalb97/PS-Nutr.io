@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.navGraphViewModels
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealIngredient
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealItem
@@ -15,23 +15,29 @@ import pt.ipl.isel.leic.ps.androidclient.ui.modular.listener.check.ICheckListene
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.listener.check.ICheckListenerOwner
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.listener.click.IItemClickListener
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.listener.click.IItemClickListenerOwner
-import pt.ipl.isel.leic.ps.androidclient.ui.provider.AddIngredientsVMProviderFactory
+import pt.ipl.isel.leic.ps.androidclient.ui.provider.AddCustomMealRecyclerVMProviderFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.util.*
 import pt.ipl.isel.leic.ps.androidclient.ui.util.units.WeightUnits
-import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.meal.AddIngredientsListViewModel
+import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.pick.IngredientPickViewModel
 
 class AddMealSlideScreenFragment : BaseSlideScreenFragment(propagateArguments = false), ISend {
 
     private lateinit var okButton: Button
-    private lateinit var viewModel: AddIngredientsListViewModel
+    private lateinit var viewModel: IngredientPickViewModel
+
+    private fun extractViewModelFromParent(): IngredientPickViewModel {
+        val parentNavigation = requireNotNull(arguments?.getParentNavigation()) {
+            "${javaClass.simpleName} Must have a parent navigation for navGraphViewModel!"
+        }
+        val viewModelLazy: IngredientPickViewModel by navGraphViewModels(parentNavigation.navId)
+        return viewModelLazy
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        //Build ViewModel
-        val intent = requireActivity().intent
-        val factory = AddIngredientsVMProviderFactory(arguments, savedInstanceState, intent)
-        viewModel = ViewModelProvider(this, factory)[AddIngredientsListViewModel::class.java]
+        viewModel = extractViewModelFromParent()
+
         //Restore picked items to items list
         viewModel.update()
     }
@@ -40,10 +46,11 @@ class AddMealSlideScreenFragment : BaseSlideScreenFragment(propagateArguments = 
         super.onViewCreated(view, savedInstanceState)
 
         okButton = view.findViewById(R.id.tab_fragment_ok_btn)
-        okButton.text = getString(if (viewModel.items.isEmpty()) R.string.cancel else R.string.ok)
+        okButton.text =
+            getString(if (viewModel.pickedItems.isEmpty()) R.string.cancel else R.string.ok)
         okButton.visibility = View.VISIBLE
         okButton.setOnClickListener {
-            sendToDestination(view, Navigation.SEND_TO_ADD_CUSTOM_MEAL)
+            sendToDestination(view, requireArguments().getNavigation())
         }
     }
 
@@ -70,14 +77,8 @@ class AddMealSlideScreenFragment : BaseSlideScreenFragment(propagateArguments = 
         return fragment
     }
 
-    override fun onSendToDestination(bundle: Bundle) {
-        if (viewModel.items.isNotEmpty()) {
-            bundle.putMealIngredients(viewModel.items)
-        }
-    }
-
     private fun <T : MealItem> restoredItemPredicator(item: T): Boolean {
-        val originalItem = viewModel.items.firstOrNull {
+        val originalItem = viewModel.pickedItems.firstOrNull {
             it.submissionId == item.submissionId
         }
         return if (originalItem != null) {
@@ -87,14 +88,17 @@ class AddMealSlideScreenFragment : BaseSlideScreenFragment(propagateArguments = 
         } else false
     }
 
-    private fun <T: MealItem> getCheckListener(): ICheckListener<T> {
+    private fun <T : MealItem> getCheckListener(): ICheckListener<T> {
         return ICheckListener { item, isChecked, onChangeCallback ->
             val mealIngredient = toMealIngredient(item)
-            val existingItem = viewModel.items.firstOrNull { it.submissionId == item.submissionId }
+            viewModel.ingredientsChanged = true
+
+            val existingItem =
+                viewModel.pickedItems.firstOrNull { it.submissionId == item.submissionId }
             //Add checked item to list
             if (isChecked) {
                 //Change button state if it's the first item
-                if (viewModel.items.isEmpty()) {
+                if (viewModel.pickedItems.isEmpty()) {
                     okButton.text = getString(R.string.ok)
                 }
                 //Ignore already checked items (list restore)
@@ -116,28 +120,28 @@ class AddMealSlideScreenFragment : BaseSlideScreenFragment(propagateArguments = 
                     item.carbs = roundedCarbs
                     mealIngredient.amount = roundedGrams
                     mealIngredient.carbs = roundedCarbs
-                    viewModel.liveDataHandler.add(mealIngredient)
+                    viewModel.pick(mealIngredient)
                     onChangeCallback()
                 }
             }
             //Remove checked item from list
             else {
                 //Change button state if it's last item
-                if (viewModel.items.size == 1) {
+                if (viewModel.pickedItems.size == 1) {
                     okButton.text = getString(R.string.cancel)
                 }
                 //Find item to remove based on submission id
                 //This will avoid failed removals when
                 //the object is not the same after restoring checked items
-                viewModel.liveDataHandler.remove(existingItem ?: mealIngredient)
+                viewModel.unPick(existingItem ?: mealIngredient)
             }
         }
     }
 
-    private fun <T: MealItem> getItemClickListener(): IItemClickListener<T> {
+    private fun <T : MealItem> getItemClickListener(): IItemClickListener<T> {
         return IItemClickListener { item, onChangeCallback ->
             val mealIngredient =
-                viewModel.items.firstOrNull { it.submissionId == item.submissionId }
+                viewModel.pickedItems.firstOrNull { it.submissionId == item.submissionId }
             if (mealIngredient != null) {
                 MealAmountSelector(
                     ctx = requireContext(),
@@ -175,5 +179,9 @@ class AddMealSlideScreenFragment : BaseSlideScreenFragment(propagateArguments = 
             imageUri = mealItem.imageUri,
             source = mealItem.source
         )
+    }
+
+    override fun onSendToDestination(bundle: Bundle) {
+
     }
 }

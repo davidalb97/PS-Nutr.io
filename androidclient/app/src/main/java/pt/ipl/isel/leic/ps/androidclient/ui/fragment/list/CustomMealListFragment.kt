@@ -45,10 +45,11 @@ class CustomMealListFragment
         }) {
             val addButton = view.findViewById<ImageButton>(R.id.add_meal)
 
-            if (recyclerViewModel.navDestination != Navigation.SEND_TO_CALCULATOR) {
+            if (recyclerViewModel.navDestination != Navigation.BACK_TO_CALCULATOR) {
                 addButton.visibility = View.VISIBLE
                 addButton.setOnClickListener {
-                    view.findNavController().navigate(R.id.nav_add_custom_meal)
+//                    view.findNavController().navigate(R.id.nav_add_custom_meal)
+                    view.findNavController().navigate(R.id.nav_custom_meal_nested)
                 }
             }
             recyclerViewModel.update()

@@ -55,7 +55,7 @@ class CalculatorFragment : BaseFragment() {
         }
 
         observeExistingInsulinProfiles()
-        setupAddMealButtonListener()
+        setupAddMealButtonListener(view)
         viewModelProfiles.update()
     }
 
@@ -137,12 +137,13 @@ class CalculatorFragment : BaseFragment() {
     /**
      * Setups the button that allows the user to select meals.
      */
-    private fun setupAddMealButtonListener() {
-        val addButton = view?.findViewById<ImageButton>(R.id.meal_add_button)
+    private fun setupAddMealButtonListener(view: View) {
+        val addButton = view.findViewById<ImageButton>(R.id.meal_add_button)
         addButton?.setOnClickListener {
             val bundle = Bundle()
-            bundle.putNavigation(Navigation.SEND_TO_CALCULATOR)
-            view?.findNavController()?.navigate(R.id.nav_add_meal_to_calculator, bundle)
+            bundle.putNavigation(Navigation.BACK_TO_CALCULATOR)
+            bundle.putParentNavigation(Navigation.SEND_TO_CALCULATOR)
+            view.findNavController().navigate(R.id.nav_action_calculator_to_pick_ingredients, bundle)
         }
     }
 

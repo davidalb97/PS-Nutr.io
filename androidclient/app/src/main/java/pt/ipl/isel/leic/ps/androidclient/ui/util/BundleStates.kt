@@ -6,6 +6,7 @@ import pt.ipl.isel.leic.ps.androidclient.data.model.*
 private const val BUNDLE_CUISINES_LIST = "BUNDLE_CUISINES_LIST"
 private const val BUNDLE_ACTIONS_LIST = "BUNDLE_ACTIONS_LIST"
 private const val BUNDLE_NAVIGATION = "BUNDLE_MEAL_NAVIGATION"
+private const val BUNDLE_NAVIGATION_PARENT = "BUNDLE_NAVIGATION_PARENT"
 private const val BUNDLE_MEAL_INGREDIENT_LIST = "BUNDLE_INGREDIENT_LIST"
 private const val BUNDLE_MEAL_LIST = "BUNDLE_MEAL_LIST"
 private const val BUNDLE_MEAL_INFO = "BUNDLE_MEAL_INFO"
@@ -109,3 +110,9 @@ fun Bundle.getNavigation(): Navigation = getInt(BUNDLE_NAVIGATION)
     .let { idx -> Navigation.values()[idx] }
 
 fun Bundle.putNavigation(navigation: Navigation) = putInt(BUNDLE_NAVIGATION, navigation.ordinal)
+
+fun Bundle.getParentNavigation(): Navigation = getInt(BUNDLE_NAVIGATION_PARENT)
+    .let { idx -> Navigation.values()[idx] }
+
+fun Bundle.putParentNavigation(navigation: Navigation) =
+    putInt(BUNDLE_NAVIGATION_PARENT, navigation.ordinal)
