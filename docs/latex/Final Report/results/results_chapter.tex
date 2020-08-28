@@ -224,9 +224,10 @@ Spring Security is a customizable authentication and access-control framework.\\
 
 The picture below shows how the server handles an user login using this framework.\\
 
+\newpage
 \begin{figure}[H]
     \begin{center}
-        \includegraphics[scale=0.65]{_figures/Spring-jwt-diagram.eps}
+        \includegraphics[scale=0.60]{_figures/Spring-jwt-diagram.eps}
         \caption{A Spring security workflow example with the POST /user/login}
     \end{center}
 \end{figure}
@@ -235,8 +236,8 @@ After the previously mentioned dependencies are installed, the WebSecurityConfig
 endpoints do not need authentication, acting like a whitelist, so every endpoint that is not specified via antMatchers needs authentication, and will return code 401
 Unauthorized if the JWT is invalid. The JWT filter is also started up inside this class.\\
 
-The Jwtfilter class, as the name says, filters each request, checking the authentication header and extracting the jwt from the Bearer
-verifying if it is valid. This class extends the OncePerRequestFilter() which garantees a single execution of this filter every request.\\
+The UserAuthenticationArgumentResolver class, as the name says, is an argument resolver that filters each request, acting before it reaches the desired controller,
+checking the authentication header and extracting the jwt from the Bearer verifying if it is valid.\\
 
 The Authentication service class calls the Spring Authentication Manager and authenticates the user, it provides methods which call the JwtUtil
 to retrieve the email from the token or encode the password when registering.\\
@@ -393,9 +394,39 @@ up to \textbf{Android 10} (API level 29).
 
 \subsection{Functionalities}
 
-Here will be displayed pictures of the mobile application and its functionalities, explaining each one.\\
+Here will be displayed pictures of the mobile application and its functionalities.\\
 
-\textbf{This section will be completed in the final release, once every UI aspect is resolved}
+\subsubsection{Register and Login}
+
+\begin{figure}[H]
+    \begin{center}
+        \begin{subfigure}{.3\textwidth}
+            \includegraphics[scale=0.1]{_figures/register.png}
+            \caption{The register fragment} 
+        \end{subfigure}
+        \begin{subfigure}{.3\textwidth}
+            \includegraphics[scale=0.1]{_figures/login.png}
+            \caption{The login fragment} 
+        \end{subfigure}%
+        \begin{subfigure}{.3\textwidth}
+            \includegraphics[scale=0.1]{_figures/firstSign.png}
+            \caption{The sign in/up at the application's startup} 
+        \end{subfigure}%
+    \end{center}
+\end{figure}
+
+Here are the 3 ways a user can register or login inside the mobile application: either on the application's startup or by clicking on the user's profile picture inside the
+drawer menu and accessing the slide screen with the bottom bar.\\
+
+Here's the login and register workflow:
+
+\textbf{Workflow diagram}
+
+\subsubsection{Insulin profiles' creation and access}
+
+\subsubsection{Searching for restaurants and meals}
+
+\subsubsection{Using the insulin calculator}
 
 \section{Web browser application}
 
@@ -415,8 +446,8 @@ variety of reasons, being the main one a better performance comparing to a tradi
 
 \subsubsection{Routing}
 
-\textbf{Under development}
-
 \subsection{Functionalities}
 
-\textbf{Under development}
+\subsubsection{Consult reports}
+
+\subsubsection{Ban users}
