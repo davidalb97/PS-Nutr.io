@@ -11,6 +11,10 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbMealDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbMealIngredientDto
 import pt.isel.ps.g06.httpserver.dataAccess.input.ingredient.IngredientInput
 import pt.isel.ps.g06.httpserver.common.exception.problemJson.badRequest.InvalidInputException
+import pt.isel.ps.g06.httpserver.dataAccess.input.IngredientInput
+import pt.isel.ps.g06.httpserver.common.exception.clientError.InvalidInputException
+import pt.isel.ps.g06.httpserver.dataAccess.db.MEAL_TYPE_SUGGESTED_INGREDIENT
+import pt.isel.ps.g06.httpserver.dataAccess.db.MEAL_TYPE_SUGGESTED_MEAL
 import pt.isel.ps.g06.httpserver.dataAccess.db.MealType
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType
 
@@ -53,7 +57,7 @@ class MealDbRepository(jdbi: Jdbi) : SubmissionDbRepository(jdbi) {
             jdbi.inTransaction<Collection<DbMealIngredientDto>, Exception>(isolationLevel) { handle ->
                 return@inTransaction handle
                         .attach(MealIngredientDao::class.java)
-                        .getMealIngredients(mealId)
+                        .getMealIngredientsByMealId(mealId)
             }
         }
 
@@ -65,7 +69,7 @@ class MealDbRepository(jdbi: Jdbi) : SubmissionDbRepository(jdbi) {
             jdbi.inTransaction<Collection<DbMealIngredientDto>, Exception>(isolationLevel) { handle ->
                 return@inTransaction handle
                         .attach(MealIngredientDao::class.java)
-                        .getMealComponents(mealId)
+                        .getMealComponentsByMealId(mealId)
             }
         }
 
@@ -77,7 +81,7 @@ class MealDbRepository(jdbi: Jdbi) : SubmissionDbRepository(jdbi) {
             jdbi.inTransaction<Collection<DbMealDto>, Exception>(isolationLevel) { handle ->
                 return@inTransaction handle
                         .attach(MealDao::class.java)
-                        .getAllIngredients(skip, count)
+                        .getAllByType(MEAL_TYPE_SUGGESTED_INGREDIENT, skip, count)
             }
         }
 
@@ -114,12 +118,14 @@ class MealDbRepository(jdbi: Jdbi) : SubmissionDbRepository(jdbi) {
         return Sequence { collection.value.iterator() }
     }
 
+    //TODO use cuisine filtering
     fun getAllSuggestedMeals(skip: Int?, count: Int?, cuisines: Collection<String>?): Sequence<DbMealDto> {
         val collection = lazy {
             jdbi.inTransaction<Collection<DbMealDto>, Exception>(isolationLevel) { handle ->
                 return@inTransaction handle
                         .attach(MealDao::class.java)
-                        .getAllSuggestedMeals(skip, count, cuisines)
+                        //.getAllSuggestedMeals(skip, count, cuisines)
+                        .getAllByType(MEAL_TYPE_SUGGESTED_MEAL, skip, count)
             }
         }
         return Sequence { collection.value.iterator() }
@@ -138,7 +144,6 @@ class MealDbRepository(jdbi: Jdbi) : SubmissionDbRepository(jdbi) {
 
     fun insert(
             submitterId: Int,
-            submissionType: SubmissionType,
             mealName: String,
             quantity: Int,
             cuisines: Collection<String>,
@@ -165,10 +170,10 @@ class MealDbRepository(jdbi: Jdbi) : SubmissionDbRepository(jdbi) {
 
             //Insert submission
             val mealSubmissionId = it.attach(SubmissionDao::class.java)
-                    .insert(submissionType.toString())
+                    .insert(SubmissionType.MEAL.toString())
                     .submission_id
 
-            if(type == MealType.SUGGESTED) {
+            if(type == MealType.SUGGESTED_MEAL) {
                 //Insert contract FAVORABLE
                 it.attach(SubmissionContractDao::class.java)
                         .insertAll(mutableListOf(FAVORABLE).map {
@@ -189,7 +194,7 @@ class MealDbRepository(jdbi: Jdbi) : SubmissionDbRepository(jdbi) {
             //Insert Meal
             val mealDto = it
                     .attach(mealDaoClass)
-                    .insert(mealSubmissionId, mealName, carbs, quantity, type = type.toString())
+                    .insert(mealSubmissionId, mealName, carbs, quantity, mealType = type.toString())
 
             //Insert all MealCuisine associations
             insertMealCuisines(it, mealSubmissionId, cuisines)

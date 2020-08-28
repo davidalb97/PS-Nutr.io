@@ -7,15 +7,13 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
-import pt.isel.ps.g06.httpserver.common.COUNT
 import pt.isel.ps.g06.httpserver.common.CUISINES
+import pt.isel.ps.g06.httpserver.common.MAX_COUNT
 import pt.isel.ps.g06.httpserver.dataAccess.output.cuisines.CuisinesOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.cuisines.toSimplifiedCuisinesOutput
 import pt.isel.ps.g06.httpserver.service.CuisinesService
-import javax.validation.Valid
 import javax.validation.constraints.Max
 import javax.validation.constraints.Min
-import javax.validation.constraints.Size
 
 @Validated
 @RestController
@@ -28,8 +26,8 @@ class CuisinesController(private val cuisinesService: CuisinesService) {
 
     @GetMapping
     fun getCuisinesHandler(
-            @RequestParam skip: Int?,
-            @RequestParam @Min(0) count: Int?
+            @RequestParam @Min(0) skip: Int?,
+            @RequestParam @Min(0) @Max(MAX_COUNT) count: Int?
     ): ResponseEntity<CuisinesOutput> {
 
         val availableCuisines = cuisinesService.getAvailableCuisines(skip, count)

@@ -54,7 +54,6 @@ class MealService(
 
         val createdMeal = dbMealRepository.insert(
                 submitterId = submitterId,
-                submissionType = SubmissionType.MEAL,
                 mealName = name,
                 cuisines = cuisines,
                 ingredients = ingredients,

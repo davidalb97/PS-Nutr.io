@@ -2,6 +2,7 @@ package pt.isel.ps.g06.httpserver.controller
 
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
+import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.util.UriComponentsBuilder
 import pt.isel.ps.g06.httpserver.common.*
@@ -30,6 +31,7 @@ import javax.validation.constraints.Min
 
 private const val INVALID_RESTAURANT_SEARCH = "To search nearby restaurants, a geolocation must be given!"
 
+@Validated
 @Suppress("MVCPathVariableInspection") //False positive for IntelliJ
 @RestController
 @RequestMapping(produces = [MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_PROBLEM_JSON_VALUE])
@@ -51,13 +53,13 @@ class RestaurantController(
      */
     @GetMapping(RESTAURANTS, consumes = [MediaType.ALL_VALUE])
     fun searchRestaurants(
-            latitude: Float?,
-            longitude: Float?,
-            name: String?,
-            radius: Int?,
-            apiType: String?,
-            @RequestParam skip: Int?,
-            @RequestParam(defaultValue = COUNT.toString()) @Min(0) @Max(COUNT) count: Int?,
+            @RequestParam latitude: Float?,
+            @RequestParam longitude: Float?,
+            @RequestParam name: String?,
+            @RequestParam radius: Int?,
+            @RequestParam apiType: String?,
+            @RequestParam @Min(0) skip: Int?,
+            @RequestParam(defaultValue = DEFAULT_COUNT_STR) @Min(0) @Max(MAX_COUNT) count: Int?,
             user: User?
     ): ResponseEntity<Collection<SimplifiedRestaurantOutput>> {
         if (latitude == null || longitude == null) {

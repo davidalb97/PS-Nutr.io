@@ -3,6 +3,7 @@ package pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.restaurant
 import org.springframework.stereotype.Component
 import pt.isel.ps.g06.httpserver.common.nutrition.calculateCarbsFromBase
 import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.ResponseMapper
+import pt.isel.ps.g06.httpserver.dataAccess.db.MealType
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbMealDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.*
 import pt.isel.ps.g06.httpserver.model.MealComposition
@@ -70,6 +71,7 @@ class DbMealComponentResponseMapper(
                                 }
                             },
                             creationDate = lazy { dbMealRepo.getCreationDate(dto.submission_id) },
+                            type = MealType.fromValue(dto.meal_type),
                             restaurantInfoSupplier = { restaurantIdentifier ->
                                 restaurantIdentifier.submissionId
                                         ?.let { id -> dbRestaurantMeal.getRestaurantMeal(id, dto.submission_id) }

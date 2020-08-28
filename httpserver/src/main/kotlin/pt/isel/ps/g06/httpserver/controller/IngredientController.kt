@@ -2,9 +2,14 @@ package pt.isel.ps.g06.httpserver.controller
 
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
+import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.util.UriComponentsBuilder
+import pt.isel.ps.g06.httpserver.common.DEFAULT_COUNT
 import pt.isel.ps.g06.httpserver.common.INGREDIENTS
+import pt.isel.ps.g06.httpserver.common.MAX_COUNT
+import pt.isel.ps.g06.httpserver.common.exception.clientError.InvalidInputException
+import pt.isel.ps.g06.httpserver.dataAccess.input.MealInput
 import pt.isel.ps.g06.httpserver.common.exception.problemJson.badRequest.InvalidInputException
 import pt.isel.ps.g06.httpserver.dataAccess.input.meal.MealInput
 import pt.isel.ps.g06.httpserver.dataAccess.output.ingredient.IngredientsContainerOutput
@@ -12,8 +17,10 @@ import pt.isel.ps.g06.httpserver.dataAccess.output.ingredient.toIngredientsConta
 import pt.isel.ps.g06.httpserver.model.User
 import pt.isel.ps.g06.httpserver.service.IngredientService
 import pt.isel.ps.g06.httpserver.service.UserService
+import javax.validation.constraints.Max
 import javax.validation.constraints.Min
 
+@Validated
 @RestController
 @RequestMapping(INGREDIENTS,
         produces = [MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_PROBLEM_JSON_VALUE],
@@ -32,8 +39,8 @@ class IngredientController(
      */
     @GetMapping
     fun getIngredients(
-            @RequestParam skip: Int?,
-            @RequestParam @Min(0)  count: Int?
+            @RequestParam @Min(0) skip: Int?,
+            @RequestParam @Min(0) @Max(MAX_COUNT) count: Int?
     ): ResponseEntity<IngredientsContainerOutput> {
 
         val ingredients = ingredientService.getIngredients(skip, count)
