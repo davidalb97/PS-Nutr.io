@@ -6,18 +6,14 @@ import androidx.lifecycle.ViewModel
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.mealRepository
 import pt.ipl.isel.leic.ps.androidclient.data.model.CustomMeal
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealInfo
-import pt.ipl.isel.leic.ps.androidclient.data.model.MealIngredient
 import pt.ipl.isel.leic.ps.androidclient.ui.util.requireUserSession
-import pt.ipl.isel.leic.ps.androidclient.util.readListCompat
 
 class AddCustomMealViewModel(
-    var editMeal: MealInfo? = null,
-    var addedIngredients: List<MealIngredient>? = null
+    var editMeal: MealInfo? = null
 ) : ViewModel(), Parcelable {
 
     constructor(parcel: Parcel) : this(
-        editMeal = parcel.readParcelable(MealInfo::class.java.classLoader),
-        addedIngredients = parcel.readListCompat(MealIngredient::class)
+        editMeal = parcel.readParcelable(MealInfo::class.java.classLoader)
     )
 
     fun addCustomMeal(customMeal: CustomMeal, error: (Throwable) -> Unit) =
@@ -37,7 +33,6 @@ class AddCustomMealViewModel(
 
     override fun writeToParcel(dest: Parcel?, flags: Int) {
         dest?.writeParcelable(editMeal, flags)
-        dest?.writeList(addedIngredients)
     }
 
     override fun describeContents(): Int {

@@ -122,7 +122,7 @@
         app:startDestination="@id/nav_add_custom_meal">
         <fragment
             android:id="@+id/nav_add_custom_meal"
-            android:name="pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.AddCustomMealFragment"
+            android:name="pt.ipl.isel.leic.ps.androidclient.ui.fragment.list.addMeal.AddCustomMealFragment"
             android:label="Add a custom meal"
             tools:layout="@layout/add_custom_meal" >
             <action

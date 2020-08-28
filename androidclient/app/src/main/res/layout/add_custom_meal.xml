@@ -9,32 +9,46 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         >
-        <TextView
-            android:id="@+id/meal_name_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:layout_marginRight="30dp"
-            android:layout_marginLeft="30dp"
-            android:text="@string/meal_name"
-            android:textColor="?attr/textColor"
-            android:textSize="24sp"
-            android:layout_gravity="center">
-        </TextView>
 
-        <EditText
-            android:id="@+id/meal_name"
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:layout_gravity="center"
-            android:padding="5dp"
-            android:background="@drawable/textbox_shape"
-            android:hint="@string/add_the_meal_name"
-            android:importantForAutofill="no"
-            android:inputType="text"
-            android:focusable="true"
-            />
+            >
+
+            <TextView
+                android:id="@+id/meal_name_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:layout_marginRight="30dp"
+                android:layout_marginLeft="30dp"
+                android:text="@string/meal_name"
+                android:textColor="?attr/textColor"
+                android:textSize="24sp"
+                android:layout_gravity="center"
+                android:layout_marginStart="10dp"
+                >
+            </TextView>
+
+            <EditText
+                android:id="@+id/meal_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:layout_gravity="center"
+                android:padding="5dp"
+                android:background="@drawable/textbox_shape"
+                android:hint="@string/add_the_meal_name"
+                android:importantForAutofill="no"
+                android:inputType="text"
+                android:focusable="true"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_toRightOf="@+id/meal_name_label"
+                />
+        </RelativeLayout>
+
+
 
         <TextView
             android:layout_width="wrap_content"
@@ -65,6 +79,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:id="@+id/custom_meal_cuisines_list"
+            android:layout_marginTop="10dp"
             />
 
         <TextView
@@ -84,7 +99,9 @@
             android:background="@drawable/material_button_shape"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:src="@drawable/ic_add">
+            android:src="@drawable/ic_add"
+            android:layout_marginTop="10dp"
+            >
         </ImageButton>
 
         <androidx.recyclerview.widget.RecyclerView
@@ -92,13 +109,47 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:id="@+id/custom_meal_meals_list"
+            android:layout_marginTop="10dp"
             />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="10dp"
+            >
+
+            <TextView
+                android:id="@+id/total_ingredient_carbs"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="?attr/textColor"
+                android:textSize="18sp"
+                android:text="TEMPLATE"
+                android:layout_gravity="center"
+                android:layout_marginTop="10dp"
+                >
+            </TextView>
+
+            <TextView
+                android:id="@+id/total_ingredient_amount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="?attr/textColor"
+                android:textSize="18sp"
+                android:text="TEMPLATE"
+                android:layout_gravity="center"
+                android:layout_marginTop="10dp"
+                >
+            </TextView>
+        </LinearLayout>
 
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="30dp"
             android:layout_marginLeft="30dp"
+            android:layout_marginTop="10dp"
             >
 
             <TextView
@@ -106,7 +157,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="10dp"
-                android:text="@string/custom_meal_total_quantity"
+                android:text="@string/custom_meal_additional_quantity"
                 android:textColor="?attr/textColor"
                 android:textSize="18sp"
                 android:layout_centerVertical="true"
@@ -135,7 +186,6 @@
                 android:layout_gravity="center"
                 android:layout_toEndOf="@+id/meal_portion_quantity"
                 android:layout_centerVertical="true"
-                android:entries="@array/weight_units"
                 android:focusable="true"
                 />
         </RelativeLayout>
@@ -144,26 +194,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="30dp"
-            android:layout_marginLeft="30dp">
-
-            <TextView
-                android:id="@+id/meal_carbs"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
-                android:textColor="?attr/textColor"
-                android:textSize="18sp"
-                android:layout_centerVertical="true"
-                android:text="TEMPLATE"
-                >
-            </TextView>
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="30dp"
-            android:layout_marginLeft="30dp">
+            android:layout_marginLeft="30dp"
+            android:layout_marginTop="10dp"
+            >
 
             <TextView
                 android:id="@+id/custom_meal_image_url_txt"
