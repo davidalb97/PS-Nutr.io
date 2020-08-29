@@ -1,19 +1,17 @@
 package pt.isel.ps.g06.httpserver.dataAccess.output.user
 
-import pt.isel.ps.g06.httpserver.model.Submitter
+import pt.isel.ps.g06.httpserver.model.User
 import java.net.URI
 
 class UserInfoOutput(
         val email: String,
         val username: String,
-        val userRole: String,
-        val userImage: URI?
+        val userRole: String
 )
 
-fun mapUserToOutput(email: String, userRole: String, model: Submitter): UserInfoOutput =
+fun mapUserToOutput(user: User): UserInfoOutput =
         UserInfoOutput(
-                email = email,
-                username = model.name,
-                userRole = userRole,
-                userImage = model.image
+                email = user.userEmail,
+                username = user.userName,
+                userRole = user.userRole
         )

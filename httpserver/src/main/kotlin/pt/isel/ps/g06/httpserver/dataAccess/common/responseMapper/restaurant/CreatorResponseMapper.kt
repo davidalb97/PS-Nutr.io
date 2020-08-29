@@ -13,7 +13,6 @@ class DbSubmitterResponseMapper(
     override fun mapTo(dto: DbSubmitterDto): Submitter {
         return Submitter(
                 identifier = dto.submitter_id,
-                name = dto.submitter_name,
                 isUser = apiSubmitterMapper.getApiType(dto.submitter_id) == null,
                 creationDate = dto.creation_date,
                 image = null

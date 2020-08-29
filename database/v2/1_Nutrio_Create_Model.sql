@@ -29,7 +29,6 @@ SET TIMEZONE='Portugal';
 
 CREATE TABLE Submitter(
 	submitter_id serial PRIMARY KEY,
-	submitter_name varchar(20) NOT NULL,
 	creation_date timestamp with time zone default CURRENT_TIMESTAMP, -- Add to doc
 	submitter_type varchar(5) CHECK(submitter_type = 'User' OR submitter_type = 'API')	
 );
@@ -37,6 +36,7 @@ CREATE TABLE Submitter(
 CREATE TABLE _User(
 	submitter_id integer,	
 	email varchar(50) NOT NULL,
+	username varchar(20) NOT NULL,
 	password varchar(60) NOT NULL, -- it will always be 60, because of the BCrypt password encoding
 	role varchar(10) CHECK(role = 'normal' OR role = 'mod') NOT NULL,
 	is_banned boolean NOT NULL,
@@ -59,6 +59,7 @@ CREATE TABLE InsulinProfile(
 
 CREATE TABLE Api(
 	submitter_id integer PRIMARY KEY,
+	api_name varchar(20) NOT NULL,
 	api_token varchar(256) NOT NULL,
 	FOREIGN KEY(submitter_id) REFERENCES Submitter(submitter_id)
 );
