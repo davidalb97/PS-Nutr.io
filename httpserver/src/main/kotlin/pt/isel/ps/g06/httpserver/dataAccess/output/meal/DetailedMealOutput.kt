@@ -17,6 +17,7 @@ class DetailedMealOutput(
         isFavorite: Boolean,
         nutritionalInfo: NutritionalInfoOutput,
         isSuggested: Boolean,
+        isVerified: Boolean,
         isVotable: Boolean,
         @JsonSerialize(using = ToStringSerializer::class)
         val creationDate: OffsetDateTime?,
@@ -29,6 +30,7 @@ class DetailedMealOutput(
         nutritionalInfo = nutritionalInfo,
         isSuggested = isSuggested,
         isFavorite = isFavorite,
+        isVerified = isVerified,
         isVotable = isVotable
 )
 
@@ -41,6 +43,7 @@ fun toDetailedMealOutput(meal: Meal, userId: Int? = null): DetailedMealOutput {
             isSuggested = !meal.isUserMeal(),
             //A suggested/custom meal is not votable
             isVotable = false,
+            isVerified = false,
             creationDate = meal.creationDate.value,
             composedBy = toMealComposition(meal),
             nutritionalInfo = toNutritionalInfoOutput(meal.nutritionalValues),

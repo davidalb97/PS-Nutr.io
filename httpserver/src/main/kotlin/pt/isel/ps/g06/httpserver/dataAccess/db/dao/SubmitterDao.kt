@@ -20,27 +20,20 @@ interface SubmitterDao {
     companion object {
         const val table = "Submitter"
         const val id = "submitter_id"
-        const val name = "submitter_name"
         const val date = "creation_date"
         const val type = "submitter_type"
     }
 
-    @SqlQuery("SELECT * FROM $table WHERE $type = '$API' AND submitter_name IN (<names>)")
-    fun getApiSubmittersByName(@BindList names: Collection<String>): Collection<DbSubmitterDto>
-
-    @SqlQuery("SELECT $table.$id, $table.$name, $table.$type, $table.$date" +
+    @SqlQuery("SELECT $table.$id, $table.$type, $table.$date" +
             " FROM $table" +
             " INNER JOIN $SS_table" +
             " ON $table.$id = $SS_table.$SS_submitterId" +
             " WHERE $SS_table.$SS_submissionId = :submissionId")
     fun getSubmitterForSubmission(@Bind submissionId: Int): DbSubmitterDto?
 
-    @SqlQuery("SELECT * FROM $table WHERE $name = :name")
-    fun getSubmitterByName(@Bind name: String): DbSubmitterDto?
-
     @SqlQuery("SELECT * FROM $table WHERE $id = :id")
     fun getSubmitterBySubmitterId(@Bind id: Int): DbSubmitterDto?
 
-    @SqlQuery("INSERT INTO $table($name, $type) VALUES(:name, :type) RETURNING *")
-    fun insertSubmitter(@Bind name: String, @Bind type: String): DbSubmitterDto
+    @SqlQuery("INSERT INTO $table($type) VALUES(:type) RETURNING *")
+    fun insertSubmitter(@Bind type: String): DbSubmitterDto
 }

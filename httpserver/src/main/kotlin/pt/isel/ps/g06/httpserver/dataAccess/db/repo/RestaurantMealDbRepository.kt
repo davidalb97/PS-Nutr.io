@@ -7,8 +7,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionContractType.*
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType.*
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.*
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbRestaurantMealDto
-import pt.isel.ps.g06.httpserver.common.exception.clientError.InvalidInputDomain
-import pt.isel.ps.g06.httpserver.common.exception.clientError.InvalidInputException
+import pt.isel.ps.g06.httpserver.common.exception.problemJson.badRequest.InvalidInputException
 import java.util.*
 
 private val isolationLevel = TransactionIsolationLevel.SERIALIZABLE
@@ -52,11 +51,10 @@ class RestaurantMealDbRepository(jdbi: Jdbi) : SubmissionDbRepository(jdbi) {
                     .insert(RESTAURANT_MEAL.toString())
                     .submission_id
 
-            val contracts = EnumSet.of(FAVORABLE)
+            val contracts = EnumSet.of(FAVORABLE, VOTABLE)
             if (submitterId != null) {
                 it.attach(SubmissionSubmitterDao::class.java).insert(submissionId, submitterId)
                 contracts.add(REPORTABLE)
-                contracts.add(VOTABLE)
             }
 
             //Insert all needed contracts
@@ -69,11 +67,6 @@ class RestaurantMealDbRepository(jdbi: Jdbi) : SubmissionDbRepository(jdbi) {
 
             return@inTransaction restaurantMealDao.insert(submissionId, restaurantId, mealId, verified)
         }
-    }
-
-    // TODO
-    fun getVerification() {
-
     }
 
     fun putVerification(submissionId: Int, verification: Boolean): DbRestaurantMealDto {

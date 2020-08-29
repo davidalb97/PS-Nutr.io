@@ -20,8 +20,8 @@ interface InsulinProfileDao {
         const val carbRatio = "carbohydrate_ratio"
     }
 
-    @SqlQuery("SELECT * FROM $table WHERE $submitterId = :submitterId")
-    fun getAllFromUser(submitterId: Int): Collection<DbUserEncInsulinProfileDto>
+    @SqlQuery("SELECT * FROM $table WHERE $submitterId = :submitterId LIMIT :count OFFSET :skip")
+    fun getAllFromUser(submitterId: Int, count: Int?, skip: Int?): Collection<DbUserEncInsulinProfileDto>
 
     @SqlQuery("SELECT * FROM $table WHERE $submitterId = :submitterId AND $profileName = :profileName")
     fun getFromUser(submitterId: Int, profileName: String): DbUserEncInsulinProfileDto?
@@ -36,6 +36,9 @@ interface InsulinProfileDao {
             submitterId: Int, profileName: String, startTime: String, endTime: String,
             glucoseObjective: String, sensitivityFactor: String, carbRatio: String, modificationDate: String
     ): DbUserEncInsulinProfileDto
+
+    @SqlQuery("DELETE FROM $table WHERE $submitterId = :submitterId RETURNING *")
+    fun deleteAllBySubmitterId(submitterId: Int): Collection<DbUserEncInsulinProfileDto>?
 
     @SqlQuery("DELETE FROM $table WHERE $submitterId = :submitterId AND $profileName = :profileName RETURNING *")
     fun deleteProfile(submitterId: Int, profileName: String): DbUserEncInsulinProfileDto?

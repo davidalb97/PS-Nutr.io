@@ -6,9 +6,11 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbRestaurantMealDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.MealDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.PortionDbRepository
 import pt.isel.ps.g06.httpserver.model.MealRestaurantInfo
+import pt.isel.ps.g06.httpserver.model.VoteState
+import pt.isel.ps.g06.httpserver.model.Votes
 
 @Component
- class DbRestaurantMealInfoResponseMapper(
+class DbRestaurantMealInfoResponseMapper(
         private val dbPortionsMapper: DbRestaurantMealPortionsResponseMapper,
         private val dbVotesMapper: DbVotesResponseMapper,
         private val dbMealRepo: MealDbRepository,
@@ -18,13 +20,18 @@ import pt.isel.ps.g06.httpserver.model.MealRestaurantInfo
     override fun mapTo(dto: DbRestaurantMealDto): MealRestaurantInfo {
         return MealRestaurantInfo(
                 restaurantMealIdentifier = dto.submission_id,
-                votes = lazy { dbVotesMapper.mapTo(dbMealRepo.getVotes(dto.submission_id)) },
-                userVote = { userId -> dbMealRepo.getUserVote(dto.submission_id, userId) },
-                portions = dbPortionRepo.getAllByRestaurantMealId(dto.submission_id).map(dbPortionsMapper::mapTo),
+                votes = lazy { dto.submission_id?.let { dbVotesMapper.mapTo(dbMealRepo.getVotes(it)) } ?: Votes(0, 0) },
+                userVote = { userId ->
+                    dto.submission_id?.let { dbMealRepo.getUserVote(it, userId) } ?: VoteState.NOT_VOTED
+                },
+                portions = dto.submission_id?.let { dbPortionRepo.getAllByRestaurantMealId(it) }?.map(dbPortionsMapper::mapTo)
+                        ?: sequenceOf(),
                 userPortion = { userId ->
-                    dbPortionRepo
-                            .getUserPortion(dto.submission_id, userId)
-                            ?.let(dbPortionsMapper::mapTo)
+                    dto.submission_id?.let {
+                        dbPortionRepo
+                                .getUserPortion(it, userId)
+                                ?.let(dbPortionsMapper::mapTo)
+                    }
                 }
         )
     }

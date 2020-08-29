@@ -1,5 +1,6 @@
 package pt.isel.ps.g06.httpserver.model
 
+import pt.isel.ps.g06.httpserver.dataAccess.db.MealType
 import java.net.URI
 import java.time.OffsetDateTime
 
@@ -13,6 +14,7 @@ data class Meal(
         val cuisines: Sequence<Cuisine>,
         val submitterInfo: Lazy<Submitter?>,
         val creationDate: Lazy<OffsetDateTime?>,
+        val type: MealType,
         private val restaurantInfoSupplier: (RestaurantIdentifier) -> MealRestaurantInfo?,
         private val restaurantInfo: MutableMap<RestaurantIdentifier, MealRestaurantInfo?> = mutableMapOf()
 ) {
@@ -21,11 +23,8 @@ data class Meal(
      * This also allows to know that given Meal **is not** a suggested Meal, if false, as suggested Meals
      * have no submitter/owner
      *
-     * *This operation initializes [submitterInfo] value.*
      */
-    fun isUserMeal(): Boolean {
-        return submitterInfo.value != null
-    }
+    fun isUserMeal(): Boolean = type == MealType.CUSTOM
 
     fun isMealOwner(user: User?): Boolean =
             user != null && isUserMeal() && user.identifier != submitterInfo.value?.identifier

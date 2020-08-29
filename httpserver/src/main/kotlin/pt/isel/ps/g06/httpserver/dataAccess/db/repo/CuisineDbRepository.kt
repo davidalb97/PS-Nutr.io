@@ -11,11 +11,11 @@ private val cuisineDaoClass = CuisineDao::class.java
 
 @Repository
 class CuisineDbRepository(jdbi: Jdbi) : BaseDbRepo(jdbi) {
-    fun getAll(skip: Int?, limit: Int?): Collection<DbCuisineDto> {
+    fun getAll(skip: Int?, count: Int?): Collection<DbCuisineDto> {
         return jdbi.inTransaction<Collection<DbCuisineDto>, Exception>(isolationLevel) {
             return@inTransaction it
                     .attach(cuisineDaoClass)
-                    .getAll(skip ?: 0, limit)
+                    .getAll(skip, count)
         }
     }
 

@@ -1,8 +1,8 @@
 package pt.isel.ps.g06.httpserver.service
 
 import org.springframework.stereotype.Service
-import pt.isel.ps.g06.httpserver.common.exception.NoSuchApiResponseStatusException
-import pt.isel.ps.g06.httpserver.common.exception.notFound.RestaurantNotFoundException
+import pt.isel.ps.g06.httpserver.common.exception.problemJson.badRequest.NoSuchApiResponseStatusException
+import pt.isel.ps.g06.httpserver.common.exception.problemJson.notFound.RestaurantNotFoundException
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.RestaurantApiType
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.mapper.RestaurantApiMapper
 import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.restaurant.RestaurantResponseMapper
@@ -37,8 +37,8 @@ class RestaurantService(
             name: String?,
             radius: Int?,
             apiType: String?,
-            count: Int?,
-            skip: Int?
+            skip: Int?,
+            count: Int?
     ): Sequence<Restaurant> {
         val chosenRadius = if (radius != null && radius <= MAX_RADIUS) radius else MAX_RADIUS
         val type = RestaurantApiType.getOrDefault(apiType)
@@ -46,7 +46,7 @@ class RestaurantService(
 
         //Get API restaurants
         val apiRestaurants =
-                restaurantApi.searchNearbyRestaurants(latitude, longitude, chosenRadius, name)
+                restaurantApi.searchNearbyRestaurants(latitude, longitude, chosenRadius, name, skip, count)
                         .thenApply {
                             it.map(restaurantResponseMapper::mapTo)
                         }
@@ -173,7 +173,6 @@ class RestaurantService(
     fun addOwner(restaurantId: Int, ownerId: Int) {
         dbRestaurantRepository.addOwner(restaurantId, ownerId)
     }
-
 
     private fun filterRedundantApiRestaurants(dbRestaurants: Sequence<Restaurant>, apiRestaurants: Sequence<Restaurant>): Sequence<Restaurant> {
         //Join db restaurants with filtered api restaurants

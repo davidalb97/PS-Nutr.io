@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "3ef62674-1c8d-49cb-97f7-152a4fde148e",
+		"_postman_id": "29f04da4-274a-4b6d-8f4b-5e3674a8ca0d",
 		"name": "PS",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -8,6 +8,29 @@
 		{
 			"name": "auth",
 			"item": [
+				{
+					"name": "userInfo",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{USER_JWT}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{DOMAIN}}/user",
+							"host": [
+								"{{DOMAIN}}"
+							],
+							"path": [
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
 				{
 					"name": "loginUser",
 					"protocolProfileBehavior": {
@@ -34,12 +57,10 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/user/login",
-							"protocol": "http",
+							"raw": "{{DOMAIN}}/user/login",
 							"host": [
-								"localhost"
+								"{{DOMAIN}}"
 							],
-							"port": "8080",
 							"path": [
 								"user",
 								"login"
@@ -74,12 +95,10 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/user/register",
-							"protocol": "http",
+							"raw": "{{DOMAIN}}/user/register",
 							"host": [
-								"localhost"
+								"{{DOMAIN}}"
 							],
-							"port": "8080",
 							"path": [
 								"user",
 								"register"
@@ -95,7 +114,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"admin@email.com\",\r\n    \"password\": \"memes\"\r\n}",
+							"raw": "{\r\n    \"email\": \"1234@1234\",\r\n    \"password\": \"1234\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -103,12 +122,10 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/user/login",
-							"protocol": "http",
+							"raw": "{{DOMAIN}}/user/login",
 							"host": [
-								"localhost"
+								"{{DOMAIN}}"
 							],
-							"port": "8080",
 							"path": [
 								"user",
 								"login"
@@ -132,12 +149,10 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/user/register",
-							"protocol": "http",
+							"raw": "{{DOMAIN}}/user/register",
 							"host": [
-								"localhost"
+								"{{DOMAIN}}"
 							],
-							"port": "8080",
 							"path": [
 								"user",
 								"register"
@@ -147,23 +162,24 @@
 					"response": []
 				},
 				{
-					"name": "userInfo",
+					"name": "user",
 					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{USER_JWT}}",
-								"type": "text"
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"123@123\",\r\n    \"password\": \"123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
 							}
-						],
+						},
 						"url": {
-							"raw": "http://localhost:8080/user",
-							"protocol": "http",
+							"raw": "{{DOMAIN}}/user",
 							"host": [
-								"localhost"
+								"{{DOMAIN}}"
 							],
-							"port": "8080",
 							"path": [
 								"user"
 							]
@@ -189,12 +205,10 @@
 							}
 						],
 						"url": {
-							"raw": "http://localhost:8080/user/profile",
-							"protocol": "http",
+							"raw": "{{DOMAIN}}/user/profile",
 							"host": [
-								"localhost"
+								"{{DOMAIN}}"
 							],
-							"port": "8080",
 							"path": [
 								"user",
 								"profile"
@@ -215,16 +229,14 @@
 							}
 						],
 						"url": {
-							"raw": "http://localhost:8080/user/profile/profile1",
-							"protocol": "http",
+							"raw": "{{DOMAIN}}/user/profile/Profile1",
 							"host": [
-								"localhost"
+								"{{DOMAIN}}"
 							],
-							"port": "8080",
 							"path": [
 								"user",
 								"profile",
-								"profile1"
+								"Profile1"
 							]
 						}
 					},
@@ -251,15 +263,44 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/user/profile",
-							"protocol": "http",
+							"raw": "{{DOMAIN}}/user/profile",
 							"host": [
-								"localhost"
+								"{{DOMAIN}}"
 							],
-							"port": "8080",
 							"path": [
 								"user",
 								"profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "insulinProfile",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{USER_JWT}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{DOMAIN}}/user/profile/:profileName",
+							"host": [
+								"{{DOMAIN}}"
+							],
+							"path": [
+								"user",
+								"profile",
+								":profileName"
+							],
+							"variable": [
+								{
+									"key": "profileName",
+									"value": "Profile1"
+								}
 							]
 						}
 					},
@@ -272,41 +313,6 @@
 			"name": "moderation",
 			"item": [
 				{
-					"name": "userBan",
-					"request": {
-						"method": "PUT",
-						"header": [
-							{
-								"key": "Authorization",
-								"type": "text",
-								"value": "Bearer {{MOD_JWT}}"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"submitterId\": 4,\r\n    \"isBanned\": false\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:8080/user/ban",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"user",
-								"ban"
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "allReports",
 					"request": {
 						"method": "GET",
@@ -318,14 +324,71 @@
 							}
 						],
 						"url": {
-							"raw": "http://localhost:8080/report",
-							"protocol": "http",
+							"raw": "{{DOMAIN}}/report",
 							"host": [
-								"localhost"
+								"{{DOMAIN}}"
 							],
-							"port": "8080",
 							"path": [
 								"report"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "allReportsByType",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{MOD_JWT}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{DOMAIN}}/report?type=RESTAURANT",
+							"host": [
+								"{{DOMAIN}}"
+							],
+							"path": [
+								"report"
+							],
+							"query": [
+								{
+									"key": "type",
+									"value": "RESTAURANT"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "allReportsBySubmission",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{MOD_JWT}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{DOMAIN}}/report/:submissionId",
+							"host": [
+								"{{DOMAIN}}"
+							],
+							"path": [
+								"report",
+								":submissionId"
+							],
+							"variable": [
+								{
+									"key": "submissionId",
+									"value": ""
+								}
 							]
 						}
 					},
@@ -352,12 +415,10 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/ingredient",
-							"protocol": "http",
+							"raw": "{{DOMAIN}}/ingredient",
 							"host": [
-								"localhost"
+								"{{DOMAIN}}"
 							],
-							"port": "8080",
 							"path": [
 								"ingredient"
 							]
@@ -386,15 +447,85 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/meal/suggested",
-							"protocol": "http",
+							"raw": "{{DOMAIN}}/meal/suggested",
 							"host": [
-								"localhost"
+								"{{DOMAIN}}"
 							],
-							"port": "8080",
 							"path": [
 								"meal",
 								"suggested"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "userBan",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{MOD_JWT}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"submitterId\": 4,\r\n    \"isBanned\": false\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{DOMAIN}}/user/ban",
+							"host": [
+								"{{DOMAIN}}"
+							],
+							"path": [
+								"user",
+								"ban"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "restaurantOwner",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{MOD_JWT}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ownerId\": 4\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{DOMAIN}}/restaurant/:restaurantId",
+							"host": [
+								"{{DOMAIN}}"
+							],
+							"path": [
+								"restaurant",
+								":restaurantId"
+							],
+							"variable": [
+								{
+									"key": "restaurantId",
+									"value": "4+232+"
+								}
 							]
 						}
 					},
@@ -412,12 +543,10 @@
 							}
 						],
 						"url": {
-							"raw": "http://localhost:8080/report/:reportId",
-							"protocol": "http",
+							"raw": "{{DOMAIN}}/report/:reportId",
 							"host": [
-								"localhost"
+								"{{DOMAIN}}"
 							],
-							"port": "8080",
 							"path": [
 								"report",
 								":reportId"
@@ -450,11 +579,10 @@
 							}
 						],
 						"url": {
-							"raw": "localhost:8080/restaurant/:id",
+							"raw": "{{DOMAIN}}/restaurant/:id",
 							"host": [
-								"localhost"
+								"{{DOMAIN}}"
 							],
-							"port": "8080",
 							"path": [
 								"restaurant",
 								":id"
@@ -462,7 +590,7 @@
 							"variable": [
 								{
 									"key": "id",
-									"value": "2+237+here:pds:place:620eyckr-1026ddfdac9a4373aeb2b500345fad98"
+									"value": "2++here:pds:place:620eyckr-72ff992cbb2c4e979321a0683885c6b0"
 								}
 							]
 						}
@@ -481,12 +609,10 @@
 							}
 						],
 						"url": {
-							"raw": "http://localhost:8080/restaurant?latitude=38.736946&longitude=-9.142685",
-							"protocol": "http",
+							"raw": "{{DOMAIN}}/restaurant?latitude=38.736946&longitude=-9.142685&skip=0&count=5",
 							"host": [
-								"localhost"
+								"{{DOMAIN}}"
 							],
-							"port": "8080",
 							"path": [
 								"restaurant"
 							],
@@ -498,7 +624,47 @@
 								{
 									"key": "longitude",
 									"value": "-9.142685"
+								},
+								{
+									"key": "skip",
+									"value": "0"
+								},
+								{
+									"key": "count",
+									"value": "5"
 								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "restaurant",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{USER_JWT}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"MockRestaurant\",\r\n    \"latitude\": 9.45481,\r\n    \"longitude\": 75.64455,\r\n    \"cuisines\": [\"Italian\"],\r\n    \"ownerId\": null\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{DOMAIN}}/restaurant",
+							"host": [
+								"{{DOMAIN}}"
+							],
+							"path": [
+								"restaurant"
 							]
 						}
 					},
@@ -525,12 +691,10 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/restaurant/:restaurantIdentifier/report",
-							"protocol": "http",
+							"raw": "{{DOMAIN}}/restaurant/:restaurantIdentifier/report",
 							"host": [
-								"localhost"
+								"{{DOMAIN}}"
 							],
-							"port": "8080",
 							"path": [
 								"restaurant",
 								":restaurantIdentifier",
@@ -539,7 +703,7 @@
 							"variable": [
 								{
 									"key": "restaurantIdentifier",
-									"value": "2+237+here:pds:place:620eyckr-1026ddfdac9a4373aeb2b500345fad98"
+									"value": "2++here:pds:place:620eyckr-72ff992cbb2c4e979321a0683885c6b0"
 								}
 							]
 						}
@@ -567,12 +731,10 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/restaurant/:restaurantIdentifier/favorite",
-							"protocol": "http",
+							"raw": "{{DOMAIN}}/restaurant/:restaurantIdentifier/favorite",
 							"host": [
-								"localhost"
+								"{{DOMAIN}}"
 							],
-							"port": "8080",
 							"path": [
 								"restaurant",
 								":restaurantIdentifier",
@@ -581,41 +743,8 @@
 							"variable": [
 								{
 									"key": "restaurantIdentifier",
-									"value": "2++here:pds:place:620eyckr-c667200476bd439eb10f81f0469d2f7d"
+									"value": "2++here:pds:place:620eyckr-72ff992cbb2c4e979321a0683885c6b0"
 								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "restaurant",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{USER_JWT}}",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"MockRestaurant2\",\r\n    \"latitude\": 9.45481,\r\n    \"longitude\": 75.64455,\r\n    \"cuisines\": [\"Italian\"],\r\n    \"ownerId\": null\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "localhost:8080/restaurant",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"restaurant"
 							]
 						}
 					},
@@ -628,7 +757,7 @@
 			"name": "restaurantMeal",
 			"item": [
 				{
-					"name": "restaurantMeal",
+					"name": "restaurantMeal (Suggested)",
 					"protocolProfileBehavior": {
 						"disabledSystemHeaders": {
 							"accept": true
@@ -639,27 +768,25 @@
 						"header": [
 							{
 								"key": "Accept",
-								"value": "application/json",
-								"type": "text"
+								"type": "text",
+								"value": "application/json"
 							},
 							{
 								"key": "Content-Type",
-								"value": "application/json",
-								"type": "text"
+								"type": "text",
+								"value": "application/json"
 							},
 							{
 								"key": "Authorization",
-								"value": "Bearer {{USER_JWT}}",
-								"type": "text"
+								"type": "text",
+								"value": "Bearer {{USER_JWT}}"
 							}
 						],
 						"url": {
-							"raw": "http://localhost:8080/restaurant/:restaurant_id/meal/:meal_id",
-							"protocol": "http",
+							"raw": "{{DOMAIN}}/restaurant/:restaurant_id/meal/:meal_id",
 							"host": [
-								"localhost"
+								"{{DOMAIN}}"
 							],
-							"port": "8080",
 							"path": [
 								"restaurant",
 								":restaurant_id",
@@ -676,11 +803,11 @@
 							"variable": [
 								{
 									"key": "restaurant_id",
-									"value": "2++here:pds:place:620aabd1-06ab55432064055a739de11c3bc12038"
+									"value": "2++here:pds:place:620eyckr-72ff992cbb2c4e979321a0683885c6b0"
 								},
 								{
 									"key": "meal_id",
-									"value": "186"
+									"value": "197"
 								}
 							]
 						}
@@ -688,7 +815,7 @@
 					"response": []
 				},
 				{
-					"name": "mealsFromRestaurant",
+					"name": "mealsFromRestaurant (API)",
 					"protocolProfileBehavior": {
 						"disabledSystemHeaders": {
 							"accept": true
@@ -699,27 +826,25 @@
 						"header": [
 							{
 								"key": "Accept",
-								"value": "application/json",
-								"type": "text"
+								"type": "text",
+								"value": "application/json"
 							},
 							{
 								"key": "Content-Type",
-								"value": "application/json",
-								"type": "text"
+								"type": "text",
+								"value": "application/json"
 							},
 							{
 								"key": "Authorization",
-								"value": "Bearer {{USER_JWT}}",
-								"type": "text"
+								"type": "text",
+								"value": "Bearer {{USER_JWT}}"
 							}
 						],
 						"url": {
-							"raw": "http://localhost:8080/restaurant/:restaurant_id/meal",
-							"protocol": "http",
+							"raw": "{{DOMAIN}}/restaurant/:restaurant_id/meal",
 							"host": [
-								"localhost"
+								"{{DOMAIN}}"
 							],
-							"port": "8080",
 							"path": [
 								"restaurant",
 								":restaurant_id",
@@ -735,7 +860,93 @@
 							"variable": [
 								{
 									"key": "restaurant_id",
-									"value": "2++here:pds:place:620aabd1-06ab55432064055a739de11c3bc12038"
+									"value": "2++here:pds:place:620eyckr-72ff992cbb2c4e979321a0683885c6b0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "restaurantMealPortion",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{USER_JWT}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"quantity\": 100,\r\n    \"unit\": \"gr\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{DOMAIN}}/restaurant/:restaurant_id/meal/:meal_id/portion",
+							"host": [
+								"{{DOMAIN}}"
+							],
+							"path": [
+								"restaurant",
+								":restaurant_id",
+								"meal",
+								":meal_id",
+								"portion"
+							],
+							"variable": [
+								{
+									"key": "restaurant_id",
+									"value": "2++here:pds:place:620eyckr-72ff992cbb2c4e979321a0683885c6b0"
+								},
+								{
+									"key": "meal_id",
+									"value": "197"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "mealForRestaurant (Requires user meal)",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{USER_JWT}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"mealId\": 233\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{DOMAIN}}/restaurant/:restaurant_id/meal",
+							"host": [
+								"{{DOMAIN}}"
+							],
+							"path": [
+								"restaurant",
+								":restaurant_id",
+								"meal"
+							],
+							"variable": [
+								{
+									"key": "restaurant_id",
+									"value": "2++here:pds:place:620eyckr-72ff992cbb2c4e979321a0683885c6b0"
 								}
 							]
 						}
@@ -763,12 +974,10 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/restaurant/:restaurantIdentifier/meal/:mealId/report",
-							"protocol": "http",
+							"raw": "{{DOMAIN}}/restaurant/:restaurantIdentifier/meal/:mealId/report",
 							"host": [
-								"localhost"
+								"{{DOMAIN}}"
 							],
-							"port": "8080",
 							"path": [
 								"restaurant",
 								":restaurantIdentifier",
@@ -779,11 +988,11 @@
 							"variable": [
 								{
 									"key": "restaurantIdentifier",
-									"value": "2++here:pds:place:620aabd1-06ab55432064055a739de11c3bc12038"
+									"value": "2++here:pds:place:620eyckr-72ff992cbb2c4e979321a0683885c6b0"
 								},
 								{
 									"key": "mealId",
-									"value": "186"
+									"value": "197"
 								}
 							]
 						}
@@ -791,7 +1000,7 @@
 					"response": []
 				},
 				{
-					"name": "voteRestaurantMeal",
+					"name": "voteRestaurantMeal (Requires user restaurant)",
 					"request": {
 						"method": "PUT",
 						"header": [
@@ -811,12 +1020,10 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/restaurant/:restaurantIdentifier/meal/:mealId/vote",
-							"protocol": "http",
+							"raw": "{{DOMAIN}}/restaurant/:restaurantIdentifier/meal/:mealId/vote",
 							"host": [
-								"localhost"
+								"{{DOMAIN}}"
 							],
-							"port": "8080",
 							"path": [
 								"restaurant",
 								":restaurantIdentifier",
@@ -827,11 +1034,11 @@
 							"variable": [
 								{
 									"key": "restaurantIdentifier",
-									"value": "2++here:pds:place:620aabd1-06ab55432064055a739de11c3bc12038"
+									"value": "2++here:pds:place:620eyckr-72ff992cbb2c4e979321a0683885c6b0"
 								},
 								{
 									"key": "mealId",
-									"value": "186"
+									"value": "197"
 								}
 							]
 						}
@@ -859,12 +1066,10 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/restaurant/:restaurantIdentifier/meal/:mealId/favorite",
-							"protocol": "http",
+							"raw": "{{DOMAIN}}/restaurant/:restaurantIdentifier/meal/:mealId/favorite",
 							"host": [
-								"localhost"
+								"{{DOMAIN}}"
 							],
-							"port": "8080",
 							"path": [
 								"restaurant",
 								":restaurantIdentifier",
@@ -875,11 +1080,56 @@
 							"variable": [
 								{
 									"key": "restaurantIdentifier",
-									"value": "2++here:pds:place:620aabd1-06ab55432064055a739de11c3bc12038"
+									"value": "2++here:pds:place:620eyckr-72ff992cbb2c4e979321a0683885c6b0"
 								},
 								{
 									"key": "mealId",
-									"value": "186"
+									"value": "197"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "verifyRestaurantMeal (Requires owner)",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{USER_JWT}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"verified\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{DOMAIN}}/restaurant/:restaurantIdentifier/meal/:mealId",
+							"host": [
+								"{{DOMAIN}}"
+							],
+							"path": [
+								"restaurant",
+								":restaurantIdentifier",
+								"meal",
+								":mealId"
+							],
+							"variable": [
+								{
+									"key": "restaurantIdentifier",
+									"value": "2++here:pds:place:620eyckr-72ff992cbb2c4e979321a0683885c6b0"
+								},
+								{
+									"key": "mealId",
+									"value": "197"
 								}
 							]
 						}
@@ -893,6 +1143,30 @@
 			"name": "meal",
 			"item": [
 				{
+					"name": "favoriteMeals",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{USER_JWT}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{DOMAIN}}/meal/favorite",
+							"host": [
+								"{{DOMAIN}}"
+							],
+							"path": [
+								"meal",
+								"favorite"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "meals",
 					"request": {
 						"method": "GET",
@@ -904,12 +1178,10 @@
 							}
 						],
 						"url": {
-							"raw": "http://localhost:8080/meal/suggested?count=10&skip=0",
-							"protocol": "http",
+							"raw": "{{DOMAIN}}/meal/suggested?count=10&skip=0",
 							"host": [
-								"localhost"
+								"{{DOMAIN}}"
 							],
-							"port": "8080",
 							"path": [
 								"meal",
 								"suggested"
@@ -940,12 +1212,10 @@
 							}
 						],
 						"url": {
-							"raw": "http://localhost:8080/meal/custom",
-							"protocol": "http",
+							"raw": "{{DOMAIN}}/meal/custom",
 							"host": [
-								"localhost"
+								"{{DOMAIN}}"
 							],
-							"port": "8080",
 							"path": [
 								"meal",
 								"custom"
@@ -975,12 +1245,10 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/meal/custom",
-							"protocol": "http",
+							"raw": "{{DOMAIN}}/meal/custom",
 							"host": [
-								"localhost"
+								"{{DOMAIN}}"
 							],
-							"port": "8080",
 							"path": [
 								"meal",
 								"custom"
@@ -1010,12 +1278,10 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/meal/:mealId/favorite",
-							"protocol": "http",
+							"raw": "{{DOMAIN}}/meal/:mealId/favorite",
 							"host": [
-								"localhost"
+								"{{DOMAIN}}"
 							],
-							"port": "8080",
 							"path": [
 								"meal",
 								":mealId",
@@ -1026,32 +1292,6 @@
 									"key": "mealId",
 									"value": "200"
 								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "favoriteMeals",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{USER_JWT}}",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "http://localhost:8080/meal/favorite",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"meal",
-								"favorite"
 							]
 						}
 					},
@@ -1075,24 +1315,12 @@
 							}
 						],
 						"url": {
-							"raw": "http://localhost:8080/ingredient?count=10&skip=0",
-							"protocol": "http",
+							"raw": "{{DOMAIN}}/ingredient",
 							"host": [
-								"localhost"
+								"{{DOMAIN}}"
 							],
-							"port": "8080",
 							"path": [
 								"ingredient"
-							],
-							"query": [
-								{
-									"key": "count",
-									"value": "10"
-								},
-								{
-									"key": "skip",
-									"value": "0"
-								}
 							]
 						}
 					},
@@ -1116,13 +1344,49 @@
 							}
 						],
 						"url": {
-							"raw": "localhost:8080/cuisine",
+							"raw": "{{DOMAIN}}/cuisine",
 							"host": [
-								"localhost"
+								"{{DOMAIN}}"
 							],
-							"port": "8080",
 							"path": [
 								"cuisine"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "submission",
+			"item": [
+				{
+					"name": "submission",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{USER_JWT}}"
+							}
+						],
+						"url": {
+							"raw": "{{DOMAIN}}/submission/:submissionId",
+							"host": [
+								"{{DOMAIN}}"
+							],
+							"path": [
+								"submission",
+								":submissionId"
+							],
+							"variable": [
+								{
+									"key": "submissionId",
+									"type": "string",
+									"value": "227"
+								}
 							]
 						}
 					},

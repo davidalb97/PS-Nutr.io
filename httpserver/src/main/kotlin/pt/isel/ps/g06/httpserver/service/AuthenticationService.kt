@@ -7,7 +7,7 @@ import org.springframework.security.core.userdetails.User
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 import pt.isel.ps.g06.httpserver.common.BEARER
-import pt.isel.ps.g06.httpserver.common.exception.authentication.NotAuthenticatedException
+import pt.isel.ps.g06.httpserver.common.exception.problemJson.unauthorized.UnauthorizedException
 import pt.isel.ps.g06.httpserver.security.JwtUtil
 
 @Service
@@ -29,7 +29,7 @@ class AuthenticationService(
                     UsernamePasswordAuthenticationToken(email, password)
             )
         } catch (e: AuthenticationException) {
-            throw NotAuthenticatedException()
+            throw UnauthorizedException()
         }
 
         return jwtUtil.generateToken(userDetails)

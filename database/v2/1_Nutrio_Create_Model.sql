@@ -29,7 +29,6 @@ SET TIMEZONE='Portugal';
 
 CREATE TABLE Submitter(
 	submitter_id serial PRIMARY KEY,
-	submitter_name varchar(20) NOT NULL,
 	creation_date timestamp with time zone default CURRENT_TIMESTAMP, -- Add to doc
 	submitter_type varchar(5) CHECK(submitter_type = 'User' OR submitter_type = 'API')	
 );
@@ -37,6 +36,7 @@ CREATE TABLE Submitter(
 CREATE TABLE _User(
 	submitter_id integer,	
 	email varchar(50) NOT NULL,
+	username varchar(20) NOT NULL,
 	password varchar(60) NOT NULL, -- it will always be 60, because of the BCrypt password encoding
 	role varchar(10) CHECK(role = 'normal' OR role = 'mod') NOT NULL,
 	is_banned boolean NOT NULL,
@@ -59,6 +59,7 @@ CREATE TABLE InsulinProfile(
 
 CREATE TABLE Api(
 	submitter_id integer PRIMARY KEY,
+	api_name varchar(20) NOT NULL,
 	api_token varchar(256) NOT NULL,
 	FOREIGN KEY(submitter_id) REFERENCES Submitter(submitter_id)
 );
@@ -69,7 +70,6 @@ CREATE TABLE Submission(
 		submission_type = 'Restaurant' OR
 		submission_type = 'Portion' OR
 		submission_type = 'Meal' OR
-		submission_type = 'Ingredient' OR 
 		submission_type = 'Cuisine' OR
 		submission_type = 'ApiCuisine' OR
 		submission_type = 'RestaurantMeal'
@@ -81,7 +81,7 @@ CREATE TABLE ApiSubmission(
 	submission_id integer,
 	apiId varchar(100),	
 	PRIMARY KEY(submission_id, apiId),
-	FOREIGN KEY(submission_id) REFERENCES Submission(submission_id)
+	FOREIGN KEY(submission_id) REFERENCES Submission(submission_id) ON DELETE CASCADE
 );
 
 CREATE TABLE SubmissionSubmitter(	
@@ -149,7 +149,7 @@ CREATE TABLE Cuisine(
 CREATE TABLE ApiCuisine(
 	submission_id integer PRIMARY KEY,
 	cuisine_submission_id integer,
-	FOREIGN KEY(submission_id) REFERENCES Submission(submission_id),
+	FOREIGN KEY(submission_id) REFERENCES Submission(submission_id) ON DELETE CASCADE,
 	FOREIGN KEY(cuisine_submission_id) REFERENCES Cuisine(submission_id)
 );
 
@@ -160,8 +160,9 @@ CREATE TABLE Meal(
 	quantity integer NOT NULL,
 	unit varchar(10) CHECK(unit = 'gr'),
 	meal_type varchar(10) CHECK(
-		meal_type = 'Suggested' OR
-		meal_type = 'Custom'
+		meal_type = 'I' OR
+		meal_type = 'MS' OR
+		meal_type = 'MC'
 	),
 	FOREIGN KEY(submission_id) REFERENCES Submission(submission_id) ON DELETE CASCADE
 );

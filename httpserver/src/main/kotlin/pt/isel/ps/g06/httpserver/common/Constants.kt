@@ -8,4 +8,6 @@ const val NORMAL_USER = "normal"
 const val MOD_USER = "mod"
 
 // Pagination
-const val COUNT = 15
+const val MAX_COUNT: Long = 30
+const val DEFAULT_COUNT: Int = 15
+const val DEFAULT_COUNT_STR = DEFAULT_COUNT.toString()

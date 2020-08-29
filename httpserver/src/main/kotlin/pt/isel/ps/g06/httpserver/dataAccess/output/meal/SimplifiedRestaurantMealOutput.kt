@@ -15,6 +15,7 @@ open class SimplifiedRestaurantMealOutput(
         name: String,
         isFavorite: Boolean,
         isSuggested: Boolean,
+        isVerified: Boolean,
         imageUri: URI?,
         nutritionalInfo: NutritionalInfoOutput,
         val votes: VotesOutput?
@@ -23,6 +24,7 @@ open class SimplifiedRestaurantMealOutput(
         name = name,
         isFavorite = isFavorite,
         isSuggested = isSuggested,
+        isVerified = isVerified,
         //A restaurant meal is always votable
         isVotable = true,
         imageUri = imageUri,
@@ -49,6 +51,7 @@ fun toSimplifiedRestaurantMealOutput(
             imageUri = meal.imageUri,
             votes = votes,
             isSuggested = !meal.isUserMeal(),
+            isVerified = false, // TODO
             nutritionalInfo = toNutritionalInfoOutput(meal.nutritionalValues)
     )
 }
