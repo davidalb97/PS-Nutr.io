@@ -5,11 +5,13 @@ import java.net.URI
 
 class UserInfoOutput(
         val email: String,
-        val username: String
+        val username: String,
+        val userRole: String
 )
 
 fun mapUserToOutput(user: User): UserInfoOutput =
         UserInfoOutput(
                 email = user.userEmail,
-                username = user.userName
+                username = user.userName,
+                userRole = user.userRole
         )
