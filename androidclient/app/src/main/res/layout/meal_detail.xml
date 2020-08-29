@@ -175,9 +175,7 @@
         </RelativeLayout>
 
         <RelativeLayout
-            android:layout_marginTop="10dp"
-
-            >
+            android:layout_marginTop="10dp">
 
             <ImageButton
                 android:id="@+id/add_to_calc_action"
@@ -202,12 +200,43 @@
 
         </RelativeLayout>
 
-
-
         <!--Graph layout-->
-        <RelativeLayout>
+        <RelativeLayout
+            android:visibility="visible">
 
+            <com.github.mikephil.charting.charts.LineChart
+                android:id="@+id/portion_chart"
+                android:layout_margin="15dp"
+                android:layout_width="match_parent"
+                android:layout_height="150dp" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/portion_chart"
+                android:layout_centerVertical="true">
+
+                <ImageButton
+                    android:id="@+id/add_portion_button"
+                    android:background="@drawable/material_button_shape"
+                    android:layout_centerHorizontal="true"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:src="@drawable/ic_add">
+                </ImageButton>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginStart="10dp"
+                    android:layout_below="@+id/add_portion_button"
+                    android:gravity="center"
+                    android:text="@string/add_your_portion_for_this_meal">
+                </TextView>
+            </RelativeLayout>
         </RelativeLayout>
+
 
         <RelativeLayout
             android:id="@+id/meal_info_portions"

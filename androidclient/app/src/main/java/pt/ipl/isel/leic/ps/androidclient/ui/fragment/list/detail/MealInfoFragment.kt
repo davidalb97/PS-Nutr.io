@@ -6,6 +6,11 @@ import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import com.github.mikephil.charting.charts.LineChart
+import com.github.mikephil.charting.data.Entry
+import com.github.mikephil.charting.data.LineData
+import com.github.mikephil.charting.data.LineDataSet
+import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.*
 import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.meal.MealItemRecyclerAdapter
@@ -71,6 +76,16 @@ class MealInfoFragment :
         recyclerViewModel.observeInfo(this) { mealInfo ->
             setupView(view, mealInfo)
         }
+
+        val portionChart = view.findViewById<LineChart>(R.id.portion_chart)
+        val graphDataSet = LineDataSet(arrayListOf(Entry(0f, 20f)), "Portions")
+        val dataSets = arrayListOf<ILineDataSet>()
+        dataSets.add(graphDataSet)
+
+        val lineData = LineData(dataSets)
+        portionChart.data = lineData
+        portionChart.invalidate()
+
         //Fetch meal info
         recyclerViewModel.update()
     }
