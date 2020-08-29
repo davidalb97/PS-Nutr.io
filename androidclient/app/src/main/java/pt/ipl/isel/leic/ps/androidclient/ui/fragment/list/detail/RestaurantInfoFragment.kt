@@ -118,7 +118,7 @@ class RestaurantInfoFragment :
     }
 
     override fun onEdit(onSuccess: () -> Unit) {
-        sendToDestination(requireView(), Navigation.SEND_TO_ADD_CUSTOM_RESTAURANT)
+        sendToDestination(requireView(), Navigation.SEND_TO_ADD_RESTAURANT)
     }
 
     override fun onSendToDestination(bundle: Bundle) {

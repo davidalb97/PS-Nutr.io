@@ -71,14 +71,16 @@ class RestaurantRepository(private val dataSource: RestaurantDataSource) {
 
     fun addCustomRestaurant(
         customRestaurant: CustomRestaurant,
-        error: (VolleyError) -> Unit,
+        onSuccess: () -> Unit,
+        onError: (VolleyError) -> Unit,
         userSession: UserSession
     ) {
         dataSource.postRestaurant(
             customRestaurantOutput = customRestaurantOutputMapper.mapToOutputModel(
                 restaurant = customRestaurant
             ),
-            error = error,
+            onSuccess = onSuccess,
+            error = onError,
             jwt = userSession.jwt
         )
     }

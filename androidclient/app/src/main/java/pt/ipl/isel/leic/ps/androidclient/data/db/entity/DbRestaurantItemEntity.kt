@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = DbRestaurantItemEntity.tableName)
 data class DbRestaurantItemEntity(
-    val id: String,
+    val id: String?,
     val name: String,
     val latitude: Float,
     val longitude: Float,

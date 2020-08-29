@@ -9,15 +9,12 @@ class CustomRestaurant : RestaurantInfo, Parcelable {
 
     constructor(
         dbId: Long?,
-        id: String,
+        id: String?,
         name: String,
         latitude: Float,
         longitude: Float,
         imageUri: Uri?,
-        creationDate: TimestampWithTimeZone?,
-        cuisines: List<Cuisine>,
-        meals: List<MealItem>,
-        suggestedMeals: List<MealItem>
+        cuisines: List<Cuisine>
     ) : super(
         dbId = dbId,
         id = id,
@@ -29,10 +26,10 @@ class CustomRestaurant : RestaurantInfo, Parcelable {
         isVotable = false,
         imageUri = imageUri,
         source = Source.CUSTOM,
-        creationDate = creationDate,
+        creationDate = null,
         cuisines = cuisines,
-        meals = meals,
-        suggestedMeals = suggestedMeals
+        meals = emptyList(),
+        suggestedMeals = emptyList()
     )
 
     constructor(parcel: Parcel) : super(parcel)

@@ -14,7 +14,7 @@ open class RestaurantInfo : RestaurantItem, Parcelable {
 
     constructor(
         dbId: Long?,
-        id: String,
+        id: String?,
         name: String,
         latitude: Float,
         longitude: Float,

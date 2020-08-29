@@ -6,7 +6,7 @@ import pt.ipl.isel.leic.ps.androidclient.util.TimestampWithTimeZone
 
 @Entity(tableName = DbRestaurantInfoEntity.tableName)
 data class DbRestaurantInfoEntity(
-    val id: String,
+    val id: String?,
     val name: String,
     val latitude: Float,
     val longitude: Float,

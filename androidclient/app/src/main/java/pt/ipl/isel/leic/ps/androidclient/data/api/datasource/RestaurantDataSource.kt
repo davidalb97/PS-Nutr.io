@@ -4,12 +4,12 @@ import android.net.Uri
 import com.android.volley.VolleyError
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.SimplifiedRestaurantInput
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.info.DetailedRestaurantInput
+import pt.ipl.isel.leic.ps.androidclient.data.api.dto.output.CustomRestaurantOutput
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.output.FavoriteOutput
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.output.ReportOutput
-import pt.ipl.isel.leic.ps.androidclient.data.api.dto.output.CustomRestaurantOutput
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.output.VoteOutput
-import pt.ipl.isel.leic.ps.androidclient.data.api.request.*
-import pt.ipl.isel.leic.ps.androidclient.data.model.Cuisine
+import pt.ipl.isel.leic.ps.androidclient.data.api.request.HTTPMethod
+import pt.ipl.isel.leic.ps.androidclient.data.api.request.RequestParser
 import pt.ipl.isel.leic.ps.androidclient.data.util.appendQueryNotNullListParameter
 import pt.ipl.isel.leic.ps.androidclient.data.util.appendQueryNotNullParameter
 import pt.ipl.isel.leic.ps.androidclient.data.util.appendQueryParameter
@@ -83,6 +83,7 @@ class RestaurantDataSource(
 
     fun postRestaurant(
         customRestaurantOutput: CustomRestaurantOutput,
+        onSuccess: () -> Unit,
         error: (VolleyError) -> Unit,
         jwt: String
     ) {
@@ -97,7 +98,7 @@ class RestaurantDataSource(
             reqHeader = buildAuthHeader(jwt),
             reqPayload = customRestaurantOutput,
             onError = error,
-            responseConsumer = { }
+            responseConsumer = { onSuccess() }
         )
     }
 

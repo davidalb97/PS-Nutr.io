@@ -10,7 +10,7 @@ import pt.ipl.isel.leic.ps.androidclient.util.writeUri
 
 open class RestaurantItem(
     var dbId: Long?,
-    val id: String,
+    val id: String?,
     val name: String,
     val latitude: Float,
     val longitude: Float,
@@ -23,7 +23,7 @@ open class RestaurantItem(
 
     constructor(parcel: Parcel) : this(
         dbId = parcel.readSerializable() as Long?,
-        id = parcel.readString()!!,
+        id = parcel.readString(),
         name = parcel.readString()!!,
         latitude = parcel.readFloat(),
         longitude = parcel.readFloat(),
