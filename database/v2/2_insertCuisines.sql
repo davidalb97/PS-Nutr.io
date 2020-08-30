@@ -2,9 +2,9 @@ DO $$
 --Test variables declaration:
 DECLARE
 	submitter_id_api_zomato INTEGER := 1;
-	submitter_name_api_zomato varchar(20) := 'Zomato';
 	submitter_id_api_here INTEGER := 2;
-	submitter_name_api_here varchar(20) := 'Here';
+	api_name_zomato varchar(20) := 'Zomato';
+	api_name_here varchar(20) := 'Here';
 	cuisineNames varchar[] := ARRAY[
 		'African',--10
 		'Alentejana',
@@ -209,14 +209,14 @@ DECLARE
 	];
 BEGIN 
 	
-	INSERT INTO Submitter(submitter_name, submitter_type) VALUES
-	(submitter_name_api_zomato, 'API'),
-	(submitter_name_api_here, 'API'),
-	('User', 'User');
+	INSERT INTO Submitter(submitter_type) VALUES
+	('API'),
+	('API'),
+	('User');
 
-	INSERT INTO Api(submitter_id, api_token) VALUES
-	(submitter_id_api_zomato, '456'),
-	(submitter_id_api_here, 'here:123');	
+	INSERT INTO Api(submitter_id, api_name, api_token) VALUES
+	(submitter_id_api_zomato, api_name_zomato, '456'),
+	(submitter_id_api_here, api_name_here, 'here:123');	
 	
 	--Insert hardcoded cuisines
 	FOR cuisineIdx in 1 .. array_length(cuisineNames, 1)
