@@ -5,6 +5,7 @@ import com.android.volley.VolleyError
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.roomDb
 import pt.ipl.isel.leic.ps.androidclient.data.api.datasource.MealDataSource
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.output.FavoriteOutput
+import pt.ipl.isel.leic.ps.androidclient.data.api.dto.output.PortionOutput
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.output.ReportOutput
 import pt.ipl.isel.leic.ps.androidclient.data.api.mapper.input.*
 import pt.ipl.isel.leic.ps.androidclient.data.api.mapper.output.OutputCuisineMapper
@@ -255,6 +256,24 @@ class MealRepository(private val dataSource: MealDataSource) {
                 jwt = userSession.jwt
             )
         }
+    }
+
+    fun addMealPortion(
+        restaurantId: String?,
+        mealId: Int?,
+        portionOutput: PortionOutput,
+        userSession: UserSession,
+        onSuccess: (Int) -> Unit,
+        onError: (VolleyError) -> Unit
+    ) {
+        dataSource.postRestaurantMealPortion(
+            restaurantId = restaurantId,
+            mealId = mealId,
+            portionOutput = portionOutput,
+            onSuccess = onSuccess,
+            onError = onError,
+            jwt = userSession.jwt
+        )
     }
 
     fun report(

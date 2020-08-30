@@ -9,7 +9,6 @@ import pt.ipl.isel.leic.ps.androidclient.data.api.dto.output.*
 import pt.ipl.isel.leic.ps.androidclient.data.api.request.HTTPMethod
 import pt.ipl.isel.leic.ps.androidclient.data.api.request.PayloadResponse
 import pt.ipl.isel.leic.ps.androidclient.data.api.request.RequestParser
-import pt.ipl.isel.leic.ps.androidclient.data.model.Cuisine
 import pt.ipl.isel.leic.ps.androidclient.data.util.appendPath
 import pt.ipl.isel.leic.ps.androidclient.data.util.appendQueryNotNullListParameter
 import pt.ipl.isel.leic.ps.androidclient.data.util.appendQueryNotNullParameter
@@ -223,6 +222,36 @@ class MealDataSource(
             onSuccess = success,
             onError = error,
             reqPayload = restaurantMealOutput
+        )
+    }
+
+    fun postRestaurantMealPortion(
+        restaurantId: String?,
+        mealId: Int?,
+        portionOutput: PortionOutput,
+        onSuccess: (Int) -> Unit,
+        onError: (VolleyError) -> Unit,
+        jwt: String
+    ) {
+
+        requestParser.request(
+            method = HTTPMethod.POST,
+            uri = Uri.Builder()
+                .scheme(SCHEME)
+                .encodedAuthority(ADDRESS_PORT)
+                .appendPath(RESTAURANT_PATH)
+                .appendPath(restaurantId)
+                .appendPath(MEAL_PATH)
+                .appendPath(mealId!!)
+                .appendPath(PORTION_PATH)
+                .build()
+                .toString(),
+            reqHeader = buildAuthHeader(jwt),
+            reqPayload = portionOutput,
+            onError = onError,
+            responseConsumer = { payloadResponse ->
+                onSuccess(payloadResponse.status)
+            }
         )
     }
 

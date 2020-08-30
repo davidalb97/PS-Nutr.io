@@ -13,6 +13,7 @@ const val SUGGESTED_PATH = "suggested"
 const val FAVORITE_PATH = "favorite"
 const val VOTE_PATH = "vote"
 const val REPORT_PATH = "report"
+const val PORTION_PATH = "portion"
 
 const val ADDRESS = "10.0.2.2" // Loopback for the host machine
 const val PORT = "8080"

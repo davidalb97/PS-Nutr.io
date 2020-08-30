@@ -5,6 +5,7 @@ import android.os.Parcelable
 import androidx.lifecycle.LifecycleOwner
 import com.android.volley.VolleyError
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.mealRepository
+import pt.ipl.isel.leic.ps.androidclient.data.api.dto.output.PortionOutput
 import pt.ipl.isel.leic.ps.androidclient.data.model.*
 import pt.ipl.isel.leic.ps.androidclient.ui.util.ItemAction
 import pt.ipl.isel.leic.ps.androidclient.ui.util.Navigation
@@ -128,6 +129,24 @@ open class MealInfoViewModel : MealItemListViewModel {
             },
             error = onError,
             userSession = userSession
+        )
+    }
+
+    fun addMealPortion(
+        restaurantId: String?,
+        mealId: Int?,
+        portionOutput: PortionOutput,
+        userSession: UserSession,
+        onSuccess: (Int) -> Unit,
+        onError: (VolleyError) -> Unit
+    ) {
+        mealRepository.addMealPortion(
+            restaurantId = restaurantId,
+            mealId = mealId,
+            portionOutput = portionOutput,
+            userSession = userSession,
+            onSuccess = onSuccess,
+            onError =  onError
         )
     }
 

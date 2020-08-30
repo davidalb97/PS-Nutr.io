@@ -8,24 +8,27 @@ import android.view.ViewGroup
 import android.widget.*
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.data.Entry
-import com.github.mikephil.charting.data.LineData
-import com.github.mikephil.charting.data.LineDataSet
-import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
+import pt.ipl.isel.leic.ps.androidclient.NutrioApp
+import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.app
 import pt.ipl.isel.leic.ps.androidclient.R
+import pt.ipl.isel.leic.ps.androidclient.data.api.dto.output.PortionOutput
 import pt.ipl.isel.leic.ps.androidclient.data.model.*
 import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.meal.MealItemRecyclerAdapter
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.list.BaseListFragment
+import pt.ipl.isel.leic.ps.androidclient.ui.modular.IChart
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.IImage
+import pt.ipl.isel.leic.ps.androidclient.ui.modular.ISend
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.ICalculatorActionButton
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.IFavoriteActionButton
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.IVoteActionButtons
-import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.menu.MenuItemFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.menu.IEditMenuItem
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.menu.IPopupMenuButton
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.menu.IReportMenuItem
+import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.menu.MenuItemFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.BaseViewModelProviderFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.MealInfoVMProviderFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.util.*
+import pt.ipl.isel.leic.ps.androidclient.ui.util.units.WeightUnits
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.meal.info.MealInfoViewModel
 
 class MealInfoFragment :
@@ -33,6 +36,8 @@ class MealInfoFragment :
     IVoteActionButtons,
     ICalculatorActionButton,
     IImage,
+    IChart,
+    ISend,
     IFavoriteActionButton,
     IPopupMenuButton,
     IReportMenuItem,
@@ -68,6 +73,8 @@ class MealInfoFragment :
     override lateinit var downVoteButton: ImageButton
     override val menuButtonId: Int = R.id.options
     override lateinit var menuButton: ImageButton
+    override val chartId: Int = R.id.portion_chart
+    override lateinit var chart: LineChart
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -76,15 +83,6 @@ class MealInfoFragment :
         recyclerViewModel.observeInfo(this) { mealInfo ->
             setupView(view, mealInfo)
         }
-
-        val portionChart = view.findViewById<LineChart>(R.id.portion_chart)
-        val graphDataSet = LineDataSet(arrayListOf(Entry(0f, 20f)), "Portions")
-        val dataSets = arrayListOf<ILineDataSet>()
-        dataSets.add(graphDataSet)
-
-        val lineData = LineData(dataSets)
-        portionChart.data = lineData
-        portionChart.invalidate()
 
         //Fetch meal info
         recyclerViewModel.update()
@@ -103,6 +101,42 @@ class MealInfoFragment :
         super.setupReportMenuItem()
         super.setupEditMenuItem()
         super.setupPopupMenuButton(view)
+
+        val amountMap: HashMap<Float, Int> = hashMapOf()
+        val portionEntries =
+            receivedMeal.portions.map { portion ->
+                val amount = portion.amount
+                amountMap[amount]?.inc() ?: amountMap.put(amount, 1)
+                Entry(portion.amount, amountMap[amount]!!.toFloat())
+            }
+        super.setupChart(view, portionEntries)
+
+        val addPortionButton = view.findViewById<ImageButton>(R.id.add_portion_button)
+        addPortionButton.setOnClickListener {
+            MealAmountSelector(
+                ctx = requireContext(),
+                layoutInflater = layoutInflater,
+                baseCarbs = 0f,
+                baseAmountGrams = 0f,
+                mealUnit = WeightUnits.GRAMS // TODO: Check default weight unit inside pref settings
+            ) { preciseGrams, preciseCarbs ->
+                recyclerViewModel.addMealPortion(
+                    restaurantId = receivedMeal.restaurantSubmissionId,
+                    mealId = receivedMeal.submissionId,
+                    portionOutput = PortionOutput(
+                        preciseGrams.toInt(),
+                        WeightUnits.GRAMS.toString()
+                    ),
+                    userSession = requireUserSession(),
+                    onSuccess = { status ->
+                        Toast.makeText(app, status, Toast.LENGTH_SHORT).show()
+                    },
+                    onError = {
+                        Toast.makeText(app, "Could not add portion", Toast.LENGTH_SHORT).show()
+                    }
+                )
+            }
+        }
 
         val title: TextView = view.findViewById(R.id.meal_detail_title)
         title.text = receivedMeal.name
