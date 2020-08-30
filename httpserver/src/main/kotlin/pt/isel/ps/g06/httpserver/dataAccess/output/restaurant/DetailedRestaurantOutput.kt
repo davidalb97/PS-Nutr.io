@@ -6,8 +6,8 @@ import pt.isel.ps.g06.httpserver.dataAccess.output.meal.SimplifiedRestaurantMeal
 import pt.isel.ps.g06.httpserver.dataAccess.output.meal.toSimplifiedRestaurantMealOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.vote.VotesOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.vote.toVotesOutput
-import pt.isel.ps.g06.httpserver.model.Restaurant
 import pt.isel.ps.g06.httpserver.model.VoteState
+import pt.isel.ps.g06.httpserver.model.restaurant.Restaurant
 import java.time.OffsetDateTime
 
 class DetailedRestaurantOutput(

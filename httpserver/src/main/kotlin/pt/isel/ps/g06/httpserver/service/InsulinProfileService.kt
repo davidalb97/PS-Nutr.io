@@ -1,6 +1,7 @@
 package pt.isel.ps.g06.httpserver.service
 
 import org.springframework.stereotype.Service
+import pt.isel.ps.g06.httpserver.common.exception.clientError.MissingInsulinProfileException
 import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.InsulinProfileResponseMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.InsulinProfileDbRepository
 import pt.isel.ps.g06.httpserver.model.InsulinProfile
@@ -17,8 +18,11 @@ class InsulinProfileService(
                 .map(insulinProfileMapper::mapToModel)
     }
 
-    fun getProfileFromUser(submitterId: Int, profileName: String): InsulinProfile =
-            insulinProfileMapper.mapToModel(insulinProfileDbRepository.getFromUser(submitterId, profileName))
+    fun getProfileFromUser(submitterId: Int, profileName: String): InsulinProfile {
+        return insulinProfileDbRepository.getFromUser(submitterId, profileName)
+                ?.let(insulinProfileMapper::mapToModel)
+                ?: throw MissingInsulinProfileException(profileName)
+    }
 
     fun createProfile(
             submitterId: Int,
@@ -43,6 +47,7 @@ class InsulinProfileService(
     }
 
     fun deleteProfile(submitterId: Int, profileName: String) {
+        //TODO Get insulin profile before deleting it
         insulinProfileDbRepository.deleteProfile(submitterId, profileName)
     }
 

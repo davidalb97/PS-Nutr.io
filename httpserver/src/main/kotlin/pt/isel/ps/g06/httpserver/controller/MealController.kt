@@ -66,7 +66,6 @@ class MealController(
         if (count != null) {
             meals = meals.take(count)
         }
-
         return ResponseEntity
                 .ok()
                 .body(toSimplifiedMealContainer(meals, user?.identifier))

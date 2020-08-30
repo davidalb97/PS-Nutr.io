@@ -2,7 +2,7 @@ package pt.isel.ps.g06.httpserver.dataAccess.output.ingredient
 
 import pt.isel.ps.g06.httpserver.dataAccess.output.NutritionalInfoOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.toNutritionalInfoOutput
-import pt.isel.ps.g06.httpserver.model.MealIngredient
+import pt.isel.ps.g06.httpserver.model.food.Ingredient
 import java.net.URI
 
 data class DetailedIngredientOutput(
@@ -13,7 +13,7 @@ data class DetailedIngredientOutput(
         val nutritionalInfo: NutritionalInfoOutput
 )
 
-fun toDetailedIngredientOutput(ingredient: MealIngredient, userId: Int? = null): DetailedIngredientOutput {
+fun toDetailedIngredientOutput(ingredient: Ingredient, userId: Int? = null): DetailedIngredientOutput {
     return DetailedIngredientOutput(
             id = ingredient.identifier,
             name = ingredient.name,
