@@ -39,7 +39,7 @@ class MealInfoFragment :
             this.requireContext()
         )
     }
-    override val menus: MutableList<MenuItemFactory> = mutableListOf()
+    override val menus: MutableMap<String, MenuItemFactory> = mutableMapOf()
     override lateinit var actions: List<ItemAction>
     override val imageId: Int = R.id.meal_detail_image
     override lateinit var image: ImageView
