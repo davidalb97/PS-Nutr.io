@@ -3,18 +3,15 @@ package pt.isel.ps.g06.httpserver.controller
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import pt.isel.ps.g06.httpserver.common.BAN
-import pt.isel.ps.g06.httpserver.common.LOGIN
-import pt.isel.ps.g06.httpserver.common.REGISTER
-import pt.isel.ps.g06.httpserver.common.USER
+import pt.isel.ps.g06.httpserver.common.*
 import pt.isel.ps.g06.httpserver.common.exception.problemJson.notFound.UserNotFoundException
 import pt.isel.ps.g06.httpserver.common.exception.problemJson.unauthorized.UnauthorizedException
 import pt.isel.ps.g06.httpserver.dataAccess.input.moderation.BanInput
 import pt.isel.ps.g06.httpserver.dataAccess.input.user.UserLoginInput
 import pt.isel.ps.g06.httpserver.dataAccess.input.user.UserRegisterInput
+import pt.isel.ps.g06.httpserver.dataAccess.output.user.UserInfoOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.user.UserLoginOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.user.UserRegisterOutput
-import pt.isel.ps.g06.httpserver.dataAccess.output.user.UserInfoOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.user.mapUserToOutput
 import pt.isel.ps.g06.httpserver.model.User
 import pt.isel.ps.g06.httpserver.service.AuthenticationService
@@ -60,15 +57,13 @@ class UserController(private val userService: UserService, private val authentic
                             ?: throw UserNotFoundException()
             )
 
-    @DeleteMapping(USER)
-    fun removeAccount(@Valid @RequestBody userLoginInput: UserLoginInput): ResponseEntity<Void> {
+    @DeleteMapping("/user/{userIdentifier}")
+    fun removeAccount(@PathVariable userIdentifier: Int, user: User): ResponseEntity<Void> {
+        if (user.identifier != userIdentifier || user.userRole != MOD_USER) {
+            throw UnauthorizedException()
+        }
 
-        val userEmail = userLoginInput.email
-
-        // Authenticates the user, throwing UnauthorizedException if the credentials are wrong
-        authenticationService.login(userEmail, userLoginInput.password)
-
-        userService.deleteUser(userEmail)
+        userService.deleteUser(userEmail = user.userEmail)
 
         return ResponseEntity.ok().build()
     }
