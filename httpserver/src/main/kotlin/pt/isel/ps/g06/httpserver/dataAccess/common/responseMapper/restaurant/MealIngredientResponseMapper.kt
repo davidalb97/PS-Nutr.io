@@ -6,11 +6,10 @@ import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.ResponseMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.MealType
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbMealDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.*
-import pt.isel.ps.g06.httpserver.model.Meal
 import pt.isel.ps.g06.httpserver.model.MealComposition
+import pt.isel.ps.g06.httpserver.model.Meal
 import pt.isel.ps.g06.httpserver.model.MealIngredient
 import pt.isel.ps.g06.httpserver.model.NutritionalValues
-import pt.isel.ps.g06.httpserver.model.modular.toUserPredicate
 
 @Component
 class DbMealIngredientResponseMapper(
@@ -26,12 +25,8 @@ class DbMealIngredientResponseMapper(
                     MealIngredient(
                             identifier = ingredient.submission_id,
                             name = ingredient.meal_name,
-                            image = null,
-                            isFavorite = toUserPredicate({ false }) { userId ->
-                                dbFavoriteRepo.getFavorite(ingredient.submission_id, userId)
-                            },
-                            //An ingredient is always favorable
-                            isFavorable = { true },
+                            imageUri = null,
+                            isFavorite = { userId -> dbFavoriteRepo.getFavorite(ingredient.submission_id, userId) },
                             nutritionalValues = NutritionalValues(
                                     carbs = calculateCarbsFromBase(ingredient.amount, ingredient.carbs, it.quantity).toInt(),
                                     amount = it.quantity,
@@ -63,15 +58,8 @@ class DbMealComponentResponseMapper(
                     Meal(
                             identifier = dto.submission_id,
                             name = dto.meal_name,
-                            isFavorite = toUserPredicate({ false }) { userId ->
-                                dbFavoriteRepo.getFavorite(dto.submission_id, userId)
-                            },
-                            //An ingredient is always favorable
-                            isFavorable = toUserPredicate({ true }) { userId ->
-                                //A user cannot favorite on it's own submission
-                                !dbMealRepo.isSubmissionSubmitter(dto.submission_id, userId)
-                            },
-                            image = null,
+                            isFavorite = { userId -> dbFavoriteRepo.getFavorite(dto.submission_id, userId) },
+                            imageUri = null,
                             composedBy = MealComposition(
                                     meals = this.mapTo(mealComponent),
                                     ingredients = dbMealIngredientResponseMapper.mapTo(mealComponent)
@@ -89,7 +77,7 @@ class DbMealComponentResponseMapper(
                                         ?.let { id -> dbRestaurantMeal.getRestaurantMeal(id, dto.submission_id) }
                                         ?.let(restaurantMealResponseMapper::mapTo)
                             },
-                            nutritionalInfo = NutritionalValues(
+                            nutritionalValues = NutritionalValues(
                                     carbs = calculateCarbsFromBase(mealComponent.amount, mealComponent.carbs, it.quantity).toInt(),
                                     amount = it.quantity,
                                     unit = "gr"     //TODO From an enum
@@ -110,12 +98,8 @@ class DbIngredientResponseMapper(
         return MealIngredient(
                 identifier = dto.submission_id,
                 name = dto.meal_name,
-                isFavorite = toUserPredicate({ false }) { userId ->
-                    dbFavoriteRepo.getFavorite(dto.submission_id, userId)
-                },
-                //An ingredient is always favorable
-                isFavorable = { true },
-                image = null,
+                isFavorite = { userId -> dbFavoriteRepo.getFavorite(dto.submission_id, userId) },
+                imageUri = null,
                 nutritionalValues = NutritionalValues(dto.carbs, dto.amount, dto.unit)
         )
     }

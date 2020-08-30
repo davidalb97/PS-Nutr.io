@@ -5,9 +5,8 @@ import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.ResponseMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.MealType
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbMealDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.*
-import pt.isel.ps.g06.httpserver.model.Meal
 import pt.isel.ps.g06.httpserver.model.MealComposition
-import pt.isel.ps.g06.httpserver.model.modular.toUserPredicate
+import pt.isel.ps.g06.httpserver.model.Meal
 
 @Component
 class DbMealResponseMapper(
@@ -27,14 +26,9 @@ class DbMealResponseMapper(
         return Meal(
                 identifier = dto.submission_id,
                 name = dto.meal_name,
-                isFavorite = toUserPredicate({ false }) { userId ->
-                    dbFavoriteRepo.getFavorite(dto.submission_id, userId)
-                },
-                isFavorable = toUserPredicate({ true }) { userId ->
-                    !dbMealRepo.isSubmissionSubmitter(dto.submission_id, userId)
-                },
-                nutritionalInfo = nutritionalMapper.mapTo(dto),
-                image = null,
+                isFavorite = { userId -> dbFavoriteRepo.getFavorite(dto.submission_id, userId) },
+                nutritionalValues = nutritionalMapper.mapTo(dto),
+                imageUri = null,
                 composedBy = MealComposition(
                         meals = mealComponentMapper.mapTo(dto),
                         ingredients = ingredientMapper.mapTo(dto)

@@ -34,19 +34,6 @@ class BaseDbRepo constructor(internal val jdbi: Jdbi) {
         }
     }
 
-    fun isSubmissionSubmitter(
-            submissionId: Int,
-            submitterId: Int,
-            defaultIsolation: TransactionIsolationLevel = SERIALIZABLE
-    ): Boolean {
-        return jdbi.inTransaction<Boolean, InvalidInputException>(defaultIsolation) {
-            val submitterIds = it.attach(SubmissionSubmitterDao::class.java)
-                    .getAllBySubmissionId(submissionId)
-                    .map { it.submitter_id }
-            return@inTransaction submitterIds.contains(submitterId)
-        }
-    }
-
     /**
      * @throws InvalidInputException If submitter does not own the submission.
      */
@@ -55,11 +42,18 @@ class BaseDbRepo constructor(internal val jdbi: Jdbi) {
             submitterId: Int,
             defaultIsolation: TransactionIsolationLevel = SERIALIZABLE
     ) {
-        if(!isSubmissionSubmitter(submissionId, submitterId, defaultIsolation)) {
-            throw InvalidInputException(
-                    "The specified submitter with id \"$submitterId\" " +
-                            "does not own submission with id \"$submissionId\"."
-            )
+        jdbi.inTransaction<Unit, InvalidInputException>(defaultIsolation) {
+
+            // Check if the submitter owns the submission
+            val submitterIds = it.attach(SubmissionSubmitterDao::class.java)
+                    .getAllBySubmissionId(submissionId)
+                    .map { it.submitter_id }
+            if (!submitterIds.contains(submitterId)) {
+                throw InvalidInputException(
+                        "The specified submitter with id \"$submitterId\" " +
+                                "does not own submission with id \"$submissionId\"."
+                )
+            }
         }
     }
 
@@ -67,7 +61,7 @@ class BaseDbRepo constructor(internal val jdbi: Jdbi) {
      * @throws InvalidInputException If the submission does not meet the IS-A contract or
      * if the submission does not exist.
      */
-    fun hasContract(
+    protected fun hasContract(
             submissionId: Int,
             contract: SubmissionContractType,
             defaultIsolation: TransactionIsolationLevel = SERIALIZABLE

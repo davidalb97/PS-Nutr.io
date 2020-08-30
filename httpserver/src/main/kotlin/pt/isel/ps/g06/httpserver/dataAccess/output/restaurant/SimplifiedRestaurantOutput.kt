@@ -1,43 +1,31 @@
 package pt.isel.ps.g06.httpserver.dataAccess.output.restaurant
 
-import pt.isel.ps.g06.httpserver.dataAccess.output.modular.*
-import pt.isel.ps.g06.httpserver.dataAccess.output.VotesOutput
-import pt.isel.ps.g06.httpserver.dataAccess.output.toVotesOutput
+import pt.isel.ps.g06.httpserver.dataAccess.output.vote.VotesOutput
+import pt.isel.ps.g06.httpserver.dataAccess.output.vote.toVotesOutput
 import pt.isel.ps.g06.httpserver.model.Restaurant
-import java.net.URI
+import pt.isel.ps.g06.httpserver.model.VoteState
 
 open class SimplifiedRestaurantOutput(
-        identifier: String,
-        name: String,
-        image: URI?,
-        favorites: FavoritesOutput,
+        val id: String,
+        val name: String,
         val latitude: Float,
         val longitude: Float,
-        override val votes: VotesOutput,
-        override val isReportable: Boolean
-) : BasePublicSubmissionOutput<String>(
-        identifier = identifier,
-        name = name,
-        image = image,
-        favorites = favorites
-), IVotableOutput, IReportableOutput, IFavorableOutput
+        val votes: VotesOutput?,
+        val isFavorite: Boolean,
+        val isVotable: Boolean
+)
 
 fun toSimplifiedRestaurantOutput(restaurant: Restaurant, userId: Int? = null): SimplifiedRestaurantOutput {
     return SimplifiedRestaurantOutput(
-            identifier = restaurant.identifier.value.toString(),
+            id = restaurant.identifier.value.toString(),
             name = restaurant.name,
-            image = restaurant.image,
             latitude = restaurant.latitude,
             longitude = restaurant.longitude,
             votes = toVotesOutput(
-                    isVotable = restaurant.isVotable(userId),
-                    votes = restaurant.votes.value,
-                    userVote = restaurant.userVote(userId)
+                    votes = restaurant.votes,
+                    userVote = userId?.let { restaurant.userVote(userId) } ?: VoteState.NOT_VOTED
             ),
-            favorites = FavoritesOutput(
-                    isFavorite = restaurant.isFavorite(userId),
-                    isFavorable = restaurant.isFavorable(userId)
-            ),
-            isReportable = restaurant.isReportable(userId)
+            isFavorite = userId?.let { restaurant.isFavorite(userId) } ?: false,
+            isVotable = restaurant.isUserRestaurant()
     )
 }
