@@ -3,7 +3,7 @@ package pt.isel.ps.g06.httpserver.model.modular
 import pt.isel.ps.g06.httpserver.model.Portion
 import pt.isel.ps.g06.httpserver.model.VoteState
 
-typealias UserPortion = (Int) -> Portion?
+typealias UserPortion = (Int?) -> Portion?
 
 typealias UserVote = (Int?) -> VoteState
 
@@ -15,4 +15,8 @@ fun toUserPredicate(default: () -> Boolean, onUser: (Int) -> Boolean): UserPredi
 
 fun toUserVote(onUser: (Int) -> VoteState): UserVote {
     return { userId -> userId?.let { onUser(it) } ?: VoteState.NOT_VOTED }
+}
+
+fun toUserPortion(onUser: (Int) -> Portion?): UserPortion {
+    return { userId -> userId?.let { onUser(it) } }
 }

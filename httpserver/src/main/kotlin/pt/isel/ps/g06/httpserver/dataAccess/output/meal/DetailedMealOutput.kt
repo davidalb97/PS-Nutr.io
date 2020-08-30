@@ -6,8 +6,8 @@ import pt.isel.ps.g06.httpserver.dataAccess.output.NutritionalInfoOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.modular.FavoritesOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.modular.ISubmitterInfoOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.toNutritionalInfoOutput
-import pt.isel.ps.g06.httpserver.dataAccess.output.vote.SimplifiedUserOutput
-import pt.isel.ps.g06.httpserver.dataAccess.output.vote.toSimplifiedUserOutput
+import pt.isel.ps.g06.httpserver.dataAccess.output.user.SimplifiedUserOutput
+import pt.isel.ps.g06.httpserver.dataAccess.output.user.toSimplifiedUserOutput
 import pt.isel.ps.g06.httpserver.model.Meal
 import java.net.URI
 import java.time.OffsetDateTime

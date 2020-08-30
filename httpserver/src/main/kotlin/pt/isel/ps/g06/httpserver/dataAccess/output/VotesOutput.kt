@@ -1,4 +1,4 @@
-package pt.isel.ps.g06.httpserver.dataAccess.output.vote
+package pt.isel.ps.g06.httpserver.dataAccess.output
 
 import pt.isel.ps.g06.httpserver.model.VoteState
 import pt.isel.ps.g06.httpserver.model.Votes

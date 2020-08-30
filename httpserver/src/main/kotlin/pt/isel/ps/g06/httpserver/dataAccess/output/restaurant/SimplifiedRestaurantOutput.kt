@@ -1,10 +1,9 @@
 package pt.isel.ps.g06.httpserver.dataAccess.output.restaurant
 
 import pt.isel.ps.g06.httpserver.dataAccess.output.modular.*
-import pt.isel.ps.g06.httpserver.dataAccess.output.vote.VotesOutput
-import pt.isel.ps.g06.httpserver.dataAccess.output.vote.toVotesOutput
+import pt.isel.ps.g06.httpserver.dataAccess.output.VotesOutput
+import pt.isel.ps.g06.httpserver.dataAccess.output.toVotesOutput
 import pt.isel.ps.g06.httpserver.model.Restaurant
-import pt.isel.ps.g06.httpserver.model.VoteState
 import java.net.URI
 
 open class SimplifiedRestaurantOutput(

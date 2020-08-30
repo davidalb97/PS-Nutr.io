@@ -12,6 +12,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.repo.ReportDbRepository
 import pt.isel.ps.g06.httpserver.model.MealRestaurantInfo
 import pt.isel.ps.g06.httpserver.model.VoteState
 import pt.isel.ps.g06.httpserver.model.Votes
+import pt.isel.ps.g06.httpserver.model.modular.toUserPortion
 import pt.isel.ps.g06.httpserver.model.modular.toUserPredicate
 import pt.isel.ps.g06.httpserver.model.modular.toUserVote
 
@@ -61,7 +62,7 @@ class DbRestaurantMealInfoResponseMapper(
                 portions = dto.submission_id?.let(dbPortionRepo::getAllByRestaurantMealId)
                         ?.map(dbPortionsMapper::mapTo)
                         ?: sequenceOf(),
-                userPortion = { userId ->
+                userPortion = toUserPortion { userId ->
                     dto.submission_id?.let {
                         dbPortionRepo.getUserPortion(it, userId)
                                 ?.let(dbPortionsMapper::mapTo)

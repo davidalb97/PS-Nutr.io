@@ -1,13 +1,15 @@
-package pt.isel.ps.g06.httpserver.dataAccess.output.meal
+package pt.isel.ps.g06.httpserver.dataAccess.output.restaurantMeal
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer
-import pt.isel.ps.g06.httpserver.dataAccess.output.NutritionalInfoOutput
+import pt.isel.ps.g06.httpserver.common.user
+import pt.isel.ps.g06.httpserver.dataAccess.output.*
+import pt.isel.ps.g06.httpserver.dataAccess.output.meal.MealCompositionOutput
+import pt.isel.ps.g06.httpserver.dataAccess.output.meal.toMealComposition
 import pt.isel.ps.g06.httpserver.dataAccess.output.modular.FavoritesOutput
-import pt.isel.ps.g06.httpserver.dataAccess.output.toNutritionalInfoOutput
-import pt.isel.ps.g06.httpserver.dataAccess.output.vote.*
+import pt.isel.ps.g06.httpserver.dataAccess.output.user.SimplifiedUserOutput
+import pt.isel.ps.g06.httpserver.dataAccess.output.user.toSimplifiedUserOutput
 import pt.isel.ps.g06.httpserver.model.RestaurantMeal
-import pt.isel.ps.g06.httpserver.model.VoteState
 import java.net.URI
 import java.time.OffsetDateTime
 
@@ -23,7 +25,7 @@ class DetailedRestaurantMealOutput(
         isVerified: Boolean,
         val creationDate: OffsetDateTime?,
         val composedBy: MealCompositionOutput?,
-        val portions: Collection<Int>,
+        val portions: PortionsOutput,
         @JsonSerialize(using = ToStringSerializer::class)
         val createdBy: SimplifiedUserOutput?
 ) : SimplifiedRestaurantMealOutput(
@@ -66,10 +68,6 @@ fun toDetailedRestaurantMealOutput(restaurantMeal: RestaurantMeal, userId: Int? 
             createdBy = meal.submitterInfo.value?.let(::toSimplifiedUserOutput),
             creationDate = meal.creationDate.value,
             composedBy = toMealComposition(meal),
-            portions = restaurantMealInfo
-                    ?.portions
-                    ?.map { portion -> portion.amount }
-                    ?.toList()
-                    ?: emptyList()
+            portions = toPortionsOutput(restaurantMeal, userId)
     )
 }
