@@ -18,7 +18,7 @@ data class InsulinProfileOutput(
 
 fun toInsulinProfileOutput(insulinProfile: InsulinProfile): InsulinProfileOutput {
         return InsulinProfileOutput(
-                name = insulinProfile.name,
+                name = insulinProfile.profileName,
                 startTime = insulinProfile.startTime,
                 endTime = insulinProfile.endTime,
                 glucoseObjective = insulinProfile.glucoseObjective,

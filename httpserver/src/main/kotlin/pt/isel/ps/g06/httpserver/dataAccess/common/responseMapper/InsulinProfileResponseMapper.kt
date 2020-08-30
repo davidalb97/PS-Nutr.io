@@ -9,8 +9,8 @@ class InsulinProfileResponseMapper {
 
     fun mapToModel(dto: DbUserInsulinProfileDto): InsulinProfile =
             InsulinProfile(
-                    identifier = dto.submitterId,
-                    name = dto.profileName,
+                    submitterId = dto.submitterId,
+                    profileName = dto.profileName,
                     startTime = dto.startTime,
                     endTime = dto.endTime,
                     glucoseObjective = dto.glucoseObjective,

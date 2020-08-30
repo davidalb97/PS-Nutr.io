@@ -1,39 +1,30 @@
 package pt.isel.ps.g06.httpserver.dataAccess.output.meal
 
 import pt.isel.ps.g06.httpserver.dataAccess.output.NutritionalInfoOutput
-import pt.isel.ps.g06.httpserver.dataAccess.output.modular.BasePublicSubmissionOutput
-import pt.isel.ps.g06.httpserver.dataAccess.output.modular.FavoritesOutput
-import pt.isel.ps.g06.httpserver.dataAccess.output.modular.INutritionalSubmissionOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.toNutritionalInfoOutput
 import pt.isel.ps.g06.httpserver.model.Meal
 import java.net.URI
 
 open class BaseMealOutput(
-        identifier: Int,
-        name: String,
-        image: URI?,
-        favorites: FavoritesOutput,
-        override val nutritionalInfo: NutritionalInfoOutput,
+        val mealIdentifier: Int,
+        val name: String,
+        val isFavorite: Boolean,
         val isSuggested: Boolean,
-        val isVerified: Boolean
-) : BasePublicSubmissionOutput<Int>(
-        identifier = identifier,
-        name = name,
-        image = image,
-        favorites = favorites
-), INutritionalSubmissionOutput
+        val isVerified: Boolean,
+        val nutritionalInfo: NutritionalInfoOutput,
+        val isVotable: Boolean,
+        val imageUri: URI?
+)
 
 fun toBaseMealOutput(meal: Meal, userId: Int? = null): BaseMealOutput {
     return BaseMealOutput(
-            identifier = meal.identifier,
+            mealIdentifier = meal.identifier,
             name = meal.name,
-            image = meal.image,
+            isFavorite = userId?.let { meal.isFavorite(userId) } ?: false,
             isSuggested = !meal.isUserMeal(),
-            isVerified = false,
-            favorites = FavoritesOutput(
-                    isFavorite = meal.isFavorite(userId),
-                    isFavorable = meal.isFavorable(userId)
-            ),
-            nutritionalInfo = toNutritionalInfoOutput(meal.nutritionalInfo)
+            nutritionalInfo = toNutritionalInfoOutput(meal.nutritionalValues),
+            isVotable = false, //A suggested/custom meal is not votable
+            isVerified = false, //A suggested/custom meal is not verified
+            imageUri = meal.imageUri
     )
 }

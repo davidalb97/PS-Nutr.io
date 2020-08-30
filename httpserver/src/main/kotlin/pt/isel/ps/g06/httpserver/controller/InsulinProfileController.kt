@@ -62,7 +62,7 @@ class InsulinProfileController(private val insulinProfileService: InsulinProfile
         return ResponseEntity.created(
                 UriComponentsBuilder
                         .fromUriString(INSULIN_PROFILE)
-                        .buildAndExpand(mapOf(Pair(PROFILE_NAME_VALUE, profile.name)))
+                        .buildAndExpand(mapOf(Pair(PROFILE_NAME_VALUE, profile.profileName)))
                         .toUri()
         ).build()
     }
