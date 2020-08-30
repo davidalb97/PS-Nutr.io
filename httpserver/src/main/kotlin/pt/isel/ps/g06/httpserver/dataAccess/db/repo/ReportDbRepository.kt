@@ -58,6 +58,10 @@ class ReportDbRepository(jdbi: Jdbi) : BaseDbRepo(jdbi) {
         }
     }
 
+    fun userHasReported(submitterId: Int, submissionId: Int): Boolean {
+        return getReportFromSubmitter(submitterId, submissionId) != null
+    }
+
     fun insert(
             submitterId: Int,
             submissionId: Int,

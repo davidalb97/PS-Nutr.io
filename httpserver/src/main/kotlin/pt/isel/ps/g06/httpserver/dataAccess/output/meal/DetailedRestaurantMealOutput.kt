@@ -3,66 +3,69 @@ package pt.isel.ps.g06.httpserver.dataAccess.output.meal
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer
 import pt.isel.ps.g06.httpserver.dataAccess.output.NutritionalInfoOutput
+import pt.isel.ps.g06.httpserver.dataAccess.output.modular.FavoritesOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.toNutritionalInfoOutput
-import pt.isel.ps.g06.httpserver.dataAccess.output.vote.SimplifiedUserOutput
-import pt.isel.ps.g06.httpserver.dataAccess.output.vote.VotesOutput
-import pt.isel.ps.g06.httpserver.dataAccess.output.vote.toSimplifiedUserOutput
-import pt.isel.ps.g06.httpserver.dataAccess.output.vote.toVotesOutput
+import pt.isel.ps.g06.httpserver.dataAccess.output.vote.*
 import pt.isel.ps.g06.httpserver.model.RestaurantMeal
 import pt.isel.ps.g06.httpserver.model.VoteState
 import java.net.URI
 import java.time.OffsetDateTime
 
 class DetailedRestaurantMealOutput(
-        mealIdentifier: Int,
+        identifier: Int,
         name: String,
-        imageUri: URI?,
-        votes: VotesOutput?,
-        isFavorite: Boolean,
+        image: URI?,
+        votes: VotesOutput,
+        favorites: FavoritesOutput,
         isSuggested: Boolean,
-        isVerified: Boolean,
+        isReportable: Boolean,
         nutritionalInfo: NutritionalInfoOutput,
+        isVerified: Boolean,
         val creationDate: OffsetDateTime?,
         val composedBy: MealCompositionOutput?,
         val portions: Collection<Int>,
         @JsonSerialize(using = ToStringSerializer::class)
         val createdBy: SimplifiedUserOutput?
 ) : SimplifiedRestaurantMealOutput(
-        mealIdentifier = mealIdentifier,
+        identifier = identifier,
         name = name,
-        isFavorite = isFavorite,
-        imageUri = imageUri,
+        image = image,
+        favorites = favorites,
         isSuggested = isSuggested,
-        isVerified = isVerified,
         votes = votes,
+        isReportable = isReportable,
+        isVerified = isVerified,
         nutritionalInfo = nutritionalInfo
 )
 
 fun toDetailedRestaurantMealOutput(restaurantMeal: RestaurantMeal, userId: Int? = null): DetailedRestaurantMealOutput {
     val meal = restaurantMeal.meal
-    val restaurant = restaurantMeal.restaurant
-
-    val restaurantMealInfo = meal.getMealRestaurantInfo(restaurant.identifier.value)
-
-    val votes = restaurantMealInfo?.let {
-        toVotesOutput(
-                it.votes.value,
-                userId?.let { id -> it.userVote(id) } ?: VoteState.NOT_VOTED
-        )
-    }
-
+    val restaurantMealInfo = restaurantMeal.info
+    val isMealOwner = meal.isUserMeal() && userId?.let { meal.submitterInfo.value?.identifier == userId } ?: false
     return DetailedRestaurantMealOutput(
-            mealIdentifier = meal.identifier,
+            identifier = meal.identifier,
             name = meal.name,
-            imageUri = meal.imageUri,
-            isFavorite = userId?.let { meal.isFavorite(userId) } ?: false,
+            image = meal.image,
+            nutritionalInfo = toNutritionalInfoOutput(meal.nutritionalInfo),
+            //All RestaurantMeal info is only available when inserted on the database
+            favorites = FavoritesOutput(
+                    isFavorite = restaurantMealInfo?.isFavorite?.invoke(userId) ?: false,
+                    isFavorable = restaurantMealInfo?.isFavorable?.invoke(userId) ?: !isMealOwner
+            ),
+            votes = restaurantMealInfo?.let {
+                toVotesOutput(
+                        isVotable = it.isVotable(userId),
+                        votes = it.votes.value,
+                        userVote = it.userVote(userId)
+                )
+            } ?: toDefaultVotesOutput(isVotable = isMealOwner),
+            isSuggested = !meal.isUserMeal(),
+            isVerified = restaurantMealInfo?.isVerified ?: false,
+            isReportable = restaurantMealInfo?.isReportable?.invoke(userId) ?: isMealOwner,
+            //Info values bellow:
+            createdBy = meal.submitterInfo.value?.let(::toSimplifiedUserOutput),
             creationDate = meal.creationDate.value,
             composedBy = toMealComposition(meal),
-            nutritionalInfo = toNutritionalInfoOutput(meal.nutritionalValues),
-            createdBy = meal.submitterInfo.value?.let { toSimplifiedUserOutput(it) },
-            votes = votes,
-            isSuggested = !meal.isUserMeal(),
-            isVerified = restaurantMeal.verified!!, // TODO: CHECK nullable type
             portions = restaurantMealInfo
                     ?.portions
                     ?.map { portion -> portion.amount }

@@ -1,57 +1,59 @@
 package pt.isel.ps.g06.httpserver.dataAccess.output.meal
 
 import pt.isel.ps.g06.httpserver.dataAccess.output.NutritionalInfoOutput
+import pt.isel.ps.g06.httpserver.dataAccess.output.modular.FavoritesOutput
+import pt.isel.ps.g06.httpserver.dataAccess.output.modular.IReportableOutput
+import pt.isel.ps.g06.httpserver.dataAccess.output.modular.IVotableOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.toNutritionalInfoOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.vote.VotesOutput
+import pt.isel.ps.g06.httpserver.dataAccess.output.vote.toDefaultVotesOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.vote.toVotesOutput
-import pt.isel.ps.g06.httpserver.model.Meal
-import pt.isel.ps.g06.httpserver.model.NutritionalValues
-import pt.isel.ps.g06.httpserver.model.RestaurantIdentifier
-import pt.isel.ps.g06.httpserver.model.VoteState
+import pt.isel.ps.g06.httpserver.model.RestaurantMeal
 import java.net.URI
 
 open class SimplifiedRestaurantMealOutput(
-        mealIdentifier: Int,
+        //This is the MEAL identifier!
+        identifier: Int,
         name: String,
-        isFavorite: Boolean,
+        favorites: FavoritesOutput,
         isSuggested: Boolean,
         isVerified: Boolean,
-        imageUri: URI?,
+        image: URI?,
         nutritionalInfo: NutritionalInfoOutput,
-        val votes: VotesOutput?
+        override val isReportable: Boolean,
+        override val votes: VotesOutput
 ) : BaseMealOutput(
-        mealIdentifier = mealIdentifier,
+        identifier = identifier,
         name = name,
-        isFavorite = isFavorite,
+        favorites = favorites,
         isSuggested = isSuggested,
         isVerified = isVerified,
-        //A restaurant meal is always votable
-        isVotable = true,
-        imageUri = imageUri,
+        image = image,
         nutritionalInfo = nutritionalInfo
-)
+), IReportableOutput, IVotableOutput
 
 
 fun toSimplifiedRestaurantMealOutput(
-        restaurantIdentifier: RestaurantIdentifier,
-        meal: Meal,
+        restaurantMeal: RestaurantMeal,
         userId: Int? = null
 ): SimplifiedRestaurantMealOutput {
-    val votes = meal.getMealRestaurantInfo(restaurantIdentifier)?.let {
-        toVotesOutput(
-                it.votes.value,
-                userId?.let { id -> it.userVote(id) } ?: VoteState.NOT_VOTED
-        )
-    }
-
-    return SimplifiedRestaurantMealOutput(
-            mealIdentifier = meal.identifier,
-            name = meal.name,
-            isFavorite = userId?.let { meal.isFavorite(userId) } ?: false,
-            imageUri = meal.imageUri,
-            votes = votes,
+    val meal = restaurantMeal.meal
+    val restaurantMealInfo = restaurantMeal.info
+    val isMealOwner = meal.isUserMeal() && userId?.let { meal.submitterInfo.value?.identifier == userId } ?: false
+    return SimplifiedRestaurantMealOutput(identifier = meal.identifier, name = meal.name, image = meal.image, nutritionalInfo = toNutritionalInfoOutput(meal.nutritionalInfo), //All RestaurantMeal info is only available when inserted on the database
+            favorites = FavoritesOutput(
+                    isFavorite = restaurantMealInfo?.isFavorite?.invoke(userId) ?: false,
+                    isFavorable = restaurantMealInfo?.isFavorable?.invoke(userId) ?: !isMealOwner
+            ),
+            votes = restaurantMealInfo?.let {
+                toVotesOutput(
+                        isVotable = it.isFavorable.invoke(userId),
+                        votes = it.votes.value,
+                        userVote = it.userVote(userId)
+                )
+            } ?: toDefaultVotesOutput(isVotable = isMealOwner),
             isSuggested = !meal.isUserMeal(),
-            isVerified = false, // TODO
-            nutritionalInfo = toNutritionalInfoOutput(meal.nutritionalValues)
+            isVerified = restaurantMealInfo?.isVerified ?: false,
+            isReportable = restaurantMealInfo?.isReportable?.invoke(userId) ?: !isMealOwner
     )
 }

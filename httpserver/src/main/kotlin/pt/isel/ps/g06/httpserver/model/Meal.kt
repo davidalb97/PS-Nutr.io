@@ -1,23 +1,35 @@
 package pt.isel.ps.g06.httpserver.model
 
 import pt.isel.ps.g06.httpserver.dataAccess.db.MealType
+import pt.isel.ps.g06.httpserver.model.modular.BasePublicSubmission
+import pt.isel.ps.g06.httpserver.model.modular.INutritionalSubmission
+import pt.isel.ps.g06.httpserver.model.modular.UserPredicate
 import java.net.URI
 import java.time.OffsetDateTime
 
-data class Meal(
-        val identifier: Int,
-        val name: String,
-        val isFavorite: (Int) -> Boolean,
-        val imageUri: URI?,
-        val nutritionalValues: NutritionalValues,
+class Meal(
+        identifier: Int,
+        name: String,
+        isFavorite: UserPredicate,
+        isFavorable: UserPredicate,
+        image: URI?,
+        override val nutritionalInfo: NutritionalValues,
         val composedBy: MealComposition,
         val cuisines: Sequence<Cuisine>,
         val submitterInfo: Lazy<Submitter?>,
         val creationDate: Lazy<OffsetDateTime?>,
         val type: MealType,
-        private val restaurantInfoSupplier: (RestaurantIdentifier) -> MealRestaurantInfo?,
-        private val restaurantInfo: MutableMap<RestaurantIdentifier, MealRestaurantInfo?> = mutableMapOf()
-) {
+        private val restaurantInfoSupplier: (RestaurantIdentifier) -> MealRestaurantInfo?
+): BasePublicSubmission<Int>(
+        identifier = identifier,
+        name = name,
+        image = image,
+        isFavorable = isFavorable,
+        isFavorite = isFavorite
+), INutritionalSubmission {
+
+    private val restaurantInfo: MutableMap<RestaurantIdentifier, MealRestaurantInfo?> = mutableMapOf()
+
     /**
      * Checks if given Meal belongs to a User.
      * This also allows to know that given Meal **is not** a suggested Meal, if false, as suggested Meals

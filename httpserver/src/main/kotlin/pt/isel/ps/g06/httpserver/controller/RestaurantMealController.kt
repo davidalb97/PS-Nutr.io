@@ -145,9 +145,8 @@ class RestaurantMealController(
         val restaurantIdentifier = restaurantIdentifierBuilder.extractIdentifiers(restaurantId)
         val restaurantMeal = restaurantMealService.getOrAddRestaurantMeal(restaurantIdentifier, mealId)
 
-
         submissionService.alterRestaurantMealVote(
-                restaurantMealId = restaurantMeal.restaurantMealIdentifier!!,
+                restaurantMealId = restaurantMeal.info?.identifier!!,
                 submitterId = user.identifier,
                 voteState = userVote.vote
         )
