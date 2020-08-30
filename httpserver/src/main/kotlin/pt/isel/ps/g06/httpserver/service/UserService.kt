@@ -33,13 +33,13 @@ class UserService(
     fun registerUser(email: String, username: String, encodedPassword: String) {
 
         val submitter = submitterDbRepository.insertSubmitter(
-                name = username,
                 type = "User"
         )
 
         userDbRepository.insertUser(
                 submitterId = submitter.submitter_id,
                 email = email,
+                username = username,
                 password = encodedPassword
         )
     }

@@ -78,7 +78,6 @@ class HereRestaurantResponseMapper(
                 submitterInfo = lazy {
                     Submitter(
                             identifier = apiSubmitterId,
-                            name = RestaurantApiType.Here.toString(),
                             creationDate = null,
                             //TODO return const image for Zomato api icon
                             image = null,
@@ -132,7 +131,6 @@ class ZomatoRestaurantResponseMapper(
                 submitterInfo = lazy {
                     Submitter(
                             identifier = apiSubmitterId,
-                            name = RestaurantApiType.Zomato.toString(),
                             creationDate = null,
                             //TODO return const image for Zomato api icon
                             image = null,

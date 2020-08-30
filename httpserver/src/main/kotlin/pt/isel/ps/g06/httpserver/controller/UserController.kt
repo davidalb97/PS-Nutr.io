@@ -7,6 +7,7 @@ import pt.isel.ps.g06.httpserver.common.BAN
 import pt.isel.ps.g06.httpserver.common.LOGIN
 import pt.isel.ps.g06.httpserver.common.REGISTER
 import pt.isel.ps.g06.httpserver.common.USER
+import pt.isel.ps.g06.httpserver.common.exception.problemJson.notFound.UserNotFoundException
 import pt.isel.ps.g06.httpserver.common.exception.problemJson.unauthorized.UnauthorizedException
 import pt.isel.ps.g06.httpserver.dataAccess.input.moderation.BanInput
 import pt.isel.ps.g06.httpserver.dataAccess.input.user.UserLoginInput
@@ -54,8 +55,9 @@ class UserController(private val userService: UserService, private val authentic
     fun getUserAdditionalInfo(user: User): ResponseEntity<UserInfoOutput> =
             ResponseEntity.ok(
                     userService
-                            .getUserSubmitterInfo(user)
-                            .let { submitter -> mapUserToOutput(user.userEmail, user.userRole, submitter) }
+                            .getUserFromEmail(user.userEmail)
+                            ?.let(::mapUserToOutput)
+                            ?: throw UserNotFoundException()
             )
 
     @DeleteMapping(USER)
