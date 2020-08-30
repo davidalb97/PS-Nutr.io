@@ -1,4 +1,4 @@
-package pt.isel.ps.g06.httpserver.dataAccess.output.vote
+package pt.isel.ps.g06.httpserver.dataAccess.output.user
 
 import pt.isel.ps.g06.httpserver.model.Submitter
 
