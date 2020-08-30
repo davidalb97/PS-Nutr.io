@@ -4,9 +4,12 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer
 import pt.isel.ps.g06.httpserver.common.user
 import pt.isel.ps.g06.httpserver.dataAccess.output.*
+import pt.isel.ps.g06.httpserver.dataAccess.output.cuisines.CuisinesOutput
+import pt.isel.ps.g06.httpserver.dataAccess.output.cuisines.toSimplifiedCuisinesOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.meal.MealCompositionOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.meal.toMealComposition
 import pt.isel.ps.g06.httpserver.dataAccess.output.modular.FavoritesOutput
+import pt.isel.ps.g06.httpserver.dataAccess.output.modular.ICuisinesOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.user.SimplifiedUserOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.user.toSimplifiedUserOutput
 import pt.isel.ps.g06.httpserver.model.RestaurantMeal
@@ -27,7 +30,8 @@ class DetailedRestaurantMealOutput(
         val composedBy: MealCompositionOutput?,
         val portions: PortionsOutput,
         @JsonSerialize(using = ToStringSerializer::class)
-        val createdBy: SimplifiedUserOutput?
+        val createdBy: SimplifiedUserOutput?,
+        override val cuisines: CuisinesOutput
 ) : SimplifiedRestaurantMealOutput(
         identifier = identifier,
         name = name,
@@ -38,7 +42,7 @@ class DetailedRestaurantMealOutput(
         isReportable = isReportable,
         isVerified = isVerified,
         nutritionalInfo = nutritionalInfo
-)
+), ICuisinesOutput
 
 fun toDetailedRestaurantMealOutput(restaurantMeal: RestaurantMeal, userId: Int? = null): DetailedRestaurantMealOutput {
     val meal = restaurantMeal.meal
@@ -68,6 +72,7 @@ fun toDetailedRestaurantMealOutput(restaurantMeal: RestaurantMeal, userId: Int? 
             createdBy = meal.submitterInfo.value?.let(::toSimplifiedUserOutput),
             creationDate = meal.creationDate.value,
             composedBy = toMealComposition(meal),
-            portions = toPortionsOutput(restaurantMeal, userId)
+            portions = toPortionsOutput(restaurantMeal, userId),
+            cuisines = toSimplifiedCuisinesOutput(restaurantMeal.meal.cuisines.toList())
     )
 }

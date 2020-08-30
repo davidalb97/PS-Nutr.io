@@ -8,6 +8,9 @@ import pt.isel.ps.g06.httpserver.dataAccess.output.modular.FavoritesOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.modular.ISubmitterInfoOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.user.SimplifiedUserOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.VotesOutput
+import pt.isel.ps.g06.httpserver.dataAccess.output.cuisines.CuisinesOutput
+import pt.isel.ps.g06.httpserver.dataAccess.output.cuisines.toSimplifiedCuisinesOutput
+import pt.isel.ps.g06.httpserver.dataAccess.output.modular.ICuisinesOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.user.toSimplifiedUserOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.toVotesOutput
 import pt.isel.ps.g06.httpserver.model.Meal
@@ -25,7 +28,7 @@ class DetailedRestaurantOutput(
         favorites: FavoritesOutput,
         votes: VotesOutput,
         isReportable: Boolean,
-        val cuisines: Collection<String>,
+        override val cuisines: CuisinesOutput,
         @JsonSerialize(using = ToStringSerializer::class)
         val creationDate: OffsetDateTime?,
         val meals: Collection<SimplifiedRestaurantMealOutput>,
@@ -40,7 +43,7 @@ class DetailedRestaurantOutput(
         votes = votes,
         isReportable = isReportable,
         image = image
-), ISubmitterInfoOutput
+), ISubmitterInfoOutput, ICuisinesOutput
 
 fun toDetailedRestaurantOutput(restaurant: Restaurant, userId: Int? = null): DetailedRestaurantOutput {
     val mealToRestaurantMeal: (Meal) -> SimplifiedRestaurantMealOutput = { meal: Meal ->
@@ -69,7 +72,7 @@ fun toDetailedRestaurantOutput(restaurant: Restaurant, userId: Int? = null): Det
                     userVote = restaurant.userVote(userId)
             ),
             isReportable = restaurant.isReportable(userId),
-            cuisines = restaurant.cuisines.map { it.name }.toList(),
+            cuisines = toSimplifiedCuisinesOutput(restaurant.cuisines.toList()),
             meals = restaurant.meals
                     .map { mealToRestaurantMeal(it) }
                     .toList(),
