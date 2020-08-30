@@ -39,26 +39,16 @@ const ACTIONS = {
     }
 }
 
-export default function Report({ }) {
+export default function Report({ report }) {
     const [request, setRequest] = useReducer((req, action) => action(report), {})
     const hasInfoButton = report.reports
 
-    return < RequestingEntity
+    return <RequestingEntity
         request={request}
         onLoad={Loading}
         onDefault={DisplayReport}
-        onError={Error}
-        onSuccess={Success}
+        onSuccess={() => <Alert variant="success">Success! This report will disappear shortly..</Alert>}
     />
-
-
-    function Success() {
-        return <Alert variant="success">Success! This report will disappear shortly..</Alert>
-    }
-
-    function Error() {
-        return <Alert variant="danger">Unable to fulfil your request! Please try again later.</Alert>
-    }
 
     function DisplayReport() {
         return <>

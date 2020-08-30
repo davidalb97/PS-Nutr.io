@@ -41,24 +41,19 @@ export default function ReportPage() {
     </Card >
 }
 
-function Error() {
-    return <Alert variant="danger">Unable to obtain reports! Please try again later.</Alert>
-}
-
 function Reports({ url }) {
     return <RequestingEntity
         request={{ url: url }}
         onDefault={Loading}
         onSuccess={displayResult}
-        onError={Error}
     />
 
     function displayResult({ json }) {
-        if (json || json.lenght <= 0) {
+        if (json || json.length <= 0) {
             return <>There are currently no reports.</>
         }
 
-        const items = json.map((report, idx) => {
+        const items = json.reports.map((report, idx) => {
             return <ListGroup.Item> <Report key={idx} report={report} /> </ListGroup.Item>
         })
 
