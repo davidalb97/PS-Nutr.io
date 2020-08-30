@@ -100,7 +100,7 @@ class MealAmountSelector(
         )
     }
 
-    override fun onUnitChange(converter: (Float) -> Float) {
+    override fun onWeightUnitChange(converter: (Float) -> Float) {
         val oldValue = percentageToAmount(previousUnit, conversionPercentage ?: seekBar.progress.toFloat())
         val convertedValue = converter(oldValue)
         logger.v("Converting from $oldValue $previousUnit to $convertedValue $currentUnit")

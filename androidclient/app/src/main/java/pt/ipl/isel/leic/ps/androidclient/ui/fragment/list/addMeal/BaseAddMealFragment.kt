@@ -155,7 +155,7 @@ abstract class BaseAddMealFragment : BaseFragment(), IWeightUnitSpinner, IPicked
         ingredientsViewModel.tryRestore()
     }
 
-    override fun onUnitChange(converter: (Float) -> Float) {
+    override fun onWeightUnitChange(converter: (Float) -> Float) {
         _currentIngredientQuantity = converter(_currentIngredientQuantity)
         refreshIngredientQuantityTextView()
     }

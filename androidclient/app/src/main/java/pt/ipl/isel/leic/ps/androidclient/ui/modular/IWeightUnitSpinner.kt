@@ -15,7 +15,7 @@ interface IWeightUnitSpinner {
     var previousUnit: WeightUnits
     var currentUnit: WeightUnits
 
-    fun onUnitChange(converter: (Float) -> Float)
+    fun onWeightUnitChange(converter: (Float) -> Float)
 
     fun setupWeightUnitSpinner(context: Context, weightUnitSpinner: Spinner) {
         val log = Logger(IWeightUnitSpinner::class)
@@ -55,7 +55,7 @@ interface IWeightUnitSpinner {
                 log.v("Changing unit from $previousUnit to $currentUnit")
 
                 //Notify listeners of unit change passing the converted function
-                onUnitChange { oldValue ->
+                onWeightUnitChange { oldValue ->
                     previousUnit.convert(currentUnit, oldValue)
                 }
             }
