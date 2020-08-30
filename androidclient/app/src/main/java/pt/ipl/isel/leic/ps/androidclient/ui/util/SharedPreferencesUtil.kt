@@ -35,6 +35,8 @@ fun saveSession(jwt: String, email: String, username: String, password: String) 
         .apply()
     NutrioApp.sharedPreferences.edit()
         .putString(JWT_KEY, jwt)
+        //Fixes logout deleteSession() clearing this flag
+        .setIsFirstTime(false)
         .apply()
 }
 
