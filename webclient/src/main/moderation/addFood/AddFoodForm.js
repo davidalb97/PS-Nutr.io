@@ -1,5 +1,6 @@
-import React, { useRef, useEffect, useState } from 'react'
+import React, { useRef, useEffect, useState, useReducer } from 'react'
 import useFetch, { FetchStates } from '../../common/useFetch'
+import RequestingEntity from '../../common/RequestingEntity'
 
 import Card from 'react-bootstrap/Card'
 import Col from 'react-bootstrap/Col'
@@ -16,6 +17,12 @@ import PopoverTitle from 'react-bootstrap/PopoverTitle'
 import { isNotEmpty, isPositive } from '../../forms/Validations'
 import FormWrapper, { InputController } from '../../forms/FormWrapper'
 import MultiSelectWrapper from '../../forms/MultiSelectWrapper'
+import Loading from '../../bootstrap-common/Loading'
+import SuccessAlert from '../../bootstrap-common/SuccessAlert'
+import FetchError from '../../bootstrap-common/FetchError'
+
+const INGREDIENTS_URL = "http://localhost:9000/api/ingredient"
+const MEALS_URL = "http://localhost:9000/api/meal/suggested"
 
 export default function AddFoodForm({ cuisines }) {
     const [controller, body, allFieldsAreValid] = InputController()
@@ -25,8 +32,16 @@ export default function AddFoodForm({ cuisines }) {
 
 
     //Special form references need to be registered in the controller
-    const foodType = { reference: useRef(), id: "foodTypes", initialValue: "Ingredient" }
+    const foodType = { reference: useRef(), id: "foodType", initialValue: "Ingredient" }
     useEffect(() => { controller.register(foodType) }, [])
+
+
+    if (fetchState === FetchStates.fetching) return <Loading />
+    if (fetchState === FetchStates.error) return <FetchError json={json} error={error} />
+    if (fetchState === FetchStates.done) return <SuccessAlert
+        heading={`Created suggested ${body.foodType} with successs!`}
+        body={`This ${body.foodType} will now be suggested when a user requests meals and ingredients that belong to given cuisines`}
+    />
 
 
     const options = cuisines.map(cuisine => { return { label: cuisine, value: cuisine } })
@@ -130,7 +145,6 @@ export default function AddFoodForm({ cuisines }) {
         </Card.Body>
     </Card >
 
-
     function RequestButton() {
         let text = "Submit"
         let disabled = false
@@ -156,7 +170,7 @@ export default function AddFoodForm({ cuisines }) {
                 <Popover.Title as="h2">Invalid fields</Popover.Title>
                 <Popover.Content>
                     Make sure all fields are valid and at least one cuisine is selected.
-                </Popover.Content>
+            </Popover.Content>
             </Popover>)
 
         return <OverlayTrigger placement="top" overlay={popover} trigger="focus">
@@ -164,8 +178,12 @@ export default function AddFoodForm({ cuisines }) {
         </OverlayTrigger>
     }
 
-
     function triggerRequest() {
-        if (!allFieldsAreValid) return setDisplayErrors(true)
+        if (!allFieldsAreValid) return setDisplayErrors(true);
+        else setRequest({
+            url: body.foodType === 'Ingredient' ? INGREDIENTS_URL : MEALS_URL,
+            method: "POST",
+            body: body
+        })
     }
 }

@@ -14,7 +14,7 @@ export default function FetchError({ json, error }) {
         <hr />
         <div className="d-flex justify-content-end">
             <LinkContainer to="/">
-                <Button variant="outline-danger">Back to homepage</Button>
+                <Button variant="danger">Back to homepage</Button>
             </LinkContainer>
         </div>
     </Alert >

@@ -204,7 +204,11 @@ export default function NewProfile({ onProfileCreation, disabledIntervals }) {
                         method: "POST",
                         authToken: authToken,
                         url: "http://localhost:9000/api/user/profile",
-                        body: status.profile
+                        body: {
+                            ...status.profile,
+                            startTime: toString(status.profile.startTime),
+                            endTime: toString(status.profile.endTime)
+                        }
                     }
                 })
             }
