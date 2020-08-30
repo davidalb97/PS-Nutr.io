@@ -2,6 +2,7 @@ package pt.isel.ps.g06.httpserver.model
 
 import pt.isel.ps.g06.httpserver.dataAccess.db.MealType
 import pt.isel.ps.g06.httpserver.model.modular.BasePublicSubmission
+import pt.isel.ps.g06.httpserver.model.modular.ICuisines
 import pt.isel.ps.g06.httpserver.model.modular.INutritionalSubmission
 import pt.isel.ps.g06.httpserver.model.modular.UserPredicate
 import java.net.URI
@@ -15,7 +16,7 @@ class Meal(
         image: URI?,
         override val nutritionalInfo: NutritionalValues,
         val composedBy: MealComposition,
-        val cuisines: Sequence<Cuisine>,
+        override val cuisines: Sequence<Cuisine>,
         val submitterInfo: Lazy<Submitter?>,
         val creationDate: Lazy<OffsetDateTime?>,
         val type: MealType,
@@ -26,7 +27,7 @@ class Meal(
         image = image,
         isFavorable = isFavorable,
         isFavorite = isFavorite
-), INutritionalSubmission {
+), INutritionalSubmission, ICuisines {
 
     private val restaurantInfo: MutableMap<RestaurantIdentifier, MealRestaurantInfo?> = mutableMapOf()
 

@@ -21,14 +21,14 @@ class Restaurant(
         val creationDate: Lazy<OffsetDateTime?>,
         val meals: Sequence<Meal>,
         val suggestedMeals: Sequence<Meal>,
-        val cuisines: Sequence<Cuisine>
+        override val cuisines: Sequence<Cuisine>
 ): BasePublicSubmission<Lazy<RestaurantIdentifier>>(
         identifier = identifier,
         image = image,
         name = name,
         isFavorable = isFavorable,
         isFavorite = isFavorite
-), IVotable, IReportable {
+), IVotable, IReportable, ICuisines {
     /**
      * Checks if given restaurant is present in the database or not.
      * *This operation is stateful and initializes [identifier] value.*
