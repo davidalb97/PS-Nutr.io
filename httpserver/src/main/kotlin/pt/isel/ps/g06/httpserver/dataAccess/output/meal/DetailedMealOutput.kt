@@ -16,9 +16,9 @@ import java.net.URI
 import java.time.OffsetDateTime
 
 class DetailedMealOutput(
-        mealIdentifier: Int,
+        identifier: Int,
         name: String,
-        imageUri: URI?,
+        image: URI?,
         nutritionalInfo: NutritionalInfoOutput,
         isSuggested: Boolean,
         isVerified: Boolean,
@@ -29,9 +29,9 @@ class DetailedMealOutput(
         override val createdBy: SimplifiedUserOutput?,
         override val cuisines: CuisinesOutput
 ) : BaseMealOutput(
-        identifier = mealIdentifier,
+        identifier = identifier,
         name = name,
-        image = imageUri,
+        image = image,
         nutritionalInfo = nutritionalInfo,
         isSuggested = isSuggested,
         isVerified = isVerified,
@@ -40,9 +40,9 @@ class DetailedMealOutput(
 
 fun toDetailedMealOutput(meal: Meal, userId: Int? = null): DetailedMealOutput {
     return DetailedMealOutput(
-            mealIdentifier = meal.identifier,
+            identifier = meal.identifier,
             name = meal.name,
-            imageUri = meal.image,
+            image = meal.image,
             favorites = FavoritesOutput(
                     isFavorite = meal.isFavorite(userId),
                     isFavorable = meal.isFavorable(userId)
