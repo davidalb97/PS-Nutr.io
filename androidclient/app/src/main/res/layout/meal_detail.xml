@@ -204,7 +204,7 @@
         <RelativeLayout
             android:visibility="visible">
 
-            <com.github.mikephil.charting.charts.LineChart
+            <com.github.mikephil.charting.charts.BarChart
                 android:id="@+id/portion_chart"
                 android:layout_margin="15dp"
                 android:layout_width="match_parent"

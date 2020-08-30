@@ -6,10 +6,10 @@ import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import com.github.mikephil.charting.charts.LineChart
-import com.github.mikephil.charting.data.Entry
-import pt.ipl.isel.leic.ps.androidclient.NutrioApp
+import com.github.mikephil.charting.charts.BarChart
+import com.github.mikephil.charting.data.BarEntry
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.app
+import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.sharedPreferences
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.output.PortionOutput
 import pt.ipl.isel.leic.ps.androidclient.data.model.*
@@ -74,7 +74,7 @@ class MealInfoFragment :
     override val menuButtonId: Int = R.id.options
     override lateinit var menuButton: ImageButton
     override val chartId: Int = R.id.portion_chart
-    override lateinit var chart: LineChart
+    override lateinit var chart: BarChart
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -107,7 +107,7 @@ class MealInfoFragment :
             receivedMeal.portions.map { portion ->
                 val amount = portion.amount
                 amountMap[amount]?.inc() ?: amountMap.put(amount, 1)
-                Entry(portion.amount, amountMap[amount]!!.toFloat())
+                BarEntry(portion.amount, amountMap[amount]!!.toFloat())
             }
         super.setupChart(view, portionEntries)
 
@@ -118,20 +118,20 @@ class MealInfoFragment :
                 layoutInflater = layoutInflater,
                 baseCarbs = 0f,
                 baseAmountGrams = 0f,
-                mealUnit = WeightUnits.GRAMS // TODO: Check default weight unit inside pref settings
+                mealUnit = WeightUnits.fromValue(sharedPreferences.getWeightUnitOrDefault())
             ) { preciseGrams, preciseCarbs ->
                 recyclerViewModel.addMealPortion(
                     restaurantId = receivedMeal.restaurantSubmissionId,
                     mealId = receivedMeal.submissionId,
                     portionOutput = PortionOutput(
                         preciseGrams.toInt(),
-                        WeightUnits.GRAMS.toString()
+                        sharedPreferences.getWeightUnitOrDefault()
                     ),
                     userSession = requireUserSession(),
                     onSuccess = { status ->
                         Toast.makeText(app, status, Toast.LENGTH_SHORT).show()
                     },
-                    onError = {
+                    onError = { error ->
                         Toast.makeText(app, "Could not add portion", Toast.LENGTH_SHORT).show()
                     }
                 )
