@@ -1,4 +1,4 @@
-import React, { useState, useReducer } from 'react'
+import React, { useState, useReducer, useEffect } from 'react'
 import useFetch, { FetchStates } from '../../common/useFetch'
 
 import ListGroup from 'react-bootstrap/ListGroup'
@@ -10,16 +10,12 @@ import Tab from 'react-bootstrap/Tab'
 import Nav from 'react-bootstrap/Nav'
 import Button from 'react-bootstrap/Button'
 
+import Loading from '../../bootstrap-common/Loading'
 
-const meals = Array
-    .from(Array(100).keys())
-    .map(aux => { return { name: aux, mealIdentifier: aux } })
+export default function MealList({ meals }) {
+    const [activeMeals, setActiveMeals] = useState(meals)
 
-export default function MealList() {
-    const [activeMeals, onMealDelete] = useReducer(removeFromArray, meals)
-    const [request, triggerRequest] = useReducer(reducer, {})
-
-    return <Tab.Container defaultActiveKey="0" mountOnEnter onSelect={triggerRequest}>
+    return <Tab.Container defaultActiveKey="0" mountOnEnter>
         <Row>
             <Col sm={3} className="overflow nav-tab">
                 {/* Side buttons */}
@@ -34,7 +30,10 @@ export default function MealList() {
                 <Tab.Content >
                     {activeMeals.map((meal, idx) => {
                         return <Tab.Pane key={idx} eventKey={idx}>
-                            <Meal onMealDelete={onMealDelete} />
+                            <Meal
+                                onMealDelete={removeFromList.bind(meal.mealIdentifier)}
+                                identifier={meal.mealIdentifier}
+                            />
                         </Tab.Pane>
                     })}
                 </Tab.Content>
@@ -42,62 +41,82 @@ export default function MealList() {
         </Row>
     </Tab.Container>
 
-    function reducer(request, mealId) {
-        return request
-    }
-
-    function removeFromArray(list, id) {
-        return [...list].filter(meal => meal.mealIdentifier !== id)
+    function removeFromList() {
+        //Where 'this' is meal identifier defined by bind() call
+        const newList = [...activeMeals].filter(meal => meal.mealIdentifier !== this)
+        setActiveMeals(newList)
     }
 }
 
-function Meal({ onMealDelete }) {
-    const meal = { mealIdentifier: 1, name: "Fruit Salad", nutritionalInfo: { amount: 200, carbs: 100, unit: "gr" } }
+function Meal({ onMealDelete, identifier }) {
+    const [request, setRequest] = useState({})
+    const [onDelete, triggerDeletion] = useReducer(_ => true, false);
+    const [fetchState, response, json, error] = useFetch(request)
+    const [meal, setMealDetail] = useState()
 
-    const composedByIngredients = [
-        { name: "Apple", nutritionalInfo: { amount: 100, carbs: 20, unit: "gr" } },
-        { name: "Banana", nutritionalInfo: { amount: 50, carbs: 10, unit: "gr" } }
-    ]
+    useEffect(() => {
+        if (!meal) setRequest({ url: `http://localhost:9000/api/meal/${identifier}` })
 
-    const composedByMeals = []
-    const nutritionalInfo = meal.nutritionalInfo
+        //Clear request so that meal is cached and not obtained multiple times on next renders (on menu iterating)
+        else setRequest({})
+    }, [setRequest])
+
+    useEffect(() => {
+        if (fetchState === FetchStates.done && json && !meal) setMealDetail(json)
+        if (fetchState === FetchStates.done && onDelete) onMealDelete()
+    }, [fetchState, setMealDetail])
+
+
+    if (error) return <FetchError error={error} json={json} />
+    if (!meal || fetchState === FetchStates.fetching) return <Loading />
+
+    const meals = meal
+        .composedBy
+        .meals
+        .map((component, idx) => <MealComposition key={idx} component={component} />)
+
+    const ingredients = meal
+        .composedBy
+        .ingredients
+        .map((component, idx) => <MealComposition key={idx} component={component} />)
 
     return <>
         <Card.Header as="h2">{meal.name}</Card.Header>
         <Card.Body>
-            <p><strong>Quantity:</strong> {nutritionalInfo.amount} {nutritionalInfo.unit}</p>
-            <p><strong>Carbohydrates:</strong> {nutritionalInfo.carbs} gr</p>
-
+            <p><strong>Quantity:</strong> {meal.nutritionalInfo.amount} {meal.nutritionalInfo.unit}</p>
+            <p><strong>Carbohydrates:</strong> {meal.nutritionalInfo.carbs}{meal.nutritionalInfo.unit}</p>
 
             <Tabs defaultActiveKey="meals">
                 <Tab eventKey="meals" title="Meals">
                     <Card.Body>
                         <ListGroup variant="flush">
-                            {composedByMeals.map((composition, idx) => <MealComposition key={idx} food={composition} />)}
+                            {meals.length ? meals : "This meal is not composed by other meals."}
                         </ListGroup>
                     </Card.Body>
                 </Tab>
                 <Tab eventKey="ingredients" title="Ingredients">
                     <Card.Body>
                         <ListGroup variant="flush">
-                            {composedByIngredients.map((composition, idx) => <MealComposition key={idx} food={composition} />)}
+                            {ingredients.length ? ingredients : "This meal is not composed by any ingredients."}
                         </ListGroup>
                     </Card.Body>
                 </Tab>
             </Tabs>
+            <div className="spacer-20" />
             <Button variant="danger" block onClick={deleteMeal}>Delete</Button>
         </Card.Body>
     </>
 
     function deleteMeal() {
-        onMealDelete(meal.mealIdentifier)
+        setRequest({ url: `http://localhost:9000/api/meal/${identifier}`, method: "DELETE" })
+        triggerDeletion()
     }
 }
 
-function MealComposition({ food }) {
-    const nutrition = food.nutritionalInfo
+function MealComposition({ component }) {
+    const nutrition = component.nutritionalInfo
 
     return <ListGroup.Item>
-        {nutrition.amount}{nutrition.unit} of <strong>{food.name}</strong> with {} gr of carbohydrates.
+        {nutrition.amount}{nutrition.unit} of <strong>{component.name}</strong> with {nutrition.carbs}gr of carbohydrates.
     </ListGroup.Item>
 }

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { LinkContainer } from 'react-router-bootstrap'
 
 import Alert from 'react-bootstrap/Alert'
 import Button from 'react-bootstrap/Alert'
@@ -13,9 +13,9 @@ export default function FetchError({ json, error }) {
         <p>{detail}</p>
         <hr />
         <div className="d-flex justify-content-end">
-            <Link to="/">
+            <LinkContainer to="/">
                 <Button variant="outline-danger">Back to homepage</Button>
-            </Link>
+            </LinkContainer>
         </div>
     </Alert >
 }

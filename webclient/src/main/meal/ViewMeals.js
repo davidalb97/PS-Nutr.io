@@ -1,5 +1,7 @@
 import React, { useContext } from 'react'
+import { LinkContainer } from 'react-router-bootstrap'
 import { Link } from 'react-router-dom'
+
 
 import Card from 'react-bootstrap/Card'
 import Button from 'react-bootstrap/Button'
@@ -31,11 +33,11 @@ export default function ViewMeals() {
 
     function handleResult({ json }) {
         if (!json.meals || json.meals.length <= 0) {
-            return <Link to="/meals/create">
+            return <LinkContainer to="/meals/create">
                 <Button variant="info" block>You have no meals! Let's start by creating one</Button>
-            </Link>
+            </LinkContainer>
         }
 
-        return <MealList />
+        return <MealList meals={json.meals} />
     }
 }

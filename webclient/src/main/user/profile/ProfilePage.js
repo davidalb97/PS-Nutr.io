@@ -9,10 +9,9 @@ import Button from 'react-bootstrap/Button'
 import Modal from 'react-bootstrap/Modal'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
-import Container from 'react-bootstrap/Container'
-
 
 import FetchError from '../../bootstrap-common/FetchError'
+import SuccessAlert from '../../bootstrap-common/SuccessAlert'
 import Loading from '../../bootstrap-common/Loading'
 import UserContext from '../../authentication/UserContext'
 
@@ -71,7 +70,6 @@ export default function ProfilePage() {
             </Row>
 
             <ConfirmationModal
-                userContext={context}
                 show={showModal}
                 onClose={success => { setShowModal(success); setRedirect(success) }}
             />
@@ -79,12 +77,11 @@ export default function ProfilePage() {
     }
 }
 
-function ConfirmationModal({ userContext, show, onClose }) {
+function ConfirmationModal({ show, onClose }) {
     const [request, triggerRequest] = useReducer(() => {
         return {
-            url: "",
+            url: "http://localhost:9000/api/user/1",
             method: "DELETE",
-            authToken: userContext.authToken
         }
     }, {})
 
@@ -96,7 +93,10 @@ function ConfirmationModal({ userContext, show, onClose }) {
         case FetchStates.error: body = <FetchError error={error} json={json} />; break
         case FetchStates.done: {
             deleteCookie()
-            body = "success!";
+            body = <SuccessAlert
+                heading="Deleted account with success!"
+                body="Thank you for being part of our journey."
+            />;
             break;
         }
 

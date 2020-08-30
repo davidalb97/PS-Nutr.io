@@ -35,7 +35,7 @@ export default function TopNavigation() {
         <Navbar.Brand><Link to="/" >Nutr.io</Link></Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
-            <Nav className="mr-auto">
+            <Nav className="mr-auto d-flex">
                 {/* MEALS */}
                 <NavDropdown title="Meal" id="collasible-nav-dropdown" disabled={disabled}>
                     <NavDropdown.Item><Link to="/meals">View custom meals</Link></NavDropdown.Item>

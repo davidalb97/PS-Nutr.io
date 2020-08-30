@@ -71,7 +71,7 @@ export default function CreateMeal() {
     let previous
     let next
 
-    if (currentProgress.order > 0) {
+    if (currentProgress.order > 0 && currentProgress.order < CreationStates.length - 1) {
         previous = <Col>
             <Button variant="primary" block onClick={() => setProgress(idx => idx - 1)}>Previous</Button>
         </Col>

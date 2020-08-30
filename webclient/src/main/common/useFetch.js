@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useContext } from 'react'
+import UserContext from '../authentication/UserContext'
 export const FetchStates = {
     init: 'init',
     fetching: 'fetching',
@@ -10,7 +11,7 @@ const acceptTypes = ['application/json', 'application/problem+json']
 
 export default function useFetch({
     url,
-    authToken,
+    authToken = useContext(UserContext).authToken,
     contentType,
     method,
     body,
