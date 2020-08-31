@@ -10,6 +10,8 @@ import pt.ipl.isel.leic.ps.androidclient.ui.util.Logger
 import pt.ipl.isel.leic.ps.androidclient.ui.util.getWeightUnitOrDefault
 import pt.ipl.isel.leic.ps.androidclient.ui.util.units.WeightUnits
 
+private val log = Logger(IWeightUnitSpinner::class)
+
 interface IWeightUnitSpinner {
 
     var previousWeightUnit: WeightUnits
@@ -18,7 +20,6 @@ interface IWeightUnitSpinner {
     fun onWeightUnitChange(converter: (Float) -> Float)
 
     fun setupWeightUnitSpinner(context: Context, weightUnitSpinner: Spinner) {
-        val log = Logger(IWeightUnitSpinner::class)
         val spinnerAdapter = ArrayAdapter(
             context,
             android.R.layout.simple_spinner_item,
