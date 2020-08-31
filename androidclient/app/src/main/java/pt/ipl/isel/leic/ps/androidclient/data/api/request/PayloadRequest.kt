@@ -24,8 +24,8 @@ class JsonRequest(
     onError?.onErrorResponse(error)
 
     logger.v("\nReceived response from $method $url, " +
-            "\nstatus: ${error.networkResponse.statusCode} " +
-            "\nbody: ${String(error.networkResponse.data)} ")
+            "\nstatus: ${error?.networkResponse?.statusCode} " +
+            "\nbody: ${error?.networkResponse?.data?.let(::String)} ")
 
 }) {
 
