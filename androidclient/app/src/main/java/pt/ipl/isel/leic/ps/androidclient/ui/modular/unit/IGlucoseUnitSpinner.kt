@@ -9,7 +9,6 @@ import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.sharedPreferences
 import pt.ipl.isel.leic.ps.androidclient.ui.util.Logger
 import pt.ipl.isel.leic.ps.androidclient.ui.util.getGlucoseUnitOrDefault
 import pt.ipl.isel.leic.ps.androidclient.ui.util.units.GlucoseUnits
-import pt.ipl.isel.leic.ps.androidclient.ui.util.units.WeightUnits
 
 private val log = Logger(IGlucoseUnitSpinner::class)
 
@@ -30,7 +29,7 @@ interface IGlucoseUnitSpinner {
         glucoseUnitSpinner.adapter = spinnerAdapter
 
         //Add all units
-        spinnerAdapter.addAll(WeightUnits.values().map { it.toString() })
+        spinnerAdapter.addAll(GlucoseUnits.values().map { it.toString() })
 
         //Get user configured unit
         val configuredUnit = sharedPreferences.getGlucoseUnitOrDefault()
