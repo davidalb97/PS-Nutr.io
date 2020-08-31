@@ -2,11 +2,13 @@ package pt.ipl.isel.leic.ps.androidclient.data.api.datasource
 
 import android.net.Uri
 import com.android.volley.VolleyError
+import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.meal.MealInfoInput
+import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.meal.MealItemContainerInput
+import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.restaurantMeal.SimplifiedRestaurantMealContainerInput
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.output.*
 import pt.ipl.isel.leic.ps.androidclient.data.api.request.HTTPMethod
 import pt.ipl.isel.leic.ps.androidclient.data.api.request.PayloadResponse
 import pt.ipl.isel.leic.ps.androidclient.data.api.request.RequestParser
-import pt.ipl.isel.leic.ps.androidclient.data.model.MealInfo
 import pt.ipl.isel.leic.ps.androidclient.data.util.appendPath
 import pt.ipl.isel.leic.ps.androidclient.data.util.appendQueryNotNullListParameter
 import pt.ipl.isel.leic.ps.androidclient.data.util.appendQueryNotNullParameter
