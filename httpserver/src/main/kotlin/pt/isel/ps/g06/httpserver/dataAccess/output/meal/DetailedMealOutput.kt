@@ -6,7 +6,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.output.NutritionalInfoOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.toNutritionalInfoOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.vote.SimplifiedUserOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.vote.toSimplifiedUserOutput
-import pt.isel.ps.g06.httpserver.model.food.Meal
+import pt.isel.ps.g06.httpserver.model.Meal
 import java.net.URI
 import java.time.OffsetDateTime
 
@@ -47,6 +47,7 @@ fun toDetailedMealOutput(meal: Meal, userId: Int? = null): DetailedMealOutput {
             creationDate = meal.creationDate.value,
             composedBy = toMealComposition(meal),
             nutritionalInfo = toNutritionalInfoOutput(meal.nutritionalValues),
-            createdBy = meal.submitterInfo.value.let { toSimplifiedUserOutput(it) }
+            //TODO See if nullable check is correct
+            createdBy = meal.submitterInfo.value.let { toSimplifiedUserOutput(it!!) }
     )
 }

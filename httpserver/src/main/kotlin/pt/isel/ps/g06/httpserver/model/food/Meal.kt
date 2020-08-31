@@ -1,13 +1,6 @@
 package pt.isel.ps.g06.httpserver.model.food
 
-import pt.isel.ps.g06.httpserver.dataAccess.model.Cuisine
-import pt.isel.ps.g06.httpserver.dataAccess.model.MealComposition
-import pt.isel.ps.g06.httpserver.model.NutritionalValues
-import pt.isel.ps.g06.httpserver.model.Submitter
-import java.net.URI
-import java.time.OffsetDateTime
-import java.util.stream.Stream
-
+/*
 open class Meal(
         identifier: Int,
         name: String,
@@ -40,3 +33,5 @@ open class Meal(
         return restaurantInfo.computeIfAbsent(restaurantIdentifier) { restaurantInfoSupplier(restaurantIdentifier) }
     }
 }
+
+*/

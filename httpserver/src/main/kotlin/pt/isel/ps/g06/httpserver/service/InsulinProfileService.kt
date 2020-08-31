@@ -1,7 +1,7 @@
 package pt.isel.ps.g06.httpserver.service
 
 import org.springframework.stereotype.Service
-import pt.isel.ps.g06.httpserver.common.exception.clientError.MissingInsulinProfileException
+import pt.isel.ps.g06.httpserver.common.exception.problemJson.notFound.MissingInsulinProfileException
 import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.InsulinProfileResponseMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.InsulinProfileDbRepository
 import pt.isel.ps.g06.httpserver.model.InsulinProfile

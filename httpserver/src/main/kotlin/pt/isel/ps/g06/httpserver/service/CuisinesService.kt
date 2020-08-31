@@ -14,6 +14,7 @@ class CuisinesService(
     fun getAvailableCuisines(skip: Int?, count: Int?): Stream<Cuisine> {
         return cuisineDbRepository
                 .getAll(skip, count)
+                .stream()       //TODO Remove 'to stream' call
                 .map(cuisinesMapper::mapTo)
     }
 }

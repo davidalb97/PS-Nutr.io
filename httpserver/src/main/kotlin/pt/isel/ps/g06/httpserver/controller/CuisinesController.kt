@@ -14,6 +14,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.output.cuisines.toSimplifiedCuisines
 import pt.isel.ps.g06.httpserver.service.CuisinesService
 import javax.validation.constraints.Max
 import javax.validation.constraints.Min
+import kotlin.streams.toList
 
 @Validated
 @RestController
@@ -34,6 +35,6 @@ class CuisinesController(private val cuisinesService: CuisinesService) {
 
         return ResponseEntity
                 .ok()
-                .body(toSimplifiedCuisinesOutput(availableCuisines))
+                .body(toSimplifiedCuisinesOutput(availableCuisines.toList())) //TODO Stream -> toList
     }
 }

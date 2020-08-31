@@ -1,6 +1,8 @@
 package pt.isel.ps.g06.httpserver.model
 
 import pt.isel.ps.g06.httpserver.dataAccess.db.MealType
+import pt.isel.ps.g06.httpserver.model.restaurant.Restaurant
+import pt.isel.ps.g06.httpserver.model.restaurant.RestaurantIdentifier
 import java.net.URI
 import java.time.OffsetDateTime
 

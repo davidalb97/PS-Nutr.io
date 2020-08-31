@@ -1,16 +1,23 @@
 package pt.isel.ps.g06.httpserver.service
 
 import org.springframework.stereotype.Service
-import pt.isel.ps.g06.httpserver.common.exception.problemJson.conflict.DuplicateMealException
 import pt.isel.ps.g06.httpserver.common.exception.problemJson.badRequest.InvalidInputException
+import pt.isel.ps.g06.httpserver.common.exception.problemJson.conflict.DuplicateMealException
 import pt.isel.ps.g06.httpserver.common.exception.problemJson.forbidden.NotSubmissionOwnerException
-import pt.isel.ps.g06.httpserver.common.exception.problemJson.notFound.*
+import pt.isel.ps.g06.httpserver.common.exception.problemJson.notFound.MealNotFoundException
+import pt.isel.ps.g06.httpserver.common.exception.problemJson.notFound.PortionNotFoundException
+import pt.isel.ps.g06.httpserver.common.exception.problemJson.notFound.RestaurantMealNotFound
+import pt.isel.ps.g06.httpserver.common.exception.problemJson.notFound.RestaurantNotFoundException
 import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.restaurant.DbRestaurantMealInfoResponseMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.FavoriteDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.PortionDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.ReportDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.RestaurantMealDbRepository
-import pt.isel.ps.g06.httpserver.model.*
+import pt.isel.ps.g06.httpserver.model.Meal
+import pt.isel.ps.g06.httpserver.model.MealRestaurantInfo
+import pt.isel.ps.g06.httpserver.model.RestaurantMeal
+import pt.isel.ps.g06.httpserver.model.User
+import pt.isel.ps.g06.httpserver.model.restaurant.RestaurantIdentifier
 
 @Service
 class RestaurantMealService(

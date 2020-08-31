@@ -18,7 +18,9 @@ fun toDetailedIngredientOutput(ingredient: Ingredient, userId: Int? = null): Det
             id = ingredient.identifier,
             name = ingredient.name,
             imageUri = ingredient.imageUri,
-            isFavorite = userId?.let { ingredient.isFavorite(userId) } ?: false,
+//            isFavorite = userId?.let { ingredient.isFavorite(userId) } ?: false,
+            //TODO Get user favorite for ingredient
+            isFavorite = false,
             nutritionalInfo = toNutritionalInfoOutput(ingredient.nutritionalValues)
     )
 }

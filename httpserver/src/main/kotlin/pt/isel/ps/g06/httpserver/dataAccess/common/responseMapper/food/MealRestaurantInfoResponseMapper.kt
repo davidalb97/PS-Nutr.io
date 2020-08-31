@@ -7,9 +7,10 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbRestaurantMealDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.FavoriteDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.PortionDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.VoteDbRepository
-import pt.isel.ps.g06.httpserver.model.food.MealRestaurantInfo
-import pt.isel.ps.g06.httpserver.model.submission.Favorable
-import pt.isel.ps.g06.httpserver.model.submission.Votable
+import pt.isel.ps.g06.httpserver.model.MealRestaurantInfo
+import pt.isel.ps.g06.httpserver.model.VoteState
+import pt.isel.ps.g06.httpserver.model.Votes
+import kotlin.streams.asSequence
 
 @Component
 class MealRestaurantInfoResponseMapper(
@@ -25,22 +26,29 @@ class MealRestaurantInfoResponseMapper(
 
         return MealRestaurantInfo(
                 restaurantMealIdentifier = restaurantMealIdentifier,
+                //TODO Fix nullable and sequence cast
                 portions = dbPortionDbRepository
-                        .getAllByRestaurantMealId(restaurantMealIdentifier)
-                        .map(portionResponseMapper::mapTo),
+                        .getAllByRestaurantMealId(restaurantMealIdentifier!!)
+                        .map(portionResponseMapper::mapTo)
+                        .asSequence(),
 
                 userPortion = {
                     dbPortionDbRepository
-                            .getUserPortion(restaurantMealIdentifier, it.identifier)
+                            .getUserPortion(restaurantMealIdentifier, it)
                             ?.let(portionResponseMapper::mapTo)
                 },
 
-                votable = Votable(voteDbRepository
-                        .getVotes(restaurantMealIdentifier)
-                        .let(votesResponseMapper::mapTo)
-                ) { voteDbRepository.getUserVote(restaurantMealIdentifier, it.identifier) },
+                //TODO Fix this
+                votes = lazy { Votes(0, 0) },
+                //TODO Fix this too
+                userVote = { VoteState.NOT_VOTED }
 
-                favorable = Favorable { favoriteDbRepository.getFavorite(restaurantMealIdentifier, it.identifier) }
+//                Votable(voteDbRepository
+//                        .getVotes(restaurantMealIdentifier)
+//                        .let(votesResponseMapper::mapTo)
+//                ) { voteDbRepository.getUserVote(restaurantMealIdentifier, it.identifier) },
+
+//                        favorable = Favorable { favoriteDbRepository.getFavorite(restaurantMealIdentifier, it.identifier) }
         )
     }
 }

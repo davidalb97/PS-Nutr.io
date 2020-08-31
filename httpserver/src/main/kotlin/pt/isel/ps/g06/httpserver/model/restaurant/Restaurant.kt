@@ -1,5 +1,6 @@
-package pt.isel.ps.g06.httpserver.model
+package pt.isel.ps.g06.httpserver.model.restaurant
 
+import pt.isel.ps.g06.httpserver.model.*
 import java.net.URI
 import java.time.OffsetDateTime
 

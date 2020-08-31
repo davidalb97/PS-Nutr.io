@@ -5,7 +5,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.restaurant.DbI
 import pt.isel.ps.g06.httpserver.dataAccess.db.MealType
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.MealDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.input.meal.MealInput
-import pt.isel.ps.g06.httpserver.model.MealIngredient
+import pt.isel.ps.g06.httpserver.model.food.Ingredient
 
 @Service
 class IngredientService(
@@ -13,13 +13,13 @@ class IngredientService(
         private val ingredientResponseMapper: DbIngredientResponseMapper
 ) {
 
-    fun getIngredients(skip: Int?, count: Int?): Sequence<MealIngredient> {
+    fun getIngredients(skip: Int?, count: Int?): Sequence<Ingredient> {
         return mealDbRepository
                 .getAllIngredients(skip, count)
                 .map(ingredientResponseMapper::mapTo)
     }
 
-    fun insertSuggestedIngredient(submitterId: Int, mealIngredientInput: MealInput): MealIngredient {
+    fun insertSuggestedIngredient(submitterId: Int, mealIngredientInput: MealInput): Ingredient {
         return mealDbRepository
                 .insert(
                         submitterId = submitterId,

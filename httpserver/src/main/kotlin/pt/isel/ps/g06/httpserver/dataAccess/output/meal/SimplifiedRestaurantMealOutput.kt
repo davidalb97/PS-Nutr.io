@@ -5,9 +5,8 @@ import pt.isel.ps.g06.httpserver.dataAccess.output.toNutritionalInfoOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.vote.VotesOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.vote.toVotesOutput
 import pt.isel.ps.g06.httpserver.model.Meal
-import pt.isel.ps.g06.httpserver.model.NutritionalValues
-import pt.isel.ps.g06.httpserver.model.RestaurantIdentifier
 import pt.isel.ps.g06.httpserver.model.VoteState
+import pt.isel.ps.g06.httpserver.model.restaurant.RestaurantIdentifier
 import java.net.URI
 
 open class SimplifiedRestaurantMealOutput(

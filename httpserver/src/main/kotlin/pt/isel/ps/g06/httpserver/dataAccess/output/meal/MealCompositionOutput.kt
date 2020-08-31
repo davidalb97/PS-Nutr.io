@@ -2,7 +2,8 @@ package pt.isel.ps.g06.httpserver.dataAccess.output.meal
 
 import pt.isel.ps.g06.httpserver.dataAccess.output.ingredient.DetailedIngredientOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.ingredient.toDetailedIngredientOutput
-import pt.isel.ps.g06.httpserver.model.food.Meal
+import pt.isel.ps.g06.httpserver.model.Meal
+import kotlin.streams.toList
 
 data class MealCompositionOutput(
         val meals: Collection<DetailedMealOutput>,

@@ -1,7 +1,6 @@
 package pt.isel.ps.g06.httpserver.model
 
 import pt.isel.ps.g06.httpserver.model.food.Ingredient
-import pt.isel.ps.g06.httpserver.model.food.Meal
 import java.util.stream.Stream
 
 data class MealComposition(

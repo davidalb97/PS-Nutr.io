@@ -1,28 +1,25 @@
 package pt.isel.ps.g06.httpserver.dataAccess.db.repo
 
-import org.jdbi.v3.core.Handle
-import org.jdbi.v3.core.Jdbi
-import org.jdbi.v3.core.transaction.TransactionIsolationLevel
 import org.springframework.stereotype.Repository
+import pt.isel.ps.g06.httpserver.common.exception.problemJson.badRequest.InvalidInputException
+import pt.isel.ps.g06.httpserver.dataAccess.db.MEAL_TYPE_SUGGESTED_INGREDIENT
+import pt.isel.ps.g06.httpserver.dataAccess.db.MEAL_TYPE_SUGGESTED_MEAL
+import pt.isel.ps.g06.httpserver.dataAccess.db.MealType
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionContractType.FAVORABLE
+import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType
+import pt.isel.ps.g06.httpserver.dataAccess.db.common.DatabaseContext
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.*
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbMealCuisineDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbMealDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbMealIngredientDto
 import pt.isel.ps.g06.httpserver.dataAccess.input.ingredient.IngredientInput
-import pt.isel.ps.g06.httpserver.common.exception.problemJson.badRequest.InvalidInputException
-import pt.isel.ps.g06.httpserver.dataAccess.db.MEAL_TYPE_SUGGESTED_INGREDIENT
-import pt.isel.ps.g06.httpserver.dataAccess.db.MEAL_TYPE_SUGGESTED_MEAL
-import pt.isel.ps.g06.httpserver.dataAccess.db.MealType
-import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType
 
-private val isolationLevel = TransactionIsolationLevel.SERIALIZABLE
 private val mealDaoClass = MealDao::class.java
 
 @Repository
-class MealDbRepository(jdbi: Jdbi) : SubmissionDbRepository(jdbi) {
+class MealDbRepository(private val databaseContext: DatabaseContext, private val cuisineDbRepository: CuisineDbRepository) {
     fun getById(mealSubmissionId: Int): DbMealDto? {
-        return jdbi.inTransaction<DbMealDto, Exception>(isolationLevel) { handle ->
+        return databaseContext.inTransaction { handle ->
             return@inTransaction handle.attach(mealDaoClass)
                     .getById(mealSubmissionId)
         }
@@ -30,7 +27,7 @@ class MealDbRepository(jdbi: Jdbi) : SubmissionDbRepository(jdbi) {
 
     fun getBySubmitterId(submitterId: Int, skip: Int?, count: Int?): Sequence<DbMealDto> {
         val meals = lazy {
-            jdbi.inTransaction<Collection<DbMealDto>, Exception>(isolationLevel) { handle ->
+            databaseContext.inTransaction { handle ->
                 return@inTransaction handle.attach(mealDaoClass)
                         .getAllBySubmitterIdAndType(submitterId, MealType.CUSTOM.toString(), skip, count)
             }
@@ -41,7 +38,7 @@ class MealDbRepository(jdbi: Jdbi) : SubmissionDbRepository(jdbi) {
 
     fun getAllUserFavorites(submitterId: Int, count: Int?, skip: Int?): Sequence<DbMealDto> {
         val meals = lazy {
-            jdbi.inTransaction<Collection<DbMealDto>, Exception>(isolationLevel) { handle ->
+            databaseContext.inTransaction { handle ->
                 return@inTransaction handle.attach(mealDaoClass)
                         .getAllUserFavorites(submitterId, count, skip)
             }
@@ -52,7 +49,7 @@ class MealDbRepository(jdbi: Jdbi) : SubmissionDbRepository(jdbi) {
 
     fun getMealIngredients(mealId: Int): Sequence<DbMealIngredientDto> {
         val ingredients = lazy {
-            jdbi.inTransaction<Collection<DbMealIngredientDto>, Exception>(isolationLevel) { handle ->
+            databaseContext.inTransaction { handle ->
                 return@inTransaction handle
                         .attach(MealIngredientDao::class.java)
                         .getMealIngredientsByMealId(mealId)
@@ -64,7 +61,7 @@ class MealDbRepository(jdbi: Jdbi) : SubmissionDbRepository(jdbi) {
 
     fun getMealComponents(mealId: Int): Sequence<DbMealIngredientDto> {
         val ingredients = lazy {
-            jdbi.inTransaction<Collection<DbMealIngredientDto>, Exception>(isolationLevel) { handle ->
+            databaseContext.inTransaction { handle ->
                 return@inTransaction handle
                         .attach(MealIngredientDao::class.java)
                         .getMealComponentsByMealId(mealId)
@@ -76,7 +73,7 @@ class MealDbRepository(jdbi: Jdbi) : SubmissionDbRepository(jdbi) {
 
     fun getAllIngredients(skip: Int?, count: Int?): Sequence<DbMealDto> {
         val ingredients = lazy {
-            jdbi.inTransaction<Collection<DbMealDto>, Exception>(isolationLevel) { handle ->
+            databaseContext.inTransaction { handle ->
                 return@inTransaction handle
                         .attach(MealDao::class.java)
                         .getAllByType(MEAL_TYPE_SUGGESTED_INGREDIENT, skip, count)
@@ -88,10 +85,10 @@ class MealDbRepository(jdbi: Jdbi) : SubmissionDbRepository(jdbi) {
 
     fun getAllSuggestedMealsByCuisineApiIds(apiSubmitterId: Int, cuisineApiIds: Sequence<String>): Sequence<DbMealDto> {
         val collection = lazy {
-            jdbi.inTransaction<Collection<DbMealDto>, Exception>(isolationLevel) {
+            databaseContext.inTransaction {
                 val cuisineApiIdsList = cuisineApiIds.toList()
 
-                if (cuisineApiIdsList.isEmpty()) return@inTransaction emptyList()
+                if (cuisineApiIdsList.isEmpty()) return@inTransaction emptyList<DbMealDto>()
 
                 return@inTransaction it
                         .attach(MealDao::class.java)
@@ -103,10 +100,10 @@ class MealDbRepository(jdbi: Jdbi) : SubmissionDbRepository(jdbi) {
 
     fun getAllSuggestedMealsFromCuisineNames(cuisineNames: Sequence<String>): Sequence<DbMealDto> {
         val collection = lazy {
-            jdbi.inTransaction<Collection<DbMealDto>, Exception>(isolationLevel) { handle ->
+            databaseContext.inTransaction { handle ->
                 val cuisineNameList = cuisineNames.toList()
 
-                if (cuisineNameList.isEmpty()) return@inTransaction emptyList()
+                if (cuisineNameList.isEmpty()) return@inTransaction emptyList<DbMealDto>()
 
                 return@inTransaction handle
                         .attach(MealDao::class.java)
@@ -119,7 +116,7 @@ class MealDbRepository(jdbi: Jdbi) : SubmissionDbRepository(jdbi) {
     //TODO use cuisine filtering
     fun getAllSuggestedMeals(skip: Int?, count: Int?, cuisines: Collection<String>?): Sequence<DbMealDto> {
         val collection = lazy {
-            jdbi.inTransaction<Collection<DbMealDto>, Exception>(isolationLevel) { handle ->
+            databaseContext.inTransaction { handle ->
                 return@inTransaction handle
                         .attach(MealDao::class.java)
                         //.getAllSuggestedMeals(skip, count, cuisines)
@@ -131,7 +128,7 @@ class MealDbRepository(jdbi: Jdbi) : SubmissionDbRepository(jdbi) {
 
     fun getAllUserMealsForRestaurant(restaurantId: Int): Sequence<DbMealDto> {
         val collection = lazy {
-            jdbi.inTransaction<Collection<DbMealDto>, Exception>(isolationLevel) { handle ->
+            databaseContext.inTransaction { handle ->
                 return@inTransaction handle
                         .attach(MealDao::class.java)
                         .getAllUserMealsByRestaurantId(restaurantId)
@@ -156,7 +153,7 @@ class MealDbRepository(jdbi: Jdbi) : SubmissionDbRepository(jdbi) {
             throw InvalidInputException("A meal must have at least one ingredient!")
         }
 
-        return jdbi.inTransaction<DbMealDto, Exception>(isolationLevel) {
+        return databaseContext.inTransaction {
             //Validate given ingredients to see if they are all in the database
             val databaseIngredients = it
                     .attach(MealDao::class.java)
@@ -171,7 +168,7 @@ class MealDbRepository(jdbi: Jdbi) : SubmissionDbRepository(jdbi) {
                     .insert(SubmissionType.MEAL.toString())
                     .submission_id
 
-            if(type == MealType.SUGGESTED_MEAL) {
+            if (type == MealType.SUGGESTED_MEAL) {
                 //Insert contract FAVORABLE
                 it.attach(SubmissionContractDao::class.java)
                         .insertAll(mutableListOf(FAVORABLE).map {
@@ -195,7 +192,12 @@ class MealDbRepository(jdbi: Jdbi) : SubmissionDbRepository(jdbi) {
                     .insert(mealSubmissionId, mealName, carbs, quantity, mealType = type.toString())
 
             //Insert all MealCuisine associations
-            insertMealCuisines(it, mealSubmissionId, cuisines)
+            //TODO Make this better
+            val cuisineIds = cuisineDbRepository
+                    .getAllByNames(cuisines.asSequence())
+                    .map { DbMealCuisineDto(submitterId, it.submission_id) }
+
+            it.attach(MealCuisineDao::class.java).insertAll(cuisineIds.toList())
 
             //Insert meal's ingredients
             it.attach(MealIngredientDao::class.java).insertAll(ingredients.map { ingredientInput ->
@@ -209,13 +211,6 @@ class MealDbRepository(jdbi: Jdbi) : SubmissionDbRepository(jdbi) {
 
             return@inTransaction mealDto
         }
-    }
-
-    private fun insertMealCuisines(it: Handle, submissionId: Int, cuisineNames: Collection<String>) {
-        if (cuisineNames.isEmpty()) return
-
-        val cuisineIds = getCuisinesByNames(cuisineNames, isolationLevel).map { it.submission_id }
-        it.attach(MealCuisineDao::class.java).insertAll(cuisineIds.map { DbMealCuisineDto(submissionId, it) })
     }
 
 

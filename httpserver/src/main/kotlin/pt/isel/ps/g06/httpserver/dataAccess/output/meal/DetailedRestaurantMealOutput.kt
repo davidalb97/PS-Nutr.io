@@ -8,6 +8,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.output.vote.SimplifiedUserOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.vote.VotesOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.vote.toSimplifiedUserOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.vote.toVotesOutput
+import pt.isel.ps.g06.httpserver.model.RestaurantMeal
 import pt.isel.ps.g06.httpserver.model.VoteState
 import java.net.URI
 import java.time.OffsetDateTime
@@ -45,8 +46,9 @@ fun toDetailedRestaurantMealOutput(restaurantMeal: RestaurantMeal, userId: Int? 
 
     val votes = restaurantMealInfo.let {
         toVotesOutput(
-                it.votes.value,
-                userId?.let { id -> it.userVote(id) } ?: VoteState.NOT_VOTED
+                it?.votes?.value,
+//                userId?.let { id -> it.userVote(id) } ?: VoteState.NOT_VOTED
+                VoteState.NOT_VOTED     //TODO Get user vote
         )
     }
 
@@ -58,14 +60,15 @@ fun toDetailedRestaurantMealOutput(restaurantMeal: RestaurantMeal, userId: Int? 
             creationDate = meal.creationDate.value,
             composedBy = toMealComposition(meal),
             nutritionalInfo = toNutritionalInfoOutput(meal.nutritionalValues),
-            createdBy = meal.submitterInfo.value.let { toSimplifiedUserOutput(it) },
+            createdBy = meal.submitterInfo.value.let { toSimplifiedUserOutput(it!!) },      //TODO Check if null is correct
             votes = votes,
             isSuggested = !meal.isUserMeal(),
-            isVerified = restaurantMeal.verified!!, // TODO: CHECK nullable type
+            isVerified = restaurantMeal.verified,
+            //TODO Check if this is correct
             portions = restaurantMealInfo
                     ?.portions
-                    .map { portion -> portion.amount }
-                    .toList()
+                    ?.map { portion -> portion.amount }
+                    ?.toList()
                     ?: emptyList()
     )
 }

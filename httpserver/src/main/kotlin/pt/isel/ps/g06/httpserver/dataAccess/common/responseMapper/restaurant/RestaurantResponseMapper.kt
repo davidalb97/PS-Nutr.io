@@ -2,17 +2,18 @@ package pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.restaurant
 
 import org.springframework.stereotype.Component
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.RestaurantApiType
-import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.dto.zomato.ZomatoRestaurantDto
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.dto.here.HereResultItem
+import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.dto.zomato.ZomatoRestaurantDto
+import pt.isel.ps.g06.httpserver.dataAccess.common.dto.RestaurantDto
 import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.ResponseMapper
+import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.submitter.DbSubmitterResponseMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.ApiSubmitterMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbRestaurantDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.*
-import pt.isel.ps.g06.httpserver.dataAccess.common.dto.RestaurantDto
-import pt.isel.ps.g06.httpserver.model.Restaurant
-import pt.isel.ps.g06.httpserver.model.RestaurantIdentifier
 import pt.isel.ps.g06.httpserver.model.Submitter
 import pt.isel.ps.g06.httpserver.model.VoteState
+import pt.isel.ps.g06.httpserver.model.restaurant.Restaurant
+import pt.isel.ps.g06.httpserver.model.restaurant.RestaurantIdentifier
 import pt.isel.ps.g06.httpserver.util.log
 import java.time.OffsetDateTime
 
@@ -139,7 +140,8 @@ class DbRestaurantResponseMapper(
         private val dbMealMapper: DbMealResponseMapper,
         private val dbCuisineMapper: DbCuisineResponseMapper,
         private val dbVotesMapper: DbVotesResponseMapper,
-        private val dbSubmitterMapper: DbSubmitterResponseMapper
+        private val dbSubmitterMapper: DbSubmitterResponseMapper,
+        private val dbSubmissionRepository: SubmissionDbRepository
 ) : ResponseMapper<DbRestaurantDto, Restaurant> {
 
     override fun mapTo(dto: DbRestaurantDto): Restaurant {
@@ -150,8 +152,8 @@ class DbRestaurantResponseMapper(
         return Restaurant(
                 identifier = lazy {
                     //A restaurant always has a submitter
-                    val submitterId = dbRestaurantRepository.getSubmitterForSubmissionId(dto.submission_id)!!.submitter_id
-                    val apiId = dbRestaurantRepository.getApiSubmissionById(dto.submission_id)?.apiId
+                    val submitterId = dbSubmissionRepository.getSubmitterForSubmissionId(dto.submission_id)!!.submitter_id
+                    val apiId = dbSubmissionRepository.getApiSubmissionById(dto.submission_id)?.apiId
                     RestaurantIdentifier(
                             submissionId = dto.submission_id,
                             apiId = apiId,
@@ -171,11 +173,11 @@ class DbRestaurantResponseMapper(
                         .getAllSuggestedMealsFromCuisineNames(cuisines.map { it.name })
                         .map(dbMealMapper::mapTo),
 
-                votes = dbVotesMapper.mapTo(dbRestaurantRepository.getVotes(dto.submission_id)),
-                userVote = { userId -> dbRestaurantRepository.getUserVote(dto.submission_id, userId) },
+                votes = dbVotesMapper.mapTo(dbSubmissionRepository.getVotes(dto.submission_id)),
+                userVote = { userId -> dbSubmissionRepository.getUserVote(dto.submission_id, userId) },
                 isFavorite = { userId -> dbFavoriteRepo.getFavorite(dto.submission_id, userId) },
                 image = dto.image,
-                creationDate = lazy { dbRestaurantRepository.getCreationDate(dto.submission_id) },
+                creationDate = lazy { dbSubmissionRepository.getCreationDate(dto.submission_id) },
                 submitterInfo = lazy {
                     //Restaurants always have a submitter, even if it's from the API
                     dbSubmitterRepo

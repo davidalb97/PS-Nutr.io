@@ -2,11 +2,15 @@ package pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.restaurant
 
 import org.springframework.stereotype.Component
 import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.ResponseMapper
+import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.food.DbNutritionalValuesResponseMapper
+import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.submitter.DbSubmitterResponseMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.MealType
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbMealDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.*
-import pt.isel.ps.g06.httpserver.model.MealComposition
 import pt.isel.ps.g06.httpserver.model.Meal
+import pt.isel.ps.g06.httpserver.model.MealComposition
+import java.time.OffsetDateTime
+import kotlin.streams.asStream
 
 @Component
 class DbMealResponseMapper(
@@ -30,8 +34,9 @@ class DbMealResponseMapper(
                 nutritionalValues = nutritionalMapper.mapTo(dto),
                 imageUri = null,
                 composedBy = MealComposition(
-                        meals = mealComponentMapper.mapTo(dto),
-                        ingredients = ingredientMapper.mapTo(dto)
+                        //TODO Fix sequence -> stream
+                        meals = mealComponentMapper.mapTo(dto).asStream(),
+                        ingredients = ingredientMapper.mapTo(dto).asStream()
                 ),
                 cuisines = dbCuisineRepo.getAllByMealId(dto.submission_id).map(dbCuisineMapper::mapTo),
                 submitterInfo = lazy {
@@ -39,7 +44,8 @@ class DbMealResponseMapper(
                             .getSubmitterForSubmission(dto.submission_id)
                             ?.let { submitter -> dbSubmitterMapper.mapTo(submitter) }
                 },
-                creationDate = lazy { dbMealRepo.getCreationDate(dto.submission_id) },
+                //TODO Get date from here
+                creationDate = lazy { OffsetDateTime.now() },
                 type = MealType.fromValue(dto.meal_type),
                 restaurantInfoSupplier = { restaurantIdentifier ->
                     restaurantIdentifier.submissionId

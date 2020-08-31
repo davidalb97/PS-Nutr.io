@@ -1,18 +1,16 @@
 package pt.isel.ps.g06.httpserver.dataAccess.db.repo
 
-import org.jdbi.v3.core.Jdbi
-import org.jdbi.v3.core.transaction.TransactionIsolationLevel
 import org.springframework.stereotype.Repository
+import pt.isel.ps.g06.httpserver.dataAccess.db.common.DatabaseContext
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.CuisineDao
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbCuisineDto
 
-private val isolationLevel = TransactionIsolationLevel.SERIALIZABLE
 private val cuisineDaoClass = CuisineDao::class.java
 
 @Repository
-class CuisineDbRepository(jdbi: Jdbi) : BaseDbRepo(jdbi) {
+class CuisineDbRepository(private val databaseContext: DatabaseContext) {
     fun getAll(skip: Int?, count: Int?): Collection<DbCuisineDto> {
-        return jdbi.inTransaction<Collection<DbCuisineDto>, Exception>(isolationLevel) {
+        return databaseContext.inTransaction {
             return@inTransaction it
                     .attach(cuisineDaoClass)
                     .getAll(skip, count)
@@ -25,7 +23,7 @@ class CuisineDbRepository(jdbi: Jdbi) : BaseDbRepo(jdbi) {
 
             if (cuisines.isEmpty()) return@lazy emptyList<DbCuisineDto>()
 
-            jdbi.inTransaction<Collection<DbCuisineDto>, Exception>(isolationLevel) {
+            databaseContext.inTransaction {
                 return@inTransaction it
                         .attach(cuisineDaoClass)
                         .getAllByApiSubmitterAndApiIds(apiSubmitterId, cuisines)
@@ -36,7 +34,7 @@ class CuisineDbRepository(jdbi: Jdbi) : BaseDbRepo(jdbi) {
 
     fun getAllByNames(cuisineNames: Sequence<String>): Sequence<DbCuisineDto> {
         val collection = lazy {
-            jdbi.inTransaction<Collection<DbCuisineDto>, Exception>(isolationLevel) {
+            databaseContext.inTransaction {
                 return@inTransaction it.attach(cuisineDaoClass)
                         .getAllByNames(cuisineNames.toList())
             }
@@ -46,7 +44,7 @@ class CuisineDbRepository(jdbi: Jdbi) : BaseDbRepo(jdbi) {
 
     fun getAllByMealId(mealId: Int): Sequence<DbCuisineDto> {
         val collection = lazy {
-            jdbi.inTransaction<Collection<DbCuisineDto>, Exception>(isolationLevel) { handle ->
+            databaseContext.inTransaction { handle ->
                 handle.attach(CuisineDao::class.java).getByMealId(mealId)
             }
         }
@@ -55,7 +53,7 @@ class CuisineDbRepository(jdbi: Jdbi) : BaseDbRepo(jdbi) {
 
     fun getAllByRestaurantId(restaurantId: Int): Sequence<DbCuisineDto> {
         val collection = lazy {
-            jdbi.inTransaction<Collection<DbCuisineDto>, Exception>(isolationLevel) {
+            databaseContext.inTransaction {
                 return@inTransaction it.attach(CuisineDao::class.java).getAllByRestaurantId(restaurantId)
             }
         }
