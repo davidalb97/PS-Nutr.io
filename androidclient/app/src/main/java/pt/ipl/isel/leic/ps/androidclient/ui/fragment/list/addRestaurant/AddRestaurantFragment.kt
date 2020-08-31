@@ -122,7 +122,7 @@ class AddRestaurantFragment : BaseFragment(), IRemainingPickSpinner, IPickedFlex
             name = restaurantNameEditText.text.toString(),
             latitude = latitude?.toFloat()!!,
             longitude = longitude?.toFloat()!!,
-            imageUri = viewModel.editRestaurant?.imageUri,
+            image = viewModel.editRestaurant?.image,
             cuisines = cuisinesViewModel.pickedItems
         )
     }

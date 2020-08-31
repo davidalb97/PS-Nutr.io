@@ -2,10 +2,7 @@ package pt.ipl.isel.leic.ps.androidclient.data.db.mapper
 
 import android.net.Uri
 import pt.ipl.isel.leic.ps.androidclient.data.db.entity.DbMealItemEntity
-import pt.ipl.isel.leic.ps.androidclient.data.model.MealItem
-import pt.ipl.isel.leic.ps.androidclient.data.model.Source
-import pt.ipl.isel.leic.ps.androidclient.data.model.VoteState
-import pt.ipl.isel.leic.ps.androidclient.data.model.Votes
+import pt.ipl.isel.leic.ps.androidclient.data.model.*
 import pt.ipl.isel.leic.ps.androidclient.ui.util.units.WeightUnits
 
 class DbMealItemMapper {
@@ -20,12 +17,17 @@ class DbMealItemMapper {
         amount = entity.amount,
         unit = WeightUnits.values()[entity.unit],
         votes = if (entity.hasVote) Votes(
+            isVotable = entity.isVotable ?: false,
             userHasVoted = VoteState.values()[entity.userVoteOrdinal!!],
             positive = entity.positiveVotes!!,
             negative = entity.negativeVotes!!
         ) else null,
-        isFavorite = entity.isFavorite,
-        isVotable = entity.isVotable,
+        favorites = Favorites(
+            false,
+            entity.isFavorite
+        ),
+        isReportable = false,
+        isVerified = false,
         imageUri = entity.imageUri?.let { Uri.parse(it) },
         isSuggested = entity.isSuggested,
         source = Source.values()[entity.sourceOrdinal]
@@ -38,8 +40,8 @@ class DbMealItemMapper {
         carbs = model.carbs,
         amount = model.amount,
         unit = model.unit.ordinal,
-        isFavorite = model.isFavorite,
-        isVotable = model.isVotable,
+        isFavorite = model.favorites?.isFavorite ?: false,
+        isVotable = model.votes?.isVotable ?: false,
         imageUri = model.imageUri?.toString(),
         positiveVotes = model.votes?.positive,
         negativeVotes = model.votes?.negative,

@@ -4,17 +4,14 @@ import android.os.Parcel
 import android.os.Parcelable
 
 class SubmissionOwner(
-    val username: String,
     val id: Int
 ): Parcelable {
 
     constructor(parcel: Parcel) : this(
-        username = parcel.readString()!!,
         id = parcel.readInt()
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(username)
         parcel.writeInt(id)
     }
 

@@ -23,16 +23,18 @@ class DbRestaurantInfoMapper(
             longitude = relation.entity.longitude,
             creationDate = relation.entity.creationDate,
             votes = if (relation.entity.hasVote) Votes(
+                isVotable = relation.entity.isVotable,
                 userHasVoted = VoteState.values()[relation.entity.userVoteOrdinal!!],
                 positive = relation.entity.positiveVotes!!,
                 negative = relation.entity.negativeVotes!!
             ) else null,
             isFavorite = relation.entity.isFavorite,
             isVotable = relation.entity.isVotable,
-            imageUri = Uri.parse(relation.entity.imageUri),
+            image = Uri.parse(relation.entity.imageUri),
             cuisines = cuisinesMapper.mapToListModel(relation.cuisines),
-            meals = meals.filter { !it.isSuggested },
-            suggestedMeals = meals.filter { it.isSuggested },
+            meals = meals.filter { !it.isSuggested!! },
+            suggestedMeals = meals.filter { it.isSuggested!! },
+            ownerId = relation.entity.ownerId,
             source = Source.values()[relation.entity.sourceOrdinal]
         )
     }
@@ -46,11 +48,12 @@ class DbRestaurantInfoMapper(
             creationDate = model.creationDate,
             isFavorite = model.isFavorite,
             isVotable = model.isVotable,
-            imageUri = model.imageUri?.toString(),
+            imageUri = model.image?.toString(),
             positiveVotes = model.votes?.positive,
             negativeVotes = model.votes?.negative,
             userVoteOrdinal = model.votes?.userHasVoted?.ordinal,
             hasVote = model.votes != null,
+            ownerId = null,
             sourceOrdinal = model.source.ordinal
         ).also { dto ->
             dto.primaryKey = model.dbId ?: DbRestaurantInfoEntity.DEFAULT_DB_ID

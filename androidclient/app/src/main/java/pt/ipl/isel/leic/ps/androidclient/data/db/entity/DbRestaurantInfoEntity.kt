@@ -18,6 +18,7 @@ data class DbRestaurantInfoEntity(
     val negativeVotes: Int?,
     val userVoteOrdinal: Int?,
     val creationDate: TimestampWithTimeZone?,
+    val ownerId: Int?,
     val sourceOrdinal: Int
 ) {
 

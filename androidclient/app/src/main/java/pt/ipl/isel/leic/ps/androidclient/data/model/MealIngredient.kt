@@ -23,6 +23,7 @@ class MealIngredient : MealItem, Parcelable {
         name: String,
         carbs: Int,
         amount: Float,
+        favorites: Favorites,
         unit: WeightUnits,
         imageUri: Uri?,
         source: Source
@@ -36,10 +37,11 @@ class MealIngredient : MealItem, Parcelable {
         amount = amount,
         unit = unit,
         votes = null,
-        isFavorite = false,
-        isVotable = false,
+        favorites = favorites,
         imageUri = imageUri,
+        isVerified = false,
         isSuggested = false,
+        isReportable = false,
         source = source
     ) {
         this.dbMealId = dbMealId

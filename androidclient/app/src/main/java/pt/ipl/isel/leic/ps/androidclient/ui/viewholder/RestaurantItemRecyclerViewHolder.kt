@@ -52,7 +52,7 @@ abstract class RestaurantItemRecyclerViewHolder(
         super.bindTo(item)
 
         restaurantName.text = item.name
-        super.setupImage(view, item.imageUri)
+        super.setupImage(view, item.image)
         super.setupVoteBarCounters(view, item.votes, item.isVotable)
         super.setupFavoriteButton(view)
         super.setupReportMenuItem()

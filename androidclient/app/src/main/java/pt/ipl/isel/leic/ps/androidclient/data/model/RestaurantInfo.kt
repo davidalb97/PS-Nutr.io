@@ -3,7 +3,10 @@ package pt.ipl.isel.leic.ps.androidclient.data.model
 import android.net.Uri
 import android.os.Parcel
 import android.os.Parcelable
-import pt.ipl.isel.leic.ps.androidclient.util.*
+import pt.ipl.isel.leic.ps.androidclient.util.TimestampWithTimeZone
+import pt.ipl.isel.leic.ps.androidclient.util.readListCompat
+import pt.ipl.isel.leic.ps.androidclient.util.readTimestampWithTimeZone
+import pt.ipl.isel.leic.ps.androidclient.util.writeTimestampWithTimeZone
 
 open class RestaurantInfo : RestaurantItem, Parcelable {
 
@@ -11,6 +14,7 @@ open class RestaurantInfo : RestaurantItem, Parcelable {
     val cuisines: List<Cuisine>
     val meals: List<MealItem>
     val suggestedMeals: List<MealItem>
+    var ownerId: Int? = 0
 
     constructor(
         dbId: Long?,
@@ -21,12 +25,13 @@ open class RestaurantInfo : RestaurantItem, Parcelable {
         votes: Votes?,
         isFavorite: Boolean,
         isVotable: Boolean,
-        imageUri: Uri?,
+        image: Uri?,
         source: Source,
         creationDate: TimestampWithTimeZone?,
         cuisines: List<Cuisine>,
         meals: List<MealItem>,
-        suggestedMeals: List<MealItem>
+        suggestedMeals: List<MealItem>,
+        ownerId: Int?
     ) : super(
         dbId = dbId,
         id = id,
@@ -36,13 +41,14 @@ open class RestaurantInfo : RestaurantItem, Parcelable {
         votes = votes,
         isFavorite = isFavorite,
         isVotable = isVotable,
-        imageUri = imageUri,
+        image = image,
         source = source
     ) {
         this.creationDate = creationDate
         this.cuisines = cuisines
         this.meals = meals
         this.suggestedMeals = suggestedMeals
+        this.ownerId = ownerId
     }
 
     constructor(parcel: Parcel) : super(parcel) {

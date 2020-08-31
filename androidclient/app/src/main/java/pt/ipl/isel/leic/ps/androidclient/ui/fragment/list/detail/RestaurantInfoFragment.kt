@@ -79,7 +79,7 @@ class RestaurantInfoFragment :
     }
 
     private fun setupRestaurantInfoView(view: View, restaurantInfo: RestaurantInfo) {
-        super.setupImage(view, restaurantInfo.imageUri)
+        super.setupImage(view, restaurantInfo.image)
         super.setupVoteBarCounters(view, restaurantInfo.votes, restaurantInfo.isVotable)
         super.setupFavoriteButton(view)
         super.setupReportMenuItem()

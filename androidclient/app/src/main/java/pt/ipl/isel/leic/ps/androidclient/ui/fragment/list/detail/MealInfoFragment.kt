@@ -79,8 +79,8 @@ class MealInfoFragment :
         super.setupImage(view, receivedMeal.imageUri)
 
         if (receivedMeal.restaurantSubmissionId != null) {
-            super.setupVoteBarCounters(view, receivedMeal.votes, receivedMeal.isVotable)
-            super.setupVoteButtons(view, receivedMeal.isVotable)
+            super.setupVoteBarCounters(view, receivedMeal.votes, receivedMeal.votes?.isVotable ?: false)
+            super.setupVoteButtons(view, receivedMeal.votes?.isVotable ?: false)
         }
 
         super.setupFavoriteButton(view)
@@ -92,7 +92,7 @@ class MealInfoFragment :
         val title: TextView = view.findViewById(R.id.meal_detail_title)
         title.text = receivedMeal.name
 
-        if (receivedMeal.source != Source.CUSTOM && receivedMeal.isSuggested) {
+        if (receivedMeal.source != Source.CUSTOM && receivedMeal.isSuggested == true) {
             val suggestedLayout: RelativeLayout = view.findViewById(R.id.meal_info_suggested_rl)
             suggestedLayout.visibility = View.VISIBLE
         }
@@ -141,7 +141,7 @@ class MealInfoFragment :
 
     override fun fetchCtx(): Context = requireContext()
 
-    override fun isFavorite(): Boolean = recyclerViewModel.mealInfo!!.isFavorite
+    override fun isFavorite(): Boolean = recyclerViewModel.mealInfo!!.favorites?.isFavorite ?: false
 
     override fun getRecyclerId() = R.id.meal_info_ingredient_item_list
 

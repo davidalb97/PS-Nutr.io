@@ -18,9 +18,10 @@ open class MealItem(
     var unit: WeightUnits,
     var imageUri: Uri?,
     var votes: Votes?,
-    var isFavorite: Boolean,
-    var isVotable: Boolean,
-    var isSuggested: Boolean,
+    var favorites: Favorites,
+    var isVerified: Boolean?,
+    var isSuggested: Boolean?,
+    var isReportable: Boolean?,
     var source: Source
 ) : Parcelable {
 
@@ -35,9 +36,10 @@ open class MealItem(
         unit = parcel.readWeightUnit(),
         imageUri = parcel.readUri(),
         votes = parcel.readParcelable(Votes::class.java.classLoader),
-        isFavorite = parcel.readBooleanCompat(),
-        isVotable = parcel.readBooleanCompat(),
-        isSuggested = parcel.readBooleanCompat(),
+        favorites = parcel.readParcelable(Favorites::class.java.classLoader)!!,
+        isVerified = parcel.readSerializable() as Boolean?,
+        isSuggested = parcel.readSerializable() as Boolean?,
+        isReportable = parcel.readSerializable() as Boolean?,
         source = Source.values()[parcel.readInt()]
     )
 
@@ -52,9 +54,9 @@ open class MealItem(
         parcel.writeWeightUnit(unit)
         parcel.writeUri(imageUri)
         parcel.writeParcelable(votes, flags)
-        parcel.writeBooleanCompat(isFavorite)
-        parcel.writeBooleanCompat(isVotable)
-        parcel.writeBooleanCompat(isSuggested)
+        parcel.writeSerializable(isVerified)
+        parcel.writeSerializable(isSuggested)
+        parcel.writeSerializable(isReportable)
         parcel.writeInt(source.ordinal)
     }
 

@@ -2,7 +2,7 @@ package pt.ipl.isel.leic.ps.androidclient.data.api.datasource
 
 import android.net.Uri
 import com.android.volley.VolleyError
-import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.InsulinProfileInput
+import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.insulin.InsulinProfileInput
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.output.InsulinProfileOutput
 import pt.ipl.isel.leic.ps.androidclient.data.api.request.*
 

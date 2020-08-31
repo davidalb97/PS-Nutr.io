@@ -1,4 +1,4 @@
-package pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.info
+package pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.meal
 
 class NutritionalInfoInput(
     val carbs: Int,

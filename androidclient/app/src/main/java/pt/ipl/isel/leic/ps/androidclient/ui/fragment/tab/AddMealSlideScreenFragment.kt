@@ -175,7 +175,8 @@ class AddMealSlideScreenFragment : BaseSlideScreenFragment(propagateArguments = 
             amount = mealItem.amount,
             unit = mealItem.unit,
             imageUri = mealItem.imageUri,
-            source = mealItem.source
+            source = mealItem.source,
+            favorites = mealItem.favorites
         )
     }
 

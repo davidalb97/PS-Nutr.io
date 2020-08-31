@@ -11,6 +11,8 @@ class DbComponentIngredientEntity(
     val amount: Float,
     val unit: Int,
     val imageUri: String?,
+    val isFavorable: Boolean,
+    val isFavorite: Boolean,
     val sourceOrdinal: Int
 ) {
     companion object {

@@ -1,4 +1,4 @@
-package pt.ipl.isel.leic.ps.androidclient.data.api.dto.input
+package pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.insulin
 
 class InsulinProfileInput(
     val name: String,
