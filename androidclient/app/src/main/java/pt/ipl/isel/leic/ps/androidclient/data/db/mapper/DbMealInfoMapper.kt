@@ -22,13 +22,18 @@ class DbMealInfoMapper(
         carbs = relation.entity.carbs,
         amount = relation.entity.amount,
         unit = WeightUnits.values()[relation.entity.unit],
-        votes = if (relation.entity.hasVote) Votes(
-            userHasVoted = VoteState.values()[relation.entity.userVoteOrdinal!!],
-            positive = relation.entity.positiveVotes!!,
-            negative = relation.entity.negativeVotes!!
-        ) else null,
-        isFavorite = relation.entity.isFavorite,
-        isVotable = relation.entity.isVotable,
+        votes = relation.entity.isVotable?.let {
+            Votes(
+                isVotable = relation.entity.isVotable,
+                userHasVoted = VoteState.values()[relation.entity.userVoteOrdinal!!],
+                positive = relation.entity.positiveVotes!!,
+                negative = relation.entity.negativeVotes!!
+            )
+        },
+        favorites = Favorites(
+            isFavorable = relation.entity.isFavorable,
+            isFavorite = relation.entity.isFavorite
+        ),
         imageUri = relation.entity.imageUri?.let { Uri.parse(it) },
         creationDate = relation.entity.creationDate,
         mealComponents = componentMealMapper.mapToListModel(relation.componentMeals),
@@ -36,14 +41,13 @@ class DbMealInfoMapper(
         cuisines = cuisinesMapper.mapToListModel(relation.cuisines),
         portions = portionMapper.mapToListModel(relation.portions),
         isSuggested = relation.entity.isSuggested,
+        isReportable = relation.entity.isReportable,
+        isVerified = relation.entity.isVerified,
         source = Source.values()[relation.entity.sourceOrdinal],
         submissionOwner = relation.entity.ownerId?.let { ownerId ->
-            relation.entity.ownerName?.let { ownerName ->
-                SubmissionOwner(
-                    username = ownerName,
-                    id = ownerId
-                )
-            }
+            SubmissionOwner(
+                id = ownerId
+            )
         }
     )
 
@@ -55,18 +59,19 @@ class DbMealInfoMapper(
             carbs = model.carbs,
             amount = model.amount,
             unit = model.unit.ordinal,
-            isFavorite = model.isFavorite,
-            isVotable = model.isVotable,
+            isFavorite = model.favorites?.isFavorite ?: false,
             imageUri = model.imageUri?.toString(),
+            isVotable = model.votes?.isVotable,
             positiveVotes = model.votes?.positive,
             negativeVotes = model.votes?.negative,
             userVoteOrdinal = model.votes?.userHasVoted?.ordinal,
-            hasVote = model.votes != null,
             creationDate = model.creationDate,
             isSuggested = model.isSuggested,
             sourceOrdinal = model.source.ordinal,
             ownerId = model.submissionOwner?.id,
-            ownerName = model.submissionOwner?.username,
+            isFavorable = model.favorites.isFavorable,
+            isReportable = model.isReportable,
+            isVerified = model.isVerified
         ),
         componentMeals = componentMealMapper.mapToListEntity(model.mealComponents),
         componentIngredients = componentIngredientMapper.mapToListEntity(model.ingredientComponents),

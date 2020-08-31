@@ -10,6 +10,9 @@ class DbComponentMealEntity(
     val carbs: Int,
     val amount: Float,
     val unit: Int,
+    val isFavorite: Boolean,
+    val isFavorable: Boolean,
+    val isReportable: Boolean?,
     val imageUri: String?,
     val sourceOrdinal: Int
 ) {

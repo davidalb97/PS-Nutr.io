@@ -1,6 +1,6 @@
 package pt.isel.ps.g06.httpserver.dataAccess.db.dto
 
-import pt.isel.ps.g06.httpserver.dataAccess.model.RestaurantDto
+import pt.isel.ps.g06.httpserver.dataAccess.common.dto.RestaurantDto
 
 open class DbRestaurantDto(
         val submission_id: Int,

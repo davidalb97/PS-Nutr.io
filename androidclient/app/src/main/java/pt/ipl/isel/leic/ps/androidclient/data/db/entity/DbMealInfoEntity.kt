@@ -12,18 +12,19 @@ open class DbMealInfoEntity(
     val carbs: Int,
     val amount: Float,
     val unit: Int,
-    val isFavorite: Boolean,
-    val isVotable: Boolean,
     val imageUri: String?,
-    val hasVote: Boolean,
+    val isVotable: Boolean?,
     val positiveVotes: Int?,
     val negativeVotes: Int?,
     val userVoteOrdinal: Int?,
     val creationDate: TimestampWithTimeZone?,
-    val isSuggested: Boolean,
     val sourceOrdinal: Int,
     val ownerId: Int?,
-    val ownerName: String?
+    val isFavorite: Boolean,
+    val isFavorable: Boolean,
+    val isReportable: Boolean?,
+    val isSuggested: Boolean?,
+    val isVerified: Boolean?
 ) {
     companion object {
         const val DEFAULT_DB_ID: Long = 0

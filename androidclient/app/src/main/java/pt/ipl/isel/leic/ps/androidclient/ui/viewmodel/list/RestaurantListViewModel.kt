@@ -49,7 +49,7 @@ class RestaurantListViewModel(
         onSuccess: () -> Unit,
         onError: (Throwable) -> Unit
     ) = restaurantRepository.changeFavorite(
-        restaurantId = restaurantItem.id,
+        restaurantId = requireNotNull(restaurantItem.id),
         isFavorite = !restaurantItem.isFavorite,
         success = {
             restaurantItem.isFavorite = !restaurantItem.isFavorite
@@ -65,7 +65,7 @@ class RestaurantListViewModel(
         onSuccess: () -> Unit,
         onError: (Throwable) -> Unit
     ) = restaurantRepository.addReport(
-        restaurantId = restaurantItem.id,
+        restaurantId = requireNotNull(restaurantItem.id),
         reportMsg = reportMsg,
         onSuccess = {
             restaurantItem.isFavorite = !restaurantItem.isFavorite

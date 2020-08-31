@@ -17,6 +17,7 @@ private const val IN_CIRCLE = "circle:"
 private const val RADIUS = "r"
 private const val QUERY = "q"
 private const val LIMIT = "limit"
+private const val SKIP = "skip"
 private const val ID = "id"
 private const val API_KEY = "apiKey"
 
@@ -28,13 +29,15 @@ class HereUriBuilder : RestaurantUri {
             longitude: Float,
             radius: Int,
             restaurantName: String?,
+            skip: Int?,
             count: Int?
     ): URI {
         return UriComponentsBuilder
                 .fromHttpUrl(DISCOVER_PATH)
                 .queryParam(IN, nearbyCircleByGeocode(latitude, longitude, radius))
                 .queryParam(QUERY, queryRestaurantName(restaurantName))
-                .queryParam(LIMIT, count ?: MAX_LIMIT)
+                .queryParam(SKIP, skip)
+                .queryParam(LIMIT, count)
                 .queryParam(API_KEY, KEY)
                 .build()
                 .toUri()

@@ -115,6 +115,7 @@
     <string name="ingredient_carbohydrates_amount">Ingredient carbohydrates: %1$d %2$s</string>
     <string name="ingredient_weight">Ingredient quantity: %1$.2f %2$s</string>
     <string name="add_the_meal_name">Pizza</string>
+    <string name="add_restaurant">Restaurant</string>
     <string name="add_ingredients">Add ingredients</string>
     <string name="portion_quantity">Portion quantity</string>
     <string name="meal_quantity_card">Meal quantity: %1$.2f %2$s</string>
@@ -204,5 +205,10 @@
     <string name="meal_carbs_amout">Carbohydrates: %1$.2f grams</string>
     <string name="meal_amout">Amount: %1$.2f</string>
     <string name="select_meal_amount">Select meal amount</string>
+    <string name="created_restaurant">Restaurant created!</string>
+    <string name="field_required">Required</string>
+    <string name="calculator_ingredients_required">Please add food portions</string>
+    <string name="calculator_result">You need to inject %1$.2f insulin doses</string>
+    <string name="select_cuisine">Please select at least one cuisine for this restaurant</string>
     <string name="add_your_portion_for_this_meal">Add your portion for this meal</string>
 </resources>

@@ -28,14 +28,18 @@ class CustomMeal : MealInfo, Parcelable {
         amount = amount,
         unit = unit,
         votes = null,
-        isFavorite = false,
-        isVotable = false,
+        favorites = Favorites(
+            isFavorable = false,
+            isFavorite = false
+        ),
         imageUri = imageUri,
         creationDate = null,
         ingredientComponents = ingredientComponents,
         mealComponents = mealComponents,
         cuisines = cuisines,
         portions = emptyList(),
+        isReportable = false,
+        isVerified = false,
         isSuggested = false,
         source = Source.CUSTOM,
         //TODO pass owner to custom meal ctor

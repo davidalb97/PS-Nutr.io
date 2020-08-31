@@ -1,45 +1,35 @@
 package pt.ipl.isel.leic.ps.androidclient.data.api.mapper.input
 
-import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.info.DetailedIngredientInput
-import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.info.DetailedIngredientsInput
-import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.info.DetailedMealInput
+import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.ingredient.IngredientContainerInput
+import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.meal.MealInfoInput
+import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.meal.MealItemInput
 import pt.ipl.isel.leic.ps.androidclient.data.db.entity.DbComponentIngredientEntity
 import pt.ipl.isel.leic.ps.androidclient.data.db.entity.DbMealInfoEntity
-import pt.ipl.isel.leic.ps.androidclient.data.model.MealIngredient
-import pt.ipl.isel.leic.ps.androidclient.data.model.Source
+import pt.ipl.isel.leic.ps.androidclient.data.model.*
 import pt.ipl.isel.leic.ps.androidclient.ui.util.units.WeightUnits
 
-class InputMealIngredientMapper {
+class InputMealIngredientMapper(
+    private val inputVotesMapper: InputVotesMapper,
+    private val inputFavoritesMapper: InputFavoriteMapper
+) {
 
-    fun mapToModel(dto: DetailedIngredientInput) = MealIngredient(
-        dbId = DbComponentIngredientEntity.DEFAULT_DB_ID,
-        dbMealId = DbMealInfoEntity.DEFAULT_DB_ID,
-        submissionId = dto.id,
+    fun mapToModel(dto: MealItemInput, isMeal: Boolean) = MealIngredient(
+        dbId = null,
+        dbMealId = null,
+        submissionId = dto.identifier,
         name = dto.name,
-        imageUri = dto.imageUri,
         carbs = dto.nutritionalInfo.carbs,
         amount = dto.nutritionalInfo.amount.toFloat(),
         unit = WeightUnits.fromValue(dto.nutritionalInfo.unit),
-        isMeal = false, //Not a meal (DetailedIngredientInput)
-        source = Source.API
-    )
-
-    fun mapToModel(dto: DetailedMealInput, isMeal: Boolean) = MealIngredient(
-        dbId = DbComponentIngredientEntity.DEFAULT_DB_ID,
-        dbMealId = DbMealInfoEntity.DEFAULT_DB_ID,
-        submissionId = dto.mealIdentifier,
-        name = dto.name,
-        imageUri = dto.imageUri,
-        carbs = dto.nutritionalInfo.carbs,
-        amount = dto.nutritionalInfo.amount.toFloat(),
-        unit = WeightUnits.fromValue(dto.nutritionalInfo.unit),
+        imageUri = dto.image,
+        favorites = inputFavoritesMapper.mapToModel(dto.favorites),
         isMeal = isMeal,
         source = Source.API
     )
 
-    fun mapToListModel(dtos: Iterable<DetailedMealInput>, isMeal: Boolean): List<MealIngredient> =
+    fun mapToListModel(dtos: Iterable<MealItemInput>, isMeal: Boolean): List<MealIngredient> =
         dtos.map { mapToModel(it, isMeal) }
 
-    fun mapToListModel(dto: DetailedIngredientsInput): List<MealIngredient> =
-        dto.ingredients.map(this::mapToModel)
+    fun mapToListModel(dto: IngredientContainerInput): List<MealIngredient> =
+        dto.ingredients.map { mapToModel(it, false) }
 }

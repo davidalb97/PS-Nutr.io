@@ -3,6 +3,7 @@ package pt.ipl.isel.leic.ps.androidclient.ui.provider
 import android.content.Intent
 import android.os.Bundle
 import androidx.lifecycle.ViewModel
+import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.ui.util.Logger
 import pt.ipl.isel.leic.ps.androidclient.ui.util.getRestaurantItem
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.meal.info.RestaurantInfoViewModel
@@ -22,7 +23,9 @@ class RestaurantInfoVMProviderFactory(
         return when (modelClass) {
             RestaurantInfoViewModel::class.java -> {
                 RestaurantInfoViewModel(
-                    restaurantId = requireNotNull(arguments?.getRestaurantItem()).id
+                    restaurantId = requireNotNull(arguments?.getRestaurantItem()?.id) {
+                        "Restaurant detail requires submission ID"
+                    }
                 )
             }
             else -> null

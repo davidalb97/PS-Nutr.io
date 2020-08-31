@@ -10,27 +10,27 @@ import pt.ipl.isel.leic.ps.androidclient.util.writeUri
 
 open class RestaurantItem(
     var dbId: Long?,
-    val id: String,
+    val id: String?,
     val name: String,
     val latitude: Float,
     val longitude: Float,
     val votes: Votes?,
     var isFavorite: Boolean,
     val isVotable: Boolean,
-    val imageUri: Uri?,
+    val image: Uri?,
     val source: Source
 ) : Parcelable {
 
     constructor(parcel: Parcel) : this(
         dbId = parcel.readSerializable() as Long?,
-        id = parcel.readString()!!,
+        id = parcel.readString(),
         name = parcel.readString()!!,
         latitude = parcel.readFloat(),
         longitude = parcel.readFloat(),
         votes = parcel.readParcelable<Votes>(Votes::class.java.classLoader),
         isFavorite = parcel.readBooleanCompat(),
         isVotable = parcel.readBooleanCompat(),
-        imageUri = parcel.readUri(),
+        image = parcel.readUri(),
         source = Source.values()[parcel.readInt()]
     )
 
@@ -43,7 +43,7 @@ open class RestaurantItem(
         parcel.writeParcelable(votes, flags)
         parcel.writeBooleanCompat(isFavorite)
         parcel.writeBooleanCompat(isVotable)
-        parcel.writeUri(imageUri)
+        parcel.writeUri(image)
         parcel.writeInt(source.ordinal)
     }
 

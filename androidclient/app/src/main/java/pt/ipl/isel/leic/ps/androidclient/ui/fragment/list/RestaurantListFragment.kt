@@ -8,14 +8,19 @@ import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.os.Bundle
 import android.view.View
+import android.widget.ImageButton
 import android.widget.SearchView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
+import androidx.navigation.findNavController
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.app
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.RestaurantItem
+import pt.ipl.isel.leic.ps.androidclient.data.model.UserSession
 import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.RestaurantRecyclerAdapter
+import pt.ipl.isel.leic.ps.androidclient.ui.modular.IUserSession
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.RestaurantRecyclerVMProviderFactory
+import pt.ipl.isel.leic.ps.androidclient.ui.util.Navigation
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.RestaurantListViewModel
 
 internal const val REQUEST_PERMISSIONS_CODE = 0
@@ -24,7 +29,7 @@ open class RestaurantListFragment : BaseListFragment<
         RestaurantItem,
         RestaurantListViewModel,
         RestaurantRecyclerAdapter
-        >() {
+        >(), IUserSession {
 
     private lateinit var locationManager: LocationManager
 
@@ -39,6 +44,7 @@ open class RestaurantListFragment : BaseListFragment<
         super.onViewCreated(view, savedInstanceState)
 
         val searchBar = view.findViewById<SearchView>(R.id.search_restaurant)
+        val addButton = view.findViewById<ImageButton>(R.id.add_restaurant)
 
         searchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
@@ -51,6 +57,12 @@ open class RestaurantListFragment : BaseListFragment<
 
             override fun onQueryTextChange(query: String?): Boolean = true
         })
+
+        addButton.setOnClickListener {
+            ensureUserSession(requireContext()) {
+                view.findNavController().navigate(Navigation.SEND_TO_ADD_RESTAURANT.navId)
+            }
+        }
 
         if (isLocationEnabled()) {
             onLocationEnabled()

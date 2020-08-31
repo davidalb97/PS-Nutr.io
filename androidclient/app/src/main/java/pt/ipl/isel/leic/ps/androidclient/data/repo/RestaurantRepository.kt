@@ -13,8 +13,9 @@ import pt.ipl.isel.leic.ps.androidclient.data.model.*
 class RestaurantRepository(private val dataSource: RestaurantDataSource) {
 
     private val inputVotesMapper = InputVotesMapper()
+    private val inputFavoriteMapper = InputFavoriteMapper()
     private val inputRestaurantItemMapper = InputRestaurantItemMapper(inputVotesMapper)
-    private val inputMealInputMapper = InputMealItemMapper(inputVotesMapper)
+    private val inputMealInputMapper = InputMealItemMapper(inputVotesMapper, inputFavoriteMapper)
     private val inputCuisineInputMapper = InputCuisineMapper()
     private val votesInputMapper = InputVotesMapper()
     private val inputRestaurantInfoMapper = InputRestaurantInfoMapper(
@@ -71,14 +72,16 @@ class RestaurantRepository(private val dataSource: RestaurantDataSource) {
 
     fun addCustomRestaurant(
         customRestaurant: CustomRestaurant,
-        error: (VolleyError) -> Unit,
+        onSuccess: () -> Unit,
+        onError: (VolleyError) -> Unit,
         userSession: UserSession
     ) {
         dataSource.postRestaurant(
             customRestaurantOutput = customRestaurantOutputMapper.mapToOutputModel(
                 restaurant = customRestaurant
             ),
-            error = error,
+            onSuccess = onSuccess,
+            error = onError,
             jwt = userSession.jwt
         )
     }

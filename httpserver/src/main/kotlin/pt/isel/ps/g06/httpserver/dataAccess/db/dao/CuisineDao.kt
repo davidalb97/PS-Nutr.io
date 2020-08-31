@@ -38,9 +38,9 @@ interface CuisineDao {
 
     @SqlQuery("SELECT * FROM $table " +
             "ORDER BY $table.$name ASC " +
-            "LIMIT :limit " +
-            "OFFSET :offset")
-    fun getAll(offset: Int = 0, limit: Int?): Collection<DbCuisineDto>
+            "LIMIT :count " +
+            "OFFSET :skip")
+    fun getAll(skip: Int?, count: Int?): Collection<DbCuisineDto>
 
     @SqlQuery("SELECT * FROM $table WHERE $name = :name")
     fun getByName(@Bind name: String): Collection<DbCuisineDto>
