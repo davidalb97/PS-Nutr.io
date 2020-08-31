@@ -63,7 +63,6 @@ class MapFragment : RestaurantListFragment(), OnMapReadyCallback {
             }
 
             override fun onQueryTextChange(query: String?): Boolean = true
-
         })
     }
 

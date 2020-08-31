@@ -9,7 +9,6 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.BaseRecyclerAdapter
-import pt.ipl.isel.leic.ps.androidclient.ui.listener.ScrollListener
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.BaseListViewModel
 
 class RecyclerHandler<M : Parcelable, VM : BaseListViewModel<M>, A : BaseRecyclerAdapter<*, *, *>>(
@@ -53,29 +52,15 @@ class RecyclerHandler<M : Parcelable, VM : BaseListViewModel<M>, A : BaseRecycle
 
     /**
      * Recycler list scroll listener
-     * Receives the fetch from the specific view model TODO
+     * Receives the fetch from the specific view model
      */
-    fun startScrollListener() {
-        recyclerView.addOnScrollListener(object :
-            ScrollListener(
-                recyclerView.layoutManager as LinearLayoutManager,
-                recyclerProgressWheel
-            ) {
-
-            var minimumListSize = 1
-
-            override fun loadMore() {
-                minimumListSize = recyclerViewModel.items.size + 1
-                if (!isLoading && progressBar.visibility == View.INVISIBLE) {
-                    startLoading()
-                    recyclerViewModel.update()
-                    //stopLoading() // This must be called on success / error func (async call)
-                }
-            }
-
-            override fun shouldGetMore(): Boolean =
-                !isLoading && minimumListSize < recyclerViewModel.items.size
-        })
+    private fun startScrollListener() {
+        recyclerView.addOnScrollListener(
+            AppScrollListener(
+                layoutManager = recyclerView.layoutManager as LinearLayoutManager,
+                recyclerViewModel = recyclerViewModel
+            )
+        )
     }
 
     /**
@@ -87,6 +72,7 @@ class RecyclerHandler<M : Parcelable, VM : BaseListViewModel<M>, A : BaseRecycle
         if (list.isEmpty()) {
             onNoRecyclerItems()
         } else onRecyclerItems()
+        recyclerViewModel.pendingRequest = false
     }
 
     /**
@@ -97,6 +83,7 @@ class RecyclerHandler<M : Parcelable, VM : BaseListViewModel<M>, A : BaseRecycle
     fun errorFunction(exception: Throwable) {
         onError(exception)
         onNoRecyclerItems()
+        recyclerViewModel.pendingRequest = false
     }
 
     fun onRecyclerFetchItems() {
