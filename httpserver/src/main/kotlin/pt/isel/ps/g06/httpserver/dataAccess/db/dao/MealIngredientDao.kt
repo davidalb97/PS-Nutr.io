@@ -4,15 +4,12 @@ import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.customizer.BindBeanList
 import org.jdbi.v3.sqlobject.customizer.BindList
 import org.jdbi.v3.sqlobject.statement.SqlQuery
+import pt.isel.ps.g06.httpserver.dataAccess.db.MEAL_TYPE_SUGGESTED_INGREDIENT
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbMealIngredientDto
 
-//Submission constants
-private const val S_table = SubmissionDao.table
-private const val S_submission_id = SubmissionDao.id
-private const val S_submission_type = SubmissionDao.type
-
-private const val INGREDIENT = "Ingredient"
-private const val MEAL = "Meal"
+private const val M_table = MealDao.table
+private const val M_id = MealDao.id
+private const val M_type = MealDao.meal_type
 
 interface MealIngredientDao {
 
@@ -21,26 +18,26 @@ interface MealIngredientDao {
         const val mealId = "meal_submission_id"
         const val ingredientId = "ingredient_submission_id"
         const val quantity = "quantity"
+        const val attributes = "$table.$mealId, $table.$ingredientId, $table.$quantity"
     }
 
-    @SqlQuery("SELECT * " +
+    @SqlQuery("SELECT $attributes " +
             "FROM $table " +
-            "INNER JOIN $S_table " +
-            "ON $S_table.$S_submission_id = $table.$ingredientId " +
-            "WHERE $S_table.$S_submission_type = '$INGREDIENT' " +
+            "INNER JOIN $M_table " +
+            "ON $M_table.$M_id = $table.$ingredientId " +
+            "WHERE $M_table.$M_type = '$MEAL_TYPE_SUGGESTED_INGREDIENT' " +
             "AND $table.$mealId = :mealId"
     )
-    fun getMealIngredients(@Bind mealId: Int): Collection<DbMealIngredientDto>
+    fun getMealIngredientsByMealId(@Bind mealId: Int): Collection<DbMealIngredientDto>
 
-    @SqlQuery("SELECT * " +
+    @SqlQuery("SELECT $attributes " +
             "FROM $table " +
-            "INNER JOIN $S_table " +
-            "ON $S_table.$S_submission_id = $table.$ingredientId " +
-            "WHERE $S_table.$S_submission_type = '$MEAL' " +
+            "INNER JOIN $M_table " +
+            "ON $M_table.$M_id = $table.$ingredientId " +
+            "WHERE $M_table.$M_type != '$MEAL_TYPE_SUGGESTED_INGREDIENT' " +
             "AND $table.$mealId = :mealId"
     )
-    fun getMealComponents(@Bind mealId: Int): Collection<DbMealIngredientDto>
-
+    fun getMealComponentsByMealId(@Bind mealId: Int): Collection<DbMealIngredientDto>
 
     @SqlQuery("INSERT INTO $table($mealId, $ingredientId, $quantity) values <mealIngredientParams> RETURNING *")
     fun insertAll(

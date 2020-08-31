@@ -99,8 +99,8 @@ class RequestParser(
                 url = uri,
                 reqHeader = reqHeader,
                 reqPayload = payloadStr,
-                listener = { stringResponse -> responseConsumer(stringResponse) },
-                errorListener = { error -> onError(error) }
+                listener = responseConsumer::invoke,
+                onError = onError::invoke
             )
         requestQueue.add(jsonRequest)
     }

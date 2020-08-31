@@ -1,25 +1,35 @@
 package pt.isel.ps.g06.httpserver.dataAccess.output.meal
 
+import pt.isel.ps.g06.httpserver.dataAccess.output.NutritionalInfoOutput
+import pt.isel.ps.g06.httpserver.dataAccess.output.modular.BasePublicSubmissionOutput
+import pt.isel.ps.g06.httpserver.dataAccess.output.modular.FavoritesOutput
+import pt.isel.ps.g06.httpserver.dataAccess.output.modular.INutritionalSubmissionOutput
+import pt.isel.ps.g06.httpserver.dataAccess.output.toNutritionalInfoOutput
 import pt.isel.ps.g06.httpserver.model.Meal
 import java.net.URI
 
 open class BaseMealOutput(
-        val mealIdentifier: Int,
-        val name: String,
-        val isFavorite: Boolean,
-        val isSuggested: Boolean,
-        val isVotable: Boolean,
-        val imageUri: URI?
-)
+        identifier: Int,
+        name: String,
+        image: URI?,
+        favorites: FavoritesOutput,
+        override val nutritionalInfo: NutritionalInfoOutput
+) : BasePublicSubmissionOutput<Int>(
+        identifier = identifier,
+        name = name,
+        image = image,
+        favorites = favorites
+), INutritionalSubmissionOutput
 
 fun toBaseMealOutput(meal: Meal, userId: Int? = null): BaseMealOutput {
     return BaseMealOutput(
-            mealIdentifier = meal.identifier,
+            identifier = meal.identifier,
             name = meal.name,
-            isFavorite = userId?.let { meal.isFavorite(userId) } ?: false,
-            isSuggested = !meal.isUserMeal(),
-            //A suggested/custom meal is not votable
-            isVotable = false,
-            imageUri = meal.imageUri
+            image = meal.image,
+            favorites = FavoritesOutput(
+                    isFavorite = meal.isFavorite(userId),
+                    isFavorable = meal.isFavorable(userId)
+            ),
+            nutritionalInfo = toNutritionalInfoOutput(meal.nutritionalInfo)
     )
 }

@@ -10,16 +10,16 @@ import android.widget.TextView
 import androidx.navigation.findNavController
 import androidx.navigation.navGraphViewModels
 import pt.ipl.isel.leic.ps.androidclient.R
-import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.pick.IngredientPickRecyclerAdapter
+import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.pick.MealItemPickRecyclerAdapter
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.BaseFragment
-import pt.ipl.isel.leic.ps.androidclient.ui.modular.IWeightUnitSpinner
+import pt.ipl.isel.leic.ps.androidclient.ui.modular.unit.IWeightUnitSpinner
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.pick.IPickedFlexBoxRecycler
 import pt.ipl.isel.leic.ps.androidclient.ui.util.Navigation
 import pt.ipl.isel.leic.ps.androidclient.ui.util.putNavigation
 import pt.ipl.isel.leic.ps.androidclient.ui.util.putParentNavigation
 import pt.ipl.isel.leic.ps.androidclient.ui.util.units.DEFAULT_WEIGHT_UNIT
 import pt.ipl.isel.leic.ps.androidclient.ui.util.units.WeightUnits
-import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.pick.IngredientPickViewModel
+import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.pick.MealItemPickViewModel
 
 
 abstract class BaseAddMealFragment : BaseFragment(), IWeightUnitSpinner, IPickedFlexBoxRecycler {
@@ -30,13 +30,13 @@ abstract class BaseAddMealFragment : BaseFragment(), IWeightUnitSpinner, IPicked
 
     //Meals
     protected abstract val mealsRecyclerViewId: Int
-    protected lateinit var ingredientsViewModel: IngredientPickViewModel
+    protected lateinit var mealsViewModel: MealItemPickViewModel
     protected val mealsRecyclerAdapter by lazy {
-        IngredientPickRecyclerAdapter(ingredientsViewModel, requireContext())
+        MealItemPickRecyclerAdapter(mealsViewModel, requireContext())
     }
 
-    override lateinit var currentUnit: WeightUnits
-    override lateinit var previousUnit: WeightUnits
+    override lateinit var currentWeightUnit: WeightUnits
+    override lateinit var previousWeightUnit: WeightUnits
 
     protected abstract val weightUnitSpinnerId: Int
     protected lateinit var weightUnitSpinner: Spinner
@@ -59,8 +59,8 @@ abstract class BaseAddMealFragment : BaseFragment(), IWeightUnitSpinner, IPicked
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val viewModelLazy: IngredientPickViewModel by navGraphViewModels(nestedNavigation.navId)
-        ingredientsViewModel = viewModelLazy
+        val viewModelLazy: MealItemPickViewModel by navGraphViewModels(nestedNavigation.navId)
+        mealsViewModel = viewModelLazy
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
@@ -77,8 +77,8 @@ abstract class BaseAddMealFragment : BaseFragment(), IWeightUnitSpinner, IPicked
     override fun onResume() {
         super.onResume()
 
-        if (ingredientsViewModel.ingredientsChanged) {
-            ingredientsViewModel.ingredientsChanged = false
+        if (mealsViewModel.itemsChanged) {
+            mealsViewModel.itemsChanged = false
             mealsRecyclerAdapter.notifyDataSetChanged()
         }
     }
@@ -122,18 +122,18 @@ abstract class BaseAddMealFragment : BaseFragment(), IWeightUnitSpinner, IPicked
         totalIngredientsWeightTextView.text = String.format(
             getString(R.string.ingredient_weight),
             _currentIngredientQuantity,
-            currentUnit.toString()
+            currentWeightUnit.toString()
         )
     }
 
     private fun countIngredientCarbohydrates(): Int =
-        ingredientsViewModel.pickedItems.sumBy { ingredient ->
+        mealsViewModel.pickedItems.sumBy { ingredient ->
             ingredient.carbs
         }
 
     private fun countIngredientQuantity(): Float =
-        ingredientsViewModel.pickedItems.fold(0.0F) { sum, ingredient ->
-            sum + ingredient.unit.convert(currentUnit, ingredient.amount)
+        mealsViewModel.pickedItems.fold(0.0F) { sum, ingredient ->
+            sum + ingredient.unit.convert(currentWeightUnit, ingredient.amount)
         }
 
     protected open fun setupIngredients(view: View) {
@@ -144,7 +144,7 @@ abstract class BaseAddMealFragment : BaseFragment(), IWeightUnitSpinner, IPicked
             view = view,
             recyclerViewId = mealsRecyclerViewId,
             adapter = mealsRecyclerAdapter,
-            pickerViewModel = ingredientsViewModel
+            pickerViewModel = mealsViewModel
         ) {
             _currentIngredientCarbohydrates = countIngredientCarbohydrates()
             refreshIngredientCarbohydratesTextView()
@@ -152,10 +152,10 @@ abstract class BaseAddMealFragment : BaseFragment(), IWeightUnitSpinner, IPicked
             refreshIngredientQuantityTextView()
         }
 
-        ingredientsViewModel.tryRestore()
+        mealsViewModel.tryRestore()
     }
 
-    override fun onUnitChange(converter: (Float) -> Float) {
+    override fun onWeightUnitChange(converter: (Float) -> Float) {
         _currentIngredientQuantity = converter(_currentIngredientQuantity)
         refreshIngredientQuantityTextView()
     }

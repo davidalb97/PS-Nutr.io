@@ -9,7 +9,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType.RESTAURANT
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.*
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbRestaurantCuisineDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbRestaurantDto
-import pt.isel.ps.g06.httpserver.exception.InvalidInputException
+import pt.isel.ps.g06.httpserver.common.exception.problemJson.badRequest.InvalidInputException
 
 private val isolationLevel = TransactionIsolationLevel.SERIALIZABLE
 private val restaurantDaoClass = RestaurantDao::class.java
@@ -81,12 +81,18 @@ class RestaurantDbRepository(jdbi: Jdbi) : SubmissionDbRepository(jdbi) {
             //Insert all RestaurantCuisine associations
             insertRestaurantCuisines(it, submissionId, cuisineNames)
 
-            //Insert contracts (VOTABLE,  API if there is an apiId, REPORTABLE if it doesn't)
+            //Insert contracts (REPORTABLE, API if there is an apiId, VOTABLE if it doesn't)
             it
                     .attach(SubmissionContractDao::class.java)
                     .insertAll(contracts.map { contract -> SubmissionContractParam(submissionId, contract.toString()) })
 
             return@inTransaction restaurant
+        }
+    }
+
+    fun addOwner(restaurantId: Int, ownerId: Int): DbRestaurantDto {
+        return jdbi.inTransaction<DbRestaurantDto, Exception>(isolationLevel) {
+            return@inTransaction it.attach(restaurantDaoClass).addOwner(restaurantId, ownerId)
         }
     }
 

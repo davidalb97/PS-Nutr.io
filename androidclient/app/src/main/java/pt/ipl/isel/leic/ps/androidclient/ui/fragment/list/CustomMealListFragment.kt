@@ -26,6 +26,7 @@ class CustomMealListFragment
     override var restoredItemPredicator: ((MealItem) -> Boolean)? = null
     override var onCheckListener: ICheckListener<MealItem>? = null
     override var onClickListener: IItemClickListener<MealItem>? = null
+    lateinit var addButton: ImageButton
 
     override val recyclerAdapter by lazy {
         MealItemRecyclerAdapter(
@@ -40,18 +41,20 @@ class CustomMealListFragment
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        ensureUserSession(requireContext(), failConsumer = {
-            super.recyclerHandler.onNoRecyclerItems()
-        }) {
-            val addButton = view.findViewById<ImageButton>(R.id.add_meal)
+        addButton = view.findViewById(R.id.add_meal)
 
-            if (recyclerViewModel.navDestination != Navigation.BACK_TO_CALCULATOR) {
-                addButton.visibility = View.VISIBLE
-                addButton.setOnClickListener {
-//                    view.findNavController().navigate(R.id.nav_add_custom_meal)
+        if (recyclerViewModel.navDestination != Navigation.BACK_TO_CALCULATOR) {
+            addButton.visibility = View.VISIBLE
+            addButton.setOnClickListener {
+                ensureUserSession(requireContext()) {
                     view.findNavController().navigate(R.id.nav_custom_meal_nested)
                 }
             }
+        }
+
+        ensureUserSession(requireContext(), failConsumer = {
+            super.recyclerHandler.onNoRecyclerItems()
+        }) {
             recyclerViewModel.update()
         }
     }

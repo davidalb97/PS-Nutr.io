@@ -7,7 +7,7 @@ import android.widget.SeekBar
 import android.widget.Spinner
 import android.widget.TextView
 import pt.ipl.isel.leic.ps.androidclient.R
-import pt.ipl.isel.leic.ps.androidclient.ui.modular.IWeightUnitSpinner
+import pt.ipl.isel.leic.ps.androidclient.ui.modular.unit.IWeightUnitSpinner
 import pt.ipl.isel.leic.ps.androidclient.ui.util.units.WeightUnits
 
 private const val MAX_WEIGHT_GRAMS = 1000
@@ -23,8 +23,8 @@ class MealAmountSelector(
 
     private val logger = Logger(MealAmountSelector::class)
 
-    override lateinit var currentUnit: WeightUnits
-    override lateinit var previousUnit: WeightUnits
+    override lateinit var currentWeightUnit: WeightUnits
+    override lateinit var previousWeightUnit: WeightUnits
 
     var seekBar: SeekBar
     var carbsTextView: TextView
@@ -76,11 +76,11 @@ class MealAmountSelector(
     }
 
     private fun getCurrentAmount(): Float {
-        return percentageToAmount(currentUnit, conversionPercentage ?: seekBar.progress.toFloat())
+        return percentageToAmount(currentWeightUnit, conversionPercentage ?: seekBar.progress.toFloat())
     }
 
     private fun getConvertedAmount(currentAmount: Float): Float {
-        return currentUnit.convert(mealUnit, currentAmount)
+        return currentWeightUnit.convert(mealUnit, currentAmount)
     }
 
     private fun getConvertedCarbs(amountGrams: Float): Float {
@@ -100,11 +100,11 @@ class MealAmountSelector(
         )
     }
 
-    override fun onUnitChange(converter: (Float) -> Float) {
-        val oldValue = percentageToAmount(previousUnit, conversionPercentage ?: seekBar.progress.toFloat())
+    override fun onWeightUnitChange(converter: (Float) -> Float) {
+        val oldValue = percentageToAmount(previousWeightUnit, conversionPercentage ?: seekBar.progress.toFloat())
         val convertedValue = converter(oldValue)
-        logger.v("Converting from $oldValue $previousUnit to $convertedValue $currentUnit")
-        conversionPercentage = amountToPercentage(currentUnit, convertedValue)
+        logger.v("Converting from $oldValue $previousWeightUnit to $convertedValue $currentWeightUnit")
+        conversionPercentage = amountToPercentage(currentWeightUnit, convertedValue)
         updateTextViews()
     }
 

@@ -1,54 +1,72 @@
 package pt.isel.ps.g06.httpserver.service
 
 import org.springframework.stereotype.Service
-import pt.isel.ps.g06.httpserver.common.exception.clientError.InvalidMealException
+import pt.isel.ps.g06.httpserver.common.exception.problemJson.badRequest.InvalidMealException
 import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.restaurant.DbMealResponseMapper
+import pt.isel.ps.g06.httpserver.dataAccess.db.MealType
+import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.FavoriteDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.MealDbRepository
-import pt.isel.ps.g06.httpserver.dataAccess.input.IngredientInput
+import pt.isel.ps.g06.httpserver.dataAccess.input.ingredient.IngredientInput
 import pt.isel.ps.g06.httpserver.model.Meal
 
 @Service
 class MealService(
-        private val dbMealRepo: MealDbRepository,
-        private val dbFavoriteDbRepository: FavoriteDbRepository,
+        private val dbMealRepository: MealDbRepository,
+        private val dbFavoriteRepository: FavoriteDbRepository,
         private val dbMealResponseMapper: DbMealResponseMapper
 ) {
     fun setFavorite(mealId: Int, userId: Int, isFavorite: Boolean): Boolean {
-        return dbFavoriteDbRepository.setFavorite(mealId, userId, isFavorite)
+        return dbFavoriteRepository.setFavorite(mealId, userId, isFavorite)
     }
 
     fun getMeal(mealId: Int): Meal? {
-        return dbMealRepo
+        return dbMealRepository
                 .getById(mealId)
                 ?.let(dbMealResponseMapper::mapTo)
     }
 
-    fun getSuggestedMeals(): Sequence<Meal> {
-        return dbMealRepo
-                .getAllSuggestedMeals()
+    fun getSuggestedMeals(skip: Int?, count: Int?, cuisines: Collection<String>?): Sequence<Meal> {
+        return dbMealRepository
+                .getAllSuggestedMeals(skip, count, cuisines)
                 .map { dbMealResponseMapper.mapTo(it) }
     }
+
+    fun getUserCustomMeals(submitterId: Int, skip: Int?, count: Int?): Sequence<Meal> =
+            dbMealRepository
+                    .getBySubmitterId(submitterId, skip, count)
+                    .map(dbMealResponseMapper::mapTo)
+
+    fun getUserFavoriteMeals(submitterId: Int, count: Int?, skip: Int?): Sequence<Meal> =
+            dbMealRepository
+                    .getAllUserFavorites(submitterId, count, skip)
+                    .map(dbMealResponseMapper::mapTo)
 
     fun createMeal(
             submitterId: Int,
             name: String,
             quantity: Int,
             ingredients: Collection<IngredientInput>,
-            cuisines: Collection<String>
+            cuisines: Collection<String>,
+            mealType: MealType
     ): Meal {
-        if (ingredients.sumBy { it.quantity!! } > quantity) {
-            throw InvalidMealException("The sum of ingredient quantity must be lower than meal quantity!")
-        }
+        validateMealQuantity(ingredients, quantity)
 
-        val createdMeal = dbMealRepo.insert(
+        val createdMeal = dbMealRepository.insert(
                 submitterId = submitterId,
                 mealName = name,
                 cuisines = cuisines,
                 ingredients = ingredients,
-                quantity = quantity
+                quantity = quantity,
+                type = mealType
         )
 
         return dbMealResponseMapper.mapTo(createdMeal)
+    }
+
+    private fun validateMealQuantity(ingredients: Collection<IngredientInput>, quantity: Int) {
+        if (ingredients.sumBy { it.quantity!! } > quantity) {
+            throw InvalidMealException("The sum of ingredient quantity must be lower than meal quantity!")
+        }
     }
 }

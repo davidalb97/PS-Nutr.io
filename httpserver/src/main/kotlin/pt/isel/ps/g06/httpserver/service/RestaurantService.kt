@@ -1,16 +1,16 @@
 package pt.isel.ps.g06.httpserver.service
 
 import org.springframework.stereotype.Service
-import pt.isel.ps.g06.httpserver.common.exception.NoSuchApiResponseStatusException
-import pt.isel.ps.g06.httpserver.common.exception.notFound.RestaurantNotFoundException
+import pt.isel.ps.g06.httpserver.common.exception.problemJson.badRequest.NoSuchApiResponseStatusException
+import pt.isel.ps.g06.httpserver.common.exception.problemJson.notFound.RestaurantNotFoundException
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.RestaurantApiType
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.mapper.RestaurantApiMapper
 import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.restaurant.RestaurantResponseMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.ApiSubmitterMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.FavoriteDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.RestaurantDbRepository
-import pt.isel.ps.g06.httpserver.dataAccess.db.repo.RestaurantMealDbRepository
-import pt.isel.ps.g06.httpserver.dataAccess.model.RestaurantDto
+import pt.isel.ps.g06.httpserver.dataAccess.common.dto.RestaurantDto
+import pt.isel.ps.g06.httpserver.dataAccess.db.repo.ReportDbRepository
 import pt.isel.ps.g06.httpserver.model.Restaurant
 import pt.isel.ps.g06.httpserver.model.RestaurantIdentifier
 import pt.isel.ps.g06.httpserver.util.log
@@ -20,11 +20,11 @@ private const val MAX_RADIUS = 1000
 @Service
 class RestaurantService(
         private val dbRestaurantRepository: RestaurantDbRepository,
-        private val dbRestaurantMealRepository: RestaurantMealDbRepository,
         private val restaurantApiMapper: RestaurantApiMapper,
         private val restaurantResponseMapper: RestaurantResponseMapper,
         private val apiSubmitterMapper: ApiSubmitterMapper,
-        private val dbFavoriteDbRepository: FavoriteDbRepository
+        private val dbFavoriteDbRepository: FavoriteDbRepository,
+        private val dbReportDbRepository: ReportDbRepository
 ) {
 
     fun setFavorite(restaurantId: Int, userId: Int, isFavorite: Boolean): Boolean {
@@ -36,7 +36,9 @@ class RestaurantService(
             longitude: Float,
             name: String?,
             radius: Int?,
-            apiType: String?
+            apiType: String?,
+            skip: Int?,
+            count: Int?
     ): Sequence<Restaurant> {
         val chosenRadius = if (radius != null && radius <= MAX_RADIUS) radius else MAX_RADIUS
         val type = RestaurantApiType.getOrDefault(apiType)
@@ -44,7 +46,7 @@ class RestaurantService(
 
         //Get API restaurants
         val apiRestaurants =
-                restaurantApi.searchNearbyRestaurants(latitude, longitude, chosenRadius, name)
+                restaurantApi.searchNearbyRestaurants(latitude, longitude, chosenRadius, name, skip, count)
                         .thenApply {
                             it.map(restaurantResponseMapper::mapTo)
                         }
@@ -103,7 +105,7 @@ class RestaurantService(
         )
     }
 
-    fun getOrCreateRestaurant(restaurantIdentifier: RestaurantIdentifier): Restaurant {
+    fun getOrInsertRestaurant(restaurantIdentifier: RestaurantIdentifier): Restaurant {
         var restaurant = getRestaurant(restaurantIdentifier) ?: throw RestaurantNotFoundException()
         restaurant = createRestaurantIfAbsent(restaurant)
         return restaurant
@@ -162,13 +164,25 @@ class RestaurantService(
         return restaurant
     }
 
+    fun addReport(submitterId: Int, restaurantIdentifier: RestaurantIdentifier, report: String) {
+        val restaurant = getOrInsertRestaurant(restaurantIdentifier)
+
+        dbReportDbRepository.insert(submitterId, restaurant.identifier.value.submissionId!!, report)
+    }
+
+    fun addOwner(restaurantId: Int, ownerId: Int) {
+        dbRestaurantRepository.addOwner(restaurantId, ownerId)
+    }
+
     private fun filterRedundantApiRestaurants(dbRestaurants: Sequence<Restaurant>, apiRestaurants: Sequence<Restaurant>): Sequence<Restaurant> {
         //Join db restaurants with filtered api restaurants
         return dbRestaurants.plus(
                 //Filter api restaurants that already exist in db
                 apiRestaurants.filter { apiRestaurant ->
                     //Db does not contain a restaurant with the api identifier
-                    dbRestaurants.none { dbRestaurant -> apiRestaurant.identifier == dbRestaurant.identifier }
+                    dbRestaurants.none { dbRestaurant ->
+                        apiRestaurant.identifier.value.apiId == dbRestaurant.identifier.value.apiId
+                    }
                 }
         )
     }

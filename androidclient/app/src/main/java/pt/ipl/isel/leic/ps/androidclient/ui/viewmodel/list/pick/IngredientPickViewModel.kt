@@ -8,16 +8,14 @@ import kotlin.reflect.KClass
 
 class IngredientPickViewModel : BaseItemPickerViewModel<MealIngredient> {
 
-    var ingredientsChanged = false
+    var itemsChanged = false
 
     constructor(parcel: Parcel) : super(parcel)
 
     constructor() : super()
 
     override fun update() {
-        if (!tryRestore()) {
-            ingredientRepository.getIngredients(count, skip, liveDataHandler::set, onError)
-        }
+        tryRestore()
     }
 
     override fun getModelClass(): KClass<MealIngredient> = MealIngredient::class

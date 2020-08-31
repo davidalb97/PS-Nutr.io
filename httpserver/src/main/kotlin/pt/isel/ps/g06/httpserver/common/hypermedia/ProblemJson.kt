@@ -12,15 +12,15 @@ import org.springframework.http.ResponseEntity
 data class ProblemJson(
         val type: String,
         val title: String,
-        val detail: String,
-        val status: Int
+        val status: Int,
+        val detail: String? = null
 )
 
 fun toResponseEntity(
         status: HttpStatus,
         type: String = "about:blank",
         title: String = status.reasonPhrase,
-        detail: String
+        detail: String?
 ): ResponseEntity<ProblemJson> {
     val problem = ProblemJson(
             type = type,

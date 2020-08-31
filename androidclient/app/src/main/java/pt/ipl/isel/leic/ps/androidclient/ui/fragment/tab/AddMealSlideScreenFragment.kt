@@ -6,7 +6,6 @@ import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.navigation.navGraphViewModels
 import pt.ipl.isel.leic.ps.androidclient.R
-import pt.ipl.isel.leic.ps.androidclient.data.model.MealIngredient
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealItem
 import pt.ipl.isel.leic.ps.androidclient.data.model.Source
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.list.*
@@ -15,21 +14,19 @@ import pt.ipl.isel.leic.ps.androidclient.ui.modular.listener.check.ICheckListene
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.listener.check.ICheckListenerOwner
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.listener.click.IItemClickListener
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.listener.click.IItemClickListenerOwner
-import pt.ipl.isel.leic.ps.androidclient.ui.provider.AddCustomMealRecyclerVMProviderFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.util.*
-import pt.ipl.isel.leic.ps.androidclient.ui.util.units.WeightUnits
-import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.pick.IngredientPickViewModel
+import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.pick.MealItemPickViewModel
 
 class AddMealSlideScreenFragment : BaseSlideScreenFragment(propagateArguments = false), ISend {
 
     private lateinit var okButton: Button
-    private lateinit var viewModel: IngredientPickViewModel
+    private lateinit var viewModel: MealItemPickViewModel
 
-    private fun extractViewModelFromParent(): IngredientPickViewModel {
+    private fun extractViewModelFromParent(): MealItemPickViewModel {
         val parentNavigation = requireNotNull(arguments?.getParentNavigation()) {
             "${javaClass.simpleName} Must have a parent navigation for navGraphViewModel!"
         }
-        val viewModelLazy: IngredientPickViewModel by navGraphViewModels(parentNavigation.navId)
+        val viewModelLazy: MealItemPickViewModel by navGraphViewModels(parentNavigation.navId)
         return viewModelLazy
     }
 
@@ -90,8 +87,7 @@ class AddMealSlideScreenFragment : BaseSlideScreenFragment(propagateArguments = 
 
     private fun <T : MealItem> getCheckListener(): ICheckListener<T> {
         return ICheckListener { item, isChecked, onChangeCallback ->
-            val mealIngredient = toMealIngredient(item)
-            viewModel.ingredientsChanged = true
+            viewModel.itemsChanged = true
 
             val existingItem =
                 viewModel.pickedItems.firstOrNull { it.submissionId == item.submissionId }
@@ -117,9 +113,7 @@ class AddMealSlideScreenFragment : BaseSlideScreenFragment(propagateArguments = 
                     val roundedCarbs = preciseCarbs.toInt()
                     item.amount = preciseGrams
                     item.carbs = roundedCarbs
-                    mealIngredient.amount = preciseGrams
-                    mealIngredient.carbs = roundedCarbs
-                    viewModel.pick(mealIngredient)
+                    viewModel.pick(item)
                     onChangeCallback()
                 }
             }
@@ -132,51 +126,33 @@ class AddMealSlideScreenFragment : BaseSlideScreenFragment(propagateArguments = 
                 //Find item to remove based on submission id
                 //This will avoid failed removals when
                 //the object is not the same after restoring checked items
-                viewModel.unPick(existingItem ?: mealIngredient)
+                viewModel.unPick(existingItem ?: item)
             }
         }
     }
 
     private fun <T : MealItem> getItemClickListener(): IItemClickListener<T> {
         return IItemClickListener { item, onChangeCallback ->
-            val mealIngredient =
-                viewModel.pickedItems.firstOrNull { it.submissionId == item.submissionId }
-            if (mealIngredient != null) {
+            val existingItem = viewModel.pickedItems.firstOrNull {
+                it.submissionId == item.submissionId
+            }
+            if (existingItem != null) {
                 MealAmountSelector(
                     ctx = requireContext(),
                     layoutInflater = layoutInflater,
-                    baseCarbs = mealIngredient.carbs.toFloat(),
-                    baseAmountGrams = mealIngredient.amount,
+                    baseCarbs = existingItem.carbs.toFloat(),
+                    baseAmountGrams = existingItem.amount,
                     mealUnit = item.unit
                 ) { preciseGrams, preciseCarbs ->
                     val roundedCarbs = preciseCarbs.toInt()
                     item.amount = preciseGrams
                     item.carbs = roundedCarbs
-                    mealIngredient.amount = preciseGrams
-                    mealIngredient.carbs = roundedCarbs
+                    existingItem.amount = preciseGrams
+                    existingItem.carbs = roundedCarbs
                     onChangeCallback()
                 }
             }
         }
-    }
-
-    private fun toMealIngredient(mealItem: MealItem): MealIngredient {
-        return if (mealItem is MealIngredient) {
-            mealItem.dbMealId = arguments?.getDbId()
-            mealItem
-        } else MealIngredient(
-            dbMealId = arguments?.getDbId(),
-            //Ingredient fragment is the only fragment that returns meal ingredients
-            isMeal = true,
-            dbId = mealItem.dbId,
-            submissionId = mealItem.submissionId,
-            name = mealItem.name,
-            carbs = mealItem.carbs,
-            amount = mealItem.amount,
-            unit = mealItem.unit,
-            imageUri = mealItem.imageUri,
-            source = mealItem.source
-        )
     }
 
     override fun onSendToDestination(bundle: Bundle) {

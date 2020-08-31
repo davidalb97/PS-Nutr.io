@@ -1,13 +1,15 @@
 package pt.isel.ps.g06.httpserver.service
 
 import org.springframework.stereotype.Service
-import pt.isel.ps.g06.httpserver.common.exception.clientError.SubmissionNotVotableException
-import pt.isel.ps.g06.httpserver.common.exception.forbidden.NotSubmissionOwnerException
-import pt.isel.ps.g06.httpserver.common.exception.notFound.SubmissionNotFoundException
+import pt.isel.ps.g06.httpserver.common.MOD_USER
+import pt.isel.ps.g06.httpserver.common.exception.problemJson.badRequest.SubmissionNotVotableException
+import pt.isel.ps.g06.httpserver.common.exception.problemJson.forbidden.NotSubmissionOwnerException
+import pt.isel.ps.g06.httpserver.common.exception.problemJson.notFound.SubmissionNotFoundException
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.SubmissionDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.VoteDbRepository
+import pt.isel.ps.g06.httpserver.model.MealRestaurantInfo
 import pt.isel.ps.g06.httpserver.model.Restaurant
-import pt.isel.ps.g06.httpserver.model.RestaurantMeal
+import pt.isel.ps.g06.httpserver.model.User
 import pt.isel.ps.g06.httpserver.model.VoteState
 
 /**
@@ -24,16 +26,18 @@ class SubmissionService(
      * Deletes given submission and all of it's attributes (votes, reports, etc),
      * if given user was the creator.
      */
-    fun deleteSubmission(submissionId: Int, userId: Int) {
-        val submitter = submissionDbRepository
-                .getSubmitterForSubmissionId(submissionId)
-                ?: throw SubmissionNotFoundException()
+    fun deleteSubmission(submissionId: Int, user: User) {
+        if (user.userRole != MOD_USER) {
+            val submitter = submissionDbRepository
+                    .getSubmitterForSubmissionId(submissionId)
+                    ?: throw SubmissionNotFoundException()
 
-        if (submitter.submitter_id != userId) {
-            throw NotSubmissionOwnerException()
+            if (submitter.submitter_id != user.identifier) {
+                throw NotSubmissionOwnerException()
+            }
         }
 
-        submissionDbRepository.deleteSubmission(submissionId)
+        submissionDbRepository.deleteSubmissionById(submissionId)
     }
 
     fun alterRestaurantVote(restaurant: Restaurant, submitterId: Int, voteState: VoteState) {
@@ -45,13 +49,10 @@ class SubmissionService(
         setSubmissionVote(restaurant.identifier.value.submissionId!!, submitterId, voteState)
     }
 
-    fun alterRestaurantMealVote(restaurantMeal: RestaurantMeal, submitterId: Int, voteState: VoteState) {
-        val mealRestaurantInfo = (restaurantMeal
-                .getRestaurantMealInfo()
-                ?: throw SubmissionNotVotableException("Only restaurant meals created by users can have votes!"))
+    fun alterRestaurantMealVote(restaurantMealId: Int, submitterId: Int, voteState: VoteState) {
 
         setSubmissionVote(
-                submissionId = mealRestaurantInfo.restaurantMealIdentifier,
+                submissionId = restaurantMealId,
                 submitterId = submitterId,
                 voteState = voteState
         )

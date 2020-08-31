@@ -1,6 +1,6 @@
 package pt.isel.ps.g06.httpserver.dataAccess.db.dto
 
-import pt.isel.ps.g06.httpserver.dataAccess.model.VotesDto
+import pt.isel.ps.g06.httpserver.dataAccess.common.dto.VotesDto
 
 class DbVotesDto(
         positive_count: Int,
