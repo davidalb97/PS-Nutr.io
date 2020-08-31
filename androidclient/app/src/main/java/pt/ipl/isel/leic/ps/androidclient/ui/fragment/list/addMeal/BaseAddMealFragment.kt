@@ -12,7 +12,7 @@ import androidx.navigation.navGraphViewModels
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.pick.IngredientPickRecyclerAdapter
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.BaseFragment
-import pt.ipl.isel.leic.ps.androidclient.ui.modular.IWeightUnitSpinner
+import pt.ipl.isel.leic.ps.androidclient.ui.modular.unit.IWeightUnitSpinner
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.pick.IPickedFlexBoxRecycler
 import pt.ipl.isel.leic.ps.androidclient.ui.util.Navigation
 import pt.ipl.isel.leic.ps.androidclient.ui.util.putNavigation
@@ -35,8 +35,8 @@ abstract class BaseAddMealFragment : BaseFragment(), IWeightUnitSpinner, IPicked
         IngredientPickRecyclerAdapter(ingredientsViewModel, requireContext())
     }
 
-    override lateinit var currentUnit: WeightUnits
-    override lateinit var previousUnit: WeightUnits
+    override lateinit var currentWeightUnit: WeightUnits
+    override lateinit var previousWeightUnit: WeightUnits
 
     protected abstract val weightUnitSpinnerId: Int
     protected lateinit var weightUnitSpinner: Spinner
@@ -122,7 +122,7 @@ abstract class BaseAddMealFragment : BaseFragment(), IWeightUnitSpinner, IPicked
         totalIngredientsWeightTextView.text = String.format(
             getString(R.string.ingredient_weight),
             _currentIngredientQuantity,
-            currentUnit.toString()
+            currentWeightUnit.toString()
         )
     }
 
@@ -133,7 +133,7 @@ abstract class BaseAddMealFragment : BaseFragment(), IWeightUnitSpinner, IPicked
 
     private fun countIngredientQuantity(): Float =
         ingredientsViewModel.pickedItems.fold(0.0F) { sum, ingredient ->
-            sum + ingredient.unit.convert(currentUnit, ingredient.amount)
+            sum + ingredient.unit.convert(currentWeightUnit, ingredient.amount)
         }
 
     protected open fun setupIngredients(view: View) {

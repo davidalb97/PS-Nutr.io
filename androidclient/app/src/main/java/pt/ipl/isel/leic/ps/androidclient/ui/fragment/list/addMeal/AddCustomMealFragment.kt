@@ -154,7 +154,7 @@ class AddCustomMealFragment : BaseAddMealFragment(), IRemainingPickSpinner {
             submissionId = viewModel.editMeal?.submissionId,
             name = mMealNameEditText.text.toString(),
             carbs = currentIngredientsCarbohydrates,
-            amount = currentUnit.convert(
+            amount = currentWeightUnit.convert(
                 DEFAULT_WEIGHT_UNIT,
                 currentIngredientsAmount + getAdditionalAmount()
             ),
