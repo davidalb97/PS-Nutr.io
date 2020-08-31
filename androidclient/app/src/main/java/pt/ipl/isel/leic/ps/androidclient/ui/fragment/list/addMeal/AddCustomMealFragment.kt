@@ -135,12 +135,17 @@ class AddCustomMealFragment : BaseAddMealFragment(), IRemainingPickSpinner {
                 val customMeal = getCurrentCustomMeal()
                 val editMeal = viewModel.editMeal
                 if (editMeal == null) {
-                    viewModel.addCustomMeal(customMeal = customMeal, error = log::e)
+                    viewModel.addCustomMeal(
+                        customMeal = customMeal,
+                        error = log::e,
+                        success = ::popUpBackStack
+                    )
                 } else {
                     viewModel.editCustomMeal(
                         submission = requireNotNull(editMeal.submissionId),
                         customMeal = customMeal,
-                        error = log::e
+                        error = log::e,
+                        success = ::popUpBackStack
                     )
                 }
             }

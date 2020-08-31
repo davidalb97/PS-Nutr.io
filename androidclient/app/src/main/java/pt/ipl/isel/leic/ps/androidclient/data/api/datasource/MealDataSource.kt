@@ -182,6 +182,7 @@ class MealDataSource(
      */
     fun postCustomMeal(
         customMealOutput: CustomMealOutput,
+        success: (PayloadResponse) -> Unit,
         error: (VolleyError) -> Unit,
         jwt: String
     ) {
@@ -197,7 +198,7 @@ class MealDataSource(
             reqHeader = buildAuthHeader(jwt),
             reqPayload = customMealOutput,
             onError = error,
-            responseConsumer = { }
+            responseConsumer = success
         )
     }
 
@@ -283,6 +284,7 @@ class MealDataSource(
     fun putMeal(
         submissionId: Int,
         customMealOutput: CustomMealOutput,
+        success: (PayloadResponse) -> Unit,
         error: (VolleyError) -> Unit,
         jwt: String
     ) {
@@ -298,7 +300,7 @@ class MealDataSource(
             reqHeader = buildAuthHeader(jwt),
             reqPayload = customMealOutput,
             onError = error,
-            responseConsumer = { }
+            responseConsumer = success
         )
     }
 
