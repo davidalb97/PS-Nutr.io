@@ -22,13 +22,14 @@ import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.pick.CuisinePickRec
 import pt.ipl.isel.leic.ps.androidclient.ui.adapter.spinner.pick.CuisinePickSpinnerAdapter
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.BaseFragment
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.list.REQUEST_PERMISSIONS_CODE
+import pt.ipl.isel.leic.ps.androidclient.ui.modular.IRequiredTextInput
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.pick.IPickedFlexBoxRecycler
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.pick.IRemainingPickSpinner
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.AddRestaurantVMProviderFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.AddRestaurantViewModel
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.pick.CuisinePickViewModel
 
-class AddRestaurantFragment : BaseFragment(), IRemainingPickSpinner, IPickedFlexBoxRecycler {
+class AddRestaurantFragment : BaseFragment(), IRemainingPickSpinner, IPickedFlexBoxRecycler, IRequiredTextInput {
 
     private lateinit var viewModel: AddRestaurantViewModel
 
@@ -165,10 +166,18 @@ class AddRestaurantFragment : BaseFragment(), IRemainingPickSpinner, IPickedFlex
     private fun setupSubmit(view: View) {
         submitButton = view.findViewById(R.id.create_custom_meal_button)
         submitButton.setOnClickListener {
-            val noneFieldBlank = restaurantNameEditText.text.isNotBlank()
-            val noneEmpty = cuisinesViewModel.pickedItems.isNotEmpty()
+            val pickerIsEmpty = cuisinesViewModel.pickedItems.isEmpty()
 
-            if (noneFieldBlank && noneEmpty) {
+            if (pickerIsEmpty) {
+                Toast.makeText(
+                    app,
+                    getString(R.string.select_cuisine),
+                    Toast.LENGTH_SHORT
+                ).show()
+                return@setOnClickListener
+            }
+
+            if (validateTextViews(requireContext(), restaurantNameEditText)) {
                 val customRestaurant = getCurrentCustomRestaurant()
                 val editRestaurant = viewModel.editRestaurant
                 if (editRestaurant == null) {
@@ -180,16 +189,11 @@ class AddRestaurantFragment : BaseFragment(), IRemainingPickSpinner, IPickedFlex
                                 getString(R.string.created_restaurant),
                                 Toast.LENGTH_SHORT
                             ).show()
+                            popUpBackStack()
                         },
                         onError = log::e
                     )
-                }/* else {
-                    viewModel.editRestaurant(
-                        submission = requireNotNull(editRestaurant.submissionId),
-                        customMeal = customMeal,
-                        error = log::e
-                    )
-                }*/
+                }
             }
         }
     }
