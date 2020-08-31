@@ -29,15 +29,16 @@ open class MealInfo : MealItem {
         amount: Float,
         unit: WeightUnits,
         votes: Votes?,
-        isFavorite: Boolean,
-        isVotable: Boolean,
+        favorites: Favorites,
         imageUri: Uri?,
         creationDate: TimestampWithTimeZone?,
         ingredientComponents: List<MealIngredient>,
         mealComponents: List<MealIngredient>,
         cuisines: List<Cuisine>,
         portions: List<Portion>,
-        isSuggested: Boolean,
+        isVerified: Boolean?,
+        isSuggested: Boolean?,
+        isReportable: Boolean?,
         source: Source,
         submissionOwner: SubmissionOwner?
     ) : super(
@@ -50,10 +51,11 @@ open class MealInfo : MealItem {
         amount = amount,
         unit = unit,
         votes = votes,
-        isFavorite = isFavorite,
-        isVotable = isVotable,
+        favorites = favorites,
         imageUri = imageUri,
+        isVerified = isVerified,
         isSuggested = isSuggested,
+        isReportable = isReportable,
         source = source
     ) {
         this.creationDate = creationDate

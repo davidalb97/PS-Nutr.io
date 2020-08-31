@@ -2,8 +2,8 @@ package pt.ipl.isel.leic.ps.androidclient.data.api.datasource
 
 import android.net.Uri
 import com.android.volley.VolleyError
-import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.info.DetailedIngredientInput
-import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.info.DetailedIngredientsInput
+import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.ingredient.IngredientContainerInput
+import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.meal.MealInfoInput
 import pt.ipl.isel.leic.ps.androidclient.data.api.request.*
 import pt.ipl.isel.leic.ps.androidclient.data.util.appendPath
 import pt.ipl.isel.leic.ps.androidclient.data.util.appendQueryNotNullParameter
@@ -15,7 +15,7 @@ class IngredientDataSource(
     fun getIngredients(
         count: Int?,
         skip: Int?,
-        success: (DetailedIngredientsInput) -> Unit,
+        success: (IngredientContainerInput) -> Unit,
         error: (VolleyError) -> Unit
     ) {
         requestParser.requestAndParse(
@@ -28,7 +28,7 @@ class IngredientDataSource(
                 .appendQueryNotNullParameter(SKIP_PARAM, skip)
                 .build()
                 .toString(),
-            dtoClass = DetailedIngredientsInput::class.java,
+            dtoClass = IngredientContainerInput::class.java,
             onSuccess = success,
             onError = error
         )
@@ -36,7 +36,7 @@ class IngredientDataSource(
 
     fun getIngredientInfo(
         ingredientId: Int,
-        success: (DetailedIngredientInput) -> Unit,
+        success: (MealInfoInput) -> Unit,
         error: (VolleyError) -> Unit
     ) {
         requestParser.requestAndParse(
@@ -48,7 +48,7 @@ class IngredientDataSource(
                 .appendPath(ingredientId)
                 .build()
                 .toString(),
-            dtoClass = DetailedIngredientInput::class.java,
+            dtoClass = MealInfoInput::class.java,
             onSuccess = success,
             onError = error
         )

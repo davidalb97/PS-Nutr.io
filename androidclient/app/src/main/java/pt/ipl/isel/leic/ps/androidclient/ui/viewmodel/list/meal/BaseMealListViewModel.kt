@@ -73,17 +73,27 @@ abstract class BaseMealListViewModel<M : Parcelable> : BaseListViewModel<M> {
         mealItem: MealItem,
         onSuccess: () -> Unit,
         onError: (Throwable) -> Unit
-    ) = mealRepository.putFavorite(
+    ) {
+
+        val favorites = requireNotNull(mealItem.favorites) {
+            "Favorite can not be null"
+        }
+        val submissionId = requireNotNull(mealItem.submissionId) {
+            "Submission"
+        }
+
+        mealRepository.putFavorite(
             restaurantId = mealItem.restaurantSubmissionId!!,
-            submissionId = requireNotNull(mealItem.submissionId),
-            isFavorite = !mealItem.isFavorite,
+            submissionId = submissionId,
+            isFavorite = !favorites.isFavorite,
             success = {
-                mealItem.isFavorite = !mealItem.isFavorite
+                favorites.isFavorite = !favorites.isFavorite
                 onSuccess()
             },
             error = onError,
             userSession = requireUserSession()
         )
+    }
 
     override fun writeToParcel(dest: Parcel?, flags: Int) {
         super.writeToParcel(dest, flags)

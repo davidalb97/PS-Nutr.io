@@ -3,21 +3,17 @@ package pt.ipl.isel.leic.ps.androidclient.data.model
 import android.net.Uri
 import android.os.Parcel
 import android.os.Parcelable
-import pt.ipl.isel.leic.ps.androidclient.util.TimestampWithTimeZone
 
 class CustomRestaurant : RestaurantInfo, Parcelable {
 
     constructor(
         dbId: Long?,
-        id: String,
+        id: String?,
         name: String,
         latitude: Float,
         longitude: Float,
-        imageUri: Uri?,
-        creationDate: TimestampWithTimeZone?,
-        cuisines: List<Cuisine>,
-        meals: List<MealItem>,
-        suggestedMeals: List<MealItem>
+        image: Uri?,
+        cuisines: List<Cuisine>
     ) : super(
         dbId = dbId,
         id = id,
@@ -27,12 +23,13 @@ class CustomRestaurant : RestaurantInfo, Parcelable {
         votes = null,
         isFavorite = false,
         isVotable = false,
-        imageUri = imageUri,
+        image = image,
         source = Source.CUSTOM,
-        creationDate = creationDate,
+        creationDate = null,
         cuisines = cuisines,
-        meals = meals,
-        suggestedMeals = suggestedMeals
+        meals = emptyList(),
+        suggestedMeals = emptyList(),
+        ownerId = null
     )
 
     constructor(parcel: Parcel) : super(parcel)

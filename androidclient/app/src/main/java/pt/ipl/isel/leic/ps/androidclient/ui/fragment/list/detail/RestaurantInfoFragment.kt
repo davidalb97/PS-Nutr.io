@@ -79,7 +79,7 @@ class RestaurantInfoFragment :
     }
 
     private fun setupRestaurantInfoView(view: View, restaurantInfo: RestaurantInfo) {
-        super.setupImage(view, restaurantInfo.imageUri)
+        super.setupImage(view, restaurantInfo.image)
         super.setupVoteBarCounters(view, restaurantInfo.votes, restaurantInfo.isVotable)
         super.setupFavoriteButton(view)
         super.setupReportMenuItem()
@@ -118,7 +118,7 @@ class RestaurantInfoFragment :
     }
 
     override fun onEdit(onSuccess: () -> Unit) {
-        sendToDestination(requireView(), Navigation.SEND_TO_ADD_CUSTOM_RESTAURANT)
+        sendToDestination(requireView(), Navigation.SEND_TO_ADD_RESTAURANT)
     }
 
     override fun onSendToDestination(bundle: Bundle) {

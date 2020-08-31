@@ -17,8 +17,8 @@ open class DbMealItemEntity(
     val negativeVotes: Int?,
     val userVoteOrdinal: Int?,
     val isFavorite: Boolean,
-    val isVotable: Boolean,
-    val isSuggested: Boolean,
+    val isVotable: Boolean?,
+    val isSuggested: Boolean?,
     val sourceOrdinal: Int
 ) {
     companion object {

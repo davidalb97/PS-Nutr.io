@@ -191,6 +191,7 @@ class AddCustomMealFragment : BaseAddMealFragment(), IRemainingPickSpinner {
             name = mealItem.name,
             carbs = mealItem.carbs,
             amount = mealItem.amount,
+            favorites = mealItem.favorites,
             unit = mealItem.unit,
             imageUri = mealItem.imageUri,
             source = mealItem.source

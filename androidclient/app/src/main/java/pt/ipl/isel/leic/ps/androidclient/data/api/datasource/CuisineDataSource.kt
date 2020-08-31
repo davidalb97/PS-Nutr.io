@@ -2,7 +2,7 @@ package pt.ipl.isel.leic.ps.androidclient.data.api.datasource
 
 import android.net.Uri
 import com.android.volley.VolleyError
-import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.CuisinesInput
+import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.cuisine.CuisinesInput
 import pt.ipl.isel.leic.ps.androidclient.data.api.request.*
 import pt.ipl.isel.leic.ps.androidclient.data.util.appendQueryNotNullParameter
 

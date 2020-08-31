@@ -31,19 +31,23 @@ class MealRepository(private val dataSource: MealDataSource) {
     )
     val dbMealItemMapper = DbMealItemMapper()
     private val inputVotesMapper = InputVotesMapper()
+    private val inputFavoriteMapper = InputFavoriteMapper()
     private val inputCuisineMapper = InputCuisineMapper()
-    private val inputMealIngredientMapper = InputMealIngredientMapper()
+    private val inputMealIngredientMapper = InputMealIngredientMapper(
+        inputVotesMapper = inputVotesMapper,
+        inputFavoritesMapper = inputFavoriteMapper
+    )
     private val inputPortionMapper = InputPortionMapper()
     private val inputUserMapper = InputSubmissionOwnerMapper()
     private val inputMealInfoMapper = InputMealInfoMapper(
-        inputVotesMapper = inputVotesMapper,
         inputCuisineMapper = inputCuisineMapper,
         inputMealIngredientMapper = inputMealIngredientMapper,
-        inputPortionMapper = inputPortionMapper,
-        inputUserMapper = inputUserMapper
+        inputUserMapper = inputUserMapper,
+        inputFavoriteMapper = InputFavoriteMapper()
     )
     private val inputMealItemMapper = InputMealItemMapper(
-        inputVotesMapper = inputVotesMapper
+        inputVotesMapper = inputVotesMapper,
+        inputFavoriteMapper = inputFavoriteMapper
     )
     private val outputVoteMapper = OutputVoteMapper()
     private val cuisineOutputMapper = OutputCuisineMapper()

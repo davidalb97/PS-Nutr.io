@@ -2,14 +2,15 @@ package pt.ipl.isel.leic.ps.androidclient.data.api.datasource
 
 import android.net.Uri
 import com.android.volley.VolleyError
-import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.SimplifiedRestaurantInput
-import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.info.DetailedRestaurantInput
+import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.restaurant.RestaurantItemInput
+import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.restaurant.RestaurantInfoInput
+import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.restaurant.RestaurantItemContainerInput
+import pt.ipl.isel.leic.ps.androidclient.data.api.dto.output.CustomRestaurantOutput
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.output.FavoriteOutput
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.output.ReportOutput
-import pt.ipl.isel.leic.ps.androidclient.data.api.dto.output.CustomRestaurantOutput
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.output.VoteOutput
-import pt.ipl.isel.leic.ps.androidclient.data.api.request.*
-import pt.ipl.isel.leic.ps.androidclient.data.model.Cuisine
+import pt.ipl.isel.leic.ps.androidclient.data.api.request.HTTPMethod
+import pt.ipl.isel.leic.ps.androidclient.data.api.request.RequestParser
 import pt.ipl.isel.leic.ps.androidclient.data.util.appendQueryNotNullListParameter
 import pt.ipl.isel.leic.ps.androidclient.data.util.appendQueryNotNullParameter
 import pt.ipl.isel.leic.ps.androidclient.data.util.appendQueryParameter
@@ -28,7 +29,7 @@ class RestaurantDataSource(
     fun getRestaurant(
         jwt: String?,
         restaurantId: String,
-        success: (DetailedRestaurantInput) -> Unit,
+        success: (RestaurantInfoInput) -> Unit,
         error: (VolleyError) -> Unit
     ) {
         requestParser.requestAndParse(
@@ -41,7 +42,7 @@ class RestaurantDataSource(
                 .build()
                 .toString(),
             reqHeader = jwt?.let { buildAuthHeader(jwt) },
-            dtoClass = DetailedRestaurantInput::class.java,
+            dtoClass = RestaurantInfoInput::class.java,
             onSuccess = success,
             onError = error
         )
@@ -54,7 +55,7 @@ class RestaurantDataSource(
         count: Int?,
         skip: Int?,
         cuisines: Collection<String>?,
-        success: (Array<SimplifiedRestaurantInput>) -> Unit,
+        success: (RestaurantItemContainerInput) -> Unit,
         error: (VolleyError) -> Unit
     ) {
         requestParser.requestAndParse(
@@ -71,7 +72,7 @@ class RestaurantDataSource(
                 .build()
                 .toString(),
             reqHeader = jwt?.let { buildAuthHeader(jwt) },
-            dtoClass = Array<SimplifiedRestaurantInput>::class.java,
+            dtoClass = RestaurantItemContainerInput::class.java,
             onSuccess = success,
             onError = error
         )
@@ -83,6 +84,7 @@ class RestaurantDataSource(
 
     fun postRestaurant(
         customRestaurantOutput: CustomRestaurantOutput,
+        onSuccess: () -> Unit,
         error: (VolleyError) -> Unit,
         jwt: String
     ) {
@@ -97,7 +99,7 @@ class RestaurantDataSource(
             reqHeader = buildAuthHeader(jwt),
             reqPayload = customRestaurantOutput,
             onError = error,
-            responseConsumer = { }
+            responseConsumer = { onSuccess() }
         )
     }
 
