@@ -40,13 +40,13 @@ abstract class BaseMealRecyclerViewHolder<T : MealItem>(
     ICheckBox<T> {
 
     private val mealName: TextView = view.findViewById(R.id.mealName)
-    override val checkBoxId: Int = R.id.meal_card_checkbox;
+    override val checkBoxId: Int = R.id.meal_card_checkbox
     override lateinit var checkBox: CheckBox
     override val customMealQuantityId: Int = R.id.custom_meal_quantity
     override lateinit var customMealQuantity: TextView
     override val customMealCarbsId: Int = R.id.custom_meal_carbs_amount
     override lateinit var customMealCarbs: TextView
-    override val menus: MutableList<MenuItemFactory> = mutableListOf()
+    override val menus: MutableMap<String, MenuItemFactory> = mutableMapOf()
     override val menuButtonId = R.id.options
     override lateinit var menuButton: ImageButton
     override val imageId: Int = R.id.mealImage

@@ -206,4 +206,7 @@
     <string name="meal_amout">Amount: %1$.2f</string>
     <string name="select_meal_amount">Select meal amount</string>
     <string name="created_restaurant">Restaurant created!</string>
+    <string name="field_required">Required</string>
+    <string name="calculator_ingredients_required">Please add food portions</string>
+    <string name="calculator_result">You need to inject %1$.2f insulin doses</string>
 </resources>

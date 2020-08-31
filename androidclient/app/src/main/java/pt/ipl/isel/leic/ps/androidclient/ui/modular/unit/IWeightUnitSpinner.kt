@@ -1,4 +1,4 @@
-package pt.ipl.isel.leic.ps.androidclient.ui.modular
+package pt.ipl.isel.leic.ps.androidclient.ui.modular.unit
 
 import android.content.Context
 import android.view.View
@@ -10,15 +10,16 @@ import pt.ipl.isel.leic.ps.androidclient.ui.util.Logger
 import pt.ipl.isel.leic.ps.androidclient.ui.util.getWeightUnitOrDefault
 import pt.ipl.isel.leic.ps.androidclient.ui.util.units.WeightUnits
 
+private val log = Logger(IWeightUnitSpinner::class)
+
 interface IWeightUnitSpinner {
 
-    var previousUnit: WeightUnits
-    var currentUnit: WeightUnits
+    var previousWeightUnit: WeightUnits
+    var currentWeightUnit: WeightUnits
 
-    fun onUnitChange(converter: (Float) -> Float)
+    fun onWeightUnitChange(converter: (Float) -> Float)
 
     fun setupWeightUnitSpinner(context: Context, weightUnitSpinner: Spinner) {
-        val log = Logger(IWeightUnitSpinner::class)
         val spinnerAdapter = ArrayAdapter(
             context,
             android.R.layout.simple_spinner_item,
@@ -32,8 +33,8 @@ interface IWeightUnitSpinner {
 
         //Get user configured unit
         val configuredUnit = sharedPreferences.getWeightUnitOrDefault()
-        currentUnit =  WeightUnits.fromValue(configuredUnit)
-        previousUnit = currentUnit
+        currentWeightUnit =  WeightUnits.fromValue(configuredUnit)
+        previousWeightUnit = currentWeightUnit
 
         //Set selected unit to configured unit
         val spinnerPosition = spinnerAdapter.getPosition(configuredUnit)
@@ -49,14 +50,14 @@ interface IWeightUnitSpinner {
                 position: Int,
                 id: Long
             ) {
-                previousUnit = currentUnit
-                currentUnit = WeightUnits.fromValue(weightUnitSpinner.selectedItem.toString())
+                previousWeightUnit = currentWeightUnit
+                currentWeightUnit = WeightUnits.fromValue(weightUnitSpinner.selectedItem.toString())
 
-                log.v("Changing unit from $previousUnit to $currentUnit")
+                log.v("Changing unit from $previousWeightUnit to $currentWeightUnit")
 
                 //Notify listeners of unit change passing the converted function
-                onUnitChange { oldValue ->
-                    previousUnit.convert(currentUnit, oldValue)
+                onWeightUnitChange { oldValue ->
+                    previousWeightUnit.convert(currentWeightUnit, oldValue)
                 }
             }
         }

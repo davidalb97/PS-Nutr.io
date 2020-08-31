@@ -30,7 +30,7 @@ open class MealInfoViewModel : MealItemListViewModel {
         navDestination = Navigation.SEND_TO_MEAL_DETAIL,
         actions = ingredientActions
     ) {
-        mealItem = null
+        mealItem = mealInfo
         mealInfoLiveDataHandler.restoreFromValue(mealInfo)
     }
 
