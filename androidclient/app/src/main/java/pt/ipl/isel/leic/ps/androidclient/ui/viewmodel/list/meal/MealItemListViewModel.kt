@@ -4,6 +4,7 @@ import android.os.Parcel
 import android.os.Parcelable
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.mealRepository
 import pt.ipl.isel.leic.ps.androidclient.data.model.Cuisine
+import pt.ipl.isel.leic.ps.androidclient.data.model.MealInfo
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealItem
 import pt.ipl.isel.leic.ps.androidclient.data.model.Source
 import pt.ipl.isel.leic.ps.androidclient.ui.util.ItemAction
@@ -17,7 +18,7 @@ open class MealItemListViewModel : BaseMealListViewModel<MealItem> {
     constructor(
         navDestination: Navigation,
         actions: List<ItemAction>,
-        source: Source,
+        source: Source?,
         restaurantId: String? = null,
         cuisines: List<Cuisine> = emptyList()
     ) : super(
@@ -61,6 +62,13 @@ open class MealItemListViewModel : BaseMealListViewModel<MealItem> {
                     success = liveDataHandler::add,
                     error = onError
                 )
+                Source.CUSTOM -> mealRepository.getCustomMeals(
+                    userSession = requireUserSession(),
+                    count = count,
+                    skip = skip,
+                    success = liveDataHandler::add,
+                    error = onError
+                )
                 else -> fetchDbInfoBySource(requireNotNull(source) {
                     "Cannot meal items from db without a source!"
                 })
@@ -73,8 +81,6 @@ open class MealItemListViewModel : BaseMealListViewModel<MealItem> {
             mealRepository.dbMealItemMapper.mapToModel(it)
         }
     }
-
-    override fun getModelClass(): KClass<MealItem> = MealItem::class
 
     override fun describeContents(): Int {
         TODO("Not yet implemented")
@@ -93,5 +99,7 @@ open class MealItemListViewModel : BaseMealListViewModel<MealItem> {
         }
 
     }
+
+    override fun getModelClass(): KClass<MealItem> = MealItem::class
 
 }

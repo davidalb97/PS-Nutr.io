@@ -4,19 +4,31 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import pt.ipl.isel.leic.ps.androidclient.R
-import pt.ipl.isel.leic.ps.androidclient.data.model.MealInfo
-import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.meal.MealInfoRecyclerAdapter
+import pt.ipl.isel.leic.ps.androidclient.data.model.MealIngredient
+import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.meal.MealIngredientRecyclerAdapter
+import pt.ipl.isel.leic.ps.androidclient.ui.modular.listener.check.ICheckListener
+import pt.ipl.isel.leic.ps.androidclient.ui.modular.listener.check.ICheckListenerOwner
+import pt.ipl.isel.leic.ps.androidclient.ui.modular.listener.click.IItemClickListener
+import pt.ipl.isel.leic.ps.androidclient.ui.modular.listener.click.IItemClickListenerOwner
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.BaseViewModelProviderFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.IngredientRecyclerVMProviderFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.meal.IngredientListViewModel
 
 open class IngredientsListFragment
-    : BaseListFragment<MealInfo, IngredientListViewModel, MealInfoRecyclerAdapter>() {
+    : BaseListFragment<MealIngredient, IngredientListViewModel, MealIngredientRecyclerAdapter>(),
+    ICheckListenerOwner<MealIngredient>,
+    IItemClickListenerOwner<MealIngredient> {
 
+    override var restoredItemPredicator: ((MealIngredient) -> Boolean)? = null
+    override var onCheckListener: ICheckListener<MealIngredient>? = null
+    override var onClickListener: IItemClickListener<MealIngredient>? = null
     override val recyclerAdapter by lazy {
-        MealInfoRecyclerAdapter(
+        MealIngredientRecyclerAdapter(
             recyclerViewModel,
-            this.requireContext()
+            this.requireContext(),
+            restoredItemPredicator,
+            onCheckListener,
+            onClickListener
         )
     }
 

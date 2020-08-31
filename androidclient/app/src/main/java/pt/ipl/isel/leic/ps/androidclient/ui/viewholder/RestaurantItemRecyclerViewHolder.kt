@@ -32,7 +32,7 @@ abstract class RestaurantItemRecyclerViewHolder(
     IReportMenuItem {
 
     private val restaurantName: TextView = view.findViewById(R.id.restaurantName)
-    override val menus: MutableList<MenuItemFactory> = mutableListOf()
+    override val menus: MutableMap<String, MenuItemFactory> = mutableMapOf()
     override val menuButtonId: Int = R.id.options
     override lateinit var menuButton: ImageButton
     override val imageId: Int = R.id.restaurantImage

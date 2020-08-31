@@ -14,8 +14,8 @@ class IngredientRepository(private val dataSource: IngredientDataSource) {
     private val inputIngredientMapper = InputMealIngredientMapper()
 
     fun getIngredients(
-        count: Int,
-        skip: Int,
+        count: Int?,
+        skip: Int?,
         success: (List<MealIngredient>) -> Unit,
         error: (Throwable) -> Unit
     ) {

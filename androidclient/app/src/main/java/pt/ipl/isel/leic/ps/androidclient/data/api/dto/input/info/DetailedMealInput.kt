@@ -13,10 +13,10 @@ class DetailedMealInput(
     votes: VotesInputDto?,
     isSuggested: Boolean,
     isVotable: Boolean,
+    nutritionalInfo: NutritionalInfoInput,
     val portions: Collection<Int>?,
     val creationDate: String?,
     val composedBy: MealComposition?,
-    val nutritionalInfo: NutritionalInfoInput,
     val createdBy: SimplifiedUserInput?,
     val cuisines: Collection<String>?
 ) : SimplifiedMealInput(
@@ -26,5 +26,6 @@ class DetailedMealInput(
     isFavorite = isFavorite,
     isVotable = isVotable,
     votes = votes,
-    isSuggested = isSuggested
+    isSuggested = isSuggested,
+    nutritionalInfo = nutritionalInfo
 )

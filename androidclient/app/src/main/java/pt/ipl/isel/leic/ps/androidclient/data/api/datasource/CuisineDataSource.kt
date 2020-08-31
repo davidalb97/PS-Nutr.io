@@ -1,15 +1,10 @@
 package pt.ipl.isel.leic.ps.androidclient.data.api.datasource
 
+import android.net.Uri
 import com.android.volley.VolleyError
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.CuisinesInput
-import pt.ipl.isel.leic.ps.androidclient.data.api.request.CUISINES
-import pt.ipl.isel.leic.ps.androidclient.data.api.request.HTTPMethod
-import pt.ipl.isel.leic.ps.androidclient.data.api.request.RequestParser
-import pt.ipl.isel.leic.ps.androidclient.data.api.request.URI_BASE
-
-private const val CUISINE_URI = "$URI_BASE/$CUISINES" +
-        "?skip=$SKIP_PARAM" +
-        "&count=$COUNT_PARAM"
+import pt.ipl.isel.leic.ps.androidclient.data.api.request.*
+import pt.ipl.isel.leic.ps.androidclient.data.util.appendQueryNotNullParameter
 
 class CuisineDataSource(
     private val requestParser: RequestParser
@@ -19,22 +14,21 @@ class CuisineDataSource(
      * ----------------------------- GETs -----------------------------
      */
     fun getCuisines(
-        count: Int,
-        skip: Int,
+        count: Int?,
+        skip: Int?,
         success: (CuisinesInput) -> Unit,
         error: (VolleyError) -> Unit
     ) {
-        var uri = CUISINE_URI
-        val params = hashMapOf(
-            Pair(SKIP_PARAM, "$skip"),
-            Pair(COUNT_PARAM, "$count")
-        )
-
-        uri = buildUri(uri, params)
-
         requestParser.requestAndParse(
             method = HTTPMethod.GET,
-            uri = uri,
+            uri = Uri.Builder()
+                .scheme(SCHEME)
+                .encodedAuthority(ADDRESS_PORT)
+                .appendPath(CUISINES_PATH)
+                .appendQueryNotNullParameter(COUNT_PARAM, count)
+                .appendQueryNotNullParameter(SKIP_PARAM, skip)
+                .build()
+                .toString(),
             dtoClass = CuisinesInput::class.java,
             onSuccess = success,
             onError = error

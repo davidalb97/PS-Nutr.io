@@ -40,7 +40,7 @@ class DbRestaurantItemMapper {
         hasVote = model.votes != null,
         sourceOrdinal = model.source.ordinal
     ).also { dto ->
-        dto.primaryKey = model.dbId
+        dto.primaryKey = model.dbId ?: DbRestaurantItemEntity.DEFAULT_DB_ID
     }
 
     fun mapToListModel(relations: List<DbRestaurantItemEntity>) = relations.map(this::mapToModel)

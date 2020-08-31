@@ -36,11 +36,11 @@ abstract class BaseMealListViewModel<M : Parcelable> : BaseListViewModel<M> {
     }
 
     constructor(parcel: Parcel) : super(parcel) {
-        navDestination = Navigation.values()[parcel.readInt()]
-        actions = parcel.readListCompat(ItemAction::class)
-        source = (parcel.readSerializable() as Int?)?.let { Source.values()[it] }
-        restaurantId = parcel.readString()
-        cuisines = parcel.readListCompat(Cuisine::class)
+        this.navDestination = Navigation.values()[parcel.readInt()]
+        this.actions = parcel.readListCompat(ItemAction::class)
+        this.source = (parcel.readSerializable() as Int?)?.let { Source.values()[it] }
+        this.restaurantId = parcel.readString()
+        this.cuisines = parcel.readListCompat(Cuisine::class)
     }
 
     fun insertInfo(mealInfo: MealInfo) = mealRepository.insertInfo(mealInfo)
@@ -61,8 +61,8 @@ abstract class BaseMealListViewModel<M : Parcelable> : BaseListViewModel<M> {
         onSuccess: () -> Unit,
         onError: (Throwable) -> Unit
     ) = mealRepository.report(
-        restaurantId = mealItem.restaurantSubmissionId!!,
-        mealId = mealItem.submissionId,
+        restaurantId = requireNotNull(mealItem.restaurantSubmissionId),
+        mealId = requireNotNull(mealItem.submissionId),
         reportMsg = reportStr,
         success = onSuccess,
         error = onError,
@@ -73,10 +73,9 @@ abstract class BaseMealListViewModel<M : Parcelable> : BaseListViewModel<M> {
         mealItem: MealItem,
         onSuccess: () -> Unit,
         onError: (Throwable) -> Unit
-    ) =
-        mealRepository.putFavorite(
+    ) = mealRepository.putFavorite(
             restaurantId = mealItem.restaurantSubmissionId!!,
-            submissionId = mealItem.submissionId,
+            submissionId = requireNotNull(mealItem.submissionId),
             isFavorite = !mealItem.isFavorite,
             success = {
                 mealItem.isFavorite = !mealItem.isFavorite
@@ -87,11 +86,11 @@ abstract class BaseMealListViewModel<M : Parcelable> : BaseListViewModel<M> {
         )
 
     override fun writeToParcel(dest: Parcel?, flags: Int) {
+        super.writeToParcel(dest, flags)
         dest?.writeInt(navDestination.ordinal)
         dest?.writeList(actions)
         dest?.writeSerializable(source?.ordinal)
         dest?.writeString(restaurantId)
         dest?.writeList(cuisines)
-        super.writeToParcel(dest, flags)
     }
 }

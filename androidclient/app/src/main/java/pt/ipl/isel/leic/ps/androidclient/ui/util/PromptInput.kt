@@ -11,19 +11,20 @@ import pt.ipl.isel.leic.ps.androidclient.R
 class PromptInput(
     ctx: Context,
     @StringRes titleId: Int,
+    inputType: Int = InputType.TYPE_CLASS_TEXT,
     confirmConsumer: (String) -> Unit,
     cancelConsumer: (String) -> Unit = { }
 ) {
 
     private val editText = EditText(ctx).apply {
-        inputType = InputType.TYPE_CLASS_TEXT
+        this.inputType = inputType
     }
     private val imm = ctx.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
 
     private var alertDialog = AlertDialog.Builder(ctx)
         .setTitle(titleId)
         .setView(editText)
-        .setPositiveButton(R.string.Dialog_Ok) { _, _ ->
+        .setPositiveButton(R.string.ok) { _, _ ->
             confirmConsumer(editText.text.toString())
         }
         .setNegativeButton(R.string.Dialog_cancel) { _, _ ->

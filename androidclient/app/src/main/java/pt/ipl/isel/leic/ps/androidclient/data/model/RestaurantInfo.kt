@@ -5,55 +5,59 @@ import android.os.Parcel
 import android.os.Parcelable
 import pt.ipl.isel.leic.ps.androidclient.util.*
 
-data class RestaurantInfo(
-    var dbId: Long,
-    val id: String,
-    val name: String,
-    val latitude: Float,
-    val longitude: Float,
-    val creationDate: TimestampWithTimeZone?,
-    val votes: Votes?,
-    var isFavorite: Boolean,
-    var isVotable: Boolean,
-    val imageUri: Uri?,
-    val cuisines: List<Cuisine>,
-    val meals: List<MealItem>,
-    val suggestedMeals: List<MealItem>,
-    val source: Source
-) : Parcelable {
+open class RestaurantInfo : RestaurantItem, Parcelable {
 
-    constructor(parcel: Parcel) : this(
-        dbId = parcel.readLong(),
-        id = parcel.readString()!!,
-        name = parcel.readString()!!,
-        latitude = parcel.readFloat(),
-        longitude = parcel.readFloat(),
-        creationDate = parcel.readTimestampWithTimeZone(),
-        votes = parcel.readParcelable(Votes::class.java.classLoader),
-        isFavorite = parcel.readBooleanCompat(),
-        isVotable = parcel.readBooleanCompat(),
-        imageUri = parcel.readUri(),
-        cuisines = parcel.readListCompat(Cuisine::class),
-        meals = parcel.readListCompat(MealItem::class),
-        suggestedMeals = parcel.readListCompat(MealItem::class),
-        source = Source.values()[parcel.readInt()]
-    )
+    val creationDate: TimestampWithTimeZone?
+    val cuisines: List<Cuisine>
+    val meals: List<MealItem>
+    val suggestedMeals: List<MealItem>
+
+    constructor(
+        dbId: Long?,
+        id: String,
+        name: String,
+        latitude: Float,
+        longitude: Float,
+        votes: Votes?,
+        isFavorite: Boolean,
+        isVotable: Boolean,
+        imageUri: Uri?,
+        source: Source,
+        creationDate: TimestampWithTimeZone?,
+        cuisines: List<Cuisine>,
+        meals: List<MealItem>,
+        suggestedMeals: List<MealItem>
+    ) : super(
+        dbId = dbId,
+        id = id,
+        name = name,
+        latitude = latitude,
+        longitude = longitude,
+        votes = votes,
+        isFavorite = isFavorite,
+        isVotable = isVotable,
+        imageUri = imageUri,
+        source = source
+    ) {
+        this.creationDate = creationDate
+        this.cuisines = cuisines
+        this.meals = meals
+        this.suggestedMeals = suggestedMeals
+    }
+
+    constructor(parcel: Parcel) : super(parcel) {
+        creationDate = parcel.readTimestampWithTimeZone()
+        cuisines = parcel.readListCompat(Cuisine::class)
+        meals = parcel.readListCompat(MealItem::class)
+        suggestedMeals = parcel.readListCompat(MealItem::class)
+    }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeLong(dbId)
-        parcel.writeString(id)
-        parcel.writeString(name)
-        parcel.writeFloat(latitude)
-        parcel.writeFloat(longitude)
+        super.writeToParcel(parcel, flags)
         parcel.writeTimestampWithTimeZone(creationDate)
-        parcel.writeParcelable(votes, flags)
-        parcel.writeBooleanCompat(isFavorite)
-        parcel.writeBooleanCompat(isVotable)
-        parcel.writeUri(imageUri)
         parcel.writeList(cuisines)
         parcel.writeList(meals)
         parcel.writeList(suggestedMeals)
-        parcel.writeInt(source.ordinal)
     }
 
     override fun describeContents(): Int {

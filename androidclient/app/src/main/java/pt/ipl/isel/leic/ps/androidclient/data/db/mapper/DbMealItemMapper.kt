@@ -6,6 +6,7 @@ import pt.ipl.isel.leic.ps.androidclient.data.model.MealItem
 import pt.ipl.isel.leic.ps.androidclient.data.model.Source
 import pt.ipl.isel.leic.ps.androidclient.data.model.VoteState
 import pt.ipl.isel.leic.ps.androidclient.data.model.Votes
+import pt.ipl.isel.leic.ps.androidclient.ui.util.units.WeightUnits
 
 class DbMealItemMapper {
 
@@ -17,7 +18,7 @@ class DbMealItemMapper {
         name = entity.name,
         carbs = entity.carbs,
         amount = entity.amount,
-        unit = entity.unit,
+        unit = WeightUnits.values()[entity.unit],
         votes = if (entity.hasVote) Votes(
             userHasVoted = VoteState.values()[entity.userVoteOrdinal!!],
             positive = entity.positiveVotes!!,
@@ -36,7 +37,7 @@ class DbMealItemMapper {
         name = model.name,
         carbs = model.carbs,
         amount = model.amount,
-        unit = model.unit,
+        unit = model.unit.ordinal,
         isFavorite = model.isFavorite,
         isVotable = model.isVotable,
         imageUri = model.imageUri?.toString(),
@@ -47,8 +48,8 @@ class DbMealItemMapper {
         isSuggested = model.isSuggested,
         sourceOrdinal = model.source.ordinal
     ).also { dto ->
-        dto.primaryKey = model.dbId
-        dto.restaurantKey = model.dbRestaurantId
+        dto.primaryKey = model.dbId ?: DbMealItemEntity.DEFAULT_DB_ID
+        dto.restaurantKey = model.dbRestaurantId ?: DbMealItemEntity.DEFAULT_DB_ID
     }
 
     fun mapToListModel(entities: List<DbMealItemEntity>) = entities.map(this::mapToModel)

@@ -7,6 +7,7 @@ import pt.ipl.isel.leic.ps.androidclient.data.db.entity.DbComponentIngredientEnt
 import pt.ipl.isel.leic.ps.androidclient.data.db.entity.DbMealInfoEntity
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealIngredient
 import pt.ipl.isel.leic.ps.androidclient.data.model.Source
+import pt.ipl.isel.leic.ps.androidclient.ui.util.units.WeightUnits
 
 class InputMealIngredientMapper {
 
@@ -17,8 +18,8 @@ class InputMealIngredientMapper {
         name = dto.name,
         imageUri = dto.imageUri,
         carbs = dto.nutritionalInfo.carbs,
-        amount = dto.nutritionalInfo.amount,
-        unit = dto.nutritionalInfo.unit,
+        amount = dto.nutritionalInfo.amount.toFloat(),
+        unit = WeightUnits.fromValue(dto.nutritionalInfo.unit),
         isMeal = false, //Not a meal (DetailedIngredientInput)
         source = Source.API
     )
@@ -30,8 +31,8 @@ class InputMealIngredientMapper {
         name = dto.name,
         imageUri = dto.imageUri,
         carbs = dto.nutritionalInfo.carbs,
-        amount = dto.nutritionalInfo.amount,
-        unit = dto.nutritionalInfo.unit,
+        amount = dto.nutritionalInfo.amount.toFloat(),
+        unit = WeightUnits.fromValue(dto.nutritionalInfo.unit),
         isMeal = isMeal,
         source = Source.API
     )

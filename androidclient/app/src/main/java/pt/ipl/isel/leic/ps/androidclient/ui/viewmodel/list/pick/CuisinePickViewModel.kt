@@ -6,7 +6,7 @@ import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.cuisineRepository
 import pt.ipl.isel.leic.ps.androidclient.data.model.Cuisine
 import kotlin.reflect.KClass
 
-class CuisinePickViewModel : ItemPickerViewModel<Cuisine> {
+class CuisinePickViewModel : BaseItemPickerViewModel<Cuisine> {
 
     constructor(parcel: Parcel) : super(parcel)
 

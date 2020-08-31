@@ -6,6 +6,7 @@ import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.SimplifiedRestaurant
 import pt.ipl.isel.leic.ps.androidclient.data.db.entity.DbMealItemEntity
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealItem
 import pt.ipl.isel.leic.ps.androidclient.data.model.Source
+import pt.ipl.isel.leic.ps.androidclient.ui.util.units.WeightUnits
 
 class InputMealItemMapper(
     private val inputVotesMapper: InputVotesMapper
@@ -15,11 +16,9 @@ class InputMealItemMapper(
         dbRestaurantId = DbMealItemEntity.DEFAULT_DB_ID,
         submissionId = dto.mealIdentifier,
         restaurantSubmissionId = restaurantId,
-        //Nutritional info does not come in form of a MealItem,
-        //this field is used for custom meal display
-        carbs = null,
-        amount = null,
-        unit = null,
+        carbs = dto.nutritionalInfo.carbs,
+        amount = dto.nutritionalInfo.amount.toFloat(),
+        unit = WeightUnits.fromValue(dto.nutritionalInfo.unit),
         imageUri = dto.imageUri,
         name = dto.name,
         votes = inputVotesMapper.mapToModel(dto.votes),
@@ -35,7 +34,7 @@ class InputMealItemMapper(
     fun mapToListModel(dtos: Array<SimplifiedMealInput>, restaurantId: String?) =
         dtos.map { mapToModel(it, restaurantId) }
 
-    fun mapToListModel(dto: SimplifiedMealsInput, restaurantId: String?) =
+    fun mapToListModel(dto: SimplifiedMealsInput, restaurantId: String? = null) =
         mapToListModel(dto.meals, restaurantId)
 
     fun mapToListModel(dto: SimplifiedRestaurantMealsInput) =
