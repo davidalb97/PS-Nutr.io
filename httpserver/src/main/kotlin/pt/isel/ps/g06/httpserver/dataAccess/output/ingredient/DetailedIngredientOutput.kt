@@ -1,6 +1,7 @@
 package pt.isel.ps.g06.httpserver.dataAccess.output.ingredient
 
 import pt.isel.ps.g06.httpserver.dataAccess.output.NutritionalInfoOutput
+import pt.isel.ps.g06.httpserver.dataAccess.output.meal.BaseMealOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.modular.BasePublicSubmissionOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.modular.FavoritesOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.modular.IFavorableOutput
@@ -14,13 +15,14 @@ class DetailedIngredientOutput(
         name: String,
         image: URI?,
         favorites: FavoritesOutput,
-        override val nutritionalInfo: NutritionalInfoOutput
-) : BasePublicSubmissionOutput<Int>(
+        nutritionalInfo: NutritionalInfoOutput
+) : BaseMealOutput(
         identifier = identifier,
         name = name,
         image = image,
-        favorites = favorites
-), INutritionalSubmissionOutput, IFavorableOutput
+        favorites = favorites,
+        nutritionalInfo = nutritionalInfo
+), INutritionalSubmissionOutput
 
 fun toDetailedIngredientOutput(ingredient: MealIngredient, userId: Int? = null): DetailedIngredientOutput {
     return DetailedIngredientOutput(

@@ -13,9 +13,7 @@ open class BaseMealOutput(
         name: String,
         image: URI?,
         favorites: FavoritesOutput,
-        override val nutritionalInfo: NutritionalInfoOutput,
-        val isSuggested: Boolean,
-        val isVerified: Boolean
+        override val nutritionalInfo: NutritionalInfoOutput
 ) : BasePublicSubmissionOutput<Int>(
         identifier = identifier,
         name = name,
@@ -28,8 +26,6 @@ fun toBaseMealOutput(meal: Meal, userId: Int? = null): BaseMealOutput {
             identifier = meal.identifier,
             name = meal.name,
             image = meal.image,
-            isSuggested = !meal.isUserMeal(),
-            isVerified = false,
             favorites = FavoritesOutput(
                     isFavorite = meal.isFavorite(userId),
                     isFavorable = meal.isFavorable(userId)

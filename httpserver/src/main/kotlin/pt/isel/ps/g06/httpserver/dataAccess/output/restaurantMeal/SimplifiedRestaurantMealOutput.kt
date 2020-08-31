@@ -17,18 +17,16 @@ open class SimplifiedRestaurantMealOutput(
         identifier: Int,
         name: String,
         favorites: FavoritesOutput,
-        isSuggested: Boolean,
-        isVerified: Boolean,
         image: URI?,
         nutritionalInfo: NutritionalInfoOutput,
+        val isVerified: Boolean,
+        val isSuggested: Boolean,
         override val isReportable: Boolean,
         override val votes: VotesOutput
 ) : BaseMealOutput(
         identifier = identifier,
         name = name,
         favorites = favorites,
-        isSuggested = isSuggested,
-        isVerified = isVerified,
         image = image,
         nutritionalInfo = nutritionalInfo
 ), IReportableOutput, IVotableOutput

@@ -20,8 +20,6 @@ class DetailedMealOutput(
         name: String,
         image: URI?,
         nutritionalInfo: NutritionalInfoOutput,
-        isSuggested: Boolean,
-        isVerified: Boolean,
         favorites: FavoritesOutput,
         @JsonSerialize(using = ToStringSerializer::class)
         val creationDate: OffsetDateTime?,
@@ -33,8 +31,6 @@ class DetailedMealOutput(
         name = name,
         image = image,
         nutritionalInfo = nutritionalInfo,
-        isSuggested = isSuggested,
-        isVerified = isVerified,
         favorites = favorites
 ), ISubmitterInfoOutput, ICuisinesOutput
 
@@ -47,8 +43,6 @@ fun toDetailedMealOutput(meal: Meal, userId: Int? = null): DetailedMealOutput {
                     isFavorite = meal.isFavorite(userId),
                     isFavorable = meal.isFavorable(userId)
             ),
-            isSuggested = !meal.isUserMeal(),
-            isVerified = false,
             creationDate = meal.creationDate.value,
             composedBy = toMealComposition(meal),
             nutritionalInfo = toNutritionalInfoOutput(meal.nutritionalInfo),
