@@ -10,11 +10,14 @@ import android.widget.Button
 import android.widget.EditText
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.CustomMeal
+import pt.ipl.isel.leic.ps.androidclient.data.model.MealIngredient
+import pt.ipl.isel.leic.ps.androidclient.data.model.MealItem
 import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.pick.CuisinePickRecyclerAdapter
 import pt.ipl.isel.leic.ps.androidclient.ui.adapter.spinner.pick.CuisinePickSpinnerAdapter
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.pick.IRemainingPickSpinner
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.AddCustomMealRecyclerVMProviderFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.util.Navigation
+import pt.ipl.isel.leic.ps.androidclient.ui.util.getDbId
 import pt.ipl.isel.leic.ps.androidclient.ui.util.units.DEFAULT_WEIGHT_UNIT
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.AddCustomMealViewModel
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.pick.CuisinePickViewModel
@@ -80,10 +83,10 @@ class AddCustomMealFragment : BaseAddMealFragment(), IRemainingPickSpinner {
         super.setupIngredients(view)
 
         val editMeal = viewModel.editMeal
-        if (ingredientsViewModel.items.isEmpty() && editMeal != null) {
+        if (mealsViewModel.items.isEmpty() && editMeal != null) {
             val ingredients = editMeal.mealComponents.plus(editMeal.ingredientComponents)
             if (ingredients.isNotEmpty()) {
-                ingredientsViewModel.pickedLiveDataHandler.set(ingredients)
+                mealsViewModel.pickedLiveDataHandler.set(ingredients)
             }
         }
     }
@@ -125,7 +128,7 @@ class AddCustomMealFragment : BaseAddMealFragment(), IRemainingPickSpinner {
 
             val noneEmpty = listOf(
                 cuisinesViewModel,
-                ingredientsViewModel
+                mealsViewModel
             ).none { it.pickedItems.isEmpty() }
 
             if (noneFieldBlank && noneEmpty) {
@@ -160,12 +163,34 @@ class AddCustomMealFragment : BaseAddMealFragment(), IRemainingPickSpinner {
             ),
             unit = DEFAULT_WEIGHT_UNIT,
             imageUri = imageUrlEditText.text?.toString()?.let { Uri.parse(it) },
-            ingredientComponents = ingredientsViewModel.items.filter { !it.isMeal },
-            mealComponents = ingredientsViewModel.items.filter { it.isMeal },
+            ingredientComponents = mealsViewModel.pickedItems
+                .map(::toMealIngredient)
+                .filter { !it.isMeal },
+            mealComponents = mealsViewModel.pickedItems
+                .map(::toMealIngredient)
+                .filter { it.isMeal },
             cuisines = cuisinesViewModel.pickedItems
         )
     }
 
+    private fun toMealIngredient(mealItem: MealItem): MealIngredient {
+        return if (mealItem is MealIngredient) {
+            mealItem.dbMealId = arguments?.getDbId()
+            mealItem
+        } else MealIngredient(
+            dbMealId = arguments?.getDbId(),
+            //Ingredient fragment is the only fragment that returns meal ingredients
+            isMeal = true,
+            dbId = mealItem.dbId,
+            submissionId = mealItem.submissionId,
+            name = mealItem.name,
+            carbs = mealItem.carbs,
+            amount = mealItem.amount,
+            unit = mealItem.unit,
+            imageUri = mealItem.imageUri,
+            source = mealItem.source
+        )
+    }
 
     override fun getVMProviderFactory(
         savedInstanceState: Bundle?,
