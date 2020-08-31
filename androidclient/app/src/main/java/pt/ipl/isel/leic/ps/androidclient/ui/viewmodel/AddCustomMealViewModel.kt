@@ -16,18 +16,20 @@ class AddCustomMealViewModel(
         editMeal = parcel.readParcelable(MealInfo::class.java.classLoader)
     )
 
-    fun addCustomMeal(customMeal: CustomMeal, error: (Throwable) -> Unit) =
+    fun addCustomMeal(customMeal: CustomMeal, error: (Throwable) -> Unit, success: () -> Unit) =
         mealRepository.addCustomMeal(
             customMeal = customMeal,
             userSession = requireUserSession(),
+            success = success,
             error = error
         )
 
-    fun editCustomMeal(submission: Int, customMeal: CustomMeal, error: (Throwable) -> Unit) =
+    fun editCustomMeal(submission: Int, customMeal: CustomMeal, error: (Throwable) -> Unit, success: () -> Unit) =
         mealRepository.editCustomMeal(
             submissionId = submission,
             customMeal = customMeal,
             userSession = requireUserSession(),
+            success = success,
             error = error
         )
 

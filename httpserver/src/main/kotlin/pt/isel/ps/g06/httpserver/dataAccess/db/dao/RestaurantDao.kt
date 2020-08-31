@@ -62,5 +62,8 @@ interface RestaurantDao {
     fun delete(@Bind submissionId: Int): DbRestaurantDto
 
     @SqlQuery("UPDATE $table SET $name = :name WHERE $id = :submissionId RETURNING *")
-    fun update(submissionId: Int, name: String): Collection<DbRestaurantDto>
+    fun update(@Bind submissionId: Int, @Bind name: String): Collection<DbRestaurantDto>
+
+    @SqlQuery("UPDATE $table SET $ownerId = :ownerId WHERE $id = :restaurantId RETURNING *")
+    fun addOwner(@Bind restaurantId: Int, @Bind ownerId: Int): DbRestaurantDto
 }

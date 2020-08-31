@@ -15,7 +15,7 @@ class Logger(private val subject: String) {
     }
 
     fun e(throwable: Throwable) {
-        Log.e(TAG, "[$subject]: ${throwable.message}", throwable)
+        Log.e(TAG, "[$subject]: ${throwable.message ?: ""}", throwable)
     }
 
     fun e(msg: String, throwable: Throwable) {

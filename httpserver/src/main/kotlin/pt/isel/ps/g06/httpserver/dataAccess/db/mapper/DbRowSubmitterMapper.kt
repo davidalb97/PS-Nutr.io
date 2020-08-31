@@ -12,7 +12,6 @@ class DbRowSubmitterMapper : RowMapper<DbSubmitterDto> {
     override fun map(rs: ResultSet?, ctx: StatementContext?): DbSubmitterDto {
         return DbSubmitterDto(
                 submitter_id = rs!!.getInt(SubmitterDao.id),
-                submitter_name = rs.getString(SubmitterDao.name),
                 creation_date = OffsetDateTimeSupport.parseFromDateTimeWithWithTimeZone(
                         rs.getString(SubmitterDao.date)
                 ),

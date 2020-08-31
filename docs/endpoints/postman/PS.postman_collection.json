@@ -1,0 +1,1400 @@
+{
+	"info": {
+		"_postman_id": "29f04da4-274a-4b6d-8f4b-5e3674a8ca0d",
+		"name": "PS",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "auth",
+			"item": [
+				{
+					"name": "userInfo",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{USER_JWT}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{DOMAIN}}/user",
+							"host": [
+								"{{DOMAIN}}"
+							],
+							"path": [
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "loginUser",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"content-type": true
+						}
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"123@123\",\r\n    \"password\": \"123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{DOMAIN}}/user/login",
+							"host": [
+								"{{DOMAIN}}"
+							],
+							"path": [
+								"user",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "registerUser",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"content-type": true
+						}
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"123@123\",\r\n    \"username\": \"123\",\r\n    \"password\": \"123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{DOMAIN}}/user/register",
+							"host": [
+								"{{DOMAIN}}"
+							],
+							"path": [
+								"user",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "loginMod",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"1234@1234\",\r\n    \"password\": \"1234\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{DOMAIN}}/user/login",
+							"host": [
+								"{{DOMAIN}}"
+							],
+							"path": [
+								"user",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "registerMod",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"1234@1234\",\r\n    \"username\": \"1234\",\r\n    \"password\": \"1234\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{DOMAIN}}/user/register",
+							"host": [
+								"{{DOMAIN}}"
+							],
+							"path": [
+								"user",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "user",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"123@123\",\r\n    \"password\": \"123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{DOMAIN}}/user",
+							"host": [
+								"{{DOMAIN}}"
+							],
+							"path": [
+								"user"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "user",
+			"item": [
+				{
+					"name": "allUserInsulinProfiles",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{USER_JWT}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{DOMAIN}}/user/profile",
+							"host": [
+								"{{DOMAIN}}"
+							],
+							"path": [
+								"user",
+								"profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "userInsulinProfile",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{USER_JWT}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{DOMAIN}}/user/profile/Profile1",
+							"host": [
+								"{{DOMAIN}}"
+							],
+							"path": [
+								"user",
+								"profile",
+								"Profile1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "insulinProfile",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{USER_JWT}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"profileName\": \"Profile1\",\r\n    \"startTime\": \"21:10\",\r\n    \"endTime\": \"23:10\",\r\n    \"glucoseObjective\": 110,\r\n    \"insulinSensitivityFactor\": 25,\r\n    \"carbohydrateRatio\": 15\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{DOMAIN}}/user/profile",
+							"host": [
+								"{{DOMAIN}}"
+							],
+							"path": [
+								"user",
+								"profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "insulinProfile",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{USER_JWT}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{DOMAIN}}/user/profile/:profileName",
+							"host": [
+								"{{DOMAIN}}"
+							],
+							"path": [
+								"user",
+								"profile",
+								":profileName"
+							],
+							"variable": [
+								{
+									"key": "profileName",
+									"value": "Profile1"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "moderation",
+			"item": [
+				{
+					"name": "allReports",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{MOD_JWT}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{DOMAIN}}/report",
+							"host": [
+								"{{DOMAIN}}"
+							],
+							"path": [
+								"report"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "allReportsByType",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{MOD_JWT}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{DOMAIN}}/report?type=RESTAURANT",
+							"host": [
+								"{{DOMAIN}}"
+							],
+							"path": [
+								"report"
+							],
+							"query": [
+								{
+									"key": "type",
+									"value": "RESTAURANT"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "allReportsBySubmission",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{MOD_JWT}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{DOMAIN}}/report/:submissionId",
+							"host": [
+								"{{DOMAIN}}"
+							],
+							"path": [
+								"report",
+								":submissionId"
+							],
+							"variable": [
+								{
+									"key": "submissionId",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "hardcodedIngredient",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{MOD_JWT}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"TestIngredient\",\r\n    \"quantity\": 100,\r\n    \"unit\": \"gr\",\r\n    \"ingredients\": [\r\n        {\r\n            \"identifier\": 143,\r\n            \"quantity\": 100\r\n        }\r\n    ],\r\n    \"cuisines\": [\"Filipino\"]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{DOMAIN}}/ingredient",
+							"host": [
+								"{{DOMAIN}}"
+							],
+							"path": [
+								"ingredient"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "hardcodedMeal",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{MOD_JWT}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"TestMeal\",\r\n    \"quantity\": 100,\r\n    \"unit\": \"gr\",\r\n    \"ingredients\": [\r\n        {\r\n            \"identifier\": 143,\r\n            \"quantity\": 100\r\n        }\r\n    ],\r\n    \"cuisines\": [\"Italian\"]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{DOMAIN}}/meal/suggested",
+							"host": [
+								"{{DOMAIN}}"
+							],
+							"path": [
+								"meal",
+								"suggested"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "userBan",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{MOD_JWT}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"submitterId\": 4,\r\n    \"isBanned\": false\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{DOMAIN}}/user/ban",
+							"host": [
+								"{{DOMAIN}}"
+							],
+							"path": [
+								"user",
+								"ban"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "restaurantOwner",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{MOD_JWT}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ownerId\": 4\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{DOMAIN}}/restaurant/:restaurantId",
+							"host": [
+								"{{DOMAIN}}"
+							],
+							"path": [
+								"restaurant",
+								":restaurantId"
+							],
+							"variable": [
+								{
+									"key": "restaurantId",
+									"value": "4+232+"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "reportId",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{MOD_JWT}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{DOMAIN}}/report/:reportId",
+							"host": [
+								"{{DOMAIN}}"
+							],
+							"path": [
+								"report",
+								":reportId"
+							],
+							"variable": [
+								{
+									"key": "reportId",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "restaurant",
+			"item": [
+				{
+					"name": "restaurantById",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{USER_JWT}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{DOMAIN}}/restaurant/:id",
+							"host": [
+								"{{DOMAIN}}"
+							],
+							"path": [
+								"restaurant",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "2++here:pds:place:620eyckr-72ff992cbb2c4e979321a0683885c6b0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "restaurantByLocation (Lisbon)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{USER_JWT}}"
+							}
+						],
+						"url": {
+							"raw": "{{DOMAIN}}/restaurant?latitude=38.736946&longitude=-9.142685&skip=0&count=5",
+							"host": [
+								"{{DOMAIN}}"
+							],
+							"path": [
+								"restaurant"
+							],
+							"query": [
+								{
+									"key": "latitude",
+									"value": "38.736946"
+								},
+								{
+									"key": "longitude",
+									"value": "-9.142685"
+								},
+								{
+									"key": "skip",
+									"value": "0"
+								},
+								{
+									"key": "count",
+									"value": "5"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "restaurant",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{USER_JWT}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"MockRestaurant\",\r\n    \"latitude\": 9.45481,\r\n    \"longitude\": 75.64455,\r\n    \"cuisines\": [\"Italian\"],\r\n    \"ownerId\": null\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{DOMAIN}}/restaurant",
+							"host": [
+								"{{DOMAIN}}"
+							],
+							"path": [
+								"restaurant"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "reportRestaurant",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{USER_JWT}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"description\": \"Test: this restaurant does not exist!\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{DOMAIN}}/restaurant/:restaurantIdentifier/report",
+							"host": [
+								"{{DOMAIN}}"
+							],
+							"path": [
+								"restaurant",
+								":restaurantIdentifier",
+								"report"
+							],
+							"variable": [
+								{
+									"key": "restaurantIdentifier",
+									"value": "2++here:pds:place:620eyckr-72ff992cbb2c4e979321a0683885c6b0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "favoriteRestaurant",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{USER_JWT}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"isFavorite\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{DOMAIN}}/restaurant/:restaurantIdentifier/favorite",
+							"host": [
+								"{{DOMAIN}}"
+							],
+							"path": [
+								"restaurant",
+								":restaurantIdentifier",
+								"favorite"
+							],
+							"variable": [
+								{
+									"key": "restaurantIdentifier",
+									"value": "2++here:pds:place:620eyckr-72ff992cbb2c4e979321a0683885c6b0"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "restaurantMeal",
+			"item": [
+				{
+					"name": "restaurantMeal (Suggested)",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"accept": true
+						}
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{USER_JWT}}"
+							}
+						],
+						"url": {
+							"raw": "{{DOMAIN}}/restaurant/:restaurant_id/meal/:meal_id",
+							"host": [
+								"{{DOMAIN}}"
+							],
+							"path": [
+								"restaurant",
+								":restaurant_id",
+								"meal",
+								":meal_id"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							],
+							"variable": [
+								{
+									"key": "restaurant_id",
+									"value": "2++here:pds:place:620eyckr-72ff992cbb2c4e979321a0683885c6b0"
+								},
+								{
+									"key": "meal_id",
+									"value": "197"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "mealsFromRestaurant (API)",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"accept": true
+						}
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{USER_JWT}}"
+							}
+						],
+						"url": {
+							"raw": "{{DOMAIN}}/restaurant/:restaurant_id/meal",
+							"host": [
+								"{{DOMAIN}}"
+							],
+							"path": [
+								"restaurant",
+								":restaurant_id",
+								"meal"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							],
+							"variable": [
+								{
+									"key": "restaurant_id",
+									"value": "2++here:pds:place:620eyckr-72ff992cbb2c4e979321a0683885c6b0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "restaurantMealPortion",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{USER_JWT}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"quantity\": 100,\r\n    \"unit\": \"gr\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{DOMAIN}}/restaurant/:restaurant_id/meal/:meal_id/portion",
+							"host": [
+								"{{DOMAIN}}"
+							],
+							"path": [
+								"restaurant",
+								":restaurant_id",
+								"meal",
+								":meal_id",
+								"portion"
+							],
+							"variable": [
+								{
+									"key": "restaurant_id",
+									"value": "2++here:pds:place:620eyckr-72ff992cbb2c4e979321a0683885c6b0"
+								},
+								{
+									"key": "meal_id",
+									"value": "197"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "mealForRestaurant (Requires user meal)",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{USER_JWT}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"mealId\": 233\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{DOMAIN}}/restaurant/:restaurant_id/meal",
+							"host": [
+								"{{DOMAIN}}"
+							],
+							"path": [
+								"restaurant",
+								":restaurant_id",
+								"meal"
+							],
+							"variable": [
+								{
+									"key": "restaurant_id",
+									"value": "2++here:pds:place:620eyckr-72ff992cbb2c4e979321a0683885c6b0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "reportRestaurantMeal",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{USER_JWT}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"description\": \"Test: this restaurant meal does not exist!\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{DOMAIN}}/restaurant/:restaurantIdentifier/meal/:mealId/report",
+							"host": [
+								"{{DOMAIN}}"
+							],
+							"path": [
+								"restaurant",
+								":restaurantIdentifier",
+								"meal",
+								":mealId",
+								"report"
+							],
+							"variable": [
+								{
+									"key": "restaurantIdentifier",
+									"value": "2++here:pds:place:620eyckr-72ff992cbb2c4e979321a0683885c6b0"
+								},
+								{
+									"key": "mealId",
+									"value": "197"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "voteRestaurantMeal (Requires user restaurant)",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{USER_JWT}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"vote\": \"POSITIVE\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{DOMAIN}}/restaurant/:restaurantIdentifier/meal/:mealId/vote",
+							"host": [
+								"{{DOMAIN}}"
+							],
+							"path": [
+								"restaurant",
+								":restaurantIdentifier",
+								"meal",
+								":mealId",
+								"vote"
+							],
+							"variable": [
+								{
+									"key": "restaurantIdentifier",
+									"value": "2++here:pds:place:620eyckr-72ff992cbb2c4e979321a0683885c6b0"
+								},
+								{
+									"key": "mealId",
+									"value": "197"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "favoriteRestaurantMeal",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{USER_JWT}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"isFavorite\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{DOMAIN}}/restaurant/:restaurantIdentifier/meal/:mealId/favorite",
+							"host": [
+								"{{DOMAIN}}"
+							],
+							"path": [
+								"restaurant",
+								":restaurantIdentifier",
+								"meal",
+								":mealId",
+								"favorite"
+							],
+							"variable": [
+								{
+									"key": "restaurantIdentifier",
+									"value": "2++here:pds:place:620eyckr-72ff992cbb2c4e979321a0683885c6b0"
+								},
+								{
+									"key": "mealId",
+									"value": "197"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "verifyRestaurantMeal (Requires owner)",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{USER_JWT}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"verified\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{DOMAIN}}/restaurant/:restaurantIdentifier/meal/:mealId",
+							"host": [
+								"{{DOMAIN}}"
+							],
+							"path": [
+								"restaurant",
+								":restaurantIdentifier",
+								"meal",
+								":mealId"
+							],
+							"variable": [
+								{
+									"key": "restaurantIdentifier",
+									"value": "2++here:pds:place:620eyckr-72ff992cbb2c4e979321a0683885c6b0"
+								},
+								{
+									"key": "mealId",
+									"value": "197"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "meal",
+			"item": [
+				{
+					"name": "favoriteMeals",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{USER_JWT}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{DOMAIN}}/meal/favorite",
+							"host": [
+								"{{DOMAIN}}"
+							],
+							"path": [
+								"meal",
+								"favorite"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "meals",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{USER_JWT}}"
+							}
+						],
+						"url": {
+							"raw": "{{DOMAIN}}/meal/suggested?count=10&skip=0",
+							"host": [
+								"{{DOMAIN}}"
+							],
+							"path": [
+								"meal",
+								"suggested"
+							],
+							"query": [
+								{
+									"key": "count",
+									"value": "10"
+								},
+								{
+									"key": "skip",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "customMeals",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{USER_JWT}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{DOMAIN}}/meal/custom",
+							"host": [
+								"{{DOMAIN}}"
+							],
+							"path": [
+								"meal",
+								"custom"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "customMeal",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{USER_JWT}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"TestCustomMeal\",\r\n    \"quantity\": 100,\r\n    \"unit\": \"gr\",\r\n    \"ingredients\":  [\r\n        {\r\n            \"identifier\": 143,\r\n            \"quantity\": 100\r\n        }\r\n    ],\r\n    \"cuisines\": [\"Italian\"]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{DOMAIN}}/meal/custom",
+							"host": [
+								"{{DOMAIN}}"
+							],
+							"path": [
+								"meal",
+								"custom"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "favoriteMeal",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{USER_JWT}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"isFavorite\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{DOMAIN}}/meal/:mealId/favorite",
+							"host": [
+								"{{DOMAIN}}"
+							],
+							"path": [
+								"meal",
+								":mealId",
+								"favorite"
+							],
+							"variable": [
+								{
+									"key": "mealId",
+									"value": "200"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "ingredient",
+			"item": [
+				{
+					"name": "ingredients",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{USER_JWT}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{DOMAIN}}/ingredient",
+							"host": [
+								"{{DOMAIN}}"
+							],
+							"path": [
+								"ingredient"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "cuisine",
+			"item": [
+				{
+					"name": "cuisines",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{USER_JWT}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{DOMAIN}}/cuisine",
+							"host": [
+								"{{DOMAIN}}"
+							],
+							"path": [
+								"cuisine"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "submission",
+			"item": [
+				{
+					"name": "submission",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{USER_JWT}}"
+							}
+						],
+						"url": {
+							"raw": "{{DOMAIN}}/submission/:submissionId",
+							"host": [
+								"{{DOMAIN}}"
+							],
+							"path": [
+								"submission",
+								":submissionId"
+							],
+							"variable": [
+								{
+									"key": "submissionId",
+									"type": "string",
+									"value": "227"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"protocolProfileBehavior": {}
+}

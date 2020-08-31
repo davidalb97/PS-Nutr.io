@@ -18,6 +18,6 @@ class OutputCustomMealMapper(
         unit = restaurant.unit.toString(),
         ingredients = ingredientMapper.mapToOutputModelCollection(restaurant.mealComponents.plus(restaurant.ingredientComponents)),
         cuisines = cuisineMapper.mapToOutputModelCollection(restaurant.cuisines),
-        imageUri = restaurant.imageUri
+        imageUri = restaurant.imageUri.toString()
     )
 }
