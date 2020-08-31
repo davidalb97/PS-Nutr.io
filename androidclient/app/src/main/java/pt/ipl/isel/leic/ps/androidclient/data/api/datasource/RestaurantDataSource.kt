@@ -38,7 +38,7 @@ class RestaurantDataSource(
                 .scheme(SCHEME)
                 .encodedAuthority(ADDRESS_PORT)
                 .appendPath(RESTAURANT_PATH)
-                .appendPath(restaurantId)
+                .appendEncodedPath(restaurantId)
                 .build()
                 .toString(),
             reqHeader = jwt?.let { buildAuthHeader(jwt) },
@@ -119,7 +119,7 @@ class RestaurantDataSource(
                 .scheme(SCHEME)
                 .encodedAuthority(ADDRESS_PORT)
                 .appendPath(RESTAURANT_PATH)
-                .appendPath(restaurantId)
+                .appendEncodedPath(restaurantId)
                 .appendPath(VOTE_PATH)
                 .build()
                 .toString(),
@@ -143,7 +143,7 @@ class RestaurantDataSource(
                 .scheme(SCHEME)
                 .encodedAuthority(ADDRESS_PORT)
                 .appendPath(RESTAURANT_PATH)
-                .appendPath(restaurantId)
+                .appendEncodedPath(restaurantId)
                 .appendPath(FAVORITE_PATH)
                 .build()
                 .toString(),
@@ -167,7 +167,7 @@ class RestaurantDataSource(
                 .scheme(SCHEME)
                 .encodedAuthority(ADDRESS_PORT)
                 .appendPath(RESTAURANT_PATH)
-                .appendPath(restaurantId)
+                .appendEncodedPath(restaurantId)
                 .appendPath(REPORT_PATH)
                 .build()
                 .toString(),
@@ -194,7 +194,7 @@ class RestaurantDataSource(
                 .scheme(SCHEME)
                 .encodedAuthority(ADDRESS_PORT)
                 .appendPath(RESTAURANT_PATH)
-                .appendPath(restaurantId)
+                .appendEncodedPath(restaurantId)
                 .build()
                 .toString(),
             reqHeader = buildAuthHeader(jwt),
