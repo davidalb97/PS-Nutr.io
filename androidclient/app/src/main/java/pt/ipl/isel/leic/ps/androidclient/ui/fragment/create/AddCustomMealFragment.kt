@@ -22,7 +22,7 @@ import pt.ipl.isel.leic.ps.androidclient.ui.util.MealAmountSelector
 import pt.ipl.isel.leic.ps.androidclient.ui.util.Navigation
 import pt.ipl.isel.leic.ps.androidclient.ui.util.getDbId
 import pt.ipl.isel.leic.ps.androidclient.ui.util.units.DEFAULT_WEIGHT_UNIT
-import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.AddCustomMealViewModel
+import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.meal.info.AddCustomMealViewModel
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.pick.CuisinePickViewModel
 
 
@@ -73,7 +73,39 @@ class AddCustomMealFragment : BaseAddMealFragment(), IRemainingPickSpinner, IReq
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        setupViewModel()
+        if (viewModel.mealItem != null) {
+            viewModel.observeInfo(this) { editMeal ->
+                viewModel.removeObservers(this)
+
+                //Restore name
+                viewModel.currentName = editMeal.name
+
+                //Restore unit
+                viewModel.currentWeightUnits = editMeal.unit
+
+                //Restore image
+                viewModel.currentImg = editMeal.imageUri?.toString()
+
+                //Restore ingredients
+                val ingredients = editMeal.ingredientComponents.plus(editMeal.mealComponents)
+                mealsViewModel.pickedLiveDataHandler.restoreFromValues(ingredients)
+
+                //Restore additional meal amount
+                viewModel.currentAdditionalAmount = editMeal.amount - countIngredientQuantity(
+                    editMeal.unit,
+                    ingredients
+                )
+
+                //Restore cuisines
+                cuisinesViewModel.pickedLiveDataHandler.restoreFromValues(editMeal.cuisines)
+
+                setupView(view, savedInstanceState)
+            }
+            viewModel.update()
+        } else setupView(view, savedInstanceState)
+    }
+
+    private fun setupView(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         setupCuisines(view)
@@ -86,35 +118,6 @@ class AddCustomMealFragment : BaseAddMealFragment(), IRemainingPickSpinner, IReq
 
         imageUrlEditText = view.findViewById(R.id.custom_meal_image_url)
         imageUrlEditText.setText(viewModel.currentImg)
-    }
-
-    private fun setupViewModel() {
-        //If is the first time the fragment opened and is editing custom meal
-        if(viewModel.currentName == null) {
-            if(viewModel.editMeal != null) {
-                val editMeal = viewModel.editMeal!!
-
-                //Restore name
-                viewModel.currentName = editMeal.name
-
-                //Restore unit
-                viewModel.currentWeightUnits = editMeal.unit
-
-                //Restore image
-                viewModel.currentImg = editMeal.imageUri?.toString()
-
-                //Restore ingredients
-                mealsViewModel.pickedLiveDataHandler.restoreFromValues(
-                    editMeal.ingredientComponents.plus(editMeal.mealComponents)
-                )
-
-                //Restore additional meal amount
-                viewModel.currentAdditionalAmount = editMeal.amount - countIngredientQuantity()
-
-                //Restore cuisines
-                cuisinesViewModel.pickedLiveDataHandler.restoreFromValues(editMeal.cuisines)
-            }
-        }
     }
 
     private fun setupAdditionalAmount(view: View) {
@@ -177,7 +180,7 @@ class AddCustomMealFragment : BaseAddMealFragment(), IRemainingPickSpinner, IReq
                 return@setOnClickListener
             }
             val customMeal = getCurrentCustomMeal()
-            val editMeal = viewModel.editMeal
+            val editMeal = viewModel.mealItem
             if (editMeal == null) {
                 viewModel.addCustomMeal(
                     customMeal = customMeal,
@@ -237,8 +240,8 @@ class AddCustomMealFragment : BaseAddMealFragment(), IRemainingPickSpinner, IReq
     private fun getCurrentCustomMeal(): CustomMeal {
         val ingredients = mealsViewModel.pickedItems.map(::toMealIngredient)
         return CustomMeal(
-            dbId = viewModel.editMeal?.dbId,
-            submissionId = viewModel.editMeal?.submissionId,
+            dbId = viewModel.mealItem?.dbId,
+            submissionId = viewModel.mealItem?.submissionId,
             name = mMealNameEditText.text.toString(),
             carbs = currentIngredientsCarbohydrates,
             amount = currentWeightUnit.convert(
