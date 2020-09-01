@@ -1,4 +1,4 @@
-package pt.ipl.isel.leic.ps.androidclient.ui.fragment.list.addMeal
+package pt.ipl.isel.leic.ps.androidclient.ui.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,7 +11,6 @@ import androidx.navigation.findNavController
 import androidx.navigation.navGraphViewModels
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.pick.MealItemPickRecyclerAdapter
-import pt.ipl.isel.leic.ps.androidclient.ui.fragment.BaseFragment
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.unit.IWeightUnitSpinner
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.pick.IPickedFlexBoxRecycler
 import pt.ipl.isel.leic.ps.androidclient.ui.util.Navigation

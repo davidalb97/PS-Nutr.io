@@ -209,5 +209,9 @@
     <string name="field_required">Required</string>
     <string name="calculator_ingredients_required">Please add food portions</string>
     <string name="calculator_result">You need to inject %1$.2f insulin doses</string>
-    <string name="select_cuisine">Please select at least one cuisine for this restaurant</string>
+    <string name="select_cuisine">Please select at least one cuisine</string>
+    <string name="select_ingredients">Please select at least one ingredient</string>
+    <string name="created_custom_meal">Meal created!</string>
+    <string name="edited_custom_meal">Meal saved!</string>
+    <string name="submit_fail_custom_meal">Submission failed!</string>
 </resources>

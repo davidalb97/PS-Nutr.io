@@ -1,4 +1,4 @@
-package pt.ipl.isel.leic.ps.androidclient.ui.fragment.list.addMeal
+package pt.ipl.isel.leic.ps.androidclient.ui.fragment.create
 
 import android.content.Intent
 import android.net.Uri

@@ -120,7 +120,7 @@
 
     <fragment
         android:id="@+id/nav_add_restaurant"
-        android:name="pt.ipl.isel.leic.ps.androidclient.ui.fragment.list.addRestaurant.AddRestaurantFragment"
+        android:name="pt.ipl.isel.leic.ps.androidclient.ui.fragment.create.AddRestaurantFragment"
         android:label="Add Restaurant"
         tools:layout="@layout/add_restaurant_fragment" />
 
@@ -128,7 +128,7 @@
         app:startDestination="@id/nav_add_custom_meal">
         <fragment
             android:id="@+id/nav_add_custom_meal"
-            android:name="pt.ipl.isel.leic.ps.androidclient.ui.fragment.list.addMeal.AddCustomMealFragment"
+            android:name="pt.ipl.isel.leic.ps.androidclient.ui.fragment.create.AddCustomMealFragment"
             android:label="Add a custom meal"
             tools:layout="@layout/add_custom_meal" >
             <action
@@ -151,7 +151,7 @@
         app:startDestination="@id/nav_calculator">
         <fragment
             android:id="@+id/nav_calculator"
-            android:name="pt.ipl.isel.leic.ps.androidclient.ui.fragment.list.addMeal.CalculatorFragment"
+            android:name="pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.CalculatorFragment"
             android:label="@string/insulin_calculator_nav"
             tools:layout="@layout/calculator_fragment" >
             <action
