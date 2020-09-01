@@ -5,6 +5,7 @@ import android.view.View
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealItem
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.listener.check.ICheckListener
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.listener.click.IItemClickListener
+import pt.ipl.isel.leic.ps.androidclient.ui.util.Navigation
 import pt.ipl.isel.leic.ps.androidclient.ui.viewholder.meal.MealItemRecyclerViewHolder
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.meal.MealItemListViewModel
 
@@ -13,17 +14,20 @@ class MealItemRecyclerAdapter(
     ctx: Context,
     itemCheckPredicator: ((MealItem) -> Boolean)? = null,
     onCheckListener: ICheckListener<MealItem>? = null,
-    onClickListener: IItemClickListener<MealItem>? = null
+    onClickListener: IItemClickListener<MealItem>? = null,
+    onEditNavigation: Navigation? = null
 ) : BaseMealRecyclerAdapter<MealItem, MealItemListViewModel, MealItemRecyclerViewHolder>(
     viewModel = viewModel,
     ctx = ctx,
     itemCheckPredicator = itemCheckPredicator,
     onCheckListener = onCheckListener,
-    onClickListener = onClickListener
+    onClickListener = onClickListener,
+    onEditNavigation = onEditNavigation
 ) {
 
     override fun newViewHolder(layout: View): MealItemRecyclerViewHolder {
         return object : MealItemRecyclerViewHolder(
+            onEditNavigation = onEditNavigation,
             navDestination = viewModel.navDestination,
             actions = viewModel.actions,
             view = layout,
