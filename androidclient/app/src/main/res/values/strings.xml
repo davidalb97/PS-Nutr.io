@@ -205,12 +205,12 @@
     <string name="meal_carbs_amout">Carbohydrates: %1$.2f grams</string>
     <string name="meal_amout">Amount: %1$.2f</string>
     <string name="select_meal_amount">Select meal amount</string>
+    <string name="add_your_portion_for_this_meal">Add your portion for this meal</string>
     <string name="created_restaurant">Restaurant created!</string>
     <string name="field_required">Required</string>
     <string name="calculator_ingredients_required">Please add food portions</string>
     <string name="calculator_result">You need to inject %1$.2f insulin doses</string>
     <string name="select_cuisine">Please select at least one cuisine for this restaurant</string>
-    <string name="add_your_portion_for_this_meal">Add your portion for this meal</string>
     <string name="edit">Edit</string>
     <string name="you_already_inserted_a_portion_for_this_meal">You already inserted a portion for this meal.</string>
     <string name="delete">Delete</string>
