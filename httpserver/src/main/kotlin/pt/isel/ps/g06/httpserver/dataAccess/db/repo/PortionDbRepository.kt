@@ -54,4 +54,16 @@ class PortionDbRepository(jdbi: Jdbi) : BaseDbRepo(jdbi) {
             return@inTransaction it.attach(portionDaoClass).insert(submissionId, restaurantMealId, quantity)
         }
     }
+
+    fun update(
+            portionIdentifier: Int,
+            quantity: Int
+    ): DbPortionDto {
+        return jdbi.inTransaction<DbPortionDto, Exception>(isolationLevel) {
+            // Check if given submission is restaurant meal
+            requireSubmission(portionIdentifier, PORTION, isolationLevel)
+
+            return@inTransaction it.attach(portionDaoClass).update(portionIdentifier, quantity)
+        }
+    }
 }
