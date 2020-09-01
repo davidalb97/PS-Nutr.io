@@ -104,35 +104,85 @@ class MealInfoFragment :
 
         val amountMap: HashMap<Float, Int> = hashMapOf()
         val portionEntries =
-            receivedMeal.portions.map { portion ->
-                val amount = portion.amount
+            receivedMeal.portions?.allPortions?.map { amount ->
                 amountMap[amount]?.inc() ?: amountMap.put(amount, 1)
-                BarEntry(portion.amount, amountMap[amount]!!.toFloat())
-            }
+                BarEntry(amount, amountMap[amount]!!.toFloat())
+            } ?: emptyList()
         super.setupChart(view, portionEntries)
 
-        val addPortionButton = view.findViewById<ImageButton>(R.id.add_portion_button)
-        addPortionButton.setOnClickListener {
-            MealAmountSelector(
-                ctx = requireContext(),
-                layoutInflater = layoutInflater,
-                baseCarbs = 0f,
-                baseAmountGrams = 0f,
-                mealUnit = WeightUnits.fromValue(sharedPreferences.getWeightUnitOrDefault())
-            ) { preciseGrams, preciseCarbs ->
-                recyclerViewModel.addMealPortion(
-                    restaurantId = receivedMeal.restaurantSubmissionId,
-                    mealId = receivedMeal.submissionId,
-                    portionOutput = PortionOutput(
-                        preciseGrams.toInt(),
-                        sharedPreferences.getWeightUnitOrDefault()
-                    ),
+        // If current has not any portion added to this meal
+        if (receivedMeal.portions?.userPortion == null) {
+            val addPortionButton: ImageButton = view.findViewById(R.id.add_portion_button)
+            addPortionButton.setOnClickListener {
+                MealAmountSelector(
+                    ctx = requireContext(),
+                    layoutInflater = layoutInflater,
+                    baseCarbs = receivedMeal.carbs.toFloat(),
+                    baseAmountGrams = receivedMeal.amount,
+                    mealUnit = WeightUnits.fromValue(sharedPreferences.getWeightUnitOrDefault())
+                ) { preciseGrams, preciseCarbs ->
+                    recyclerViewModel.addMealPortion(
+                        restaurantId = receivedMeal.restaurantSubmissionId,
+                        mealId = receivedMeal.submissionId,
+                        portionOutput = PortionOutput(
+                            preciseGrams.toInt(),
+                            sharedPreferences.getWeightUnitOrDefault()
+                        ),
+                        userSession = requireUserSession(),
+                        onSuccess = { status ->
+                            Toast.makeText(app, "Added portion", Toast.LENGTH_SHORT).show()
+                            recyclerViewModel.update()
+                        },
+                        onError = { error ->
+                            Toast.makeText(app, "Could not add portion", Toast.LENGTH_SHORT).show()
+                        }
+                    )
+                }
+            }
+        } else { // If the user already added a portion to this meal
+            val addPortionLayout: RelativeLayout = view.findViewById(R.id.add_portion_layout)
+            val editPortionLayout: RelativeLayout = view.findViewById(R.id.edit_portion_layout)
+            val editPortionButton: Button = view.findViewById(R.id.edit_portion_button)
+            val deletePortionButton: Button = view.findViewById(R.id.delete_portion_button)
+            addPortionLayout.visibility = View.GONE
+            editPortionLayout.visibility = View.VISIBLE
+            editPortionButton.setOnClickListener {
+                MealAmountSelector(
+                    ctx = requireContext(),
+                    layoutInflater = layoutInflater,
+                    baseCarbs = receivedMeal.carbs.toFloat(),
+                    baseAmountGrams = receivedMeal.portions!!.userPortion!!,
+                    mealUnit = WeightUnits.fromValue(sharedPreferences.getWeightUnitOrDefault())
+                ) { preciseGrams, preciseCarbs ->
+                    recyclerViewModel.editMealPortion(
+                        restaurantId = receivedMeal.restaurantSubmissionId!!,
+                        mealId = receivedMeal.submissionId!!,
+                        portionOutput = PortionOutput(
+                            preciseGrams.toInt(),
+                            sharedPreferences.getWeightUnitOrDefault()
+                        ),
+                        userSession = requireUserSession(),
+                        onSuccess = { status ->
+                            Toast.makeText(app, "Added portion", Toast.LENGTH_SHORT).show()
+                        },
+                        onError = { error ->
+                            Toast.makeText(app, "Could not add portion", Toast.LENGTH_SHORT).show()
+                        }
+                    )
+                }
+            }
+
+            deletePortionButton.setOnClickListener {
+                recyclerViewModel.deleteMealPortion(
+                    restaurantId = receivedMeal.restaurantSubmissionId!!,
+                    mealId = receivedMeal.submissionId!!,
                     userSession = requireUserSession(),
                     onSuccess = { status ->
-                        Toast.makeText(app, status, Toast.LENGTH_SHORT).show()
+                        Toast.makeText(app, "Your portion submission was deleted!", Toast.LENGTH_SHORT).show()
+                        recyclerViewModel.update()
                     },
                     onError = { error ->
-                        Toast.makeText(app, "Could not add portion", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(app, "Could not delete your submitted portion", Toast.LENGTH_SHORT).show()
                     }
                 )
             }
@@ -190,7 +240,7 @@ class MealInfoFragment :
 
     override fun fetchCtx(): Context = requireContext()
 
-    override fun isFavorite(): Boolean = recyclerViewModel.mealInfo!!.favorites?.isFavorite ?: false
+    override fun isFavorite(): Boolean = recyclerViewModel.mealInfo!!.favorites.isFavorite
 
     override fun getRecyclerId() = R.id.meal_info_ingredient_item_list
 

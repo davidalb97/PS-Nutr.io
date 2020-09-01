@@ -211,4 +211,10 @@
     <string name="calculator_result">You need to inject %1$.2f insulin doses</string>
     <string name="select_cuisine">Please select at least one cuisine for this restaurant</string>
     <string name="add_your_portion_for_this_meal">Add your portion for this meal</string>
+    <string name="edit">Edit</string>
+    <string name="you_already_inserted_a_portion_for_this_meal">You already inserted a portion for this meal.</string>
+    <string name="delete">Delete</string>
+    <string name="no_portions_chart_message">There are no portions available. Be the first to add one!</string>
+    <string name="entries">Entries</string>
+    <string name="portion_weights">Portion weights</string>
 </resources>

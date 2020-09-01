@@ -241,7 +241,7 @@ class MealDataSource(
                 .scheme(SCHEME)
                 .encodedAuthority(ADDRESS_PORT)
                 .appendPath(RESTAURANT_PATH)
-                .appendPath(restaurantId)
+                .appendEncodedPath(restaurantId)
                 .appendPath(MEAL_PATH)
                 .appendPath(mealId!!)
                 .appendPath(PORTION_PATH)
@@ -435,6 +435,58 @@ class MealDataSource(
             reqPayload = reportOutput,
             onError = error,
             responseConsumer = { success() }
+        )
+    }
+
+    fun putRestaurantMealPortion(
+        restaurantId: String,
+        mealId: Int,
+        portionOutput: PortionOutput,
+        onSuccess: (Int) -> Unit,
+        onError: (VolleyError) -> Unit,
+        jwt: String
+    ) {
+        requestParser.request(
+            method = HTTPMethod.PUT,
+            uri = Uri.Builder()
+                .scheme(SCHEME)
+                .encodedAuthority(ADDRESS_PORT)
+                .appendPath(RESTAURANT_PATH)
+                .appendEncodedPath(restaurantId)
+                .appendPath(MEAL_PATH)
+                .appendPath(mealId)
+                .appendPath(PORTION_PATH)
+                .build()
+                .toString(),
+            reqHeader = buildAuthHeader(jwt),
+            reqPayload = portionOutput,
+            onError = onError,
+            responseConsumer = { onSuccess(it.status) }
+        )
+    }
+
+    fun deleteRestaurantMealPortion(
+        restaurantId: String,
+        mealId: Int,
+        onSuccess: (Int) -> Unit,
+        onError: (VolleyError) -> Unit,
+        jwt: String
+    ) {
+        requestParser.request(
+            method = HTTPMethod.DELETE,
+            uri = Uri.Builder()
+                .scheme(SCHEME)
+                .encodedAuthority(ADDRESS_PORT)
+                .appendPath(RESTAURANT_PATH)
+                .appendEncodedPath(restaurantId)
+                .appendPath(MEAL_PATH)
+                .appendPath(mealId)
+                .appendPath(PORTION_PATH)
+                .build()
+                .toString(),
+            reqHeader = buildAuthHeader(jwt),
+            onError = onError,
+            responseConsumer = { onSuccess(it.status) }
         )
     }
 }

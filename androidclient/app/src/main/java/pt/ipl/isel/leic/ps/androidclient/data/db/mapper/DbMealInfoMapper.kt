@@ -39,7 +39,10 @@ class DbMealInfoMapper(
         mealComponents = componentMealMapper.mapToListModel(relation.componentMeals),
         ingredientComponents = componentIngredientMapper.mapToListModel(relation.componentIngredients),
         cuisines = cuisinesMapper.mapToListModel(relation.cuisines),
-        portions = portionMapper.mapToListModel(relation.portions),
+        portions = portionMapper.mapToModel(
+            relation.portions[0],
+            relation.entity,
+            relation.portions.map { it.portion }),
         isSuggested = relation.entity.isSuggested,
         isReportable = relation.entity.isReportable,
         isVerified = relation.entity.isVerified,
@@ -59,7 +62,7 @@ class DbMealInfoMapper(
             carbs = model.carbs,
             amount = model.amount,
             unit = model.unit.ordinal,
-            isFavorite = model.favorites?.isFavorite ?: false,
+            isFavorite = model.favorites.isFavorite,
             imageUri = model.imageUri?.toString(),
             isVotable = model.votes?.isVotable,
             positiveVotes = model.votes?.positive,
@@ -69,6 +72,7 @@ class DbMealInfoMapper(
             isSuggested = model.isSuggested,
             sourceOrdinal = model.source.ordinal,
             ownerId = model.submissionOwner?.id,
+            userPortion = model.portions?.userPortion,
             isFavorable = model.favorites.isFavorable,
             isReportable = model.isReportable,
             isVerified = model.isVerified
@@ -76,7 +80,7 @@ class DbMealInfoMapper(
         componentMeals = componentMealMapper.mapToListEntity(model.mealComponents),
         componentIngredients = componentIngredientMapper.mapToListEntity(model.ingredientComponents),
         cuisines = cuisinesMapper.mapToListEntity(model.cuisines),
-        portions = portionMapper.mapToListEntity(model.portions)
+        portions = model.portions?.let { portionMapper.mapToListEntity(it) } ?: emptyList()
     ).also { dto ->
         dto.entity.primaryKey = model.dbId ?: DbMealInfoEntity.DEFAULT_DB_ID
         dto.entity.restaurantKey = model.dbRestaurantId ?: DbMealInfoEntity.DEFAULT_DB_ID

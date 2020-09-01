@@ -28,7 +28,7 @@ import java.util.concurrent.TimeUnit
 
 const val TAG = "Nutr.io App"
 const val ROOM_DB_NAME = "nutrio-db"
-const val ROOM_DB_VERSION = 34
+const val ROOM_DB_VERSION = 35
 
 /**
  * The application context.

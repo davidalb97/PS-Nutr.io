@@ -17,7 +17,7 @@ open class MealInfo : MealItem {
     var ingredientComponents: List<MealIngredient>
     var mealComponents: List<MealIngredient>
     var cuisines: List<Cuisine>
-    var portions: List<Portion>
+    var portions: Portions?
 
     constructor(
         dbId: Long?,
@@ -35,7 +35,7 @@ open class MealInfo : MealItem {
         ingredientComponents: List<MealIngredient>,
         mealComponents: List<MealIngredient>,
         cuisines: List<Cuisine>,
-        portions: List<Portion>,
+        portions: Portions?,
         isVerified: Boolean?,
         isSuggested: Boolean?,
         isReportable: Boolean?,
@@ -71,7 +71,7 @@ open class MealInfo : MealItem {
         this.ingredientComponents = parcel.readListCompat(MealIngredient::class)
         this.mealComponents = parcel.readListCompat(MealIngredient::class)
         this.cuisines = parcel.readListCompat(Cuisine::class)
-        this.portions = parcel.readListCompat(Portion::class)
+        this.portions = parcel.readParcelable(Portions::class.java.classLoader)!!
         this.submissionOwner = parcel.readParcelable(SubmissionOwner::class.java.classLoader)
     }
 
@@ -81,7 +81,7 @@ open class MealInfo : MealItem {
         parcel.writeList(ingredientComponents)
         parcel.writeList(mealComponents)
         parcel.writeList(cuisines)
-        parcel.writeList(portions)
+        parcel.writeParcelable(portions, flags)
         parcel.writeParcelable(submissionOwner, flags)
     }
 

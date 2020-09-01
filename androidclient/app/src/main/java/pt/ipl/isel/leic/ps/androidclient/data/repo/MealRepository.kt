@@ -38,13 +38,14 @@ class MealRepository(private val dataSource: MealDataSource) {
         inputVotesMapper = inputVotesMapper,
         inputFavoritesMapper = inputFavoriteMapper
     )
-    private val inputPortionMapper = InputPortionMapper()
     private val inputUserMapper = InputSubmissionOwnerMapper()
+    private val inputPortionMapper = InputPortionMapper()
     private val inputMealInfoMapper = InputMealInfoMapper(
         inputCuisineMapper = inputCuisineMapper,
         inputMealIngredientMapper = inputMealIngredientMapper,
         inputUserMapper = inputUserMapper,
-        inputFavoriteMapper = InputFavoriteMapper()
+        inputFavoriteMapper = inputFavoriteMapper,
+        inputPortionMapper = inputPortionMapper
     )
     private val inputMealItemMapper = InputMealItemMapper(
         inputVotesMapper = inputVotesMapper,
@@ -278,6 +279,40 @@ class MealRepository(private val dataSource: MealDataSource) {
             restaurantId = restaurantId,
             mealId = mealId,
             portionOutput = portionOutput,
+            onSuccess = onSuccess,
+            onError = onError,
+            jwt = userSession.jwt
+        )
+    }
+
+    fun editMealPortion(
+        restaurantId: String,
+        mealId: Int,
+        portionOutput: PortionOutput,
+        userSession: UserSession,
+        onSuccess: (Int) -> Unit,
+        onError: (VolleyError) -> Unit
+    ) {
+        dataSource.putRestaurantMealPortion(
+            restaurantId = restaurantId,
+            mealId = mealId,
+            portionOutput = portionOutput,
+            onSuccess = onSuccess,
+            onError = onError,
+            jwt = userSession.jwt
+        )
+    }
+
+    fun deleteMealPortion(
+        restaurantId: String,
+        mealId: Int,
+        userSession: UserSession,
+        onSuccess: (Int) -> Unit,
+        onError: (VolleyError) -> Unit
+    ) {
+        dataSource.deleteRestaurantMealPortion(
+            restaurantId = restaurantId,
+            mealId = mealId,
             onSuccess = onSuccess,
             onError = onError,
             jwt = userSession.jwt

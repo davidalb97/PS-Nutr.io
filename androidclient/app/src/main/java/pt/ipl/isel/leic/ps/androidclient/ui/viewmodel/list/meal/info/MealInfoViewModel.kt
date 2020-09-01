@@ -150,6 +150,40 @@ open class MealInfoViewModel : MealItemListViewModel {
         )
     }
 
+    fun editMealPortion(
+        restaurantId: String,
+        mealId: Int,
+        portionOutput: PortionOutput,
+        userSession: UserSession,
+        onSuccess: (Int) -> Unit,
+        onError: (VolleyError) -> Unit
+    ) {
+        mealRepository.editMealPortion(
+            restaurantId = restaurantId,
+            mealId = mealId,
+            portionOutput = portionOutput,
+            userSession = userSession,
+            onSuccess = onSuccess,
+            onError =  onError
+        )
+    }
+
+    fun deleteMealPortion(
+        restaurantId: String,
+        mealId: Int,
+        userSession: UserSession,
+        onSuccess: (Int) -> Unit,
+        onError: (VolleyError) -> Unit
+    ) {
+        mealRepository.deleteMealPortion(
+            restaurantId = restaurantId,
+            mealId = mealId,
+            userSession = userSession,
+            onSuccess = onSuccess,
+            onError =  onError
+        )
+    }
+
     override fun writeToParcel(dest: Parcel?, flags: Int) {
         super.writeToParcel(dest, flags)
         dest?.writeParcelable(mealItem, flags)
