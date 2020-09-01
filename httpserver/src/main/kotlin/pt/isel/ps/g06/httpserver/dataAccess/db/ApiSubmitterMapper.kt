@@ -7,8 +7,8 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.common.DatabaseContext
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbApiDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.ApiDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.SubmitterDbRepository
+import java.util.stream.Collectors
 import javax.annotation.PostConstruct
-import kotlin.streams.asSequence
 
 @Repository
 data class ApiSubmitterMapper(
@@ -20,10 +20,9 @@ data class ApiSubmitterMapper(
 
     @PostConstruct
     protected fun createMap() {
-        val submitters = apiDbRepository
+        val submitters: Map<Int, RestaurantApiType> = apiDbRepository
                 .getApisByName(RestaurantApiType.values().map { it.toString() })
-                .asSequence()   //TODO Avoid this sequence call
-                .associate(this::buildSubmitterPair)
+                .collect(Collectors.toMap({ it.submitter_id }, ::buildApiType))
 
         if (submitters.size != RestaurantApiType.values().size) {
             throw InvalidApplicationStartupException("Insufficient RestaurantApi submitters in Database! \n" +
@@ -43,12 +42,9 @@ data class ApiSubmitterMapper(
 
     fun getSubmitter(type: RestaurantApiType) = apiSubmitters.filterValues { it == type }.keys.firstOrNull()
 
-    private fun buildSubmitterPair(apiDto: DbApiDto): Pair<Int, RestaurantApiType> {
-
-        val type = RestaurantApiType
+    private fun buildApiType(apiDto: DbApiDto): RestaurantApiType {
+        return RestaurantApiType
                 .getOrNull(apiDto.api_name)
                 ?: throw  InvalidApplicationStartupException("Failed to map string '${apiDto.api_name}' to a valid RestaurantApiType.")
-
-        return Pair(apiDto.submitter_id, type)
     }
 }

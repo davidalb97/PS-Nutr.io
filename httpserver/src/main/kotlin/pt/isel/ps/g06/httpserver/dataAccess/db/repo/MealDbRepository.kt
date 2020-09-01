@@ -14,7 +14,6 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbMealDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbMealIngredientDto
 import pt.isel.ps.g06.httpserver.dataAccess.input.ingredient.IngredientInput
 import java.util.stream.Stream
-import kotlin.streams.asSequence
 import kotlin.streams.toList
 
 private val mealDaoClass = MealDao::class.java
@@ -129,12 +128,13 @@ class MealDbRepository(private val databaseContext: DatabaseContext, private val
 
         return databaseContext.inTransaction {
             //Validate given ingredients to see if they are all in the database
+            //TODO See if eager call is possible to avoid
             val databaseIngredients = it
                     .attach(MealDao::class.java)
                     .getAllIngredientsByIds(ingredients.map { ingredient -> ingredient.identifier!! })
+                    .toList()
 
-            //TODO See if eager call is possible to avoid
-            if (databaseIngredients.toList().size != ingredients.size) {
+            if (databaseIngredients.size != ingredients.size) {
                 throw InvalidInputException("Not all ingredients belong to the database!")
             }
 
@@ -157,8 +157,7 @@ class MealDbRepository(private val databaseContext: DatabaseContext, private val
             // TODO: Logic should be isolated on the service and passed to repo as a parameter
             //Calculate meal carbs from adding each ingredient carb for given input quantity
             val carbs = databaseIngredients
-                    .asSequence()   //TODO Needless sequence calls? Find Stream equivalent
-                    .zip(ingredients.asSequence(), this::getCarbsForInputQuantity)
+                    .zip(ingredients, this::getCarbsForInputQuantity)
                     .sum()
                     .toInt()
 
