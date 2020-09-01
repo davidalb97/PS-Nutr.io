@@ -12,6 +12,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.repo.SubmissionDbRepository
 import pt.isel.ps.g06.httpserver.model.report.BaseReport
 import pt.isel.ps.g06.httpserver.model.report.ReportSubmissionDetail
 import pt.isel.ps.g06.httpserver.model.report.ReportedSubmission
+import pt.isel.ps.g06.httpserver.model.report.SubmissionReport
 import java.util.stream.Stream
 
 @Service
@@ -28,8 +29,9 @@ class ReportService(
     /**
      * Gets all the reports inside the database
      */
-    fun getAllReports(skip: Int?, count: Int?) =
-            reportDbRepository.getAll(skip, count).map(reportDbMapper::mapToModel)
+    fun getAllReports(skip: Int?, count: Int?): Stream<SubmissionReport> {
+        return reportDbRepository.getAll(skip, count).map(reportDbMapper::mapTo)
+    }
 
     /**
      * Gets all the reports inside the database
@@ -57,7 +59,7 @@ class ReportService(
 
     fun getReportedSubmissionDetail(submissionId: Int): ReportSubmissionDetail? =
             reportDbRepository.getReportedSubmissionDetail(submissionId)
-                    ?.let{ reportSubmissionDetailMapper.mapTo(it, submissionId)}
+                    ?.let { reportSubmissionDetailMapper.mapTo(it, submissionId) }
 
     fun deleteReport(reportId: Int) {
         reportDbRepository.delete(reportId)

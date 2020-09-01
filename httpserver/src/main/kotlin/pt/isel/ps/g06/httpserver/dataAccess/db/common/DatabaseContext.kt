@@ -21,6 +21,7 @@ class DatabaseContext(jdbi: Jdbi) {
         }
 
     fun close() {
+        println("Handle closing on Thread ${Thread.currentThread().id}")
         localHandle.get().close()
         localHandle.remove()
         isOpen.remove()

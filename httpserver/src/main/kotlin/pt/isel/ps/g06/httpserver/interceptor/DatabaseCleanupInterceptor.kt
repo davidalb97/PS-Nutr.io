@@ -23,7 +23,6 @@ class DatabaseCleanupInterceptor(private val databaseContext: DatabaseContext) :
             handler: Any,
             modelAndView: ModelAndView?
     ) {
-        println(Thread.currentThread().id)
         if (databaseContext.isHandleOpen()) {
             databaseContext.close()
         }

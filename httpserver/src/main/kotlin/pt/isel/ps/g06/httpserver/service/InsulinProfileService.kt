@@ -16,12 +16,12 @@ class InsulinProfileService(
 
     fun getAllProfilesFromUser(submitterId: Int, count: Int?, skip: Int?): Stream<InsulinProfile> {
         return insulinProfileDbRepository.getAllFromUser(submitterId, count, skip)
-                .map(insulinProfileMapper::mapToModel)
+                .map(insulinProfileMapper::mapTo)
     }
 
     fun getProfileFromUser(submitterId: Int, profileName: String): InsulinProfile {
         return insulinProfileDbRepository.getFromUser(submitterId, profileName)
-                ?.let(insulinProfileMapper::mapToModel)
+                ?.let(insulinProfileMapper::mapTo)
                 ?: throw MissingInsulinProfileException(profileName)
     }
 
@@ -34,7 +34,7 @@ class InsulinProfileService(
             insulinSensitivityFactor: Int,
             carbohydrateRatio: Int
     ): InsulinProfile {
-        return insulinProfileMapper.mapToModel(
+        return insulinProfileMapper.mapTo(
                 insulinProfileDbRepository.insertProfile(
                         submitterId,
                         profileName,

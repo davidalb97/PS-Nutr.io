@@ -3,6 +3,7 @@ package pt.isel.ps.g06.httpserver.dataAccess.db
 import org.springframework.stereotype.Repository
 import pt.isel.ps.g06.httpserver.common.exception.server.InvalidApplicationStartupException
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.RestaurantApiType
+import pt.isel.ps.g06.httpserver.dataAccess.db.common.DatabaseContext
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbApiDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.ApiDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.SubmitterDbRepository
@@ -12,7 +13,8 @@ import kotlin.streams.asSequence
 @Repository
 data class ApiSubmitterMapper(
         private val submitterDbRepository: SubmitterDbRepository,
-        private val apiDbRepository: ApiDbRepository
+        private val apiDbRepository: ApiDbRepository,
+        private val databaseContext: DatabaseContext
 ) {
     private lateinit var apiSubmitters: Map<Int, RestaurantApiType>
 
@@ -31,6 +33,9 @@ data class ApiSubmitterMapper(
         }
 
         apiSubmitters = submitters
+
+        //Force close because this method is never intercepted by Database context cleanup
+        databaseContext.close()
     }
 
 
