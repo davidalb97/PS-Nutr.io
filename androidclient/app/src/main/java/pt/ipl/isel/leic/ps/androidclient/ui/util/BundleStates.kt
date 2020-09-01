@@ -6,6 +6,7 @@ import pt.ipl.isel.leic.ps.androidclient.data.model.*
 private const val BUNDLE_CUISINES_LIST = "BUNDLE_CUISINES_LIST"
 private const val BUNDLE_ACTIONS_LIST = "BUNDLE_ACTIONS_LIST"
 private const val BUNDLE_NAVIGATION = "BUNDLE_MEAL_NAVIGATION"
+private const val BUNDLE_NAVIGATION_PARENT = "BUNDLE_NAVIGATION_PARENT"
 private const val BUNDLE_MEAL_INGREDIENT_LIST = "BUNDLE_INGREDIENT_LIST"
 private const val BUNDLE_MEAL_LIST = "BUNDLE_MEAL_LIST"
 private const val BUNDLE_MEAL_INFO = "BUNDLE_MEAL_INFO"
@@ -31,10 +32,14 @@ fun Bundle.getMealIngredients() =
 fun Bundle.putMealIngredients(ingredients: ArrayList<MealIngredient>) =
     putParcelableArrayList(BUNDLE_MEAL_INGREDIENT_LIST, ingredients)
 
+fun Bundle.putMealIngredients(meals: List<MealIngredient>) = putMealIngredients(ArrayList(meals))
+
 fun Bundle.getMealItems() = getParcelableArrayList<MealItem>(BUNDLE_MEAL_LIST)
 
 fun Bundle.putMealItems(meals: ArrayList<MealItem>) =
     putParcelableArrayList(BUNDLE_MEAL_LIST, meals)
+
+fun Bundle.putMealItems(meals: List<MealItem>) = putMealItems(ArrayList(meals))
 
 fun Bundle.getMealItem() = getParcelable<MealItem>(BUNDLE_MEAL_ITEM)
 
@@ -56,10 +61,10 @@ fun Bundle.getSource() = getInt(BUNDLE_MEAL_SOURCE, -1)
 
 fun Bundle.putSource(source: Source) = putInt(BUNDLE_MEAL_SOURCE, source.ordinal)
 
-fun Bundle.getMealSubmissionId() = getInt(BUNDLE_SUBMISSION_ID, -1)
-    .let { if (it == -1) null else it }
+fun Bundle.getMealSubmissionId() = getSerializable(BUNDLE_SUBMISSION_ID) as Int?
 
-fun Bundle.putMealSubmissionId(submissionId: Int) = putInt(BUNDLE_SUBMISSION_ID, submissionId)
+fun Bundle.putMealSubmissionId(submissionId: Int?) =
+    putSerializable(BUNDLE_SUBMISSION_ID, submissionId)
 
 fun Bundle.getRestaurantSubmissionId() = getString(BUNDLE_RESTAURANT_SUBMISSION_ID)
 
@@ -86,13 +91,9 @@ fun Bundle.getCuisines() = getParcelableArrayList<Cuisine>(BUNDLE_CUISINES_LIST)
 fun Bundle.putCuisines(cuisines: ArrayList<Cuisine>) =
     putParcelableArrayList(BUNDLE_CUISINES_LIST, cuisines)
 
-fun Bundle.getDbId() = getLong(BUNDLE_MEAL_DB_ID, -1)
-    .let {
-        val check: Long = -1
-        if (it == check) null else it
-    }
+fun Bundle.getDbId() = getSerializable(BUNDLE_MEAL_DB_ID) as Long?
 
-fun Bundle.putDbId(bdId: Long) = putLong(BUNDLE_MEAL_DB_ID, bdId)
+fun Bundle.putDbId(bdId: Long?) = putSerializable(BUNDLE_MEAL_DB_ID, bdId)
 
 fun Bundle.getItemActions() = this.getIntegerArrayList(BUNDLE_ACTIONS_LIST)
     ?.let { indexes ->
@@ -109,3 +110,9 @@ fun Bundle.getNavigation(): Navigation = getInt(BUNDLE_NAVIGATION)
     .let { idx -> Navigation.values()[idx] }
 
 fun Bundle.putNavigation(navigation: Navigation) = putInt(BUNDLE_NAVIGATION, navigation.ordinal)
+
+fun Bundle.getParentNavigation(): Navigation = getInt(BUNDLE_NAVIGATION_PARENT)
+    .let { idx -> Navigation.values()[idx] }
+
+fun Bundle.putParentNavigation(navigation: Navigation) =
+    putInt(BUNDLE_NAVIGATION_PARENT, navigation.ordinal)

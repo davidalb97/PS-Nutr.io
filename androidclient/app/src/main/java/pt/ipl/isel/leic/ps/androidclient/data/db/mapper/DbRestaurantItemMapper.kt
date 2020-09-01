@@ -16,13 +16,14 @@ class DbRestaurantItemMapper {
         latitude = entity.latitude,
         longitude = entity.longitude,
         votes = if (entity.hasVote) Votes(
+            isVotable = entity.isVotable,
             userHasVoted = VoteState.values()[entity.userVoteOrdinal!!],
             positive = entity.positiveVotes!!,
             negative = entity.negativeVotes!!
         ) else null,
         isFavorite = entity.isFavorite,
         isVotable = entity.isVotable,
-        imageUri = Uri.parse(entity.imageUri),
+        image = Uri.parse(entity.image),
         source = Source.values()[entity.sourceOrdinal]
     )
 
@@ -33,14 +34,14 @@ class DbRestaurantItemMapper {
         longitude = model.longitude,
         isFavorite = model.isFavorite,
         isVotable = model.isVotable,
-        imageUri = model.imageUri?.toString(),
+        image = model.image?.toString(),
         positiveVotes = model.votes?.positive,
         negativeVotes = model.votes?.negative,
         userVoteOrdinal = model.votes?.userHasVoted?.ordinal,
         hasVote = model.votes != null,
         sourceOrdinal = model.source.ordinal
     ).also { dto ->
-        dto.primaryKey = model.dbId
+        dto.primaryKey = model.dbId ?: DbRestaurantItemEntity.DEFAULT_DB_ID
     }
 
     fun mapToListModel(relations: List<DbRestaurantItemEntity>) = relations.map(this::mapToModel)

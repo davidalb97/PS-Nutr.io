@@ -11,6 +11,8 @@ import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.InsulinProfile
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.IDeleteActionButton
 import pt.ipl.isel.leic.ps.androidclient.ui.util.*
+import pt.ipl.isel.leic.ps.androidclient.ui.util.units.DEFAULT_GLUCOSE_UNIT
+import pt.ipl.isel.leic.ps.androidclient.ui.util.units.DEFAULT_WEIGHT_UNIT
 import pt.ipl.isel.leic.ps.androidclient.ui.util.units.GlucoseUnits
 import pt.ipl.isel.leic.ps.androidclient.ui.util.units.WeightUnits
 

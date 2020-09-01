@@ -8,7 +8,7 @@ class InputPortionMapper {
     fun mapToModel(dto: Int) = Portion(
         dbId = DbPortionEntity.DEFAULT_DB_ID,
         dbMealId = DbPortionEntity.DEFAULT_DB_ID,
-        amount = dto
+        amount = dto.toFloat()
     )
 
     fun mapToListModel(dtos: Iterable<Int>) = dtos.map(::mapToModel)

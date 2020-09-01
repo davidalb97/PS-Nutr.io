@@ -4,10 +4,10 @@ import android.text.SpannableStringBuilder
 import java.math.RoundingMode
 
 private const val GRAM_OUNCE_RATIO = 0.035274
-
+val DEFAULT_WEIGHT_UNIT = WeightUnits.GRAMS
 
 enum class WeightUnits(private val str: String) {
-    GRAMS("grams"),
+    GRAMS("gr"),
     OUNCES("ounces");
 
     fun convert(targetUnit: WeightUnits, value: Float): Float {

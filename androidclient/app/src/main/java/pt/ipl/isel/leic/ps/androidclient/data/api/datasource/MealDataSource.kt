@@ -1,35 +1,18 @@
 package pt.ipl.isel.leic.ps.androidclient.data.api.datasource
 
+import android.net.Uri
 import com.android.volley.VolleyError
-import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.SimplifiedMealInput
-import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.SimplifiedMealsInput
-import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.SimplifiedRestaurantMealsInput
-import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.info.DetailedMealInput
+import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.meal.MealInfoInput
+import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.meal.MealItemContainerInput
+import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.restaurantMeal.SimplifiedRestaurantMealContainerInput
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.output.*
-import pt.ipl.isel.leic.ps.androidclient.data.api.request.*
-import pt.ipl.isel.leic.ps.androidclient.data.model.Cuisine
-import pt.ipl.isel.leic.ps.androidclient.data.model.MealIngredient
-import pt.ipl.isel.leic.ps.androidclient.data.model.VoteState
-
-
-private const val RESTAURANT_ID_PARAM = ":restaurantId"
-private const val MEAL_ID_PARAM = ":mealId"
-private const val CUISINES_PARAM = ":cuisines"
-
-private const val MEAL_URI = "$URI_BASE/$MEAL"
-private const val MEAL_FAVORITE_URI = "$MEAL_URI/favorite"
-private const val MEAL_ID_URI = "$MEAL_URI/$MEAL_ID_PARAM"
-private const val MEAL_ID_FAVORITE_URI = "$MEAL_ID_URI/favorite"
-private const val RESTAURANT_ID_URI = "$URI_BASE/$RESTAURANT/$RESTAURANT_ID_PARAM"
-private const val RESTAURANT_ID_MEAL_URI = "$RESTAURANT_ID_URI/$MEAL"
-private const val RESTAURANT_ID_MEAL_ID_URI = "$RESTAURANT_ID_MEAL_URI/$MEAL_ID_PARAM"
-private const val RESTAURANT_ID_MEAL_ID_VOTE_URI = "$RESTAURANT_ID_MEAL_ID_URI/vote"
-private const val RESTAURANT_ID_MEAL_ID_FAVORITE_URI = "$RESTAURANT_ID_MEAL_ID_URI/favorite"
-private const val RESTAURANT_ID_MEAL_ID_REPORT_URI = "$RESTAURANT_ID_MEAL_ID_URI/report"
-
-private val INPUT_MEAL_DTO = DetailedMealInput::class.java
-private val OUTPUT_MEAL_DTO = MealOutput::class.java
-private val INPUT_MEALS_DTO = Array<SimplifiedMealInput>::class.java
+import pt.ipl.isel.leic.ps.androidclient.data.api.request.HTTPMethod
+import pt.ipl.isel.leic.ps.androidclient.data.api.request.PayloadResponse
+import pt.ipl.isel.leic.ps.androidclient.data.api.request.RequestParser
+import pt.ipl.isel.leic.ps.androidclient.data.model.MealInfo
+import pt.ipl.isel.leic.ps.androidclient.data.util.appendPath
+import pt.ipl.isel.leic.ps.androidclient.data.util.appendQueryNotNullListParameter
+import pt.ipl.isel.leic.ps.androidclient.data.util.appendQueryNotNullParameter
 
 class MealDataSource(
     private val requestParser: RequestParser
@@ -39,88 +22,77 @@ class MealDataSource(
      * ----------------------------- GETs -----------------------------
      */
 
-    /**
-     * Parameter: id is required
-     */
-    fun getMeals(
+    fun getSuggestedMeals(
         jwt: String?,
-        count: Int = 30,
-        skip: Int = 0,
-        cuisines: Collection<Cuisine>? = null,    //Optional filter
-        success: (SimplifiedMealsInput) -> Unit,
+        count: Int? = 30,
+        skip: Int? = 0,
+        cuisines: Collection<String>? = null,
+        success: (MealItemContainerInput) -> Unit,
         error: (VolleyError) -> Unit
     ) {
-        var uri = MEAL_URI
-        val params = hashMapOf(
-            Pair(SKIP_PARAM, "$skip"),
-            Pair(COUNT_PARAM, "$count")
-        )
-        //If optional cuisines parameter was passed
-        if (cuisines != null && cuisines.isNotEmpty()) {
-            uri += "&cuisines=$CUISINES_PARAM"
-            params[CUISINES_PARAM] = cuisines.joinToString(",") { it.name }
-        }
-        uri = buildUri(uri, params)
-
         requestParser.requestAndParse(
             method = HTTPMethod.GET,
-            uri = uri,
+            uri = Uri.Builder()
+                .scheme(SCHEME)
+                .encodedAuthority(ADDRESS_PORT)
+                .appendPath(MEAL_PATH)
+                .appendPath(SUGGESTED_PATH)
+                .appendQueryNotNullParameter(COUNT_PARAM, count)
+                .appendQueryNotNullParameter(SKIP_PARAM, skip)
+                .appendQueryNotNullListParameter(CUISINES_PARAM, cuisines)
+                .build()
+                .toString(),
             reqHeader = jwt?.let { buildAuthHeader(jwt) },
-            dtoClass = SimplifiedMealsInput::class.java,
+            dtoClass = MealItemContainerInput::class.java,
             onSuccess = success,
             onError = error
         )
     }
 
-    /**
-     * Parameter: id is required
-     */
     fun getRestaurantMeals(
         jwt: String?,
         restaurantId: String,
-        count: Int = 30,
-        skip: Int = 0,
-        success: (SimplifiedRestaurantMealsInput) -> Unit,
+        count: Int? = 30,
+        skip: Int? = 0,
+        success: (SimplifiedRestaurantMealContainerInput) -> Unit,
         error: (VolleyError) -> Unit
     ) {
-        var uri = "$RESTAURANT_ID_MEAL_URI?skip=:skip&count=:count"
-        val params = hashMapOf(
-            Pair(RESTAURANT_ID_PARAM, restaurantId),
-            Pair(SKIP_PARAM, "$skip"),
-            Pair(COUNT_PARAM, "$count")
-        )
-        uri = buildUri(uri, params)
-
         requestParser.requestAndParse(
             method = HTTPMethod.GET,
-            uri = uri,
+            uri = Uri.Builder()
+                .scheme(SCHEME)
+                .encodedAuthority(ADDRESS_PORT)
+                .appendPath(RESTAURANT_PATH)
+                .appendEncodedPath(restaurantId)
+                .appendPath(MEAL_PATH)
+                .appendQueryNotNullParameter(COUNT_PARAM, count)
+                .appendQueryNotNullParameter(SKIP_PARAM, skip)
+                .build()
+                .toString(),
             reqHeader = jwt?.let { buildAuthHeader(jwt) },
-            dtoClass = SimplifiedRestaurantMealsInput::class.java,
+            dtoClass = SimplifiedRestaurantMealContainerInput::class.java,
             onSuccess = success,
             onError = error
         )
     }
 
-
-    /**
-     * Parameter: id is required
-     */
     fun getMeal(
         mealId: Int,
         jwt: String?,
-        success: (DetailedMealInput) -> Unit,
+        success: (MealInfoInput) -> Unit,
         error: (VolleyError) -> Unit
     ) {
-        var uri = MEAL_ID_URI
-        val params = hashMapOf(
-            Pair(MEAL_ID_PARAM, "$mealId")
-        )
-        uri = buildUri(uri, params)
         requestParser.requestAndParse(
             method = HTTPMethod.GET,
-            uri = uri,
+            uri = Uri.Builder()
+                .scheme(SCHEME)
+                .encodedAuthority(ADDRESS_PORT)
+                .appendPath(MEAL_PATH)
+                .appendPath(mealId)
+                .build()
+                .toString(),
             reqHeader = jwt?.let { buildAuthHeader(jwt) },
-            dtoClass = INPUT_MEAL_DTO,
+            dtoClass = MealInfoInput::class.java,
             onSuccess = success,
             onError = error
         )
@@ -130,21 +102,22 @@ class MealDataSource(
         restaurantId: String,
         mealId: Int,
         jwt: String?,
-        success: (DetailedMealInput) -> Unit,
+        success: (MealInfoInput) -> Unit,
         error: (VolleyError) -> Unit
     ) {
-        val uri = buildUri(
-            RESTAURANT_ID_MEAL_ID_URI,
-            hashMapOf(
-                Pair(RESTAURANT_ID_PARAM, restaurantId),
-                Pair(MEAL_ID_PARAM, "$mealId")
-            )
-        )
         requestParser.requestAndParse(
             method = HTTPMethod.GET,
-            uri = uri,
+            uri = Uri.Builder()
+                .scheme(SCHEME)
+                .encodedAuthority(ADDRESS_PORT)
+                .appendPath(RESTAURANT_PATH)
+                .appendEncodedPath(restaurantId)
+                .appendPath(MEAL_PATH)
+                .appendPath(mealId)
+                .build()
+                .toString(),
             reqHeader = jwt?.let { buildAuthHeader(jwt) },
-            dtoClass = INPUT_MEAL_DTO,
+            dtoClass = MealInfoInput::class.java,
             onSuccess = success,
             onError = error
         )
@@ -152,24 +125,53 @@ class MealDataSource(
 
     fun getFavoriteMeals(
         jwt: String,
-        count: Int = 30,
-        skip: Int = 0,
-        success: (SimplifiedRestaurantMealsInput) -> Unit,
+        count: Int? = 30,
+        skip: Int? = 0,
+        cuisines: Collection<String>? = null,
+        success: (MealItemContainerInput) -> Unit,
         error: (VolleyError) -> Unit
     ) {
-        var uri = "$MEAL_FAVORITE_URI?skip=:skip&count=:count"
-        val params = hashMapOf(
-            Pair(SKIP_PARAM, "$skip"),
-            Pair(COUNT_PARAM, "$count")
-        )
-        uri = buildUri(uri, params)
-        val reqHeader = buildAuthHeader(jwt)
-
         requestParser.requestAndParse(
             method = HTTPMethod.GET,
-            uri = uri,
-            reqHeader = reqHeader,
-            dtoClass = SimplifiedRestaurantMealsInput::class.java,
+            uri = Uri.Builder()
+                .scheme(SCHEME)
+                .encodedAuthority(ADDRESS_PORT)
+                .appendPath(MEAL_PATH)
+                .appendPath(FAVORITE_PATH)
+                .appendQueryNotNullParameter(COUNT_PARAM, count)
+                .appendQueryNotNullParameter(SKIP_PARAM, skip)
+                .appendQueryNotNullListParameter(CUISINES_PARAM, cuisines)
+                .build()
+                .toString(),
+            reqHeader = buildAuthHeader(jwt),
+            dtoClass = MealItemContainerInput::class.java,
+            onSuccess = success,
+            onError = error
+        )
+    }
+
+    fun getCustomMeals(
+        jwt: String,
+        count: Int? = 30,
+        skip: Int? = 0,
+        cuisines: Collection<String>? = null,
+        success: (MealItemContainerInput) -> Unit,
+        error: (VolleyError) -> Unit
+    ) {
+        requestParser.requestAndParse(
+            method = HTTPMethod.GET,
+            uri = Uri.Builder()
+                .scheme(SCHEME)
+                .encodedAuthority(ADDRESS_PORT)
+                .appendPath(MEAL_PATH)
+                .appendPath(CUSTOM_PATH)
+                .appendQueryNotNullParameter(COUNT_PARAM, count)
+                .appendQueryNotNullParameter(SKIP_PARAM, skip)
+                .appendQueryNotNullListParameter(CUISINES_PARAM, cuisines)
+                .build()
+                .toString(),
+            reqHeader = buildAuthHeader(jwt),
+            dtoClass = MealItemContainerInput::class.java,
             onSuccess = success,
             onError = error
         )
@@ -178,128 +180,97 @@ class MealDataSource(
     /**
      * ----------------------------- POSTs -----------------------------
      */
-    fun postMeal(
-        name: String,
-        quantity: Int,
-        unit: String,
-        ingredients: Iterable<MealIngredient>,
-        cuisines: Iterable<Cuisine>,
+    fun postCustomMeal(
+        customMealOutput: CustomMealOutput,
+        success: (PayloadResponse) -> Unit,
         error: (VolleyError) -> Unit,
         jwt: String
     ) {
-
-        // Composing the authorization header
-        val reqHeader = buildAuthHeader(jwt)
-
         requestParser.request(
             method = HTTPMethod.POST,
-            uri = MEAL_URI,
-            reqHeader = reqHeader,
-            reqPayload = MealOutput(
-                name = name,
-                quantity = quantity,
-                unit = unit,
-                ingredients =
-                ingredients.map {
-                    IngredientOutput(
-                        identifier = it.submissionId,
-                        quantity = it.amount
-                    )
-                },
-                cuisines = cuisines.map { it.name }
-            ),
+            uri = Uri.Builder()
+                .scheme(SCHEME)
+                .encodedAuthority(ADDRESS_PORT)
+                .appendPath(MEAL_PATH)
+                .appendPath(CUSTOM_PATH)
+                .build()
+                .toString(),
+            reqHeader = buildAuthHeader(jwt),
+            reqPayload = customMealOutput,
             onError = error,
-            responseConsumer = { }
+            responseConsumer = success
         )
     }
 
     fun postRestaurantMeal(
         restaurantId: String,
-        mealId: Int,
-        success: (MealOutput) -> Unit,
+        restaurantMealOutput: RestaurantMealOutput,
+        success: (CustomMealOutput) -> Unit,
         error: (VolleyError) -> Unit,
         jwt: String
     ) {
-        val uri = buildUri(
-            RESTAURANT_ID_URI,
-            hashMapOf(Pair(RESTAURANT_ID_PARAM, restaurantId))
-        )
-        // Composing the authorization header
-        val reqHeader = buildAuthHeader(jwt)
-
         requestParser.requestAndParse(
             method = HTTPMethod.POST,
-            uri = uri,
-            reqHeader = reqHeader,
-            dtoClass = OUTPUT_MEAL_DTO,
+            uri = Uri.Builder()
+                .scheme(SCHEME)
+                .encodedAuthority(ADDRESS_PORT)
+                .appendPath(RESTAURANT_PATH)
+                .appendEncodedPath(restaurantId)
+                .appendPath(MEAL_PATH)
+                .build()
+                .toString(),
+            reqHeader = buildAuthHeader(jwt),
+            dtoClass = CustomMealOutput::class.java,
             onSuccess = success,
             onError = error,
-            reqPayload = {
-                //TODO replace with output mapper
-                RestaurantMealOutput(
-                    mealId = mealId
-                )
-            }
+            reqPayload = restaurantMealOutput
         )
     }
 
     /**
      * ----------------------------- DELETEs ---------------------------
      */
-    /**
-     * Parameter: id is required
-     */
+
     fun deleteMeal(
         mealId: Int,
         success: (PayloadResponse) -> Unit,
         error: (VolleyError) -> Unit,
         jwt: String
     ) {
-        val uri =
-            buildUri(
-                MEAL_ID_URI,
-                hashMapOf(
-                    Pair(MEAL_ID_PARAM, "$mealId")
-                )
-            )
-
-        // Composing the authorization header
-        val reqHeader = buildAuthHeader(jwt)
-
         requestParser.request(
             method = HTTPMethod.DELETE,
-            uri = uri,
-            reqHeader = reqHeader,
+            uri = Uri.Builder()
+                .scheme(SCHEME)
+                .encodedAuthority(ADDRESS_PORT)
+                .appendPath(MEAL_PATH)
+                .appendPath(mealId)
+                .build()
+                .toString(),
+            reqHeader = buildAuthHeader(jwt),
             reqPayload = null,
             onError = error,
             responseConsumer = success
         )
     }
 
-    /**
-     * Parameter: restaurantId & mealId are required
-     */
     fun deleteRestaurantMeal(
         restaurantId: String,
         mealId: Int,
         error: (VolleyError) -> Unit,
         jwt: String
     ) {
-        val uri = buildUri(
-            RESTAURANT_ID_MEAL_ID_URI,
-            hashMapOf(
-                Pair(RESTAURANT_ID_PARAM, restaurantId),
-                Pair(MEAL_ID_PARAM, "$mealId")
-            )
-        )
-
-        // Composing the authorization header
-        val reqHeader = buildAuthHeader(jwt)
-
         requestParser.request(
             method = HTTPMethod.DELETE,
-            uri = uri,
-            reqHeader = reqHeader,
+            uri = Uri.Builder()
+                .scheme(SCHEME)
+                .encodedAuthority(ADDRESS_PORT)
+                .appendPath(RESTAURANT_PATH)
+                .appendEncodedPath(restaurantId)
+                .appendPath(MEAL_PATH)
+                .appendPath(mealId)
+                .build()
+                .toString(),
+            reqHeader = buildAuthHeader(jwt),
             reqPayload = null,
             onError = error,
             responseConsumer = {}
@@ -310,60 +281,75 @@ class MealDataSource(
      * ----------------------------- PUTs ------------------------------
      */
 
-    /**
-     * Parameter: restaurantId & mealId are required
-     */
-    fun putRestaurantMealVote(
-        restaurantId: String,
-        mealId: Int,
-        vote: VoteState,
-        success: () -> Unit,
+    fun putMeal(
+        submissionId: Int,
+        customMealOutput: CustomMealOutput,
+        success: (PayloadResponse) -> Unit,
         error: (VolleyError) -> Unit,
         jwt: String
     ) {
-        val uri = buildUri(
-            RESTAURANT_ID_MEAL_ID_VOTE_URI,
-            hashMapOf(
-                Pair(RESTAURANT_ID_PARAM, restaurantId),
-                Pair(MEAL_ID_PARAM, "$mealId")
-            )
-        )
-
-        // Composing the authorization header
-        val reqHeader = buildAuthHeader(jwt)
-
         requestParser.request(
-            method = HTTPMethod.PUT,
-            uri = uri,
-            reqHeader = reqHeader,
-            reqPayload = VoteOutput(
-                vote = vote
-            ),
+            method = HTTPMethod.POST,
+            uri = Uri.Builder()
+                .scheme(SCHEME)
+                .encodedAuthority(ADDRESS_PORT)
+                .appendPath(MEAL_PATH)
+                .appendPath(submissionId)
+                .build()
+                .toString(),
+            reqHeader = buildAuthHeader(jwt),
+            reqPayload = customMealOutput,
             onError = error,
-            responseConsumer = { success() }
+            responseConsumer = success
         )
     }
 
     fun putMealFavorite(
         mealId: Int,
-        isFavorite: Boolean,
+        favoriteOutput: FavoriteOutput,
         success: () -> Unit,
         error: (VolleyError) -> Unit,
         jwt: String
     ) {
-        val uri = buildUri(
-            MEAL_ID_FAVORITE_URI,
-            hashMapOf(Pair(MEAL_ID_PARAM, "$mealId"))
-        )
-
-        // Composing the authorization header
-        val reqHeader = buildAuthHeader(jwt)
-
         requestParser.request(
             method = HTTPMethod.PUT,
-            uri = uri,
-            reqHeader = reqHeader,
-            reqPayload = FavoriteOutput(isFavorite = isFavorite),
+            uri = Uri.Builder()
+                .scheme(SCHEME)
+                .encodedAuthority(ADDRESS_PORT)
+                .appendPath(MEAL_PATH)
+                .appendPath(mealId)
+                .appendPath(FAVORITE_PATH)
+                .build()
+                .toString(),
+            reqHeader = buildAuthHeader(jwt),
+            reqPayload = favoriteOutput,
+            onError = error,
+            responseConsumer = { success() }
+        )
+    }
+
+    fun putRestaurantMealVote(
+        restaurantId: String,
+        mealId: Int,
+        voteOutput: VoteOutput,
+        success: () -> Unit,
+        error: (VolleyError) -> Unit,
+        jwt: String
+    ) {
+        requestParser.request(
+            method = HTTPMethod.PUT,
+            uri = Uri.Builder()
+                .scheme(SCHEME)
+                .encodedAuthority(ADDRESS_PORT)
+                .appendPath(RESTAURANT_PATH)
+                .appendEncodedPath(restaurantId)
+                .appendPath(MEAL_PATH)
+                .appendPath(mealId)
+                .appendPath(VOTE_PATH)
+                .build()
+                .toString(),
+            reqHeader = buildAuthHeader(jwt),
+            reqPayload = voteOutput,
             onError = error,
             responseConsumer = { success() }
         )
@@ -372,27 +358,25 @@ class MealDataSource(
     fun putRestaurantMealFavorite(
         restaurantId: String,
         mealId: Int,
-        isFavorite: Boolean,
+        favoriteOutput: FavoriteOutput,
         success: () -> Unit,
         error: (VolleyError) -> Unit,
         jwt: String
     ) {
-        val uri = buildUri(
-            RESTAURANT_ID_MEAL_ID_FAVORITE_URI,
-            hashMapOf(
-                Pair(RESTAURANT_ID_PARAM, restaurantId),
-                Pair(MEAL_ID_PARAM, "$mealId")
-            )
-        )
-
-        // Composing the authorization header
-        val reqHeader = buildAuthHeader(jwt)
-
         requestParser.request(
             method = HTTPMethod.PUT,
-            uri = uri,
-            reqHeader = reqHeader,
-            reqPayload = FavoriteOutput(isFavorite = isFavorite),
+            uri = Uri.Builder()
+                .scheme(SCHEME)
+                .encodedAuthority(ADDRESS_PORT)
+                .appendPath(RESTAURANT_PATH)
+                .appendEncodedPath(restaurantId)
+                .appendPath(MEAL_PATH)
+                .appendPath(mealId)
+                .appendPath(FAVORITE_PATH)
+                .build()
+                .toString(),
+            reqHeader = buildAuthHeader(jwt),
+            reqPayload = favoriteOutput,
             onError = error,
             responseConsumer = { success() }
         )
@@ -401,27 +385,25 @@ class MealDataSource(
     fun putRestaurantMealReport(
         restaurantId: String,
         mealId: Int,
-        reportStr: String,
+        reportOutput: ReportOutput,
         success: () -> Unit,
         error: (VolleyError) -> Unit,
         jwt: String
     ) {
-        val uri = buildUri(
-            RESTAURANT_ID_MEAL_ID_REPORT_URI,
-            hashMapOf(
-                Pair(RESTAURANT_ID_PARAM, restaurantId),
-                Pair(MEAL_ID_PARAM, "$mealId")
-            )
-        )
-
-        // Composing the authorization header
-        val reqHeader = buildAuthHeader(jwt)
-
         requestParser.request(
             method = HTTPMethod.PUT,
-            uri = uri,
-            reqHeader = reqHeader,
-            reqPayload = ReportOutput(description = reportStr),
+            uri = Uri.Builder()
+                .scheme(SCHEME)
+                .encodedAuthority(ADDRESS_PORT)
+                .appendPath(RESTAURANT_PATH)
+                .appendEncodedPath(restaurantId)
+                .appendPath(MEAL_PATH)
+                .appendPath(mealId)
+                .appendPath(REPORT_PATH)
+                .build()
+                .toString(),
+            reqHeader = buildAuthHeader(jwt),
+            reqPayload = reportOutput,
             onError = error,
             responseConsumer = { success() }
         )

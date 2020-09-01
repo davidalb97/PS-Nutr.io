@@ -63,7 +63,7 @@ class RestaurantInfoViewModel : MealItemListViewModel {
     }
 
     fun report(reportMsg: String, onSuccess: () -> Unit, onError: (VolleyError) -> Unit) {
-        restaurantRepository.report(
+        restaurantRepository.addReport(
             restaurantId = restaurantId!!,
             reportMsg = reportMsg,
             onSuccess = onSuccess,
@@ -73,7 +73,7 @@ class RestaurantInfoViewModel : MealItemListViewModel {
     }
 
     fun vote(vote: VoteState, onSuccess: () -> Unit, onError: (VolleyError) -> Unit) {
-        restaurantRepository.putVote(
+        restaurantRepository.changeVote(
             id = restaurantId!!,
             vote = vote,
             success = {
@@ -87,7 +87,7 @@ class RestaurantInfoViewModel : MealItemListViewModel {
 
     fun favorite(onSuccess: () -> Unit, onError: (VolleyError) -> Unit) {
         val restaurantInfo = restaurantInfo!!
-        restaurantRepository.putFavorite(
+        restaurantRepository.changeFavorite(
             restaurantId = restaurantId!!,
             isFavorite = !restaurantInfo.isFavorite,
             success = {
@@ -110,11 +110,8 @@ class RestaurantInfoViewModel : MealItemListViewModel {
 
     companion object CREATOR : Parcelable.Creator<RestaurantInfoViewModel> {
 
-
         override fun createFromParcel(parcel: Parcel): RestaurantInfoViewModel =
-            RestaurantInfoViewModel(
-                parcel
-            )
+            RestaurantInfoViewModel(parcel)
 
         override fun newArray(size: Int): Array<RestaurantInfoViewModel?> {
             return arrayOfNulls(size)

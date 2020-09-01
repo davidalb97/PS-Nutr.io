@@ -3,6 +3,7 @@ package pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list
 import android.os.Parcel
 import android.os.Parcelable
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.restaurantRepository
+import pt.ipl.isel.leic.ps.androidclient.data.model.Cuisine
 import pt.ipl.isel.leic.ps.androidclient.data.model.RestaurantItem
 import pt.ipl.isel.leic.ps.androidclient.ui.util.ItemAction
 import pt.ipl.isel.leic.ps.androidclient.ui.util.Navigation
@@ -18,6 +19,8 @@ class RestaurantListViewModel(
 
     var latitude: Double? = null
     var longitude: Double? = null
+    //TODO use cuisines search filter
+    var cuisines: Collection<Cuisine>? = null
 
     constructor(parcel: Parcel) : this(
         navDestination = Navigation.values()[parcel.readInt()],
@@ -34,6 +37,7 @@ class RestaurantListViewModel(
             longitude = longitude!!,
             count = count,
             skip = skip,
+            cuisines = cuisines,
             userSession = getUserSession(),
             success = liveDataHandler::add,
             error = onError
@@ -44,8 +48,8 @@ class RestaurantListViewModel(
         restaurantItem: RestaurantItem,
         onSuccess: () -> Unit,
         onError: (Throwable) -> Unit
-    ) = restaurantRepository.putFavorite(
-        restaurantId = restaurantItem.id,
+    ) = restaurantRepository.changeFavorite(
+        restaurantId = requireNotNull(restaurantItem.id),
         isFavorite = !restaurantItem.isFavorite,
         success = {
             restaurantItem.isFavorite = !restaurantItem.isFavorite
@@ -60,8 +64,8 @@ class RestaurantListViewModel(
         reportMsg: String,
         onSuccess: () -> Unit,
         onError: (Throwable) -> Unit
-    ) = restaurantRepository.report(
-        restaurantId = restaurantItem.id,
+    ) = restaurantRepository.addReport(
+        restaurantId = requireNotNull(restaurantItem.id),
         reportMsg = reportMsg,
         onSuccess = {
             restaurantItem.isFavorite = !restaurantItem.isFavorite

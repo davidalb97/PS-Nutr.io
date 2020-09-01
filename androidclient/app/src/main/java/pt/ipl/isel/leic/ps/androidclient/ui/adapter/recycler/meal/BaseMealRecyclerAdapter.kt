@@ -4,13 +4,18 @@ import android.content.Context
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealItem
 import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.BaseRecyclerAdapter
+import pt.ipl.isel.leic.ps.androidclient.ui.modular.listener.check.ICheckListener
+import pt.ipl.isel.leic.ps.androidclient.ui.modular.listener.click.IItemClickListener
 import pt.ipl.isel.leic.ps.androidclient.ui.viewholder.meal.BaseMealRecyclerViewHolder
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.meal.BaseMealListViewModel
 
 abstract class BaseMealRecyclerAdapter
 <T : MealItem, VM : BaseMealListViewModel<T>, VH : BaseMealRecyclerViewHolder<T>>(
     viewModel: VM,
-    ctx: Context
+    ctx: Context,
+    val itemCheckPredicator: ((T) -> Boolean)? = null,
+    val onCheckListener: ICheckListener<T>? = null,
+    val onClickListener: IItemClickListener<T>? = null
 ) : BaseRecyclerAdapter<T, VM, VH>(
     viewModel = viewModel,
     ctx = ctx
@@ -27,7 +32,7 @@ abstract class BaseMealRecyclerAdapter
     }
 
     fun onDelete(mealItem: MealItem, onSuccess: () -> Unit) {
-        viewModel.deleteItemById(mealItem.dbId)
+        viewModel.deleteItemById(requireNotNull(mealItem.dbId))
             .setOnPostExecute { onSuccess() }
             .execute()
     }
@@ -45,4 +50,18 @@ abstract class BaseMealRecyclerAdapter
             onError = onError
         )
     }
+
+    fun onCheck(viewHolder: BaseMealRecyclerViewHolder<T>, isChecked: Boolean) {
+        onCheckListener?.onCheckChange(viewHolder.item, isChecked) {
+            viewHolder.bindingAdapter?.notifyItemChanged(viewHolder.layoutPosition)
+        }
+    }
+
+    fun setupOnClick(viewHolder: BaseMealRecyclerViewHolder<T>) {
+        if (onClickListener != null) {
+            viewHolder.onClickListener = viewHolder.onClickListener?.appendListener(onClickListener)
+        }
+    }
+
+    fun isAlreadyChecked(item: T) = itemCheckPredicator?.invoke(item) ?: false
 }

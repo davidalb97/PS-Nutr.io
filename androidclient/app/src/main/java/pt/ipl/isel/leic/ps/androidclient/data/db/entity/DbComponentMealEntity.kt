@@ -5,11 +5,14 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = DbComponentMealEntity.tableName)
 class DbComponentMealEntity(
-    val submissionId: Int,
+    val submissionId: Int?,
     val name: String,
     val carbs: Int,
-    val amount: Int,
-    val unit: String,
+    val amount: Float,
+    val unit: Int,
+    val isFavorite: Boolean,
+    val isFavorable: Boolean,
+    val isReportable: Boolean?,
     val imageUri: String?,
     val sourceOrdinal: Int
 ) {

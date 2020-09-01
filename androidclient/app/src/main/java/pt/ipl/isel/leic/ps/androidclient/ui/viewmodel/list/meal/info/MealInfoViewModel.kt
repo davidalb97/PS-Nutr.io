@@ -11,9 +11,10 @@ import pt.ipl.isel.leic.ps.androidclient.ui.util.Navigation
 import pt.ipl.isel.leic.ps.androidclient.ui.util.getUserSession
 import pt.ipl.isel.leic.ps.androidclient.ui.util.live.LiveDataHandler
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.RestaurantListViewModel
-import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.meal.MealInfoListViewModel
+import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.meal.MealItemListViewModel
+import kotlin.reflect.KClass
 
-open class MealInfoViewModel : MealInfoListViewModel {
+open class MealInfoViewModel : MealItemListViewModel {
 
     private val mealInfoLiveDataHandler = LiveDataHandler<MealInfo>()
     val mealInfo get() = mealInfoLiveDataHandler.value
@@ -29,7 +30,7 @@ open class MealInfoViewModel : MealInfoListViewModel {
         navDestination = Navigation.SEND_TO_MEAL_DETAIL,
         actions = ingredientActions
     ) {
-        mealItem = null
+        mealItem = mealInfo
         mealInfoLiveDataHandler.restoreFromValue(mealInfo)
     }
 
@@ -65,22 +66,22 @@ open class MealInfoViewModel : MealInfoListViewModel {
         if (mealItem!!.source == Source.API || mealItem.source == Source.FAVORITE) {
             if (mealItem.restaurantSubmissionId != null) {
                 mealRepository.getApiRestaurantMealInfo(
-                    restaurantId = mealItem.restaurantSubmissionId,
-                    mealId = mealItem.submissionId,
+                    restaurantId = mealItem.restaurantSubmissionId!!,
+                    mealId = requireNotNull(mealItem.submissionId),
                     userSession = getUserSession(),
                     success = mealInfoLiveDataHandler::set,
                     error = onError
                 )
             } else {
                 mealRepository.getApiMealInfo(
-                    mealId = mealItem.submissionId,
+                    mealId = requireNotNull(mealItem.submissionId),
                     userSession = getUserSession(),
                     success = mealInfoLiveDataHandler::set,
                     error = onError
                 )
             }
         } else {
-            fetchDbBySource(mealItem.dbId, requireNotNull(source) {
+            fetchDbBySource(requireNotNull(mealItem.dbId), requireNotNull(source) {
                 "Cannot find meal info from db without a source!"
             })
         }
@@ -118,8 +119,8 @@ open class MealInfoViewModel : MealInfoListViewModel {
         onError: (VolleyError) -> Unit
     ) {
         mealRepository.putVote(
-            restaurantId = mealInfo!!.restaurantSubmissionId!!,
-            mealId = mealInfo!!.submissionId,
+            restaurantId = requireNotNull(mealInfo!!.restaurantSubmissionId),
+            mealId = requireNotNull(mealInfo!!.submissionId),
             vote = vote,
             success = {
                 mealInfo?.votes?.userHasVoted = vote
@@ -135,6 +136,8 @@ open class MealInfoViewModel : MealInfoListViewModel {
         dest?.writeParcelable(mealItem, flags)
         mealInfoLiveDataHandler.writeToParcel(dest, flags)
     }
+
+    override fun getModelClass(): KClass<MealItem> = MealItem::class
 
     override fun describeContents(): Int {
         return 0

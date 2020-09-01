@@ -10,17 +10,14 @@ import pt.isel.ps.g06.httpserver.common.exception.problemJson.badRequest.Invalid
 import pt.isel.ps.g06.httpserver.common.exception.problemJson.forbidden.NotSubmissionOwnerException
 import pt.isel.ps.g06.httpserver.common.exception.problemJson.notFound.RestaurantNotFoundException
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.RestaurantApiType
+import pt.isel.ps.g06.httpserver.dataAccess.input.userActions.FavoriteInput
 import pt.isel.ps.g06.httpserver.dataAccess.input.restaurant.RestaurantInput
 import pt.isel.ps.g06.httpserver.dataAccess.input.restaurant.RestaurantOwnerInput
-import pt.isel.ps.g06.httpserver.dataAccess.input.userActions.FavoriteInput
 import pt.isel.ps.g06.httpserver.dataAccess.input.userActions.ReportInput
 import pt.isel.ps.g06.httpserver.dataAccess.input.userActions.VoteInput
-import pt.isel.ps.g06.httpserver.dataAccess.output.restaurant.DetailedRestaurantOutput
-import pt.isel.ps.g06.httpserver.dataAccess.output.restaurant.SimplifiedRestaurantOutput
-import pt.isel.ps.g06.httpserver.dataAccess.output.restaurant.toDetailedRestaurantOutput
-import pt.isel.ps.g06.httpserver.dataAccess.output.restaurant.toSimplifiedRestaurantOutput
+import pt.isel.ps.g06.httpserver.dataAccess.output.restaurant.*
+import pt.isel.ps.g06.httpserver.model.Restaurant
 import pt.isel.ps.g06.httpserver.model.User
-import pt.isel.ps.g06.httpserver.model.restaurant.Restaurant
 import pt.isel.ps.g06.httpserver.service.AuthenticationService
 import pt.isel.ps.g06.httpserver.service.RestaurantService
 import pt.isel.ps.g06.httpserver.service.SubmissionService
@@ -28,7 +25,6 @@ import pt.isel.ps.g06.httpserver.service.UserService
 import javax.validation.Valid
 import javax.validation.constraints.Max
 import javax.validation.constraints.Min
-import kotlin.streams.toList
 
 private const val INVALID_RESTAURANT_SEARCH = "To search nearby restaurants, a geolocation must be given!"
 
@@ -62,7 +58,7 @@ class RestaurantController(
             @RequestParam @Min(0) skip: Int?,
             @RequestParam(defaultValue = DEFAULT_COUNT_STR) @Min(0) @Max(MAX_COUNT) count: Int?,
             user: User?
-    ): ResponseEntity<Collection<SimplifiedRestaurantOutput>> {
+    ): ResponseEntity<SimplifiedRestaurantContainerOutput> {
         if (latitude == null || longitude == null) {
             throw InvalidInputException(INVALID_RESTAURANT_SEARCH)
         }
@@ -76,9 +72,10 @@ class RestaurantController(
                 skip = skip,
                 count = count
         )
+
         return ResponseEntity
                 .ok()
-                .body(nearbyRestaurants.map { toSimplifiedRestaurantOutput(it, user?.identifier) }.toList())
+                .body(toSimplifiedRestaurantContainerOutput(nearbyRestaurants.toList()))
     }
 
     @GetMapping(RESTAURANT, consumes = [MediaType.ALL_VALUE])
@@ -200,9 +197,9 @@ class RestaurantController(
         // Check if the user is a moderator
         userService.ensureModerator(user)
 
-        val restaurantId = ensureRestaurantExists(restaurantId).identifier.value.submissionId!!
+        val restaurantSubmissionId = ensureRestaurantExists(restaurantId).identifier.value.submissionId!!
 
-        restaurantService.addOwner(restaurantId, restaurantOwnerInput.ownerId)
+        restaurantService.addOwner(restaurantSubmissionId, restaurantOwnerInput.ownerId)
 
         return ResponseEntity.ok().build()
     }

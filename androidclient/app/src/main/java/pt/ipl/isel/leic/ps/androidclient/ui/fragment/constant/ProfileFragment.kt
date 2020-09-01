@@ -11,7 +11,6 @@ import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.ui.adapter.TabAdapter
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.BaseFragment
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.list.InsulinProfilesListFragment
-import pt.ipl.isel.leic.ps.androidclient.ui.fragment.list.ProfileSubmissionsListFragment
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.UserProfileVMProviderFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.util.ItemAction
 import pt.ipl.isel.leic.ps.androidclient.ui.util.getUsername
@@ -39,7 +38,6 @@ class ProfileFragment : BaseFragment() {
                 bundle.putItemActions(ItemAction.EDIT, ItemAction.DELETE)
             }
         }, "Profiles")
-        tabPagerAdapter.addFragment(ProfileSubmissionsListFragment(), "Submissions")
 
         tabLayout = view.findViewById(R.id.profile_tab)
         viewPager = view.findViewById(R.id.profile_view_pager)

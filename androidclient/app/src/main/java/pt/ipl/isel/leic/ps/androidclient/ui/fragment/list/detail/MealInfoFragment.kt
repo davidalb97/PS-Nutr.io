@@ -7,11 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import pt.ipl.isel.leic.ps.androidclient.R
-import pt.ipl.isel.leic.ps.androidclient.data.model.MealInfo
-import pt.ipl.isel.leic.ps.androidclient.data.model.Source
-import pt.ipl.isel.leic.ps.androidclient.data.model.VoteState
-import pt.ipl.isel.leic.ps.androidclient.data.model.Votes
-import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.meal.MealInfoRecyclerAdapter
+import pt.ipl.isel.leic.ps.androidclient.data.model.*
+import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.meal.MealItemRecyclerAdapter
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.list.BaseListFragment
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.IImage
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.ICalculatorActionButton
@@ -27,7 +24,7 @@ import pt.ipl.isel.leic.ps.androidclient.ui.util.*
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.meal.info.MealInfoViewModel
 
 class MealInfoFragment :
-    BaseListFragment<MealInfo, MealInfoViewModel, MealInfoRecyclerAdapter>(),
+    BaseListFragment<MealItem, MealInfoViewModel, MealItemRecyclerAdapter>(),
     IVoteActionButtons,
     ICalculatorActionButton,
     IImage,
@@ -37,12 +34,12 @@ class MealInfoFragment :
     IEditMenuItem {
 
     override val recyclerAdapter by lazy {
-        MealInfoRecyclerAdapter(
+        MealItemRecyclerAdapter(
             recyclerViewModel,
             this.requireContext()
         )
     }
-    override val menus: MutableList<MenuItemFactory> = mutableListOf()
+    override val menus: MutableMap<String, MenuItemFactory> = mutableMapOf()
     override lateinit var actions: List<ItemAction>
     override val imageId: Int = R.id.meal_detail_image
     override lateinit var image: ImageView
@@ -82,8 +79,8 @@ class MealInfoFragment :
         super.setupImage(view, receivedMeal.imageUri)
 
         if (receivedMeal.restaurantSubmissionId != null) {
-            super.setupVoteBarCounters(view, receivedMeal.votes, receivedMeal.isVotable)
-            super.setupVoteButtons(view, receivedMeal.isVotable)
+            super.setupVoteBarCounters(view, receivedMeal.votes, receivedMeal.votes?.isVotable ?: false)
+            super.setupVoteButtons(view, receivedMeal.votes?.isVotable ?: false)
         }
 
         super.setupFavoriteButton(view)
@@ -95,7 +92,7 @@ class MealInfoFragment :
         val title: TextView = view.findViewById(R.id.meal_detail_title)
         title.text = receivedMeal.name
 
-        if (receivedMeal.source != Source.CUSTOM && receivedMeal.isSuggested) {
+        if (receivedMeal.source != Source.CUSTOM && receivedMeal.isSuggested == true) {
             val suggestedLayout: RelativeLayout = view.findViewById(R.id.meal_info_suggested_rl)
             suggestedLayout.visibility = View.VISIBLE
         }
@@ -144,7 +141,7 @@ class MealInfoFragment :
 
     override fun fetchCtx(): Context = requireContext()
 
-    override fun isFavorite(): Boolean = recyclerViewModel.mealInfo!!.isFavorite
+    override fun isFavorite(): Boolean = recyclerViewModel.mealInfo!!.favorites?.isFavorite ?: false
 
     override fun getRecyclerId() = R.id.meal_info_ingredient_item_list
 

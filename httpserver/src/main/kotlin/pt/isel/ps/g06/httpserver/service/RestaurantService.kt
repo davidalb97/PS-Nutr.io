@@ -185,7 +185,9 @@ class RestaurantService(
                 //Filter api restaurants that already exist in db
                 apiRestaurants.filter { apiRestaurant ->
                     //Db does not contain a restaurant with the api identifier
-                    dbRestaurants.none { dbRestaurant -> apiRestaurant.identifier == dbRestaurant.identifier }
+                    dbRestaurants.none { dbRestaurant ->
+                        apiRestaurant.identifier.value.apiId == dbRestaurant.identifier.value.apiId
+                    }
                 }
         )
     }

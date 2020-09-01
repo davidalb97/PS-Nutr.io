@@ -8,34 +8,34 @@ import pt.ipl.isel.leic.ps.androidclient.util.readUri
 import pt.ipl.isel.leic.ps.androidclient.util.writeBooleanCompat
 import pt.ipl.isel.leic.ps.androidclient.util.writeUri
 
-data class RestaurantItem(
-    var dbId: Long,
-    val id: String,
+open class RestaurantItem(
+    var dbId: Long?,
+    val id: String?,
     val name: String,
     val latitude: Float,
     val longitude: Float,
     val votes: Votes?,
     var isFavorite: Boolean,
     val isVotable: Boolean,
-    val imageUri: Uri?,
+    val image: Uri?,
     val source: Source
 ) : Parcelable {
 
     constructor(parcel: Parcel) : this(
-        dbId = parcel.readLong(),
-        id = parcel.readString()!!,
+        dbId = parcel.readSerializable() as Long?,
+        id = parcel.readString(),
         name = parcel.readString()!!,
         latitude = parcel.readFloat(),
         longitude = parcel.readFloat(),
         votes = parcel.readParcelable<Votes>(Votes::class.java.classLoader),
         isFavorite = parcel.readBooleanCompat(),
         isVotable = parcel.readBooleanCompat(),
-        imageUri = parcel.readUri(),
+        image = parcel.readUri(),
         source = Source.values()[parcel.readInt()]
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeLong(dbId)
+        parcel.writeSerializable(dbId)
         parcel.writeString(id)
         parcel.writeString(name)
         parcel.writeFloat(latitude)
@@ -43,7 +43,7 @@ data class RestaurantItem(
         parcel.writeParcelable(votes, flags)
         parcel.writeBooleanCompat(isFavorite)
         parcel.writeBooleanCompat(isVotable)
-        parcel.writeUri(imageUri)
+        parcel.writeUri(image)
         parcel.writeInt(source.ordinal)
     }
 

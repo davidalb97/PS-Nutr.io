@@ -3,33 +3,35 @@ package pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.restaurant
 import org.springframework.stereotype.Component
 import pt.isel.ps.g06.httpserver.common.nutrition.calculateCarbsFromBase
 import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.ResponseMapper
-import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.UserResponseMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.MealType
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbMealDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.*
 import pt.isel.ps.g06.httpserver.model.Meal
 import pt.isel.ps.g06.httpserver.model.MealComposition
+import pt.isel.ps.g06.httpserver.model.MealIngredient
 import pt.isel.ps.g06.httpserver.model.NutritionalValues
-import pt.isel.ps.g06.httpserver.model.food.Ingredient
-import java.time.OffsetDateTime
-import java.util.stream.Stream
+import pt.isel.ps.g06.httpserver.model.modular.toUserPredicate
 
 @Component
 class DbMealIngredientResponseMapper(
         private val dbFavoriteRepo: FavoriteDbRepository,
         private val dbMealRepo: MealDbRepository
-) : ResponseMapper<DbMealDto, Stream<Ingredient>> {
-    override fun mapTo(dto: DbMealDto): Stream<Ingredient> {
+) : ResponseMapper<DbMealDto, Sequence<MealIngredient>> {
+    override fun mapTo(dto: DbMealDto): Sequence<MealIngredient> {
         return dbMealRepo
                 .getMealIngredients(dto.submission_id)
                 .map {
                     //A Meal Ingredient tuple always requires an existing ingredient tuple
                     val ingredient = dbMealRepo.getById(it.ingredient_submission_id)!!
-                    Ingredient(
+                    MealIngredient(
                             identifier = ingredient.submission_id,
                             name = ingredient.meal_name,
-                            imageUri = null,
-//                            isFavorite = { userId -> dbFavoriteRepo.getFavorite(ingredient.submission_id, userId) },
+                            image = null,
+                            isFavorite = toUserPredicate({ false }) { userId ->
+                                dbFavoriteRepo.getFavorite(ingredient.submission_id, userId)
+                            },
+                            //An ingredient is always favorable
+                            isFavorable = { true },
                             nutritionalValues = NutritionalValues(
                                     carbs = calculateCarbsFromBase(ingredient.amount, ingredient.carbs, it.quantity).toInt(),
                                     amount = it.quantity,
@@ -45,14 +47,14 @@ class DbMealComponentResponseMapper(
         private val dbMealRepo: MealDbRepository,
         private val dbFavoriteRepo: FavoriteDbRepository,
         private val dbMealIngredientResponseMapper: DbMealIngredientResponseMapper,
-        private val dbSubmitterMapper: UserResponseMapper,
+        private val dbSubmitterMapper: DbSubmitterResponseMapper,
         private val dbCuisineMapper: DbCuisineResponseMapper,
         private val dbRestaurantMeal: RestaurantMealDbRepository,
         private val dbCuisineRepo: CuisineDbRepository,
         private val dbSubmitterRepo: SubmitterDbRepository,
         private val restaurantMealResponseMapper: DbRestaurantMealInfoResponseMapper
-) : ResponseMapper<DbMealDto, Stream<Meal>> {
-    override fun mapTo(dto: DbMealDto): Stream<Meal> {
+) : ResponseMapper<DbMealDto, Sequence<Meal>> {
+    override fun mapTo(dto: DbMealDto): Sequence<Meal> {
         return dbMealRepo
                 .getMealComponents(dto.submission_id)
                 .map {
@@ -61,33 +63,33 @@ class DbMealComponentResponseMapper(
                     Meal(
                             identifier = dto.submission_id,
                             name = dto.meal_name,
-                            isFavorite = { userId -> dbFavoriteRepo.getFavorite(dto.submission_id, userId) },
-                            imageUri = null,
+                            isFavorite = toUserPredicate({ false }) { userId ->
+                                dbFavoriteRepo.getFavorite(dto.submission_id, userId)
+                            },
+                            //An ingredient is always favorable
+                            isFavorable = toUserPredicate({ true }) { userId ->
+                                //A user cannot favorite on it's own submission
+                                !dbMealRepo.isSubmissionSubmitter(dto.submission_id, userId)
+                            },
+                            image = null,
                             composedBy = MealComposition(
-                                    //TODO Sequence -> Stream
                                     meals = this.mapTo(mealComponent),
                                     ingredients = dbMealIngredientResponseMapper.mapTo(mealComponent)
                             ),
                             cuisines = dbCuisineRepo.getAllByMealId(dto.submission_id).map(dbCuisineMapper::mapTo),
                             submitterInfo = lazy {
-                                //TODO Fix lack of submitter
-                                null
+                                dbSubmitterRepo.getSubmitterForSubmission(dto.submission_id)?.let { userInfoDto ->
+                                    dbSubmitterMapper.mapTo(userInfoDto)
+                                }
                             },
-//                            submitterInfo = lazy {
-//                                dbSubmitterRepo.getSubmitterForSubmission(dto.submission_id)?.let { userInfoDto ->
-//                                    dbSubmitterMapper.mapTo(userInfoDto)
-//                                }
-//                            },
-                            creationDate = lazy { OffsetDateTime.now() },
-
-//                            creationDate = lazy { dbMealRepo.getCreationDate(dto.submission_id) },
+                            creationDate = lazy { dbMealRepo.getCreationDate(dto.submission_id) },
                             type = MealType.fromValue(dto.meal_type),
                             restaurantInfoSupplier = { restaurantIdentifier ->
                                 restaurantIdentifier.submissionId
                                         ?.let { id -> dbRestaurantMeal.getRestaurantMeal(id, dto.submission_id) }
                                         ?.let(restaurantMealResponseMapper::mapTo)
                             },
-                            nutritionalValues = NutritionalValues(
+                            nutritionalInfo = NutritionalValues(
                                     carbs = calculateCarbsFromBase(mealComponent.amount, mealComponent.carbs, it.quantity).toInt(),
                                     amount = it.quantity,
                                     unit = "gr"     //TODO From an enum
@@ -103,13 +105,17 @@ class DbMealComponentResponseMapper(
 @Component
 class DbIngredientResponseMapper(
         private val dbFavoriteRepo: FavoriteDbRepository
-) : ResponseMapper<DbMealDto, Ingredient> {
-    override fun mapTo(dto: DbMealDto): Ingredient {
-        return Ingredient(
+) : ResponseMapper<DbMealDto, MealIngredient> {
+    override fun mapTo(dto: DbMealDto): MealIngredient {
+        return MealIngredient(
                 identifier = dto.submission_id,
                 name = dto.meal_name,
-//                isFavorite = { userId -> dbFavoriteRepo.getFavorite(dto.submission_id, userId) },
-                imageUri = null,
+                isFavorite = toUserPredicate({ false }) { userId ->
+                    dbFavoriteRepo.getFavorite(dto.submission_id, userId)
+                },
+                //An ingredient is always favorable
+                isFavorable = { true },
+                image = null,
                 nutritionalValues = NutritionalValues(dto.carbs, dto.amount, dto.unit)
         )
     }

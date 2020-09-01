@@ -5,9 +5,9 @@ import android.os.Parcelable
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.BaseRecyclerAdapter
 import pt.ipl.isel.leic.ps.androidclient.ui.viewholder.BaseRecyclerViewHolder
-import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.pick.ItemPickerViewModel
+import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.pick.BaseItemPickerViewModel
 
-abstract class BasePickRecyclerAdapter<T : Parcelable, VM : ItemPickerViewModel<T>>(
+abstract class BasePickRecyclerAdapter<T : Parcelable, VM : BaseItemPickerViewModel<T>>(
     viewModel: VM,
     ctx: Context
 ) : BaseRecyclerAdapter<T, VM, BaseRecyclerViewHolder<T>>(

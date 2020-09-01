@@ -15,6 +15,8 @@ import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.IFavoriteActionButton
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.menu.MenuItemFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.menu.IPopupMenuButton
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.menu.IReportMenuItem
+import pt.ipl.isel.leic.ps.androidclient.ui.modular.listener.check.ICheckBox
+import pt.ipl.isel.leic.ps.androidclient.ui.modular.viewHolder.IMealItemDetail
 import pt.ipl.isel.leic.ps.androidclient.ui.util.*
 import pt.ipl.isel.leic.ps.androidclient.ui.viewholder.BaseRecyclerViewHolder
 
@@ -33,10 +35,18 @@ abstract class BaseMealRecyclerViewHolder<T : MealItem>(
     IDeleteActionButton<T>,
     IFavoriteActionButton,
     IPopupMenuButton,
-    IReportMenuItem {
+    IReportMenuItem,
+    IMealItemDetail<T>,
+    ICheckBox<T> {
 
     private val mealName: TextView = view.findViewById(R.id.mealName)
-    override val menus: MutableList<MenuItemFactory> = mutableListOf()
+    override val checkBoxId: Int = R.id.meal_card_checkbox
+    override lateinit var checkBox: CheckBox
+    override val customMealQuantityId: Int = R.id.custom_meal_quantity
+    override lateinit var customMealQuantity: TextView
+    override val customMealCarbsId: Int = R.id.custom_meal_carbs_amount
+    override lateinit var customMealCarbs: TextView
+    override val menus: MutableMap<String, MenuItemFactory> = mutableMapOf()
     override val menuButtonId = R.id.options
     override lateinit var menuButton: ImageButton
     override val imageId: Int = R.id.mealImage
@@ -62,12 +72,14 @@ abstract class BaseMealRecyclerViewHolder<T : MealItem>(
         super.bindTo(item)
         mealName.text = item.name
 
+        super.setupCheckBox(view, item)
+        super.setupCustomMeal(view, ctx, item)
         super.setupCalculateAction(view)
         super.setupPressAction(view)
         super.setupOnDeleteAction(view, bindingAdapter, layoutPosition)
         super.setupFavoriteButton(view)
         super.setupImage(view, item.imageUri)
-        super.setupVoteBarCounters(view, item.votes, item.isVotable)
+        super.setupVoteBarCounters(view, item.votes, item.votes?.isVotable ?: false)
         super.setupReportMenuItem()
         super.setupPopupMenuButton(view)
     }
@@ -81,5 +93,5 @@ abstract class BaseMealRecyclerViewHolder<T : MealItem>(
         bundle.putDbId(this.item.dbId)
     }
 
-    override fun isFavorite(): Boolean = item.isFavorite
+    override fun isFavorite(): Boolean = item.favorites?.isFavorite ?: false
 }
