@@ -8,12 +8,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Toast
+import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.app
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.CustomMeal
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealIngredient
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealItem
 import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.pick.CuisinePickRecyclerAdapter
 import pt.ipl.isel.leic.ps.androidclient.ui.adapter.spinner.pick.CuisinePickSpinnerAdapter
+import pt.ipl.isel.leic.ps.androidclient.ui.fragment.BaseAddMealFragment
+import pt.ipl.isel.leic.ps.androidclient.ui.modular.IRequiredTextInput
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.pick.IRemainingPickSpinner
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.AddCustomMealRecyclerVMProviderFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.util.Navigation
@@ -23,7 +27,7 @@ import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.AddCustomMealViewModel
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.pick.CuisinePickViewModel
 
 
-class AddCustomMealFragment : BaseAddMealFragment(), IRemainingPickSpinner {
+class AddCustomMealFragment : BaseAddMealFragment(), IRemainingPickSpinner, IRequiredTextInput {
 
     //All data
     private lateinit var viewModel: AddCustomMealViewModel
@@ -120,36 +124,65 @@ class AddCustomMealFragment : BaseAddMealFragment(), IRemainingPickSpinner {
     private fun setupSubmit(view: View) {
         submitButton = view.findViewById(R.id.create_custom_meal_button)
         submitButton.setOnClickListener {
-            val noneFieldBlank =
-                listOf(
-                    mMealNameEditText,
-                    additionalAmountEditText
-                ).none { it.text.isBlank() }
-
-            val noneEmpty = listOf(
-                cuisinesViewModel,
-                mealsViewModel
-            ).none { it.pickedItems.isEmpty() }
-
-            if (noneFieldBlank && noneEmpty) {
-                val customMeal = getCurrentCustomMeal()
-                val editMeal = viewModel.editMeal
-                if (editMeal == null) {
-                    viewModel.addCustomMeal(
-                        customMeal = customMeal,
-                        error = log::e,
-                        success = ::popUpBackStack
-                    )
-                } else {
-                    viewModel.editCustomMeal(
-                        submission = requireNotNull(editMeal.submissionId),
-                        customMeal = customMeal,
-                        error = log::e,
-                        success = ::popUpBackStack
-                    )
-                }
+            if(!isInputValid()) {
+                return@setOnClickListener
+            }
+            val customMeal = getCurrentCustomMeal()
+            val editMeal = viewModel.editMeal
+            if (editMeal == null) {
+                viewModel.addCustomMeal(
+                    customMeal = customMeal,
+                    error = ::onSubmitError,
+                    success = ::onCreateSuccess
+                )
+            } else {
+                viewModel.editCustomMeal(
+                    submission = requireNotNull(editMeal.submissionId),
+                    customMeal = customMeal,
+                    error = ::onSubmitError,
+                    success = ::onEditSuccess
+                )
             }
         }
+    }
+
+    private fun onCreateSuccess() {
+        Toast.makeText(app, getString(R.string.created_custom_meal), Toast.LENGTH_SHORT).show()
+        popUpBackStack()
+    }
+
+    private fun onEditSuccess() {
+        Toast.makeText(app, getString(R.string.edited_custom_meal), Toast.LENGTH_SHORT).show()
+        popUpBackStack()
+    }
+
+    private fun onSubmitError(throwable: Throwable) {
+        log.e(throwable)
+        Toast.makeText(app, getString(R.string.submit_fail_custom_meal), Toast.LENGTH_SHORT).show()
+        popUpBackStack()
+    }
+
+    private fun isInputValid(): Boolean {
+        if(!validateTextViews(requireContext(), mMealNameEditText)) {
+            return false
+        }
+        if (cuisinesViewModel.pickedItems.isEmpty()) {
+            Toast.makeText(
+                app,
+                getString(R.string.select_cuisine),
+                Toast.LENGTH_SHORT
+            ).show()
+            return false
+        }
+        if (mealsViewModel.pickedItems.isEmpty()) {
+            Toast.makeText(
+                app,
+                getString(R.string.select_ingredients),
+                Toast.LENGTH_SHORT
+            ).show()
+            return false
+        }
+        return true
     }
 
     private fun getAdditionalAmount(): Float {
