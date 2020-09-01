@@ -39,7 +39,7 @@ interface ReportDao {
         const val description = "description"
     }
 
-    @SqlQuery("SELECT * FROM $table LIMIT :count OFFSET :skip")
+    @SqlQuery("SELECT * FROM $table LIMIT :count OFFSET :skip * :count")
     fun getAll(skip: Int?, count: Int?): Collection<DbReportDto>
 
     @SqlQuery( "SELECT $S_table.$S_submission_id as _submission_id, " +
@@ -57,7 +57,7 @@ interface ReportDao {
                     "WHERE $S_table.$S_submission_type IN (:submissionType) " +
                     "GROUP BY $S_table.$S_submission_id, $R_table.$R_restaurant_name, _RestaurantMeal.meal_name, _submitter_id " +
                     "ORDER BY _count DESC, _name ASC " +
-                    "LIMIT :count OFFSET :skip"
+                    "LIMIT :count OFFSET :skip * :count"
     )
     fun getAllReportedSubmissionsByType(submissionType: String, skip: Int?, count: Int?): Collection<DbReportedSubmissionDto>
 
