@@ -171,13 +171,13 @@ class RestaurantMealService(
     }
 
     fun updateUserPortion(submitterId: Int, restaurantId: RestaurantIdentifier, mealId: Int, portion: PortionInput) {
-        val restaurantMeal = getRestaurantMeal(restaurantId, mealId)
+        val restaurantMeal = getOrAddRestaurantMeal(restaurantId, mealId)
 
         val userPortion = restaurantMeal.getRestaurantMealInfo()
                 ?.let { it.userPortion(submitterId) }
                 ?: throw PortionNotFoundException()
 
-        dbPortionRepository.update(userPortion.identifier, portion.quantity!!)
+        dbPortionRepository.update(submitterId, userPortion.identifier, portion.quantity!!)
     }
 
 
