@@ -44,6 +44,8 @@ interface IChart {
             val lineData = BarData(dataSets)
             chart.data = lineData
         }
-        chart.invalidate()
+        invalidateChart()
     }
+
+    fun invalidateChart() = chart.invalidate()
 }

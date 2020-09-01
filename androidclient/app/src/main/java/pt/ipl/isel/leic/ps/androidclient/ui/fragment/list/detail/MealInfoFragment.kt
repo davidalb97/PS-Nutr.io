@@ -76,6 +76,9 @@ class MealInfoFragment :
     override val chartId: Int = R.id.portion_chart
     override lateinit var chart: BarChart
 
+    lateinit var addPortionLayout: RelativeLayout
+    lateinit var editPortionLayout: RelativeLayout
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -92,7 +95,11 @@ class MealInfoFragment :
         super.setupImage(view, receivedMeal.imageUri)
 
         if (receivedMeal.restaurantSubmissionId != null) {
-            super.setupVoteBarCounters(view, receivedMeal.votes, receivedMeal.votes?.isVotable ?: false)
+            super.setupVoteBarCounters(
+                view,
+                receivedMeal.votes,
+                receivedMeal.votes?.isVotable ?: false
+            )
             super.setupVoteButtons(view, receivedMeal.votes?.isVotable ?: false)
         }
 
@@ -110,82 +117,15 @@ class MealInfoFragment :
             } ?: emptyList()
         super.setupChart(view, portionEntries)
 
-        // If current has not any portion added to this meal
-        if (receivedMeal.portions?.userPortion == null) {
-            val addPortionButton: ImageButton = view.findViewById(R.id.add_portion_button)
-            addPortionButton.setOnClickListener {
-                MealAmountSelector(
-                    ctx = requireContext(),
-                    layoutInflater = layoutInflater,
-                    baseCarbs = receivedMeal.carbs.toFloat(),
-                    baseAmountGrams = receivedMeal.amount,
-                    mealUnit = WeightUnits.fromValue(sharedPreferences.getWeightUnitOrDefault())
-                ) { preciseGrams, preciseCarbs ->
-                    recyclerViewModel.addMealPortion(
-                        restaurantId = receivedMeal.restaurantSubmissionId,
-                        mealId = receivedMeal.submissionId,
-                        portionOutput = PortionOutput(
-                            preciseGrams.toInt(),
-                            sharedPreferences.getWeightUnitOrDefault()
-                        ),
-                        userSession = requireUserSession(),
-                        onSuccess = { status ->
-                            Toast.makeText(app, "Added portion", Toast.LENGTH_SHORT).show()
-                            recyclerViewModel.update()
-                        },
-                        onError = { error ->
-                            Toast.makeText(app, "Could not add portion", Toast.LENGTH_SHORT).show()
-                        }
-                    )
-                }
-            }
-        } else { // If the user already added a portion to this meal
-            val addPortionLayout: RelativeLayout = view.findViewById(R.id.add_portion_layout)
-            val editPortionLayout: RelativeLayout = view.findViewById(R.id.edit_portion_layout)
-            val editPortionButton: Button = view.findViewById(R.id.edit_portion_button)
-            val deletePortionButton: Button = view.findViewById(R.id.delete_portion_button)
-            addPortionLayout.visibility = View.GONE
-            editPortionLayout.visibility = View.VISIBLE
-            editPortionButton.setOnClickListener {
-                MealAmountSelector(
-                    ctx = requireContext(),
-                    layoutInflater = layoutInflater,
-                    baseCarbs = receivedMeal.carbs.toFloat(),
-                    baseAmountGrams = receivedMeal.portions!!.userPortion!!,
-                    mealUnit = WeightUnits.fromValue(sharedPreferences.getWeightUnitOrDefault())
-                ) { preciseGrams, preciseCarbs ->
-                    recyclerViewModel.editMealPortion(
-                        restaurantId = receivedMeal.restaurantSubmissionId!!,
-                        mealId = receivedMeal.submissionId!!,
-                        portionOutput = PortionOutput(
-                            preciseGrams.toInt(),
-                            sharedPreferences.getWeightUnitOrDefault()
-                        ),
-                        userSession = requireUserSession(),
-                        onSuccess = { status ->
-                            Toast.makeText(app, "Added portion", Toast.LENGTH_SHORT).show()
-                        },
-                        onError = { error ->
-                            Toast.makeText(app, "Could not add portion", Toast.LENGTH_SHORT).show()
-                        }
-                    )
-                }
-            }
+        addPortionLayout = view.findViewById(R.id.add_portion_layout)
+        editPortionLayout = view.findViewById(R.id.edit_portion_layout)
 
-            deletePortionButton.setOnClickListener {
-                recyclerViewModel.deleteMealPortion(
-                    restaurantId = receivedMeal.restaurantSubmissionId!!,
-                    mealId = receivedMeal.submissionId!!,
-                    userSession = requireUserSession(),
-                    onSuccess = { status ->
-                        Toast.makeText(app, "Your portion submission was deleted!", Toast.LENGTH_SHORT).show()
-                        recyclerViewModel.update()
-                    },
-                    onError = { error ->
-                        Toast.makeText(app, "Could not delete your submitted portion", Toast.LENGTH_SHORT).show()
-                    }
-                )
-            }
+        // If the current user has not any portion added to this meal
+        if (receivedMeal.portions?.userPortion == null) {
+            setupAddPortion(view, receivedMeal)
+        } else { // If the user already added a portion to this meal can now only edit or delete it
+            setupEditPortion(view, receivedMeal)
+            setupDeletePortion(view, receivedMeal)
         }
 
         val title: TextView = view.findViewById(R.id.meal_detail_title)
@@ -194,6 +134,98 @@ class MealInfoFragment :
         if (receivedMeal.source != Source.CUSTOM && receivedMeal.isSuggested == true) {
             val suggestedLayout: RelativeLayout = view.findViewById(R.id.meal_info_suggested_rl)
             suggestedLayout.visibility = View.VISIBLE
+        }
+    }
+
+    private fun setupAddPortion(view: View, receivedMeal: MealInfo) {
+        val addPortionButton: ImageButton = view.findViewById(R.id.add_portion_button)
+        addPortionLayout.visibility = View.VISIBLE
+        editPortionLayout.visibility = View.GONE
+        addPortionButton.setOnClickListener {
+            MealAmountSelector(
+                ctx = requireContext(),
+                layoutInflater = layoutInflater,
+                baseCarbs = receivedMeal.carbs.toFloat(),
+                baseAmountGrams = receivedMeal.amount,
+                mealUnit = WeightUnits.fromValue(sharedPreferences.getWeightUnitOrDefault())
+            ) { preciseGrams, preciseCarbs ->
+                recyclerViewModel.addMealPortion(
+                    restaurantId = receivedMeal.restaurantSubmissionId,
+                    mealId = receivedMeal.submissionId,
+                    portionOutput = PortionOutput(
+                        preciseGrams.toInt(),
+                        sharedPreferences.getWeightUnitOrDefault()
+                    ),
+                    userSession = requireUserSession(),
+                    onSuccess = { status ->
+                        Toast.makeText(app, "Added portion", Toast.LENGTH_SHORT).show()
+                        recyclerViewModel.update()
+                    },
+                    onError = { error ->
+                        Toast.makeText(app, "Could not add the portion", Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                )
+            }
+        }
+    }
+
+    private fun setupEditPortion(view: View, receivedMeal: MealInfo) {
+        val editPortionButton: Button = view.findViewById(R.id.edit_portion_button)
+        addPortionLayout.visibility = View.GONE
+        editPortionLayout.visibility = View.VISIBLE
+        editPortionButton.setOnClickListener {
+            MealAmountSelector(
+                ctx = requireContext(),
+                layoutInflater = layoutInflater,
+                baseCarbs = receivedMeal.carbs.toFloat(),
+                baseAmountGrams = receivedMeal.portions!!.userPortion!!,
+                mealUnit = WeightUnits.fromValue(sharedPreferences.getWeightUnitOrDefault())
+            ) { preciseGrams, preciseCarbs ->
+                recyclerViewModel.editMealPortion(
+                    restaurantId = receivedMeal.restaurantSubmissionId!!,
+                    mealId = receivedMeal.submissionId!!,
+                    portionOutput = PortionOutput(
+                        preciseGrams.toInt(),
+                        sharedPreferences.getWeightUnitOrDefault()
+                    ),
+                    userSession = requireUserSession(),
+                    onSuccess = { status ->
+                        Toast.makeText(app, "Added portion", Toast.LENGTH_SHORT).show()
+                        recyclerViewModel.update()
+                    },
+                    onError = { error ->
+                        Toast.makeText(app, "Could not edit the portion", Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                )
+            }
+        }
+    }
+
+    private fun setupDeletePortion(view: View, receivedMeal: MealInfo) {
+        val deletePortionButton: Button = view.findViewById(R.id.delete_portion_button)
+        deletePortionButton.setOnClickListener {
+            recyclerViewModel.deleteMealPortion(
+                restaurantId = receivedMeal.restaurantSubmissionId!!,
+                mealId = receivedMeal.submissionId!!,
+                userSession = requireUserSession(),
+                onSuccess = { status ->
+                    Toast.makeText(
+                        app,
+                        "Your portion submission was deleted!",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    recyclerViewModel.update()
+                },
+                onError = { error ->
+                    Toast.makeText(
+                        app,
+                        "Could not delete your submitted portion",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            )
         }
     }
 
