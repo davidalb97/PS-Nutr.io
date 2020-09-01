@@ -6,9 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.EditText
-import android.widget.Toast
+import android.widget.*
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.app
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.CustomMeal
@@ -20,6 +18,7 @@ import pt.ipl.isel.leic.ps.androidclient.ui.fragment.BaseAddMealFragment
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.IRequiredTextInput
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.pick.IRemainingPickSpinner
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.AddCustomMealRecyclerVMProviderFactory
+import pt.ipl.isel.leic.ps.androidclient.ui.util.MealAmountSelector
 import pt.ipl.isel.leic.ps.androidclient.ui.util.Navigation
 import pt.ipl.isel.leic.ps.androidclient.ui.util.getDbId
 import pt.ipl.isel.leic.ps.androidclient.ui.util.units.DEFAULT_WEIGHT_UNIT
@@ -44,7 +43,9 @@ class AddCustomMealFragment : BaseAddMealFragment(), IRemainingPickSpinner, IReq
     }
 
     private lateinit var mMealNameEditText: EditText
-    private lateinit var additionalAmountEditText: EditText
+    private lateinit var additionalAmountTextView: TextView
+    private lateinit var addAdditionalAmountTextView: TextView
+    private lateinit var addAdditionalAmountImageButton: ImageButton
     private lateinit var imageUrlEditText: EditText
     private lateinit var submitButton: Button
 
@@ -57,6 +58,10 @@ class AddCustomMealFragment : BaseAddMealFragment(), IRemainingPickSpinner, IReq
     override val totalIngredientsWeightTextViewId: Int = R.id.total_ingredient_amount
     override val totalIngredientsCarbohydratesTextViewId: Int = R.id.total_ingredient_carbs
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -68,31 +73,82 @@ class AddCustomMealFragment : BaseAddMealFragment(), IRemainingPickSpinner, IReq
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        setupViewModel()
         super.onViewCreated(view, savedInstanceState)
 
         setupCuisines(view)
         setupSubmit(view)
 
         mMealNameEditText = view.findViewById(R.id.meal_name)
-        mMealNameEditText.setText(viewModel.editMeal?.name)
+        mMealNameEditText.setText(viewModel.currentName)
 
-        additionalAmountEditText = view.findViewById(R.id.meal_portion_quantity)
-        additionalAmountEditText.setText(viewModel.editMeal?.amount?.toString())
+        setupAdditionalAmount(view)
 
         imageUrlEditText = view.findViewById(R.id.custom_meal_image_url)
-        imageUrlEditText.setText(viewModel.editMeal?.imageUri?.toString())
+        imageUrlEditText.setText(viewModel.currentImg)
     }
 
-    override fun setupIngredients(view: View) {
-        super.setupIngredients(view)
+    private fun setupViewModel() {
+        //If is the first time the fragment opened and is editing custom meal
+        if(viewModel.currentName == null) {
+            if(viewModel.editMeal != null) {
+                val editMeal = viewModel.editMeal!!
 
-        val editMeal = viewModel.editMeal
-        if (mealsViewModel.items.isEmpty() && editMeal != null) {
-            val ingredients = editMeal.mealComponents.plus(editMeal.ingredientComponents)
-            if (ingredients.isNotEmpty()) {
-                mealsViewModel.pickedLiveDataHandler.set(ingredients)
+                //Restore name
+                viewModel.currentName = editMeal.name
+
+                //Restore unit
+                viewModel.currentWeightUnits = editMeal.unit
+
+                //Restore image
+                viewModel.currentImg = editMeal.imageUri?.toString()
+
+                //Restore ingredients
+                mealsViewModel.pickedLiveDataHandler.restoreFromValues(
+                    editMeal.ingredientComponents.plus(editMeal.mealComponents)
+                )
+
+                //Restore additional meal amount
+                viewModel.currentAdditionalAmount = editMeal.amount - countIngredientQuantity()
+
+                //Restore cuisines
+                cuisinesViewModel.pickedLiveDataHandler.restoreFromValues(editMeal.cuisines)
             }
         }
+    }
+
+    private fun setupAdditionalAmount(view: View) {
+        additionalAmountTextView = view.findViewById(R.id.custom_meal_additional_amount)
+        addAdditionalAmountTextView = view.findViewById(R.id.add_custom_meal_add_amount_txt)
+        addAdditionalAmountImageButton = view.findViewById(R.id.add_custom_meal_add_amount_btn)
+        addAdditionalAmountImageButton.setOnClickListener {
+            MealAmountSelector(
+                requireContext(),
+                layoutInflater,
+                0.0F,
+                viewModel.currentAdditionalAmount,
+                currentWeightUnit,
+            ) { amountGrams: Float, _: Float ->
+                viewModel.currentAdditionalAmount = DEFAULT_WEIGHT_UNIT.convert(
+                    targetUnit = currentWeightUnit,
+                    value = amountGrams
+                )
+                refreshAdditionalAmount()
+            }
+        }
+        refreshAdditionalAmount()
+    }
+
+    private fun refreshAdditionalAmount() {
+        additionalAmountTextView.text = String.format(
+            getString(R.string.custom_meal_additional_quantity),
+            viewModel.currentAdditionalAmount
+        )
+        addAdditionalAmountTextView.text = getString(
+            if (viewModel.currentAdditionalAmount != 0.0F)
+                R.string.edit_amount
+            else R.string.add_amount
+        )
     }
 
     private fun setupCuisines(view: View) {
@@ -111,20 +167,13 @@ class AddCustomMealFragment : BaseAddMealFragment(), IRemainingPickSpinner, IReq
             adapter = cuisinesSpinnerAdapter,
             pickerViewModel = cuisinesViewModel
         )
-        when {
-            viewModel.editMeal?.cuisines != null -> {
-                val cuisines = viewModel.editMeal!!.cuisines
-                cuisinesViewModel.tryRestore()
-                cuisinesViewModel.pickedLiveDataHandler.add(cuisines)
-            }
-            else -> cuisinesViewModel.update()
-        }
+        cuisinesViewModel.update()
     }
 
     private fun setupSubmit(view: View) {
         submitButton = view.findViewById(R.id.create_custom_meal_button)
         submitButton.setOnClickListener {
-            if(!isInputValid()) {
+            if (!isInputValid()) {
                 return@setOnClickListener
             }
             val customMeal = getCurrentCustomMeal()
@@ -163,7 +212,7 @@ class AddCustomMealFragment : BaseAddMealFragment(), IRemainingPickSpinner, IReq
     }
 
     private fun isInputValid(): Boolean {
-        if(!validateTextViews(requireContext(), mMealNameEditText)) {
+        if (!validateTextViews(requireContext(), mMealNameEditText)) {
             return false
         }
         if (cuisinesViewModel.pickedItems.isEmpty()) {
@@ -185,11 +234,8 @@ class AddCustomMealFragment : BaseAddMealFragment(), IRemainingPickSpinner, IReq
         return true
     }
 
-    private fun getAdditionalAmount(): Float {
-        return additionalAmountEditText.text?.toString()?.toFloat() ?: 0.0F
-    }
-
     private fun getCurrentCustomMeal(): CustomMeal {
+        val ingredients = mealsViewModel.pickedItems.map(::toMealIngredient)
         return CustomMeal(
             dbId = viewModel.editMeal?.dbId,
             submissionId = viewModel.editMeal?.submissionId,
@@ -197,16 +243,12 @@ class AddCustomMealFragment : BaseAddMealFragment(), IRemainingPickSpinner, IReq
             carbs = currentIngredientsCarbohydrates,
             amount = currentWeightUnit.convert(
                 DEFAULT_WEIGHT_UNIT,
-                currentIngredientsAmount + getAdditionalAmount()
+                currentIngredientsAmount + viewModel.currentAdditionalAmount
             ),
             unit = DEFAULT_WEIGHT_UNIT,
-            imageUri = imageUrlEditText.text?.toString()?.let { Uri.parse(it) },
-            ingredientComponents = mealsViewModel.pickedItems
-                .map(::toMealIngredient)
-                .filter { !it.isMeal },
-            mealComponents = mealsViewModel.pickedItems
-                .map(::toMealIngredient)
-                .filter { it.isMeal },
+            imageUri = imageUrlEditText.text?.toString()?.let(Uri::parse),
+            ingredientComponents = ingredients.filter { !it.isMeal },
+            mealComponents = ingredients.filter { it.isMeal },
             cuisines = cuisinesViewModel.pickedItems
         )
     }
@@ -229,6 +271,13 @@ class AddCustomMealFragment : BaseAddMealFragment(), IRemainingPickSpinner, IReq
             imageUri = mealItem.imageUri,
             source = mealItem.source
         )
+    }
+
+    override fun onWeightUnitChange(converter: (Float) -> Float) {
+        super.onWeightUnitChange(converter)
+        viewModel.currentWeightUnits = currentWeightUnit
+        viewModel.currentAdditionalAmount = converter(viewModel.currentAdditionalAmount)
+        refreshAdditionalAmount()
     }
 
     override fun getVMProviderFactory(

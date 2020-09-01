@@ -30,7 +30,7 @@ abstract class BaseAddMealFragment : BaseFragment(), IWeightUnitSpinner, IPicked
     //Meals
     protected abstract val mealsRecyclerViewId: Int
     protected lateinit var mealsViewModel: MealItemPickViewModel
-    protected val mealsRecyclerAdapter by lazy {
+    private val mealsRecyclerAdapter by lazy {
         MealItemPickRecyclerAdapter(mealsViewModel, requireContext())
     }
 
@@ -38,18 +38,18 @@ abstract class BaseAddMealFragment : BaseFragment(), IWeightUnitSpinner, IPicked
     override lateinit var previousWeightUnit: WeightUnits
 
     protected abstract val weightUnitSpinnerId: Int
-    protected lateinit var weightUnitSpinner: Spinner
+    private lateinit var weightUnitSpinner: Spinner
 
     protected abstract val addIngredientsImgButtonId: Int
-    protected lateinit var addIngredientsImgButton: ImageButton
+    private lateinit var addIngredientsImgButton: ImageButton
 
     protected abstract val totalIngredientsWeightTextViewId: Int
-    protected lateinit var totalIngredientsWeightTextView: TextView
+    private lateinit var totalIngredientsWeightTextView: TextView
     private var _currentIngredientQuantity: Float = 0.0F
     protected val currentIngredientsAmount get() = _currentIngredientQuantity
 
     protected abstract val totalIngredientsCarbohydratesTextViewId: Int
-    protected lateinit var totalIngredientsCarbohydratesTextView: TextView
+    private lateinit var totalIngredientsCarbohydratesTextView: TextView
     private var _currentIngredientCarbohydrates: Int = 0
     protected val currentIngredientsCarbohydrates get() = _currentIngredientCarbohydrates
 
@@ -130,7 +130,7 @@ abstract class BaseAddMealFragment : BaseFragment(), IWeightUnitSpinner, IPicked
             ingredient.carbs
         }
 
-    private fun countIngredientQuantity(): Float =
+    protected fun countIngredientQuantity(): Float =
         mealsViewModel.pickedItems.fold(0.0F) { sum, ingredient ->
             sum + ingredient.unit.convert(currentWeightUnit, ingredient.amount)
         }

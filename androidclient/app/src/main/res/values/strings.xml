@@ -111,7 +111,7 @@
     <string name="glucose_amount_card">Glucose amount:</string>
     <string name="meal_carbohydrates_amount">Carbohydrates amount</string>
     <string name="meal_glucose_amount">Meal glucose amount</string>
-    <string name="custom_meal_additional_quantity">Additional quantity</string>
+    <string name="custom_meal_additional_quantity">Additional quantity: %1$.2f</string>
     <string name="ingredient_carbohydrates_amount">Ingredient carbohydrates: %1$d %2$s</string>
     <string name="ingredient_weight">Ingredient quantity: %1$.2f %2$s</string>
     <string name="add_the_meal_name">Pizza</string>
@@ -191,6 +191,8 @@
     <string name="resource_downvoted">Downvoted!</string>
     <string name="resource_upvodted">Upvoted!</string>
     <string name="add_meals">Add meals</string>
+    <string name="add_amount">Add amount</string>
+    <string name="edit_amount">Edit amount</string>
     <string name="restaurant_map_nav">Restaurants by location</string>
     <string name="login_required">You must login to use this feature!</string>
     <string name="upvotes">Upvotes</string>
