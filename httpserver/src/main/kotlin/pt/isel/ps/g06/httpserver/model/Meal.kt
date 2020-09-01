@@ -21,7 +21,7 @@ class Meal(
         val creationDate: Lazy<OffsetDateTime?>,
         val type: MealType,
         private val restaurantInfoSupplier: (RestaurantIdentifier) -> MealRestaurantInfo?
-): BasePublicSubmission<Int>(
+) : BasePublicSubmission<Int>(
         identifier = identifier,
         name = name,
         image = image,
@@ -57,8 +57,10 @@ class Meal(
         val restaurantCuisines = restaurant.cuisines.toList()
         val mealCuisines = cuisines.toList()
 
-        return restaurantCuisines
-                .intersect(mealCuisines)
-                .isNotEmpty()
+        return restaurantCuisines.any { restaurantCuisine ->
+            mealCuisines.any { mealCuisine ->
+                restaurantCuisine.name == mealCuisine.name
+            }
+        }
     }
 }
