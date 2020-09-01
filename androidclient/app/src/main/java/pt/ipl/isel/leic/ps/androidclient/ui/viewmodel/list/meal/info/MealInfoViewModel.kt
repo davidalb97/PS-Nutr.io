@@ -46,13 +46,22 @@ open class MealInfoViewModel : MealItemListViewModel {
         this.mealItem = mealItem
     }
 
-    constructor(ingredientActions: List<ItemAction>) : super(
+    protected constructor() : super(
         source = null,
-        navDestination = Navigation.SEND_TO_MEAL_DETAIL,
-        actions = ingredientActions
+        navDestination = Navigation.IGNORE,
+        actions = emptyList()
     ) {
         mealItem = null
     }
+
+    //TODO remove if not in use
+//    constructor(ingredientActions: List<ItemAction>) : super(
+//        source = null,
+//        navDestination = Navigation.SEND_TO_MEAL_DETAIL,
+//        actions = ingredientActions
+//    ) {
+//        mealItem = null
+//    }
 
     constructor(parcel: Parcel) : super(parcel) {
         mealItem = parcel.readParcelable(MealItem::class.java.classLoader)
@@ -63,42 +72,37 @@ open class MealInfoViewModel : MealItemListViewModel {
         if (mealInfoLiveDataHandler.tryRestore()) {
             return
         }
-        if (mealItem!!.source == Source.API || mealItem.source == Source.FAVORITE) {
-            if (mealItem.restaurantSubmissionId != null) {
-                mealRepository.getApiRestaurantMealInfo(
-                    restaurantId = mealItem.restaurantSubmissionId!!,
-                    mealId = requireNotNull(mealItem.submissionId),
-                    userSession = getUserSession(),
-                    success = mealInfoLiveDataHandler::set,
-                    error = onError
-                )
-            } else {
-                mealRepository.getApiMealInfo(
-                    mealId = requireNotNull(mealItem.submissionId),
-                    userSession = getUserSession(),
-                    success = mealInfoLiveDataHandler::set,
-                    error = onError
-                )
-            }
+        if (mealItem!!.restaurantSubmissionId != null) {
+            mealRepository.getApiRestaurantMealInfo(
+                restaurantId = mealItem.restaurantSubmissionId!!,
+                mealId = requireNotNull(mealItem.submissionId),
+                userSession = getUserSession(),
+                success = mealInfoLiveDataHandler::set,
+                error = onError
+            )
         } else {
-            fetchDbBySource(requireNotNull(mealItem.dbId), requireNotNull(source) {
-                "Cannot find meal info from db without a source!"
-            })
+            mealRepository.getApiMealInfo(
+                mealId = requireNotNull(mealItem.submissionId),
+                userSession = getUserSession(),
+                success = mealInfoLiveDataHandler::set,
+                error = onError
+            )
         }
     }
 
-    private fun fetchDbBySource(dbId: Long, source: Source) {
-        mealInfoLiveDataHandler.set(
-            mealRepository.getByIdAndSource(
-                dbId = dbId,
-                source = source
-            )
-        ) { dbDto ->
-            mealRepository.dbMealInfoMapper.mapToModel(dbDto).also { mapped ->
-                onMealInfo(mapped)
-            }
-        }
-    }
+    //TODO remove if not in use
+//    private fun fetchDbBySource(dbId: Long, source: Source) {
+//        mealInfoLiveDataHandler.set(
+//            mealRepository.getByIdAndSource(
+//                dbId = dbId,
+//                source = source
+//            )
+//        ) { dbDto ->
+//            mealRepository.dbMealInfoMapper.mapToModel(dbDto).also { mapped ->
+//                onMealInfo(mapped)
+//            }
+//        }
+//    }
 
     fun observeInfo(owner: LifecycleOwner, observer: (MealInfo) -> Unit) {
         mealInfoLiveDataHandler.observe(owner) { mealInfo ->
@@ -147,12 +151,12 @@ open class MealInfoViewModel : MealItemListViewModel {
         liveDataHandler.removeObservers(owner)
     }
 
-    companion object CREATOR : Parcelable.Creator<RestaurantListViewModel> {
+    companion object CREATOR : Parcelable.Creator<MealInfoViewModel> {
 
-        override fun createFromParcel(parcel: Parcel): RestaurantListViewModel =
+        override fun createFromParcel(parcel: Parcel): MealInfoViewModel =
             TODO("Restore RestaurantRecyclerViewModel from bundle")
 
-        override fun newArray(size: Int): Array<RestaurantListViewModel?> {
+        override fun newArray(size: Int): Array<MealInfoViewModel?> {
             return arrayOfNulls(size)
         }
     }
