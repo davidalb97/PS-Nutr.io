@@ -1,6 +1,7 @@
 package pt.isel.ps.g06.httpserver.model
 
 import pt.isel.ps.g06.httpserver.model.modular.*
+import java.util.stream.Stream
 
 class MealRestaurantInfo(
         identifier: Int?,
@@ -10,7 +11,7 @@ class MealRestaurantInfo(
         override val userVote: UserVote,
         override val votes: Lazy<Votes>,
         override val isReportable: UserPredicate,
-        val portions: Sequence<Portion>,
+        val portions: Stream<Portion>,
         val userPortion: UserPortion,
         val isVerified: Boolean
 ) : BaseSubmission<Int?>(

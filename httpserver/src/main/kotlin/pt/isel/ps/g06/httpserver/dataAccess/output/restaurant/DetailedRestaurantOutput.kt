@@ -2,22 +2,23 @@ package pt.isel.ps.g06.httpserver.dataAccess.output.restaurant
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer
-import pt.isel.ps.g06.httpserver.dataAccess.output.restaurantMeal.SimplifiedRestaurantMealOutput
-import pt.isel.ps.g06.httpserver.dataAccess.output.restaurantMeal.toSimplifiedRestaurantMealOutput
-import pt.isel.ps.g06.httpserver.dataAccess.output.modular.FavoritesOutput
-import pt.isel.ps.g06.httpserver.dataAccess.output.modular.ISubmitterInfoOutput
-import pt.isel.ps.g06.httpserver.dataAccess.output.user.SimplifiedUserOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.VotesOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.cuisines.CuisinesOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.cuisines.toSimplifiedCuisinesOutput
+import pt.isel.ps.g06.httpserver.dataAccess.output.modular.FavoritesOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.modular.ICuisinesOutput
-import pt.isel.ps.g06.httpserver.dataAccess.output.user.toSimplifiedUserOutput
+import pt.isel.ps.g06.httpserver.dataAccess.output.modular.ISubmitterInfoOutput
+import pt.isel.ps.g06.httpserver.dataAccess.output.restaurantMeal.SimplifiedRestaurantMealOutput
+import pt.isel.ps.g06.httpserver.dataAccess.output.restaurantMeal.toSimplifiedRestaurantMealOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.toVotesOutput
+import pt.isel.ps.g06.httpserver.dataAccess.output.user.SimplifiedUserOutput
+import pt.isel.ps.g06.httpserver.dataAccess.output.user.toSimplifiedUserOutput
 import pt.isel.ps.g06.httpserver.model.Meal
-import pt.isel.ps.g06.httpserver.model.Restaurant
 import pt.isel.ps.g06.httpserver.model.RestaurantMeal
+import pt.isel.ps.g06.httpserver.model.restaurant.Restaurant
 import java.net.URI
 import java.time.OffsetDateTime
+import kotlin.streams.toList
 
 class DetailedRestaurantOutput(
         identifier: String,

@@ -6,6 +6,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionContractType.VOTABLE
 import pt.isel.ps.g06.httpserver.dataAccess.db.common.DatabaseContext
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.UserVoteDao
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.VotableDao
+import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbVotesDto
 import pt.isel.ps.g06.httpserver.model.VoteState
 
 private val voteDaoClass = UserVoteDao::class.java
@@ -74,6 +75,26 @@ class VoteDbRepository(private val databaseContext: DatabaseContext, private val
                     positiveOffset = positiveOffset,
                     negativeOffset = negativeOffset
             )
+        }
+    }
+
+    fun getVotes(submissionId: Int): DbVotesDto {
+        return databaseContext.inTransaction { handle ->
+            return@inTransaction handle.attach(VotableDao::class.java).getById(submissionId)
+        } ?: DbVotesDto(0, 0)
+    }
+
+    fun getUserVote(
+            submissionId: Int,
+            userId: Int
+    ): VoteState {
+        return databaseContext.inTransaction { handle ->
+            val dto = handle
+                    .attach(UserVoteDao::class.java)
+                    .getUserVoteForSubmission(submissionId, userId)
+                    ?: return@inTransaction VoteState.NOT_VOTED
+
+            return@inTransaction if (dto.vote) VoteState.POSITIVE else VoteState.NEGATIVE
         }
     }
 }

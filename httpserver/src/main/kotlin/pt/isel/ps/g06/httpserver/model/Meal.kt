@@ -5,18 +5,21 @@ import pt.isel.ps.g06.httpserver.model.modular.BasePublicSubmission
 import pt.isel.ps.g06.httpserver.model.modular.ICuisines
 import pt.isel.ps.g06.httpserver.model.modular.INutritionalSubmission
 import pt.isel.ps.g06.httpserver.model.modular.UserPredicate
+import pt.isel.ps.g06.httpserver.model.restaurant.Restaurant
+import pt.isel.ps.g06.httpserver.model.restaurant.RestaurantIdentifier
 import java.net.URI
 import java.time.OffsetDateTime
+import java.util.stream.Stream
+import kotlin.streams.toList
 
 class Meal(
         identifier: Int,
         name: String,
         isFavorite: UserPredicate,
-        isFavorable: UserPredicate,
         image: URI?,
         override val nutritionalInfo: NutritionalValues,
         val composedBy: MealComposition,
-        override val cuisines: Sequence<Cuisine>,
+        override val cuisines: Stream<Cuisine>,
         val submitterInfo: Lazy<Submitter?>,
         val creationDate: Lazy<OffsetDateTime?>,
         val type: MealType,
@@ -25,7 +28,7 @@ class Meal(
         identifier = identifier,
         name = name,
         image = image,
-        isFavorable = isFavorable,
+        isFavorable = { submitterInfo.value?.identifier == it ?: true },
         isFavorite = isFavorite
 ), INutritionalSubmission, ICuisines {
 

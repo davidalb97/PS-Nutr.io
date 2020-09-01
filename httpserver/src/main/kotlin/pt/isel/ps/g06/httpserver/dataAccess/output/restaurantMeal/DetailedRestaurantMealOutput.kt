@@ -2,7 +2,6 @@ package pt.isel.ps.g06.httpserver.dataAccess.output.restaurantMeal
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer
-import pt.isel.ps.g06.httpserver.common.user
 import pt.isel.ps.g06.httpserver.dataAccess.output.*
 import pt.isel.ps.g06.httpserver.dataAccess.output.cuisines.CuisinesOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.cuisines.toSimplifiedCuisinesOutput
@@ -15,6 +14,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.output.user.toSimplifiedUserOutput
 import pt.isel.ps.g06.httpserver.model.RestaurantMeal
 import java.net.URI
 import java.time.OffsetDateTime
+import kotlin.streams.toList
 
 class DetailedRestaurantMealOutput(
         identifier: Int,

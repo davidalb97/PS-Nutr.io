@@ -8,8 +8,6 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.dao.*
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbApiSubmissionDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbSubmissionDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbSubmitterDto
-import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbVotesDto
-import pt.isel.ps.g06.httpserver.model.VoteState
 import java.time.OffsetDateTime
 
 
@@ -34,26 +32,6 @@ class SubmissionDbRepository(private val databaseContext: DatabaseContext) {
     fun getApiSubmissionById(submissionId: Int): DbApiSubmissionDto? {
         return databaseContext.inTransaction { handle ->
             return@inTransaction handle.attach(ApiSubmissionDao::class.java).getBySubmissionId(submissionId)
-        }
-    }
-
-    fun getVotes(submissionId: Int): DbVotesDto {
-        return databaseContext.inTransaction { handle ->
-            return@inTransaction handle.attach(VotableDao::class.java).getById(submissionId)
-        } ?: DbVotesDto(0, 0)
-    }
-
-    fun getUserVote(
-            submissionId: Int,
-            userId: Int
-    ): VoteState {
-        return databaseContext.inTransaction { handle ->
-            val dto = handle
-                    .attach(UserVoteDao::class.java)
-                    .getUserVoteForSubmission(submissionId, userId)
-                    ?: return@inTransaction VoteState.NOT_VOTED
-
-            return@inTransaction if (dto.vote) VoteState.POSITIVE else VoteState.NEGATIVE
         }
     }
 
@@ -95,10 +73,18 @@ class SubmissionDbRepository(private val databaseContext: DatabaseContext) {
                     .attach(SubmissionDao::class.java)
                     .getById(submissionId)
                     ?.submission_type.equals(submissionType.toString())
-
         }
     }
 
+    fun isSubmissionOwner(submissionId: Int, submitterId: Int): Boolean {
+        return databaseContext.inTransaction { handle ->
+            // Check if the submitter owns the submission
+            handle.attach(SubmissionSubmitterDao::class.java)
+                    .getAllBySubmissionId(submissionId)
+                    .map { it.submitter_id }
+                    .anyMatch { it == submitterId }
+        }
+    }
 
 /*
 
@@ -152,12 +138,6 @@ class SubmissionDbRepository(private val databaseContext: DatabaseContext) {
             if (seconds > timeout.seconds) {
                 throw InvalidInputException("Submission update timed out!")
             }
-        }
-    }
-
-    protected fun requireFromUser(submissionId: Int, isolationLevel: TransactionIsolationLevel = SERIALIZABLE) {
-        if (isFromApi(submissionId, isolationLevel)) {
-            throw InvalidInputException("The submission id \"$submissionId\" is not an API submission.")
         }
     }
 
