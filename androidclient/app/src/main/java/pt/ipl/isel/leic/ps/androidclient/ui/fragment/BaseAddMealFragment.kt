@@ -10,6 +10,7 @@ import android.widget.TextView
 import androidx.navigation.findNavController
 import androidx.navigation.navGraphViewModels
 import pt.ipl.isel.leic.ps.androidclient.R
+import pt.ipl.isel.leic.ps.androidclient.data.model.MealItem
 import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.pick.MealItemPickRecyclerAdapter
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.unit.IWeightUnitSpinner
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.pick.IPickedFlexBoxRecycler
@@ -130,10 +131,17 @@ abstract class BaseAddMealFragment : BaseFragment(), IWeightUnitSpinner, IPicked
             ingredient.carbs
         }
 
-    protected fun countIngredientQuantity(): Float =
-        mealsViewModel.pickedItems.fold(0.0F) { sum, ingredient ->
-            sum + ingredient.unit.convert(currentWeightUnit, ingredient.amount)
+    protected fun countIngredientQuantity(
+        targetUnit: WeightUnits,
+        ingredients: Iterable<MealItem>
+    ): Float {
+        return ingredients.fold(0.0F) { sum, ingredient ->
+            sum + ingredient.unit.convert(targetUnit, ingredient.amount)
         }
+    }
+
+    protected fun countIngredientQuantity(): Float =
+        countIngredientQuantity(currentWeightUnit, mealsViewModel.pickedItems)
 
     protected open fun setupIngredients(view: View) {
 
