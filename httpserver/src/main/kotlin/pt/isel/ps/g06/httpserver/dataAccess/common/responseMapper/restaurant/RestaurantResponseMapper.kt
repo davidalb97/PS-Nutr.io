@@ -16,6 +16,7 @@ import pt.isel.ps.g06.httpserver.model.restaurant.Restaurant
 import pt.isel.ps.g06.httpserver.model.restaurant.RestaurantIdentifier
 import pt.isel.ps.g06.httpserver.util.log
 import java.time.OffsetDateTime
+import java.util.stream.Stream
 
 @Component
 class RestaurantResponseMapper(
@@ -57,9 +58,8 @@ class HereRestaurantResponseMapper(
                 cuisines = hereCuisineMapper.mapTo(cuisineIds),
                 suggestedMeals = dbMealRepository
                         .getAllSuggestedMealsByCuisineApiIds(apiSubmitterId, cuisineIds)
-                        .map(dbMealMapper::mapTo)
-                        .asSequence(),
-                meals = emptySequence(),
+                        .map(dbMealMapper::mapTo),
+                meals = Stream.empty(),
                 //There are no votes if it's not inserted on db yet
                 votes = null,
                 //User has not voted yet if not inserted
@@ -92,7 +92,7 @@ class ZomatoRestaurantResponseMapper(
 ) : ResponseMapper<ZomatoRestaurantDto, Restaurant> {
 
     override fun mapTo(dto: ZomatoRestaurantDto): Restaurant {
-        val cuisineNames = dto.cuisines.split(",").asSequence()
+        val cuisineNames = dto.cuisines.split(",").stream()
         val apiSubmitterId = apiSubmitterMapper.getSubmitter(RestaurantApiType.Zomato)!!
         return Restaurant(
                 identifier = lazy {
@@ -107,7 +107,7 @@ class ZomatoRestaurantResponseMapper(
                 longitude = dto.longitude,
                 cuisines = zomatoCuisineMapper.mapTo(cuisineNames),
                 suggestedMeals = dbMealRepository.getAllSuggestedMealsFromCuisineNames(cuisineNames).map(mealMapper::mapTo),
-                meals = emptySequence(),
+                meals = Stream.empty(),
                 //There are no votes if it's not inserted on db yet
                 votes = null,
                 //User has not voted yet if not inserted

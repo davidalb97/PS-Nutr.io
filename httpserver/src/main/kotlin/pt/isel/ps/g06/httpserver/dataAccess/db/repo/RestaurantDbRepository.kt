@@ -7,19 +7,18 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.common.DatabaseContext
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.*
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbRestaurantCuisineDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbRestaurantDto
+import java.util.stream.Stream
+import kotlin.streams.toList
 
 private val restaurantDaoClass = RestaurantDao::class.java
 
 @Repository
 class RestaurantDbRepository(private val databaseContext: DatabaseContext, private val cuisineDbRepository: CuisineDbRepository) {
-    fun getAllByCoordinates(latitude: Float, longitude: Float, radius: Int): Sequence<DbRestaurantDto> {
-        val collection = lazy {
-            databaseContext.inTransaction {
-                return@inTransaction it.attach(RestaurantDao::class.java)
-                        .getByCoordinates(latitude, longitude, radius)
-            }
+    fun getAllByCoordinates(latitude: Float, longitude: Float, radius: Int): Stream<DbRestaurantDto> {
+        return databaseContext.inTransaction {
+            return@inTransaction it.attach(RestaurantDao::class.java)
+                    .getByCoordinates(latitude, longitude, radius)
         }
-        return Sequence { collection.value.iterator() }
     }
 
     fun getById(restaurantId: Int): DbRestaurantDto? {
@@ -73,9 +72,10 @@ class RestaurantDbRepository(private val databaseContext: DatabaseContext, priva
             if (!cuisineNames.isEmpty()) {
                 //TODO Make better
                 val cuisines = cuisineDbRepository
-                        .getAllByNames(cuisineNames.asSequence())
+                        .getAllByNames(cuisineNames.stream())
                         .map { DbRestaurantCuisineDto(submissionId, it.submission_id) }
 
+                //TODO Avoid eager call
                 handle.attach(RestaurantCuisineDao::class.java).insertAll(cuisines.toList())
             }
 

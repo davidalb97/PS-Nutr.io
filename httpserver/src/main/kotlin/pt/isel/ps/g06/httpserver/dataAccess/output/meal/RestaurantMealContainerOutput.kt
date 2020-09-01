@@ -1,6 +1,7 @@
 package pt.isel.ps.g06.httpserver.dataAccess.output.meal
 
 import pt.isel.ps.g06.httpserver.model.restaurant.Restaurant
+import kotlin.streams.toList
 
 
 data class RestaurantMealContainerOutput(

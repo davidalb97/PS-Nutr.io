@@ -5,6 +5,7 @@ import org.jdbi.v3.sqlobject.customizer.BindBeanList
 import org.jdbi.v3.sqlobject.customizer.BindList
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbRestaurantCuisineDto
+import java.util.stream.Stream
 
 interface RestaurantCuisineDao {
 
@@ -24,7 +25,7 @@ interface RestaurantCuisineDao {
     ): Collection<DbRestaurantCuisineDto>
 
     @SqlQuery("DELETE FROM $table WHERE $id = :restaurantId RETURNING *")
-    fun deleteAllByRestaurantId(@Bind restaurantId: Int): List<DbRestaurantCuisineDto>
+    fun deleteAllByRestaurantId(@Bind restaurantId: Int): Stream<DbRestaurantCuisineDto>
 
     @SqlQuery("DELETE FROM $table" +
             " WHERE $id = :submission_id" +
@@ -32,5 +33,5 @@ interface RestaurantCuisineDao {
     fun deleteAllByRestaurantIdAndCuisineIds(
             @Bind restaurantSubmissionId: Int,
             @BindList cuisineIds: List<Int>
-    ): List<DbRestaurantCuisineDto>
+    ): Stream<DbRestaurantCuisineDto>
 }

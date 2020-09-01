@@ -9,9 +9,12 @@ import pt.isel.ps.g06.httpserver.common.*
 import pt.isel.ps.g06.httpserver.common.exception.problemJson.forbidden.NotSubmissionOwnerException
 import pt.isel.ps.g06.httpserver.common.exception.problemJson.notFound.MealNotFoundException
 import pt.isel.ps.g06.httpserver.dataAccess.db.MealType
-import pt.isel.ps.g06.httpserver.dataAccess.input.userActions.FavoriteInput
 import pt.isel.ps.g06.httpserver.dataAccess.input.meal.MealInput
-import pt.isel.ps.g06.httpserver.dataAccess.output.meal.*
+import pt.isel.ps.g06.httpserver.dataAccess.input.userActions.FavoriteInput
+import pt.isel.ps.g06.httpserver.dataAccess.output.meal.DetailedMealOutput
+import pt.isel.ps.g06.httpserver.dataAccess.output.meal.SimplifiedMealContainer
+import pt.isel.ps.g06.httpserver.dataAccess.output.meal.toDetailedMealOutput
+import pt.isel.ps.g06.httpserver.dataAccess.output.meal.toSimplifiedMealContainer
 import pt.isel.ps.g06.httpserver.model.User
 import pt.isel.ps.g06.httpserver.service.MealService
 import pt.isel.ps.g06.httpserver.service.SubmissionService
@@ -41,8 +44,8 @@ class MealController(
     fun getMeals(
             user: User?,
             @RequestParam cuisines: Collection<String>?,
-            @RequestParam @Min(0) skip: Int?,
-            @RequestParam @Min(0) @Max(MAX_COUNT) count: Int?
+            @RequestParam @Min(0) skip: Long?,
+            @RequestParam @Min(0) @Max(MAX_COUNT) count: Long?
     ): ResponseEntity<SimplifiedMealContainer> {
 
         var meals = mealService.getSuggestedMeals(
@@ -55,16 +58,16 @@ class MealController(
         if (cuisines != null && cuisines.isNotEmpty()) {
             //Filter by user cuisines
             meals = meals.filter {
-                it.cuisines.any { mealCuisines ->
+                it.cuisines.anyMatch { mealCuisines ->
                     cuisines.any { cuisine -> mealCuisines.name.equals(cuisine, ignoreCase = true) }
                 }
             }
         }
 
         //Perform final result reductions
-        meals = meals.drop(skip ?: 0)
+        meals = meals.skip(skip ?: 0)
         if (count != null) {
-            meals = meals.take(count)
+            meals = meals.limit(count)
         }
         return ResponseEntity
                 .ok()

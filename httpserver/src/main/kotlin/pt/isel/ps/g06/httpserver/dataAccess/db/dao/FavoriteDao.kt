@@ -3,6 +3,7 @@ package pt.isel.ps.g06.httpserver.dataAccess.db.dao
 import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbFavoriteDto
+import java.util.stream.Stream
 
 interface FavoriteDao {
 
@@ -13,16 +14,16 @@ interface FavoriteDao {
     }
 
     @SqlQuery("SELECT * FROM $table")
-    fun getAll(): List<DbFavoriteDto>
+    fun getAll(): Stream<DbFavoriteDto>
 
     @SqlQuery("SELECT * FROM $table WHERE $submissionId = :submissionId AND $submitterId = :userId")
     fun getByIds(submissionId: Int, userId: Int): DbFavoriteDto?
 
     @SqlQuery("SELECT * FROM $table WHERE $submissionId = :submissionId")
-    fun getAllBySubmissionId(submissionId: Int): List<DbFavoriteDto>
+    fun getAllBySubmissionId(submissionId: Int): Stream<DbFavoriteDto>
 
     @SqlQuery("SELECT * FROM $table WHERE $submitterId = :userId")
-    fun getAllBySubmitterId(userId: Int): List<DbFavoriteDto>
+    fun getAllBySubmitterId(userId: Int): Stream<DbFavoriteDto>
 
     @SqlQuery("INSERT INTO $table($submissionId, $submitterId)" +
             " VALUES(:submissionId, :submitterId) RETURNING *")
@@ -33,5 +34,5 @@ interface FavoriteDao {
     fun delete(@Bind submissionId: Int, @Bind submitterId: Int): DbFavoriteDto
 
     @SqlQuery("DELETE FROM $table WHERE $submissionId = :submissionId RETURNING *")
-    fun deleteAllBySubmissionId(submissionId: Int): List<DbFavoriteDto>
+    fun deleteAllBySubmissionId(submissionId: Int): Stream<DbFavoriteDto>
 }

@@ -12,7 +12,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.repo.SubmissionDbRepository
 import pt.isel.ps.g06.httpserver.model.report.BaseReport
 import pt.isel.ps.g06.httpserver.model.report.ReportSubmissionDetail
 import pt.isel.ps.g06.httpserver.model.report.ReportedSubmission
-import pt.isel.ps.g06.httpserver.model.report.SubmissionReport
+import java.util.stream.Stream
 
 @Service
 class ReportService(
@@ -38,7 +38,7 @@ class ReportService(
             submissionType: String,
             skip: Int?,
             count: Int?
-    ): Collection<ReportedSubmission> {
+    ): Stream<ReportedSubmission> {
         if (REPORTABLE_TYPES.all { it != submissionType }) {
             throw InvalidInputException(
                     "This type of submission can not be reported and thus there are no reports for this"
@@ -52,7 +52,7 @@ class ReportService(
      * Gets all the reports for a specific submission
      * @param submissionId - The submission's id
      */
-    fun getSubmissionReports(submissionId: Int): Collection<BaseReport> =
+    fun getSubmissionReports(submissionId: Int): Stream<BaseReport> =
             reportDbRepository.getAllFromSubmission(submissionId).map(detailedReportMapper::mapTo)
 
     fun getReportedSubmissionDetail(submissionId: Int): ReportSubmissionDetail? =

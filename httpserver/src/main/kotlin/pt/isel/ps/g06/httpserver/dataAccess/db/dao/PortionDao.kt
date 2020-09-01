@@ -49,5 +49,5 @@ interface PortionDao {
             " WHERE $restaurantMealId in (<restaurantMealIds>) RETURNING *")
     fun deleteAllByRestaurantMealIds(
             @BindList restaurantMealIds: Stream<Int>
-    ): List<DbPortionDto>
+    ): Stream<DbPortionDto>
 }

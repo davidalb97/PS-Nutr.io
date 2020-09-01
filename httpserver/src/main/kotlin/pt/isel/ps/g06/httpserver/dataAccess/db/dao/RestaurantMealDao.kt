@@ -3,6 +3,7 @@ package pt.isel.ps.g06.httpserver.dataAccess.db.dao
 import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbRestaurantMealDto
+import java.util.stream.Stream
 
 private const val SS_table = SubmissionSubmitterDao.table
 private const val SS_submission_id = SubmissionSubmitterDao.submissionId
@@ -25,7 +26,7 @@ interface RestaurantMealDao {
             "INNER JOIN $SS_table " +
             "ON $table.$id = $SS_table.$SS_submission_id " +
             "WHERE $table.$restaurantId = :restaurantId")
-    fun getAllUserMealsByRestaurantId(@Bind restaurantId: Int): Collection<DbRestaurantMealDto>
+    fun getAllUserMealsByRestaurantId(@Bind restaurantId: Int): Stream<DbRestaurantMealDto>
 
     @SqlQuery("INSERT INTO $table($id, $restaurantId, $mealId, $verified)" +
             " VALUES(:submissionId, :restaurantId, :mealId, :verified) RETURNING *")
@@ -40,7 +41,7 @@ interface RestaurantMealDao {
     fun updateRestaurantMealVerification(@Bind submissionId: Int, verified: Boolean): DbRestaurantMealDto
 
     @SqlQuery("DELETE FROM $table WHERE $restaurantId = :restaurantId RETURNING *")
-    fun deleteAllByRestaurantId(@Bind restaurantId: Int): List<DbRestaurantMealDto>
+    fun deleteAllByRestaurantId(@Bind restaurantId: Int): Stream<DbRestaurantMealDto>
 
     @SqlQuery("DELETE FROM $table WHERE $id = :submissionId RETURNING *")
     fun deleteById(@Bind submissionId: Int): DbRestaurantMealDto

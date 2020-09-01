@@ -5,6 +5,8 @@ import pt.isel.ps.g06.httpserver.model.restaurant.Restaurant
 import pt.isel.ps.g06.httpserver.model.restaurant.RestaurantIdentifier
 import java.net.URI
 import java.time.OffsetDateTime
+import java.util.stream.Stream
+import kotlin.streams.toList
 
 data class Meal(
         val identifier: Int,
@@ -13,7 +15,7 @@ data class Meal(
         val imageUri: URI?,
         val nutritionalValues: NutritionalValues,
         val composedBy: MealComposition,
-        val cuisines: Sequence<Cuisine>,
+        val cuisines: Stream<Cuisine>,
         val submitterInfo: Lazy<Submitter?>,
         val creationDate: Lazy<OffsetDateTime?>,
         val type: MealType,

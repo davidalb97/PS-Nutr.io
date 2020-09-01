@@ -7,13 +7,14 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionContractType.REPORTABLE
 import pt.isel.ps.g06.httpserver.dataAccess.db.common.DatabaseContext
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.ReportDao
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.*
+import java.util.stream.Stream
 
 private val reportDaoClass = ReportDao::class.java
 
 @Repository
 class ReportDbRepository(private val databaseContext: DatabaseContext, private val submissionDbRepository: SubmissionDbRepository) {
 
-    fun getAll(skip: Int?, count: Int?): Collection<DbReportSubmissionDto> {
+    fun getAll(skip: Int?, count: Int?): Stream<DbReportSubmissionDto> {
         return databaseContext.inTransaction {
             val dao = it.attach(reportDaoClass)
             val allReports = dao.getAll(skip, count)
@@ -32,13 +33,13 @@ class ReportDbRepository(private val databaseContext: DatabaseContext, private v
         }
     }
 
-    fun getAllBySubmissionType(submissionType: String, skip: Int?, count: Int?): Collection<DbReportedSubmissionDto> {
+    fun getAllBySubmissionType(submissionType: String, skip: Int?, count: Int?): Stream<DbReportedSubmissionDto> {
         return databaseContext.inTransaction {
             return@inTransaction it.attach(reportDaoClass).getAllReportedSubmissionsByType(submissionType, skip, count)
         }
     }
 
-    fun getAllFromSubmission(submissionId: Int): Collection<DbSubmissionReportDto> {
+    fun getAllFromSubmission(submissionId: Int): Stream<DbSubmissionReportDto> {
         return databaseContext.inTransaction {
             return@inTransaction it.attach(reportDaoClass).getAllBySubmission(submissionId)
         }

@@ -4,10 +4,10 @@ import org.springframework.stereotype.Repository
 import pt.isel.ps.g06.httpserver.common.exception.server.InvalidApplicationStartupException
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.RestaurantApiType
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbApiDto
-import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbSubmitterDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.ApiDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.SubmitterDbRepository
 import javax.annotation.PostConstruct
+import kotlin.streams.asSequence
 
 @Repository
 data class ApiSubmitterMapper(
@@ -20,6 +20,7 @@ data class ApiSubmitterMapper(
     protected fun createMap() {
         val submitters = apiDbRepository
                 .getApisByName(RestaurantApiType.values().map { it.toString() })
+                .asSequence()   //TODO Avoid this sequence call
                 .associate(this::buildSubmitterPair)
 
         if (submitters.size != RestaurantApiType.values().size) {

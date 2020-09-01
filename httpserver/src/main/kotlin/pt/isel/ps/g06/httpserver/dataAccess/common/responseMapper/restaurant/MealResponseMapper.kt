@@ -10,7 +10,6 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.repo.*
 import pt.isel.ps.g06.httpserver.model.Meal
 import pt.isel.ps.g06.httpserver.model.MealComposition
 import java.time.OffsetDateTime
-import kotlin.streams.asStream
 
 @Component
 class DbMealResponseMapper(
@@ -34,9 +33,8 @@ class DbMealResponseMapper(
                 nutritionalValues = nutritionalMapper.mapTo(dto),
                 imageUri = null,
                 composedBy = MealComposition(
-                        //TODO Fix sequence -> stream
-                        meals = mealComponentMapper.mapTo(dto).asStream(),
-                        ingredients = ingredientMapper.mapTo(dto).asStream()
+                        meals = mealComponentMapper.mapTo(dto),
+                        ingredients = ingredientMapper.mapTo(dto)
                 ),
                 cuisines = dbCuisineRepo.getAllByMealId(dto.submission_id).map(dbCuisineMapper::mapTo),
                 submitterInfo = lazy {

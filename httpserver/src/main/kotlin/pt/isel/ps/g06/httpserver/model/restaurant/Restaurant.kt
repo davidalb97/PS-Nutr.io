@@ -3,6 +3,7 @@ package pt.isel.ps.g06.httpserver.model.restaurant
 import pt.isel.ps.g06.httpserver.model.*
 import java.net.URI
 import java.time.OffsetDateTime
+import java.util.stream.Stream
 
 data class Restaurant(
         val identifier: Lazy<RestaurantIdentifier>,
@@ -16,9 +17,9 @@ data class Restaurant(
         val votes: Votes?,
         val submitterInfo: Lazy<Submitter>,
         val creationDate: Lazy<OffsetDateTime?>,
-        val meals: Sequence<Meal>,
-        val suggestedMeals: Sequence<Meal>,
-        val cuisines: Sequence<Cuisine>
+        val meals: Stream<Meal>,
+        val suggestedMeals: Stream<Meal>,
+        val cuisines: Stream<Cuisine>
 ) {
     /**
      * Checks if given restaurant is present in the database or not.

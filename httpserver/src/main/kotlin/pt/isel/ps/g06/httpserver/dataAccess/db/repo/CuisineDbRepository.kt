@@ -4,12 +4,14 @@ import org.springframework.stereotype.Repository
 import pt.isel.ps.g06.httpserver.dataAccess.db.common.DatabaseContext
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.CuisineDao
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbCuisineDto
+import java.util.stream.Stream
+import kotlin.streams.toList
 
 private val cuisineDaoClass = CuisineDao::class.java
 
 @Repository
 class CuisineDbRepository(private val databaseContext: DatabaseContext) {
-    fun getAll(skip: Int?, count: Int?): Collection<DbCuisineDto> {
+    fun getAll(skip: Int?, count: Int?): Stream<DbCuisineDto> {
         return databaseContext.inTransaction {
             return@inTransaction it
                     .attach(cuisineDaoClass)
@@ -17,46 +19,35 @@ class CuisineDbRepository(private val databaseContext: DatabaseContext) {
         }
     }
 
-    fun getByApiIds(apiSubmitterId: Int, cuisineIds: Sequence<String>): Sequence<DbCuisineDto> {
-        val collection = lazy {
-            val cuisines = cuisineIds.toList()
+    fun getByApiIds(apiSubmitterId: Int, cuisineIds: Sequence<String>): Stream<DbCuisineDto> {
+        val cuisines = cuisineIds.toList()
+        //TODO See if eager call is possible to avoid
+        if (cuisines.isEmpty()) return Stream.empty()
 
-            if (cuisines.isEmpty()) return@lazy emptyList<DbCuisineDto>()
-
-            databaseContext.inTransaction {
-                return@inTransaction it
-                        .attach(cuisineDaoClass)
-                        .getAllByApiSubmitterAndApiIds(apiSubmitterId, cuisines)
-            }
+        return databaseContext.inTransaction {
+            return@inTransaction it
+                    .attach(cuisineDaoClass)
+                    .getAllByApiSubmitterAndApiIds(apiSubmitterId, cuisines)
         }
-        return Sequence { collection.value.iterator() }
     }
 
-    fun getAllByNames(cuisineNames: Sequence<String>): Sequence<DbCuisineDto> {
-        val collection = lazy {
-            databaseContext.inTransaction {
-                return@inTransaction it.attach(cuisineDaoClass)
-                        .getAllByNames(cuisineNames.toList())
-            }
+    fun getAllByNames(cuisineNames: Stream<String>): Stream<DbCuisineDto> {
+        return databaseContext.inTransaction {
+            return@inTransaction it.attach(cuisineDaoClass)
+                    .getAllByNames(cuisineNames.toList())       //TODO See if eager call is possible to avoid
         }
-        return Sequence { collection.value.iterator() }
     }
 
-    fun getAllByMealId(mealId: Int): Sequence<DbCuisineDto> {
-        val collection = lazy {
-            databaseContext.inTransaction { handle ->
-                handle.attach(CuisineDao::class.java).getByMealId(mealId)
-            }
+
+    fun getAllByMealId(mealId: Int): Stream<DbCuisineDto> {
+        return databaseContext.inTransaction { handle ->
+            handle.attach(CuisineDao::class.java).getByMealId(mealId)
         }
-        return Sequence { collection.value.iterator() }
     }
 
-    fun getAllByRestaurantId(restaurantId: Int): Sequence<DbCuisineDto> {
-        val collection = lazy {
-            databaseContext.inTransaction {
-                return@inTransaction it.attach(CuisineDao::class.java).getAllByRestaurantId(restaurantId)
-            }
+    fun getAllByRestaurantId(restaurantId: Int): Stream<DbCuisineDto> {
+        return databaseContext.inTransaction {
+            return@inTransaction it.attach(CuisineDao::class.java).getAllByRestaurantId(restaurantId)
         }
-        return Sequence { collection.value.iterator() }
     }
 }

@@ -82,7 +82,7 @@ class SubmissionDbRepository(private val databaseContext: DatabaseContext) {
             // Check if submission is implementing the IS-A contract
             return@inTransaction handle.attach(SubmissionContractDao::class.java)
                     .getAllById(submissionId)
-                    .any { it.submission_contract == contract.toString() }
+                    .anyMatch { it.submission_contract == contract.toString() }
         }
     }
 

@@ -14,6 +14,10 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.repo.RestaurantDbRepository
 import pt.isel.ps.g06.httpserver.model.restaurant.Restaurant
 import pt.isel.ps.g06.httpserver.model.restaurant.RestaurantIdentifier
 import pt.isel.ps.g06.httpserver.util.log
+import java.util.stream.Stream
+import kotlin.streams.asSequence
+import kotlin.streams.asStream
+import kotlin.streams.toList
 
 private const val MAX_RADIUS = 1000
 
@@ -39,7 +43,7 @@ class RestaurantService(
             apiType: String?,
             skip: Int?,
             count: Int?
-    ): Sequence<Restaurant> {
+    ): Stream<Restaurant> {
         val chosenRadius = if (radius != null && radius <= MAX_RADIUS) radius else MAX_RADIUS
         val type = RestaurantApiType.getOrDefault(apiType)
         val restaurantApi = restaurantApiMapper.getRestaurantApi(type)
@@ -53,8 +57,8 @@ class RestaurantService(
 
         return dbRestaurantRepository.getAllByCoordinates(latitude, longitude, chosenRadius)
                 .map(restaurantResponseMapper::mapTo)
-                .let { filterRedundantApiRestaurants(it, apiRestaurants.get().asSequence()) }
-
+                .let { filterRedundantApiRestaurants(it.asSequence(), apiRestaurants.get().asSequence()).asStream() }
+        //TODO Avoid sequence -> Stream call
         //Keeps an open transaction while we iterate the DB response Stream
 //        return transactionHolder.inTransaction {
 //
@@ -155,6 +159,7 @@ class RestaurantService(
                     apiId = restaurant.identifier.value.apiId,
                     restaurantName = restaurant.name,
                     //TODO use cuisine mapper
+                    //TODO Avoid eager call
                     cuisines = restaurant.cuisines.map { it.name }.toList(),
                     latitude = restaurant.latitude,
                     longitude = restaurant.longitude,

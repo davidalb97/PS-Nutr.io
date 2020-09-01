@@ -34,7 +34,6 @@ class FavoriteDbRepository(private val databaseContext: DatabaseContext) {
     ): Boolean {
         return databaseContext.inTransaction { handle ->
             return@inTransaction userId.let {
-
                 handle.attach(SubmissionDao::class.java)
                         .getById(submissionId)
                         ?: throw SubmissionNotFoundException()
@@ -42,9 +41,10 @@ class FavoriteDbRepository(private val databaseContext: DatabaseContext) {
                 val contracts = handle.attach(SubmissionContractDao::class.java)
                         .getAllById(submissionId)
 
-                if (contracts.none { it.submission_contract == SubmissionContractType.FAVORABLE.toString() }) {
+                if (contracts.noneMatch { it.submission_contract == SubmissionContractType.FAVORABLE.toString() }) {
                     throw SubmissionNotFavorableException()
                 }
+
                 val favoriteDao = handle.attach(FavoriteDao::class.java)
                 val favoriteExists = getFavorite(submissionId, userId, isolationLevel)
 

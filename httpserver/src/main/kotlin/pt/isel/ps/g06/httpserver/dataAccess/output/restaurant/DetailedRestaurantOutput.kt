@@ -9,6 +9,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.output.vote.toVotesOutput
 import pt.isel.ps.g06.httpserver.model.VoteState
 import pt.isel.ps.g06.httpserver.model.restaurant.Restaurant
 import java.time.OffsetDateTime
+import kotlin.streams.toList
 
 class DetailedRestaurantOutput(
         id: String,

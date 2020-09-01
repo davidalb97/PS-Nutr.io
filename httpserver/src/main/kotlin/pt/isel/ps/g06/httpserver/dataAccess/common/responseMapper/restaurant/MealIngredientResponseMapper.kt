@@ -12,14 +12,14 @@ import pt.isel.ps.g06.httpserver.model.MealComposition
 import pt.isel.ps.g06.httpserver.model.NutritionalValues
 import pt.isel.ps.g06.httpserver.model.food.Ingredient
 import java.time.OffsetDateTime
-import kotlin.streams.asStream
+import java.util.stream.Stream
 
 @Component
 class DbMealIngredientResponseMapper(
         private val dbFavoriteRepo: FavoriteDbRepository,
         private val dbMealRepo: MealDbRepository
-) : ResponseMapper<DbMealDto, Sequence<Ingredient>> {
-    override fun mapTo(dto: DbMealDto): Sequence<Ingredient> {
+) : ResponseMapper<DbMealDto, Stream<Ingredient>> {
+    override fun mapTo(dto: DbMealDto): Stream<Ingredient> {
         return dbMealRepo
                 .getMealIngredients(dto.submission_id)
                 .map {
@@ -51,8 +51,8 @@ class DbMealComponentResponseMapper(
         private val dbCuisineRepo: CuisineDbRepository,
         private val dbSubmitterRepo: SubmitterDbRepository,
         private val restaurantMealResponseMapper: DbRestaurantMealInfoResponseMapper
-) : ResponseMapper<DbMealDto, Sequence<Meal>> {
-    override fun mapTo(dto: DbMealDto): Sequence<Meal> {
+) : ResponseMapper<DbMealDto, Stream<Meal>> {
+    override fun mapTo(dto: DbMealDto): Stream<Meal> {
         return dbMealRepo
                 .getMealComponents(dto.submission_id)
                 .map {
@@ -65,8 +65,8 @@ class DbMealComponentResponseMapper(
                             imageUri = null,
                             composedBy = MealComposition(
                                     //TODO Sequence -> Stream
-                                    meals = this.mapTo(mealComponent).asStream(),
-                                    ingredients = dbMealIngredientResponseMapper.mapTo(mealComponent).asStream()
+                                    meals = this.mapTo(mealComponent),
+                                    ingredients = dbMealIngredientResponseMapper.mapTo(mealComponent)
                             ),
                             cuisines = dbCuisineRepo.getAllByMealId(dto.submission_id).map(dbCuisineMapper::mapTo),
                             submitterInfo = lazy {

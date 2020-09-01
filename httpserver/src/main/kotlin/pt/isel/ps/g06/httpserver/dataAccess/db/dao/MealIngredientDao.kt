@@ -6,6 +6,7 @@ import org.jdbi.v3.sqlobject.customizer.BindList
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import pt.isel.ps.g06.httpserver.dataAccess.db.MEAL_TYPE_SUGGESTED_INGREDIENT
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbMealIngredientDto
+import java.util.stream.Stream
 
 private const val M_table = MealDao.table
 private const val M_id = MealDao.id
@@ -28,7 +29,7 @@ interface MealIngredientDao {
             "WHERE $M_table.$M_type = '$MEAL_TYPE_SUGGESTED_INGREDIENT' " +
             "AND $table.$mealId = :mealId"
     )
-    fun getMealIngredientsByMealId(@Bind mealId: Int): Collection<DbMealIngredientDto>
+    fun getMealIngredientsByMealId(@Bind mealId: Int): Stream<DbMealIngredientDto>
 
     @SqlQuery("SELECT $attributes " +
             "FROM $table " +
@@ -37,16 +38,16 @@ interface MealIngredientDao {
             "WHERE $M_table.$M_type != '$MEAL_TYPE_SUGGESTED_INGREDIENT' " +
             "AND $table.$mealId = :mealId"
     )
-    fun getMealComponentsByMealId(@Bind mealId: Int): Collection<DbMealIngredientDto>
+    fun getMealComponentsByMealId(@Bind mealId: Int): Stream<DbMealIngredientDto>
 
     @SqlQuery("INSERT INTO $table($mealId, $ingredientId, $quantity) values <mealIngredientParams> RETURNING *")
     fun insertAll(
             @BindBeanList(propertyNames = [mealId, ingredientId, quantity])
             mealIngredientParams: Collection<DbMealIngredientDto>
-    ): Collection<DbMealIngredientDto>
+    ): Stream<DbMealIngredientDto>
 
     @SqlQuery("DELETE FROM $table WHERE $mealId = :submissionId RETURNING *")
-    fun deleteAllByMealId(submissionId: Int): Collection<DbMealIngredientDto>
+    fun deleteAllByMealId(submissionId: Int): Stream<DbMealIngredientDto>
 
     @SqlQuery("DELETE FROM $table" +
             " WHERE $mealId = :submissionId" +
@@ -54,5 +55,5 @@ interface MealIngredientDao {
     fun deleteAllByMealIdAndIngredientIds(
             @Bind submissionId: Int,
             @BindList deleteIngredientIds: Collection<Int>
-    ): Collection<DbMealIngredientDto>
+    ): Stream<DbMealIngredientDto>
 }
