@@ -20,7 +20,11 @@ import kotlin.streams.toList
 private val mealDaoClass = MealDao::class.java
 
 @Repository
-class MealDbRepository(private val databaseContext: DatabaseContext, private val cuisineDbRepository: CuisineDbRepository) {
+class MealDbRepository(
+        private val databaseContext: DatabaseContext,
+        private val cuisineDbRepository: CuisineDbRepository,
+        private val submissionDbRepository: SubmissionDbRepository
+) {
     fun getById(mealSubmissionId: Int): DbMealDto? {
         return databaseContext.inTransaction { handle ->
             return@inTransaction handle.attach(mealDaoClass)
@@ -202,20 +206,14 @@ class MealDbRepository(private val databaseContext: DatabaseContext, private val
             throw InvalidInputException("A meal must have at least one ingredient!")
         }
 
-        return jdbi.inTransaction<DbMealDto, Exception>(isolationLevel) {
+        return databaseContext.inTransaction {
 
-            requireSubmissionSubmitter(submissionId, submitterId, isolationLevel)
+            submissionDbRepository.requireSubmissionOwner(submissionId, submitterId)
 
-            requireSubmission(submissionId, SubmissionType.MEAL, isolationLevel)
+            submissionDbRepository.requireSubmissionType(submissionId, SubmissionType.MEAL)
 
             //Validate given ingredients to see if they are all in the database
-            val databaseIngredients = it
-                    .attach(MealDao::class.java)
-                    .getAllIngredientsByIds(ingredients.map { ingredient -> ingredient.identifier!! })
-
-            if (databaseIngredients.size != ingredients.size) {
-                throw InvalidInputException("Not all ingredients belong to the database!")
-            }
+            val databaseIngredients = requireIngredientsById(it, ingredients.map { it.identifier!! })
 
             // TODO: Logic should be isolated on the service and passed to repo as a parameter
             //Calculate meal carbs from adding each ingredient carb for given input quantity
@@ -233,7 +231,10 @@ class MealDbRepository(private val databaseContext: DatabaseContext, private val
             it.attach(MealCuisineDao::class.java).deleteAllByMealId(submissionId)
 
             //Insert all MealCuisine associations
-            insertMealCuisines(it, submissionId, cuisines)
+            val cuisineIds = cuisineDbRepository.getAllByNames(cuisines.stream()).map { it.submission_id }
+            val mealCuisineDao = it.attach(MealCuisineDao::class.java)
+            mealCuisineDao.deleteAllByMealId(submissionId)
+            mealCuisineDao.insertAll(cuisineIds.map { DbMealCuisineDto(submissionId, it) }.toList())
 
             //Insert meal's ingredients
             val mealIngredientDao = it.attach(MealIngredientDao::class.java)
@@ -249,12 +250,6 @@ class MealDbRepository(private val databaseContext: DatabaseContext, private val
 
             return@inTransaction mealDto
         }
-    }
-
-    private fun insertMealCuisines(it: Handle, submissionId: Int, cuisineNames: Collection<String>) {
-        if (cuisineNames.isEmpty()) return
-        val cuisineIds = cuisineDbRepository.getCuisinesByNames(cuisineNames, isolationLevel).map { it.submission_id }
-        it.attach(MealCuisineDao::class.java).insertAll(cuisineIds.map { DbMealCuisineDto(submissionId, it) })
     }
 
     private fun requireIngredientsById(handle: Handle, ingredientIds: Collection<Int>): List<DbMealDto> {
