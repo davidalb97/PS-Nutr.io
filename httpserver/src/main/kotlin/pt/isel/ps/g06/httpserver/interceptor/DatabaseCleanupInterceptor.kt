@@ -4,8 +4,12 @@ import org.springframework.stereotype.Component
 import org.springframework.web.servlet.HandlerInterceptor
 import org.springframework.web.servlet.ModelAndView
 import pt.isel.ps.g06.httpserver.dataAccess.db.common.DatabaseContext
+import java.lang.Exception
+import java.util.logging.Logger
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
+
+private val log = Logger.getLogger(DatabaseCleanupInterceptor::class.simpleName)
 
 /**
  * Responsible for closing database handle connections, after all lazily acquired values (i.e: ResultIterable<T>)
@@ -17,12 +21,9 @@ import javax.servlet.http.HttpServletResponse
  */
 @Component
 class DatabaseCleanupInterceptor(private val databaseContext: DatabaseContext) : HandlerInterceptor {
-    override fun postHandle(
-            request: HttpServletRequest,
-            response: HttpServletResponse,
-            handler: Any,
-            modelAndView: ModelAndView?
-    ) {
+
+    override fun afterCompletion(request: HttpServletRequest, response: HttpServletResponse, handler: Any, ex: Exception?) {
+        super.afterCompletion(request, response, handler, ex)
         if (databaseContext.isHandleOpen()) {
             databaseContext.close()
         }
