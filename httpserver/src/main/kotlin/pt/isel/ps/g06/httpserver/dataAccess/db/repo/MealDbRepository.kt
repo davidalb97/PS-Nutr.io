@@ -185,6 +185,78 @@ class MealDbRepository(private val databaseContext: DatabaseContext, private val
         }
     }
 
+    fun update(
+            submissionId: Int,
+            submitterId: Int,
+            mealName: String,
+            quantity: Int,
+            cuisines: Collection<String>,
+            ingredients: Collection<IngredientInput>,
+            type: MealType
+    ): DbMealDto {
+        if (cuisines.isEmpty()) {
+            throw InvalidInputException("A meal must have at least a cuisine!")
+        }
+
+        if (ingredients.isEmpty()) {
+            throw InvalidInputException("A meal must have at least one ingredient!")
+        }
+
+        return jdbi.inTransaction<DbMealDto, Exception>(isolationLevel) {
+
+            requireSubmissionSubmitter(submissionId, submitterId, isolationLevel)
+
+            requireSubmission(submissionId, SubmissionType.MEAL, isolationLevel)
+
+            //Validate given ingredients to see if they are all in the database
+            val databaseIngredients = it
+                    .attach(MealDao::class.java)
+                    .getAllIngredientsByIds(ingredients.map { ingredient -> ingredient.identifier!! })
+
+            if (databaseIngredients.size != ingredients.size) {
+                throw InvalidInputException("Not all ingredients belong to the database!")
+            }
+
+            // TODO: Logic should be isolated on the service and passed to repo as a parameter
+            //Calculate meal carbs from adding each ingredient carb for given input quantity
+            val carbs = databaseIngredients
+                    .zip(ingredients, this::getCarbsForInputQuantity)
+                    .sum()
+                    .toInt()
+
+            //Insert Meal
+            val mealDto = it
+                    .attach(mealDaoClass)
+                    .update(submissionId, mealName, carbs, quantity, mealType = type.toString())
+
+            //Delete existing cuisines
+            it.attach(MealCuisineDao::class.java).deleteAllByMealId(submissionId)
+
+            //Insert all MealCuisine associations
+            insertMealCuisines(it, submissionId, cuisines)
+
+            //Insert meal's ingredients
+            val mealIngredientDao = it.attach(MealIngredientDao::class.java)
+            mealIngredientDao.deleteAllByMealId(submissionId)
+            mealIngredientDao.insertAll(ingredients.map { ingredientInput ->
+                DbMealIngredientDto(
+                        //We know fields are not null due to validation checks
+                        meal_submission_id = submissionId,
+                        ingredient_submission_id = ingredientInput.identifier!!,
+                        quantity = ingredientInput.quantity!!
+                )
+            })
+
+            return@inTransaction mealDto
+        }
+    }
+
+    private fun insertMealCuisines(it: Handle, submissionId: Int, cuisineNames: Collection<String>) {
+        if (cuisineNames.isEmpty()) return
+        val cuisineIds = cuisineDbRepository.getCuisinesByNames(cuisineNames, isolationLevel).map { it.submission_id }
+        it.attach(MealCuisineDao::class.java).insertAll(cuisineIds.map { DbMealCuisineDto(submissionId, it) })
+    }
+
     private fun requireIngredientsById(handle: Handle, ingredientIds: Collection<Int>): List<DbMealDto> {
         val databaseIngredients = handle
                 .attach(MealDao::class.java)

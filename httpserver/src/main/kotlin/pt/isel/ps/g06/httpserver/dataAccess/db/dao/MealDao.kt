@@ -153,6 +153,24 @@ interface MealDao {
             @Bind mealType: String
     ): DbMealDto
 
+    @SqlQuery("UPDATE $table SET " +
+            "$name = :mealName, " +
+            "$carbs = :carbs, " +
+            "$quantity = :quantity, " +
+            "$unit = :unit, " +
+            "$meal_type = :mealType " +
+            "WHERE $id = :submissionId " +
+            "RETURNING *"
+    )
+    fun update(
+            @Bind submissionId: Int,
+            @Bind mealName: String,
+            @Bind carbs: Int,
+            @Bind quantity: Int,
+            @Bind unit: String = "gr",
+            @Bind mealType: String
+    ): DbMealDto
+
     @SqlQuery("DELETE FROM $table WHERE $id = :submissionId RETURNING *")
     fun delete(@Bind submissionId: Int): DbMealDto
 

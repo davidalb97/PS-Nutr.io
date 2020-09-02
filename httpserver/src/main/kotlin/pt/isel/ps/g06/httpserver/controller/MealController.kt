@@ -138,6 +138,31 @@ class MealController(
         ).build()
     }
 
+    @PutMapping(MEAL)
+    fun editCustomMeal(
+            @PathVariable(MEAL_ID_VALUE) mealId: Int,
+            @Valid @RequestBody meal: MealInput,
+            user: User
+    ): ResponseEntity<Void> {
+        //Due to validators we are sure fields are never null
+        val updatedMeal = mealService.editMeal(
+                submissionId = mealId,
+                submitterId = user.identifier,
+                name = meal.name!!,
+                quantity = meal.quantity!!,
+                ingredients = meal.ingredients!!,
+                cuisines = meal.cuisines!!,
+                mealType = MealType.CUSTOM
+        )
+
+        return ResponseEntity.created(
+                UriComponentsBuilder
+                        .fromUriString(MEAL)
+                        .buildAndExpand(updatedMeal.identifier)
+                        .toUri()
+        ).build()
+    }
+
     @GetMapping(MEALS_FAVORITE)
     fun getFavoriteMealsFromUser(
             user: User,

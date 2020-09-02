@@ -64,6 +64,30 @@ class MealService(
         return dbMealResponseMapper.mapTo(createdMeal)
     }
 
+    fun editMeal(
+            submissionId: Int,
+            submitterId: Int,
+            name: String,
+            quantity: Int,
+            ingredients: Collection<IngredientInput>,
+            cuisines: Collection<String>,
+            mealType: MealType
+    ): Meal {
+        validateMealQuantity(ingredients, quantity)
+
+        val updatedMeal = dbMealRepository.update(
+                submissionId = submissionId,
+                submitterId = submitterId,
+                mealName = name,
+                cuisines = cuisines,
+                ingredients = ingredients,
+                quantity = quantity,
+                type = mealType
+        )
+
+        return dbMealResponseMapper.mapTo(updatedMeal)
+    }
+
     private fun validateMealQuantity(ingredients: Collection<IngredientInput>, quantity: Int) {
         if (ingredients.sumBy { it.quantity!! } > quantity) {
             throw InvalidMealException("The sum of ingredient quantity must be lower than meal quantity!")
