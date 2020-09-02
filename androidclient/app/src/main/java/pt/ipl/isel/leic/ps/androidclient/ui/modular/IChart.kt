@@ -26,9 +26,9 @@ interface IChart {
             val yAxisRight = chart.axisRight
 
             yAxisLeft.granularity = 1f
-            xAxis.granularity = 1f
-            xAxis.axisMinimum =  values.minOf { it.x }
-            xAxis.axisMaximum = values.maxOf { it.x }
+            xAxis.granularity = 10f
+            xAxis.axisMinimum =  0f
+            xAxis.axisMaximum = values.maxOf { it.x } + xAxis.granularity
             chart.description.isEnabled = false;
 
             xAxis.position = XAxis.XAxisPosition.BOTTOM
