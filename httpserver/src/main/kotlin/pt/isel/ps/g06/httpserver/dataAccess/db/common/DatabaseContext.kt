@@ -6,28 +6,20 @@ import org.springframework.stereotype.Component
 
 @Component
 class DatabaseContext(jdbi: Jdbi) {
-    //TODO Unit test to see if handle is lazily open
     //TODO Unit test to verify if context is a singleton
-    //TODO Remove prints after tests
-    private val localHandle: ThreadLocal<Handle> = ThreadLocal.withInitial { println("Open jdbi handle"); return@withInitial jdbi.open() }
+    protected val localHandle: ThreadLocal<Handle> = ThreadLocal.withInitial { jdbi.open() }
     private val isOpen: ThreadLocal<Boolean> = ThreadLocal.withInitial { false }
 
     private val handle: Handle
         get() {
-            //TODO Right now the starting thread is not closing the handle on API fetch call
-            println("Get handle with Thread ID {${Thread.currentThread().id}}")
             if (!isOpen.get()) isOpen.set(true)
             return localHandle.get()
         }
 
     fun close() {
-        println("Handle closing on Thread ${Thread.currentThread().id}")
         localHandle.get().close()
         localHandle.remove()
         isOpen.remove()
-//        handle.close()
-//        localHandle.remove()
-//        isOpen.remove()
     }
 
     fun isHandleOpen(): Boolean = isOpen.get()
