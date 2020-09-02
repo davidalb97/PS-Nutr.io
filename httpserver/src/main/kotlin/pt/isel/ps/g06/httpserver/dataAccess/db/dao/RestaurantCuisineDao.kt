@@ -1,11 +1,11 @@
 package pt.isel.ps.g06.httpserver.dataAccess.db.dao
 
+import org.jdbi.v3.core.result.ResultIterable
 import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.customizer.BindBeanList
 import org.jdbi.v3.sqlobject.customizer.BindList
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbRestaurantCuisineDto
-import java.util.stream.Stream
 
 interface RestaurantCuisineDao {
 
@@ -16,7 +16,7 @@ interface RestaurantCuisineDao {
     }
 
     @SqlQuery("SELECT * FROM $table WHERE $id = :restaurantId")
-    fun getAllForRestaurantId(@Bind restaurantId: Int): Collection<DbRestaurantCuisineDto>
+    fun getAllForRestaurantId(@Bind restaurantId: Int): ResultIterable<DbRestaurantCuisineDto>
 
     @SqlQuery("INSERT INTO $table($id, $cuisineId) values <restaurantCuisineDtos> RETURNING *")
     fun insertAll(
@@ -25,7 +25,7 @@ interface RestaurantCuisineDao {
     ): Collection<DbRestaurantCuisineDto>
 
     @SqlQuery("DELETE FROM $table WHERE $id = :restaurantId RETURNING *")
-    fun deleteAllByRestaurantId(@Bind restaurantId: Int): Stream<DbRestaurantCuisineDto>
+    fun deleteAllByRestaurantId(@Bind restaurantId: Int): ResultIterable<DbRestaurantCuisineDto>
 
     @SqlQuery("DELETE FROM $table" +
             " WHERE $id = :submission_id" +
@@ -33,5 +33,5 @@ interface RestaurantCuisineDao {
     fun deleteAllByRestaurantIdAndCuisineIds(
             @Bind restaurantSubmissionId: Int,
             @BindList cuisineIds: List<Int>
-    ): Stream<DbRestaurantCuisineDto>
+    ): ResultIterable<DbRestaurantCuisineDto>
 }

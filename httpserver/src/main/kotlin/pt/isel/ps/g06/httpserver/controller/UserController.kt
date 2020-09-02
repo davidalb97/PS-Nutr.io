@@ -12,9 +12,9 @@ import pt.isel.ps.g06.httpserver.common.exception.problemJson.unauthorized.Unaut
 import pt.isel.ps.g06.httpserver.dataAccess.input.moderation.BanInput
 import pt.isel.ps.g06.httpserver.dataAccess.input.user.UserLoginInput
 import pt.isel.ps.g06.httpserver.dataAccess.input.user.UserRegisterInput
+import pt.isel.ps.g06.httpserver.dataAccess.output.user.UserInfoOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.user.UserLoginOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.user.UserRegisterOutput
-import pt.isel.ps.g06.httpserver.dataAccess.output.user.UserInfoOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.user.mapUserToOutput
 import pt.isel.ps.g06.httpserver.model.User
 import pt.isel.ps.g06.httpserver.service.AuthenticationService

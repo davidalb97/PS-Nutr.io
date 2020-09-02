@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 import pt.isel.ps.g06.httpserver.common.hypermedia.ProblemJson
 import pt.isel.ps.g06.httpserver.common.hypermedia.toResponseEntity
-import java.lang.IllegalArgumentException
 
 private val log = LoggerFactory.getLogger(DatabaseExceptionHandler::class.java)
 

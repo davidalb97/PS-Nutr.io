@@ -9,6 +9,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.dao.*
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbApiSubmissionDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbSubmissionDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbSubmitterDto
+import pt.isel.ps.g06.httpserver.util.asCachedSequence
 import java.time.OffsetDateTime
 
 
@@ -61,7 +62,8 @@ class SubmissionDbRepository(private val databaseContext: DatabaseContext) {
             // Check if submission is implementing the IS-A contract
             return@inTransaction handle.attach(SubmissionContractDao::class.java)
                     .getAllById(submissionId)
-                    .anyMatch { it.submission_contract == contract.toString() }
+                    .asCachedSequence()
+                    .any { it.submission_contract == contract.toString() }
         }
     }
 
@@ -81,7 +83,7 @@ class SubmissionDbRepository(private val databaseContext: DatabaseContext) {
             submissionId: Int,
             submissionType: SubmissionType
     ) {
-        if(!isOfSubmissionType(submissionId, submissionType)) {
+        if (!isOfSubmissionType(submissionId, submissionType)) {
             throw InvalidInputException(
                     "The specified submission with id \"$submissionId\" " +
                             "is not of type \"$submissionType\"."
@@ -94,20 +96,19 @@ class SubmissionDbRepository(private val databaseContext: DatabaseContext) {
             // Check if the submitter owns the submission
             handle.attach(SubmissionSubmitterDao::class.java)
                     .getAllBySubmissionId(submissionId)
-                    .map { it.submitter_id }
-                    .anyMatch { it == submitterId }
+                    .asCachedSequence()
+                    .any { it.submitter_id == submitterId }
         }
     }
 
     fun requireSubmissionOwner(submissionId: Int, submitterId: Int) {
-        if(!isSubmissionOwner(submissionId, submitterId)) {
+        if (!isSubmissionOwner(submissionId, submitterId)) {
             throw InvalidInputException(
                     "The specified submitter with id \"$submitterId\" " +
-                    "does not own submission with id \"$submissionId\"."
+                            "does not own submission with id \"$submissionId\"."
             )
         }
     }
-
 
 
 /*

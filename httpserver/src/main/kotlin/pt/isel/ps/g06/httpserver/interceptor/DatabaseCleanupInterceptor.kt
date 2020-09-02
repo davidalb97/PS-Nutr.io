@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
 /**
- * Responsible for closing database handle connections, after all lazily acquired values (i.e: Stream<T>)
+ * Responsible for closing database handle connections, after all lazily acquired values (i.e: ResultIterable<T>)
  * were iterated throughout the request.
  *
  * From [JDBI's documentation](https://jdbi.org/#_on_demand) regarding streams:

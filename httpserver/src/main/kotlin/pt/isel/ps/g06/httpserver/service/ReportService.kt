@@ -13,7 +13,6 @@ import pt.isel.ps.g06.httpserver.model.report.BaseReport
 import pt.isel.ps.g06.httpserver.model.report.ReportSubmissionDetail
 import pt.isel.ps.g06.httpserver.model.report.ReportedSubmission
 import pt.isel.ps.g06.httpserver.model.report.SubmissionReport
-import java.util.stream.Stream
 
 @Service
 class ReportService(
@@ -29,7 +28,7 @@ class ReportService(
     /**
      * Gets all the reports inside the database
      */
-    fun getAllReports(skip: Int?, count: Int?): Stream<SubmissionReport> {
+    fun getAllReports(skip: Int?, count: Int?): Sequence<SubmissionReport> {
         return reportDbRepository.getAll(skip, count).map(reportDbMapper::mapTo)
     }
 
@@ -40,22 +39,24 @@ class ReportService(
             submissionType: String,
             skip: Int?,
             count: Int?
-    ): Stream<ReportedSubmission> {
+    ): Sequence<ReportedSubmission> {
         if (REPORTABLE_TYPES.all { it != submissionType }) {
             throw InvalidInputException(
                     "This type of submission can not be reported and thus there are no reports for this"
             )
         }
 
-        return reportDbRepository.getAllBySubmissionType(submissionType, skip, count).map(simpleReportDbMapper::mapTo)
+        return reportDbRepository.getAllBySubmissionType(submissionType, skip, count)
+                .map(simpleReportDbMapper::mapTo)
     }
 
     /**
      * Gets all the reports for a specific submission
      * @param submissionId - The submission's id
      */
-    fun getSubmissionReports(submissionId: Int): Stream<BaseReport> =
-            reportDbRepository.getAllFromSubmission(submissionId).map(detailedReportMapper::mapTo)
+    fun getSubmissionReports(submissionId: Int): Sequence<BaseReport> =
+            reportDbRepository.getAllFromSubmission(submissionId)
+                    .map(detailedReportMapper::mapTo)
 
     fun getReportedSubmissionDetail(submissionId: Int): ReportSubmissionDetail? =
             reportDbRepository.getReportedSubmissionDetail(submissionId)

@@ -10,12 +10,12 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionContractType.FAVORABLE
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType
 import pt.isel.ps.g06.httpserver.dataAccess.db.common.DatabaseContext
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.*
+import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbCuisineDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbMealCuisineDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbMealDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbMealIngredientDto
 import pt.isel.ps.g06.httpserver.dataAccess.input.ingredient.IngredientInput
-import java.util.stream.Stream
-import kotlin.streams.toList
+import pt.isel.ps.g06.httpserver.util.asCachedSequence
 
 private val mealDaoClass = MealDao::class.java
 
@@ -32,86 +32,95 @@ class MealDbRepository(
         }
     }
 
-    fun getBySubmitterId(submitterId: Int, skip: Int?, count: Int?): Stream<DbMealDto> {
+    fun getBySubmitterId(submitterId: Int, skip: Int?, count: Int?): Sequence<DbMealDto> {
         return databaseContext.inTransaction { handle ->
             return@inTransaction handle.attach(mealDaoClass)
                     .getAllBySubmitterIdAndType(submitterId, MealType.CUSTOM.toString(), skip, count)
+                    .asCachedSequence()
         }
 
     }
 
-    fun getAllUserFavorites(submitterId: Int, count: Int?, skip: Int?): Stream<DbMealDto> {
+    fun getAllUserFavorites(submitterId: Int, count: Int?, skip: Int?): Sequence<DbMealDto> {
         return databaseContext.inTransaction { handle ->
             return@inTransaction handle.attach(mealDaoClass)
                     .getAllUserFavorites(submitterId, count, skip)
+                    .asCachedSequence()
         }
 
     }
 
-    fun getMealIngredients(mealId: Int): Stream<DbMealIngredientDto> {
+    fun getMealIngredients(mealId: Int): Sequence<DbMealIngredientDto> {
         return databaseContext.inTransaction { handle ->
             return@inTransaction handle
                     .attach(MealIngredientDao::class.java)
                     .getMealIngredientsByMealId(mealId)
+                    .asCachedSequence()
         }
     }
 
-    fun getMealComponents(mealId: Int): Stream<DbMealIngredientDto> {
+    fun getMealComponents(mealId: Int): Sequence<DbMealIngredientDto> {
         return databaseContext.inTransaction { handle ->
             return@inTransaction handle
                     .attach(MealIngredientDao::class.java)
                     .getMealComponentsByMealId(mealId)
+                    .asCachedSequence()
         }
 
     }
 
-    fun getAllIngredients(skip: Long?, count: Long?): Stream<DbMealDto> {
+    fun getAllIngredients(skip: Int?, count: Int?): Sequence<DbMealDto> {
         return databaseContext.inTransaction { handle ->
             return@inTransaction handle
                     .attach(MealDao::class.java)
                     .getAllByType(MEAL_TYPE_SUGGESTED_INGREDIENT, skip, count)
+                    .asCachedSequence()
         }
 
     }
 
-    fun getAllSuggestedMealsByCuisineApiIds(apiSubmitterId: Int, cuisineApiIds: Sequence<String>): Stream<DbMealDto> {
+    fun getAllSuggestedMealsByCuisineApiIds(apiSubmitterId: Int, cuisineApiIds: Sequence<String>): Sequence<DbMealDto> {
         val cuisineApiIdsList = cuisineApiIds.toList()
-        if (cuisineApiIdsList.isEmpty()) return Stream.empty() //TODO See if eager call is possible to avoid
+        if (cuisineApiIdsList.isEmpty()) return emptySequence() //TODO See if eager call is possible to avoid
 
         return databaseContext.inTransaction {
             return@inTransaction it
                     .attach(MealDao::class.java)
                     .getAllSuggestedForApiCuisines(apiSubmitterId, cuisineApiIdsList)
+                    .asCachedSequence()
         }
     }
 
-    fun getAllSuggestedMealsFromCuisineNames(cuisineNames: Stream<String>): Stream<DbMealDto> {
+    fun getAllSuggestedMealsFromCuisineNames(cuisineNames: Sequence<String>): Sequence<DbMealDto> {
         val cuisineNameList = cuisineNames.toList()
         //TODO See if eager call is possible to avoid
-        if (cuisineNameList.isEmpty()) return Stream.empty()
+        if (cuisineNameList.isEmpty()) return emptySequence()
 
         return databaseContext.inTransaction { handle ->
             return@inTransaction handle
                     .attach(MealDao::class.java)
                     .getAllSuggestedForCuisineNames(cuisineNameList)
+                    .asCachedSequence()
         }
     }
 
     //TODO use cuisine filtering
-    fun getAllSuggestedMeals(skip: Long?, count: Long?, cuisines: Collection<String>?): Stream<DbMealDto> {
+    fun getAllSuggestedMeals(skip: Int?, count: Int?, cuisines: Collection<String>?): Sequence<DbMealDto> {
         return databaseContext.inTransaction { handle ->
             return@inTransaction handle
                     .attach(MealDao::class.java)
                     //.getAllSuggestedMeals(skip, count, cuisines)
                     .getAllByType(MEAL_TYPE_SUGGESTED_MEAL, skip, count)
+                    .asCachedSequence()
         }
     }
 
-    fun getAllUserMealsForRestaurant(restaurantId: Int): Stream<DbMealDto> {
+    fun getAllUserMealsForRestaurant(restaurantId: Int): Sequence<DbMealDto> {
         return databaseContext.inTransaction { handle ->
             return@inTransaction handle
                     .attach(MealDao::class.java)
                     .getAllUserMealsByRestaurantId(restaurantId)
+                    .asCachedSequence()
         }
     }
 
@@ -170,7 +179,7 @@ class MealDbRepository(
             //Insert all MealCuisine associations
             //TODO Make this better
             val cuisineIds = cuisineDbRepository
-                    .getAllByNames(cuisines.stream())
+                    .getAllByNames(cuisines.asSequence())
                     .map { DbMealCuisineDto(submitterId, it.submission_id) }
 
             it.attach(MealCuisineDao::class.java).insertAll(cuisineIds.toList())
@@ -231,7 +240,8 @@ class MealDbRepository(
             it.attach(MealCuisineDao::class.java).deleteAllByMealId(submissionId)
 
             //Insert all MealCuisine associations
-            val cuisineIds = cuisineDbRepository.getAllByNames(cuisines.stream()).map { it.submission_id }
+            val cuisineIds = cuisineDbRepository.getAllByNames(cuisines.asSequence())
+                    .map(DbCuisineDto::submission_id)
             val mealCuisineDao = it.attach(MealCuisineDao::class.java)
             mealCuisineDao.deleteAllByMealId(submissionId)
             mealCuisineDao.insertAll(cuisineIds.map { DbMealCuisineDto(submissionId, it) }.toList())

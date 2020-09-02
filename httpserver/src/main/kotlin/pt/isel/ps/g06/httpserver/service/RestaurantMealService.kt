@@ -19,7 +19,6 @@ import pt.isel.ps.g06.httpserver.model.MealRestaurantInfo
 import pt.isel.ps.g06.httpserver.model.RestaurantMeal
 import pt.isel.ps.g06.httpserver.model.User
 import pt.isel.ps.g06.httpserver.model.restaurant.RestaurantIdentifier
-import pt.isel.ps.g06.httpserver.model.*
 
 @Service
 class RestaurantMealService(

@@ -13,6 +13,6 @@ class InsulinProfile(
         val carbohydrateRatio: Int,
         val modificationDate: OffsetDateTime,
         override val name: String
-): BaseSubmission<Int>(
+) : BaseSubmission<Int>(
         identifier = identifier
 ), INameable

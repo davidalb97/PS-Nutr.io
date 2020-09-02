@@ -7,7 +7,6 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.common.DatabaseContext
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbApiDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.ApiDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.SubmitterDbRepository
-import java.util.stream.Collectors
 import javax.annotation.PostConstruct
 
 @Repository
@@ -21,8 +20,12 @@ data class ApiSubmitterMapper(
     @PostConstruct
     protected fun createMap() {
         val submitters: Map<Int, RestaurantApiType> = apiDbRepository
-                .getApisByName(RestaurantApiType.values().map { it.toString() })
-                .collect(Collectors.toMap({ it.submitter_id }, ::buildApiType))
+                .getApisByName(
+                        RestaurantApiType.values()
+                                .map(RestaurantApiType::toString)
+                )
+                .map { Pair(it.submitter_id, buildApiType(it)) }
+                .toMap()
 
         if (submitters.size != RestaurantApiType.values().size) {
             throw InvalidApplicationStartupException("Insufficient RestaurantApi submitters in Database! \n" +

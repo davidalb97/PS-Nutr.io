@@ -1,10 +1,10 @@
 package pt.isel.ps.g06.httpserver.dataAccess.db.dao
 
+import org.jdbi.v3.core.result.ResultIterable
 import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.customizer.BindList
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbApiSubmissionDto
-import java.util.stream.Stream
 
 //SubmissionSubmitter constants
 private const val SS_table = SubmissionSubmitterDao.table
@@ -25,7 +25,7 @@ interface ApiSubmissionDao {
     }
 
     @SqlQuery("SELECT * FROM $table")
-    fun getAll(): Stream<DbApiSubmissionDto>
+    fun getAll(): ResultIterable<DbApiSubmissionDto>
 
     @SqlQuery("SELECT * FROM $table WHERE $submissionId = :submissionId")
     fun getBySubmissionId(submissionId: Int): DbApiSubmissionDto?
@@ -44,7 +44,7 @@ interface ApiSubmissionDao {
             @Bind submitterId: Int,
             @Bind submissionType: String,
             @BindList apiIds: List<String>
-    ): Stream<DbApiSubmissionDto>
+    ): ResultIterable<DbApiSubmissionDto>
 
     @SqlQuery("SELECT $table.$submissionId, $table.$apiId" +
             " FROM $table" +
@@ -58,7 +58,7 @@ interface ApiSubmissionDao {
     fun getAllBySubmitterIdAndSubmissionType(
             @Bind submitterId: Int,
             @Bind submissionType: String
-    ): Stream<DbApiSubmissionDto>
+    ): ResultIterable<DbApiSubmissionDto>
 
     @SqlQuery("INSERT INTO $table($submissionId, $apiId)" +
             " VALUES(:submissionId, :apiId) RETURNING *")

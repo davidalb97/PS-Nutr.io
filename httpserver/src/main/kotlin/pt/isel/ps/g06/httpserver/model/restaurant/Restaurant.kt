@@ -7,7 +7,6 @@ import pt.isel.ps.g06.httpserver.model.Votes
 import pt.isel.ps.g06.httpserver.model.modular.*
 import java.net.URI
 import java.time.OffsetDateTime
-import java.util.stream.Stream
 
 class Restaurant(
         identifier: Lazy<RestaurantIdentifier>,
@@ -24,10 +23,10 @@ class Restaurant(
         val longitude: Float,
         val submitterInfo: Lazy<Submitter>,
         val creationDate: Lazy<OffsetDateTime?>,
-        val meals: Stream<Meal>,
-        val suggestedMeals: Stream<Meal>,
-        override val cuisines: Stream<Cuisine>
-): BasePublicSubmission<Lazy<RestaurantIdentifier>>(
+        val meals: Sequence<Meal>,
+        val suggestedMeals: Sequence<Meal>,
+        override val cuisines: Sequence<Cuisine>
+) : BasePublicSubmission<Lazy<RestaurantIdentifier>>(
         identifier = identifier,
         image = image,
         name = name,

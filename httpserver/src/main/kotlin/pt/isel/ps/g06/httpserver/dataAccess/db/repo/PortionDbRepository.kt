@@ -7,7 +7,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.dao.PortionDao
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.SubmissionDao
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.SubmissionSubmitterDao
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbPortionDto
-import java.util.stream.Stream
+import pt.isel.ps.g06.httpserver.util.asCachedSequence
 
 private val portionDaoClass = PortionDao::class.java
 
@@ -17,15 +17,18 @@ class PortionDbRepository(
         private val submissionDbRepository: SubmissionDbRepository
 ) {
 
-    fun getAllByRestaurantMealId(restaurantMealId: Int): Stream<DbPortionDto> {
+    fun getAllByRestaurantMealId(restaurantMealId: Int): Sequence<DbPortionDto> {
         return databaseContext.inTransaction {
-            it.attach(portionDaoClass).getAllForRestaurantMealId(restaurantMealId)
+            it.attach(portionDaoClass)
+                    .getAllForRestaurantMealId(restaurantMealId)
+                    .asCachedSequence()
         }
     }
 
     fun getUserPortion(restaurantMealId: Int, userId: Int): DbPortionDto? {
         return databaseContext.inTransaction {
-            it.attach(portionDaoClass).getByRestaurantMealIdAndUserId(restaurantMealId, userId)
+            it.attach(portionDaoClass)
+                    .getByRestaurantMealIdAndUserId(restaurantMealId, userId)
         }
     }
 

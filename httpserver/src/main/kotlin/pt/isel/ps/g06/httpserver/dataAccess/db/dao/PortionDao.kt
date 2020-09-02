@@ -1,10 +1,10 @@
 package pt.isel.ps.g06.httpserver.dataAccess.db.dao
 
+import org.jdbi.v3.core.result.ResultIterable
 import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.customizer.BindList
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbPortionDto
-import java.util.stream.Stream
 
 //SubmissionSubmitter table constants
 private const val SS_table = SubmissionSubmitterDao.table
@@ -21,7 +21,7 @@ interface PortionDao {
     }
 
     @SqlQuery("SELECT * FROM $table WHERE $restaurantMealId = :restaurantMealId")
-    fun getAllForRestaurantMealId(@Bind restaurantMealId: Int): Stream<DbPortionDto>
+    fun getAllForRestaurantMealId(@Bind restaurantMealId: Int): ResultIterable<DbPortionDto>
 
     @SqlQuery(
             "SELECT $table.$id, $table.$restaurantMealId, $table.$quantity" +
@@ -48,6 +48,6 @@ interface PortionDao {
     @SqlQuery("DELETE FROM $table" +
             " WHERE $restaurantMealId in (<restaurantMealIds>) RETURNING *")
     fun deleteAllByRestaurantMealIds(
-            @BindList restaurantMealIds: Stream<Int>
-    ): Stream<DbPortionDto>
+            @BindList restaurantMealIds: Collection<Int>
+    ): ResultIterable<DbPortionDto>
 }

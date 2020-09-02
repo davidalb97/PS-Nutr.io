@@ -14,8 +14,6 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.repo.RestaurantDbRepository
 import pt.isel.ps.g06.httpserver.model.restaurant.Restaurant
 import pt.isel.ps.g06.httpserver.model.restaurant.RestaurantIdentifier
 import pt.isel.ps.g06.httpserver.util.log
-import java.util.stream.Stream
-import kotlin.streams.toList
 
 private const val MAX_RADIUS = 1000
 
@@ -41,7 +39,7 @@ class RestaurantService(
             apiType: String?,
             skip: Int?,
             count: Int?
-    ): Stream<Restaurant> {
+    ): Sequence<Restaurant> {
         val chosenRadius = if (radius != null && radius <= MAX_RADIUS) radius else MAX_RADIUS
         val type = RestaurantApiType.getOrDefault(apiType)
         val restaurantApi = restaurantApiMapper.getRestaurantApi(type)
@@ -53,10 +51,10 @@ class RestaurantService(
                             it.map(restaurantResponseMapper::mapTo)
                         }
 
-        //TODO Build API Restaurants Stream from Completable Future
+        //TODO Build API Restaurants Sequence from Completable Future
         return dbRestaurantRepository.getAllByCoordinates(latitude, longitude, chosenRadius)
                 .map(restaurantResponseMapper::mapTo)
-                .let { filterRedundantApiRestaurants(it, apiRestaurants.get().stream()) }
+                .let { filterRedundantApiRestaurants(it, apiRestaurants.get().asSequence()) }
         //Keeps an open transaction while we iterate the DB response Stream
 //        return transactionHolder.inTransaction {
 //
@@ -178,20 +176,21 @@ class RestaurantService(
     }
 
     private fun filterRedundantApiRestaurants(
-            dbRestaurants: Stream<Restaurant>,
-            apiRestaurants: Stream<Restaurant>
-    ): Stream<Restaurant> {
+            dbRestaurants: Sequence<Restaurant>,
+            apiRestaurants: Sequence<Restaurant>
+    ): Sequence<Restaurant> {
         //Filter api restaurants that already exist in db
         val filteredApiRestaurants = apiRestaurants.filter { apiRestaurant ->
             //Db does not contain a restaurant with the api identifier
-            dbRestaurants.noneMatch { dbRestaurant ->
+            dbRestaurants.none { dbRestaurant ->
+                //Same apiId
                 apiRestaurant.identifier.value.apiId == dbRestaurant.identifier.value.apiId
                         //Same API
                         && apiRestaurant.identifier.value.submitterId == dbRestaurant.identifier.value.submitterId
             }
         }
 
-        return Stream.concat(dbRestaurants, filteredApiRestaurants)
+        return dbRestaurants.plus(filteredApiRestaurants)
     }
 
     private fun searchApiRestaurant(apiSubmitterId: Int, apiId: String, apiType: RestaurantApiType): RestaurantDto? {

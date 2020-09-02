@@ -16,7 +16,6 @@ import pt.isel.ps.g06.httpserver.service.IngredientService
 import pt.isel.ps.g06.httpserver.service.UserService
 import javax.validation.constraints.Max
 import javax.validation.constraints.Min
-import kotlin.streams.toList
 
 @Validated
 @RestController
@@ -37,8 +36,8 @@ class IngredientController(
      */
     @GetMapping
     fun getIngredients(
-            @RequestParam @Min(0) skip: Long?,
-            @RequestParam @Min(0) @Max(MAX_COUNT) count: Long?
+            @RequestParam @Min(0) skip: Int?,
+            @RequestParam @Min(0) @Max(MAX_COUNT) count: Int?
     ): ResponseEntity<IngredientsContainerOutput> {
 
         val ingredients = ingredientService.getIngredients(skip, count)

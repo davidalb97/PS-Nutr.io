@@ -13,7 +13,6 @@ import pt.isel.ps.g06.httpserver.model.Votes
 import pt.isel.ps.g06.httpserver.model.modular.toUserPortion
 import pt.isel.ps.g06.httpserver.model.modular.toUserPredicate
 import pt.isel.ps.g06.httpserver.model.modular.toUserVote
-import java.util.stream.Stream
 
 @Component
 class DbRestaurantMealInfoResponseMapper(
@@ -63,7 +62,7 @@ class DbRestaurantMealInfoResponseMapper(
                 },
                 portions = dto.submission_id?.let(dbPortionRepo::getAllByRestaurantMealId)
                         ?.map(dbPortionsMapper::mapTo)
-                        ?: Stream.empty(),
+                        ?: emptySequence(),
                 userPortion = toUserPortion { userId ->
                     dto.submission_id?.let {
                         dbPortionRepo.getUserPortion(it, userId)

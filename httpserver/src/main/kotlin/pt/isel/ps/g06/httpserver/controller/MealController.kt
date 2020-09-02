@@ -44,8 +44,8 @@ class MealController(
     fun getMeals(
             user: User?,
             @RequestParam cuisines: Collection<String>?,
-            @RequestParam @Min(0) skip: Long?,
-            @RequestParam @Min(0) @Max(MAX_COUNT) count: Long?
+            @RequestParam @Min(0) skip: Int?,
+            @RequestParam @Min(0) @Max(MAX_COUNT) count: Int?
     ): ResponseEntity<SimplifiedMealContainer> {
 
         var meals = mealService.getSuggestedMeals(
@@ -58,16 +58,16 @@ class MealController(
         if (cuisines != null && cuisines.isNotEmpty()) {
             //Filter by user cuisines
             meals = meals.filter {
-                it.cuisines.anyMatch { mealCuisines ->
+                it.cuisines.any { mealCuisines ->
                     cuisines.any { cuisine -> mealCuisines.name.equals(cuisine, ignoreCase = true) }
                 }
             }
         }
 
         //Perform final result reductions
-        meals = meals.skip(skip ?: 0)
+        meals = meals.drop(skip ?: 0)
         if (count != null) {
-            meals = meals.limit(count)
+            meals = meals.take(count)
         }
         return ResponseEntity
                 .ok()
