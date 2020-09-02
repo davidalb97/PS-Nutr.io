@@ -7,7 +7,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import com.github.mikephil.charting.charts.BarChart
+import com.github.mikephil.charting.components.XAxis
+import com.github.mikephil.charting.data.BarData
+import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
+import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.app
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.sharedPreferences
 import pt.ipl.isel.leic.ps.androidclient.R
@@ -15,7 +19,7 @@ import pt.ipl.isel.leic.ps.androidclient.data.api.dto.output.PortionOutput
 import pt.ipl.isel.leic.ps.androidclient.data.model.*
 import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.meal.MealItemRecyclerAdapter
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.list.BaseListFragment
-import pt.ipl.isel.leic.ps.androidclient.ui.modular.IChart
+import pt.ipl.isel.leic.ps.androidclient.ui.modular.IBarChart
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.IImage
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.ISend
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.ICalculatorActionButton
@@ -36,7 +40,7 @@ class MealInfoFragment :
     IVoteActionButtons,
     ICalculatorActionButton,
     IImage,
-    IChart,
+    IBarChart,
     ISend,
     IFavoriteActionButton,
     IPopupMenuButton,
@@ -75,6 +79,10 @@ class MealInfoFragment :
     override lateinit var menuButton: ImageButton
     override val chartId: Int = R.id.portion_chart
     override lateinit var chart: BarChart
+    override var noDataText: String? =
+        app.getString(R.string.no_portions_chart_message)
+    override var dataSets: ArrayList<IBarDataSet> =
+        arrayListOf()
 
     lateinit var addPortionLayout: RelativeLayout
     lateinit var editPortionLayout: RelativeLayout
@@ -227,6 +235,27 @@ class MealInfoFragment :
                 }
             )
         }
+    }
+
+    override fun chartConfig(values: Collection<BarEntry>) {
+
+        // Setup BarChart's data set
+        val graphDataSet = BarDataSet(values.toList(), "Portions")
+        dataSets.add(graphDataSet)
+        val barData = BarData(dataSets)
+
+        // Setup BarChart's properties
+        chart
+            .setXAxisGranularity(10f)
+            .setYAxisGranularity(1f)
+            .setXAxisMin(0f)
+            .setXAxisMax(values.maxOf { it.x } + 10f)
+            .setXDrawGridLines(false)
+            .setYDrawGridLines(false)
+            .setXAxisPosition(XAxis.XAxisPosition.BOTTOM)
+            .setYAnimationTime(1000)
+            .setChartDescription(false)
+            .setupBarData(barData)
     }
 
     override fun onEdit(onSuccess: () -> Unit) {
