@@ -186,6 +186,8 @@ class RestaurantService(
             //Db does not contain a restaurant with the api identifier
             dbRestaurants.noneMatch { dbRestaurant ->
                 apiRestaurant.identifier.value.apiId == dbRestaurant.identifier.value.apiId
+                        //Same API
+                        && apiRestaurant.identifier.value.submitterId == dbRestaurant.identifier.value.submitterId
             }
         }
 
