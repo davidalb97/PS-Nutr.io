@@ -13,6 +13,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.repo.FavoriteDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.PortionDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.ReportDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.RestaurantMealDbRepository
+import pt.isel.ps.g06.httpserver.dataAccess.input.restaurantMeal.PortionInput
 import pt.isel.ps.g06.httpserver.model.Meal
 import pt.isel.ps.g06.httpserver.model.MealRestaurantInfo
 import pt.isel.ps.g06.httpserver.model.RestaurantMeal
@@ -181,7 +182,7 @@ class RestaurantMealService(
                 ?.let { it.userPortion(user.identifier) }
                 ?: throw PortionNotFoundException()
 
-        dbPortionRepository.update(submitterId, userPortion.identifier, portion.quantity!!)
+        dbPortionRepository.update(user.identifier, userPortion.identifier, portion.quantity!!)
     }
 
     fun deleteUserPortion(restaurantId: RestaurantIdentifier, mealId: Int, user: User) {

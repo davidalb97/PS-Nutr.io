@@ -207,7 +207,7 @@ class RestaurantMealController(
     ): ResponseEntity<Void> {
         val restaurantIdentifier = restaurantIdentifierBuilder.extractIdentifiers(restaurantId)
 
-        restaurantMealService.updateUserPortion(user.identifier, restaurantIdentifier, mealId, portion)
+        restaurantMealService.updateUserPortion(user, restaurantIdentifier, mealId, portion)
 
         return ResponseEntity
                 .ok()
@@ -222,7 +222,7 @@ class RestaurantMealController(
     ): ResponseEntity<Void> {
         val restaurantIdentifier = restaurantIdentifierBuilder.extractIdentifiers(restaurantId)
 
-        restaurantMealService.deleteUserPortion(user.identifier, restaurantIdentifier, mealId, user)
+        restaurantMealService.deleteUserPortion(restaurantIdentifier, mealId, user)
 
         return ResponseEntity
                 .ok()

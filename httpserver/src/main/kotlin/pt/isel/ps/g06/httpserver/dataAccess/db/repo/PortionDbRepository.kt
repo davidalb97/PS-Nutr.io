@@ -12,7 +12,10 @@ import java.util.stream.Stream
 private val portionDaoClass = PortionDao::class.java
 
 @Repository
-class PortionDbRepository(private val databaseContext: DatabaseContext) {
+class PortionDbRepository(
+        private val databaseContext: DatabaseContext,
+        private val submissionDbRepository: SubmissionDbRepository
+) {
 
     fun getAllByRestaurantMealId(restaurantMealId: Int): Stream<DbPortionDto> {
         return databaseContext.inTransaction {
@@ -43,13 +46,15 @@ class PortionDbRepository(private val databaseContext: DatabaseContext) {
             portionIdentifier: Int,
             quantity: Int
     ): DbPortionDto {
-        return jdbi.inTransaction<DbPortionDto, Exception>(isolationLevel) {
+        return databaseContext.inTransaction {
+
             // Check if given submission is restaurant meal
-            requireSubmission(portionIdentifier, PORTION, isolationLevel)
+            submissionDbRepository.requireSubmissionOwner(portionIdentifier, submitterId)
 
-            requireSubmissionSubmitter(portionIdentifier, submitterId)
+            submissionDbRepository.requireSubmissionType(portionIdentifier, PORTION)
 
-            return@inTransaction it.attach(portionDaoClass).update(portionIdentifier, quantity)
+            return@inTransaction it.attach(portionDaoClass)
+                    .update(portionIdentifier, quantity)
         }
     }
 }
