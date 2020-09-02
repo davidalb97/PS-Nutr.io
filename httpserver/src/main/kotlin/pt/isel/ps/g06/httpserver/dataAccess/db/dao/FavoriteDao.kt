@@ -32,7 +32,4 @@ interface FavoriteDao {
     @SqlQuery("DELETE FROM $table " +
             "WHERE $submissionId = :submissionId AND $submitterId = :submitterId RETURNING *")
     fun delete(@Bind submissionId: Int, @Bind submitterId: Int): DbFavoriteDto
-
-    @SqlQuery("DELETE FROM $table WHERE $submissionId = :submissionId RETURNING *")
-    fun deleteAllBySubmissionId(submissionId: Int): ResultIterable<DbFavoriteDto>
 }

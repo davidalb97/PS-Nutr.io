@@ -36,7 +36,4 @@ interface UserVoteDao {
             " WHERE $submissionId = :submissionId" +
             " AND $voterSubmitterId = :voterSubmitterId RETURNING *")
     fun delete(@Bind submissionId: Int, @Bind voterSubmitterId: Int): DbUserVoteDto
-
-    @SqlQuery("DELETE FROM $table WHERE $submissionId = :submissionId RETURNING *")
-    fun deleteAllById(@Bind submissionId: Int): ResultIterable<DbUserVoteDto>
 }

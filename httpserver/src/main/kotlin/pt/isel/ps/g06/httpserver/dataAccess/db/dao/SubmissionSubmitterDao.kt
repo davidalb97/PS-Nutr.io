@@ -19,9 +19,6 @@ interface SubmissionSubmitterDao {
     @SqlQuery("INSERT INTO $table($submissionId, $submitterId)" +
             " VALUES(:submissionId, :submitterId) RETURNING *")
     fun insert(@Bind submissionId: Int, @Bind submitterId: Int): DbSubmissionSubmitterDto
-
-    @SqlQuery("DELETE FROM $table WHERE $submissionId = :submissionId RETURNING *")
-    fun deleteAllBySubmissionId(submissionId: Int): ResultIterable<DbSubmissionSubmitterDto>
 }
 
 data class SubmissionSubmitterParam(

@@ -23,15 +23,4 @@ interface RestaurantCuisineDao {
             @BindBeanList(propertyNames = [id, cuisineId])
             restaurantCuisineDtos: Collection<DbRestaurantCuisineDto>
     ): Collection<DbRestaurantCuisineDto>
-
-    @SqlQuery("DELETE FROM $table WHERE $id = :restaurantId RETURNING *")
-    fun deleteAllByRestaurantId(@Bind restaurantId: Int): ResultIterable<DbRestaurantCuisineDto>
-
-    @SqlQuery("DELETE FROM $table" +
-            " WHERE $id = :submission_id" +
-            " AND $cuisineId in (<cuisineIds>) RETURNING *")
-    fun deleteAllByRestaurantIdAndCuisineIds(
-            @Bind restaurantSubmissionId: Int,
-            @BindList cuisineIds: List<Int>
-    ): ResultIterable<DbRestaurantCuisineDto>
 }

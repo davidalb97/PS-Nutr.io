@@ -41,13 +41,4 @@ interface PortionDao {
             " WHERE $id = :portionIdentifier RETURNING *"
     )
     fun update(portionIdentifier: Int, quantity: Int): DbPortionDto
-
-    @SqlQuery("DELETE FROM $table WHERE $id = :submissionId RETURNING *")
-    fun deleteById(@Bind submissionId: Int): DbPortionDto
-
-    @SqlQuery("DELETE FROM $table" +
-            " WHERE $restaurantMealId in (<restaurantMealIds>) RETURNING *")
-    fun deleteAllByRestaurantMealIds(
-            @BindList restaurantMealIds: Collection<Int>
-    ): ResultIterable<DbPortionDto>
 }

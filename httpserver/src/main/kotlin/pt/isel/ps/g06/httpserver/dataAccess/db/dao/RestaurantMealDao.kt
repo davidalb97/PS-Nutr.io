@@ -40,9 +40,6 @@ interface RestaurantMealDao {
     @SqlQuery("UPDATE $table SET $verified = :verified WHERE $id = :submissionId  RETURNING *")
     fun updateRestaurantMealVerification(@Bind submissionId: Int, verified: Boolean): DbRestaurantMealDto
 
-    @SqlQuery("DELETE FROM $table WHERE $restaurantId = :restaurantId RETURNING *")
-    fun deleteAllByRestaurantId(@Bind restaurantId: Int): ResultIterable<DbRestaurantMealDto>
-
     @SqlQuery("DELETE FROM $table WHERE $id = :submissionId RETURNING *")
     fun deleteById(@Bind submissionId: Int): DbRestaurantMealDto
 }

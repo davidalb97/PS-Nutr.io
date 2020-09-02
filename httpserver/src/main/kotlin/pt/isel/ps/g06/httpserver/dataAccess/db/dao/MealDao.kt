@@ -171,9 +171,6 @@ interface MealDao {
             @Bind mealType: String
     ): DbMealDto
 
-    @SqlQuery("DELETE FROM $table WHERE $id = :submissionId RETURNING *")
-    fun delete(@Bind submissionId: Int): DbMealDto
-
     @SqlQuery("SELECT $attributes " +
             "FROM $table " +
             "WHERE $table.$meal_type = :mealType " +

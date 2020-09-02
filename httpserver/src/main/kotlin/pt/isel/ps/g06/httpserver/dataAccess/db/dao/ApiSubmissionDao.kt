@@ -63,10 +63,6 @@ interface ApiSubmissionDao {
     @SqlQuery("INSERT INTO $table($submissionId, $apiId)" +
             " VALUES(:submissionId, :apiId) RETURNING *")
     fun insert(@Bind submissionId: Int, apiId: String): DbApiSubmissionDto
-
-
-    @SqlQuery("DELETE FROM $table WHERE $submissionId = :submissionId RETURNING *")
-    fun deleteById(submissionId: Int): DbApiSubmissionDto
 }
 
 data class ApiSubmissionParam(

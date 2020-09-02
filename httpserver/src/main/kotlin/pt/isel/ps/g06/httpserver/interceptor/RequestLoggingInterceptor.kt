@@ -24,6 +24,9 @@ class LoggerInterceptor : HandlerInterceptor {
             ex: Exception?
     ) {
         super.afterCompletion(request, response, handler, ex)
-        log.info("${request.method} ${request.requestURI} status: ${response.status}")
+
+        if(ex != null) {
+            log.error("${request.method} '${request.requestURI}' status: ${response.status}", ex)
+        } else log.info("${request.method} '${request.requestURI}' status: ${response.status}")
     }
 }

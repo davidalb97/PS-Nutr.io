@@ -37,16 +37,8 @@ interface MealCuisineDao {
 
     @SqlQuery("INSERT INTO $table($mealId, $cuisineId) values <mealCuisineDtos> RETURNING *")
     fun insertAll(@BindBeanList(propertyNames = [mealId, cuisineId])
-                  mealCuisineDtos: List<DbMealCuisineDto>): ResultIterable<DbMealCuisineDto>
+                  mealCuisineDtos: List<DbMealCuisineDto>): Collection<DbMealCuisineDto>
 
     @SqlQuery("DELETE FROM $table WHERE $mealId = :submissionId RETURNING *")
-    fun deleteAllByMealId(@Bind submissionId: Int): ResultIterable<DbMealCuisineDto>
-
-    @SqlQuery("DELETE FROM $table" +
-            " WHERE $mealId = :submissionId" +
-            " AND $cuisineId in (<cuisineIds>) RETURNING *")
-    fun deleteAllByMealIdAndCuisineIds(
-            @Bind submissionId: Int,
-            @BindList cuisineIds: Collection<Int>
-    ): ResultIterable<DbMealCuisineDto>
+    fun deleteAllByMealId(@Bind submissionId: Int): Collection<DbMealCuisineDto>
 }

@@ -44,10 +44,10 @@ interface MealIngredientDao {
     fun insertAll(
             @BindBeanList(propertyNames = [mealId, ingredientId, quantity])
             mealIngredientParams: Collection<DbMealIngredientDto>
-    ): ResultIterable<DbMealIngredientDto>
+    ): Collection<DbMealIngredientDto>
 
     @SqlQuery("DELETE FROM $table WHERE $mealId = :submissionId RETURNING *")
-    fun deleteAllByMealId(submissionId: Int): ResultIterable<DbMealIngredientDto>
+    fun deleteAllByMealId(submissionId: Int): Collection<DbMealIngredientDto>
 
     @SqlQuery("DELETE FROM $table" +
             " WHERE $mealId = :submissionId" +
@@ -55,5 +55,5 @@ interface MealIngredientDao {
     fun deleteAllByMealIdAndIngredientIds(
             @Bind submissionId: Int,
             @BindList deleteIngredientIds: Collection<Int>
-    ): ResultIterable<DbMealIngredientDto>
+    ): Collection<DbMealIngredientDto>
 }
