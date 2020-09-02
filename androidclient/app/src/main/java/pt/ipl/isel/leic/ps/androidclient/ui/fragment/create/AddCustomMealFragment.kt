@@ -22,6 +22,7 @@ import pt.ipl.isel.leic.ps.androidclient.ui.util.MealAmountSelector
 import pt.ipl.isel.leic.ps.androidclient.ui.util.Navigation
 import pt.ipl.isel.leic.ps.androidclient.ui.util.getDbId
 import pt.ipl.isel.leic.ps.androidclient.ui.util.units.DEFAULT_WEIGHT_UNIT
+import pt.ipl.isel.leic.ps.androidclient.ui.util.units.WeightUnits
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.meal.info.AddCustomMealViewModel
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.pick.CuisinePickViewModel
 
@@ -129,7 +130,10 @@ class AddCustomMealFragment : BaseAddMealFragment(), IRemainingPickSpinner, IReq
                 ctx = requireContext(),
                 layoutInflater = layoutInflater,
                 baseCarbs = 0.0F,
-                baseAmountGrams = viewModel.currentAdditionalAmount,
+                baseAmountGrams = currentWeightUnit.convert(
+                    WeightUnits.GRAMS,
+                    viewModel.currentAdditionalAmount
+                ),
                 mealUnit = currentWeightUnit,
                 hideCarbs = true
             ) { amountGrams: Float, _: Float ->
