@@ -31,9 +31,11 @@ open class MealInfoVMProviderFactory(
                         mealItem = mealItem,
                         ingredientActions = arguments?.getItemActions() ?: emptyList()
                     )
-                    else -> MealInfoViewModel(
-                        ingredientActions = arguments?.getItemActions() ?: emptyList()
-                    )
+                    //TODO remove if not needed
+//                    else -> MealInfoViewModel(
+//                        ingredientActions = arguments?.getItemActions() ?: emptyList()
+//                    )
+                    else -> throw UnsupportedOperationException("No meal passed to info ViewModel!")
                 }
             }
             else -> super.newViewModel(modelClass)

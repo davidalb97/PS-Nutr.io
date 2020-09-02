@@ -1,4 +1,4 @@
-package pt.ipl.isel.leic.ps.androidclient.ui.fragment.list.addMeal
+package pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant
 
 import android.app.AlertDialog
 import android.content.Intent
@@ -11,6 +11,7 @@ import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.app
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.db.InsulinCalculator
 import pt.ipl.isel.leic.ps.androidclient.data.model.InsulinProfile
+import pt.ipl.isel.leic.ps.androidclient.ui.fragment.BaseAddMealFragment
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.IRequiredTextInput
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.unit.IGlucoseUnitSpinner
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.CalculatorVMProviderFactory

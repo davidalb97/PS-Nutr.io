@@ -289,7 +289,7 @@ class MealDataSource(
         jwt: String
     ) {
         requestParser.request(
-            method = HTTPMethod.POST,
+            method = HTTPMethod.PUT,
             uri = Uri.Builder()
                 .scheme(SCHEME)
                 .encodedAuthority(ADDRESS_PORT)
