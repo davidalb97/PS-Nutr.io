@@ -136,7 +136,7 @@ class MealController(
         ).build()
     }
 
-    @PostMapping(MEAL)
+    @PutMapping(MEAL)
     fun editCustomMeal(
             @PathVariable(MEAL_ID_VALUE) mealId: Int,
             @Valid @RequestBody meal: MealInput,
