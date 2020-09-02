@@ -39,7 +39,7 @@ class MealAmountSelector(
         val alertDialogView = layoutInflater.inflate(R.layout.meal_amount_selector, null)
 
         carbsTextView = alertDialogView.findViewById(R.id.meal_amount_selector_meal_carbs)
-        if(hideCarbs) {
+        if (hideCarbs) {
             carbsTextView.visibility = View.GONE
         }
         amountTextView = alertDialogView.findViewById(R.id.meal_amount_selector_meal_amount)
@@ -72,7 +72,10 @@ class MealAmountSelector(
             .setPositiveButton("OK") { dialog, _ ->
                 dialog.dismiss()
 
-                val convertedAmount = getConvertedAmount(getCurrentAmount())
+                val convertedAmount = currentWeightUnit.convert(
+                    WeightUnits.GRAMS,
+                    getCurrentAmount()
+                )
                 val convertedCarbs = getConvertedCarbs(convertedAmount)
                 onOk(convertedAmount, convertedCarbs)
             }
@@ -81,10 +84,13 @@ class MealAmountSelector(
     }
 
     private fun getCurrentAmount(): Float {
-        return percentageToAmount(currentWeightUnit, conversionPercentage ?: seekBar.progress.toFloat())
+        return percentageToAmount(
+            currentWeightUnit,
+            conversionPercentage ?: seekBar.progress.toFloat()
+        )
     }
 
-    private fun getConvertedAmount(currentAmount: Float): Float {
+    private fun toMealUnit(currentAmount: Float): Float {
         return currentWeightUnit.convert(mealUnit, currentAmount)
     }
 
@@ -97,7 +103,7 @@ class MealAmountSelector(
 
         carbsTextView.text = String.format(
             ctx.getString(R.string.meal_carbs_amout),
-            getConvertedCarbs(getConvertedAmount(currentAmount))
+            getConvertedCarbs(toMealUnit(currentAmount))
         )
         amountTextView.text = String.format(
             ctx.getString(R.string.meal_amout),
@@ -106,7 +112,10 @@ class MealAmountSelector(
     }
 
     override fun onWeightUnitChange(converter: (Float) -> Float) {
-        val oldValue = percentageToAmount(previousWeightUnit, conversionPercentage ?: seekBar.progress.toFloat())
+        val oldValue = percentageToAmount(
+            previousWeightUnit,
+            conversionPercentage ?: seekBar.progress.toFloat()
+        )
         val convertedValue = converter(oldValue)
         logger.v("Converting from $oldValue $previousWeightUnit to $convertedValue $currentWeightUnit")
         conversionPercentage = amountToPercentage(currentWeightUnit, convertedValue)
