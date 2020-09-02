@@ -13,19 +13,21 @@ interface IBarChart {
     val chartId: Int
     var chart: BarChart
     var noDataText: String?
-    var dataSets: ArrayList<IBarDataSet>
 
     fun setupChart(view: View, values: Collection<BarEntry>) {
         chart = view.findViewById(R.id.portion_chart)
         if (values.isEmpty()) {
             chart.setNoDataText(noDataText)
         } else {
-            chartConfig(values)
+            setupChartSettings(values)
+            setupChartData(values)
         }
-        invalidateChart()
+        refreshChart()
     }
 
-    fun chartConfig(values: Collection<BarEntry>)
+    fun setupChartSettings(values: Collection<BarEntry>)
+
+    fun setupChartData(values: Collection<BarEntry>)
 
     fun BarChart.setXAxisGranularity(value: Float): BarChart {
         chart.xAxis.granularity = value
@@ -79,5 +81,8 @@ interface IBarChart {
         chart.data = barData
     }
 
-    fun invalidateChart() = chart.invalidate()
+    fun refreshChart() {
+        chart.notifyDataSetChanged()
+        chart.invalidate()
+    }
 }

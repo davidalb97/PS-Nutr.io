@@ -79,13 +79,10 @@ class MealInfoFragment :
     override lateinit var menuButton: ImageButton
     override val chartId: Int = R.id.portion_chart
     override lateinit var chart: BarChart
-    override var noDataText: String? =
-        app.getString(R.string.no_portions_chart_message)
-    override var dataSets: ArrayList<IBarDataSet> =
-        arrayListOf()
+    override var noDataText: String? = app.getString(R.string.no_portions_chart_message)
 
-    lateinit var addPortionLayout: RelativeLayout
-    lateinit var editPortionLayout: RelativeLayout
+    private lateinit var addPortionLayout: RelativeLayout
+    private lateinit var editPortionLayout: RelativeLayout
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -167,7 +164,6 @@ class MealInfoFragment :
                     userSession = requireUserSession(),
                     onSuccess = { status ->
                         Toast.makeText(app, "Added portion", Toast.LENGTH_SHORT).show()
-                        recyclerViewModel.update()
                     },
                     onError = { error ->
                         Toast.makeText(app, "Could not add the portion", Toast.LENGTH_SHORT)
@@ -182,12 +178,13 @@ class MealInfoFragment :
         val editPortionButton: Button = view.findViewById(R.id.edit_portion_button)
         addPortionLayout.visibility = View.GONE
         editPortionLayout.visibility = View.VISIBLE
+        val baseAmount = receivedMeal.portions!!.userPortion!!
         editPortionButton.setOnClickListener {
             MealAmountSelector(
                 ctx = requireContext(),
                 layoutInflater = layoutInflater,
                 baseCarbs = receivedMeal.carbs.toFloat(),
-                baseAmountGrams = receivedMeal.portions!!.userPortion!!,
+                baseAmountGrams = baseAmount,
                 mealUnit = WeightUnits.fromValue(sharedPreferences.getWeightUnitOrDefault())
             ) { preciseGrams, preciseCarbs ->
                 recyclerViewModel.editMealPortion(
@@ -199,7 +196,7 @@ class MealInfoFragment :
                     ),
                     userSession = requireUserSession(),
                     onSuccess = { status ->
-                        Toast.makeText(app, "Added portion", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(app, "Edited portion", Toast.LENGTH_SHORT).show()
                         recyclerViewModel.update()
                     },
                     onError = { error ->
@@ -224,7 +221,6 @@ class MealInfoFragment :
                         "Your portion submission was deleted!",
                         Toast.LENGTH_SHORT
                     ).show()
-                    recyclerViewModel.update()
                 },
                 onError = { error ->
                     Toast.makeText(
@@ -237,14 +233,7 @@ class MealInfoFragment :
         }
     }
 
-    override fun chartConfig(values: Collection<BarEntry>) {
-
-        // Setup BarChart's data set
-        val graphDataSet = BarDataSet(values.toList(), "Portions")
-        dataSets.add(graphDataSet)
-        val barData = BarData(dataSets)
-
-        // Setup BarChart's properties
+    override fun setupChartSettings(values: Collection<BarEntry>) {
         chart
             .setXAxisGranularity(10f)
             .setYAxisGranularity(1f)
@@ -255,7 +244,14 @@ class MealInfoFragment :
             .setXAxisPosition(XAxis.XAxisPosition.BOTTOM)
             .setYAnimationTime(1000)
             .setChartDescription(false)
-            .setupBarData(barData)
+    }
+
+    override fun setupChartData(values: Collection<BarEntry>) {
+        val dataSets: ArrayList<IBarDataSet> = arrayListOf()
+        val graphDataSet = BarDataSet(values.toList(), "Portions")
+        dataSets.add(graphDataSet)
+        val barData = BarData(dataSets)
+        chart.setupBarData(barData)
     }
 
     override fun onEdit(onSuccess: () -> Unit) {
