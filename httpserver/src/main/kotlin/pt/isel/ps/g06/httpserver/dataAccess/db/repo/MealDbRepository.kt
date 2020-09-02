@@ -1,5 +1,6 @@
 package pt.isel.ps.g06.httpserver.dataAccess.db.repo
 
+import org.jdbi.v3.core.Handle
 import org.springframework.stereotype.Repository
 import pt.isel.ps.g06.httpserver.common.exception.problemJson.badRequest.InvalidInputException
 import pt.isel.ps.g06.httpserver.dataAccess.db.MEAL_TYPE_SUGGESTED_INGREDIENT
@@ -129,14 +130,10 @@ class MealDbRepository(private val databaseContext: DatabaseContext, private val
         return databaseContext.inTransaction {
             //Validate given ingredients to see if they are all in the database
             //TODO See if eager call is possible to avoid
-            val databaseIngredients = it
-                    .attach(MealDao::class.java)
-                    .getAllIngredientsByIds(ingredients.map { ingredient -> ingredient.identifier!! })
-                    .toList()
-
-            if (databaseIngredients.size != ingredients.size) {
-                throw InvalidInputException("Not all ingredients belong to the database!")
-            }
+            val databaseIngredients = requireIngredientsById(
+                    it,
+                    ingredients.map { ingredient -> ingredient.identifier!! }
+            )
 
             //Insert submission
             val mealSubmissionId = it.attach(SubmissionDao::class.java)
@@ -188,6 +185,17 @@ class MealDbRepository(private val databaseContext: DatabaseContext, private val
         }
     }
 
+    private fun requireIngredientsById(handle: Handle, ingredientIds: Collection<Int>): List<DbMealDto> {
+        val databaseIngredients = handle
+                .attach(MealDao::class.java)
+                .getAllIngredientsByIds(ingredientIds)
+                .toList()
+
+        if (databaseIngredients.size != ingredientIds.size) {
+            throw InvalidInputException("Not all ingredients belong to the database!")
+        }
+        return databaseIngredients
+    }
 
     //TODO Remove this and use 'carbsTool'
     private fun getCarbsForInputQuantity(dbIngredientDto: DbMealDto, ingredientInput: IngredientInput): Float {
