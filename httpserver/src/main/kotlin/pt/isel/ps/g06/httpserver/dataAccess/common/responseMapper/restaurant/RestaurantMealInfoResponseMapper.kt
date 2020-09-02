@@ -55,7 +55,8 @@ class DbRestaurantMealInfoResponseMapper(
                 },
                 isFavorable = toUserPredicate(default = { true }) { userId ->
                     //A user cannot favorite on it's own submission
-                    dto.submission_id?.let { !submissionDbRepository.isSubmissionOwner(it, userId) } ?: true
+                    dto.submission_id?.let { !submissionDbRepository.isSubmissionOwner(it, userId) }
+                            ?: !submissionDbRepository.isSubmissionOwner(dto.meal_submission_id, userId)
                 },
                 isFavorite = toUserPredicate(default = { false }) { userId ->
                     dto.submission_id?.let { dbFavoriteRepo.getFavorite(it, userId) } ?: false
