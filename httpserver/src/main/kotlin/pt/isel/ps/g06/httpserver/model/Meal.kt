@@ -28,7 +28,7 @@ class Meal(
         identifier = identifier,
         name = name,
         image = image,
-        isFavorable = { submitterInfo.value?.identifier == it ?: true },
+        isFavorable = { submitterInfo.value?.identifier != it ?: true },
         isFavorite = isFavorite
 ), INutritionalSubmission, ICuisines {
 
