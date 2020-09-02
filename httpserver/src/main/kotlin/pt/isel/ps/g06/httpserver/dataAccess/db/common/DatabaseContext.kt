@@ -13,7 +13,7 @@ class DatabaseContext(jdbi: Jdbi) {
     //TODO Unit test to verify if context is a singleton
     //TODO Remove prints after tests
     private val localHandle: ThreadLocal<Handle> = ThreadLocal.withInitial {
-        log.info("Open jdbi handle")
+        log.info("Opening JDBI Handle on Thread ${Thread.currentThread().id}")
         return@withInitial jdbi.open()
     }
     private val isOpen: ThreadLocal<Boolean> = ThreadLocal.withInitial { false }
@@ -21,13 +21,13 @@ class DatabaseContext(jdbi: Jdbi) {
     private val handle: Handle
         get() {
             //TODO Right now the starting thread is not closing the handle on API fetch call
-            log.info("Get handle with Thread ID {${Thread.currentThread().id}}")
+            //log.info("Get handle with Thread ID {${Thread.currentThread().id}}")
             if (!isOpen.get()) isOpen.set(true)
             return localHandle.get()
         }
 
     fun close() {
-        log.info("Handle closing on Thread ${Thread.currentThread().id}")
+        log.info("Closing JDBI Handle on Thread ${Thread.currentThread().id}")
         localHandle.get().close()
         localHandle.remove()
         isOpen.remove()
@@ -50,6 +50,7 @@ class DatabaseContext(jdbi: Jdbi) {
 
             } catch (e: Exception) {
                 handle.rollback()
+                throw e
             }
         }
 
