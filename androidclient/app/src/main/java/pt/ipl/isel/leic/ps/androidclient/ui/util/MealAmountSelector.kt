@@ -3,6 +3,7 @@ package pt.ipl.isel.leic.ps.androidclient.ui.util
 import android.app.AlertDialog
 import android.content.Context
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.SeekBar
 import android.widget.Spinner
 import android.widget.TextView
@@ -18,6 +19,7 @@ class MealAmountSelector(
     val baseCarbs: Float,
     val baseAmountGrams: Float,
     val mealUnit: WeightUnits,
+    hideCarbs: Boolean = false,
     onOk: (amountGrams: Float, carbs: Float) -> Unit
 ) : IWeightUnitSpinner {
 
@@ -37,6 +39,9 @@ class MealAmountSelector(
         val alertDialogView = layoutInflater.inflate(R.layout.meal_amount_selector, null)
 
         carbsTextView = alertDialogView.findViewById(R.id.meal_amount_selector_meal_carbs)
+        if(hideCarbs) {
+            carbsTextView.visibility = View.GONE
+        }
         amountTextView = alertDialogView.findViewById(R.id.meal_amount_selector_meal_amount)
         seekBar = alertDialogView.findViewById(R.id.meal_amount_selector_seekBar)
         spinner = alertDialogView.findViewById(R.id.meal_amount_selector_spinner)

@@ -204,7 +204,7 @@
     <string name="user_info_error">Could not get user info</string>
     <string name="custom_meal_optional_txt">(optional)</string>
     <string name="select_ingredient_amount">Select amount</string>
-    <string name="meal_carbs_amout">Carbohydrates: %1$.2f grams</string>
+    <string name="meal_carbs_amout">Carbohydrates: %1$.2f gr</string>
     <string name="meal_amout">Amount: %1$.2f</string>
     <string name="select_meal_amount">Select meal amount</string>
     <string name="created_restaurant">Restaurant created!</string>

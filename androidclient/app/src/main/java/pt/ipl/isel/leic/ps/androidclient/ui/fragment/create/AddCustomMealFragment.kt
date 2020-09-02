@@ -126,11 +126,12 @@ class AddCustomMealFragment : BaseAddMealFragment(), IRemainingPickSpinner, IReq
         addAdditionalAmountImageButton = view.findViewById(R.id.add_custom_meal_add_amount_btn)
         addAdditionalAmountImageButton.setOnClickListener {
             MealAmountSelector(
-                requireContext(),
-                layoutInflater,
-                0.0F,
-                viewModel.currentAdditionalAmount,
-                currentWeightUnit,
+                ctx = requireContext(),
+                layoutInflater = layoutInflater,
+                baseCarbs = 0.0F,
+                baseAmountGrams = viewModel.currentAdditionalAmount,
+                mealUnit = currentWeightUnit,
+                hideCarbs = true
             ) { amountGrams: Float, _: Float ->
                 viewModel.currentAdditionalAmount = DEFAULT_WEIGHT_UNIT.convert(
                     targetUnit = currentWeightUnit,
