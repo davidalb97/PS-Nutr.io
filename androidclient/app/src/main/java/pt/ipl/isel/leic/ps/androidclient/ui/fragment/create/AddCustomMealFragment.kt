@@ -74,7 +74,8 @@ class AddCustomMealFragment : BaseAddMealFragment(), IRemainingPickSpinner, IReq
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        if (viewModel.mealItem != null) {
+        //If it is editing meal and it is not the first time loading the fragment
+        if (viewModel.mealItem != null && viewModel.mealInfo == null) {
             viewModel.observeInfo(this) { editMeal ->
                 viewModel.removeObservers(this)
 
