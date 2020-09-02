@@ -47,11 +47,9 @@ class RestaurantService(
         val restaurantApi = restaurantApiMapper.getRestaurantApi(type)
 
         //Get API restaurants
-        val apiRestaurants =
-                restaurantApi.searchNearbyRestaurants(latitude, longitude, chosenRadius, name, skip, count)
-                        .thenApply {
-                            it.map(restaurantResponseMapper::mapTo)
-                        }
+        val apiRestaurants = restaurantApi
+                .searchNearbyRestaurants(latitude, longitude, chosenRadius, name, skip, count)
+                .thenApply { it.map(restaurantResponseMapper::mapTo) }
 
         //TODO Build API Restaurants Stream from Completable Future
         return dbRestaurantRepository.getAllByCoordinates(latitude, longitude, chosenRadius)
@@ -181,15 +179,19 @@ class RestaurantService(
             dbRestaurants: Stream<Restaurant>,
             apiRestaurants: Stream<Restaurant>
     ): Stream<Restaurant> {
+        //TODO Avoid eager call or maybe cache values with a stream cache implementation
+        val aux = dbRestaurants.toList()
+
         //Filter api restaurants that already exist in db
         val filteredApiRestaurants = apiRestaurants.filter { apiRestaurant ->
             //Db does not contain a restaurant with the api identifier
-            dbRestaurants.noneMatch { dbRestaurant ->
+            aux.none { dbRestaurant ->
                 apiRestaurant.identifier.value.apiId == dbRestaurant.identifier.value.apiId
             }
         }
 
-        return Stream.concat(dbRestaurants, filteredApiRestaurants)
+        //TODO Avoid eager call or maybe cache values with a stream cache implementation
+        return Stream.concat(aux.stream(), filteredApiRestaurants)
     }
 
     private fun searchApiRestaurant(apiSubmitterId: Int, apiId: String, apiType: RestaurantApiType): RestaurantDto? {
