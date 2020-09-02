@@ -421,12 +421,63 @@ drawer menu and accessing the slide screen with the bottom bar.\\
 Here's the login and register workflow:
 
 \textbf{Workflow diagram}
+\textbf{TODO: add image}
 
 \subsubsection{Insulin profiles' creation and access}
 
+\textbf{TODO: add image}
+\begin{figure}[H]
+    \begin{center}
+        \begin{subfigure}{.3\textwidth}
+            \includegraphics[scale=0.1]{_figures/addProfile.png}
+            \caption{The fragment to add an insulin profile} 
+        \end{subfigure}
+    \end{center}
+\end{figure}
+
+The user can map its day with insulin profiles, specifying for a certain timespan its glucose objective, insulin sensitivity and carbohydrates sensitivity, as this parameters
+change along the day.\\
+
+When creating insulin profiles, the user must know that a profile's time period can not overlap another and that the time mapping must be done from 00h00 to 23h59, meaning that
+the end time can not be before the start time.
+
 \subsubsection{Searching for restaurants and meals}
 
+The user can search for restaurant in two ways:
+\begin{itemize}
+    \item By accessing 'Map view' inside the Restaurant Box, which will display a list of nearby restaurants along with a map;
+    \item By accessing 'By name' inside the Restaurant Box, which will only display a list of restaurants which are also based
+    on geolocation.
+\end{itemize}
+
+\textbf{TODO: add image}
+
+The user can also access available meals by accessing 'By name' inside the Meals box, which will display a tab menu with the
+platform's suggested meals and meals' ingredients.
+
+\textbf{TODO: add image}
+
 \subsubsection{Using the insulin calculator}
+
+To use this feature, the user must create at least one insulin profile which time period matches the current time. If the user does not have a valid insulin profile for the current
+time, the profile information in this fragment will appear with blank fields.\\
+
+\textbf{TODO: add image}
+
+Having a valid insulin profile, the user must measure its current blood glucose value and select a meal by pressing the plus green button.
+When this button is pressed, a tab menu will appear where the user can add:
+\begin{itemize}
+    \item user's custom meals;
+    \item user's favorite meals
+    \item ingredients from meals;
+    \item suggested meals; 
+\end{itemize}
+
+\textbf{TODO: add image}
+
+After these steps, the user is ready to calculate the insulin dosage that corresponds consuming the select meals, with its current blood glocuse for its current time.
+
+\textbf{TODO: add image}
 
 \section{Web browser application}
 
