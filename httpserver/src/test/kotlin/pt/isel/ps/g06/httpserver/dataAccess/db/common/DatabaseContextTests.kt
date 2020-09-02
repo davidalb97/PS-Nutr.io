@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.stereotype.Component
+import java.util.concurrent.CompletableFuture
 
 @SpringBootTest
 class DatabaseContextTests {
@@ -50,6 +51,17 @@ class DatabaseContextTests {
         //Simulate another transaction work
         databaseContext.inTransaction { }
         Assert.assertEquals(1, databaseContext.timesOpened)
+    }
+
+    @Test
+    fun `different threads should open different database handles`() {
+        val first = CompletableFuture.runAsync { databaseContext.inTransaction { } }
+        val second = CompletableFuture.runAsync { databaseContext.inTransaction { } }
+
+        first.get()
+        second.get()
+
+        Assert.assertEquals(2, databaseContext.timesOpened)
     }
 }
 
