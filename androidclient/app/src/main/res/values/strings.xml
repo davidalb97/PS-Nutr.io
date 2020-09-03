@@ -223,4 +223,10 @@
     <string name="created_custom_meal">Meal created!</string>
     <string name="edited_custom_meal">Meal saved!</string>
     <string name="submit_fail_custom_meal">Submission failed!</string>
+    <string name="portion_added">Portion added</string>
+    <string name="portion_add_fail">Could not add portion</string>
+    <string name="portion_edited">Portion edited</string>
+    <string name="portion_edit_fail">Could not edit portion</string>
+    <string name="portion_deleted">Portion deleted</string>
+    <string name="portion_delete_fail">Could not delete portion</string>
 </resources>

@@ -233,7 +233,7 @@ class MealInfoFragment :
 
     private fun onAddPortion(amount: Float, status: Int? = null, exception: Exception? = null) {
         if (exception == null) {
-            Toast.makeText(app, "Portion added", Toast.LENGTH_SHORT).show()
+            Toast.makeText(app, R.string.portion_added, Toast.LENGTH_SHORT).show()
             addPortionLayout.visibility = View.GONE
             editPortionLayout.visibility = View.VISIBLE
 
@@ -241,26 +241,26 @@ class MealInfoFragment :
             fillPortionGraphData()
             refreshChart()
         } else {
-            Toast.makeText(app, "Could not add portion", Toast.LENGTH_SHORT).show()
+            Toast.makeText(app, R.string.portion_add_fail, Toast.LENGTH_SHORT).show()
         }
     }
 
     private fun onEditPortion(amount: Float, status: Int? = null, exception: Exception? = null) {
         if (exception == null) {
-            Toast.makeText(app, "Portion edited", Toast.LENGTH_SHORT).show()
+            Toast.makeText(app, R.string.portion_edited, Toast.LENGTH_SHORT).show()
 
             deletePortionFromGraph()
             addPortionToGraph(amount)
             fillPortionGraphData()
             refreshChart()
         } else {
-            Toast.makeText(app, "Could not edit portion", Toast.LENGTH_SHORT).show()
+            Toast.makeText(app, R.string.portion_edit_fail, Toast.LENGTH_SHORT).show()
         }
     }
 
     private fun onDeletePortion(status: Int? = null, exception: Exception? = null) {
         if (exception == null) {
-            Toast.makeText(app, "Portion deleted", Toast.LENGTH_SHORT).show()
+            Toast.makeText(app, R.string.portion_deleted, Toast.LENGTH_SHORT).show()
             editPortionLayout.visibility = View.GONE
             addPortionLayout.visibility = View.VISIBLE
 
@@ -273,7 +273,7 @@ class MealInfoFragment :
                 refreshChart()
             }
         } else {
-            Toast.makeText(app, "Could not delete portion", Toast.LENGTH_SHORT).show()
+            Toast.makeText(app, R.string.portion_delete_fail, Toast.LENGTH_SHORT).show()
         }
     }
 
