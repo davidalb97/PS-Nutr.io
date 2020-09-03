@@ -26,7 +26,6 @@ class RestaurantInfoViewModel : MealItemListViewModel {
             ItemAction.FAVORITE,
             ItemAction.CALCULATE,
             ItemAction.REPORT,
-            ItemAction.EDIT,
             ItemAction.VOTE
         ),
         source = Source.API,
