@@ -83,6 +83,8 @@ class MealInfoFragment :
 
     private lateinit var addPortionLayout: RelativeLayout
     private lateinit var editPortionLayout: RelativeLayout
+    private lateinit var portionEntries: MutableList<BarEntry>
+    private var userPortionEntry: BarEntry? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -97,41 +99,19 @@ class MealInfoFragment :
     }
 
     private fun setupView(view: View, receivedMeal: MealInfo) {
+
         super.setupImage(view, receivedMeal.imageUri)
-
-        if (receivedMeal.votes?.isVotable == true) {
-            super.setupVoteBarCounters(
-                view,
-                receivedMeal.votes,
-                true
-            )
-            super.setupVoteButtons(view, true)
-        }
-
+        val isVotable = receivedMeal.votes?.isVotable ?: false
+        super.setupVoteBarCounters(view, receivedMeal.votes, isVotable)
+        super.setupVoteButtons(view, true)
         super.setupFavoriteButton(view, receivedMeal.favorites.isFavorable)
         super.setupCalculateAction(view)
         super.setupReportMenuItem(receivedMeal.isReportable ?: false)
         super.setupEditMenuItem()
         super.setupPopupMenuButton(view)
-
-        val amountMap: HashMap<Float, Int> = hashMapOf()
-        val portionEntries =
-            receivedMeal.portions?.allPortions?.map { amount ->
-                amountMap[amount]?.inc() ?: amountMap.put(amount, 1)
-                BarEntry(amount, amountMap[amount]!!.toFloat())
-            } ?: emptyList()
+        setupPortionEntries(receivedMeal)
         super.setupChart(view, portionEntries)
-
-        addPortionLayout = view.findViewById(R.id.add_portion_layout)
-        editPortionLayout = view.findViewById(R.id.edit_portion_layout)
-
-        // If the current user has not any portion added to this meal
-        if (receivedMeal.portions?.userPortion == null) {
-            setupAddPortion(view, receivedMeal)
-        } else { // If the user already added a portion to this meal can now only edit or delete it
-            setupEditPortion(view, receivedMeal)
-            setupDeletePortion(view, receivedMeal)
-        }
+        setupPortionButtons(view, receivedMeal)
 
         val title: TextView = view.findViewById(R.id.meal_detail_title)
         title.text = receivedMeal.name
@@ -142,10 +122,41 @@ class MealInfoFragment :
         }
     }
 
+    private fun setupPortionEntries(receivedMeal: MealInfo) {
+        val amountMap: HashMap<Float, Int> = hashMapOf()
+        receivedMeal.portions?.allPortions?.forEach { amount ->
+            amountMap[amount]?.inc() ?: amountMap.put(amount, 1)
+        }
+        portionEntries = amountMap.map {
+            BarEntry(it.key, it.value.toFloat())
+        }.toMutableList()
+
+        val userPortion = receivedMeal.portions?.userPortion
+        if (userPortion != null) {
+            userPortionEntry = portionEntries.firstOrNull { it.x == userPortion }
+        }
+    }
+
+    private fun setupPortionButtons(view: View, receivedMeal: MealInfo) {
+        addPortionLayout = view.findViewById(R.id.add_portion_layout)
+        editPortionLayout = view.findViewById(R.id.edit_portion_layout)
+
+        setupAddPortion(view, receivedMeal)
+        setupEditPortion(view, receivedMeal)
+        setupDeletePortion(view, receivedMeal)
+
+        // If the current user has not any portion added to this meal
+        if (receivedMeal.portions?.userPortion == null) {
+            addPortionLayout.visibility = View.VISIBLE
+        }
+        // If the user already added a portion to this meal can now only edit or delete it
+        else {
+            editPortionLayout.visibility = View.VISIBLE
+        }
+    }
+
     private fun setupAddPortion(view: View, receivedMeal: MealInfo) {
         val addPortionButton: ImageButton = view.findViewById(R.id.add_portion_button)
-        addPortionLayout.visibility = View.VISIBLE
-        editPortionLayout.visibility = View.GONE
         addPortionButton.setOnClickListener {
             MealAmountSelector(
                 ctx = requireContext(),
@@ -153,7 +164,7 @@ class MealInfoFragment :
                 baseCarbs = receivedMeal.carbs.toFloat(),
                 baseAmountGrams = receivedMeal.amount,
                 mealUnit = WeightUnits.fromValue(sharedPreferences.getWeightUnitOrDefault())
-            ) { preciseGrams, preciseCarbs ->
+            ) { preciseGrams, _ ->
                 recyclerViewModel.addMealPortion(
                     restaurantId = receivedMeal.restaurantSubmissionId,
                     mealId = receivedMeal.submissionId,
@@ -162,14 +173,8 @@ class MealInfoFragment :
                         sharedPreferences.getWeightUnitOrDefault()
                     ),
                     userSession = requireUserSession(),
-                    onSuccess = { status ->
-                        Toast.makeText(app, "Added portion", Toast.LENGTH_SHORT).show()
-                        recyclerViewModel.update()
-                    },
-                    onError = { error ->
-                        Toast.makeText(app, "Could not add the portion", Toast.LENGTH_SHORT)
-                            .show()
-                    }
+                    onSuccess = { status -> onAddPortion(preciseGrams, status) },
+                    onError = { error -> onAddPortion(preciseGrams, exception = error) }
                 )
             }
         }
@@ -177,17 +182,14 @@ class MealInfoFragment :
 
     private fun setupEditPortion(view: View, receivedMeal: MealInfo) {
         val editPortionButton: Button = view.findViewById(R.id.edit_portion_button)
-        addPortionLayout.visibility = View.GONE
-        editPortionLayout.visibility = View.VISIBLE
-        val baseAmount = receivedMeal.portions!!.userPortion!!
         editPortionButton.setOnClickListener {
             MealAmountSelector(
                 ctx = requireContext(),
                 layoutInflater = layoutInflater,
                 baseCarbs = receivedMeal.carbs.toFloat(),
-                baseAmountGrams = baseAmount,
+                baseAmountGrams = userPortionEntry!!.x,
                 mealUnit = WeightUnits.fromValue(sharedPreferences.getWeightUnitOrDefault())
-            ) { preciseGrams, preciseCarbs ->
+            ) { preciseGrams, _ ->
                 recyclerViewModel.editMealPortion(
                     restaurantId = receivedMeal.restaurantSubmissionId!!,
                     mealId = receivedMeal.submissionId!!,
@@ -196,14 +198,8 @@ class MealInfoFragment :
                         sharedPreferences.getWeightUnitOrDefault()
                     ),
                     userSession = requireUserSession(),
-                    onSuccess = { status ->
-                        Toast.makeText(app, "Edited portion", Toast.LENGTH_SHORT).show()
-                        recyclerViewModel.update()
-                    },
-                    onError = { error ->
-                        Toast.makeText(app, "Could not edit the portion", Toast.LENGTH_SHORT)
-                            .show()
-                    }
+                    onSuccess = { status -> onEditPortion(preciseGrams, status) },
+                    onError = { error -> onEditPortion(preciseGrams, exception = error) }
                 )
             }
         }
@@ -216,31 +212,18 @@ class MealInfoFragment :
                 restaurantId = receivedMeal.restaurantSubmissionId!!,
                 mealId = receivedMeal.submissionId!!,
                 userSession = requireUserSession(),
-                onSuccess = { status ->
-                    Toast.makeText(
-                        app,
-                        "Your portion submission was deleted!",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    recyclerViewModel.update()
-                },
-                onError = { error ->
-                    Toast.makeText(
-                        app,
-                        "Could not delete your submitted portion",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
+                onSuccess = { status -> onDeletePortion(status) },
+                onError = { error -> onDeletePortion(exception = error) }
             )
         }
     }
 
-    override fun setupChartSettings(values: Collection<BarEntry>) {
+    override fun setupChartSettings(entries: List<BarEntry>) {
         chart
             .setXAxisGranularity(10f)
             .setYAxisGranularity(1f)
             .setXAxisMin(0f)
-            .setXAxisMax(values.maxOf { it.x } + 10f)
+            .setXAxisMax(entries.maxOf { it.x } + 10f)
             .setXDrawGridLines(false)
             .setYDrawGridLines(false)
             .setXAxisPosition(XAxis.XAxisPosition.BOTTOM)
@@ -248,12 +231,83 @@ class MealInfoFragment :
             .setChartDescription(false)
     }
 
-    override fun setupChartData(values: Collection<BarEntry>) {
-        val dataSets: ArrayList<IBarDataSet> = arrayListOf()
-        val graphDataSet = BarDataSet(values.toList(), "Portions")
-        dataSets.add(graphDataSet)
-        val barData = BarData(dataSets)
-        chart.setupBarData(barData)
+    private fun onAddPortion(amount: Float, status: Int? = null, exception: Exception? = null) {
+        if (exception == null) {
+            Toast.makeText(app, "Portion added", Toast.LENGTH_SHORT).show()
+            addPortionLayout.visibility = View.GONE
+            editPortionLayout.visibility = View.VISIBLE
+
+            addPortionToGraph(amount)
+            fillPortionGraphData()
+            refreshChart()
+        } else {
+            Toast.makeText(app, "Could not add portion", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun onEditPortion(amount: Float, status: Int? = null, exception: Exception? = null) {
+        if (exception == null) {
+            Toast.makeText(app, "Portion edited", Toast.LENGTH_SHORT).show()
+
+            deletePortionFromGraph()
+            addPortionToGraph(amount)
+            fillPortionGraphData()
+            refreshChart()
+        } else {
+            Toast.makeText(app, "Could not edit portion", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun onDeletePortion(status: Int? = null, exception: Exception? = null) {
+        if (exception == null) {
+            Toast.makeText(app, "Portion deleted", Toast.LENGTH_SHORT).show()
+            editPortionLayout.visibility = View.GONE
+            addPortionLayout.visibility = View.VISIBLE
+
+            deletePortionFromGraph()
+
+            if (portionEntries.isEmpty()) {
+                chart.clear()
+            } else {
+                fillPortionGraphData()
+                refreshChart()
+            }
+        } else {
+            Toast.makeText(app, "Could not delete portion", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun addPortionToGraph(amount: Float) {
+        //If the user amount as already been selected by other users
+        userPortionEntry = portionEntries.firstOrNull {
+            it.x == amount
+        }
+        //Add first amount data
+        if (userPortionEntry == null) {
+            userPortionEntry = BarEntry(amount, 1.toFloat())
+            portionEntries.add(userPortionEntry!!)
+        } else {
+            userPortionEntry!!.y++
+        }
+    }
+
+    private fun deletePortionFromGraph() {
+        val oldPortion = userPortionEntry!!
+        oldPortion.y--
+        if (oldPortion.y == 0.0F) {
+            portionEntries.remove(oldPortion)
+        }
+    }
+
+    override fun setupChartData(entries: List<BarEntry>) {
+        val graphDataSet = BarDataSet(entries, "Portions")
+        val chartData = BarData(arrayListOf<IBarDataSet>(graphDataSet))
+        chart.setupBarData(chartData)
+    }
+
+    private fun fillPortionGraphData() {
+        setupChartSettings(portionEntries)
+        setupChartData(portionEntries)
     }
 
     override fun onEdit(onSuccess: () -> Unit) {
