@@ -14,14 +14,16 @@ class RestaurantRepository(private val dataSource: RestaurantDataSource) {
 
     private val inputVotesMapper = InputVotesMapper()
     private val inputFavoriteMapper = InputFavoriteMapper()
-    private val inputRestaurantItemMapper = InputRestaurantItemMapper(inputVotesMapper)
+    private val inputRestaurantItemMapper =
+        InputRestaurantItemMapper(inputVotesMapper, inputFavoriteMapper)
     private val inputMealInputMapper = InputMealItemMapper(inputVotesMapper, inputFavoriteMapper)
     private val inputCuisineInputMapper = InputCuisineMapper()
     private val votesInputMapper = InputVotesMapper()
     private val inputRestaurantInfoMapper = InputRestaurantInfoMapper(
         mealInputMapper = inputMealInputMapper,
         cuisineInputMapper = inputCuisineInputMapper,
-        votesInputMapper = votesInputMapper
+        votesInputMapper = votesInputMapper,
+        inputFavoriteMapper = inputFavoriteMapper
     )
     private val favoriteOutputMapper = OutputFavoriteMapper()
     private val voteOutputMapper = OutputVoteMapper()

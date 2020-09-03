@@ -89,9 +89,9 @@ class RestaurantInfoViewModel : MealItemListViewModel {
         val restaurantInfo = restaurantInfo!!
         restaurantRepository.changeFavorite(
             restaurantId = restaurantId!!,
-            isFavorite = !restaurantInfo.isFavorite,
+            isFavorite = !restaurantInfo.favorites.isFavorite,
             success = {
-                restaurantInfo.isFavorite = !restaurantInfo.isFavorite
+                restaurantInfo.favorites.isFavorite = !restaurantInfo.favorites.isFavorite
                 onSuccess()
             },
             error = onError,

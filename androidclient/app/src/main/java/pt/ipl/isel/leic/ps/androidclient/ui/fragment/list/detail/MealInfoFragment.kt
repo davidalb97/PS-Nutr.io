@@ -99,18 +99,18 @@ class MealInfoFragment :
     private fun setupView(view: View, receivedMeal: MealInfo) {
         super.setupImage(view, receivedMeal.imageUri)
 
-        if (receivedMeal.restaurantSubmissionId != null) {
+        if (receivedMeal.votes?.isVotable == true) {
             super.setupVoteBarCounters(
                 view,
                 receivedMeal.votes,
-                receivedMeal.votes?.isVotable ?: false
+                true
             )
-            super.setupVoteButtons(view, receivedMeal.votes?.isVotable ?: false)
+            super.setupVoteButtons(view, true)
         }
 
-        super.setupFavoriteButton(view)
+        super.setupFavoriteButton(view, receivedMeal.favorites.isFavorable)
         super.setupCalculateAction(view)
-        super.setupReportMenuItem()
+        super.setupReportMenuItem(receivedMeal.isReportable ?: false)
         super.setupEditMenuItem()
         super.setupPopupMenuButton(view)
 
@@ -164,6 +164,7 @@ class MealInfoFragment :
                     userSession = requireUserSession(),
                     onSuccess = { status ->
                         Toast.makeText(app, "Added portion", Toast.LENGTH_SHORT).show()
+                        recyclerViewModel.update()
                     },
                     onError = { error ->
                         Toast.makeText(app, "Could not add the portion", Toast.LENGTH_SHORT)
@@ -221,6 +222,7 @@ class MealInfoFragment :
                         "Your portion submission was deleted!",
                         Toast.LENGTH_SHORT
                     ).show()
+                    recyclerViewModel.update()
                 },
                 onError = { error ->
                     Toast.makeText(

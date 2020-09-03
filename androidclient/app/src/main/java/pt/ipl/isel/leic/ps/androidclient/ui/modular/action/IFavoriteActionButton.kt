@@ -16,10 +16,10 @@ interface IFavoriteActionButton : IContext, IAction, IUserSession, ILog {
 
     fun onFavorite(onSuccess: () -> Unit, onError: (Throwable) -> Unit)
 
-    fun setupFavoriteButton(view: View) {
+    fun setupFavoriteButton(view: View, isFavorable: Boolean) {
         favoriteButton = view.findViewById(favoriteButtonId)
 
-        if (!actions.contains(ItemAction.FAVORITE)) {
+        if (!actions.contains(ItemAction.FAVORITE) || !isFavorable) {
             return
         }
         val ctx = fetchCtx()

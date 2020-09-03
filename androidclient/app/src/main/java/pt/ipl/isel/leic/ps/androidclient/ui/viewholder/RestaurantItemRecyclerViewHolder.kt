@@ -53,9 +53,9 @@ abstract class RestaurantItemRecyclerViewHolder(
 
         restaurantName.text = item.name
         super.setupImage(view, item.image)
-        super.setupVoteBarCounters(view, item.votes, item.isVotable)
-        super.setupFavoriteButton(view)
-        super.setupReportMenuItem()
+        super.setupVoteBarCounters(view, item.votes, item.votes.isVotable)
+        super.setupFavoriteButton(view, item.favorites.isFavorable)
+        super.setupReportMenuItem(item.isReportable)
         super.setupPopupMenuButton(view)
     }
 
@@ -65,5 +65,5 @@ abstract class RestaurantItemRecyclerViewHolder(
         bundle.putRestaurantItem(item)
     }
 
-    override fun isFavorite(): Boolean = item.isFavorite
+    override fun isFavorite(): Boolean = item.favorites.isFavorite
 }
