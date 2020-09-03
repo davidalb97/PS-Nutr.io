@@ -1,6 +1,7 @@
 package pt.isel.ps.g06.httpserver.service
 
 import org.springframework.stereotype.Service
+import pt.isel.ps.g06.httpserver.common.exception.problemJson.notFound.MissingInsulinProfileException
 import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.InsulinProfileResponseMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.InsulinProfileDbRepository
 import pt.isel.ps.g06.httpserver.model.InsulinProfile
@@ -14,11 +15,14 @@ class InsulinProfileService(
 
     fun getAllProfilesFromUser(submitterId: Int, count: Int?, skip: Int?): Sequence<InsulinProfile> {
         return insulinProfileDbRepository.getAllFromUser(submitterId, count, skip)
-                .map(insulinProfileMapper::mapToModel)
+                .map(insulinProfileMapper::mapTo)
     }
 
-    fun getProfileFromUser(submitterId: Int, profileName: String): InsulinProfile =
-            insulinProfileMapper.mapToModel(insulinProfileDbRepository.getFromUser(submitterId, profileName))
+    fun getProfileFromUser(submitterId: Int, profileName: String): InsulinProfile {
+        return insulinProfileDbRepository.getFromUser(submitterId, profileName)
+                ?.let(insulinProfileMapper::mapTo)
+                ?: throw MissingInsulinProfileException(profileName)
+    }
 
     fun createProfile(
             submitterId: Int,
@@ -29,7 +33,7 @@ class InsulinProfileService(
             insulinSensitivityFactor: Int,
             carbohydrateRatio: Int
     ): InsulinProfile {
-        return insulinProfileMapper.mapToModel(
+        return insulinProfileMapper.mapTo(
                 insulinProfileDbRepository.insertProfile(
                         submitterId,
                         profileName,
@@ -43,6 +47,7 @@ class InsulinProfileService(
     }
 
     fun deleteProfile(submitterId: Int, profileName: String) {
+        //TODO Get insulin profile before deleting it
         insulinProfileDbRepository.deleteProfile(submitterId, profileName)
     }
 

@@ -9,18 +9,18 @@ import pt.isel.ps.g06.httpserver.common.exception.problemJson.forbidden.BaseForb
 import pt.isel.ps.g06.httpserver.common.exception.problemJson.forbidden.NotSubmissionOwnerException
 import pt.isel.ps.g06.httpserver.common.exception.problemJson.notFound.MealNotFoundException
 import pt.isel.ps.g06.httpserver.common.exception.problemJson.notFound.RestaurantNotFoundException
-import pt.isel.ps.g06.httpserver.dataAccess.input.userActions.FavoriteInput
+import pt.isel.ps.g06.httpserver.dataAccess.input.moderation.VerifyInput
 import pt.isel.ps.g06.httpserver.dataAccess.input.restaurantMeal.PortionInput
 import pt.isel.ps.g06.httpserver.dataAccess.input.restaurantMeal.RestaurantMealInput
-import pt.isel.ps.g06.httpserver.dataAccess.input.moderation.VerifyInput
+import pt.isel.ps.g06.httpserver.dataAccess.input.userActions.FavoriteInput
 import pt.isel.ps.g06.httpserver.dataAccess.input.userActions.ReportInput
 import pt.isel.ps.g06.httpserver.dataAccess.input.userActions.VoteInput
 import pt.isel.ps.g06.httpserver.dataAccess.output.restaurantMeal.DetailedRestaurantMealOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.restaurantMeal.RestaurantMealContainerOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.restaurantMeal.toDetailedRestaurantMealOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.restaurantMeal.toRestaurantMealContainerOutput
-import pt.isel.ps.g06.httpserver.model.RestaurantIdentifier
 import pt.isel.ps.g06.httpserver.model.User
+import pt.isel.ps.g06.httpserver.model.restaurant.RestaurantIdentifier
 import pt.isel.ps.g06.httpserver.service.MealService
 import pt.isel.ps.g06.httpserver.service.RestaurantMealService
 import pt.isel.ps.g06.httpserver.service.RestaurantService
@@ -207,7 +207,7 @@ class RestaurantMealController(
     ): ResponseEntity<Void> {
         val restaurantIdentifier = restaurantIdentifierBuilder.extractIdentifiers(restaurantId)
 
-        restaurantMealService.updateUserPortion(user.identifier, restaurantIdentifier, mealId, portion)
+        restaurantMealService.updateUserPortion(user, restaurantIdentifier, mealId, portion)
 
         return ResponseEntity
                 .ok()
@@ -222,7 +222,7 @@ class RestaurantMealController(
     ): ResponseEntity<Void> {
         val restaurantIdentifier = restaurantIdentifierBuilder.extractIdentifiers(restaurantId)
 
-        restaurantMealService.deleteUserPortion(user.identifier, restaurantIdentifier, mealId, user)
+        restaurantMealService.deleteUserPortion(restaurantIdentifier, mealId, user)
 
         return ResponseEntity
                 .ok()

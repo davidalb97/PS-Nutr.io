@@ -5,7 +5,7 @@ class SubmissionReport(
         reportId: Int,
         reporterId: Int,
         text: String
-): BaseReport(
+) : BaseReport(
         reportId = reportId,
         reporterId = reporterId,
         text = text

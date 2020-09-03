@@ -14,7 +14,11 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.repo.PortionDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.ReportDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.RestaurantMealDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.input.restaurantMeal.PortionInput
-import pt.isel.ps.g06.httpserver.model.*
+import pt.isel.ps.g06.httpserver.model.Meal
+import pt.isel.ps.g06.httpserver.model.MealRestaurantInfo
+import pt.isel.ps.g06.httpserver.model.RestaurantMeal
+import pt.isel.ps.g06.httpserver.model.User
+import pt.isel.ps.g06.httpserver.model.restaurant.RestaurantIdentifier
 
 @Service
 class RestaurantMealService(
@@ -170,22 +174,20 @@ class RestaurantMealService(
         submissionService.deleteSubmission(restaurantInfo.identifier!!, user)
     }
 
-    fun updateUserPortion(submitterId: Int, restaurantId: RestaurantIdentifier, mealId: Int, portion: PortionInput) {
+    fun updateUserPortion(user: User, restaurantId: RestaurantIdentifier, mealId: Int, portion: PortionInput) {
         val restaurantMeal = getOrAddRestaurantMeal(restaurantId, mealId)
 
         val userPortion = restaurantMeal.getRestaurantMealInfo()
-                ?.let { it.userPortion(submitterId) }
+                ?.let { it.userPortion(user.identifier) }
                 ?: throw PortionNotFoundException()
 
-        dbPortionRepository.update(submitterId, userPortion.identifier, portion.quantity!!)
+        dbPortionRepository.update(user.identifier, userPortion.identifier, portion.quantity!!)
     }
 
-
-
-    fun deleteUserPortion(submitterId: Int, restaurantId: RestaurantIdentifier, mealId: Int, user: User) {
+    fun deleteUserPortion(restaurantId: RestaurantIdentifier, mealId: Int, user: User) {
         val restaurantMeal = getRestaurantMeal(restaurantId, mealId)
         val userPortion = restaurantMeal.getRestaurantMealInfo()
-                ?.let { it.userPortion(submitterId) }
+                ?.let { it.userPortion(user.identifier) }
                 ?: throw PortionNotFoundException()
 
         submissionService.deleteSubmission(userPortion.identifier, user)

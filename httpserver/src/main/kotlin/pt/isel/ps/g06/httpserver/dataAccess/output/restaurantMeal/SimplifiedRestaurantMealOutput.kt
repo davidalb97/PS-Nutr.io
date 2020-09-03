@@ -1,14 +1,10 @@
 package pt.isel.ps.g06.httpserver.dataAccess.output.restaurantMeal
 
-import pt.isel.ps.g06.httpserver.dataAccess.output.NutritionalInfoOutput
+import pt.isel.ps.g06.httpserver.dataAccess.output.*
 import pt.isel.ps.g06.httpserver.dataAccess.output.meal.BaseMealOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.modular.FavoritesOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.modular.IReportableOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.modular.IVotableOutput
-import pt.isel.ps.g06.httpserver.dataAccess.output.toNutritionalInfoOutput
-import pt.isel.ps.g06.httpserver.dataAccess.output.VotesOutput
-import pt.isel.ps.g06.httpserver.dataAccess.output.toDefaultVotesOutput
-import pt.isel.ps.g06.httpserver.dataAccess.output.toVotesOutput
 import pt.isel.ps.g06.httpserver.model.RestaurantMeal
 import java.net.URI
 

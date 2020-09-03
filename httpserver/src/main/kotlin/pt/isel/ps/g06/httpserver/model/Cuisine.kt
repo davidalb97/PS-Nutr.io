@@ -6,6 +6,6 @@ import pt.isel.ps.g06.httpserver.model.modular.INameable
 class Cuisine(
         identifier: Int,
         override val name: String
-): BaseSubmission<Int>(
+) : BaseSubmission<Int>(
         identifier = identifier
 ), INameable

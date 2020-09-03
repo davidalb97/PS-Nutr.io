@@ -3,6 +3,7 @@ package pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.restaurant
 import org.springframework.stereotype.Component
 import pt.isel.ps.g06.httpserver.common.nutrition.calculateCarbsFromBase
 import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.ResponseMapper
+import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.submitter.DbSubmitterResponseMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.MealType
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbMealDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.*
@@ -52,7 +53,8 @@ class DbMealComponentResponseMapper(
         private val dbRestaurantMeal: RestaurantMealDbRepository,
         private val dbCuisineRepo: CuisineDbRepository,
         private val dbSubmitterRepo: SubmitterDbRepository,
-        private val restaurantMealResponseMapper: DbRestaurantMealInfoResponseMapper
+        private val restaurantMealResponseMapper: DbRestaurantMealInfoResponseMapper,
+        private val submissionDbRepository: SubmissionDbRepository
 ) : ResponseMapper<DbMealDto, Sequence<Meal>> {
     override fun mapTo(dto: DbMealDto): Sequence<Meal> {
         return dbMealRepo
@@ -66,11 +68,6 @@ class DbMealComponentResponseMapper(
                             isFavorite = toUserPredicate({ false }) { userId ->
                                 dbFavoriteRepo.getFavorite(dto.submission_id, userId)
                             },
-                            //An ingredient is always favorable
-                            isFavorable = toUserPredicate({ true }) { userId ->
-                                //A user cannot favorite on it's own submission
-                                !dbMealRepo.isSubmissionSubmitter(dto.submission_id, userId)
-                            },
                             image = null,
                             composedBy = MealComposition(
                                     meals = this.mapTo(mealComponent),
@@ -82,7 +79,7 @@ class DbMealComponentResponseMapper(
                                     dbSubmitterMapper.mapTo(userInfoDto)
                                 }
                             },
-                            creationDate = lazy { dbMealRepo.getCreationDate(dto.submission_id) },
+                            creationDate = lazy { submissionDbRepository.getCreationDate(dto.submission_id) },
                             type = MealType.fromValue(dto.meal_type),
                             restaurantInfoSupplier = { restaurantIdentifier ->
                                 restaurantIdentifier.submissionId

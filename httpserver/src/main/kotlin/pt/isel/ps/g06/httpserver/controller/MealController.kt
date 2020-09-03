@@ -9,9 +9,12 @@ import pt.isel.ps.g06.httpserver.common.*
 import pt.isel.ps.g06.httpserver.common.exception.problemJson.forbidden.NotSubmissionOwnerException
 import pt.isel.ps.g06.httpserver.common.exception.problemJson.notFound.MealNotFoundException
 import pt.isel.ps.g06.httpserver.dataAccess.db.MealType
-import pt.isel.ps.g06.httpserver.dataAccess.input.userActions.FavoriteInput
 import pt.isel.ps.g06.httpserver.dataAccess.input.meal.MealInput
-import pt.isel.ps.g06.httpserver.dataAccess.output.meal.*
+import pt.isel.ps.g06.httpserver.dataAccess.input.userActions.FavoriteInput
+import pt.isel.ps.g06.httpserver.dataAccess.output.meal.DetailedMealOutput
+import pt.isel.ps.g06.httpserver.dataAccess.output.meal.SimplifiedMealContainer
+import pt.isel.ps.g06.httpserver.dataAccess.output.meal.toDetailedMealOutput
+import pt.isel.ps.g06.httpserver.dataAccess.output.meal.toSimplifiedMealContainer
 import pt.isel.ps.g06.httpserver.model.User
 import pt.isel.ps.g06.httpserver.service.MealService
 import pt.isel.ps.g06.httpserver.service.SubmissionService
@@ -66,7 +69,6 @@ class MealController(
         if (count != null) {
             meals = meals.take(count)
         }
-
         return ResponseEntity
                 .ok()
                 .body(toSimplifiedMealContainer(meals, user?.identifier))
