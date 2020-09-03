@@ -238,7 +238,10 @@ class MealInfoFragment :
             editPortionLayout.visibility = View.VISIBLE
 
             addPortionToGraph(amount)
-            fillPortionGraphData()
+            setupChartSettings(portionEntries)
+            if(portionEntries.size == 1) {
+                setupChartData(portionEntries)
+            }
             refreshChart()
         } else {
             Toast.makeText(app, R.string.portion_add_fail, Toast.LENGTH_SHORT).show()
@@ -251,7 +254,7 @@ class MealInfoFragment :
 
             deletePortionFromGraph()
             addPortionToGraph(amount)
-            fillPortionGraphData()
+            setupChartSettings(portionEntries)
             refreshChart()
         } else {
             Toast.makeText(app, R.string.portion_edit_fail, Toast.LENGTH_SHORT).show()
@@ -269,7 +272,7 @@ class MealInfoFragment :
             if (portionEntries.isEmpty()) {
                 chart.clear()
             } else {
-                fillPortionGraphData()
+                setupChartSettings(portionEntries)
                 refreshChart()
             }
         } else {
@@ -303,11 +306,6 @@ class MealInfoFragment :
         val graphDataSet = BarDataSet(entries, "Portions")
         val chartData = BarData(arrayListOf<IBarDataSet>(graphDataSet))
         chart.setupBarData(chartData)
-    }
-
-    private fun fillPortionGraphData() {
-        setupChartSettings(portionEntries)
-        setupChartData(portionEntries)
     }
 
     override fun onEdit(onSuccess: () -> Unit) {
