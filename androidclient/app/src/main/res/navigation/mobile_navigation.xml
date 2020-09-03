@@ -137,7 +137,7 @@
         </fragment>
         <fragment
             android:id="@+id/nav_add_meal_to_calculator"
-            android:name="pt.ipl.isel.leic.ps.androidclient.ui.fragment.tab.AddMealSlideScreenFragment"
+            android:name="pt.ipl.isel.leic.ps.androidclient.ui.fragment.tab.SelectMealsSlideScreenFragment"
             android:label="Add a meal"
             tools:layout="@layout/tab_fragment" >
             <action
@@ -160,7 +160,7 @@
         </fragment>
         <fragment
             android:id="@+id/nav_add_meal_to_calculator"
-            android:name="pt.ipl.isel.leic.ps.androidclient.ui.fragment.tab.AddMealSlideScreenFragment"
+            android:name="pt.ipl.isel.leic.ps.androidclient.ui.fragment.tab.SelectMealsSlideScreenFragment"
             android:label="Add a meal"
             tools:layout="@layout/tab_fragment" >
             <action
