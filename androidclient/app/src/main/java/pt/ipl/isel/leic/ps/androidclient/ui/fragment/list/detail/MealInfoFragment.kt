@@ -168,9 +168,9 @@ class MealInfoFragment :
                 recyclerViewModel.addMealPortion(
                     restaurantId = receivedMeal.restaurantSubmissionId!!,
                     mealId = receivedMeal.submissionId!!,
-                    portionOutput = PortionOutput(
+                    portion = Portion(
                         preciseGrams.toInt(),
-                        sharedPreferences.getWeightUnitOrDefault()
+                        WeightUnits.fromValue(sharedPreferences.getWeightUnitOrDefault())
                     ),
                     userSession = requireUserSession(),
                     onSuccess = { status -> onAddPortion(preciseGrams, status) },
@@ -193,9 +193,9 @@ class MealInfoFragment :
                 recyclerViewModel.editMealPortion(
                     restaurantId = receivedMeal.restaurantSubmissionId!!,
                     mealId = receivedMeal.submissionId!!,
-                    portionOutput = PortionOutput(
+                    portion = Portion(
                         preciseGrams.toInt(),
-                        sharedPreferences.getWeightUnitOrDefault()
+                        WeightUnits.fromValue(sharedPreferences.getWeightUnitOrDefault())
                     ),
                     userSession = requireUserSession(),
                     onSuccess = { status -> onEditPortion(preciseGrams, status) },

@@ -5,13 +5,9 @@ import com.android.volley.VolleyError
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.roomDb
 import pt.ipl.isel.leic.ps.androidclient.data.api.datasource.MealDataSource
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.output.FavoriteOutput
-import pt.ipl.isel.leic.ps.androidclient.data.api.dto.output.PortionOutput
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.output.ReportOutput
 import pt.ipl.isel.leic.ps.androidclient.data.api.mapper.input.*
-import pt.ipl.isel.leic.ps.androidclient.data.api.mapper.output.OutputCuisineMapper
-import pt.ipl.isel.leic.ps.androidclient.data.api.mapper.output.OutputCustomMealMapper
-import pt.ipl.isel.leic.ps.androidclient.data.api.mapper.output.OutputIngredientMapper
-import pt.ipl.isel.leic.ps.androidclient.data.api.mapper.output.OutputVoteMapper
+import pt.ipl.isel.leic.ps.androidclient.data.api.mapper.output.*
 import pt.ipl.isel.leic.ps.androidclient.data.db.entity.DbMealItemEntity
 import pt.ipl.isel.leic.ps.androidclient.data.db.mapper.*
 import pt.ipl.isel.leic.ps.androidclient.data.db.relation.DbMealInfoRelation
@@ -58,6 +54,7 @@ class MealRepository(private val dataSource: MealDataSource) {
         cuisineMapper = cuisineOutputMapper,
         ingredientMapper = outputIngredientMapper
     )
+    private val outputPortionMapper = OutputPortionMapper()
 
     fun getByIdAndSource(dbId: Long, source: Source) =
         roomDb.mealInfoDao().getByIdAndSource(dbId, source.ordinal)
@@ -270,7 +267,7 @@ class MealRepository(private val dataSource: MealDataSource) {
     fun addMealPortion(
         restaurantId: String,
         mealId: Int,
-        portionOutput: PortionOutput,
+        portion: Portion,
         userSession: UserSession,
         onSuccess: (Int) -> Unit,
         onError: (VolleyError) -> Unit
@@ -278,7 +275,7 @@ class MealRepository(private val dataSource: MealDataSource) {
         dataSource.postRestaurantMealPortion(
             restaurantId = restaurantId,
             mealId = mealId,
-            portionOutput = portionOutput,
+            portionOutput = outputPortionMapper.mapToOutputModel(portion),
             onSuccess = onSuccess,
             onError = onError,
             jwt = userSession.jwt
@@ -288,7 +285,7 @@ class MealRepository(private val dataSource: MealDataSource) {
     fun editMealPortion(
         restaurantId: String,
         mealId: Int,
-        portionOutput: PortionOutput,
+        portion: Portion,
         userSession: UserSession,
         onSuccess: (Int) -> Unit,
         onError: (VolleyError) -> Unit
@@ -296,7 +293,7 @@ class MealRepository(private val dataSource: MealDataSource) {
         dataSource.putRestaurantMealPortion(
             restaurantId = restaurantId,
             mealId = mealId,
-            portionOutput = portionOutput,
+            portionOutput = outputPortionMapper.mapToOutputModel(portion),
             onSuccess = onSuccess,
             onError = onError,
             jwt = userSession.jwt

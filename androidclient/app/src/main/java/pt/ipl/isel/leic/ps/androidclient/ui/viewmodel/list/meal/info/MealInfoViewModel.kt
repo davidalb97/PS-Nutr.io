@@ -11,7 +11,6 @@ import pt.ipl.isel.leic.ps.androidclient.ui.util.ItemAction
 import pt.ipl.isel.leic.ps.androidclient.ui.util.Navigation
 import pt.ipl.isel.leic.ps.androidclient.ui.util.getUserSession
 import pt.ipl.isel.leic.ps.androidclient.ui.util.live.LiveDataHandler
-import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.RestaurantListViewModel
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.meal.MealItemListViewModel
 import kotlin.reflect.KClass
 
@@ -139,7 +138,7 @@ open class MealInfoViewModel : MealItemListViewModel {
     fun addMealPortion(
         restaurantId: String,
         mealId: Int,
-        portionOutput: PortionOutput,
+        portion: Portion,
         userSession: UserSession,
         onSuccess: (Int) -> Unit,
         onError: (VolleyError) -> Unit
@@ -147,7 +146,7 @@ open class MealInfoViewModel : MealItemListViewModel {
         mealRepository.addMealPortion(
             restaurantId = restaurantId,
             mealId = mealId,
-            portionOutput = portionOutput,
+            portion = portion,
             userSession = userSession,
             onSuccess = onSuccess,
             onError =  onError
@@ -157,7 +156,7 @@ open class MealInfoViewModel : MealItemListViewModel {
     fun editMealPortion(
         restaurantId: String,
         mealId: Int,
-        portionOutput: PortionOutput,
+        portion: Portion,
         userSession: UserSession,
         onSuccess: (Int) -> Unit,
         onError: (VolleyError) -> Unit
@@ -165,7 +164,7 @@ open class MealInfoViewModel : MealItemListViewModel {
         mealRepository.editMealPortion(
             restaurantId = restaurantId,
             mealId = mealId,
-            portionOutput = portionOutput,
+            portion = portion,
             userSession = userSession,
             onSuccess = onSuccess,
             onError =  onError
