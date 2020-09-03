@@ -2,9 +2,8 @@ package pt.isel.ps.g06.httpserver.dataAccess.db.dao
 
 import org.jdbi.v3.sqlobject.config.RegisterRowMapper
 import org.jdbi.v3.sqlobject.statement.SqlQuery
-import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbUserInsulinProfileDto
+import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbUserEncInsulinProfileDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.mapper.DbRowInsulinProfileMapper
-import java.time.LocalTime
 
 @RegisterRowMapper(DbRowInsulinProfileMapper::class)
 interface InsulinProfileDao {
@@ -21,25 +20,26 @@ interface InsulinProfileDao {
         const val carbRatio = "carbohydrate_ratio"
     }
 
-    @SqlQuery("SELECT * FROM $table WHERE $submitterId = :submitterId")
-    fun getAllFromUser(submitterId: Int): Collection<DbUserInsulinProfileDto>
+    @SqlQuery("SELECT * FROM $table WHERE $submitterId = :submitterId LIMIT :count OFFSET :skip")
+    fun getAllFromUser(submitterId: Int, count: Int?, skip: Int?): Collection<DbUserEncInsulinProfileDto>
 
     @SqlQuery("SELECT * FROM $table WHERE $submitterId = :submitterId AND $profileName = :profileName")
-    fun getFromUser(submitterId: Int, profileName: String): DbUserInsulinProfileDto?
+    fun getFromUser(submitterId: Int, profileName: String): DbUserEncInsulinProfileDto?
 
-
-    // TODO
     @SqlQuery("INSERT INTO $table(" +
-            "$submitterId, $profileName, $startTime, $endTime, $glucoseObjective, $sensitivityFactor, $carbRatio" +
+            "$submitterId, $profileName, $startTime, $endTime, $glucoseObjective, $sensitivityFactor, $carbRatio, $modificationDate" +
             ") VALUES(" +
-            ":submitterId, :profileName, :startTime, :endTime, :glucoseObjective, :sensitivityFactor, :carbRatio" +
+            ":submitterId, :profileName, :startTime, :endTime, :glucoseObjective, :sensitivityFactor, :carbRatio, :modificationDate" +
             ") RETURNING *"
     )
     fun insertProfile(
-            submitterId: Int, profileName: String, startTime: LocalTime, endTime: LocalTime,
-            glucoseObjective: Int, sensitivityFactor: Int, carbRatio: Int
-    ): DbUserInsulinProfileDto
+            submitterId: Int, profileName: String, startTime: String, endTime: String,
+            glucoseObjective: String, sensitivityFactor: String, carbRatio: String, modificationDate: String
+    ): DbUserEncInsulinProfileDto
+
+    @SqlQuery("DELETE FROM $table WHERE $submitterId = :submitterId RETURNING *")
+    fun deleteAllBySubmitterId(submitterId: Int): Collection<DbUserEncInsulinProfileDto>?
 
     @SqlQuery("DELETE FROM $table WHERE $submitterId = :submitterId AND $profileName = :profileName RETURNING *")
-    fun deleteProfile(submitterId: Int, profileName: String): DbUserInsulinProfileDto?
+    fun deleteProfile(submitterId: Int, profileName: String): DbUserEncInsulinProfileDto?
 }

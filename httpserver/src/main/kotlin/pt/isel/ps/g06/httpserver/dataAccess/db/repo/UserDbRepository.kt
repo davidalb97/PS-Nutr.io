@@ -11,6 +11,14 @@ private val isolationLevel = TransactionIsolationLevel.SERIALIZABLE
 @Repository
 class UserDbRepository(jdbi: Jdbi) : BaseDbRepo(jdbi) {
 
+    fun getBySubmitter(submitterId: Int): DbUserDto? {
+        return jdbi.inTransaction<DbUserDto, Exception>(isolationLevel) { handle ->
+            return@inTransaction handle
+                    .attach(UserDao::class.java)
+                    .findBySubmitterId(submitterId)
+        }
+    }
+
     fun getByEmail(email: String): DbUserDto? {
         return jdbi.inTransaction<DbUserDto, Exception>(isolationLevel) { handle ->
             return@inTransaction handle
@@ -19,11 +27,11 @@ class UserDbRepository(jdbi: Jdbi) : BaseDbRepo(jdbi) {
         }
     }
 
-    fun insertUser(submitterId: Int, email: String, password: String): DbUserDto? {
+    fun insertUser(submitterId: Int, email: String, username: String, password: String): DbUserDto? {
         return jdbi.inTransaction<DbUserDto, Exception>(isolationLevel) { handle ->
             return@inTransaction handle
                     .attach(UserDao::class.java)
-                    .insertUser(submitterId, email, password)
+                    .insertUser(submitterId, email, username, password)
         }
     }
 
@@ -32,6 +40,14 @@ class UserDbRepository(jdbi: Jdbi) : BaseDbRepo(jdbi) {
             return@inTransaction handle
                     .attach(UserDao::class.java)
                     .deleteUserByEmail(email)
+        }
+    }
+
+    fun updateUserBan(submitterId: Int, isBanned: Boolean): DbUserDto? {
+        return jdbi.inTransaction<DbUserDto, Exception>(isolationLevel) { handle ->
+            return@inTransaction handle
+                    .attach(UserDao::class.java)
+                    .updateUserBan(submitterId, isBanned)
         }
     }
 }

@@ -7,8 +7,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionContractType.*
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType.*
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.*
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbRestaurantMealDto
-import pt.isel.ps.g06.httpserver.exception.InvalidInputDomain
-import pt.isel.ps.g06.httpserver.exception.InvalidInputException
+import pt.isel.ps.g06.httpserver.common.exception.problemJson.badRequest.InvalidInputException
 import java.util.*
 
 private val isolationLevel = TransactionIsolationLevel.SERIALIZABLE
@@ -44,9 +43,7 @@ class RestaurantMealDbRepository(jdbi: Jdbi) : SubmissionDbRepository(jdbi) {
                     .getByRestaurantAndMealId(restaurantId, mealId)
 
             if (existingRestaurantMeal != null) {
-                throw InvalidInputException(InvalidInputDomain.RESTAURANT_MEAL,
-                        "The restaurant with id $restaurantId already has a meal with id $mealId!"
-                )
+                throw InvalidInputException("The restaurant with id $restaurantId already has a meal with id $mealId!")
             }
 
             val submissionId = it
@@ -54,11 +51,10 @@ class RestaurantMealDbRepository(jdbi: Jdbi) : SubmissionDbRepository(jdbi) {
                     .insert(RESTAURANT_MEAL.toString())
                     .submission_id
 
-            val contracts = EnumSet.of(FAVORABLE)
+            val contracts = EnumSet.of(FAVORABLE, VOTABLE)
             if (submitterId != null) {
                 it.attach(SubmissionSubmitterDao::class.java).insert(submissionId, submitterId)
                 contracts.add(REPORTABLE)
-                contracts.add(VOTABLE)
             }
 
             //Insert all needed contracts
@@ -70,6 +66,14 @@ class RestaurantMealDbRepository(jdbi: Jdbi) : SubmissionDbRepository(jdbi) {
             })
 
             return@inTransaction restaurantMealDao.insert(submissionId, restaurantId, mealId, verified)
+        }
+    }
+
+    fun putVerification(submissionId: Int, verification: Boolean): DbRestaurantMealDto {
+        return jdbi.inTransaction<DbRestaurantMealDto, Exception>(isolationLevel) {
+            return@inTransaction it
+                    .attach(restaurantMealDao)
+                    .updateRestaurantMealVerification(submissionId, verification)
         }
     }
 }

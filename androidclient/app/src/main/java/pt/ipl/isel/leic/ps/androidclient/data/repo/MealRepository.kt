@@ -197,10 +197,12 @@ class MealRepository(private val dataSource: MealDataSource) {
 
     fun addCustomMeal(
         customMeal: CustomMeal,
+        success: () -> Unit,
         error: (VolleyError) -> Unit,
         userSession: UserSession
     ) = dataSource.postCustomMeal(
         customMealOutput = outputCustomMealMapper.mapToOutputModel(restaurant = customMeal),
+        success = { success() },
         error = error,
         jwt = userSession.jwt
     )
@@ -208,12 +210,14 @@ class MealRepository(private val dataSource: MealDataSource) {
     fun editCustomMeal(
         submissionId: Int,
         customMeal: CustomMeal,
+        success: () -> Unit,
         error: (VolleyError) -> Unit,
         userSession: UserSession
     ) = dataSource.putMeal(
         submissionId = submissionId,
         customMealOutput = outputCustomMealMapper.mapToOutputModel(restaurant = customMeal),
         error = error,
+        success = { success() },
         jwt = userSession.jwt
     )
 

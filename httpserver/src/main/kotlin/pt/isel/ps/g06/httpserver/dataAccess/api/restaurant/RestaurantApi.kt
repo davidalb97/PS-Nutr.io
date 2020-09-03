@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.stereotype.Repository
 import pt.isel.ps.g06.httpserver.dataAccess.api.common.BaseApiRequester
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.uri.RestaurantUri
-import pt.isel.ps.g06.httpserver.dataAccess.model.RestaurantDto
+import pt.isel.ps.g06.httpserver.dataAccess.common.dto.RestaurantDto
 import java.net.http.HttpClient
 import java.net.http.HttpResponse
 import java.util.concurrent.CompletableFuture
@@ -22,8 +22,15 @@ abstract class RestaurantApi(
         return handleRestaurantInfoResponse(response)
     }
 
-    fun searchNearbyRestaurants(latitude: Float, longitude: Float, radiusMeters: Int, name: String?): CompletableFuture<Collection<RestaurantDto>> {
-        val uri = restaurantUri.nearbyRestaurants(latitude, longitude, radiusMeters, name)
+    fun searchNearbyRestaurants(
+            latitude: Float,
+            longitude: Float,
+            radiusMeters: Int,
+            name: String?,
+            skip: Int?,
+            count: Int?
+    ): CompletableFuture<Collection<RestaurantDto>> {
+        val uri = restaurantUri.nearbyRestaurants(latitude, longitude, radiusMeters, name, skip, count)
         val response = httpClient.sendAsync(buildGetRequest(uri), HttpResponse.BodyHandlers.ofString())
         return handleNearbyRestaurantsResponse(response)
     }

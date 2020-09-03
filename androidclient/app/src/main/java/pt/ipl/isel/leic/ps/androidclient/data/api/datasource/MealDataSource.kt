@@ -63,7 +63,7 @@ class MealDataSource(
                 .scheme(SCHEME)
                 .encodedAuthority(ADDRESS_PORT)
                 .appendPath(RESTAURANT_PATH)
-                .appendPath(restaurantId)
+                .appendEncodedPath(restaurantId)
                 .appendPath(MEAL_PATH)
                 .appendQueryNotNullParameter(COUNT_PARAM, count)
                 .appendQueryNotNullParameter(SKIP_PARAM, skip)
@@ -111,7 +111,7 @@ class MealDataSource(
                 .scheme(SCHEME)
                 .encodedAuthority(ADDRESS_PORT)
                 .appendPath(RESTAURANT_PATH)
-                .appendPath(restaurantId)
+                .appendEncodedPath(restaurantId)
                 .appendPath(MEAL_PATH)
                 .appendPath(mealId)
                 .build()
@@ -182,6 +182,7 @@ class MealDataSource(
      */
     fun postCustomMeal(
         customMealOutput: CustomMealOutput,
+        success: (PayloadResponse) -> Unit,
         error: (VolleyError) -> Unit,
         jwt: String
     ) {
@@ -197,7 +198,7 @@ class MealDataSource(
             reqHeader = buildAuthHeader(jwt),
             reqPayload = customMealOutput,
             onError = error,
-            responseConsumer = { }
+            responseConsumer = success
         )
     }
 
@@ -214,7 +215,7 @@ class MealDataSource(
                 .scheme(SCHEME)
                 .encodedAuthority(ADDRESS_PORT)
                 .appendPath(RESTAURANT_PATH)
-                .appendPath(restaurantId)
+                .appendEncodedPath(restaurantId)
                 .appendPath(MEAL_PATH)
                 .build()
                 .toString(),
@@ -264,7 +265,7 @@ class MealDataSource(
                 .scheme(SCHEME)
                 .encodedAuthority(ADDRESS_PORT)
                 .appendPath(RESTAURANT_PATH)
-                .appendPath(restaurantId)
+                .appendEncodedPath(restaurantId)
                 .appendPath(MEAL_PATH)
                 .appendPath(mealId)
                 .build()
@@ -283,11 +284,12 @@ class MealDataSource(
     fun putMeal(
         submissionId: Int,
         customMealOutput: CustomMealOutput,
+        success: (PayloadResponse) -> Unit,
         error: (VolleyError) -> Unit,
         jwt: String
     ) {
         requestParser.request(
-            method = HTTPMethod.POST,
+            method = HTTPMethod.PUT,
             uri = Uri.Builder()
                 .scheme(SCHEME)
                 .encodedAuthority(ADDRESS_PORT)
@@ -298,7 +300,7 @@ class MealDataSource(
             reqHeader = buildAuthHeader(jwt),
             reqPayload = customMealOutput,
             onError = error,
-            responseConsumer = { }
+            responseConsumer = success
         )
     }
 
@@ -340,7 +342,7 @@ class MealDataSource(
                 .scheme(SCHEME)
                 .encodedAuthority(ADDRESS_PORT)
                 .appendPath(RESTAURANT_PATH)
-                .appendPath(restaurantId)
+                .appendEncodedPath(restaurantId)
                 .appendPath(MEAL_PATH)
                 .appendPath(mealId)
                 .appendPath(VOTE_PATH)
@@ -367,7 +369,7 @@ class MealDataSource(
                 .scheme(SCHEME)
                 .encodedAuthority(ADDRESS_PORT)
                 .appendPath(RESTAURANT_PATH)
-                .appendPath(restaurantId)
+                .appendEncodedPath(restaurantId)
                 .appendPath(MEAL_PATH)
                 .appendPath(mealId)
                 .appendPath(FAVORITE_PATH)
@@ -394,7 +396,7 @@ class MealDataSource(
                 .scheme(SCHEME)
                 .encodedAuthority(ADDRESS_PORT)
                 .appendPath(RESTAURANT_PATH)
-                .appendPath(restaurantId)
+                .appendEncodedPath(restaurantId)
                 .appendPath(MEAL_PATH)
                 .appendPath(mealId)
                 .appendPath(REPORT_PATH)

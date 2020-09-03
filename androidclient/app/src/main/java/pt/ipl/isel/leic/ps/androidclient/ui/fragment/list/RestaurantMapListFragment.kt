@@ -7,9 +7,11 @@ import android.os.Looper.getMainLooper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.SearchView
 import android.widget.Toast
 import androidx.annotation.NonNull
+import androidx.navigation.findNavController
 import com.mapbox.android.core.location.*
 import com.mapbox.android.core.permissions.PermissionsManager
 import com.mapbox.mapboxsdk.Mapbox
@@ -23,6 +25,7 @@ import com.mapbox.mapboxsdk.maps.OnMapReadyCallback
 import com.mapbox.mapboxsdk.maps.Style
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.app
 import pt.ipl.isel.leic.ps.androidclient.R
+import pt.ipl.isel.leic.ps.androidclient.ui.util.Navigation
 
 private const val DEFAULT_INTERVAL_IN_MILLISECONDS: Long = 100000L
 private const val DEFAULT_MAX_WAIT_TIME = DEFAULT_INTERVAL_IN_MILLISECONDS * 5
@@ -51,6 +54,8 @@ class MapFragment : RestaurantListFragment(), OnMapReadyCallback {
         mapView?.onCreate(savedInstanceState)
         mapView?.getMapAsync(this)
 
+        val addButton = view.findViewById<ImageButton>(R.id.add_restaurant)
+
         val searchBar = view.findViewById<SearchView>(R.id.search_restaurant)
 
         searchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
@@ -64,6 +69,12 @@ class MapFragment : RestaurantListFragment(), OnMapReadyCallback {
 
             override fun onQueryTextChange(query: String?): Boolean = true
         })
+
+        addButton.setOnClickListener {
+            ensureUserSession(requireContext()) {
+                view.findNavController().navigate(Navigation.SEND_TO_ADD_RESTAURANT.navId)
+            }
+        }
     }
 
     override fun onMapReady(mapboxMap: MapboxMap) {
