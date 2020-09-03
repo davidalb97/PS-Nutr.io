@@ -463,6 +463,30 @@ Here's the login and register workflow:
     \end{center}
 \end{figure}
 
+\subsubsection{Account deletion}
+
+If the user goes to the login or register fragment again after being successfully logged in, it will see the fragment presented below.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.12]{_figures/logout_fragment.png}
+    \caption{The register fragment}
+\end{figure}
+
+In order to delete the account, the user needs to fill the shown form again and then press the delete account button.\\
+
+After that, the operation will occur as the diagram presented below.
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[scale=1]{_figures/user-deletion-workflow.eps}
+        \caption{User account deletion workflow}
+    \end{center}
+\end{figure}
+
+After this only the submitter identifier will remain in database to preserve public submission and all sensitive data
+will be deleted.
+
 \subsubsection{Insulin profiles' creation and access}
 
 \begin{figure}[H]
