@@ -1,4 +1,4 @@
-package pt.ipl.isel.leic.ps.androidclient.ui.fragment.list.addMeal
+package pt.ipl.isel.leic.ps.androidclient.ui.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,8 +10,8 @@ import android.widget.TextView
 import androidx.navigation.findNavController
 import androidx.navigation.navGraphViewModels
 import pt.ipl.isel.leic.ps.androidclient.R
+import pt.ipl.isel.leic.ps.androidclient.data.model.MealItem
 import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.pick.MealItemPickRecyclerAdapter
-import pt.ipl.isel.leic.ps.androidclient.ui.fragment.BaseFragment
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.unit.IWeightUnitSpinner
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.pick.IPickedFlexBoxRecycler
 import pt.ipl.isel.leic.ps.androidclient.ui.util.Navigation
@@ -31,7 +31,7 @@ abstract class BaseAddMealFragment : BaseFragment(), IWeightUnitSpinner, IPicked
     //Meals
     protected abstract val mealsRecyclerViewId: Int
     protected lateinit var mealsViewModel: MealItemPickViewModel
-    protected val mealsRecyclerAdapter by lazy {
+    private val mealsRecyclerAdapter by lazy {
         MealItemPickRecyclerAdapter(mealsViewModel, requireContext())
     }
 
@@ -39,18 +39,18 @@ abstract class BaseAddMealFragment : BaseFragment(), IWeightUnitSpinner, IPicked
     override lateinit var previousWeightUnit: WeightUnits
 
     protected abstract val weightUnitSpinnerId: Int
-    protected lateinit var weightUnitSpinner: Spinner
+    private lateinit var weightUnitSpinner: Spinner
 
     protected abstract val addIngredientsImgButtonId: Int
-    protected lateinit var addIngredientsImgButton: ImageButton
+    private lateinit var addIngredientsImgButton: ImageButton
 
     protected abstract val totalIngredientsWeightTextViewId: Int
-    protected lateinit var totalIngredientsWeightTextView: TextView
+    private lateinit var totalIngredientsWeightTextView: TextView
     private var _currentIngredientQuantity: Float = 0.0F
     protected val currentIngredientsAmount get() = _currentIngredientQuantity
 
     protected abstract val totalIngredientsCarbohydratesTextViewId: Int
-    protected lateinit var totalIngredientsCarbohydratesTextView: TextView
+    private lateinit var totalIngredientsCarbohydratesTextView: TextView
     private var _currentIngredientCarbohydrates: Int = 0
     protected val currentIngredientsCarbohydrates get() = _currentIngredientCarbohydrates
 
@@ -131,10 +131,17 @@ abstract class BaseAddMealFragment : BaseFragment(), IWeightUnitSpinner, IPicked
             ingredient.carbs
         }
 
-    private fun countIngredientQuantity(): Float =
-        mealsViewModel.pickedItems.fold(0.0F) { sum, ingredient ->
-            sum + ingredient.unit.convert(currentWeightUnit, ingredient.amount)
+    protected fun countIngredientQuantity(
+        targetUnit: WeightUnits,
+        ingredients: Iterable<MealItem>
+    ): Float {
+        return ingredients.fold(0.0F) { sum, ingredient ->
+            sum + ingredient.unit.convert(targetUnit, ingredient.amount)
         }
+    }
+
+    protected fun countIngredientQuantity(): Float =
+        countIngredientQuantity(currentWeightUnit, mealsViewModel.pickedItems)
 
     protected open fun setupIngredients(view: View) {
 

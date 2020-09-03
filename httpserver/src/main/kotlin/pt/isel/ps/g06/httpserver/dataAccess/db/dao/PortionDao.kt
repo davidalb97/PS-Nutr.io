@@ -37,9 +37,9 @@ interface PortionDao {
 
     @SqlQuery("UPDATE $table" +
             " SET $quantity = :quantity" +
-            " WHERE $id = :submissionId RETURNING *"
+            " WHERE $id = :portionIdentifier RETURNING *"
     )
-    fun update(submissionId: Int, quantity: Int): DbPortionDto
+    fun update(portionIdentifier: Int, quantity: Int): DbPortionDto
 
     @SqlQuery("DELETE FROM $table WHERE $id = :submissionId RETURNING *")
     fun deleteById(@Bind submissionId: Int): DbPortionDto

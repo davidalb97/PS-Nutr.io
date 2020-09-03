@@ -13,6 +13,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.repo.FavoriteDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.PortionDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.ReportDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.RestaurantMealDbRepository
+import pt.isel.ps.g06.httpserver.dataAccess.input.restaurantMeal.PortionInput
 import pt.isel.ps.g06.httpserver.model.*
 
 @Service
@@ -169,10 +170,22 @@ class RestaurantMealService(
         submissionService.deleteSubmission(restaurantInfo.identifier!!, user)
     }
 
-    fun deleteUserPortion(restaurantId: RestaurantIdentifier, mealId: Int, user: User) {
+    fun updateUserPortion(submitterId: Int, restaurantId: RestaurantIdentifier, mealId: Int, portion: PortionInput) {
+        val restaurantMeal = getOrAddRestaurantMeal(restaurantId, mealId)
+
+        val userPortion = restaurantMeal.getRestaurantMealInfo()
+                ?.let { it.userPortion(submitterId) }
+                ?: throw PortionNotFoundException()
+
+        dbPortionRepository.update(submitterId, userPortion.identifier, portion.quantity!!)
+    }
+
+
+
+    fun deleteUserPortion(submitterId: Int, restaurantId: RestaurantIdentifier, mealId: Int, user: User) {
         val restaurantMeal = getRestaurantMeal(restaurantId, mealId)
         val userPortion = restaurantMeal.getRestaurantMealInfo()
-                ?.let { it.userPortion(user.identifier) }
+                ?.let { it.userPortion(submitterId) }
                 ?: throw PortionNotFoundException()
 
         submissionService.deleteSubmission(userPortion.identifier, user)

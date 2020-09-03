@@ -1,4 +1,4 @@
-package pt.ipl.isel.leic.ps.androidclient.ui.fragment.list.addRestaurant
+package pt.ipl.isel.leic.ps.androidclient.ui.fragment.create
 
 import android.Manifest
 import android.annotation.SuppressLint
