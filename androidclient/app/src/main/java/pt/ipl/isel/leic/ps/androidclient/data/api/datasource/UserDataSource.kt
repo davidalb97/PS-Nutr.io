@@ -14,7 +14,7 @@ import pt.ipl.isel.leic.ps.androidclient.data.model.UserSession
 const val USER = "user"
 private const val LOGIN_URI = "$URI_BASE/$USER/login"
 private const val REGISTER_URI = "$URI_BASE/$USER/register"
-private const val USER_INFO_URI = "$URI_BASE/$USER/info"
+private const val USER_INFO_URI = "$URI_BASE/$USER"
 private const val LOGOUT_URI = "$URI_BASE/$USER/logout"
 private const val INSULIN_URI = "$URI_BASE/$USER/profile"
 
@@ -79,6 +79,10 @@ class UserDataSource(
             onError = error
         )
     }
+
+    /*fun deleteAccount(
+
+    )*/
 
     /**
      * ################ GETs ################

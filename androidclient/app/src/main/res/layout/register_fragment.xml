@@ -10,152 +10,213 @@
 
     <RelativeLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="10dp"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"
-        android:id="@+id/registerBox"
-        >
+        android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/registerTitle"
+        <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:text="@string/register"
-            android:textSize="24sp">
-        </TextView>
-
-        <EditText
-            android:id="@+id/userEmailInput"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_below="@+id/registerTitle"
-            android:layout_marginStart="100dp"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/textbox_shape"
-            android:drawableStart="@drawable/ic_email"
-            android:drawablePadding="10dp"
-            android:hint="@string/email"
-            android:padding="5dp"
-            android:focusable="true"
-            >
-        </EditText>
-
-        <EditText
-            android:id="@+id/userNameInput"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/userEmailInput"
-            android:layout_centerHorizontal="true"
-            android:layout_marginStart="100dp"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/textbox_shape"
-            android:drawableStart="@drawable/ic_user"
-            android:drawablePadding="10dp"
-            android:hint="@string/username"
-            android:padding="5dp"
-            android:focusable="true"
-            >
-        </EditText>
-
-        <EditText
-            android:id="@+id/userPasswordInput"
-            android:inputType="textPassword"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/userNameInput"
-            android:layout_centerHorizontal="true"
-            android:layout_marginStart="100dp"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/textbox_shape"
-            android:drawableStart="@drawable/ic_password"
-            android:drawablePadding="10dp"
-            android:hint="@string/password"
-            android:padding="5dp"
-            android:focusable="true"
-            >
-        </EditText>
-
-        <Button
-            android:id="@+id/registerButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/userPasswordInput"
-            android:layout_marginTop="30dp"
-            android:layout_centerHorizontal="true"
-            android:text="@string/register"
-            android:textColor="@android:color/background_light"
-            android:background="@drawable/rect_material_button_shape">
-        </Button>
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/loadingCard"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            android:layout_centerHorizontal="true"
+            android:padding="10dp"
             android:layout_centerVertical="true"
-            android:layout_margin="4dp"
-            android:elevation="10dp"
-            app:cardCornerRadius="15dp">
-            <RelativeLayout
+            android:layout_centerHorizontal="true"
+            android:id="@+id/registerBox"
+            >
+
+            <TextView
+                android:id="@+id/registerTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:text="@string/register"
+                android:textSize="24sp">
+            </TextView>
+
+            <EditText
+                android:id="@+id/userEmailInput"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:padding="10dp">
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/registerTitle"
+                android:layout_marginStart="100dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/textbox_shape"
+                android:drawableStart="@drawable/ic_email"
+                android:drawablePadding="10dp"
+                android:hint="@string/email"
+                android:padding="5dp"
+                android:focusable="true"
+                >
+            </EditText>
 
-                <ProgressBar
-                    android:id="@+id/progressWheel"
-                    android:layout_centerHorizontal="true"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp">
-                </ProgressBar>
+            <EditText
+                android:id="@+id/userNameInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/userEmailInput"
+                android:layout_centerHorizontal="true"
+                android:layout_marginStart="100dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/textbox_shape"
+                android:drawableStart="@drawable/ic_user"
+                android:drawablePadding="10dp"
+                android:hint="@string/username"
+                android:padding="5dp"
+                android:focusable="true"
+                >
+            </EditText>
 
-                <TextView
-                    android:layout_below="@+id/progressWheel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:text="@string/loading"
-                    android:textSize="24sp">
-                </TextView>
+            <EditText
+                android:id="@+id/userPasswordInput"
+                android:inputType="textPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/userNameInput"
+                android:layout_centerHorizontal="true"
+                android:layout_marginStart="100dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/textbox_shape"
+                android:drawableStart="@drawable/ic_password"
+                android:drawablePadding="10dp"
+                android:hint="@string/password"
+                android:padding="5dp"
+                android:focusable="true"
+                >
+            </EditText>
 
-            </RelativeLayout>
+            <Button
+                android:id="@+id/registerButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/userPasswordInput"
+                android:layout_marginTop="30dp"
+                android:layout_centerHorizontal="true"
+                android:text="@string/register"
+                android:textColor="@android:color/background_light"
+                android:background="@drawable/rect_material_button_shape">
+            </Button>
 
-        </androidx.cardview.widget.CardView>
+            <androidx.cardview.widget.CardView
+                android:id="@+id/loadingCard"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:layout_margin="4dp"
+                android:elevation="10dp"
+                app:cardCornerRadius="15dp">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="10dp">
 
-    </RelativeLayout>
+                    <ProgressBar
+                        android:id="@+id/progressWheel"
+                        android:layout_centerHorizontal="true"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp">
+                    </ProgressBar>
 
-    <RelativeLayout
-        android:id="@+id/logoutBox"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="10dp"
-        android:layout_centerInParent="true"
-        android:layout_below="@id/registerBox"
-        android:visibility="gone"
-        >
+                    <TextView
+                        android:layout_below="@+id/progressWheel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:text="@string/loading"
+                        android:textSize="24sp">
+                    </TextView>
 
-        <TextView
-            android:id="@+id/already_logged_in_warning"
+                </RelativeLayout>
+
+            </androidx.cardview.widget.CardView>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/deleteAccountBox"
+            android:padding="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:textColor="?attr/textColor">
-        </TextView>
+            android:visibility="gone">
 
-        <Button
-            android:id="@+id/logoutButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="10dp"
-            android:layout_below="@id/already_logged_in_warning"
-            android:text="@string/logout"
-            android:textColor="@android:color/background_light"
-            android:background="@drawable/rect_material_button_shape">
-        </Button>
+            <EditText
+                android:id="@+id/deleteUserEmailInput"
+                android:padding="5dp"
+                android:layout_centerHorizontal="true"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="100dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/textbox_shape"
+                android:drawableStart="@drawable/ic_email"
+                android:drawablePadding="10dp"
+                android:hint="@string/email"
+                android:focusable="true"
+                >
+            </EditText>
+
+            <EditText
+                android:id="@+id/deleteUserPasswordInput"
+                android:inputType="textPassword"
+                android:padding="5dp"
+                android:layout_marginTop="10dp"
+                android:layout_below="@+id/deleteUserEmailInput"
+                android:layout_centerHorizontal="true"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="100dp"
+                android:drawableStart="@drawable/ic_password"
+                android:drawablePadding="10dp"
+                android:background="@drawable/textbox_shape"
+                android:hint="@string/password"
+                android:focusable="true"
+                >
+            </EditText>
+
+            <Button
+                android:id="@+id/deleteAccountButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:layout_below="@id/deleteUserPasswordInput"
+                android:layout_marginTop="30dp"
+                android:layout_centerHorizontal="true"
+                android:text="@string/delete_account"
+                android:textColor="@android:color/background_light"
+                android:background="@drawable/rect_material_button_shape">
+            </Button>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/logoutBox"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="10dp"
+            android:layout_centerInParent="true"
+            android:layout_below="@id/deleteAccountBox"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/already_logged_in_warning"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:textColor="?attr/textColor">
+            </TextView>
+
+            <Button
+                android:id="@+id/logoutButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"
+                android:layout_below="@id/already_logged_in_warning"
+                android:text="@string/logout"
+                android:textColor="@android:color/background_light"
+                android:background="@drawable/rect_material_button_shape">
+            </Button>
+        </RelativeLayout>
+
     </RelativeLayout>
 
 </androidx.cardview.widget.CardView>

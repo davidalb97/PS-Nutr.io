@@ -42,6 +42,14 @@ class UserRepository(private val userDataSource: UserDataSource) {
         consumerDto = { onSuccess(loginUserMapper.mapToModel(it)) }
     )
 
+    fun deleteAccount(
+        userLogin: UserLogin,
+        onSuccess: (UserSession) -> Unit,
+        onError: (VolleyError) -> Unit
+    ) {
+
+    }
+
     fun requestUserInfo(
         userSession: UserSession,
         onSuccess: (UserInfo) -> Unit,

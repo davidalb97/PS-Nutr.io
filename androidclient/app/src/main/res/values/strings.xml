@@ -137,6 +137,7 @@
     <string name="password">Password</string>
     <string name="register">Register</string>
     <string name="login">Login</string>
+    <string name="delete_account">Delete account</string>
     <string name="login_success">Successfully logged in</string>
     <string name="login_error">Could not login</string>
     <string name="register_success">Successfully registered</string>
@@ -153,6 +154,7 @@
     <string name="setup_a_profile_before_proceed">Please setup a profile before proceed</string>
     <string name="logout">Logout</string>
     <string name="logout_success">Successfully logged out</string>
+    <string name="remove_account_success">Successfully removed account</string>
 
     <!-- ##################################### Arrays #####################################-->
     <string-array name="calculator_units">

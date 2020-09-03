@@ -15,11 +15,11 @@ import pt.ipl.isel.leic.ps.androidclient.data.model.UserLogin
 import pt.ipl.isel.leic.ps.androidclient.data.model.UserSession
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.BaseFragment
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.auth.ILogin
-import pt.ipl.isel.leic.ps.androidclient.ui.modular.auth.ILogout
+import pt.ipl.isel.leic.ps.androidclient.ui.modular.auth.IAccountSettings
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.UserProfileVMProviderFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.UserSessionViewModel
 
-class LoginFragment : BaseFragment(), ILogin, ILogout {
+class LoginFragment : BaseFragment(), ILogin, IAccountSettings {
 
     private lateinit var viewModel: UserSessionViewModel
 
@@ -45,6 +45,12 @@ class LoginFragment : BaseFragment(), ILogin, ILogout {
     override val logoutButtonId = R.id.logoutButton
     override lateinit var logoutButton: Button
 
+    //Remove account
+    override lateinit var removeAccountView: ViewGroup
+    override var removeAccountId: Int = R.id.deleteAccountBox
+    override lateinit var removeAccountButton: Button
+    override val removeAccountButtonId: Int = R.id.deleteAccountButton
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -63,6 +69,22 @@ class LoginFragment : BaseFragment(), ILogin, ILogout {
     }
 
     override fun onLogin(
+        userLogin: UserLogin,
+        onSuccess: (UserSession) -> Unit,
+        onError: (Throwable) -> Unit
+    ) {
+        viewModel.login(
+            userLogin = userLogin,
+            onSuccess = {
+                onSuccess(it)
+                Toast.makeText(context, R.string.login_success, Toast.LENGTH_SHORT).show()
+                requireView().findNavController().navigate(R.id.nav_home)
+            },
+            onError = onError
+        )
+    }
+
+    override fun onDeleteAccount(
         userLogin: UserLogin,
         onSuccess: (UserSession) -> Unit,
         onError: (Throwable) -> Unit

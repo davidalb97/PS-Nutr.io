@@ -27,6 +27,16 @@ class UserSessionViewModel : ViewModel() {
         onError = onError
     )
 
+    fun deleteAccount(
+        userLogin: UserLogin,
+        onSuccess: (UserSession) -> Unit,
+        onError: (VolleyError) -> Unit
+    ) = userRepository.deleteAccount(
+        userLogin = userLogin,
+        onSuccess = onSuccess,
+        onError = onError
+    )
+
     fun requestUserInfo(
         userSession: UserSession,
         onSuccess: (UserInfo) -> Unit,

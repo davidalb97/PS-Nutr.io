@@ -9,16 +9,22 @@ import android.widget.Toast
 import androidx.navigation.findNavController
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp
 import pt.ipl.isel.leic.ps.androidclient.R
+import pt.ipl.isel.leic.ps.androidclient.data.model.UserLogin
+import pt.ipl.isel.leic.ps.androidclient.data.model.UserSession
 import pt.ipl.isel.leic.ps.androidclient.ui.util.Navigation
 import pt.ipl.isel.leic.ps.androidclient.ui.util.deleteSession
 import pt.ipl.isel.leic.ps.androidclient.ui.util.getUsername
 
-interface ILogout {
+interface IAccountSettings {
 
     val nonLogoutViewId: Int
     var nonLogoutView: ViewGroup
     val logoutViewId: Int
     var logoutView: ViewGroup
+    var removeAccountView: ViewGroup
+    var removeAccountId: Int
+    val removeAccountButtonId: Int
+    var removeAccountButton: Button
     val alreadyLoggedInTextViewId: Int
     var alreadyLoggedInTextView: TextView
     val logoutButtonId: Int
@@ -27,22 +33,35 @@ interface ILogout {
     fun setupLogout(view: View, context: Context) {
 
         nonLogoutView = view.findViewById(nonLogoutViewId)
+        removeAccountView = view.findViewById(removeAccountId)
         logoutView = view.findViewById(logoutViewId)
         alreadyLoggedInTextView = view.findViewById(alreadyLoggedInTextViewId)
 
         setupSignedWarning(context)
+        setupRemoveAccountButton(view, context)
         setupLogoutButton(view, context)
     }
 
     private fun setupSignedWarning(context: Context) {
         val signedUser = NutrioApp.encryptedSharedPreferences.getUsername() ?: return
         nonLogoutView.visibility = View.GONE
+        removeAccountView.visibility = View.VISIBLE
         logoutView.visibility = View.VISIBLE
 
         alreadyLoggedInTextView.text = String.format(
             context.resources.getString(R.string.already_logged_in_message),
             signedUser
         )
+    }
+
+    private fun setupRemoveAccountButton(view: View, context: Context) {
+        removeAccountButton = view.findViewById(removeAccountButtonId)
+        removeAccountButton.setOnClickListener {
+
+            Toast.makeText(context, R.string.remove_account_success, Toast.LENGTH_SHORT)
+                .show()
+            view.findNavController().navigate(Navigation.SEND_TO_HOME.navId)
+        }
     }
 
     private fun setupLogoutButton(view: View, context: Context) {
@@ -54,4 +73,10 @@ interface ILogout {
             view.findNavController().navigate(Navigation.SEND_TO_HOME.navId)
         }
     }
+
+    fun onDeleteAccount(
+        userLogin: UserLogin,
+        onSuccess: (UserSession) -> Unit,
+        onError: (Throwable) -> Unit
+    )
 }
