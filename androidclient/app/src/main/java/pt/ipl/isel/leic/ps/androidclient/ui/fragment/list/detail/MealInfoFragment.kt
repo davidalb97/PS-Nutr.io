@@ -166,8 +166,8 @@ class MealInfoFragment :
                 mealUnit = WeightUnits.fromValue(sharedPreferences.getWeightUnitOrDefault())
             ) { preciseGrams, _ ->
                 recyclerViewModel.addMealPortion(
-                    restaurantId = receivedMeal.restaurantSubmissionId,
-                    mealId = receivedMeal.submissionId,
+                    restaurantId = receivedMeal.restaurantSubmissionId!!,
+                    mealId = receivedMeal.submissionId!!,
                     portionOutput = PortionOutput(
                         preciseGrams.toInt(),
                         sharedPreferences.getWeightUnitOrDefault()

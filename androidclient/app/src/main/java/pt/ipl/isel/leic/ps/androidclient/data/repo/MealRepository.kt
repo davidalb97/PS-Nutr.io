@@ -268,8 +268,8 @@ class MealRepository(private val dataSource: MealDataSource) {
     }
 
     fun addMealPortion(
-        restaurantId: String?,
-        mealId: Int?,
+        restaurantId: String,
+        mealId: Int,
         portionOutput: PortionOutput,
         userSession: UserSession,
         onSuccess: (Int) -> Unit,

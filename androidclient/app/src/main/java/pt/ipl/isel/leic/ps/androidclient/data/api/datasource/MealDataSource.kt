@@ -227,8 +227,8 @@ class MealDataSource(
     }
 
     fun postRestaurantMealPortion(
-        restaurantId: String?,
-        mealId: Int?,
+        restaurantId: String,
+        mealId: Int,
         portionOutput: PortionOutput,
         onSuccess: (Int) -> Unit,
         onError: (VolleyError) -> Unit,
@@ -243,7 +243,7 @@ class MealDataSource(
                 .appendPath(RESTAURANT_PATH)
                 .appendEncodedPath(restaurantId)
                 .appendPath(MEAL_PATH)
-                .appendPath(mealId!!)
+                .appendPath(mealId)
                 .appendPath(PORTION_PATH)
                 .build()
                 .toString(),
