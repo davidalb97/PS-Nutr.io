@@ -115,6 +115,24 @@ The HTTP server uses a Spring MVC implementation, structuring its' code in sever
     \end{center}
 \end{figure}
 
+\subsection{Routing and endpoints}
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[scale=0.8]{_figures/endpoints_diagram.eps}
+        \caption{The server's routing}
+    \end{center}
+\end{figure}
+
+The picture presented above represents a simplified diagram that shows how the navigation between endpoints occurs.
+It should be taken in consideration that, as the picture's label says, some nodes represented in this diagram are used by 
+both users and moderators and the diagram can not label those situations with detail. Those details can be better analysed
+in this report appendix about endpoints.\\
+
+The color code used in this diagram represents where each endpoint starts providing a better comprehension
+and visualization, e.g.: /restaurant/:restaurantId/meal/:mealId (endpoint for a specific restaurant meal) starts with a blue
+node (/restaurant); /meal/suggested (endpoint for suggested meals) starts with a yellow node (/meal).\\
+
 \subsection{Kotlin sequences}
 
 As previously stated, Kotlin is completely interoperable with Java and, as such, streams are also supported. However Kotlin introduced sequences which bring
@@ -253,6 +271,18 @@ BCrypt is a password-hashing function based on the Blowfish\cite{blowfish} ciphe
 \end{itemize}
 
 The JwtUtil is the core class which validates, generates and adds claims to the tokens.\\
+
+\subsubsection{User data safety}
+
+In the previous section it was shown that the user can register an account. It was made this way so the server can store
+insulin profiles, which will be better explained in the mobile application's section. The insulin profiles store user sensitive
+information and are encrypted when written inside the database using a symmetric cipher (AES-256) with a private key provided by an 
+environment variable from the host machine.\\
+
+The user can also delete its account. When an account is deleted all user sensitive information is deleted from the server: email,
+username, password, insulin profile and custom meals. However, its submitter identifier, which is a database generated number,
+is maintained in order to preserve its public submissions, in order to keep the platform's data consistent, so a user that makes many 
+public insertions does not compromise our data's consistency if its account is deleted.\\
 
 \section{Geolocation}
 
@@ -420,17 +450,24 @@ drawer menu and accessing the slide screen with the bottom bar.\\
 
 Here's the login and register workflow:
 
-\textbf{Workflow diagram}
-\textbf{TODO: add image}
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[scale=1]{_figures/auth-workflow.eps}
+        \caption{Meal selection menu}
+    \end{center}
+\end{figure}
 
 \subsubsection{Insulin profiles' creation and access}
 
-\textbf{TODO: add image}
 \begin{figure}[H]
     \begin{center}
         \begin{subfigure}{.3\textwidth}
             \includegraphics[scale=0.1]{_figures/addProfile.png}
             \caption{The fragment to add an insulin profile} 
+        \end{subfigure}
+        \begin{subfigure}{.3\textwidth}
+            \includegraphics[scale=0.1]{_figures/insulin_profiles_list.png}
+            \caption{The fragment to access and create insulin profiles} 
         \end{subfigure}
     \end{center}
 \end{figure}
@@ -462,7 +499,18 @@ platform's suggested meals and meals' ingredients.
 To use this feature, the user must create at least one insulin profile which time period matches the current time. If the user does not have a valid insulin profile for the current
 time, the profile information in this fragment will appear with blank fields.\\
 
-\textbf{TODO: add image}
+\begin{figure}[H]
+    \begin{center}
+        \begin{subfigure}{.3\textwidth}
+            \includegraphics[scale=0.1]{_figures/calc_with_profile.png}
+            \caption{Calculator with valid profile} 
+        \end{subfigure}
+        \begin{subfigure}{.3\textwidth}
+            \includegraphics[scale=0.1]{_figures/calc_without_profile.png}
+            \caption{Calculator without profile} 
+        \end{subfigure}%        
+    \end{center}
+\end{figure}
 
 Having a valid insulin profile, the user must measure its current blood glucose value and select a meal by pressing the plus green button.
 When this button is pressed, a tab menu will appear where the user can add:
@@ -473,13 +521,32 @@ When this button is pressed, a tab menu will appear where the user can add:
     \item suggested meals; 
 \end{itemize}
 
-\textbf{TODO: add image}
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[scale=0.1]{_figures/calc_meal_selection.png}
+        \caption{Meal selection menu}
+    \end{center}
+\end{figure}
 
 After these steps, the user is ready to calculate the insulin dosage that corresponds consuming the select meals, with its current blood glocuse for its current time.
 
-\textbf{TODO: add image}
+\begin{figure}[H]
+    \begin{center}
+        \begin{subfigure}{.3\textwidth}
+            \includegraphics[scale=0.1]{_figures/fullfilled_calc.png}
+            \caption{Calculator with all the valid field filled} 
+        \end{subfigure}
+        \begin{subfigure}{.3\textwidth}
+            \includegraphics[scale=0.1]{_figures/dosage_result.png}
+            \caption{Dosage result} 
+        \end{subfigure}%        
+    \end{center}
+\end{figure}
 
 \section{Web browser application}
+
+This web browser application will only serve the propose of moderation inside our platform, as we agreed that a good way to provide a good propose for this 
+component was to not duplicate the mobile application functionalities and to extend the platform's features.\\
 
 \subsection{Used tecnologies}
 
@@ -496,6 +563,16 @@ As website design pattern, we chose to conceive a single-page application. This 
 variety of reasons, being the main one a better performance comparing to a traditional multi-page application.\\
 
 \subsubsection{Routing}
+
+As mentioned that the web client application will only serve the propose of moderation, this routing diagram shows the
+navigation and routing inside it.
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[scale=0.7]{_figures/web-client-endpoints.eps}
+        \caption{The web client's navigation diagram}
+    \end{center}
+\end{figure}
 
 \subsection{Functionalities}
 
