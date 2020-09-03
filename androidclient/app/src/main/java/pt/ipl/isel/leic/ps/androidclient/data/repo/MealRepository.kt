@@ -55,6 +55,7 @@ class MealRepository(private val dataSource: MealDataSource) {
         ingredientMapper = outputIngredientMapper
     )
     private val outputPortionMapper = OutputPortionMapper()
+    private val outputRestaurantMealMapper = OutputRestaurantMealMapper()
 
     fun getByIdAndSource(dbId: Long, source: Source) =
         roomDb.mealInfoDao().getByIdAndSource(dbId, source.ordinal)
@@ -193,6 +194,20 @@ class MealRepository(private val dataSource: MealDataSource) {
             error = error
         )
     }
+
+    fun addRestaurantMeal(
+        restaurantItem: RestaurantItem,
+        mealItem: MealItem,
+        onSuccess: () -> Unit,
+        onError: (VolleyError) -> Unit,
+        userSession: UserSession
+    ) = dataSource.postRestaurantMeal(
+        restaurantId = restaurantItem.id!!,
+        restaurantMealOutput = outputRestaurantMealMapper.mapToOutputModel(mealItem),
+        onSuccess = { onSuccess() },
+        onError = onError,
+        jwt = userSession.jwt
+    )
 
     fun addCustomMeal(
         customMeal: CustomMeal,

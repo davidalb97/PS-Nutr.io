@@ -204,8 +204,8 @@ class MealDataSource(
     fun postRestaurantMeal(
         restaurantId: String,
         restaurantMealOutput: RestaurantMealOutput,
-        success: (CustomMealOutput) -> Unit,
-        error: (VolleyError) -> Unit,
+        onSuccess: (CustomMealOutput) -> Unit,
+        onError: (VolleyError) -> Unit,
         jwt: String
     ) {
         requestParser.requestAndParse(
@@ -220,8 +220,8 @@ class MealDataSource(
                 .toString(),
             reqHeader = buildAuthHeader(jwt),
             dtoClass = CustomMealOutput::class.java,
-            onSuccess = success,
-            onError = error,
+            onSuccess = onSuccess,
+            onError = onError,
             reqPayload = restaurantMealOutput
         )
     }
