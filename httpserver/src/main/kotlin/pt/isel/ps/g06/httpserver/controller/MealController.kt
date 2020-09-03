@@ -44,8 +44,8 @@ class MealController(
     fun getMeals(
             user: User?,
             @RequestParam cuisines: Collection<String>?,
-            @RequestParam @Min(0) skip: Long?,
-            @RequestParam @Min(0) @Max(MAX_COUNT) count: Long?
+            @RequestParam @Min(0) skip: Int?,
+            @RequestParam @Min(0) @Max(MAX_COUNT) count: Int?
     ): ResponseEntity<SimplifiedMealContainer> {
 
         var meals = mealService.getSuggestedMeals(
@@ -58,16 +58,16 @@ class MealController(
         if (cuisines != null && cuisines.isNotEmpty()) {
             //Filter by user cuisines
             meals = meals.filter {
-                it.cuisines.anyMatch { mealCuisines ->
+                it.cuisines.any { mealCuisines ->
                     cuisines.any { cuisine -> mealCuisines.name.equals(cuisine, ignoreCase = true) }
                 }
             }
         }
 
         //Perform final result reductions
-        meals = meals.skip(skip ?: 0)
+        meals = meals.drop(skip ?: 0)
         if (count != null) {
-            meals = meals.limit(count)
+            meals = meals.take(count)
         }
         return ResponseEntity
                 .ok()
@@ -134,6 +134,31 @@ class MealController(
                 UriComponentsBuilder
                         .fromUriString(MEAL)
                         .buildAndExpand(createdMeal.identifier)
+                        .toUri()
+        ).build()
+    }
+
+    @PutMapping(MEAL)
+    fun editCustomMeal(
+            @PathVariable(MEAL_ID_VALUE) mealId: Int,
+            @Valid @RequestBody meal: MealInput,
+            user: User
+    ): ResponseEntity<Void> {
+        //Due to validators we are sure fields are never null
+        val updatedMeal = mealService.editMeal(
+                submissionId = mealId,
+                submitterId = user.identifier,
+                name = meal.name!!,
+                quantity = meal.quantity!!,
+                ingredients = meal.ingredients!!,
+                cuisines = meal.cuisines!!,
+                mealType = MealType.CUSTOM
+        )
+
+        return ResponseEntity.created(
+                UriComponentsBuilder
+                        .fromUriString(MEAL)
+                        .buildAndExpand(updatedMeal.identifier)
                         .toUri()
         ).build()
     }

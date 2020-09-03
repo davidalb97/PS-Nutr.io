@@ -1,7 +1,6 @@
 package pt.isel.ps.g06.httpserver.dataAccess.output
 
 import pt.isel.ps.g06.httpserver.model.RestaurantMeal
-import kotlin.streams.toList
 
 data class PortionsOutput(
         val userPortion: Int?,

@@ -1,9 +1,9 @@
 package pt.isel.ps.g06.httpserver.dataAccess.db.dao
 
+import org.jdbi.v3.core.result.ResultIterable
 import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbUserVoteDto
-import java.util.stream.Stream
 
 interface UserVoteDao {
 
@@ -36,7 +36,4 @@ interface UserVoteDao {
             " WHERE $submissionId = :submissionId" +
             " AND $voterSubmitterId = :voterSubmitterId RETURNING *")
     fun delete(@Bind submissionId: Int, @Bind voterSubmitterId: Int): DbUserVoteDto
-
-    @SqlQuery("DELETE FROM $table WHERE $submissionId = :submissionId RETURNING *")
-    fun deleteAllById(@Bind submissionId: Int): Stream<DbUserVoteDto>
 }

@@ -7,17 +7,17 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.common.DatabaseContext
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.*
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbRestaurantCuisineDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbRestaurantDto
-import java.util.stream.Stream
-import kotlin.streams.toList
+import pt.isel.ps.g06.httpserver.util.asCachedSequence
 
 private val restaurantDaoClass = RestaurantDao::class.java
 
 @Repository
 class RestaurantDbRepository(private val databaseContext: DatabaseContext, private val cuisineDbRepository: CuisineDbRepository) {
-    fun getAllByCoordinates(latitude: Float, longitude: Float, radius: Int): Stream<DbRestaurantDto> {
+    fun getAllByCoordinates(latitude: Float, longitude: Float, radius: Int): Sequence<DbRestaurantDto> {
         return databaseContext.inTransaction {
             return@inTransaction it.attach(RestaurantDao::class.java)
                     .getByCoordinates(latitude, longitude, radius)
+                    .asCachedSequence()
         }
     }
 
@@ -30,7 +30,8 @@ class RestaurantDbRepository(private val databaseContext: DatabaseContext, priva
 
     fun getApiRestaurant(apiSubmitterId: Int, apiId: String): DbRestaurantDto? {
         return databaseContext.inTransaction {
-            return@inTransaction it.attach(restaurantDaoClass).getApiRestaurant(apiSubmitterId, apiId)
+            return@inTransaction it.attach(restaurantDaoClass)
+                    .getApiRestaurant(apiSubmitterId, apiId)
         }
     }
 
@@ -72,11 +73,12 @@ class RestaurantDbRepository(private val databaseContext: DatabaseContext, priva
             if (!cuisineNames.isEmpty()) {
                 //TODO Make better
                 val cuisines = cuisineDbRepository
-                        .getAllByNames(cuisineNames.stream())
+                        .getAllByNames(cuisineNames.asSequence())
                         .map { DbRestaurantCuisineDto(submissionId, it.submission_id) }
 
                 //TODO Avoid eager call
-                handle.attach(RestaurantCuisineDao::class.java).insertAll(cuisines.toList())
+                handle.attach(RestaurantCuisineDao::class.java)
+                        .insertAll(cuisines.toList())
             }
 
             //Insert contracts (REPORTABLE, API if there is an apiId, VOTABLE if it doesn't)
@@ -90,7 +92,8 @@ class RestaurantDbRepository(private val databaseContext: DatabaseContext, priva
 
     fun addOwner(restaurantId: Int, ownerId: Int): DbRestaurantDto {
         return databaseContext.inTransaction {
-            return@inTransaction it.attach(restaurantDaoClass).addOwner(restaurantId, ownerId)
+            return@inTransaction it.attach(restaurantDaoClass)
+                    .addOwner(restaurantId, ownerId)
         }
     }
 }

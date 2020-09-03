@@ -1,10 +1,10 @@
 package pt.isel.ps.g06.httpserver.dataAccess.db.dao
 
+import org.jdbi.v3.core.result.ResultIterable
 import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.customizer.BindList
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbApiDto
-import java.util.stream.Stream
 
 //SubmissionSubmitter table constants
 private const val SS_table = SubmissionSubmitterDao.table
@@ -21,10 +21,10 @@ interface ApiDao {
     }
 
     @SqlQuery("SELECT * FROM $table WHERE $table.$name IN (<names>)")
-    fun getApiSubmittersByName(@BindList names: Collection<String>): Stream<DbApiDto>
+    fun getApiSubmittersByName(@BindList names: Collection<String>): ResultIterable<DbApiDto>
 
     @SqlQuery("SELECT * FROM $table")
-    fun getAll(): Stream<DbApiDto>
+    fun getAll(): ResultIterable<DbApiDto>
 
     @SqlQuery("SELECT * FROM $table WHERE $id = :submitterId")
     fun getById(@Bind submitterId: Int): DbApiDto?

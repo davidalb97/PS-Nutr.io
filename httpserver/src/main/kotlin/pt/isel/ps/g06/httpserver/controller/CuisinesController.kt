@@ -14,7 +14,6 @@ import pt.isel.ps.g06.httpserver.dataAccess.output.cuisines.toSimplifiedCuisines
 import pt.isel.ps.g06.httpserver.service.CuisinesService
 import javax.validation.constraints.Max
 import javax.validation.constraints.Min
-import kotlin.streams.toList
 
 @Validated
 @RestController

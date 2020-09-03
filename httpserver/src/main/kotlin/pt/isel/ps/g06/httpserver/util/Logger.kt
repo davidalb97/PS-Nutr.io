@@ -1,4 +1,3 @@
-
 package pt.isel.ps.g06.httpserver.util
 
 import org.slf4j.LoggerFactory

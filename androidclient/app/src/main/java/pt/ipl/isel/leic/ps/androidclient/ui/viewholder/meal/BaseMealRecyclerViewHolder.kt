@@ -12,6 +12,7 @@ import pt.ipl.isel.leic.ps.androidclient.ui.modular.IVoteProgress
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.ICalculatorActionButton
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.IDeleteActionButton
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.IFavoriteActionButton
+import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.menu.IEditMenuItem
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.menu.MenuItemFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.menu.IPopupMenuButton
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.menu.IReportMenuItem
@@ -21,6 +22,7 @@ import pt.ipl.isel.leic.ps.androidclient.ui.util.*
 import pt.ipl.isel.leic.ps.androidclient.ui.viewholder.BaseRecyclerViewHolder
 
 abstract class BaseMealRecyclerViewHolder<T : MealItem>(
+    private val onEditNavigation: Navigation? = null,
     override val actions: List<ItemAction>,
     navDestination: Navigation,
     view: View,
@@ -36,6 +38,7 @@ abstract class BaseMealRecyclerViewHolder<T : MealItem>(
     IFavoriteActionButton,
     IPopupMenuButton,
     IReportMenuItem,
+    IEditMenuItem,
     IMealItemDetail<T>,
     ICheckBox<T> {
 
@@ -77,10 +80,11 @@ abstract class BaseMealRecyclerViewHolder<T : MealItem>(
         super.setupCalculateAction(view)
         super.setupPressAction(view)
         super.setupOnDeleteAction(view, bindingAdapter, layoutPosition)
-        super.setupFavoriteButton(view)
+        super.setupFavoriteButton(view, item.favorites)
         super.setupImage(view, item.imageUri)
-        super.setupVoteBarCounters(view, item.votes, item.votes?.isVotable ?: false)
-        super.setupReportMenuItem()
+        super.setupVoteBarCounters(view, item.votes)
+        super.setupReportMenuItem(item.isReportable ?: false)
+        super.setupEditMenuItem()
         super.setupPopupMenuButton(view)
     }
 
@@ -93,5 +97,10 @@ abstract class BaseMealRecyclerViewHolder<T : MealItem>(
         bundle.putDbId(this.item.dbId)
     }
 
-    override fun isFavorite(): Boolean = item.favorites?.isFavorite ?: false
+    override fun onEdit(onSuccess: () -> Unit) {
+        onEditNavigation?.also { navigation ->
+            sendToDestination(view, navigation)
+        }
+        onSuccess()
+    }
 }

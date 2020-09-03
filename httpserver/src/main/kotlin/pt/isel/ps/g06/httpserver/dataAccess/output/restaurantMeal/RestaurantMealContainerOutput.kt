@@ -3,7 +3,6 @@ package pt.isel.ps.g06.httpserver.dataAccess.output.restaurantMeal
 import pt.isel.ps.g06.httpserver.model.Meal
 import pt.isel.ps.g06.httpserver.model.RestaurantMeal
 import pt.isel.ps.g06.httpserver.model.restaurant.Restaurant
-import kotlin.streams.toList
 
 data class RestaurantMealContainerOutput(
         val restaurantIdentifier: String,

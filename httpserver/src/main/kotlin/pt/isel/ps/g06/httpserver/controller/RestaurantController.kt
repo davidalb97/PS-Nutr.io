@@ -28,7 +28,6 @@ import pt.isel.ps.g06.httpserver.service.UserService
 import javax.validation.Valid
 import javax.validation.constraints.Max
 import javax.validation.constraints.Min
-import kotlin.streams.toList
 
 private const val INVALID_RESTAURANT_SEARCH = "To search nearby restaurants, a geolocation must be given!"
 

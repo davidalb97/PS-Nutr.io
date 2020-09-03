@@ -13,7 +13,6 @@ import pt.isel.ps.g06.httpserver.model.Votes
 import pt.isel.ps.g06.httpserver.model.modular.toUserPortion
 import pt.isel.ps.g06.httpserver.model.modular.toUserPredicate
 import pt.isel.ps.g06.httpserver.model.modular.toUserVote
-import java.util.stream.Stream
 
 @Component
 class DbRestaurantMealInfoResponseMapper(
@@ -55,14 +54,15 @@ class DbRestaurantMealInfoResponseMapper(
                 },
                 isFavorable = toUserPredicate(default = { true }) { userId ->
                     //A user cannot favorite on it's own submission
-                    dto.submission_id?.let { !submissionDbRepository.isSubmissionOwner(it, userId) } ?: true
+                    dto.submission_id?.let { !submissionDbRepository.isSubmissionOwner(it, userId) }
+                            ?: !submissionDbRepository.isSubmissionOwner(dto.meal_submission_id, userId)
                 },
                 isFavorite = toUserPredicate(default = { false }) { userId ->
                     dto.submission_id?.let { dbFavoriteRepo.getFavorite(it, userId) } ?: false
                 },
                 portions = dto.submission_id?.let(dbPortionRepo::getAllByRestaurantMealId)
                         ?.map(dbPortionsMapper::mapTo)
-                        ?: Stream.empty(),
+                        ?: emptySequence(),
                 userPortion = toUserPortion { userId ->
                     dto.submission_id?.let {
                         dbPortionRepo.getUserPortion(it, userId)

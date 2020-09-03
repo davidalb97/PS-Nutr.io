@@ -14,7 +14,6 @@ import pt.isel.ps.g06.httpserver.service.ReportService
 import pt.isel.ps.g06.httpserver.service.UserService
 import javax.validation.constraints.Max
 import javax.validation.constraints.Min
-import kotlin.streams.toList
 
 @RestController
 class ReportController(
@@ -46,7 +45,7 @@ class ReportController(
     fun getAllReportsFromSubmission(
             @PathVariable(SUBMISSION_ID_VALUE) submissionId: Int,
             user: User
-    ): ResponseEntity<SubmissionReportsContainerOutput>  {
+    ): ResponseEntity<SubmissionReportsContainerOutput> {
 
         // Check if the user is a moderator
         userService.ensureModerator(user)
@@ -68,7 +67,7 @@ class ReportController(
     fun deleteReport(
             @PathVariable(REPORT_ID_VALUE) submissionId: Int,
             user: User
-    ): ResponseEntity<Void>  {
+    ): ResponseEntity<Void> {
 
         // Check if the user is a moderator
         userService.ensureModerator(user)

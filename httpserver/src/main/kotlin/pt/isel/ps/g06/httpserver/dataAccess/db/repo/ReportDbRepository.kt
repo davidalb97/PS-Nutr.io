@@ -7,53 +7,61 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionContractType.REPORTABLE
 import pt.isel.ps.g06.httpserver.dataAccess.db.common.DatabaseContext
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.ReportDao
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.*
-import java.util.stream.Stream
+import pt.isel.ps.g06.httpserver.util.asCachedSequence
 
 private val reportDaoClass = ReportDao::class.java
 
 @Repository
 class ReportDbRepository(private val databaseContext: DatabaseContext, private val submissionDbRepository: SubmissionDbRepository) {
 
-    fun getAll(skip: Int?, count: Int?): Stream<DbReportSubmissionDto> {
+    fun getAll(skip: Int?, count: Int?): Sequence<DbReportSubmissionDto> {
         return databaseContext.inTransaction {
             val dao = it.attach(reportDaoClass)
             val allReports = dao.getAll(skip, count)
 
-            return@inTransaction allReports.map { reportDto ->
-                val reportDetail = dao.getReportedSubmissionDetail(reportDto.submission_id)
-                DbReportSubmissionDto(
-                        report_id = reportDto.report_id,
-                        submitter_id = reportDto.submitter_id,
-                        submission_id = reportDto.submission_id,
-                        description = reportDto.description,
-                        _submission_name = reportDetail!!._submission_name,
-                        submission_submitter = reportDetail.submitter_id
-                )
-            }
+            return@inTransaction allReports
+                    .asCachedSequence()
+                    .map { reportDto ->
+                        val reportDetail = dao.getReportedSubmissionDetail(reportDto.submission_id)
+                        DbReportSubmissionDto(
+                                report_id = reportDto.report_id,
+                                submitter_id = reportDto.submitter_id,
+                                submission_id = reportDto.submission_id,
+                                description = reportDto.description,
+                                _submission_name = reportDetail!!._submission_name,
+                                submission_submitter = reportDetail.submitter_id
+                        )
+                    }
         }
     }
 
-    fun getAllBySubmissionType(submissionType: String, skip: Int?, count: Int?): Stream<DbReportedSubmissionDto> {
+    fun getAllBySubmissionType(submissionType: String, skip: Int?, count: Int?): Sequence<DbReportedSubmissionDto> {
         return databaseContext.inTransaction {
-            return@inTransaction it.attach(reportDaoClass).getAllReportedSubmissionsByType(submissionType, skip, count)
+            return@inTransaction it.attach(reportDaoClass)
+                    .getAllReportedSubmissionsByType(submissionType, skip, count)
+                    .asCachedSequence()
         }
     }
 
-    fun getAllFromSubmission(submissionId: Int): Stream<DbSubmissionReportDto> {
+    fun getAllFromSubmission(submissionId: Int): Sequence<DbSubmissionReportDto> {
         return databaseContext.inTransaction {
-            return@inTransaction it.attach(reportDaoClass).getAllBySubmission(submissionId)
+            return@inTransaction it.attach(reportDaoClass)
+                    .getAllBySubmission(submissionId)
+                    .asCachedSequence()
         }
     }
 
     fun getReportedSubmissionDetail(submissionId: Int): DbReportSubmissionDetailDto? {
         return databaseContext.inTransaction {
-            return@inTransaction it.attach(reportDaoClass).getReportedSubmissionDetail(submissionId)
+            return@inTransaction it.attach(reportDaoClass)
+                    .getReportedSubmissionDetail(submissionId)
         }
     }
 
     fun getReportFromSubmitter(submitterId: Int, submissionId: Int): DbReportDto? {
         return databaseContext.inTransaction {
-            return@inTransaction it.attach(reportDaoClass).getReportFromSubmitter(submitterId, submissionId)
+            return@inTransaction it.attach(reportDaoClass)
+                    .getReportFromSubmitter(submitterId, submissionId)
         }
     }
 

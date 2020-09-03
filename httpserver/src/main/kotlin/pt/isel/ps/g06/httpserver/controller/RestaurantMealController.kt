@@ -198,6 +198,22 @@ class RestaurantMealController(
                 .build()
     }
 
+    @PutMapping(RESTAURANT_MEAL_PORTION)
+    fun updateMealPortion(
+            @PathVariable(RESTAURANT_ID_VALUE) restaurantId: String,
+            @PathVariable(MEAL_ID_VALUE) mealId: Int,
+            @Valid @RequestBody portion: PortionInput,
+            user: User
+    ): ResponseEntity<Void> {
+        val restaurantIdentifier = restaurantIdentifierBuilder.extractIdentifiers(restaurantId)
+
+        restaurantMealService.updateUserPortion(user, restaurantIdentifier, mealId, portion)
+
+        return ResponseEntity
+                .ok()
+                .build()
+    }
+
     @DeleteMapping(RESTAURANT_MEAL_PORTION)
     fun deleteMealPortion(
             @PathVariable(RESTAURANT_ID_VALUE) restaurantId: String,

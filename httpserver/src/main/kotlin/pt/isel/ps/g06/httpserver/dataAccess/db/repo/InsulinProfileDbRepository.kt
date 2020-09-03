@@ -9,9 +9,9 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.dao.InsulinProfileDao
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbUserEncInsulinProfileDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbUserInsulinProfileDto
 import pt.isel.ps.g06.httpserver.security.converter.ColumnCryptoConverter
+import pt.isel.ps.g06.httpserver.util.asCachedSequence
 import java.time.LocalTime
 import java.time.OffsetDateTime
-import java.util.stream.Stream
 
 private val insulinProfileDaoClass = InsulinProfileDao::class.java
 
@@ -22,11 +22,12 @@ class InsulinProfileDbRepository(
         private val databaseContext: DatabaseContext
 ) {
 
-    fun getAllFromUser(submitterId: Int, count: Int?, skip: Int?): Stream<DbUserInsulinProfileDto> {
+    fun getAllFromUser(submitterId: Int, count: Int?, skip: Int?): Sequence<DbUserInsulinProfileDto> {
         return databaseContext.inTransaction { handle ->
             return@inTransaction handle
                     .attach(insulinProfileDaoClass)
                     .getAllFromUser(submitterId, count, skip)
+                    .asCachedSequence()
                     .map(dbInsulinProfileDtoMapper::toDbUserInsulinProfileDto)
         }
     }
@@ -84,11 +85,12 @@ class InsulinProfileDbRepository(
         }
     }
 
-    fun deleteAllBySubmitter(submitterId: Int): Stream<DbUserEncInsulinProfileDto> {
+    fun deleteAllBySubmitter(submitterId: Int): Sequence<DbUserEncInsulinProfileDto> {
         return databaseContext.inTransaction { handle ->
             return@inTransaction handle
                     .attach(insulinProfileDaoClass)
                     .deleteAllBySubmitterId(submitterId)
+                    .asCachedSequence()
         }
     }
 

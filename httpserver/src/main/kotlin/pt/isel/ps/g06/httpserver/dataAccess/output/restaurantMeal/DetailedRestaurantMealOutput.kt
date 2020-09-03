@@ -14,7 +14,6 @@ import pt.isel.ps.g06.httpserver.dataAccess.output.user.toSimplifiedUserOutput
 import pt.isel.ps.g06.httpserver.model.RestaurantMeal
 import java.net.URI
 import java.time.OffsetDateTime
-import kotlin.streams.toList
 
 class DetailedRestaurantMealOutput(
         identifier: Int,

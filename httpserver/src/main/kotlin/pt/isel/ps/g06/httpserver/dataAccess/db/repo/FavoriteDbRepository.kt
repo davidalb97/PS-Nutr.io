@@ -9,6 +9,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.common.DatabaseContext
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.FavoriteDao
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.SubmissionContractDao
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.SubmissionDao
+import pt.isel.ps.g06.httpserver.util.asCachedSequence
 
 @Repository
 class FavoriteDbRepository(private val databaseContext: DatabaseContext) {
@@ -40,8 +41,9 @@ class FavoriteDbRepository(private val databaseContext: DatabaseContext) {
 
                 val contracts = handle.attach(SubmissionContractDao::class.java)
                         .getAllById(submissionId)
+                        .asCachedSequence()
 
-                if (contracts.noneMatch { it.submission_contract == SubmissionContractType.FAVORABLE.toString() }) {
+                if (contracts.none { it.submission_contract == SubmissionContractType.FAVORABLE.toString() }) {
                     throw SubmissionNotFavorableException()
                 }
 

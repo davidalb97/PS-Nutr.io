@@ -10,7 +10,8 @@ class InputMealInfoMapper(
     private val inputCuisineMapper: InputCuisineMapper,
     private val inputMealIngredientMapper: InputMealIngredientMapper,
     private val inputUserMapper: InputSubmissionOwnerMapper,
-    private val inputFavoriteMapper: InputFavoriteMapper
+    private val inputFavoriteMapper: InputFavoriteMapper,
+    private val inputPortionMapper: InputPortionMapper
 ) {
 
     fun mapToModel(dto: MealInfoInput, restaurantId: String?) = MealInfo(
@@ -33,8 +34,8 @@ class InputMealInfoMapper(
         mealComponents = dto.composedBy?.let {
             inputMealIngredientMapper.mapToListModel(it.meals, true)
         } ?: emptyList(),
-        cuisines = dto.cuisines?.let { inputCuisineMapper.mapToListModel(dto.cuisines) } ?: emptyList(),
-        portions = emptyList(),
+        cuisines = dto.cuisines?.let { inputCuisineMapper.mapToListModel(it) } ?: emptyList(),
+        portions = dto.portions?.let { inputPortionMapper.mapToModel(it) },
         isVerified = dto.isVerified ?: false,
         isReportable = dto.isReportable ?: false,
         source = Source.API,

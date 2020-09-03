@@ -4,7 +4,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbReportedSubmissionDto
 import pt.isel.ps.g06.httpserver.model.report.ReportSubmissionDetail
 import pt.isel.ps.g06.httpserver.model.report.ReportedSubmission
 
-class ReportedSubmissionResponseMapper: ResponseMapper<DbReportedSubmissionDto, ReportedSubmission> {
+class ReportedSubmissionResponseMapper : ResponseMapper<DbReportedSubmissionDto, ReportedSubmission> {
 
     override fun mapTo(dto: DbReportedSubmissionDto): ReportedSubmission =
             ReportedSubmission(

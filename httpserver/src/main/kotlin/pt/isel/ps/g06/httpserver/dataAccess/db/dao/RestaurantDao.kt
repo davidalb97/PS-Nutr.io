@@ -1,9 +1,9 @@
 package pt.isel.ps.g06.httpserver.dataAccess.db.dao
 
+import org.jdbi.v3.core.result.ResultIterable
 import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbRestaurantDto
-import java.util.stream.Stream
 
 //SubmissionSubmitter table constants
 private const val SS_table = SubmissionSubmitterDao.table
@@ -33,7 +33,7 @@ interface RestaurantDao {
             "false" +
             ") <= :radius"
     )
-    fun getByCoordinates(@Bind latitude: Float, @Bind longitude: Float, @Bind radius: Int): Stream<DbRestaurantDto>
+    fun getByCoordinates(@Bind latitude: Float, @Bind longitude: Float, @Bind radius: Int): ResultIterable<DbRestaurantDto>
 
     @SqlQuery("SELECT * FROM $table WHERE $id = :submissionId")
     fun getBySubmissionId(@Bind submissionId: Int): DbRestaurantDto?
@@ -63,7 +63,7 @@ interface RestaurantDao {
     fun delete(@Bind submissionId: Int): DbRestaurantDto
 
     @SqlQuery("UPDATE $table SET $name = :name WHERE $id = :submissionId RETURNING *")
-    fun update(@Bind submissionId: Int, @Bind name: String): Stream<DbRestaurantDto>
+    fun update(@Bind submissionId: Int, @Bind name: String): Collection<DbRestaurantDto>
 
     @SqlQuery("UPDATE $table SET $ownerId = :ownerId WHERE $id = :restaurantId RETURNING *")
     fun addOwner(@Bind restaurantId: Int, @Bind ownerId: Int): DbRestaurantDto

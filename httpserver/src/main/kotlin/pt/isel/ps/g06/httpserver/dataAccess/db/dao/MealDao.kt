@@ -1,12 +1,12 @@
 package pt.isel.ps.g06.httpserver.dataAccess.db.dao
 
+import org.jdbi.v3.core.result.ResultIterable
 import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.customizer.BindList
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import pt.isel.ps.g06.httpserver.dataAccess.db.MEAL_TYPE_CUSTOM
 import pt.isel.ps.g06.httpserver.dataAccess.db.MEAL_TYPE_SUGGESTED_MEAL
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbMealDto
-import java.util.stream.Stream
 
 //Restaurant table constants
 private const val RM_table = RestaurantMealDao.table
@@ -63,7 +63,7 @@ interface MealDao {
     }
 
     @SqlQuery("SELECT * FROM $table")
-    fun getAll(): Stream<DbMealDto>
+    fun getAll(): ResultIterable<DbMealDto>
 
     @SqlQuery("SELECT * FROM $table WHERE $id = :submissionId")
     fun getById(@Bind submissionId: Int): DbMealDto?
@@ -80,7 +80,7 @@ interface MealDao {
             @Bind mealType: String,
             @Bind skip: Int?,
             @Bind count: Int?
-    ): Stream<DbMealDto>
+    ): ResultIterable<DbMealDto>
 
     @SqlQuery("SELECT $attributes " +
             "FROM $table " +
@@ -92,7 +92,7 @@ interface MealDao {
             @Bind submitterId: Int,
             @Bind count: Int?,
             @Bind skip: Int?
-    ): Stream<DbMealDto>
+    ): ResultIterable<DbMealDto>
 
     @SqlQuery("SELECT $attributes" +
             " FROM $table" +
@@ -104,7 +104,7 @@ interface MealDao {
             " AND $C_table.$C_name IN (<cuisineNames>)" +
             " ORDER BY $table.$name ASC"
     )
-    fun getAllSuggestedForCuisineNames(@BindList cuisineNames: Collection<String>): Stream<DbMealDto>
+    fun getAllSuggestedForCuisineNames(@BindList cuisineNames: Collection<String>): ResultIterable<DbMealDto>
 
     @SqlQuery("SELECT DISTINCT ON ($table.$name) $attributes" +
             " FROM $C_table" +
@@ -126,7 +126,7 @@ interface MealDao {
     fun getAllSuggestedForApiCuisines(
             @Bind submitterId: Int,
             @BindList apiIds: Collection<String>
-    ): Stream<DbMealDto>
+    ): ResultIterable<DbMealDto>
 
     @SqlQuery("SELECT $attributes" +
             " FROM $table" +
@@ -138,7 +138,7 @@ interface MealDao {
             @Bind skip: Int?,
             @Bind count: Int?,
             @Bind cuisines: Collection<String>?
-    ): Stream<DbMealDto>
+    ): ResultIterable<DbMealDto>
 
     @SqlQuery("INSERT INTO $table($id, $name, $carbs, $quantity, $unit, $meal_type) " +
             "VALUES(:submissionId, :mealName, :carbs, :quantity, :unit, :mealType) " +
@@ -153,8 +153,23 @@ interface MealDao {
             @Bind mealType: String
     ): DbMealDto
 
-    @SqlQuery("DELETE FROM $table WHERE $id = :submissionId RETURNING *")
-    fun delete(@Bind submissionId: Int): DbMealDto
+    @SqlQuery("UPDATE $table SET " +
+            "$name = :mealName, " +
+            "$carbs = :carbs, " +
+            "$quantity = :quantity, " +
+            "$unit = :unit, " +
+            "$meal_type = :mealType " +
+            "WHERE $id = :submissionId " +
+            "RETURNING *"
+    )
+    fun update(
+            @Bind submissionId: Int,
+            @Bind mealName: String,
+            @Bind carbs: Int,
+            @Bind quantity: Int,
+            @Bind unit: String = "gr",
+            @Bind mealType: String
+    ): DbMealDto
 
     @SqlQuery("SELECT $attributes " +
             "FROM $table " +
@@ -163,14 +178,14 @@ interface MealDao {
             "LIMIT :count " +
             "OFFSET :skip"
     )
-    fun getAllByType(@Bind mealType: String, @Bind skip: Long?, @Bind count: Long?): Stream<DbMealDto>
+    fun getAllByType(@Bind mealType: String, @Bind skip: Int?, @Bind count: Int?): ResultIterable<DbMealDto>
 
     @SqlQuery("SELECT $attributes " +
             "FROM $table " +
             "WHERE $table.$id IN (<submissionIds>) " +
             "ORDER BY $table.$name ASC "
     )
-    fun getAllIngredientsByIds(@BindList submissionIds: Collection<Int>): Stream<DbMealDto>
+    fun getAllIngredientsByIds(@BindList submissionIds: Collection<Int>): ResultIterable<DbMealDto>
 
     @SqlQuery("SELECT $attributes " +
             "FROM $table " +
@@ -179,5 +194,5 @@ interface MealDao {
             "WHERE $RM_table.$RM_restaurantId = :restaurantId " +
             "AND $table.$meal_type = '$MEAL_TYPE_CUSTOM'"
     )
-    fun getAllUserMealsByRestaurantId(@Bind restaurantId: Int): Stream<DbMealDto>
+    fun getAllUserMealsByRestaurantId(@Bind restaurantId: Int): ResultIterable<DbMealDto>
 }

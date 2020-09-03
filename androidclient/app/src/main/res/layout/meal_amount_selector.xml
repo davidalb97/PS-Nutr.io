@@ -59,7 +59,6 @@
             android:layout_below="@+id/meal_amount_amount_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
             android:layout_marginEnd="10dp"
             android:text="TEMPLATE"
             android:textColor="?attr/textColor"

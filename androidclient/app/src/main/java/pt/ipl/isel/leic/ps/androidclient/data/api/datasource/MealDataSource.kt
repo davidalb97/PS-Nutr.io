@@ -9,7 +9,6 @@ import pt.ipl.isel.leic.ps.androidclient.data.api.dto.output.*
 import pt.ipl.isel.leic.ps.androidclient.data.api.request.HTTPMethod
 import pt.ipl.isel.leic.ps.androidclient.data.api.request.PayloadResponse
 import pt.ipl.isel.leic.ps.androidclient.data.api.request.RequestParser
-import pt.ipl.isel.leic.ps.androidclient.data.model.MealInfo
 import pt.ipl.isel.leic.ps.androidclient.data.util.appendPath
 import pt.ipl.isel.leic.ps.androidclient.data.util.appendQueryNotNullListParameter
 import pt.ipl.isel.leic.ps.androidclient.data.util.appendQueryNotNullParameter
@@ -227,6 +226,36 @@ class MealDataSource(
         )
     }
 
+    fun postRestaurantMealPortion(
+        restaurantId: String,
+        mealId: Int,
+        portionOutput: PortionOutput,
+        onSuccess: (Int) -> Unit,
+        onError: (VolleyError) -> Unit,
+        jwt: String
+    ) {
+
+        requestParser.request(
+            method = HTTPMethod.POST,
+            uri = Uri.Builder()
+                .scheme(SCHEME)
+                .encodedAuthority(ADDRESS_PORT)
+                .appendPath(RESTAURANT_PATH)
+                .appendEncodedPath(restaurantId)
+                .appendPath(MEAL_PATH)
+                .appendPath(mealId)
+                .appendPath(PORTION_PATH)
+                .build()
+                .toString(),
+            reqHeader = buildAuthHeader(jwt),
+            reqPayload = portionOutput,
+            onError = onError,
+            responseConsumer = { payloadResponse ->
+                onSuccess(payloadResponse.status)
+            }
+        )
+    }
+
     /**
      * ----------------------------- DELETEs ---------------------------
      */
@@ -289,7 +318,7 @@ class MealDataSource(
         jwt: String
     ) {
         requestParser.request(
-            method = HTTPMethod.POST,
+            method = HTTPMethod.PUT,
             uri = Uri.Builder()
                 .scheme(SCHEME)
                 .encodedAuthority(ADDRESS_PORT)
@@ -406,6 +435,58 @@ class MealDataSource(
             reqPayload = reportOutput,
             onError = error,
             responseConsumer = { success() }
+        )
+    }
+
+    fun putRestaurantMealPortion(
+        restaurantId: String,
+        mealId: Int,
+        portionOutput: PortionOutput,
+        onSuccess: (Int) -> Unit,
+        onError: (VolleyError) -> Unit,
+        jwt: String
+    ) {
+        requestParser.request(
+            method = HTTPMethod.PUT,
+            uri = Uri.Builder()
+                .scheme(SCHEME)
+                .encodedAuthority(ADDRESS_PORT)
+                .appendPath(RESTAURANT_PATH)
+                .appendEncodedPath(restaurantId)
+                .appendPath(MEAL_PATH)
+                .appendPath(mealId)
+                .appendPath(PORTION_PATH)
+                .build()
+                .toString(),
+            reqHeader = buildAuthHeader(jwt),
+            reqPayload = portionOutput,
+            onError = onError,
+            responseConsumer = { onSuccess(it.status) }
+        )
+    }
+
+    fun deleteRestaurantMealPortion(
+        restaurantId: String,
+        mealId: Int,
+        onSuccess: (Int) -> Unit,
+        onError: (VolleyError) -> Unit,
+        jwt: String
+    ) {
+        requestParser.request(
+            method = HTTPMethod.DELETE,
+            uri = Uri.Builder()
+                .scheme(SCHEME)
+                .encodedAuthority(ADDRESS_PORT)
+                .appendPath(RESTAURANT_PATH)
+                .appendEncodedPath(restaurantId)
+                .appendPath(MEAL_PATH)
+                .appendPath(mealId)
+                .appendPath(PORTION_PATH)
+                .build()
+                .toString(),
+            reqHeader = buildAuthHeader(jwt),
+            onError = onError,
+            responseConsumer = { onSuccess(it.status) }
         )
     }
 }

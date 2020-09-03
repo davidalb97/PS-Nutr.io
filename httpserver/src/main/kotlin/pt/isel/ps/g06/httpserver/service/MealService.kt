@@ -8,7 +8,6 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.repo.FavoriteDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.MealDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.input.ingredient.IngredientInput
 import pt.isel.ps.g06.httpserver.model.Meal
-import java.util.stream.Stream
 
 @Service
 class MealService(
@@ -26,18 +25,18 @@ class MealService(
                 ?.let(dbMealResponseMapper::mapTo)
     }
 
-    fun getSuggestedMeals(skip: Long?, count: Long?, cuisines: Collection<String>?): Stream<Meal> {
+    fun getSuggestedMeals(skip: Int?, count: Int?, cuisines: Collection<String>?): Sequence<Meal> {
         return dbMealRepository
                 .getAllSuggestedMeals(skip, count, cuisines)
                 .map { dbMealResponseMapper.mapTo(it) }
     }
 
-    fun getUserCustomMeals(submitterId: Int, skip: Int?, count: Int?): Stream<Meal> =
+    fun getUserCustomMeals(submitterId: Int, skip: Int?, count: Int?): Sequence<Meal> =
             dbMealRepository
                     .getBySubmitterId(submitterId, skip, count)
                     .map(dbMealResponseMapper::mapTo)
 
-    fun getUserFavoriteMeals(submitterId: Int, count: Int?, skip: Int?): Stream<Meal> =
+    fun getUserFavoriteMeals(submitterId: Int, count: Int?, skip: Int?): Sequence<Meal> =
             dbMealRepository
                     .getAllUserFavorites(submitterId, count, skip)
                     .map(dbMealResponseMapper::mapTo)
@@ -62,6 +61,30 @@ class MealService(
         )
 
         return dbMealResponseMapper.mapTo(createdMeal)
+    }
+
+    fun editMeal(
+            submissionId: Int,
+            submitterId: Int,
+            name: String,
+            quantity: Int,
+            ingredients: Collection<IngredientInput>,
+            cuisines: Collection<String>,
+            mealType: MealType
+    ): Meal {
+        validateMealQuantity(ingredients, quantity)
+
+        val updatedMeal = dbMealRepository.update(
+                submissionId = submissionId,
+                submitterId = submitterId,
+                mealName = name,
+                cuisines = cuisines,
+                ingredients = ingredients,
+                quantity = quantity,
+                type = mealType
+        )
+
+        return dbMealResponseMapper.mapTo(updatedMeal)
     }
 
     private fun validateMealQuantity(ingredients: Collection<IngredientInput>, quantity: Int) {

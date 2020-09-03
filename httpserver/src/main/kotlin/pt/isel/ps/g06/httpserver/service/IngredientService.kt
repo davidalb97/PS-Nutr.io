@@ -6,7 +6,6 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.MealType
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.MealDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.input.meal.MealInput
 import pt.isel.ps.g06.httpserver.model.MealIngredient
-import java.util.stream.Stream
 
 @Service
 class IngredientService(
@@ -14,7 +13,7 @@ class IngredientService(
         private val ingredientResponseMapper: DbIngredientResponseMapper
 ) {
 
-    fun getIngredients(skip: Long?, count: Long?): Stream<MealIngredient> {
+    fun getIngredients(skip: Int?, count: Int?): Sequence<MealIngredient> {
         return mealDbRepository
                 .getAllIngredients(skip, count)
                 .map(ingredientResponseMapper::mapTo)

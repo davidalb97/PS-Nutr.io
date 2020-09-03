@@ -36,6 +36,7 @@ class DatabaseContext(jdbi: Jdbi) {
 
             } catch (e: Exception) {
                 handle.rollback()
+                throw e
             }
         }
 

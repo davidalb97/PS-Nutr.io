@@ -12,14 +12,13 @@ import pt.isel.ps.g06.httpserver.model.MealComposition
 import pt.isel.ps.g06.httpserver.model.MealIngredient
 import pt.isel.ps.g06.httpserver.model.NutritionalValues
 import pt.isel.ps.g06.httpserver.model.modular.toUserPredicate
-import java.util.stream.Stream
 
 @Component
 class DbMealIngredientResponseMapper(
         private val dbFavoriteRepo: FavoriteDbRepository,
         private val dbMealRepo: MealDbRepository
-) : ResponseMapper<DbMealDto, Stream<MealIngredient>> {
-    override fun mapTo(dto: DbMealDto): Stream<MealIngredient> {
+) : ResponseMapper<DbMealDto, Sequence<MealIngredient>> {
+    override fun mapTo(dto: DbMealDto): Sequence<MealIngredient> {
         return dbMealRepo
                 .getMealIngredients(dto.submission_id)
                 .map {
@@ -56,8 +55,8 @@ class DbMealComponentResponseMapper(
         private val dbSubmitterRepo: SubmitterDbRepository,
         private val restaurantMealResponseMapper: DbRestaurantMealInfoResponseMapper,
         private val submissionDbRepository: SubmissionDbRepository
-) : ResponseMapper<DbMealDto, Stream<Meal>> {
-    override fun mapTo(dto: DbMealDto): Stream<Meal> {
+) : ResponseMapper<DbMealDto, Sequence<Meal>> {
+    override fun mapTo(dto: DbMealDto): Sequence<Meal> {
         return dbMealRepo
                 .getMealComponents(dto.submission_id)
                 .map {

@@ -6,7 +6,6 @@ import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.InsulinProfile
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.InsulinProfileDbRepository
 import pt.isel.ps.g06.httpserver.model.InsulinProfile
 import java.time.LocalTime
-import java.util.stream.Stream
 
 @Service
 class InsulinProfileService(
@@ -14,7 +13,7 @@ class InsulinProfileService(
         private val insulinProfileMapper: InsulinProfileResponseMapper
 ) {
 
-    fun getAllProfilesFromUser(submitterId: Int, count: Int?, skip: Int?): Stream<InsulinProfile> {
+    fun getAllProfilesFromUser(submitterId: Int, count: Int?, skip: Int?): Sequence<InsulinProfile> {
         return insulinProfileDbRepository.getAllFromUser(submitterId, count, skip)
                 .map(insulinProfileMapper::mapTo)
     }

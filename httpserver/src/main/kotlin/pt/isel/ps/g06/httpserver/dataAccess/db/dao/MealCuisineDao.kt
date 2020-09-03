@@ -1,11 +1,11 @@
 package pt.isel.ps.g06.httpserver.dataAccess.db.dao
 
+import org.jdbi.v3.core.result.ResultIterable
 import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.customizer.BindBeanList
 import org.jdbi.v3.sqlobject.customizer.BindList
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbMealCuisineDto
-import java.util.stream.Stream
 
 //Cuisine table constants
 private const val C_table = CuisineDao.table
@@ -26,10 +26,10 @@ interface MealCuisineDao {
     }
 
     @SqlQuery("SELECT * FROM $table")
-    fun getAll(): Stream<DbMealCuisineDto>
+    fun getAll(): ResultIterable<DbMealCuisineDto>
 
     @SqlQuery("SELECT * FROM $table WHERE $mealId = :mealId")
-    fun getAllFromMealId(@Bind mealId: Int): Stream<DbMealCuisineDto>
+    fun getAllFromMealId(@Bind mealId: Int): ResultIterable<DbMealCuisineDto>
 
     @SqlQuery("INSERT INTO $table($mealId, $cuisineId)" +
             " VALUES(:submissionId, :cuisineName) RETURNING *")
@@ -37,16 +37,8 @@ interface MealCuisineDao {
 
     @SqlQuery("INSERT INTO $table($mealId, $cuisineId) values <mealCuisineDtos> RETURNING *")
     fun insertAll(@BindBeanList(propertyNames = [mealId, cuisineId])
-                  mealCuisineDtos: List<DbMealCuisineDto>): Stream<DbMealCuisineDto>
+                  mealCuisineDtos: List<DbMealCuisineDto>): Collection<DbMealCuisineDto>
 
     @SqlQuery("DELETE FROM $table WHERE $mealId = :submissionId RETURNING *")
-    fun deleteAllByMealId(@Bind submissionId: Int): Stream<DbMealCuisineDto>
-
-    @SqlQuery("DELETE FROM $table" +
-            " WHERE $mealId = :submissionId" +
-            " AND $cuisineId in (<cuisineIds>) RETURNING *")
-    fun deleteAllByMealIdAndCuisineIds(
-            @Bind submissionId: Int,
-            @BindList cuisineIds: Collection<Int>
-    ): Collection<DbMealCuisineDto>
+    fun deleteAllByMealId(@Bind submissionId: Int): Collection<DbMealCuisineDto>
 }

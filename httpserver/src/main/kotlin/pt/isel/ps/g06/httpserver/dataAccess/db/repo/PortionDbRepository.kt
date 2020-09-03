@@ -7,22 +7,28 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.dao.PortionDao
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.SubmissionDao
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.SubmissionSubmitterDao
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbPortionDto
-import java.util.stream.Stream
+import pt.isel.ps.g06.httpserver.util.asCachedSequence
 
 private val portionDaoClass = PortionDao::class.java
 
 @Repository
-class PortionDbRepository(private val databaseContext: DatabaseContext) {
+class PortionDbRepository(
+        private val databaseContext: DatabaseContext,
+        private val submissionDbRepository: SubmissionDbRepository
+) {
 
-    fun getAllByRestaurantMealId(restaurantMealId: Int): Stream<DbPortionDto> {
+    fun getAllByRestaurantMealId(restaurantMealId: Int): Sequence<DbPortionDto> {
         return databaseContext.inTransaction {
-            it.attach(portionDaoClass).getAllForRestaurantMealId(restaurantMealId)
+            it.attach(portionDaoClass)
+                    .getAllForRestaurantMealId(restaurantMealId)
+                    .asCachedSequence()
         }
     }
 
     fun getUserPortion(restaurantMealId: Int, userId: Int): DbPortionDto? {
         return databaseContext.inTransaction {
-            it.attach(portionDaoClass).getByRestaurantMealIdAndUserId(restaurantMealId, userId)
+            it.attach(portionDaoClass)
+                    .getByRestaurantMealIdAndUserId(restaurantMealId, userId)
         }
     }
 
@@ -35,6 +41,23 @@ class PortionDbRepository(private val databaseContext: DatabaseContext) {
 
             it.attach(SubmissionSubmitterDao::class.java).insert(submissionId, submitterId)
             return@inTransaction it.attach(portionDaoClass).insert(submissionId, restaurantMealId, quantity)
+        }
+    }
+
+    fun update(
+            submitterId: Int,
+            portionIdentifier: Int,
+            quantity: Int
+    ): DbPortionDto {
+        return databaseContext.inTransaction {
+
+            // Check if given submission is restaurant meal
+            submissionDbRepository.requireSubmissionOwner(portionIdentifier, submitterId)
+
+            submissionDbRepository.requireSubmissionType(portionIdentifier, PORTION)
+
+            return@inTransaction it.attach(portionDaoClass)
+                    .update(portionIdentifier, quantity)
         }
     }
 }

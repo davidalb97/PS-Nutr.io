@@ -14,7 +14,6 @@ import pt.isel.ps.g06.httpserver.service.InsulinProfileService
 import javax.validation.Valid
 import javax.validation.constraints.Max
 import javax.validation.constraints.Min
-import kotlin.streams.toList
 
 @Validated
 @Suppress("MVCPathVariableInspection")
