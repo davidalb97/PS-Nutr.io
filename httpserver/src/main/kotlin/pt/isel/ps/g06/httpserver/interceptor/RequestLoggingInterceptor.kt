@@ -1,10 +1,10 @@
 package pt.isel.ps.g06.httpserver.interceptor
 
 import org.slf4j.LoggerFactory
+import org.springframework.http.server.ServletServerHttpRequest
 import org.springframework.stereotype.Component
 import org.springframework.web.servlet.HandlerInterceptor
-import org.springframework.web.servlet.ModelAndView
-import java.lang.Exception
+import org.springframework.web.util.UriComponentsBuilder
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
@@ -25,8 +25,10 @@ class LoggerInterceptor : HandlerInterceptor {
     ) {
         super.afterCompletion(request, response, handler, ex)
 
-        if(ex != null) {
-            log.error("${request.method} '${request.requestURI}' status: ${response.status}", ex)
-        } else log.info("${request.method} '${request.requestURI}' status: ${response.status}")
+        val uri = UriComponentsBuilder.fromHttpRequest(ServletServerHttpRequest(request)).build().toUriString()
+        val logMsg = "${request.method} '$uri' status: ${response.status}"
+
+        if (ex != null) log.error(logMsg, ex)
+        else log.info(logMsg)
     }
 }
