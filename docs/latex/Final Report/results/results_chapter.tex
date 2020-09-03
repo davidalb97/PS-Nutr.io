@@ -357,6 +357,11 @@ to exist, they are far more lightweight to instanciate than an activity and thus
 
 It is also the recommended Android widget to use when designing an application with a side drawer.\\
 
+\subsubsection{Modular interfaces}
+
+As the code in the mobile application development became repetitive, the group decided to implement modular interfaces,
+which are interfaces that can be implemented by fragments and viewholders and provide them predefined behaviours.
+
 \subsection{Local data storing}
 
 As mentioned in the dependencies, the mobile application utilizes Room to store data locally. This is convenient
@@ -429,17 +434,18 @@ Here will be displayed pictures of the mobile application and its functionalitie
 \subsubsection{Register and Login}
 
 \begin{figure}[H]
+    \captionsetup[subfigure]{justification=centering}
     \begin{center}
         \begin{subfigure}{.3\textwidth}
-            \includegraphics[scale=0.1]{_figures/register.png}
+            \includegraphics[scale=0.1, width=\textwidth]{_figures/register.png}
             \caption{The register fragment} 
         \end{subfigure}
         \begin{subfigure}{.3\textwidth}
-            \includegraphics[scale=0.1]{_figures/login.png}
+            \includegraphics[scale=0.1, width=\textwidth]{_figures/login.png}
             \caption{The login fragment} 
         \end{subfigure}%
         \begin{subfigure}{.3\textwidth}
-            \includegraphics[scale=0.1]{_figures/firstSign.png}
+            \includegraphics[scale=0.1, width=\textwidth]{_figures/firstSign.png}
             \caption{The sign in/up at the application's startup} 
         \end{subfigure}%
     \end{center}
@@ -460,13 +466,14 @@ Here's the login and register workflow:
 \subsubsection{Insulin profiles' creation and access}
 
 \begin{figure}[H]
+    \captionsetup[subfigure]{justification=centering}
     \begin{center}
         \begin{subfigure}{.3\textwidth}
-            \includegraphics[scale=0.1]{_figures/addProfile.png}
+            \includegraphics[scale=0.1, width=\textwidth]{_figures/addProfile.png}
             \caption{The fragment to add an insulin profile} 
         \end{subfigure}
         \begin{subfigure}{.3\textwidth}
-            \includegraphics[scale=0.1]{_figures/insulin_profiles_list.png}
+            \includegraphics[scale=0.1, width=\textwidth]{_figures/insulin_profiles_list.png}
             \caption{The fragment to access and create insulin profiles} 
         \end{subfigure}
     \end{center}
@@ -500,13 +507,14 @@ To use this feature, the user must create at least one insulin profile which tim
 time, the profile information in this fragment will appear with blank fields.\\
 
 \begin{figure}[H]
+    \captionsetup[subfigure]{justification=centering}
     \begin{center}
         \begin{subfigure}{.3\textwidth}
-            \includegraphics[scale=0.1]{_figures/calc_with_profile.png}
+            \includegraphics[scale=0.1, width=\textwidth]{_figures/calc_with_profile.png}
             \caption{Calculator with valid profile} 
         \end{subfigure}
         \begin{subfigure}{.3\textwidth}
-            \includegraphics[scale=0.1]{_figures/calc_without_profile.png}
+            \includegraphics[scale=0.1, width=\textwidth]{_figures/calc_without_profile.png}
             \caption{Calculator without profile} 
         \end{subfigure}%        
     \end{center}
@@ -531,14 +539,15 @@ When this button is pressed, a tab menu will appear where the user can add:
 After these steps, the user is ready to calculate the insulin dosage that corresponds consuming the select meals, with its current blood glocuse for its current time.
 
 \begin{figure}[H]
+    \captionsetup[subfigure]{justification=centering}
     \begin{center}
         \begin{subfigure}{.3\textwidth}
-            \includegraphics[scale=0.1]{_figures/fullfilled_calc.png}
+            \includegraphics[scale=0.1, width=\textwidth]{_figures/fullfilled_calc.png}
             \caption{Calculator with all the valid field filled} 
         \end{subfigure}
         \begin{subfigure}{.3\textwidth}
-            \includegraphics[scale=0.1]{_figures/dosage_result.png}
-            \caption{Dosage result} 
+            \includegraphics[scale=0.1, width=\textwidth]{_figures/dosage_result.png}
+            \caption{Dosage result\\} 
         \end{subfigure}%        
     \end{center}
 \end{figure}
