@@ -80,9 +80,9 @@ abstract class BaseMealRecyclerViewHolder<T : MealItem>(
         super.setupCalculateAction(view)
         super.setupPressAction(view)
         super.setupOnDeleteAction(view, bindingAdapter, layoutPosition)
-        super.setupFavoriteButton(view, item.favorites.isFavorable)
+        super.setupFavoriteButton(view, item.favorites)
         super.setupImage(view, item.imageUri)
-        super.setupVoteBarCounters(view, item.votes, item.votes?.isVotable ?: false)
+        super.setupVoteBarCounters(view, item.votes)
         super.setupReportMenuItem(item.isReportable ?: false)
         super.setupEditMenuItem()
         super.setupPopupMenuButton(view)
@@ -96,8 +96,6 @@ abstract class BaseMealRecyclerViewHolder<T : MealItem>(
         bundle.putRestaurantSubmissionId(this.item.restaurantSubmissionId)
         bundle.putDbId(this.item.dbId)
     }
-
-    override fun isFavorite(): Boolean = item.favorites.isFavorite
 
     override fun onEdit(onSuccess: () -> Unit) {
         onEditNavigation?.also { navigation ->

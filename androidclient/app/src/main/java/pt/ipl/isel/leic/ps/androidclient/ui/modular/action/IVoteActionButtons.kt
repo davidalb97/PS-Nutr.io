@@ -24,29 +24,29 @@ interface IVoteActionButtons : IVoteProgress, IContext, IAction, IUserSession, I
 
     fun onVote(voteState: VoteState, onSuccess: () -> Unit, onError: (Throwable) -> Unit)
 
-    fun setupVoteButtons(view: View, isVotable: Boolean) {
+    fun setupVoteButtons(view: View, votes: Votes?) {
         upVoteButton = view.findViewById(upVoteButtonId)
         downVoteButton = view.findViewById(downVoteButtonId)
         voteButtonsLayout = view.findViewById(voteButtonsLayoutId)
 
-        if (!actions.contains(ItemAction.VOTE) || !isVotable || fetchVotes() == null) {
+        if (!actions.contains(ItemAction.VOTE) || votes == null || !votes.isVotable) {
             return
         }
         upVoteButton.setOnClickListener {
             ensureUserSession(fetchCtx()) {
-                vote(true)
+                vote(votes, true)
             }
         }
         downVoteButton.setOnClickListener {
             ensureUserSession(fetchCtx()) {
-                vote(false)
+                vote(votes, false)
             }
         }
         voteButtonsLayout.visibility = View.VISIBLE
     }
 
-    private fun vote(upVote: Boolean) {
-        val currentState = fetchVotes()!!.userHasVoted
+    private fun vote(votes: Votes, upVote: Boolean) {
+        val currentState = votes.userHasVoted
         val nextVoteState = currentState.nextState(upVote)
         onVote(
             voteState = nextVoteState,
@@ -70,6 +70,4 @@ interface IVoteActionButtons : IVoteProgress, IContext, IAction, IUserSession, I
             downVoteButton.changeColor(ctx, R.color.colorAccent)
         }
     }
-
-    fun fetchVotes(): Votes?
 }

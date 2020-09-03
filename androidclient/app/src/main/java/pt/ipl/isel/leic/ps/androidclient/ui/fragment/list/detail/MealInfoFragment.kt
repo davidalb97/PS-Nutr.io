@@ -102,9 +102,9 @@ class MealInfoFragment :
 
         super.setupImage(view, receivedMeal.imageUri)
         val isVotable = receivedMeal.votes?.isVotable ?: false
-        super.setupVoteBarCounters(view, receivedMeal.votes, isVotable)
-        super.setupVoteButtons(view, true)
-        super.setupFavoriteButton(view, receivedMeal.favorites.isFavorable)
+        super.setupVoteBarCounters(view, receivedMeal.votes)
+        super.setupVoteButtons(view, receivedMeal.votes)
+        super.setupFavoriteButton(view, receivedMeal.favorites)
         super.setupCalculateAction(view)
         super.setupReportMenuItem(receivedMeal.isReportable ?: false)
         super.setupEditMenuItem()
@@ -347,11 +347,7 @@ class MealInfoFragment :
         bundle.putNavigation(Navigation.SEND_TO_MEAL_DETAIL)    //Edit meal / calculator back
     }
 
-    override fun fetchVotes(): Votes? = recyclerViewModel.mealInfo?.votes
-
     override fun fetchCtx(): Context = requireContext()
-
-    override fun isFavorite(): Boolean = recyclerViewModel.mealInfo!!.favorites.isFavorite
 
     override fun getRecyclerId() = R.id.meal_info_ingredient_item_list
 
