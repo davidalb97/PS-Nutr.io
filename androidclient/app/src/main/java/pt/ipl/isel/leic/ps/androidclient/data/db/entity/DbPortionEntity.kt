@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = DbPortionEntity.tableName)
 open class DbPortionEntity(
-    val amount: Int
+    val portion: Float
 ) {
     companion object {
         const val DEFAULT_DB_ID: Long = 0

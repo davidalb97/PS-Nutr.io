@@ -3,6 +3,7 @@ package pt.ipl.isel.leic.ps.androidclient.data.repo
 import com.android.volley.VolleyError
 import pt.ipl.isel.leic.ps.androidclient.data.api.datasource.RestaurantDataSource
 import pt.ipl.isel.leic.ps.androidclient.data.api.mapper.input.*
+import pt.ipl.isel.leic.ps.androidclient.data.api.mapper.output.*
 import pt.ipl.isel.leic.ps.androidclient.data.model.*
 
 /**
@@ -12,19 +13,24 @@ import pt.ipl.isel.leic.ps.androidclient.data.model.*
 class RestaurantRepository(private val dataSource: RestaurantDataSource) {
 
     private val inputVotesMapper = InputVotesMapper()
-    private val inputRestaurantItemMapper = InputRestaurantItemMapper(
-        votesInputMapper = inputVotesMapper
-    )
-    private val inputMealInputMapper = InputMealItemMapper(
-        inputVotesMapper
-    )
+    private val inputFavoriteMapper = InputFavoriteMapper()
+    private val inputRestaurantItemMapper =
+        InputRestaurantItemMapper(inputVotesMapper, inputFavoriteMapper)
+    private val inputMealInputMapper = InputMealItemMapper(inputVotesMapper, inputFavoriteMapper)
     private val inputCuisineInputMapper = InputCuisineMapper()
     private val votesInputMapper = InputVotesMapper()
     private val inputRestaurantInfoMapper = InputRestaurantInfoMapper(
         mealInputMapper = inputMealInputMapper,
         cuisineInputMapper = inputCuisineInputMapper,
-        votesInputMapper = votesInputMapper
+        votesInputMapper = votesInputMapper,
+        inputFavoriteMapper = inputFavoriteMapper
     )
+    private val favoriteOutputMapper = OutputFavoriteMapper()
+    private val voteOutputMapper = OutputVoteMapper()
+    private val reportOutputMapper = OutputReportMapper()
+    private val cuisineOutputMapper = OutputCuisineMapper()
+    private val customRestaurantOutputMapper =
+        OutputCustomRestaurantMapper(cuisineMapper = cuisineOutputMapper)
 
     fun getRestaurantInfoById(
         restaurantId: String,
@@ -45,8 +51,9 @@ class RestaurantRepository(private val dataSource: RestaurantDataSource) {
     fun getNearbyRestaurants(
         latitude: Double,
         longitude: Double,
-        count: Int,
-        skip: Int,
+        cuisines: Collection<Cuisine>?,
+        count: Int?,
+        skip: Int?,
         userSession: UserSession?,
         success: (List<RestaurantItem>) -> Unit,
         error: (VolleyError) -> Unit
@@ -54,6 +61,7 @@ class RestaurantRepository(private val dataSource: RestaurantDataSource) {
         dataSource.getRestaurants(
             latitude = latitude,
             longitude = longitude,
+            cuisines = cuisines?.let(cuisineOutputMapper::mapToOutputModelCollection),
             count = count,
             skip = skip,
             jwt = userSession?.jwt,
@@ -64,39 +72,37 @@ class RestaurantRepository(private val dataSource: RestaurantDataSource) {
         )
     }
 
-    fun postRestaurant(
-        name: String,
-        latitude: Double,
-        longitude: Double,
-        cuisines: Iterable<Cuisine>,
-        error: (VolleyError) -> Unit,
+    fun addCustomRestaurant(
+        customRestaurant: CustomRestaurant,
+        onSuccess: () -> Unit,
+        onError: (VolleyError) -> Unit,
         userSession: UserSession
     ) {
         dataSource.postRestaurant(
-            name = name,
-            latitude = latitude,
-            longitude = longitude,
-            cuisines = cuisines,
-            error = error,
+            customRestaurantOutput = customRestaurantOutputMapper.mapToOutputModel(
+                restaurant = customRestaurant
+            ),
+            onSuccess = onSuccess,
+            error = onError,
             jwt = userSession.jwt
         )
     }
 
-    fun putVote(
+    fun changeVote(
         id: String,
         vote: VoteState,
         success: () -> Unit,
         onError: (VolleyError) -> Unit,
         userSession: UserSession
     ) = dataSource.putRestaurantVote(
-        restaurant = id,
-        vote = vote,
+        restaurantId = id,
+        voteOutput = voteOutputMapper.mapToOutputModel(vote),
         success = success,
         error = onError,
         jwt = userSession.jwt
     )
 
-    fun putFavorite(
+    fun changeFavorite(
         restaurantId: String,
         isFavorite: Boolean,
         success: () -> Unit,
@@ -105,14 +111,14 @@ class RestaurantRepository(private val dataSource: RestaurantDataSource) {
     ) {
         dataSource.putRestaurantFavorite(
             restaurantId = restaurantId,
-            isFavorite = isFavorite,
+            favoriteOutput = favoriteOutputMapper.mapToOutputModel(isFavorite),
             success = success,
             error = error,
             jwt = userSession.jwt
         )
     }
 
-    fun report(
+    fun addReport(
         restaurantId: String,
         reportMsg: String,
         onSuccess: () -> Unit,
@@ -120,8 +126,8 @@ class RestaurantRepository(private val dataSource: RestaurantDataSource) {
         userSession: UserSession
     ) {
         dataSource.putRestaurantReport(
-            restaurant = restaurantId,
-            reportStr = reportMsg,
+            restaurantId = restaurantId,
+            reportOutput = reportOutputMapper.mapToOutputModel(reportMsg),
             success = onSuccess,
             error = onError,
             jwt = userSession.jwt

@@ -7,30 +7,45 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.cardview.widget.CardView
-import androidx.navigation.findNavController
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.app
-import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.sharedPreferences
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.db.InsulinCalculator
 import pt.ipl.isel.leic.ps.androidclient.data.model.InsulinProfile
-import pt.ipl.isel.leic.ps.androidclient.data.model.MealInfo
-import pt.ipl.isel.leic.ps.androidclient.ui.fragment.BaseFragment
+import pt.ipl.isel.leic.ps.androidclient.ui.fragment.BaseAddMealFragment
+import pt.ipl.isel.leic.ps.androidclient.ui.modular.IRequiredTextInput
+import pt.ipl.isel.leic.ps.androidclient.ui.modular.unit.IGlucoseUnitSpinner
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.CalculatorVMProviderFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.util.*
+import pt.ipl.isel.leic.ps.androidclient.ui.util.units.DEFAULT_GLUCOSE_UNIT
 import pt.ipl.isel.leic.ps.androidclient.ui.util.units.GlucoseUnits
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.InsulinProfilesListViewModel
-import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.meal.info.MealInfoViewModel
 import java.text.SimpleDateFormat
 import java.util.*
 
-class CalculatorFragment : BaseFragment() {
+class CalculatorFragment : BaseAddMealFragment(), IRequiredTextInput, IGlucoseUnitSpinner {
+
+    override lateinit var previousGlucoseUnit: GlucoseUnits
+    override lateinit var currentGlucoseUnit: GlucoseUnits
+    override val nestedNavigation = Navigation.SEND_TO_CALCULATOR
+    override val toAddMealsActionNestedNavigation = Navigation.SEND_TO_PICK_CALCULATOR_INGREDIENTS
+    override val baskNestedActionNavigation = Navigation.BACK_TO_CALCULATOR
+    override val mealsRecyclerViewId: Int = R.id.calculator_meals_list
+    override val weightUnitSpinnerId: Int = R.id.calculator_units_spinner
+    override val addIngredientsImgButtonId = R.id.add_custom_meal_add_meal_ingredient
+    override val totalIngredientsWeightTextViewId = R.id.total_ingredient_amount
+    override val totalIngredientsCarbohydratesTextViewId = R.id.total_ingredient_carbs
 
     private lateinit var viewModelProfiles: InsulinProfilesListViewModel
-    private lateinit var viewModelMeal: MealInfoViewModel
-    private var receivedMeal: MealInfo? = null
     private var currentProfile: InsulinProfile? = null
     private val calculator = InsulinCalculator()
+    private lateinit var bloodGlucoseEditText: EditText
+    private lateinit var calculateButton: Button
+    private lateinit var glucoseUnitsSpinner: Spinner
+    private lateinit var profileStartTimeTextView: TextView
+    private lateinit var profileEndTimeTextView: TextView
+    private lateinit var profileGlucoseObjectiveTextView: TextView
+    private lateinit var profileInsulinSensitivityTextView: TextView
+    private lateinit var profileCarbohydrateRatioTextView: TextView
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -39,125 +54,55 @@ class CalculatorFragment : BaseFragment() {
     ): View? {
         viewModelProfiles =
             buildViewModel(savedInstanceState, InsulinProfilesListViewModel::class.java)
-        viewModelMeal = buildViewModel(savedInstanceState, MealInfoViewModel::class.java)
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        spinnerSetup()
-        searchForBundledMeal()
 
-        viewModelProfiles.onError = {
-            log.e(it)
-            Toast.makeText(app, R.string.profiles_error, Toast.LENGTH_LONG)
-                .show()
-        }
+        bloodGlucoseEditText = view.findViewById(R.id.user_blood_glucose)
+        calculateButton = view.findViewById(R.id.calculate_button)
+        glucoseUnitsSpinner = view.findViewById(R.id.calculator_glucose_units)
+        profileStartTimeTextView = view.findViewById(R.id.start_time_value)
+        profileEndTimeTextView = view.findViewById(R.id.end_time_value)
+        profileGlucoseObjectiveTextView = view.findViewById(R.id.glucose_objective_value)
+        profileInsulinSensitivityTextView = view.findViewById(R.id.insulin_sensitivity_factor_value)
+        profileCarbohydrateRatioTextView = view.findViewById(R.id.carbohydrate_ratio_value)
+        setupGlucoseUnitSpinner(requireContext(), glucoseUnitsSpinner)
 
-        observeExistingInsulinProfiles()
-        setupAddMealButtonListener()
-        viewModelProfiles.update()
+        setupInsulinProfilesViewModel()
     }
 
-    /**
-     * Setups the measurement units spinner following the shared preferences.
-     */
-    @Suppress("UNCHECKED_CAST")
-    private fun spinnerSetup() {
-        val spinner = view?.findViewById<Spinner>(R.id.measurement_units)
-        val spinnerAdapter: ArrayAdapter<String> = spinner!!.adapter as ArrayAdapter<String>
-
-        val configuredUnit = sharedPreferences.getGlucoseUnitOrDefault()
-
-        val spinnerPosition = spinnerAdapter.getPosition(configuredUnit)
-        spinner.setSelection(spinnerPosition)
-
-        // Changes the blood glucose value according to the unit spinner
-        val currentBloodGlucose = view?.findViewById<EditText>(R.id.user_blood_glucose)
-        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-                throw NotImplementedError("This function is not implemented")
-            }
-
-            override fun onItemSelected(
-                parent: AdapterView<*>?,
-                view: View?,
-                position: Int,
-                id: Long
-            ) {
-                if (currentBloodGlucose!!.text.isNotBlank()) {
-                    val newUnit = GlucoseUnits.fromValue(spinner.selectedItem.toString())
-                    val oldUnit = when (newUnit) {
-                        GlucoseUnits.MILLI_GRAM_PER_DL -> GlucoseUnits.MILLI_MOL_PER_L
-                        GlucoseUnits.MILLI_MOL_PER_L -> GlucoseUnits.MILLI_GRAM_PER_DL
-                    }
-                    val currentValue = currentBloodGlucose.text.toString().toFloat()
-                    currentBloodGlucose.setText(oldUnit.convert(newUnit, currentValue).toString())
-                }
-            }
-        }
-    }
-
-    /**
-     * Checks if the user already selected a meal for the calculation.
-     * This meal will be present inside the fragment bundle if it was
-     * already selected.
-     */
-    private fun searchForBundledMeal() {
-        if (viewModelMeal.mealInfo != null) {
-            addBundledMealHolder(viewModelMeal.mealInfo!!)
-        } else if (viewModelMeal.mealItem != null) {
-            val owner = this
-            viewModelMeal.observeInfo(owner) {
-                addBundledMealHolder(it)
-                viewModelMeal.removeObservers(owner)
-            }
-            viewModelMeal.onError = log::e
-            viewModelMeal.update()
-        }
-    }
-
-    /**
-     * Setups the CardView in the fragment that will hold the chosen meal.
-     */
-    private fun addBundledMealHolder(mealInfo: MealInfo) {
-        this.receivedMeal = mealInfo
-        val selectedMealCard = view?.findViewById<CardView>(R.id.calc_meal_card)
-        val selectedMealName = view?.findViewById<TextView>(R.id.calc_meal_name)
-        val selectedMealDelBtn = view?.findViewById<ImageButton>(R.id.remove_meal_from_calc_button)
-
-        selectedMealName?.text = receivedMeal?.name
-        selectedMealCard?.visibility = View.VISIBLE
-
-        selectedMealDelBtn?.setOnClickListener {
-            cleanBundledMeal(selectedMealCard)
-        }
-    }
-
-    /**
-     * Setups the button that allows the user to select meals.
-     */
-    private fun setupAddMealButtonListener() {
-        val addButton = view?.findViewById<ImageButton>(R.id.meal_add_button)
-        addButton?.setOnClickListener {
-            val bundle = Bundle()
-            bundle.putNavigation(Navigation.SEND_TO_CALCULATOR)
-            view?.findNavController()?.navigate(R.id.nav_add_meal_to_calculator, bundle)
-        }
+    override fun setupIngredients(view: View) {
+        super.setupIngredients(view)
+        arguments?.getMealItem()?.let(mealsViewModel::pick)
+        arguments?.getMealIngredient()?.let(mealsViewModel::pick)
+        arguments?.getMealInfo()?.let(mealsViewModel::pick)
     }
 
     /**
      * Observes modifications in the LiveData
      */
-    private fun observeExistingInsulinProfiles() {
+    private fun setupInsulinProfilesViewModel() {
+        viewModelProfiles.onError = {
+            log.e(it)
+            Toast.makeText(
+                app,
+                R.string.profiles_error,
+                Toast.LENGTH_LONG
+            ).show()
+        }
         viewModelProfiles.observe(this) { profilesList ->
             if (profilesList.isEmpty())
                 showNoExistingProfilesToast()
             else {
-                getProfile()
+                this.currentProfile = getCurrentProfile()?.also { currentProfile ->
+                    showCurrentProfileDetails(currentProfile)
+                }
                 setupCalculateButton()
             }
         }
+        viewModelProfiles.update()
     }
 
     /**
@@ -172,34 +117,19 @@ class CalculatorFragment : BaseFragment() {
     }
 
     /**
-     * Gets a valid profile based on the current LocalTime;
-     * Gets the bundled meal, saved in this fragment field;
-     * Calculates the insulin dosage that needs to be injected.
-     */
-    private fun getProfile() {
-        currentProfile = getActualProfile()
-        if (currentProfile != null) {
-            showActualProfileDetails(currentProfile!!)
-        }
-    }
-
-    /**
      * Searches for a profile that matches the current time
      */
-    private fun getActualProfile(): InsulinProfile? {
+    private fun getCurrentProfile(): InsulinProfile? {
 
-        // Gets actual time in hh:mm format
-        val calendar = Calendar.getInstance()
-        val currentTime =
-            "${calendar.get(Calendar.HOUR_OF_DAY)}:${calendar.get(Calendar.MINUTE)}"
-
-        val profiles = viewModelProfiles.items
-        if (profiles.isEmpty()) {
+        if (viewModelProfiles.items.isEmpty()) {
             showNoExistingProfilesToast()
             return null
         }
 
+        // Gets actual time in hh:mm format
         val timeInstance = SimpleDateFormat("HH:mm")
+        val calendar = Calendar.getInstance()
+        val currentTime = "${calendar.get(Calendar.HOUR_OF_DAY)}:${calendar.get(Calendar.MINUTE)}"
         val now = timeInstance.parse(currentTime)!!
 
         return viewModelProfiles.items.find { savedProfile ->
@@ -212,24 +142,18 @@ class CalculatorFragment : BaseFragment() {
     /**
      * Shows the profile details, according to the current time
      */
-    private fun showActualProfileDetails(profile: InsulinProfile) {
-        val startTime = view?.findViewById<TextView>(R.id.start_time_value)
-        val endTime = view?.findViewById<TextView>(R.id.end_time_value)
-        val glucoseObjective = view?.findViewById<TextView>(R.id.glucose_objective_value)
-        val insulinSensitivity =
-            view?.findViewById<TextView>(R.id.insulin_sensitivity_factor_value)
-        val carbohydrates = view?.findViewById<TextView>(R.id.carbohydrate_ratio_value)
+    private fun showCurrentProfileDetails(profile: InsulinProfile) {
 
-        startTime?.text = profile.startTime
-        endTime?.text = profile.endTime
-        glucoseObjective?.text = profile.glucoseObjective.toString()
-        insulinSensitivity?.text = String.format(
-            "%1\$d / %2\$s",
+        profileStartTimeTextView.text = profile.startTime
+        profileEndTimeTextView.text = profile.endTime
+        profileGlucoseObjectiveTextView.text = profile.glucoseObjective.toString()
+        profileInsulinSensitivityTextView.text = String.format(
+            "%1\$.2f / %2\$s",
             profile.glucoseAmountPerInsulin,
             resources.getString(R.string.insulin_unit)
         )
-        carbohydrates?.text = String.format(
-            "%1\$d / %2\$s",
+        profileCarbohydrateRatioTextView.text = String.format(
+            "%1\$.2f / %2\$s",
             profile.carbsAmountPerInsulin,
             resources.getString(R.string.insulin_unit)
         )
@@ -240,84 +164,71 @@ class CalculatorFragment : BaseFragment() {
      * the previously configured profile.
      */
     private fun setupCalculateButton() {
-        val currentBloodGlucose =
-            view?.findViewById<EditText>(R.id.user_blood_glucose)
-        val calculateButton =
-            view?.findViewById<Button>(R.id.calculate_button)
-        val spinner = view?.findViewById<Spinner>(R.id.measurement_units)
 
-        calculateButton?.setOnClickListener {
-            val result: Float
-            if (receivedMeal != null && currentProfile != null) {
-                // Current blood glucose value
-                var bloodGlucoseValue = currentBloodGlucose!!
-                    .text.toString().toDouble().toInt()
-
-                // If the unit is different from default, convert back to the value to pass to
-                // the calculator
-                val currentUnit = GlucoseUnits.fromValue(spinner?.selectedItem.toString())
-                if (currentUnit != DEFAULT_GLUCOSE_UNIT) {
-                    bloodGlucoseValue = currentUnit.convert(
-                        DEFAULT_GLUCOSE_UNIT,
-                        currentBloodGlucose.text.toString().toFloat()
-                    ).toInt()
-                }
-
-                result =
-                    calculator.calculateMealInsulin(
-                        currentProfile!!,
-                        bloodGlucoseValue,
-                        receivedMeal!!.carbs
-                    )
-
-                closeKeyboard(this.requireActivity())
-                showResultDialog(result)
-                // Clean fields after show result
-                cleanCurrentGlucose(currentBloodGlucose)
-                cleanBundledMeal()
+        calculateButton.setOnClickListener {
+            if (!inputValid()) {
+                return@setOnClickListener
             }
+
+            var currentBloodGlucoseValue = bloodGlucoseEditText.text.toString().toFloat()
+
+            //Convert current glucose value to default unit
+            currentBloodGlucoseValue = currentGlucoseUnit.convert(
+                targetUnit = DEFAULT_GLUCOSE_UNIT,
+                value = currentBloodGlucoseValue
+            )
+
+            val result = calculator.calculateMealInsulin(
+                currentProfile!!,
+                currentBloodGlucoseValue,
+                currentIngredientsCarbohydrates
+            )
+
+            closeKeyboard(this.requireActivity())
+            showResultDialog(result)
+
+            // Clean fields after show result
+            bloodGlucoseEditText.text = null
+            bloodGlucoseEditText.clearFocus()
         }
+    }
+
+    private fun inputValid(): Boolean {
+        if (!validateTextViews(requireContext(), bloodGlucoseEditText)) {
+            return false
+        }
+        if (mealsViewModel.pickedItems.isEmpty()) {
+            Toast.makeText(
+                requireContext(),
+                R.string.calculator_ingredients_required,
+                Toast.LENGTH_SHORT
+            ).show()
+            return false
+        }
+        if (currentProfile == null) {
+            showNoExistingProfilesToast()
+            return false
+        }
+        return true
     }
 
     /**
      * Shows the result dialog window
      */
     private fun showResultDialog(result: Float) {
-        val builder = AlertDialog.Builder(requireContext())
-        builder.setTitle(getString(R.string.results_title_dialog))
-        builder.setMessage("You need to inject $result insulin doses")
-        builder.setPositiveButton(view?.context?.getString(R.string.Dialog_Ok)) { _, _ -> }
-        builder.create().show()
+        AlertDialog.Builder(requireContext())
+            .setTitle(getString(R.string.results_title_dialog))
+            .setMessage(String.format(getString(R.string.calculator_result), result))
+            .setPositiveButton(view?.context?.getString(R.string.ok)) { _, _ -> }
+            .create()
+            .show()
     }
 
-    /**
-     * Cleans the current blood glucose text field
-     */
-    private fun cleanCurrentGlucose(textBox: EditText? = null) {
-        if (textBox != null) {
-            textBox.text = null
-            textBox.clearFocus()
-        } else {
-            val currentBloodGlucose =
-                view?.findViewById<EditText>(R.id.user_blood_glucose)
-            currentBloodGlucose?.text = null
-            currentBloodGlucose?.clearFocus()
+    override fun onGlucoseUnitChange(converter: (Float) -> Float) {
+        if (bloodGlucoseEditText.text.isNotBlank()) {
+            val currentValue = bloodGlucoseEditText.text.toString().toFloat()
+            bloodGlucoseEditText.setText(converter(currentValue).toString())
         }
-    }
-
-    /**
-     * Cleans the bundled meal and the fragment meal holder
-     */
-    private fun cleanBundledMeal(card: CardView? = null) {
-        if (card != null) {
-            card.visibility = View.INVISIBLE
-        } else {
-            val selectedMealCard: CardView? =
-                view?.findViewById(R.id.calc_meal_card)
-            selectedMealCard?.visibility = View.INVISIBLE
-        }
-        receivedMeal = null
-        this.arguments?.removeMealInfo()
     }
 
     override fun getLayout() = R.layout.calculator_fragment

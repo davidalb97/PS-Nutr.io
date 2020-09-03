@@ -2,7 +2,9 @@ package pt.ipl.isel.leic.ps.androidclient.data.repo
 
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.roomDb
 import pt.ipl.isel.leic.ps.androidclient.data.api.datasource.IngredientDataSource
+import pt.ipl.isel.leic.ps.androidclient.data.api.mapper.input.InputFavoriteMapper
 import pt.ipl.isel.leic.ps.androidclient.data.api.mapper.input.InputMealIngredientMapper
+import pt.ipl.isel.leic.ps.androidclient.data.api.mapper.input.InputVotesMapper
 import pt.ipl.isel.leic.ps.androidclient.data.db.mapper.DbMealItemMapper
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealIngredient
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealItem
@@ -11,11 +13,14 @@ import pt.ipl.isel.leic.ps.androidclient.util.AsyncWorker
 class IngredientRepository(private val dataSource: IngredientDataSource) {
 
     private val dbMealItemMapper = DbMealItemMapper()
-    private val inputIngredientMapper = InputMealIngredientMapper()
+    private val inputIngredientMapper = InputMealIngredientMapper(
+        inputVotesMapper = InputVotesMapper(),
+        inputFavoritesMapper = InputFavoriteMapper()
+    )
 
     fun getIngredients(
-        count: Int,
-        skip: Int,
+        count: Int?,
+        skip: Int?,
         success: (List<MealIngredient>) -> Unit,
         error: (Throwable) -> Unit
     ) {

@@ -1,12 +1,11 @@
 package pt.ipl.isel.leic.ps.androidclient.data.db.mapper
 
 import android.net.Uri
+import pt.ipl.isel.leic.ps.androidclient.data.api.mapper.input.InputFavoriteMapper
+import pt.ipl.isel.leic.ps.androidclient.data.api.mapper.input.InputVotesMapper
 import pt.ipl.isel.leic.ps.androidclient.data.db.entity.DbRestaurantInfoEntity
 import pt.ipl.isel.leic.ps.androidclient.data.db.relation.DbRestaurantInfoRelation
-import pt.ipl.isel.leic.ps.androidclient.data.model.RestaurantInfo
-import pt.ipl.isel.leic.ps.androidclient.data.model.Source
-import pt.ipl.isel.leic.ps.androidclient.data.model.VoteState
-import pt.ipl.isel.leic.ps.androidclient.data.model.Votes
+import pt.ipl.isel.leic.ps.androidclient.data.model.*
 
 class DbRestaurantInfoMapper(
     private val cuisinesMapper: DbCuisineMapper,
@@ -22,17 +21,22 @@ class DbRestaurantInfoMapper(
             latitude = relation.entity.latitude,
             longitude = relation.entity.longitude,
             creationDate = relation.entity.creationDate,
-            votes = if (relation.entity.hasVote) Votes(
+            votes = Votes(
+                isVotable = relation.entity.isVotable,
                 userHasVoted = VoteState.values()[relation.entity.userVoteOrdinal!!],
                 positive = relation.entity.positiveVotes!!,
                 negative = relation.entity.negativeVotes!!
-            ) else null,
-            isFavorite = relation.entity.isFavorite,
-            isVotable = relation.entity.isVotable,
-            imageUri = Uri.parse(relation.entity.imageUri),
+            ),
+            favorites = Favorites(
+                relation.entity.isFavorable,
+                relation.entity.isFavorite
+            ),
+            isReportable = relation.entity.isReportable,
+            image = Uri.parse(relation.entity.imageUri),
             cuisines = cuisinesMapper.mapToListModel(relation.cuisines),
-            meals = meals.filter { !it.isSuggested },
-            suggestedMeals = meals.filter { it.isSuggested },
+            meals = meals.filter { !it.isSuggested!! },
+            suggestedMeals = meals.filter { it.isSuggested!! },
+            ownerId = relation.entity.ownerId,
             source = Source.values()[relation.entity.sourceOrdinal]
         )
     }
@@ -44,16 +48,19 @@ class DbRestaurantInfoMapper(
             latitude = model.latitude,
             longitude = model.longitude,
             creationDate = model.creationDate,
-            isFavorite = model.isFavorite,
-            isVotable = model.isVotable,
-            imageUri = model.imageUri?.toString(),
-            positiveVotes = model.votes?.positive,
-            negativeVotes = model.votes?.negative,
-            userVoteOrdinal = model.votes?.userHasVoted?.ordinal,
+            isFavorable = model.favorites.isFavorable,
+            isFavorite = model.favorites.isFavorite,
+            isVotable = model.votes.isVotable,
+            isReportable = model.isReportable,
+            imageUri = model.image?.toString(),
+            positiveVotes = model.votes.positive,
+            negativeVotes = model.votes.negative,
+            userVoteOrdinal = model.votes.userHasVoted.ordinal,
             hasVote = model.votes != null,
+            ownerId = null,
             sourceOrdinal = model.source.ordinal
         ).also { dto ->
-            dto.primaryKey = model.dbId
+            dto.primaryKey = model.dbId ?: DbRestaurantInfoEntity.DEFAULT_DB_ID
         },
         meals = mealsMapper.mapToListEntity(model.meals.plus(model.suggestedMeals)),
         cuisines = cuisinesMapper.mapToListEntity(model.cuisines)

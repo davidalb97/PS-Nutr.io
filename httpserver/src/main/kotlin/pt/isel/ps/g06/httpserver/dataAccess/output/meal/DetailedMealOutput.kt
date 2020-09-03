@@ -3,50 +3,50 @@ package pt.isel.ps.g06.httpserver.dataAccess.output.meal
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer
 import pt.isel.ps.g06.httpserver.dataAccess.output.NutritionalInfoOutput
+import pt.isel.ps.g06.httpserver.dataAccess.output.cuisines.CuisinesOutput
+import pt.isel.ps.g06.httpserver.dataAccess.output.cuisines.toSimplifiedCuisinesOutput
+import pt.isel.ps.g06.httpserver.dataAccess.output.modular.FavoritesOutput
+import pt.isel.ps.g06.httpserver.dataAccess.output.modular.ICuisinesOutput
+import pt.isel.ps.g06.httpserver.dataAccess.output.modular.ISubmitterInfoOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.toNutritionalInfoOutput
-import pt.isel.ps.g06.httpserver.dataAccess.output.vote.SimplifiedUserOutput
-import pt.isel.ps.g06.httpserver.dataAccess.output.vote.toSimplifiedUserOutput
+import pt.isel.ps.g06.httpserver.dataAccess.output.user.SimplifiedUserOutput
+import pt.isel.ps.g06.httpserver.dataAccess.output.user.toSimplifiedUserOutput
 import pt.isel.ps.g06.httpserver.model.Meal
 import java.net.URI
 import java.time.OffsetDateTime
 
 class DetailedMealOutput(
-        mealIdentifier: Int,
+        identifier: Int,
         name: String,
-        imageUri: URI?,
-        isFavorite: Boolean,
+        image: URI?,
         nutritionalInfo: NutritionalInfoOutput,
-        isSuggested: Boolean,
-        isVerified: Boolean,
-        isVotable: Boolean,
+        favorites: FavoritesOutput,
         @JsonSerialize(using = ToStringSerializer::class)
         val creationDate: OffsetDateTime?,
         val composedBy: MealCompositionOutput?,
-        val createdBy: SimplifiedUserOutput?
+        override val createdBy: SimplifiedUserOutput?,
+        override val cuisines: CuisinesOutput
 ) : BaseMealOutput(
-        mealIdentifier = mealIdentifier,
+        identifier = identifier,
         name = name,
-        imageUri = imageUri,
+        image = image,
         nutritionalInfo = nutritionalInfo,
-        isSuggested = isSuggested,
-        isFavorite = isFavorite,
-        isVerified = isVerified,
-        isVotable = isVotable
-)
+        favorites = favorites
+), ISubmitterInfoOutput, ICuisinesOutput
 
 fun toDetailedMealOutput(meal: Meal, userId: Int? = null): DetailedMealOutput {
     return DetailedMealOutput(
-            mealIdentifier = meal.identifier,
+            identifier = meal.identifier,
             name = meal.name,
-            imageUri = meal.imageUri,
-            isFavorite = userId?.let { meal.isFavorite(userId) } ?: false,
-            isSuggested = !meal.isUserMeal(),
-            //A suggested/custom meal is not votable
-            isVotable = false,
-            isVerified = false,
+            image = meal.image,
+            favorites = FavoritesOutput(
+                    isFavorite = meal.isFavorite(userId),
+                    isFavorable = meal.isFavorable(userId)
+            ),
             creationDate = meal.creationDate.value,
             composedBy = toMealComposition(meal),
-            nutritionalInfo = toNutritionalInfoOutput(meal.nutritionalValues),
-            createdBy = meal.submitterInfo.value?.let { toSimplifiedUserOutput(it) }
+            nutritionalInfo = toNutritionalInfoOutput(meal.nutritionalInfo),
+            createdBy = meal.submitterInfo.value?.let(::toSimplifiedUserOutput),
+            cuisines = toSimplifiedCuisinesOutput(meal.cuisines.toList())
     )
 }

@@ -6,16 +6,16 @@ import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.ingredientRepositor
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealIngredient
 import kotlin.reflect.KClass
 
-class IngredientPickViewModel : ItemPickerViewModel<MealIngredient> {
+class IngredientPickViewModel : BaseItemPickerViewModel<MealIngredient> {
+
+    var itemsChanged = false
 
     constructor(parcel: Parcel) : super(parcel)
 
     constructor() : super()
 
     override fun update() {
-        if (!tryRestore()) {
-            ingredientRepository.getIngredients(count, skip, liveDataHandler::set, onError)
-        }
+        tryRestore()
     }
 
     override fun getModelClass(): KClass<MealIngredient> = MealIngredient::class

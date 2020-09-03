@@ -7,9 +7,9 @@ import android.view.View
 import pt.ipl.isel.leic.ps.androidclient.ui.adapter.spinner.BaseSpinnerAdapter
 import pt.ipl.isel.leic.ps.androidclient.ui.util.Navigation
 import pt.ipl.isel.leic.ps.androidclient.ui.viewholder.BaseRecyclerViewHolder
-import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.pick.ItemPickerViewModel
+import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.pick.BaseItemPickerViewModel
 
-abstract class BasePickSpinnerAdapter<M : Parcelable, VM : ItemPickerViewModel<M>>(
+abstract class BasePickSpinnerAdapter<M : Parcelable, VM : BaseItemPickerViewModel<M>>(
     viewModel: VM,
     ctx: Context
 ) : BaseSpinnerAdapter<M, VM>(
@@ -33,8 +33,8 @@ abstract class BasePickSpinnerAdapter<M : Parcelable, VM : ItemPickerViewModel<M
     }
 
     protected fun setOnClickHandler(viewHolder: BaseRecyclerViewHolder<M>) {
-        viewHolder.onClickListener = {
-            viewModel.pick(viewHolder.item)
+        viewHolder.onClickListener = viewHolder.onClickListener?.appendListener { model, idx ->
+            viewModel.pick(model)
         }
     }
 }

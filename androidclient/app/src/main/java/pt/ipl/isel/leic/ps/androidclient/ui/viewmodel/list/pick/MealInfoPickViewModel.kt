@@ -5,7 +5,7 @@ import android.os.Parcelable
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealInfo
 import kotlin.reflect.KClass
 
-class MealInfoPickViewModel : ItemPickerViewModel<MealInfo> {
+class MealInfoPickViewModel : BaseItemPickerViewModel<MealInfo> {
 
     constructor(parcel: Parcel) : super(parcel)
 

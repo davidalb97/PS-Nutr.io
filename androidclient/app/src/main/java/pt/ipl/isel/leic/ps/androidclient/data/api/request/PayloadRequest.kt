@@ -9,17 +9,27 @@ import java.io.UnsupportedEncodingException
 private const val PROTOCOL_CHARSET = "utf-8"
 private const val PROTOCOL_CONTENT_TYPE = "application/json; charset=$PROTOCOL_CHARSET"
 
+private val logger = Logger(JsonRequest::class)
+
 class JsonRequest(
-    method: HTTPMethod,
+    val method: HTTPMethod,
     url: String?,
     private val reqHeader: Map<String, String>?,
     private val reqPayload: String?,
     @GuardedBy("mLock")
     private var listener: Response.Listener<PayloadResponse>?,
-    errorListener: Response.ErrorListener?
-) : Request<PayloadResponse>(method.value, url, errorListener) {
+    private val onError: Response.ErrorListener?
+) : Request<PayloadResponse>(method.value, url, { error ->
 
-    private val logger = Logger(JsonRequest::class)
+    onError?.onErrorResponse(error)
+
+    logger.v("\nReceived response from $method $url, " +
+            "\nstatus: ${error?.networkResponse?.statusCode} " +
+            "\nbody: ${error?.networkResponse?.data?.let(::String)} ")
+
+}) {
+
+
 
     /** Lock to guard mListener as it is cleared on cancel() and read on delivery.  */
     private val mLock = Any()

@@ -1,5 +1,6 @@
 package pt.isel.ps.g06.httpserver.dataAccess.db.dao
 
+import org.jdbi.v3.core.result.ResultIterable
 import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.customizer.BindBeanList
 import org.jdbi.v3.sqlobject.customizer.BindList
@@ -15,22 +16,11 @@ interface RestaurantCuisineDao {
     }
 
     @SqlQuery("SELECT * FROM $table WHERE $id = :restaurantId")
-    fun getAllForRestaurantId(@Bind restaurantId: Int): Collection<DbRestaurantCuisineDto>
+    fun getAllForRestaurantId(@Bind restaurantId: Int): ResultIterable<DbRestaurantCuisineDto>
 
     @SqlQuery("INSERT INTO $table($id, $cuisineId) values <restaurantCuisineDtos> RETURNING *")
     fun insertAll(
             @BindBeanList(propertyNames = [id, cuisineId])
             restaurantCuisineDtos: Collection<DbRestaurantCuisineDto>
     ): Collection<DbRestaurantCuisineDto>
-
-    @SqlQuery("DELETE FROM $table WHERE $id = :restaurantId RETURNING *")
-    fun deleteAllByRestaurantId(@Bind restaurantId: Int): List<DbRestaurantCuisineDto>
-
-    @SqlQuery("DELETE FROM $table" +
-            " WHERE $id = :submission_id" +
-            " AND $cuisineId in (<cuisineIds>) RETURNING *")
-    fun deleteAllByRestaurantIdAndCuisineIds(
-            @Bind restaurantSubmissionId: Int,
-            @BindList cuisineIds: List<Int>
-    ): List<DbRestaurantCuisineDto>
 }

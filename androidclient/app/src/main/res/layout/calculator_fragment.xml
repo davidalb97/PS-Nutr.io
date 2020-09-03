@@ -5,83 +5,122 @@
     android:background="?attr/backgroundColor"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        >
 
-        <TableLayout
+        <RelativeLayout
+            android:id="@+id/calculator_add_meals_layout"
+            android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
+            android:layout_centerHorizontal="true"
+            >
 
             <RelativeLayout
-                android:layout_margin="30dp"
-                android:gravity="center">
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_centerHorizontal="true"
+                android:id="@+id/calculator_add_meals_layout2"
+                >
+
                 <TextView
-                    android:id="@+id/add_a_meal_text"
+                    android:id="@+id/calculator_add_meals_text_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/add_a_meal"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginRight="30dp"
+                    android:layout_marginLeft="30dp"
+                    android:text="@string/add_meals"
+                    android:textColor="?attr/textColor"
+                    android:textSize="24sp"
+                    android:layout_gravity="center"
                     android:layout_centerVertical="true"
-                    android:textSize="24sp">
+                    >
                 </TextView>
 
                 <ImageButton
-                    android:id="@+id/meal_add_button"
+                    android:id="@+id/add_custom_meal_add_meal_ingredient"
                     android:background="@drawable/material_button_shape"
                     android:layout_width="60dp"
                     android:layout_height="60dp"
                     android:src="@drawable/ic_add"
-                    android:layout_toEndOf="@id/add_a_meal_text"
-                    android:layout_marginStart="20dp">
+                    android:layout_marginTop="10dp"
+                    android:layout_toEndOf="@+id/calculator_add_meals_text_view"
+                    android:layout_centerVertical="true"
+                    >
                 </ImageButton>
             </RelativeLayout>
 
-            <RelativeLayout
-                android:id="@+id/calculator_selected_meal"
-                android:layout_height="wrap_content"
+            <androidx.recyclerview.widget.RecyclerView
                 android:layout_width="wrap_content"
-                android:gravity="center">
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:id="@+id/calculator_meals_list"
+                android:layout_marginTop="10dp"
+                android:layout_below="@+id/calculator_add_meals_layout2"
+                android:layout_centerHorizontal="true"
+                />
 
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/calc_meal_card"
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="10dp"
+                android:layout_below="@+id/calculator_meals_list"
+                android:layout_centerHorizontal="true"
+                >
+
+                <TextView
+                    android:id="@+id/total_ingredient_carbs"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:elevation="10dp"
-                    app:cardCornerRadius="15dp"
-                    android:visibility="invisible">
+                    android:textColor="?attr/textColor"
+                    android:textSize="18sp"
+                    android:text="TEMPLATE"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="10dp"
+                    >
+                </TextView>
 
-                    <RelativeLayout
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/total_ingredient_amount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center">
+                        android:textColor="?attr/textColor"
+                        android:textSize="18sp"
+                        android:text="TEMPLATE"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="10dp"
+                        android:layout_centerVertical="true"
+                        >
+                    </TextView>
 
-                        <TextView
-                            android:id="@+id/calc_meal_name"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_centerVertical="true"
-                            android:layout_marginStart="15dp"
-                            android:text="Meal name"
-                            android:textSize="18sp">
-                        </TextView>
+                    <Spinner
+                        android:id="@+id/calculator_units_spinner"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_toEndOf="@+id/total_ingredient_amount"
+                        android:focusable="true"
+                        android:layout_marginStart="20dp"
+                        android:layout_centerVertical="true"
+                        />
+                </RelativeLayout>
 
-                        <ImageButton
-                            android:id="@+id/remove_meal_from_calc_button"
-                            android:background="@drawable/material_bin_button_background"
-                            android:layout_toEndOf="@+id/calc_meal_name"
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
-                            android:src="@drawable/ic_close"
-                            android:layout_marginStart="20dp">
-                        </ImageButton>
+            </LinearLayout>
 
-                    </RelativeLayout>
+        </RelativeLayout>
 
-                </androidx.cardview.widget.CardView>
-
-            </RelativeLayout>
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/calculator_add_meals_layout"
+            >
 
             <!--Separator-->
             <View
@@ -113,7 +152,7 @@
                     android:gravity="center">
                 </EditText>
                 <Spinner
-                    android:id="@+id/measurement_units"
+                    android:id="@+id/calculator_glucose_units"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAlignment="center"
@@ -303,7 +342,7 @@
 
             </RelativeLayout>
         </TableLayout>
+    </RelativeLayout>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </ScrollView>

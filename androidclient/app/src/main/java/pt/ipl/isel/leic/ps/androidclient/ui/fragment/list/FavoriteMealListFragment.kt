@@ -11,7 +11,9 @@ class FavoriteMealListFragment : MealItemListFragment(), IUserSession {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.initRecyclerView(view)
 
-        ensureUserSession(requireContext()) {
+        ensureUserSession(requireContext(), failConsumer = {
+            super.recyclerHandler.onNoRecyclerItems()
+        }) {
             recyclerViewModel.update()
         }
     }

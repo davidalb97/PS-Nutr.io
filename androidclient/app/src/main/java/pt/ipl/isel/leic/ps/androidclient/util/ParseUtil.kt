@@ -2,6 +2,7 @@ package pt.ipl.isel.leic.ps.androidclient.util
 
 import android.net.Uri
 import android.os.Parcel
+import pt.ipl.isel.leic.ps.androidclient.ui.util.units.WeightUnits
 import kotlin.reflect.KClass
 
 fun <R : Any> Parcel.readListCompat(kClass: KClass<R>): ArrayList<R> {
@@ -37,4 +38,12 @@ fun Parcel.readTimestampWithTimeZone(): TimestampWithTimeZone? {
 
 fun Parcel.writeTimestampWithTimeZone(offsetDateTime: TimestampWithTimeZone?) {
     this.writeString(offsetDateTime?.toString())
+}
+
+fun Parcel.readWeightUnit(): WeightUnits {
+    return WeightUnits.values()[readInt()]
+}
+
+fun Parcel.writeWeightUnit(unit: WeightUnits) {
+    return writeInt(unit.ordinal)
 }

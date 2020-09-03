@@ -5,7 +5,9 @@ import android.os.Bundle
 import androidx.lifecycle.ViewModel
 import pt.ipl.isel.leic.ps.androidclient.ui.util.Logger
 import pt.ipl.isel.leic.ps.androidclient.ui.util.getMealInfo
-import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.AddCustomMealViewModel
+import pt.ipl.isel.leic.ps.androidclient.ui.util.getMealIngredient
+import pt.ipl.isel.leic.ps.androidclient.ui.util.getMealItem
+import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.meal.info.AddCustomMealViewModel
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.pick.CuisinePickViewModel
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.pick.IngredientPickViewModel
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.pick.MealInfoPickViewModel
@@ -23,9 +25,19 @@ class AddCustomMealRecyclerVMProviderFactory(
 
     override fun <T : ViewModel?> newViewModel(modelClass: Class<T>): ViewModel? {
         return when (modelClass) {
-            AddCustomMealViewModel::class.java -> AddCustomMealViewModel(
-                editMeal = arguments?.getMealInfo()
-            )
+            AddCustomMealViewModel::class.java -> {
+                val mealInfo = arguments?.getMealInfo()
+                val mealItem = arguments?.getMealItem() ?: arguments?.getMealIngredient()
+                when {
+                    mealInfo != null -> AddCustomMealViewModel(
+                        mealInfo = mealInfo
+                    )
+                    mealItem != null -> AddCustomMealViewModel(
+                        mealItem = mealItem
+                    )
+                    else -> AddCustomMealViewModel()
+                }
+            }
             CuisinePickViewModel::class.java -> CuisinePickViewModel()
             MealInfoPickViewModel::class.java -> MealInfoPickViewModel()
             IngredientPickViewModel::class.java -> IngredientPickViewModel()

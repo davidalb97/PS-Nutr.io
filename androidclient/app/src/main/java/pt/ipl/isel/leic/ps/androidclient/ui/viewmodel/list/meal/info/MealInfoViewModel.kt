@@ -5,15 +5,16 @@ import android.os.Parcelable
 import androidx.lifecycle.LifecycleOwner
 import com.android.volley.VolleyError
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.mealRepository
+import pt.ipl.isel.leic.ps.androidclient.data.api.dto.output.PortionOutput
 import pt.ipl.isel.leic.ps.androidclient.data.model.*
 import pt.ipl.isel.leic.ps.androidclient.ui.util.ItemAction
 import pt.ipl.isel.leic.ps.androidclient.ui.util.Navigation
 import pt.ipl.isel.leic.ps.androidclient.ui.util.getUserSession
 import pt.ipl.isel.leic.ps.androidclient.ui.util.live.LiveDataHandler
-import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.RestaurantListViewModel
-import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.meal.MealInfoListViewModel
+import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.meal.MealItemListViewModel
+import kotlin.reflect.KClass
 
-open class MealInfoViewModel : MealInfoListViewModel {
+open class MealInfoViewModel : MealItemListViewModel {
 
     private val mealInfoLiveDataHandler = LiveDataHandler<MealInfo>()
     val mealInfo get() = mealInfoLiveDataHandler.value
@@ -29,7 +30,7 @@ open class MealInfoViewModel : MealInfoListViewModel {
         navDestination = Navigation.SEND_TO_MEAL_DETAIL,
         actions = ingredientActions
     ) {
-        mealItem = null
+        mealItem = mealInfo
         mealInfoLiveDataHandler.restoreFromValue(mealInfo)
     }
 
@@ -45,13 +46,22 @@ open class MealInfoViewModel : MealInfoListViewModel {
         this.mealItem = mealItem
     }
 
-    constructor(ingredientActions: List<ItemAction>) : super(
+    protected constructor() : super(
         source = null,
-        navDestination = Navigation.SEND_TO_MEAL_DETAIL,
-        actions = ingredientActions
+        navDestination = Navigation.IGNORE,
+        actions = emptyList()
     ) {
         mealItem = null
     }
+
+    //TODO remove if not in use
+//    constructor(ingredientActions: List<ItemAction>) : super(
+//        source = null,
+//        navDestination = Navigation.SEND_TO_MEAL_DETAIL,
+//        actions = ingredientActions
+//    ) {
+//        mealItem = null
+//    }
 
     constructor(parcel: Parcel) : super(parcel) {
         mealItem = parcel.readParcelable(MealItem::class.java.classLoader)
@@ -62,42 +72,37 @@ open class MealInfoViewModel : MealInfoListViewModel {
         if (mealInfoLiveDataHandler.tryRestore()) {
             return
         }
-        if (mealItem!!.source == Source.API || mealItem.source == Source.FAVORITE) {
-            if (mealItem.restaurantSubmissionId != null) {
-                mealRepository.getApiRestaurantMealInfo(
-                    restaurantId = mealItem.restaurantSubmissionId,
-                    mealId = mealItem.submissionId,
-                    userSession = getUserSession(),
-                    success = mealInfoLiveDataHandler::set,
-                    error = onError
-                )
-            } else {
-                mealRepository.getApiMealInfo(
-                    mealId = mealItem.submissionId,
-                    userSession = getUserSession(),
-                    success = mealInfoLiveDataHandler::set,
-                    error = onError
-                )
-            }
+        if (mealItem!!.restaurantSubmissionId != null) {
+            mealRepository.getApiRestaurantMealInfo(
+                restaurantId = mealItem.restaurantSubmissionId!!,
+                mealId = requireNotNull(mealItem.submissionId),
+                userSession = getUserSession(),
+                success = mealInfoLiveDataHandler::set,
+                error = onError
+            )
         } else {
-            fetchDbBySource(mealItem.dbId, requireNotNull(source) {
-                "Cannot find meal info from db without a source!"
-            })
+            mealRepository.getApiMealInfo(
+                mealId = requireNotNull(mealItem.submissionId),
+                userSession = getUserSession(),
+                success = mealInfoLiveDataHandler::set,
+                error = onError
+            )
         }
     }
 
-    private fun fetchDbBySource(dbId: Long, source: Source) {
-        mealInfoLiveDataHandler.set(
-            mealRepository.getByIdAndSource(
-                dbId = dbId,
-                source = source
-            )
-        ) { dbDto ->
-            mealRepository.dbMealInfoMapper.mapToModel(dbDto).also { mapped ->
-                onMealInfo(mapped)
-            }
-        }
-    }
+    //TODO remove if not in use
+//    private fun fetchDbBySource(dbId: Long, source: Source) {
+//        mealInfoLiveDataHandler.set(
+//            mealRepository.getByIdAndSource(
+//                dbId = dbId,
+//                source = source
+//            )
+//        ) { dbDto ->
+//            mealRepository.dbMealInfoMapper.mapToModel(dbDto).also { mapped ->
+//                onMealInfo(mapped)
+//            }
+//        }
+//    }
 
     fun observeInfo(owner: LifecycleOwner, observer: (MealInfo) -> Unit) {
         mealInfoLiveDataHandler.observe(owner) { mealInfo ->
@@ -118,8 +123,8 @@ open class MealInfoViewModel : MealInfoListViewModel {
         onError: (VolleyError) -> Unit
     ) {
         mealRepository.putVote(
-            restaurantId = mealInfo!!.restaurantSubmissionId!!,
-            mealId = mealInfo!!.submissionId,
+            restaurantId = requireNotNull(mealInfo!!.restaurantSubmissionId),
+            mealId = requireNotNull(mealInfo!!.submissionId),
             vote = vote,
             success = {
                 mealInfo?.votes?.userHasVoted = vote
@@ -130,11 +135,65 @@ open class MealInfoViewModel : MealInfoListViewModel {
         )
     }
 
+    fun addMealPortion(
+        restaurantId: String,
+        mealId: Int,
+        portion: Portion,
+        userSession: UserSession,
+        onSuccess: (Int) -> Unit,
+        onError: (VolleyError) -> Unit
+    ) {
+        mealRepository.addMealPortion(
+            restaurantId = restaurantId,
+            mealId = mealId,
+            portion = portion,
+            userSession = userSession,
+            onSuccess = onSuccess,
+            onError =  onError
+        )
+    }
+
+    fun editMealPortion(
+        restaurantId: String,
+        mealId: Int,
+        portion: Portion,
+        userSession: UserSession,
+        onSuccess: (Int) -> Unit,
+        onError: (VolleyError) -> Unit
+    ) {
+        mealRepository.editMealPortion(
+            restaurantId = restaurantId,
+            mealId = mealId,
+            portion = portion,
+            userSession = userSession,
+            onSuccess = onSuccess,
+            onError =  onError
+        )
+    }
+
+    fun deleteMealPortion(
+        restaurantId: String,
+        mealId: Int,
+        userSession: UserSession,
+        onSuccess: (Int) -> Unit,
+        onError: (VolleyError) -> Unit
+    ) {
+        mealRepository.deleteMealPortion(
+            restaurantId = restaurantId,
+            mealId = mealId,
+            userSession = userSession,
+            onSuccess = onSuccess,
+            onError =  onError
+        )
+    }
+
     override fun writeToParcel(dest: Parcel?, flags: Int) {
         super.writeToParcel(dest, flags)
         dest?.writeParcelable(mealItem, flags)
         mealInfoLiveDataHandler.writeToParcel(dest, flags)
     }
+
+    override fun getModelClass(): KClass<MealItem> = MealItem::class
 
     override fun describeContents(): Int {
         return 0
@@ -144,12 +203,12 @@ open class MealInfoViewModel : MealInfoListViewModel {
         liveDataHandler.removeObservers(owner)
     }
 
-    companion object CREATOR : Parcelable.Creator<RestaurantListViewModel> {
+    companion object CREATOR : Parcelable.Creator<MealInfoViewModel> {
 
-        override fun createFromParcel(parcel: Parcel): RestaurantListViewModel =
+        override fun createFromParcel(parcel: Parcel): MealInfoViewModel =
             TODO("Restore RestaurantRecyclerViewModel from bundle")
 
-        override fun newArray(size: Int): Array<RestaurantListViewModel?> {
+        override fun newArray(size: Int): Array<MealInfoViewModel?> {
             return arrayOfNulls(size)
         }
     }

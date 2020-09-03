@@ -33,20 +33,12 @@
             android:textSize="20sp"
             android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/mealCuisines"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/restaurantName"
-            android:layout_toEndOf="@+id/restaurantImage"
-            android:text="@string/item_cuisines"
-            android:textSize="15sp" />
 
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toEndOf="@+id/restaurantImage"
-            android:layout_below="@+id/mealCuisines"
+            android:layout_below="@+id/restaurantName"
             android:id="@+id/restaurant_card_votes_bar"
             android:visibility="gone"
             >

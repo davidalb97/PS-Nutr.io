@@ -2,7 +2,6 @@ package pt.isel.ps.g06.httpserver.dataAccess.db.dao
 
 import org.jdbi.v3.sqlobject.config.RegisterRowMapper
 import org.jdbi.v3.sqlobject.customizer.Bind
-import org.jdbi.v3.sqlobject.customizer.BindList
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbSubmitterDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.mapper.DbRowSubmitterMapper

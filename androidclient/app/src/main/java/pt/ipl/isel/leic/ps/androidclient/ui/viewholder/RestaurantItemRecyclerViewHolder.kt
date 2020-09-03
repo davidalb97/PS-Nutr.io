@@ -32,7 +32,7 @@ abstract class RestaurantItemRecyclerViewHolder(
     IReportMenuItem {
 
     private val restaurantName: TextView = view.findViewById(R.id.restaurantName)
-    override val menus: MutableList<MenuItemFactory> = mutableListOf()
+    override val menus: MutableMap<String, MenuItemFactory> = mutableMapOf()
     override val menuButtonId: Int = R.id.options
     override lateinit var menuButton: ImageButton
     override val imageId: Int = R.id.restaurantImage
@@ -52,10 +52,10 @@ abstract class RestaurantItemRecyclerViewHolder(
         super.bindTo(item)
 
         restaurantName.text = item.name
-        super.setupImage(view, item.imageUri)
-        super.setupVoteBarCounters(view, item.votes, item.isVotable)
-        super.setupFavoriteButton(view)
-        super.setupReportMenuItem()
+        super.setupImage(view, item.image)
+        super.setupVoteBarCounters(view, item.votes)
+        super.setupFavoriteButton(view, item.favorites)
+        super.setupReportMenuItem(item.isReportable)
         super.setupPopupMenuButton(view)
     }
 
@@ -64,6 +64,4 @@ abstract class RestaurantItemRecyclerViewHolder(
         bundle.putNavigation(navDestination)
         bundle.putRestaurantItem(item)
     }
-
-    override fun isFavorite(): Boolean = item.isFavorite
 }

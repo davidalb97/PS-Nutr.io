@@ -9,8 +9,8 @@ class CuisineRepository(private val dataSource: CuisineDataSource) {
     private val inputCuisineMapper = InputCuisineMapper()
 
     fun getCuisines(
-        count: Int,
-        skip: Int,
+        count: Int?,
+        skip: Int?,
         success: (List<Cuisine>) -> Unit,
         error: (Throwable) -> Unit
     ) {

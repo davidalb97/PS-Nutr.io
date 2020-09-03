@@ -9,11 +9,13 @@ import pt.ipl.isel.leic.ps.androidclient.ui.util.Navigation
 import pt.ipl.isel.leic.ps.androidclient.ui.util.putMealItem
 
 abstract class MealItemRecyclerViewHolder(
+    onEditNavigation: Navigation? = null,
     actions: List<ItemAction>,
     navDestination: Navigation,
     view: View,
     ctx: Context
 ) : BaseMealRecyclerViewHolder<MealItem>(
+    onEditNavigation = onEditNavigation,
     navDestination = navDestination,
     actions = actions,
     view = view,

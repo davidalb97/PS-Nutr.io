@@ -10,9 +10,7 @@ import com.google.android.material.tabs.TabLayout
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.ui.adapter.TabAdapter
 
-abstract class BaseSlideScreenFragment(
-    private val tabs: Map<Fragment, String>
-) : Fragment() {
+abstract class BaseSlideScreenFragment(private val propagateArguments: Boolean): Fragment() {
 
     private lateinit var tabPagerAdapter: TabAdapter
     private lateinit var viewPager: ViewPager
@@ -30,9 +28,15 @@ abstract class BaseSlideScreenFragment(
         super.onViewCreated(view, savedInstanceState)
         tabPagerAdapter = TabAdapter(childFragmentManager)
 
+        val tabs = hashMapOf<Fragment, String>()
+
+        addFragments(tabs)
+
         //Sets the fragment mode
-        tabs.keys.forEach { fragment ->
-            fragment.arguments = arguments
+        if(propagateArguments) {
+            tabs.keys.forEach { fragment ->
+                fragment.arguments = arguments
+            }
         }
 
         // Add fragments and tab tiles to show in the tab layout
@@ -46,4 +50,6 @@ abstract class BaseSlideScreenFragment(
         viewPager.adapter = tabPagerAdapter
         tabLayout.setupWithViewPager(viewPager)
     }
+
+    abstract fun addFragments(fragments: HashMap<Fragment, String>)
 }

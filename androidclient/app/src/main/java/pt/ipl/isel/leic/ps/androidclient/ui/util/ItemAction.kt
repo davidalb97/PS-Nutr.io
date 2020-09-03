@@ -6,5 +6,6 @@ enum class ItemAction {
     CALCULATE,
     VOTE,
     EDIT,
-    REPORT
+    REPORT,
+    CHECK
 }

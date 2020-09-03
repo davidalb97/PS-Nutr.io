@@ -10,8 +10,8 @@ class SubmissionReportsContainerOutput(
 
 fun toSubmissionReportsContainerOutput(
         reportedSubmissionDetail: ReportSubmissionDetail,
-        submissionReports: Collection<BaseReport>
+        submissionReports: Sequence<BaseReport>
 ) = SubmissionReportsContainerOutput(
         submissionDetail = toReportSubmissionDetailOutput(reportedSubmissionDetail),
-        reports = submissionReports.map(::toReportOutput)
+        reports = submissionReports.map(::toReportOutput).toList()
 )

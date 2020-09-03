@@ -5,8 +5,8 @@ import pt.ipl.isel.leic.ps.androidclient.NutrioApp
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.encryptedSharedPreferences
 import pt.ipl.isel.leic.ps.androidclient.data.model.UserSession
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.DARK_MODE
-import pt.ipl.isel.leic.ps.androidclient.ui.util.units.GlucoseUnits
-import pt.ipl.isel.leic.ps.androidclient.ui.util.units.WeightUnits
+import pt.ipl.isel.leic.ps.androidclient.ui.util.units.DEFAULT_GLUCOSE_UNIT
+import pt.ipl.isel.leic.ps.androidclient.ui.util.units.DEFAULT_WEIGHT_UNIT
 
 // Application shared preferences keys
 const val FIRST_TIME = "isFirstTime"
@@ -16,9 +16,7 @@ const val EMAIL_KEY = "email"
 const val IMAGE_KEY = "image"
 const val JWT_KEY = "jwt"
 const val GLUCOSE_UNITS_KEY = "insulin_units"
-val DEFAULT_GLUCOSE_UNIT = GlucoseUnits.MILLI_GRAM_PER_DL
 const val WEIGHT_UNIT_KEY = "weight_units"
-val DEFAULT_WEIGHT_UNIT = WeightUnits.GRAMS
 
 /**
  * Saves the user credentials into the encrypted shared preferences
@@ -37,6 +35,8 @@ fun saveSession(jwt: String, email: String, username: String, password: String) 
         .apply()
     NutrioApp.sharedPreferences.edit()
         .putString(JWT_KEY, jwt)
+        //Fixes logout deleteSession() clearing this flag
+        .setIsFirstTime(false)
         .apply()
 }
 
@@ -53,7 +53,7 @@ fun getUserSession(): UserSession? = NutrioApp.sharedPreferences
     .getJwt()
     ?.let(::UserSession)
 
-fun requireUserSession() = getUserSession()!!
+fun requireUserSession() = requireNotNull(getUserSession())
 
 fun SharedPreferences.getJwt() = getString(JWT_KEY, null)
 

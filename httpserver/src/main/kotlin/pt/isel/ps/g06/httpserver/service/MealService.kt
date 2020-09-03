@@ -4,7 +4,6 @@ import org.springframework.stereotype.Service
 import pt.isel.ps.g06.httpserver.common.exception.problemJson.badRequest.InvalidMealException
 import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.restaurant.DbMealResponseMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.MealType
-import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.FavoriteDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.MealDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.input.ingredient.IngredientInput
@@ -62,6 +61,30 @@ class MealService(
         )
 
         return dbMealResponseMapper.mapTo(createdMeal)
+    }
+
+    fun editMeal(
+            submissionId: Int,
+            submitterId: Int,
+            name: String,
+            quantity: Int,
+            ingredients: Collection<IngredientInput>,
+            cuisines: Collection<String>,
+            mealType: MealType
+    ): Meal {
+        validateMealQuantity(ingredients, quantity)
+
+        val updatedMeal = dbMealRepository.update(
+                submissionId = submissionId,
+                submitterId = submitterId,
+                mealName = name,
+                cuisines = cuisines,
+                ingredients = ingredients,
+                quantity = quantity,
+                type = mealType
+        )
+
+        return dbMealResponseMapper.mapTo(updatedMeal)
     }
 
     private fun validateMealQuantity(ingredients: Collection<IngredientInput>, quantity: Int) {

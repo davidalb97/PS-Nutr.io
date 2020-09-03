@@ -1,5 +1,6 @@
 package pt.isel.ps.g06.httpserver.dataAccess.db.dao
 
+import org.jdbi.v3.core.result.ResultIterable
 import org.jdbi.v3.sqlobject.config.RegisterRowMapper
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbUserEncInsulinProfileDto
@@ -21,7 +22,7 @@ interface InsulinProfileDao {
     }
 
     @SqlQuery("SELECT * FROM $table WHERE $submitterId = :submitterId LIMIT :count OFFSET :skip")
-    fun getAllFromUser(submitterId: Int, count: Int?, skip: Int?): Collection<DbUserEncInsulinProfileDto>
+    fun getAllFromUser(submitterId: Int, count: Int?, skip: Int?): ResultIterable<DbUserEncInsulinProfileDto>
 
     @SqlQuery("SELECT * FROM $table WHERE $submitterId = :submitterId AND $profileName = :profileName")
     fun getFromUser(submitterId: Int, profileName: String): DbUserEncInsulinProfileDto?
@@ -38,7 +39,7 @@ interface InsulinProfileDao {
     ): DbUserEncInsulinProfileDto
 
     @SqlQuery("DELETE FROM $table WHERE $submitterId = :submitterId RETURNING *")
-    fun deleteAllBySubmitterId(submitterId: Int): Collection<DbUserEncInsulinProfileDto>?
+    fun deleteAllBySubmitterId(submitterId: Int): Collection<DbUserEncInsulinProfileDto>
 
     @SqlQuery("DELETE FROM $table WHERE $submitterId = :submitterId AND $profileName = :profileName RETURNING *")
     fun deleteProfile(submitterId: Int, profileName: String): DbUserEncInsulinProfileDto?

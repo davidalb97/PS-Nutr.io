@@ -72,12 +72,6 @@
         tools:layout="@layout/map_fragment" />
 
     <fragment
-        android:id="@+id/nav_calculator"
-        android:name="pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.CalculatorFragment"
-        android:label="@string/insulin_calculator_nav"
-        tools:layout="@layout/calculator_fragment" />
-
-    <fragment
         android:id="@+id/nav_history"
         android:name="pt.ipl.isel.leic.ps.androidclient.ui.fragment.list.HistoryListFragment"
         android:label="@string/insulin_calculator_nav"
@@ -95,22 +89,10 @@
         tools:layout="@layout/add_insulin_profile_fragment" />
 
     <fragment
-        android:id="@+id/nav_add_meal_to_calculator"
-        android:name="pt.ipl.isel.leic.ps.androidclient.ui.fragment.tab.AddMealSlideScreenFragment"
-        android:label="Add a meal"
-        tools:layout="@layout/tab_fragment" />
-
-    <fragment
         android:id="@+id/nav_saved_meals"
         android:name="pt.ipl.isel.leic.ps.androidclient.ui.fragment.list.CustomMealListFragment"
         android:label="Saved meals"
         tools:layout="@layout/meal_list" />
-
-    <fragment
-        android:id="@+id/nav_add_custom_meal"
-        android:name="pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.AddCustomMealFragment"
-        android:label="Add a custom meal"
-        tools:layout="@layout/add_custom_meal" />
 
     <fragment
         android:id="@+id/nav_sign"
@@ -135,5 +117,57 @@
         android:name="pt.ipl.isel.leic.ps.androidclient.ui.fragment.list.IngredientsListFragment"
         android:label="Ingredients"
         tools:layout="@layout/meal_list" />
+
+    <fragment
+        android:id="@+id/nav_add_restaurant"
+        android:name="pt.ipl.isel.leic.ps.androidclient.ui.fragment.create.AddRestaurantFragment"
+        android:label="Add Restaurant"
+        tools:layout="@layout/add_restaurant_fragment" />
+
+    <navigation android:id="@+id/nav_custom_meal_nested"
+        app:startDestination="@id/nav_add_custom_meal">
+        <fragment
+            android:id="@+id/nav_add_custom_meal"
+            android:name="pt.ipl.isel.leic.ps.androidclient.ui.fragment.create.AddCustomMealFragment"
+            android:label="Add a custom meal"
+            tools:layout="@layout/add_custom_meal" >
+            <action
+                android:id="@+id/nav_action_add_custom_meal_to_pick_ingredients"
+                app:destination="@id/nav_add_meal_to_calculator" />
+        </fragment>
+        <fragment
+            android:id="@+id/nav_add_meal_to_calculator"
+            android:name="pt.ipl.isel.leic.ps.androidclient.ui.fragment.tab.AddMealSlideScreenFragment"
+            android:label="Add a meal"
+            tools:layout="@layout/tab_fragment" >
+            <action
+                android:id="@+id/nav_action_back_to_custom_meal"
+                app:popUpTo="@id/nav_add_meal_to_calculator"
+                app:popUpToInclusive="true" />
+        </fragment>
+    </navigation>
+
+    <navigation android:id="@+id/nav_calculator_nested"
+        app:startDestination="@id/nav_calculator">
+        <fragment
+            android:id="@+id/nav_calculator"
+            android:name="pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.CalculatorFragment"
+            android:label="@string/insulin_calculator_nav"
+            tools:layout="@layout/calculator_fragment" >
+            <action
+                android:id="@+id/nav_action_calculator_to_pick_ingredients"
+                app:destination="@id/nav_add_meal_to_calculator" />
+        </fragment>
+        <fragment
+            android:id="@+id/nav_add_meal_to_calculator"
+            android:name="pt.ipl.isel.leic.ps.androidclient.ui.fragment.tab.AddMealSlideScreenFragment"
+            android:label="Add a meal"
+            tools:layout="@layout/tab_fragment" >
+            <action
+                android:id="@+id/nav_action_back_to_calculator"
+                app:popUpTo="@id/nav_add_meal_to_calculator"
+                app:popUpToInclusive="true" />
+        </fragment>
+    </navigation>
 
 </navigation>

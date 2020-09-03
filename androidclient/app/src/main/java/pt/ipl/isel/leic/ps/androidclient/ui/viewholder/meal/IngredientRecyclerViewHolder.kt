@@ -16,7 +16,7 @@ abstract class IngredientRecyclerViewHolder(
     navDestination: Navigation,
     view: View,
     ctx: Context
-) : BaseMealInfoRecyclerViewHolder<MealIngredient>(
+) : BaseMealRecyclerViewHolder<MealIngredient>(
     navDestination = navDestination,
     actions = actions,
     view = view,

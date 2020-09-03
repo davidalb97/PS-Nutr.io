@@ -5,8 +5,8 @@ import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.stereotype.Service
 import pt.isel.ps.g06.httpserver.common.MOD_USER
-import pt.isel.ps.g06.httpserver.common.exception.problemJson.unauthorized.UnauthorizedException
 import pt.isel.ps.g06.httpserver.common.exception.problemJson.forbidden.BaseForbiddenException
+import pt.isel.ps.g06.httpserver.common.exception.problemJson.unauthorized.UnauthorizedException
 import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.UserResponseMapper
 import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.submitter.SubmitterResponseMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.InsulinProfileDbRepository
@@ -60,12 +60,13 @@ class UserService(
 
     fun getUserFromEmail(email: String): pt.isel.ps.g06.httpserver.model.User? =
             userDbRepository.getByEmail(email)
-                    ?.let(userMapper::mapToModel)
+                    ?.let(userMapper::mapTo)
 
     fun getUserSubmitterInfo(user: pt.isel.ps.g06.httpserver.model.User): Submitter =
             submitterDbRepository
                     .getSubmitterBySubmitterId(user.identifier)
-                    .let(submitterMapper::mapTo)
+                    ?.let(submitterMapper::mapTo)
+                    ?: throw NoSuchElementException()   //Remove this exception and make the code better
 
     fun ensureModerator(user: pt.isel.ps.g06.httpserver.model.User) {
         if (user.userRole != MOD_USER) {

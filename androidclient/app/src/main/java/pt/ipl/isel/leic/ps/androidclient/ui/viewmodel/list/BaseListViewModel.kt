@@ -22,8 +22,8 @@ abstract class BaseListViewModel<T : Parcelable>() : ViewModel(), Parcelable {
     val log: Logger by lazy { Logger(javaClass) }
     val liveDataHandler = LiveDataListHandler<T>()
     val items: List<T> get() = liveDataHandler.mapped
-    var skip = 0
-    var count = 0
+    var skip: Int? = null
+    var count: Int? = null
     var onError: (Throwable) -> Unit = log::e
 
     abstract fun update()

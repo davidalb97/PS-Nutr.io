@@ -7,7 +7,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbUserInsulinProfileDto
 import pt.isel.ps.g06.httpserver.util.OffsetDateTimeSupport
 import java.sql.ResultSet
 
-class DbRowInsulinProfileMapper: RowMapper<DbUserInsulinProfileDto> {
+class DbRowInsulinProfileMapper : RowMapper<DbUserInsulinProfileDto> {
 
     override fun map(rs: ResultSet?, ctx: StatementContext?): DbUserInsulinProfileDto {
         return DbUserInsulinProfileDto(

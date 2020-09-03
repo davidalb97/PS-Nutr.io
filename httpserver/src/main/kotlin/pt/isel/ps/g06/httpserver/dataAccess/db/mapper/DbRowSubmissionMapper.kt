@@ -7,7 +7,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbSubmissionDto
 import pt.isel.ps.g06.httpserver.util.OffsetDateTimeSupport
 import java.sql.ResultSet
 
-class DbRowSubmissionMapper: RowMapper<DbSubmissionDto> {
+class DbRowSubmissionMapper : RowMapper<DbSubmissionDto> {
 
     override fun map(rs: ResultSet?, ctx: StatementContext?): DbSubmissionDto {
         return DbSubmissionDto(
