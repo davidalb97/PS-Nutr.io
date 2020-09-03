@@ -3,8 +3,9 @@ package pt.ipl.isel.leic.ps.androidclient.ui.modular.viewHolder
 import android.view.View
 import android.widget.RelativeLayout
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.IAction
+import pt.ipl.isel.leic.ps.androidclient.ui.modular.listener.click.IItemClickListenerOwner
 
-interface IPressAction<T : Any> : IAction, View.OnLongClickListener, IClickListener<T> {
+interface IPressAction<T : Any> : IAction, View.OnLongClickListener, IItemClickListenerOwner<T> {
 
     val pressActionViewId: Int
     var pressActionView: RelativeLayout
@@ -17,10 +18,8 @@ interface IPressAction<T : Any> : IAction, View.OnLongClickListener, IClickListe
             setButtonsVisibility(true)
             true
         }
-        val oldClickListener = onClickListener
-        onClickListener = {
+        this.onClickListener = this.onClickListener?.appendListener { _, _ ->
             setButtonsVisibility(false)
-            oldClickListener?.invoke(it)
         }
     }
 

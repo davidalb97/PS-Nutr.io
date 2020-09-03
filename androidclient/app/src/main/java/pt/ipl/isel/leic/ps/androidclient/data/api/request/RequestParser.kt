@@ -1,24 +1,11 @@
 package pt.ipl.isel.leic.ps.androidclient.data.api.request
 
-import android.util.Log
 import com.android.volley.RequestQueue
-import com.android.volley.Response
 import com.android.volley.VolleyError
 import com.fasterxml.jackson.databind.ObjectMapper
-import pt.ipl.isel.leic.ps.androidclient.TAG
+import pt.ipl.isel.leic.ps.androidclient.ui.util.Logger
 
-const val ADDRESS = "10.0.2.2" // Loopback for the host machine
-const val PORT = "8080"
-const val URI_BASE = "http://$ADDRESS:$PORT"
-const val SKIP = "&skip="
-const val COUNT = "&count="
-
-const val MEAL = "meal"
-const val RESTAURANT = "restaurant"
-const val CUISINES = "cuisines"
-const val URI_END = "$SKIP=:skip$COUNT=:count"
-const val INGREDIENTS = "ingredients"
-const val INSULIN_PROFILE = "profile"
+private val log = Logger(RequestParser::class)
 
 /**
  * This class makes asynchronous HTTP requests and parses
@@ -100,7 +87,7 @@ class RequestParser(
         onError: (VolleyError) -> Unit,
         responseConsumer: (PayloadResponse) -> Unit
     ) {
-        Log.v(TAG, uri)
+        log.v(uri)
 
         //Serialize request payload to String
         val payloadStr = jsonMapper.writeValueAsString(reqPayload)
@@ -112,8 +99,8 @@ class RequestParser(
                 url = uri,
                 reqHeader = reqHeader,
                 reqPayload = payloadStr,
-                listener = Response.Listener { stringResponse -> responseConsumer(stringResponse) },
-                errorListener = Response.ErrorListener { error -> onError(error) }
+                listener = responseConsumer::invoke,
+                onError = onError::invoke
             )
         requestQueue.add(jsonRequest)
     }

@@ -2,15 +2,14 @@ package pt.isel.ps.g06.httpserver.service
 
 import org.springframework.stereotype.Service
 import pt.isel.ps.g06.httpserver.common.MOD_USER
-import pt.isel.ps.g06.httpserver.common.exception.clientError.SubmissionNotVotableException
-import pt.isel.ps.g06.httpserver.common.exception.forbidden.NotSubmissionOwnerException
-import pt.isel.ps.g06.httpserver.common.exception.notFound.SubmissionNotFoundException
+import pt.isel.ps.g06.httpserver.common.exception.problemJson.badRequest.SubmissionNotVotableException
+import pt.isel.ps.g06.httpserver.common.exception.problemJson.forbidden.NotSubmissionOwnerException
+import pt.isel.ps.g06.httpserver.common.exception.problemJson.notFound.SubmissionNotFoundException
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.SubmissionDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.VoteDbRepository
-import pt.isel.ps.g06.httpserver.model.MealRestaurantInfo
-import pt.isel.ps.g06.httpserver.model.Restaurant
 import pt.isel.ps.g06.httpserver.model.User
 import pt.isel.ps.g06.httpserver.model.VoteState
+import pt.isel.ps.g06.httpserver.model.restaurant.Restaurant
 
 /**
  * Handles actions that are common to any Submission (like Restaurant, Meal, RestaurantMeal),
@@ -49,10 +48,10 @@ class SubmissionService(
         setSubmissionVote(restaurant.identifier.value.submissionId!!, submitterId, voteState)
     }
 
-    fun alterRestaurantMealVote(mealRestaurantInfo: MealRestaurantInfo, submitterId: Int, voteState: VoteState) {
+    fun alterRestaurantMealVote(restaurantMealId: Int, submitterId: Int, voteState: VoteState) {
 
         setSubmissionVote(
-                submissionId = mealRestaurantInfo.restaurantMealIdentifier,
+                submissionId = restaurantMealId,
                 submitterId = submitterId,
                 voteState = voteState
         )

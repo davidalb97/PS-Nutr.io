@@ -3,10 +3,7 @@ package pt.ipl.isel.leic.ps.androidclient.ui.provider
 import android.content.Intent
 import android.os.Bundle
 import androidx.lifecycle.ViewModel
-import pt.ipl.isel.leic.ps.androidclient.ui.util.Logger
-import pt.ipl.isel.leic.ps.androidclient.ui.util.getItemActions
-import pt.ipl.isel.leic.ps.androidclient.ui.util.getMealInfo
-import pt.ipl.isel.leic.ps.androidclient.ui.util.getMealItem
+import pt.ipl.isel.leic.ps.androidclient.ui.util.*
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.meal.info.MealInfoViewModel
 
 open class MealInfoVMProviderFactory(
@@ -24,7 +21,7 @@ open class MealInfoVMProviderFactory(
         return when (modelClass) {
             MealInfoViewModel::class.java -> {
                 val mealInfo = arguments?.getMealInfo()
-                val mealItem = arguments?.getMealItem()
+                val mealItem = arguments?.getMealItem() ?: arguments?.getMealIngredient()
                 when {
                     mealInfo != null -> MealInfoViewModel(
                         mealInfo = mealInfo,
@@ -34,9 +31,11 @@ open class MealInfoVMProviderFactory(
                         mealItem = mealItem,
                         ingredientActions = arguments?.getItemActions() ?: emptyList()
                     )
-                    else -> MealInfoViewModel(
-                        ingredientActions = arguments?.getItemActions() ?: emptyList()
-                    )
+                    //TODO remove if not needed
+//                    else -> MealInfoViewModel(
+//                        ingredientActions = arguments?.getItemActions() ?: emptyList()
+//                    )
+                    else -> throw UnsupportedOperationException("No meal passed to info ViewModel!")
                 }
             }
             else -> super.newViewModel(modelClass)

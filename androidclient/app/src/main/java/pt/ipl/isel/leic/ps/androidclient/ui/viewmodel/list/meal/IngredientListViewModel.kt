@@ -3,20 +3,21 @@ package pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.meal
 import android.os.Parcel
 import android.os.Parcelable
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.ingredientRepository
+import pt.ipl.isel.leic.ps.androidclient.data.model.MealIngredient
 import pt.ipl.isel.leic.ps.androidclient.data.model.Source
 import pt.ipl.isel.leic.ps.androidclient.ui.util.ItemAction
 import pt.ipl.isel.leic.ps.androidclient.ui.util.Navigation
+import kotlin.reflect.KClass
 
-open class IngredientListViewModel : MealInfoListViewModel {
+open class IngredientListViewModel : BaseMealListViewModel<MealIngredient> {
 
     constructor(
         navDestination: Navigation,
-        actions: List<ItemAction>,
-        source: Source
+        actions: List<ItemAction>
     ) : super(
         navDestination = navDestination,
         actions = actions,
-        source = source
+        source = Source.API
     )
 
     constructor(parcel: Parcel) : super(parcel)
@@ -53,4 +54,5 @@ open class IngredientListViewModel : MealInfoListViewModel {
 
     }
 
+    override fun getModelClass(): KClass<MealIngredient> = MealIngredient::class
 }

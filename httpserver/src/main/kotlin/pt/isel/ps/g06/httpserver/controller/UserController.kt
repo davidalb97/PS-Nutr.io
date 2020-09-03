@@ -7,13 +7,14 @@ import pt.isel.ps.g06.httpserver.common.BAN
 import pt.isel.ps.g06.httpserver.common.LOGIN
 import pt.isel.ps.g06.httpserver.common.REGISTER
 import pt.isel.ps.g06.httpserver.common.USER
-import pt.isel.ps.g06.httpserver.common.exception.authentication.UnauthorizedException
-import pt.isel.ps.g06.httpserver.dataAccess.input.BanInput
-import pt.isel.ps.g06.httpserver.dataAccess.input.UserLoginInput
-import pt.isel.ps.g06.httpserver.dataAccess.input.UserRegisterInput
-import pt.isel.ps.g06.httpserver.dataAccess.output.security.UserLoginOutput
-import pt.isel.ps.g06.httpserver.dataAccess.output.security.UserRegisterOutput
+import pt.isel.ps.g06.httpserver.common.exception.problemJson.notFound.UserNotFoundException
+import pt.isel.ps.g06.httpserver.common.exception.problemJson.unauthorized.UnauthorizedException
+import pt.isel.ps.g06.httpserver.dataAccess.input.moderation.BanInput
+import pt.isel.ps.g06.httpserver.dataAccess.input.user.UserLoginInput
+import pt.isel.ps.g06.httpserver.dataAccess.input.user.UserRegisterInput
 import pt.isel.ps.g06.httpserver.dataAccess.output.user.UserInfoOutput
+import pt.isel.ps.g06.httpserver.dataAccess.output.user.UserLoginOutput
+import pt.isel.ps.g06.httpserver.dataAccess.output.user.UserRegisterOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.user.mapUserToOutput
 import pt.isel.ps.g06.httpserver.model.User
 import pt.isel.ps.g06.httpserver.service.AuthenticationService
@@ -54,9 +55,23 @@ class UserController(private val userService: UserService, private val authentic
     fun getUserAdditionalInfo(user: User): ResponseEntity<UserInfoOutput> =
             ResponseEntity.ok(
                     userService
-                            .getUserSubmitterInfo(user)
-                            .let { submitter -> mapUserToOutput(user.userEmail, submitter) }
+                            .getUserFromEmail(user.userEmail)
+                            ?.let(::mapUserToOutput)
+                            ?: throw UserNotFoundException()
             )
+
+    @DeleteMapping(USER)
+    fun removeAccount(@Valid @RequestBody userLoginInput: UserLoginInput): ResponseEntity<Void> {
+
+        val userEmail = userLoginInput.email
+
+        // Authenticates the user, throwing UnauthorizedException if the credentials are wrong
+        authenticationService.login(userEmail, userLoginInput.password)
+
+        userService.deleteUser(userEmail)
+
+        return ResponseEntity.ok().build()
+    }
 
 
     @PutMapping(BAN)

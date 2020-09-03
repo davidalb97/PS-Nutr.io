@@ -6,22 +6,26 @@ import pt.ipl.isel.leic.ps.androidclient.util.TimestampWithTimeZone
 
 @Entity(tableName = DbMealInfoEntity.tableName)
 open class DbMealInfoEntity(
-    val submissionId: Int,
+    val submissionId: Int?,
     val restaurantSubmissionId: String?,
     val name: String,
     val carbs: Int,
-    val amount: Int,
-    val unit: String,
-    val isFavorite: Boolean,
-    val isVotable: Boolean,
+    val amount: Float,
+    val unit: Int,
     val imageUri: String?,
-    val hasVote: Boolean,
+    val isVotable: Boolean?,
     val positiveVotes: Int?,
     val negativeVotes: Int?,
     val userVoteOrdinal: Int?,
     val creationDate: TimestampWithTimeZone?,
-    val isSuggested: Boolean,
-    val sourceOrdinal: Int
+    val sourceOrdinal: Int,
+    val ownerId: Int?,
+    val userPortion: Float?,
+    val isFavorite: Boolean,
+    val isFavorable: Boolean,
+    val isReportable: Boolean?,
+    val isSuggested: Boolean?,
+    val isVerified: Boolean?
 ) {
     companion object {
         const val DEFAULT_DB_ID: Long = 0
@@ -32,4 +36,6 @@ open class DbMealInfoEntity(
 
     @PrimaryKey(autoGenerate = true)
     open var primaryKey: Long = DEFAULT_DB_ID
+
+    var restaurantKey: Long = DEFAULT_DB_ID
 }

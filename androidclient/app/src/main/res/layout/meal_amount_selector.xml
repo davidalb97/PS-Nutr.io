@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    >
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center">
+
+        <SeekBar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/meal_amount_selector_seekBar"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        >
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:id="@+id/meal_amount_amount_layout"
+            >
+            
+            <TextView
+                android:id="@+id/meal_amount_selector_meal_amount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="10dp"
+                android:text="TEMPLATE"
+                android:textColor="?attr/textColor"
+                android:textSize="18sp"
+                >
+            </TextView>
+
+            <Spinner
+                android:id="@+id/meal_amount_selector_spinner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:focusable="true" 
+                />
+            
+        </LinearLayout>
+        
+        <TextView
+            android:id="@+id/meal_amount_selector_meal_carbs"
+            android:layout_below="@+id/meal_amount_amount_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            android:text="TEMPLATE"
+            android:textColor="?attr/textColor"
+            android:textSize="18sp">
+
+        </TextView>
+
+    </RelativeLayout>
+
+</LinearLayout>

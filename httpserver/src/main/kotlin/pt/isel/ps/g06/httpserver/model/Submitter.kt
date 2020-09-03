@@ -5,8 +5,7 @@ import java.time.OffsetDateTime
 
 data class Submitter(
         val identifier: Int,
-        val name: String,
         val creationDate: OffsetDateTime?,
         val image: URI?,
-        val isUser: Boolean
+        val isUser: Boolean //TODO This should be its own sub-class
 )

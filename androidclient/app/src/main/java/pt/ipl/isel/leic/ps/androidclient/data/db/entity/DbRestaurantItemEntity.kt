@@ -5,13 +5,15 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = DbRestaurantItemEntity.tableName)
 data class DbRestaurantItemEntity(
-    val id: String,
+    val id: String?,
     val name: String,
     val latitude: Float,
     val longitude: Float,
+    val isFavorable: Boolean,
     val isFavorite: Boolean,
     val isVotable: Boolean,
-    val imageUri: String?,
+    val isReportable: Boolean,
+    val image: String?,
     val hasVote: Boolean,
     val positiveVotes: Int?,
     val negativeVotes: Int?,

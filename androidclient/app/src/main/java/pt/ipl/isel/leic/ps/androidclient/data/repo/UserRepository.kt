@@ -5,6 +5,8 @@ import pt.ipl.isel.leic.ps.androidclient.data.api.datasource.UserDataSource
 import pt.ipl.isel.leic.ps.androidclient.data.api.mapper.input.InputUserInfoMapper
 import pt.ipl.isel.leic.ps.androidclient.data.api.mapper.input.InputUserLoginMapper
 import pt.ipl.isel.leic.ps.androidclient.data.api.mapper.input.InputUserRegisterMapper
+import pt.ipl.isel.leic.ps.androidclient.data.api.mapper.output.OutputLoginMapper
+import pt.ipl.isel.leic.ps.androidclient.data.api.mapper.output.OutputRegisterMapper
 import pt.ipl.isel.leic.ps.androidclient.data.model.UserInfo
 import pt.ipl.isel.leic.ps.androidclient.data.model.UserLogin
 import pt.ipl.isel.leic.ps.androidclient.data.model.UserRegister
@@ -12,34 +14,30 @@ import pt.ipl.isel.leic.ps.androidclient.data.model.UserSession
 
 class UserRepository(private val userDataSource: UserDataSource) {
 
-    private val loginUserMapper =
-        InputUserLoginMapper()
-    private val registerUserMapper =
-        InputUserRegisterMapper()
-    private val infoUserMapper =
-        InputUserInfoMapper()
+    private val inputUserLoginMapper = InputUserLoginMapper()
+    private val inputUserRegisterMapper = InputUserRegisterMapper()
+    private val inputUserInfoMapper = InputUserInfoMapper()
+    private val outputRegisterMapper = OutputRegisterMapper()
+    private val outputLoginMapper = OutputLoginMapper()
 
     fun registerUser(
         userReg: UserRegister,
         userSessionConsumer: (UserSession) -> Unit,
         error: (VolleyError) -> Unit
-    ) = userDataSource.register(
-        email = userReg.email,
-        username = userReg.username,
-        password = userReg.password,
+    ) = userDataSource.portRegister(
+        registerOutput = outputRegisterMapper.mapToOutputModel(model = userReg),
         error = error,
-        consumerDto = { userSessionConsumer(registerUserMapper.mapToModel(it)) }
+        consumerDto = { userSessionConsumer(inputUserRegisterMapper.mapToModel(dto = it)) }
     )
 
     fun loginUser(
         userLogin: UserLogin,
         onSuccess: (UserSession) -> Unit,
         onError: (VolleyError) -> Unit
-    ) = userDataSource.login(
-        username = userLogin.email,
-        password = userLogin.password,
+    ) = userDataSource.postLogin(
+        loginOutput = outputLoginMapper.mapToOutputModel(model = userLogin),
         error = onError,
-        consumerDto = { onSuccess(loginUserMapper.mapToModel(it)) }
+        consumerDto = { onSuccess(inputUserLoginMapper.mapToModel(it)) }
     )
 
     fun deleteAccount(
@@ -54,9 +52,9 @@ class UserRepository(private val userDataSource: UserDataSource) {
         userSession: UserSession,
         onSuccess: (UserInfo) -> Unit,
         onError: (VolleyError) -> Unit
-    ) = userDataSource.requestUserInfo(
+    ) = userDataSource.getUserInfo(
         userSession.jwt,
         error = onError,
-        consumerDto = { onSuccess(infoUserMapper.mapToModel(it)) }
+        consumerDto = { onSuccess(inputUserInfoMapper.mapToModel(it)) }
     )
 }

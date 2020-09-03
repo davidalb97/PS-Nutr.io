@@ -8,10 +8,17 @@ import pt.ipl.isel.leic.ps.androidclient.ui.util.getUserSession
 
 interface IUserSession {
 
-    fun ensureUserSession(ctx: Context, consumer: (UserSession) -> Unit) {
+    fun ensureUserSession(
+        ctx: Context,
+        failConsumer: () -> Unit = {},
+        consumer: (UserSession) -> Unit
+    ) {
         val userSession = getUserSession()
         if (userSession != null) {
             consumer(userSession)
-        } else Toast.makeText(ctx, R.string.login_required, Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(ctx, R.string.login_required, Toast.LENGTH_SHORT).show()
+            failConsumer()
+        }
     }
 }

@@ -2,16 +2,19 @@ package pt.isel.ps.g06.httpserver.controller
 
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
+import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.util.UriComponentsBuilder
 import pt.isel.ps.g06.httpserver.common.*
-import pt.isel.ps.g06.httpserver.common.exception.forbidden.NotSubmissionOwnerException
-import pt.isel.ps.g06.httpserver.common.exception.notFound.MealNotFoundException
+import pt.isel.ps.g06.httpserver.common.exception.problemJson.forbidden.NotSubmissionOwnerException
+import pt.isel.ps.g06.httpserver.common.exception.problemJson.notFound.MealNotFoundException
 import pt.isel.ps.g06.httpserver.dataAccess.db.MealType
-import pt.isel.ps.g06.httpserver.dataAccess.input.FavoriteInput
-import pt.isel.ps.g06.httpserver.dataAccess.input.MealInput
-import pt.isel.ps.g06.httpserver.dataAccess.output.meal.*
-import pt.isel.ps.g06.httpserver.model.Meal
+import pt.isel.ps.g06.httpserver.dataAccess.input.meal.MealInput
+import pt.isel.ps.g06.httpserver.dataAccess.input.userActions.FavoriteInput
+import pt.isel.ps.g06.httpserver.dataAccess.output.meal.DetailedMealOutput
+import pt.isel.ps.g06.httpserver.dataAccess.output.meal.SimplifiedMealContainer
+import pt.isel.ps.g06.httpserver.dataAccess.output.meal.toDetailedMealOutput
+import pt.isel.ps.g06.httpserver.dataAccess.output.meal.toSimplifiedMealContainer
 import pt.isel.ps.g06.httpserver.model.User
 import pt.isel.ps.g06.httpserver.service.MealService
 import pt.isel.ps.g06.httpserver.service.SubmissionService
@@ -19,6 +22,8 @@ import pt.isel.ps.g06.httpserver.service.UserService
 import javax.validation.Valid
 import javax.validation.constraints.Max
 import javax.validation.constraints.Min
+
+@Validated
 @Suppress("MVCPathVariableInspection")
 @RestController
 @RequestMapping(produces = [MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_PROBLEM_JSON_VALUE])
@@ -39,8 +44,8 @@ class MealController(
     fun getMeals(
             user: User?,
             @RequestParam cuisines: Collection<String>?,
-            @RequestParam skip: Int?,
-            @RequestParam @Min(0) count: Int?
+            @RequestParam @Min(0) skip: Int?,
+            @RequestParam @Min(0) @Max(MAX_COUNT) count: Int?
     ): ResponseEntity<SimplifiedMealContainer> {
 
         var meals = mealService.getSuggestedMeals(
@@ -49,6 +54,7 @@ class MealController(
                 cuisines = cuisines
         )
 
+        //TODO cuisine filtering should happen in database as it breaks count param
         if (cuisines != null && cuisines.isNotEmpty()) {
             //Filter by user cuisines
             meals = meals.filter {
@@ -63,7 +69,6 @@ class MealController(
         if (count != null) {
             meals = meals.take(count)
         }
-
         return ResponseEntity
                 .ok()
                 .body(toSimplifiedMealContainer(meals, user?.identifier))
@@ -85,7 +90,7 @@ class MealController(
                 cuisines = meal.cuisines!!,
                 quantity = meal.quantity!!,
                 submitterId = user.identifier,
-                mealType = MealType.SUGGESTED
+                mealType = MealType.SUGGESTED_MEAL
         )
 
         return ResponseEntity.created(
@@ -99,8 +104,8 @@ class MealController(
     @GetMapping(MEALS_CUSTOM)
     fun getCustomMealsFromUser(
             user: User,
-            @RequestParam skip: Int?,
-            @RequestParam @Min(0) count: Int?
+            @RequestParam @Min(0) skip: Int?,
+            @RequestParam @Min(0) @Max(MAX_COUNT) count: Int?
     ): ResponseEntity<SimplifiedMealContainer> {
 
         val userCustomMeals = mealService
@@ -133,11 +138,36 @@ class MealController(
         ).build()
     }
 
+    @PutMapping(MEAL)
+    fun editCustomMeal(
+            @PathVariable(MEAL_ID_VALUE) mealId: Int,
+            @Valid @RequestBody meal: MealInput,
+            user: User
+    ): ResponseEntity<Void> {
+        //Due to validators we are sure fields are never null
+        val updatedMeal = mealService.editMeal(
+                submissionId = mealId,
+                submitterId = user.identifier,
+                name = meal.name!!,
+                quantity = meal.quantity!!,
+                ingredients = meal.ingredients!!,
+                cuisines = meal.cuisines!!,
+                mealType = MealType.CUSTOM
+        )
+
+        return ResponseEntity.created(
+                UriComponentsBuilder
+                        .fromUriString(MEAL)
+                        .buildAndExpand(updatedMeal.identifier)
+                        .toUri()
+        ).build()
+    }
+
     @GetMapping(MEALS_FAVORITE)
     fun getFavoriteMealsFromUser(
             user: User,
-            count: Int?,
-            skip: Int?
+            @RequestParam @Min(0) skip: Int?,
+            @RequestParam @Min(0) @Max(MAX_COUNT) count: Int?
     ): ResponseEntity<SimplifiedMealContainer> {
 
         val userCustomMeals = mealService

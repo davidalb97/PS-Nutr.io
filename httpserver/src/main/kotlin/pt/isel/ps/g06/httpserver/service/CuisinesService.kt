@@ -9,9 +9,8 @@ import pt.isel.ps.g06.httpserver.model.Cuisine
 class CuisinesService(
         private val cuisineDbRepository: CuisineDbRepository,
         private val cuisinesMapper: CuisinesResponseMapper
-
 ) {
-    fun getAvailableCuisines(skip: Int?, count: Int?): Collection<Cuisine> {
+    fun getAvailableCuisines(skip: Int?, count: Int?): Sequence<Cuisine> {
         return cuisineDbRepository
                 .getAll(skip, count)
                 .map(cuisinesMapper::mapTo)

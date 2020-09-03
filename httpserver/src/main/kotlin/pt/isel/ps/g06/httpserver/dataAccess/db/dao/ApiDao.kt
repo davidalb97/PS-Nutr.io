@@ -1,6 +1,8 @@
 package pt.isel.ps.g06.httpserver.dataAccess.db.dao
 
+import org.jdbi.v3.core.result.ResultIterable
 import org.jdbi.v3.sqlobject.customizer.Bind
+import org.jdbi.v3.sqlobject.customizer.BindList
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbApiDto
 
@@ -14,14 +16,21 @@ interface ApiDao {
     companion object {
         const val table = "Api"
         const val id = "submitter_id"
+        const val name = "api_name"
         const val apiToken = "api_token"
     }
 
+    @SqlQuery("SELECT * FROM $table WHERE $table.$name IN (<names>)")
+    fun getApiSubmittersByName(@BindList names: Collection<String>): ResultIterable<DbApiDto>
+
     @SqlQuery("SELECT * FROM $table")
-    fun getAll(): List<DbApiDto>
+    fun getAll(): ResultIterable<DbApiDto>
 
     @SqlQuery("SELECT * FROM $table WHERE $id = :submitterId")
     fun getById(@Bind submitterId: Int): DbApiDto?
+
+    @SqlQuery("SELECT * FROM $table WHERE $name = :apiName")
+    fun getByName(@Bind apiName: String): DbApiDto?
 
     @SqlQuery("SELECT $table.$id, $table.$apiToken" +
             " FROM $table" +

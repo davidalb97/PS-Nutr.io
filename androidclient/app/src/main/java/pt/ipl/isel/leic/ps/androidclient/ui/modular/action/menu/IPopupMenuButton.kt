@@ -25,7 +25,7 @@ interface IPopupMenuButton : IMenu, IContext {
     fun newMenu(viewAnchor: View) {
         val popupMenu = PopupMenu(fetchCtx(), viewAnchor)
         val menu = popupMenu.menu
-        menus.forEach { menuItemFactory ->
+        menus.values.forEach { menuItemFactory ->
             menuItemFactory.newMenuItem(menu)
         }
         popupMenu.show()

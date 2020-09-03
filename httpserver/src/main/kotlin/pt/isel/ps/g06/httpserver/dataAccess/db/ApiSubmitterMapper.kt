@@ -1,23 +1,31 @@
 package pt.isel.ps.g06.httpserver.dataAccess.db
 
 import org.springframework.stereotype.Repository
-import pt.isel.ps.g06.httpserver.common.exception.InvalidApplicationStartupException
+import pt.isel.ps.g06.httpserver.common.exception.server.InvalidApplicationStartupException
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.RestaurantApiType
-import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbSubmitterDto
+import pt.isel.ps.g06.httpserver.dataAccess.db.common.DatabaseContext
+import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbApiDto
+import pt.isel.ps.g06.httpserver.dataAccess.db.repo.ApiDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.SubmitterDbRepository
 import javax.annotation.PostConstruct
 
 @Repository
 data class ApiSubmitterMapper(
-        private val submitterDbRepository: SubmitterDbRepository
+        private val submitterDbRepository: SubmitterDbRepository,
+        private val apiDbRepository: ApiDbRepository,
+        private val databaseContext: DatabaseContext
 ) {
     private lateinit var apiSubmitters: Map<Int, RestaurantApiType>
 
     @PostConstruct
     protected fun createMap() {
-        val submitters = submitterDbRepository
-                .getApiSubmittersByName(RestaurantApiType.values().map { it.toString() })
-                .associate(this::buildSubmitterPair)
+        val submitters: Map<Int, RestaurantApiType> = apiDbRepository
+                .getApisByName(
+                        RestaurantApiType.values()
+                                .map(RestaurantApiType::toString)
+                )
+                .map { Pair(it.submitter_id, buildApiType(it)) }
+                .toMap()
 
         if (submitters.size != RestaurantApiType.values().size) {
             throw InvalidApplicationStartupException("Insufficient RestaurantApi submitters in Database! \n" +
@@ -27,6 +35,9 @@ data class ApiSubmitterMapper(
         }
 
         apiSubmitters = submitters
+
+        //Force close because this method is never intercepted by Database context cleanup
+        databaseContext.close()
     }
 
 
@@ -34,11 +45,9 @@ data class ApiSubmitterMapper(
 
     fun getSubmitter(type: RestaurantApiType) = apiSubmitters.filterValues { it == type }.keys.firstOrNull()
 
-    private fun buildSubmitterPair(submitter: DbSubmitterDto): Pair<Int, RestaurantApiType> {
-        val type = RestaurantApiType
-                .getOrNull(submitter.submitter_name)
-                ?: throw  InvalidApplicationStartupException("Failed to map string '${submitter.submitter_name}' to a valid RestaurantApiType.")
-
-        return Pair(submitter.submitter_id, type)
+    private fun buildApiType(apiDto: DbApiDto): RestaurantApiType {
+        return RestaurantApiType
+                .getOrNull(apiDto.api_name)
+                ?: throw  InvalidApplicationStartupException("Failed to map string '${apiDto.api_name}' to a valid RestaurantApiType.")
     }
 }

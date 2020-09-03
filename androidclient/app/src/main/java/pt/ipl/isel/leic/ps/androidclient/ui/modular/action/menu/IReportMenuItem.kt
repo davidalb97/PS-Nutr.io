@@ -14,11 +14,11 @@ interface IReportMenuItem : IMenu, IContext, IAction, ILog, IUserSession {
 
     fun onReport(reportStr: String, onSuccess: () -> Unit, onError: (Throwable) -> Unit)
 
-    fun setupReportMenuItem() {
-        if (!actions.contains(ItemAction.REPORT)) {
+    fun setupReportMenuItem(isReportable: Boolean) {
+        if (!actions.contains(ItemAction.REPORT) || !isReportable) {
             return
         }
-        menus.add(object : MenuItemFactory() {
+        menus["report"] = object : MenuItemFactory() {
             override fun newMenuItem(menu: Menu): MenuItem {
                 return menu.add(R.string.report_menu_item_title).also { menuItem ->
                     menuItem.setOnMenuItemClickListener {
@@ -39,6 +39,6 @@ interface IReportMenuItem : IMenu, IContext, IAction, ILog, IUserSession {
                     }
                 }
             }
-        })
+        }
     }
 }

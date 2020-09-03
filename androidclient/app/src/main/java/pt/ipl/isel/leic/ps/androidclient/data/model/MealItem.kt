@@ -3,59 +3,60 @@ package pt.ipl.isel.leic.ps.androidclient.data.model
 import android.net.Uri
 import android.os.Parcel
 import android.os.Parcelable
-import pt.ipl.isel.leic.ps.androidclient.util.readBooleanCompat
-import pt.ipl.isel.leic.ps.androidclient.util.readUri
-import pt.ipl.isel.leic.ps.androidclient.util.writeBooleanCompat
-import pt.ipl.isel.leic.ps.androidclient.util.writeUri
+import pt.ipl.isel.leic.ps.androidclient.ui.util.units.WeightUnits
+import pt.ipl.isel.leic.ps.androidclient.util.*
 
+//TODO replace var to val when fields are not changed
 open class MealItem(
-    var dbId: Long,
-    var dbRestaurantId: Long,
-    val name: String,
-    val submissionId: Int,
-    val restaurantSubmissionId: String?,
-    open val carbs: Int?,
-    open val amount: Int?,
-    open val unit: String?,
-    val imageUri: Uri?,
-    val votes: Votes?,
-    var isFavorite: Boolean,
-    var isVotable: Boolean,
-    val isSuggested: Boolean,
+    var dbId: Long?,
+    var dbRestaurantId: Long?,
+    var submissionId: Int?,
+    var restaurantSubmissionId: String?,
+    var name: String,
+    var carbs: Int,
+    var amount: Float,
+    var unit: WeightUnits,
+    var imageUri: Uri?,
+    var votes: Votes?,
+    var favorites: Favorites,
+    var isVerified: Boolean?,
+    var isSuggested: Boolean?,
+    var isReportable: Boolean?,
     var source: Source
 ) : Parcelable {
 
     constructor(parcel: Parcel) : this(
-        dbId = parcel.readLong(),
-        dbRestaurantId = parcel.readLong(),
-        submissionId = parcel.readInt(),
+        dbId = parcel.readSerializable() as Long?,
+        dbRestaurantId = parcel.readSerializable() as Long?,
+        submissionId = parcel.readSerializable() as Int?,
         restaurantSubmissionId = parcel.readString(),
         name = parcel.readString()!!,
-        carbs = parcel.readSerializable() as Int?,
-        amount = parcel.readSerializable() as Int?,
-        unit = parcel.readString(),
+        carbs = parcel.readInt(),
+        amount = parcel.readFloat(),
+        unit = parcel.readWeightUnit(),
         imageUri = parcel.readUri(),
         votes = parcel.readParcelable(Votes::class.java.classLoader),
-        isFavorite = parcel.readBooleanCompat(),
-        isVotable = parcel.readBooleanCompat(),
-        isSuggested = parcel.readBooleanCompat(),
+        favorites = parcel.readParcelable(Favorites::class.java.classLoader)!!,
+        isVerified = parcel.readSerializable() as Boolean?,
+        isSuggested = parcel.readSerializable() as Boolean?,
+        isReportable = parcel.readSerializable() as Boolean?,
         source = Source.values()[parcel.readInt()]
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeLong(dbId)
-        parcel.writeLong(dbRestaurantId)
-        parcel.writeInt(submissionId)
+        parcel.writeSerializable(dbId)
+        parcel.writeSerializable(dbRestaurantId)
+        parcel.writeSerializable(submissionId)
         parcel.writeString(restaurantSubmissionId)
         parcel.writeString(name)
-        parcel.writeSerializable(carbs)
-        parcel.writeSerializable(amount)
-        parcel.writeString(unit)
+        parcel.writeInt(carbs)
+        parcel.writeFloat(amount)
+        parcel.writeWeightUnit(unit)
         parcel.writeUri(imageUri)
         parcel.writeParcelable(votes, flags)
-        parcel.writeBooleanCompat(isFavorite)
-        parcel.writeBooleanCompat(isVotable)
-        parcel.writeBooleanCompat(isSuggested)
+        parcel.writeSerializable(isVerified)
+        parcel.writeSerializable(isSuggested)
+        parcel.writeSerializable(isReportable)
         parcel.writeInt(source.ordinal)
     }
 

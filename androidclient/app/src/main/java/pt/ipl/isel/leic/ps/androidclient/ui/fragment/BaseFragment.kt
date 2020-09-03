@@ -10,6 +10,7 @@ import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.hasInternetConnection
@@ -66,5 +67,9 @@ abstract class BaseFragment : Fragment() {
             ).show()
         }
         log.e(throwable)
+    }
+
+    fun popUpBackStack() {
+        view?.findNavController()?.popBackStack()
     }
 }

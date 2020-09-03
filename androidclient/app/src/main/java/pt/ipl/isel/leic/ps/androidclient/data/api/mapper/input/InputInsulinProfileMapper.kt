@@ -1,6 +1,6 @@
 package pt.ipl.isel.leic.ps.androidclient.data.api.mapper.input
 
-import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.InsulinProfileInput
+import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.insulin.InsulinProfileInput
 import pt.ipl.isel.leic.ps.androidclient.data.model.InsulinProfile
 import pt.ipl.isel.leic.ps.androidclient.util.TimestampWithTimeZone
 

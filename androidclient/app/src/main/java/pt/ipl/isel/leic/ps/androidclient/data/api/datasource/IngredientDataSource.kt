@@ -1,69 +1,54 @@
 package pt.ipl.isel.leic.ps.androidclient.data.api.datasource
 
+import android.net.Uri
 import com.android.volley.VolleyError
-import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.info.DetailedIngredientInput
-import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.info.DetailedIngredientsInput
-import pt.ipl.isel.leic.ps.androidclient.data.api.request.HTTPMethod
-import pt.ipl.isel.leic.ps.androidclient.data.api.request.INGREDIENTS
-import pt.ipl.isel.leic.ps.androidclient.data.api.request.RequestParser
-import pt.ipl.isel.leic.ps.androidclient.data.api.request.URI_BASE
-
-private const val INGREDIENT_URI = "$URI_BASE/$INGREDIENTS"
-private const val INGREDIENT_LIST_URI = "$URI_BASE/$INGREDIENTS" +
-        "?skip=$SKIP_PARAM" +
-        "&count=$COUNT_PARAM"
-private const val INGREDIENT_ID_PARAM = ":id"
-private const val INGREDIENT_ID_URI = "$INGREDIENT_URI/$INGREDIENT_ID_PARAM"
+import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.ingredient.IngredientContainerInput
+import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.meal.MealInfoInput
+import pt.ipl.isel.leic.ps.androidclient.data.api.request.*
+import pt.ipl.isel.leic.ps.androidclient.data.util.appendPath
+import pt.ipl.isel.leic.ps.androidclient.data.util.appendQueryNotNullParameter
 
 class IngredientDataSource(
     private val requestParser: RequestParser
 ) {
 
-    /**
-     * ----------------------------- GETs -----------------------------
-     */
     fun getIngredients(
-        count: Int,
-        skip: Int,
-        success: (DetailedIngredientsInput) -> Unit,
+        count: Int?,
+        skip: Int?,
+        success: (IngredientContainerInput) -> Unit,
         error: (VolleyError) -> Unit
     ) {
-        var uri = INGREDIENT_LIST_URI
-        val params = hashMapOf(
-            Pair(SKIP_PARAM, "$skip"),
-            Pair(COUNT_PARAM, "$count")
-        )
-        uri = buildUri(uri, params)
         requestParser.requestAndParse(
             method = HTTPMethod.GET,
-            uri = uri,
-            dtoClass = DetailedIngredientsInput::class.java,
+            uri = Uri.Builder()
+                .scheme(SCHEME)
+                .encodedAuthority(ADDRESS_PORT)
+                .appendPath(INGREDIENTS_PATH)
+                .appendQueryNotNullParameter(COUNT_PARAM, count)
+                .appendQueryNotNullParameter(SKIP_PARAM, skip)
+                .build()
+                .toString(),
+            dtoClass = IngredientContainerInput::class.java,
             onSuccess = success,
             onError = error
         )
     }
 
-    /**
-     * Required id parameter
-     */
     fun getIngredientInfo(
         ingredientId: Int,
-        success: (DetailedIngredientInput) -> Unit,
+        success: (MealInfoInput) -> Unit,
         error: (VolleyError) -> Unit
     ) {
-        var uri = INGREDIENT_ID_URI
-        val params = hashMapOf(
-            Pair(
-                INGREDIENT_ID_PARAM,
-                "$ingredientId"
-            )
-        )
-        uri = buildUri(uri, params)
-
         requestParser.requestAndParse(
             method = HTTPMethod.GET,
-            uri = uri,
-            dtoClass = DetailedIngredientInput::class.java,
+            uri = Uri.Builder()
+                .scheme(SCHEME)
+                .encodedAuthority(ADDRESS_PORT)
+                .appendPath(INGREDIENTS_PATH)
+                .appendPath(ingredientId)
+                .build()
+                .toString(),
+            dtoClass = MealInfoInput::class.java,
             onSuccess = success,
             onError = error
         )

@@ -160,6 +160,32 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "user",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"123@123\",\r\n    \"password\": \"123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{DOMAIN}}/user",
+							"host": [
+								"{{DOMAIN}}"
+							],
+							"path": [
+								"user"
+							]
+						}
+					},
+					"response": []
 				}
 			],
 			"protocolProfileBehavior": {}
@@ -332,6 +358,36 @@
 								{
 									"key": "type",
 									"value": "RESTAURANT"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "allReportsBySubmission",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{MOD_JWT}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{DOMAIN}}/report/:submissionId",
+							"host": [
+								"{{DOMAIN}}"
+							],
+							"path": [
+								"report",
+								":submissionId"
+							],
+							"variable": [
+								{
+									"key": "submissionId",
+									"value": ""
 								}
 							]
 						}
@@ -805,6 +861,52 @@
 								{
 									"key": "restaurant_id",
 									"value": "2++here:pds:place:620eyckr-72ff992cbb2c4e979321a0683885c6b0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "restaurantMealPortion",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{USER_JWT}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"quantity\": 100,\r\n    \"unit\": \"gr\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{DOMAIN}}/restaurant/:restaurant_id/meal/:meal_id/portion",
+							"host": [
+								"{{DOMAIN}}"
+							],
+							"path": [
+								"restaurant",
+								":restaurant_id",
+								"meal",
+								":meal_id",
+								"portion"
+							],
+							"variable": [
+								{
+									"key": "restaurant_id",
+									"value": "2++here:pds:place:620eyckr-72ff992cbb2c4e979321a0683885c6b0"
+								},
+								{
+									"key": "meal_id",
+									"value": "197"
 								}
 							]
 						}

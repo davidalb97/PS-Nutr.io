@@ -1,31 +1,44 @@
 package pt.isel.ps.g06.httpserver.model
 
+import pt.isel.ps.g06.httpserver.dataAccess.db.MealType
+import pt.isel.ps.g06.httpserver.model.modular.BasePublicSubmission
+import pt.isel.ps.g06.httpserver.model.modular.ICuisines
+import pt.isel.ps.g06.httpserver.model.modular.INutritionalSubmission
+import pt.isel.ps.g06.httpserver.model.modular.UserPredicate
+import pt.isel.ps.g06.httpserver.model.restaurant.Restaurant
+import pt.isel.ps.g06.httpserver.model.restaurant.RestaurantIdentifier
 import java.net.URI
 import java.time.OffsetDateTime
 
-data class Meal(
-        val identifier: Int,
-        val name: String,
-        val isFavorite: (Int) -> Boolean,
-        val imageUri: URI?,
-        val nutritionalValues: NutritionalValues,
+class Meal(
+        identifier: Int,
+        name: String,
+        isFavorite: UserPredicate,
+        image: URI?,
+        override val nutritionalInfo: NutritionalValues,
         val composedBy: MealComposition,
-        val cuisines: Sequence<Cuisine>,
+        override val cuisines: Sequence<Cuisine>,
         val submitterInfo: Lazy<Submitter?>,
         val creationDate: Lazy<OffsetDateTime?>,
-        private val restaurantInfoSupplier: (RestaurantIdentifier) -> MealRestaurantInfo?,
-        private val restaurantInfo: MutableMap<RestaurantIdentifier, MealRestaurantInfo?> = mutableMapOf()
-) {
+        val type: MealType,
+        private val restaurantInfoSupplier: (RestaurantIdentifier) -> MealRestaurantInfo?
+) : BasePublicSubmission<Int>(
+        identifier = identifier,
+        name = name,
+        image = image,
+        isFavorable = { submitterInfo.value?.identifier != it ?: true },
+        isFavorite = isFavorite
+), INutritionalSubmission, ICuisines {
+
+    private val restaurantInfo: MutableMap<RestaurantIdentifier, MealRestaurantInfo?> = mutableMapOf()
+
     /**
      * Checks if given Meal belongs to a User.
      * This also allows to know that given Meal **is not** a suggested Meal, if false, as suggested Meals
      * have no submitter/owner
      *
-     * *This operation initializes [submitterInfo] value.*
      */
-    fun isUserMeal(): Boolean {
-        return submitterInfo.value != null
-    }
+    fun isUserMeal(): Boolean = type == MealType.CUSTOM
 
     fun isMealOwner(user: User?): Boolean =
             user != null && isUserMeal() && user.identifier != submitterInfo.value?.identifier
@@ -45,8 +58,10 @@ data class Meal(
         val restaurantCuisines = restaurant.cuisines.toList()
         val mealCuisines = cuisines.toList()
 
-        return restaurantCuisines
-                .intersect(mealCuisines)
-                .isNotEmpty()
+        return restaurantCuisines.any { restaurantCuisine ->
+            mealCuisines.any { mealCuisine ->
+                restaurantCuisine.name == mealCuisine.name
+            }
+        }
     }
 }
