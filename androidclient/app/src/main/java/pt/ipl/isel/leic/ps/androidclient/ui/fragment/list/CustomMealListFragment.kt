@@ -34,7 +34,8 @@ class CustomMealListFragment
             this.requireContext(),
             restoredItemPredicator,
             onCheckListener,
-            onClickListener
+            onClickListener,
+            Navigation.SEND_TO_ADD_CUSTOM_MEAL
         )
     }
 

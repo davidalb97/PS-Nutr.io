@@ -6,6 +6,7 @@ import pt.ipl.isel.leic.ps.androidclient.data.model.MealItem
 import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.BaseRecyclerAdapter
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.listener.check.ICheckListener
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.listener.click.IItemClickListener
+import pt.ipl.isel.leic.ps.androidclient.ui.util.Navigation
 import pt.ipl.isel.leic.ps.androidclient.ui.viewholder.meal.BaseMealRecyclerViewHolder
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.meal.BaseMealListViewModel
 
@@ -15,7 +16,8 @@ abstract class BaseMealRecyclerAdapter
     ctx: Context,
     val itemCheckPredicator: ((T) -> Boolean)? = null,
     val onCheckListener: ICheckListener<T>? = null,
-    val onClickListener: IItemClickListener<T>? = null
+    val onClickListener: IItemClickListener<T>? = null,
+    val onEditNavigation: Navigation? = null
 ) : BaseRecyclerAdapter<T, VM, VH>(
     viewModel = viewModel,
     ctx = ctx

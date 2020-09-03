@@ -1,5 +1,6 @@
 package pt.isel.ps.g06.httpserver.dataAccess.db.dao
 
+import org.jdbi.v3.core.result.ResultIterable
 import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbRestaurantDto
@@ -32,7 +33,7 @@ interface RestaurantDao {
             "false" +
             ") <= :radius"
     )
-    fun getByCoordinates(@Bind latitude: Float, @Bind longitude: Float, @Bind radius: Int): Collection<DbRestaurantDto>
+    fun getByCoordinates(@Bind latitude: Float, @Bind longitude: Float, @Bind radius: Int): ResultIterable<DbRestaurantDto>
 
     @SqlQuery("SELECT * FROM $table WHERE $id = :submissionId")
     fun getBySubmissionId(@Bind submissionId: Int): DbRestaurantDto?

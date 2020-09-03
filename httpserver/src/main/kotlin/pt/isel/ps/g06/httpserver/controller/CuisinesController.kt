@@ -34,6 +34,6 @@ class CuisinesController(private val cuisinesService: CuisinesService) {
 
         return ResponseEntity
                 .ok()
-                .body(toSimplifiedCuisinesOutput(availableCuisines))
+                .body(toSimplifiedCuisinesOutput(availableCuisines.toList())) //TODO Stream -> toList
     }
 }

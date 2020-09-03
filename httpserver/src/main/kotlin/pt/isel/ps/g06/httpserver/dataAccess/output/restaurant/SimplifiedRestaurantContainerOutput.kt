@@ -1,6 +1,6 @@
 package pt.isel.ps.g06.httpserver.dataAccess.output.restaurant
 
-import pt.isel.ps.g06.httpserver.model.Restaurant
+import pt.isel.ps.g06.httpserver.model.restaurant.Restaurant
 
 class SimplifiedRestaurantContainerOutput(
         val restaurants: Collection<SimplifiedRestaurantOutput>

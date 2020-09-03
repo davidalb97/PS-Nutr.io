@@ -50,7 +50,6 @@ class IngredientController(
     /**
      * Create a hardcoded ingredient as moderator
      * @param   user    ModAuthorizationArgumentResolver's parameter
-     * @param   ingredientInput    The ingredient to be inserted
      * @return  [ResponseEntity]<[IngredientsContainerOutput]>
      * @throws InvalidInputException On invalid cuisines passed
      */

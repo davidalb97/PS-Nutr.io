@@ -28,8 +28,9 @@ class ReportService(
     /**
      * Gets all the reports inside the database
      */
-    fun getAllReports(skip: Int?, count: Int?) =
-            reportDbRepository.getAll(skip, count).map(reportDbMapper::mapToModel)
+    fun getAllReports(skip: Int?, count: Int?): Sequence<SubmissionReport> {
+        return reportDbRepository.getAll(skip, count).map(reportDbMapper::mapTo)
+    }
 
     /**
      * Gets all the reports inside the database
@@ -38,26 +39,28 @@ class ReportService(
             submissionType: String,
             skip: Int?,
             count: Int?
-    ): Collection<ReportedSubmission> {
+    ): Sequence<ReportedSubmission> {
         if (REPORTABLE_TYPES.all { it != submissionType }) {
             throw InvalidInputException(
                     "This type of submission can not be reported and thus there are no reports for this"
             )
         }
 
-        return reportDbRepository.getAllBySubmissionType(submissionType, skip, count).map(simpleReportDbMapper::mapTo)
+        return reportDbRepository.getAllBySubmissionType(submissionType, skip, count)
+                .map(simpleReportDbMapper::mapTo)
     }
 
     /**
      * Gets all the reports for a specific submission
      * @param submissionId - The submission's id
      */
-    fun getSubmissionReports(submissionId: Int): Collection<BaseReport> =
-            reportDbRepository.getAllFromSubmission(submissionId).map(detailedReportMapper::mapTo)
+    fun getSubmissionReports(submissionId: Int): Sequence<BaseReport> =
+            reportDbRepository.getAllFromSubmission(submissionId)
+                    .map(detailedReportMapper::mapTo)
 
     fun getReportedSubmissionDetail(submissionId: Int): ReportSubmissionDetail? =
             reportDbRepository.getReportedSubmissionDetail(submissionId)
-                    ?.let{ reportSubmissionDetailMapper.mapTo(it, submissionId)}
+                    ?.let { reportSubmissionDetailMapper.mapTo(it, submissionId) }
 
     fun deleteReport(reportId: Int) {
         reportDbRepository.delete(reportId)

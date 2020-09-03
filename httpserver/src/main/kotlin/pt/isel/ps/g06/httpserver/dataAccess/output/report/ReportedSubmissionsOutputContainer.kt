@@ -6,7 +6,7 @@ class ReportedSubmissionsOutputContainer(
         val reportedSubmissions: Collection<ReportedSubmissionOutput>
 )
 
-fun toReportedSubmissionsOutputContainer(models: Collection<ReportedSubmission>) = ReportedSubmissionsOutputContainer(
-        reportedSubmissions = models.map(::toReportedSubmissionOutput)
+fun toReportedSubmissionsOutputContainer(models: Sequence<ReportedSubmission>) = ReportedSubmissionsOutputContainer(
+        reportedSubmissions = models.map(::toReportedSubmissionOutput).toList()
 )
 
