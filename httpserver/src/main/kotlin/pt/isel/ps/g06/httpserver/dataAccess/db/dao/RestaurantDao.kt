@@ -30,9 +30,15 @@ interface RestaurantDao {
             "ST_MakePoint($table.$latitude, $table.$longitude)::geography," +
             "ST_MakePoint(:latitude, :longitude)::geography, " +
             "false" +
-            ") <= :radius"
+            ") <= :radius LIMIT :count OFFSET :count * :skip"
     )
-    fun getByCoordinates(@Bind latitude: Float, @Bind longitude: Float, @Bind radius: Int): Collection<DbRestaurantDto>
+    fun getByCoordinates(
+            @Bind latitude: Float,
+            @Bind longitude: Float,
+            @Bind radius: Int,
+            @Bind skip: Int?,
+            @Bind count: Int?
+    ): Collection<DbRestaurantDto>
 
     @SqlQuery("SELECT * FROM $table WHERE $id = :submissionId")
     fun getBySubmissionId(@Bind submissionId: Int): DbRestaurantDto?

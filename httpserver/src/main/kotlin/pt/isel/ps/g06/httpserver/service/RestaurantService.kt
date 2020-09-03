@@ -1,16 +1,17 @@
 package pt.isel.ps.g06.httpserver.service
 
 import org.springframework.stereotype.Service
+import pt.isel.ps.g06.httpserver.common.DEFAULT_COUNT
 import pt.isel.ps.g06.httpserver.common.exception.problemJson.badRequest.NoSuchApiResponseStatusException
 import pt.isel.ps.g06.httpserver.common.exception.problemJson.notFound.RestaurantNotFoundException
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.RestaurantApiType
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.mapper.RestaurantApiMapper
+import pt.isel.ps.g06.httpserver.dataAccess.common.dto.RestaurantDto
 import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.restaurant.RestaurantResponseMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.ApiSubmitterMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.FavoriteDbRepository
-import pt.isel.ps.g06.httpserver.dataAccess.db.repo.RestaurantDbRepository
-import pt.isel.ps.g06.httpserver.dataAccess.common.dto.RestaurantDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.ReportDbRepository
+import pt.isel.ps.g06.httpserver.dataAccess.db.repo.RestaurantDbRepository
 import pt.isel.ps.g06.httpserver.model.Restaurant
 import pt.isel.ps.g06.httpserver.model.RestaurantIdentifier
 import pt.isel.ps.g06.httpserver.util.log
@@ -51,9 +52,9 @@ class RestaurantService(
                             it.map(restaurantResponseMapper::mapTo)
                         }
 
-        return dbRestaurantRepository.getAllByCoordinates(latitude, longitude, chosenRadius)
+        return dbRestaurantRepository.getAllByCoordinates(latitude, longitude, chosenRadius, skip, count)
                 .map(restaurantResponseMapper::mapTo)
-                .let { filterRedundantApiRestaurants(it, apiRestaurants.get().asSequence()) }
+                .let { filterRedundantApiRestaurants(it, apiRestaurants.get().asSequence(), count ?: DEFAULT_COUNT) }
 
         //Keeps an open transaction while we iterate the DB response Stream
 //        return transactionHolder.inTransaction {
@@ -174,7 +175,11 @@ class RestaurantService(
         dbRestaurantRepository.addOwner(restaurantId, ownerId)
     }
 
-    private fun filterRedundantApiRestaurants(dbRestaurants: Sequence<Restaurant>, apiRestaurants: Sequence<Restaurant>): Sequence<Restaurant> {
+    private fun filterRedundantApiRestaurants(
+            dbRestaurants: Sequence<Restaurant>,
+            apiRestaurants: Sequence<Restaurant>,
+            count: Int
+    ): Sequence<Restaurant> {
         //Join db restaurants with filtered api restaurants
         return dbRestaurants.plus(
                 //Filter api restaurants that already exist in db
@@ -184,7 +189,7 @@ class RestaurantService(
                         apiRestaurant.identifier.value.apiId == dbRestaurant.identifier.value.apiId
                     }
                 }
-        )
+        ).take(count)
     }
 
     private fun searchApiRestaurant(apiSubmitterId: Int, apiId: String, apiType: RestaurantApiType): RestaurantDto? {

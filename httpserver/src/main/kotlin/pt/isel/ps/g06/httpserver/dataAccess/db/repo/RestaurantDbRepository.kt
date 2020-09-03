@@ -4,23 +4,24 @@ import org.jdbi.v3.core.Handle
 import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.transaction.TransactionIsolationLevel
 import org.springframework.stereotype.Repository
+import pt.isel.ps.g06.httpserver.common.exception.problemJson.badRequest.InvalidInputException
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionContractType.*
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType.RESTAURANT
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.*
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbRestaurantCuisineDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbRestaurantDto
-import pt.isel.ps.g06.httpserver.common.exception.problemJson.badRequest.InvalidInputException
 
 private val isolationLevel = TransactionIsolationLevel.SERIALIZABLE
 private val restaurantDaoClass = RestaurantDao::class.java
 
 @Repository
 class RestaurantDbRepository(jdbi: Jdbi) : SubmissionDbRepository(jdbi) {
-    fun getAllByCoordinates(latitude: Float, longitude: Float, radius: Int): Sequence<DbRestaurantDto> {
+
+    fun getAllByCoordinates(latitude: Float, longitude: Float, radius: Int, skip: Int?, count: Int?): Sequence<DbRestaurantDto> {
         val collection = lazy {
             jdbi.inTransaction<Collection<DbRestaurantDto>, Exception>(isolationLevel) {
                 return@inTransaction it.attach(RestaurantDao::class.java)
-                        .getByCoordinates(latitude, longitude, radius)
+                        .getByCoordinates(latitude, longitude, radius, skip, count)
             }
         }
         return Sequence { collection.value.iterator() }
