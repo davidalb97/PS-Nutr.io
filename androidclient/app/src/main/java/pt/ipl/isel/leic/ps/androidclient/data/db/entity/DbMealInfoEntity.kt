@@ -20,6 +20,7 @@ open class DbMealInfoEntity(
     val creationDate: TimestampWithTimeZone?,
     val sourceOrdinal: Int,
     val ownerId: Int?,
+    val userPortion: Float?,
     val isFavorite: Boolean,
     val isFavorable: Boolean,
     val isReportable: Boolean?,

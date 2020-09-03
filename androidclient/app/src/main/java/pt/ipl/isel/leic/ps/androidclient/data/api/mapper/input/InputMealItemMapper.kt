@@ -22,7 +22,7 @@ class InputMealItemMapper(
         unit = WeightUnits.fromValue(dto.nutritionalInfo.unit),
         imageUri = dto.image,
         name = dto.name,
-        votes = inputVotesMapper.mapToModel(dto.votes),
+        votes = dto.votes?.let { inputVotesMapper.mapToModel(it) },
         favorites = inputFavoriteMapper.mapToModel(dto.favorites),
         isVerified = dto.isVerified ?: false,
         isSuggested = dto.isSuggested ?: false,

@@ -80,12 +80,12 @@ class RestaurantInfoFragment :
 
     private fun setupRestaurantInfoView(view: View, restaurantInfo: RestaurantInfo) {
         super.setupImage(view, restaurantInfo.image)
-        super.setupVoteBarCounters(view, restaurantInfo.votes, restaurantInfo.isVotable)
-        super.setupFavoriteButton(view)
-        super.setupReportMenuItem()
+        super.setupVoteBarCounters(view, restaurantInfo.votes)
+        super.setupFavoriteButton(view, restaurantInfo.favorites)
+        super.setupReportMenuItem(restaurantInfo.isReportable)
         super.setupEditMenuItem()
         super.setupPopupMenuButton(view)
-        super.setupVoteButtons(view, restaurantInfo.isVotable)
+        super.setupVoteButtons(view, restaurantInfo.votes)
 
         val title: TextView = view.findViewById(R.id.restaurant_detail_title)
         title.text = restaurantInfo.name
@@ -126,11 +126,7 @@ class RestaurantInfoFragment :
         bundle.putNavigation(Navigation.SEND_TO_RESTAURANT_DETAIL)  //Edit restaurant back
     }
 
-    override fun fetchVotes(): Votes? = recyclerViewModel.restaurantInfo?.votes
-
     override fun fetchCtx(): Context = requireContext()
-
-    override fun isFavorite(): Boolean = recyclerViewModel.restaurantInfo!!.isFavorite
 
     override fun getRecyclerId() = R.id.restaurant_meals_list
 

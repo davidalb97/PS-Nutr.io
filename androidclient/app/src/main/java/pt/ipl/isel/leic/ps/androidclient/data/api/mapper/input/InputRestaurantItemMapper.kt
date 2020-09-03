@@ -7,7 +7,8 @@ import pt.ipl.isel.leic.ps.androidclient.data.model.RestaurantItem
 import pt.ipl.isel.leic.ps.androidclient.data.model.Source
 
 class InputRestaurantItemMapper(
-    private val votesInputMapper: InputVotesMapper
+    private val votesInputMapper: InputVotesMapper,
+    private val favoritesInputMapper: InputFavoriteMapper
 ) {
 
     fun mapToModel(dto: RestaurantItemInput) = RestaurantItem(
@@ -16,9 +17,9 @@ class InputRestaurantItemMapper(
         name = dto.name,
         latitude = dto.latitude,
         longitude = dto.longitude,
+        favorites = favoritesInputMapper.mapToModel(dto.favorites),
         votes = votesInputMapper.mapToModel(dto.votes),
-        isFavorite = dto.favorites.isFavorite,
-        isVotable = dto.votes.isVotable,
+        isReportable = dto.isReportable,
         image = dto.image,
         source = Source.API
     )

@@ -7,10 +7,7 @@ import pt.ipl.isel.leic.ps.androidclient.data.api.datasource.MealDataSource
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.output.FavoriteOutput
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.output.ReportOutput
 import pt.ipl.isel.leic.ps.androidclient.data.api.mapper.input.*
-import pt.ipl.isel.leic.ps.androidclient.data.api.mapper.output.OutputCuisineMapper
-import pt.ipl.isel.leic.ps.androidclient.data.api.mapper.output.OutputCustomMealMapper
-import pt.ipl.isel.leic.ps.androidclient.data.api.mapper.output.OutputIngredientMapper
-import pt.ipl.isel.leic.ps.androidclient.data.api.mapper.output.OutputVoteMapper
+import pt.ipl.isel.leic.ps.androidclient.data.api.mapper.output.*
 import pt.ipl.isel.leic.ps.androidclient.data.db.entity.DbMealItemEntity
 import pt.ipl.isel.leic.ps.androidclient.data.db.mapper.*
 import pt.ipl.isel.leic.ps.androidclient.data.db.relation.DbMealInfoRelation
@@ -37,13 +34,14 @@ class MealRepository(private val dataSource: MealDataSource) {
         inputVotesMapper = inputVotesMapper,
         inputFavoritesMapper = inputFavoriteMapper
     )
-    private val inputPortionMapper = InputPortionMapper()
     private val inputUserMapper = InputSubmissionOwnerMapper()
+    private val inputPortionMapper = InputPortionMapper()
     private val inputMealInfoMapper = InputMealInfoMapper(
         inputCuisineMapper = inputCuisineMapper,
         inputMealIngredientMapper = inputMealIngredientMapper,
         inputUserMapper = inputUserMapper,
-        inputFavoriteMapper = InputFavoriteMapper()
+        inputFavoriteMapper = inputFavoriteMapper,
+        inputPortionMapper = inputPortionMapper
     )
     private val inputMealItemMapper = InputMealItemMapper(
         inputVotesMapper = inputVotesMapper,
@@ -56,6 +54,7 @@ class MealRepository(private val dataSource: MealDataSource) {
         cuisineMapper = cuisineOutputMapper,
         ingredientMapper = outputIngredientMapper
     )
+    private val outputPortionMapper = OutputPortionMapper()
 
     fun getByIdAndSource(dbId: Long, source: Source) =
         roomDb.mealInfoDao().getByIdAndSource(dbId, source.ordinal)
@@ -263,6 +262,58 @@ class MealRepository(private val dataSource: MealDataSource) {
                 jwt = userSession.jwt
             )
         }
+    }
+
+    fun addMealPortion(
+        restaurantId: String,
+        mealId: Int,
+        portion: Portion,
+        userSession: UserSession,
+        onSuccess: (Int) -> Unit,
+        onError: (VolleyError) -> Unit
+    ) {
+        dataSource.postRestaurantMealPortion(
+            restaurantId = restaurantId,
+            mealId = mealId,
+            portionOutput = outputPortionMapper.mapToOutputModel(portion),
+            onSuccess = onSuccess,
+            onError = onError,
+            jwt = userSession.jwt
+        )
+    }
+
+    fun editMealPortion(
+        restaurantId: String,
+        mealId: Int,
+        portion: Portion,
+        userSession: UserSession,
+        onSuccess: (Int) -> Unit,
+        onError: (VolleyError) -> Unit
+    ) {
+        dataSource.putRestaurantMealPortion(
+            restaurantId = restaurantId,
+            mealId = mealId,
+            portionOutput = outputPortionMapper.mapToOutputModel(portion),
+            onSuccess = onSuccess,
+            onError = onError,
+            jwt = userSession.jwt
+        )
+    }
+
+    fun deleteMealPortion(
+        restaurantId: String,
+        mealId: Int,
+        userSession: UserSession,
+        onSuccess: (Int) -> Unit,
+        onError: (VolleyError) -> Unit
+    ) {
+        dataSource.deleteRestaurantMealPortion(
+            restaurantId = restaurantId,
+            mealId = mealId,
+            onSuccess = onSuccess,
+            onError = onError,
+            jwt = userSession.jwt
+        )
     }
 
     fun report(

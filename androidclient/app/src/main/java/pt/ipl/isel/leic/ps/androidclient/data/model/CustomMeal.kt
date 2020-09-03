@@ -37,7 +37,7 @@ class CustomMeal : MealInfo, Parcelable {
         ingredientComponents = ingredientComponents,
         mealComponents = mealComponents,
         cuisines = cuisines,
-        portions = emptyList(),
+        portions = null,
         isReportable = false,
         isVerified = false,
         isSuggested = false,

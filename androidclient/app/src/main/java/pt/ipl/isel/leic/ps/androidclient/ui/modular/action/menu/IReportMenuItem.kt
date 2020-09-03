@@ -14,8 +14,8 @@ interface IReportMenuItem : IMenu, IContext, IAction, ILog, IUserSession {
 
     fun onReport(reportStr: String, onSuccess: () -> Unit, onError: (Throwable) -> Unit)
 
-    fun setupReportMenuItem() {
-        if (!actions.contains(ItemAction.REPORT)) {
+    fun setupReportMenuItem(isReportable: Boolean) {
+        if (!actions.contains(ItemAction.REPORT) || !isReportable) {
             return
         }
         menus["report"] = object : MenuItemFactory() {
