@@ -1,47 +1,52 @@
-import React, { useReducer } from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import RequestingEntity from '../../common/RequestingEntity'
 
 import Button from 'react-bootstrap/Button'
 import ButtonGroup from 'react-bootstrap/ButtonGroup'
+import ListGroup from 'react-bootstrap/ListGroup'
 import Alert from 'react-bootstrap/Alert'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import Loading from '../../bootstrap-common/Loading'
-
-const report = {
-    submissionIdentifier: 1,
-    reportIdentifier: 2,
-    submitterIdentifier: 1,
-    name: "Some report",
-    reports: ["Bad language", "Wrong place"]
-}
-
-const ACTIONS = {
-    BAN: submitter => {
-        return {
+class ReportActions {
+    constructor(report, triggerRequest) {
+        this.report = report
+        this.triggerRequest = triggerRequest
+    }
+    BAN() {
+        const request = {
             url: `http://localhost:9000/api/user`,
             method: `PUT`,
-            body: { submitterId: submitter.submitterIdentifier, isBanned: true }
+            body: { submitterId: this.report.submissionDetail.submitterId, isBanned: true }
         }
-    },
-    DISMISS: submitter => {
-        return {
-            url: `http://localhost:9000/api/report/${submitter.reportIdentifier}`,
+
+        this.triggerRequest(request)
+    }
+    DISMISS() {
+        const request = {
+            url: `http://localhost:9000/api/report/${this.reportId}`,
             method: `DELETE`
         }
-    },
-    REMOVE: submitter => {
-        return {
-            url: `http://localhost:9000/api/submission/${submitter.submissionIdentifier}`,
+
+        this.triggerRequest(request)
+    }
+    REMOVE() {
+        const request = {
+            url: `http://localhost:9000/api/submission/${this.report.submissionDetail.submissionId}`,
             method: `DELETE`
         }
+
+        this.triggerRequest(request)
     }
 }
 
 export default function Report({ report }) {
-    const [request, setRequest] = useReducer((req, action) => action(report), {})
+    const [request, setRequest] = useState({})
+
     const hasInfoButton = report.reports
+    const submissionDetail = report.submissionDetail
+    const actions = new ReportActions(report, setRequest)
 
     return <RequestingEntity
         request={request}
@@ -55,41 +60,63 @@ export default function Report({ report }) {
             <Row>
                 {/* Submission detail */}
                 <Col >
-                    <strong>Name:</strong> {report.name}<p />
-                    {!report.reportCount ? undefined : <p><strong>Reports:</strong> 10</p>}
+                    <strong>Name:</strong> {submissionDetail.submissionName}<p />
+                    <p><strong>Reports:</strong> {report.reportCount || report.reports.length}</p>
                 </Col>
 
                 <Col xs sm md="auto">
                     <ButtonGroup aria-label="Action buttons">
                         {hasInfoButton ? undefined :
-                            <Link to={`/moderation/reports/${report.submissionIdentifier}`}>
-                                <Button variant="outline-info">  Info </Button>
+                            <Link to={`/moderation/reports/${submissionDetail.submissionId}`}>
+                                <Button variant="outline-info">Info</Button>
                             </Link>
                         }
 
                         <Button
                             variant="outline-danger"
-                            onClick={() => setRequest(ACTIONS.REMOVE)}
+                            onClick={actions.REMOVE.bind(actions)}
                         >
                             Remove
                         </Button>
 
                         <Button
                             variant="outline-danger"
-                            onClick={() => setRequest(ACTIONS.BAN)}
+                            onClick={actions.BAN.bind(actions)}
                         >
                             Ban
-                        </Button>
-
-                        <Button
-                            variant="outline-danger"
-                            onClick={() => setRequest(ACTIONS.DISMISS)}
-                        >
-                            Dismiss
                         </Button>
                     </ButtonGroup>
                 </Col>
             </Row>
+            <SubmissionReports />
+        </>
+    }
+
+
+    function SubmissionReports() {
+        if (!report.reports) return <> </>
+
+        return <>
+            <hr />
+            <strong>All reports</strong>
+            <ListGroup variant="flush">
+                {report.reports.map((reportInfo, idx) => <ListGroup.Item key={idx}>
+                    <Row>
+                        <Col>
+                            {reportInfo.text}
+                        </Col>
+                        <Col className="d-flex justify-content-end">
+                            <Button
+                                variant="outline-danger"
+                                onClick={actions.DISMISS.bind({ ...actions, reportId: reportInfo.reportId })}
+                            >
+                                Dismiss
+                        </Button>
+                        </Col>
+                    </Row>
+                </ListGroup.Item>
+                )}
+            </ListGroup>
         </>
     }
 }

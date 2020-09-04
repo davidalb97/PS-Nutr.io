@@ -49,12 +49,12 @@ function Reports({ url }) {
     />
 
     function displayResult({ json }) {
-        if (json || json.length <= 0) {
+        if (json && json.reportedSubmissions.length <= 0) {
             return <>There are currently no reports.</>
         }
 
-        const items = json.reports.map((report, idx) => {
-            return <ListGroup.Item> <Report key={idx} report={report} /> </ListGroup.Item>
+        const items = json.reportedSubmissions.map((report, idx) => {
+            return <ListGroup.Item key={idx}> <Report report={report} /> </ListGroup.Item>
         })
 
         return <ListGroup variant="flush" >{items}</ListGroup >

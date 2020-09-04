@@ -1,12 +1,10 @@
 import React from 'react'
 import { useParams, Link } from 'react-router-dom'
 import RequestingEntity from '../../common/RequestingEntity'
-import useFetch, { FetchStates } from '../../common/useFetch'
 
 
 import Card from 'react-bootstrap/Card'
 import Button from 'react-bootstrap/Button'
-import Alert from 'react-bootstrap/Alert'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import Loading from '../../bootstrap-common/Loading'
@@ -29,8 +27,7 @@ export default function DetailedReportPage() {
         <Card.Body>
             <RequestingEntity
                 request={{ url: `http://localhost:9000/api/report/${submissionId}` }}
-                onError={() => <Alert variant="danger">Could not obtain requested details! Please try again later.</Alert>}
-                onSuccess={Report}
+                onSuccess={({ json }) => { return <Report report={json} /> }}
                 onDefault={Loading}
             />
         </Card.Body>
