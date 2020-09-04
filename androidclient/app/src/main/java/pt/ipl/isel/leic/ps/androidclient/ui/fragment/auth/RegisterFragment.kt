@@ -22,6 +22,7 @@ import pt.ipl.isel.leic.ps.androidclient.ui.fragment.BaseFragment
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.auth.IAccountSettings
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.auth.IRegister
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.UserProfileVMProviderFactory
+import pt.ipl.isel.leic.ps.androidclient.ui.util.requireUserSession
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.UserSessionViewModel
 
 class RegisterFragment : BaseFragment(), IRegister, IAccountSettings {
@@ -110,10 +111,18 @@ class RegisterFragment : BaseFragment(), IRegister, IAccountSettings {
 
     override fun onDeleteAccount(
         userLogin: UserLogin,
-        onSuccess: (UserSession) -> Unit,
+        onSuccess: () -> Unit,
         onError: (Throwable) -> Unit
     ) {
-        TODO("Not yet implemented")
+        viewModel.deleteAccount(
+            userSession = requireUserSession(),
+            userLogin = userLogin,
+            onSuccess = {
+                Toast.makeText(context, R.string.remove_account_success, Toast.LENGTH_SHORT).show()
+                requireView().findNavController().navigate(R.id.nav_home)
+            },
+            onError = onError
+        )
     }
 
     override fun fetchCtx(): Context = requireContext()

@@ -17,6 +17,7 @@ import pt.ipl.isel.leic.ps.androidclient.ui.fragment.BaseFragment
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.auth.ILogin
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.auth.IAccountSettings
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.UserProfileVMProviderFactory
+import pt.ipl.isel.leic.ps.androidclient.ui.util.requireUserSession
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.UserSessionViewModel
 
 class LoginFragment : BaseFragment(), ILogin, IAccountSettings {
@@ -86,14 +87,14 @@ class LoginFragment : BaseFragment(), ILogin, IAccountSettings {
 
     override fun onDeleteAccount(
         userLogin: UserLogin,
-        onSuccess: (UserSession) -> Unit,
+        onSuccess: () -> Unit,
         onError: (Throwable) -> Unit
     ) {
-        viewModel.login(
+        viewModel.deleteAccount(
+            userSession = requireUserSession(),
             userLogin = userLogin,
             onSuccess = {
-                onSuccess(it)
-                Toast.makeText(context, R.string.login_success, Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, R.string.remove_account_success, Toast.LENGTH_SHORT).show()
                 requireView().findNavController().navigate(R.id.nav_home)
             },
             onError = onError

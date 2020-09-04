@@ -24,7 +24,7 @@ class UserRepository(private val userDataSource: UserDataSource) {
         userReg: UserRegister,
         userSessionConsumer: (UserSession) -> Unit,
         error: (VolleyError) -> Unit
-    ) = userDataSource.portRegister(
+    ) = userDataSource.postRegister(
         registerOutput = outputRegisterMapper.mapToOutputModel(model = userReg),
         error = error,
         consumerDto = { userSessionConsumer(inputUserRegisterMapper.mapToModel(dto = it)) }
@@ -41,12 +41,16 @@ class UserRepository(private val userDataSource: UserDataSource) {
     )
 
     fun deleteAccount(
+        userSession: UserSession,
         userLogin: UserLogin,
-        onSuccess: (UserSession) -> Unit,
+        onSuccess: () -> Unit,
         onError: (VolleyError) -> Unit
-    ) {
-
-    }
+    ) = userDataSource.deleteAccount(
+        jwt = userSession.jwt,
+        loginOutput = outputLoginMapper.mapToOutputModel(model = userLogin),
+        onSuccess = onSuccess,
+        onError = onError,
+    )
 
     fun requestUserInfo(
         userSession: UserSession,

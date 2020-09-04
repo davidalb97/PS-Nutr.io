@@ -158,6 +158,7 @@
     <string name="logout">Logout</string>
     <string name="logout_success">Successfully logged out</string>
     <string name="remove_account_success">Successfully removed account</string>
+    <string name="remove_account_error">Could not remove account</string>
 
     <!-- ##################################### Arrays #####################################-->
     <string-array name="calculator_units">

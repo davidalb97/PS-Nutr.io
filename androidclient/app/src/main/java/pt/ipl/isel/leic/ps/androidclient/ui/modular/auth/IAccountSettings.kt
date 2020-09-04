@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.navigation.findNavController
@@ -11,11 +12,12 @@ import pt.ipl.isel.leic.ps.androidclient.NutrioApp
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.UserLogin
 import pt.ipl.isel.leic.ps.androidclient.data.model.UserSession
+import pt.ipl.isel.leic.ps.androidclient.ui.modular.IRequiredTextInput
 import pt.ipl.isel.leic.ps.androidclient.ui.util.Navigation
 import pt.ipl.isel.leic.ps.androidclient.ui.util.deleteSession
 import pt.ipl.isel.leic.ps.androidclient.ui.util.getUsername
 
-interface IAccountSettings {
+interface IAccountSettings: IRequiredTextInput {
 
     val nonLogoutViewId: Int
     var nonLogoutView: ViewGroup
@@ -55,12 +57,26 @@ interface IAccountSettings {
     }
 
     private fun setupRemoveAccountButton(view: View, context: Context) {
+        val email: EditText = view.findViewById(R.id.deleteUserEmailInput)
+        val password: EditText = view.findViewById(R.id.deleteUserPasswordInput)
         removeAccountButton = view.findViewById(removeAccountButtonId)
-        removeAccountButton.setOnClickListener {
 
-            Toast.makeText(context, R.string.remove_account_success, Toast.LENGTH_SHORT)
-                .show()
-            view.findNavController().navigate(Navigation.SEND_TO_HOME.navId)
+        removeAccountButton.setOnClickListener {
+            if (!validateTextViews(context, email, password)) return@setOnClickListener
+            val emailStr = email.text.toString()
+            val passwordStr = password.text.toString()
+
+            onDeleteAccount(
+                userLogin = UserLogin(email = emailStr, password = passwordStr),
+                onSuccess = {
+                    Toast.makeText(context, R.string.remove_account_success, Toast.LENGTH_SHORT)
+                        .show()
+                    view.findNavController().navigate(Navigation.SEND_TO_HOME.navId)
+                },
+                onError = {
+                    Toast.makeText(context, R.string.remove_account_error, Toast.LENGTH_SHORT)
+                        .show()
+                })
         }
     }
 
@@ -76,7 +92,7 @@ interface IAccountSettings {
 
     fun onDeleteAccount(
         userLogin: UserLogin,
-        onSuccess: (UserSession) -> Unit,
+        onSuccess: () -> Unit,
         onError: (Throwable) -> Unit
     )
 }

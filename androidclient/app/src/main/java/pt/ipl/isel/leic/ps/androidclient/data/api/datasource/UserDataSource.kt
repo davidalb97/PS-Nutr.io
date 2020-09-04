@@ -21,7 +21,7 @@ class UserDataSource(
     /**
      * ################ Auth methods ################
      */
-    fun portRegister(
+    fun postRegister(
         registerOutput: RegisterOutput,
         consumerDto: (UserRegisterInput) -> Unit,
         error: (VolleyError) -> Unit
@@ -80,6 +80,26 @@ class UserDataSource(
             dtoClass = UserInfoInput::class.java,
             onSuccess = consumerDto,
             onError = error
+        )
+    }
+
+    fun deleteAccount(
+        jwt: String,
+        loginOutput: LoginOutput,
+        onSuccess: () -> Unit,
+        onError: (VolleyError) -> Unit
+    ) {
+        requestParser.request(
+            method = HTTPMethod.DELETE,
+            uri = Uri.Builder()
+                .scheme(SCHEME)
+                .encodedAuthority(ADDRESS_PORT)
+                .appendPath(USER)
+                .build()
+                .toString(),
+            reqPayload = loginOutput,
+            onError = onError,
+            responseConsumer = { onSuccess() }
         )
     }
 }
