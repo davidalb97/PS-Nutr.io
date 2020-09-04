@@ -52,7 +52,7 @@ class AddCustomMealFragment : BaseAddMealFragment(), IRemainingPickSpinner, IReq
 
     override val nestedNavigation: Navigation = Navigation.SEND_TO_ADD_CUSTOM_MEAL
     override val toAddMealsActionNestedNavigation = Navigation.SEND_TO_PICK_CUSTOM_MEAL_INGREDIENTS
-    override val baskNestedActionNavigation = Navigation.BACK_TO_CUSTOM_MEAL
+    override val backNestedActionNavigation = Navigation.BACK_TO_CUSTOM_MEAL
     override val mealsRecyclerViewId: Int = R.id.custom_meal_meals_list
     override val weightUnitSpinnerId: Int = R.id.custom_meal_units_spinner
     override val addIngredientsImgButtonId: Int = R.id.add_custom_meal_add_meal_ingredient
