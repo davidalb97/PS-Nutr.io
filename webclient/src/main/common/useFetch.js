@@ -1,4 +1,5 @@
 import { useEffect, useState, useContext } from 'react'
+import { devUri } from './Utils'
 import UserContext from '../authentication/UserContext'
 export const FetchStates = {
     init: 'init',
@@ -85,7 +86,7 @@ function setupRequest({
     body
 }) {
     let result = {
-        url: url,
+        url: devUri(url),
         requestInit: {
             headers: {
                 'Content-Type': contentType || 'application/json',

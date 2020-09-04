@@ -44,7 +44,7 @@ class CustomMealController(private val mealService: MealService) {
             user: User
     ): ResponseEntity<Void> {
         //Due to validators we are sure fields are never null
-        val createdMeal = mealService.createMeal(
+        val createdMeal = mealService.createCustomMeal(
                 submitterId = user.identifier,
                 name = meal.name!!,
                 quantity = meal.quantity!!,
@@ -68,7 +68,7 @@ class CustomMealController(private val mealService: MealService) {
             user: User
     ): ResponseEntity<Void> {
         //Due to validators we are sure fields are never null
-        val updatedMeal = mealService.editMeal(
+        val updatedMeal = mealService.editCustomMeal(
                 submissionId = mealId,
                 submitterId = user.identifier,
                 name = meal.name!!,

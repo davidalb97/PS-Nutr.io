@@ -16,7 +16,7 @@ export default function Ingredients({ setCanAdvance, setMeal, meal }) {
 
     const [ingredientContext, setIngredientContext] = useState({
         options: meal.ingredientOptions || [],
-        request: meal.ingredientOptions ? {} : { url: "http://localhost:9000/api/ingredient", shouldCancel: false },
+        request: meal.ingredientOptions ? {} : { url: "http://localhost:8080/ingredient", shouldCancel: false },
         selected: meal.ingredients || [],
         onFetch: result => {
             const options = result.map(component => {
@@ -32,7 +32,7 @@ export default function Ingredients({ setCanAdvance, setMeal, meal }) {
 
     const [mealContext, setMealContext] = useState({
         options: meal.mealOptions || [],
-        request: meal.mealOptions ? {} : { url: "http://localhost:9000/api/meal/suggested", shouldCancel: false },
+        request: meal.mealOptions ? {} : { url: "http://localhost:8080/meal", shouldCancel: false },
         selected: meal.meals || [],
         onFetch: result => {
             const options = result.map(component => {

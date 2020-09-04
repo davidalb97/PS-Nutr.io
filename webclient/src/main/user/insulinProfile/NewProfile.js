@@ -203,7 +203,7 @@ export default function NewProfile({ onProfileCreation, disabledIntervals }) {
                         ...status.request,
                         method: "POST",
                         authToken: authToken,
-                        url: "http://localhost:9000/api/user/profile",
+                        url: "http://localhost:8080/user/profile",
                         body: {
                             ...status.profile,
                             startTime: toString(status.profile.startTime),

@@ -55,7 +55,7 @@ function Meal({ onMealDelete, identifier }) {
     const [meal, setMealDetail] = useState()
 
     useEffect(() => {
-        if (!meal) setRequest({ url: `http://localhost:9000/api/meal/${identifier}` })
+        if (!meal) setRequest({ url: `http://localhost:8080/meal/${identifier}` })
 
         //Clear request so that meal is cached and not obtained multiple times on next renders (on menu iterating)
         else setRequest({})
@@ -108,7 +108,7 @@ function Meal({ onMealDelete, identifier }) {
     </>
 
     function deleteMeal() {
-        setRequest({ url: `http://localhost:9000/api/meal/${identifier}`, method: "DELETE" })
+        setRequest({ url: `http://localhost:8080/meal/${identifier}`, method: "DELETE" })
         triggerDeletion()
     }
 }

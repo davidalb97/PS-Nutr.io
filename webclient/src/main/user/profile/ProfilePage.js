@@ -88,7 +88,7 @@ export default function ProfilePage() {
 function ConfirmationModal({ show, onClose, user }) {
     const [request, triggerRequest] = useReducer(() => {
         return {
-            url: `http://localhost:9000/api/user`,
+            url: `http://localhost:8080/user`,
             method: "DELETE",
         }
     }, {})

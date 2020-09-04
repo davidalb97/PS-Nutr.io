@@ -123,7 +123,7 @@ class MealDbRepository(
         }
     }
 
-    fun insert(
+    fun insertCustomMeal(
             submitterId: Int,
             mealName: String,
             quantity: Int,
@@ -131,6 +131,10 @@ class MealDbRepository(
             ingredients: Collection<IngredientInput>,
             type: MealType
     ): DbMealDto {
+        if (ingredients.isEmpty()) {
+            throw InvalidInputException("A meal must have at least an ingredient")
+        }
+
         if (cuisines.isEmpty()) {
             throw InvalidInputException("A meal must have at least a cuisine!")
         }
@@ -180,22 +184,67 @@ class MealDbRepository(
             it.attach(MealCuisineDao::class.java).insertAll(cuisineIds.toList())
 
             //Insert meal's ingredients
-            if (ingredients.isNotEmpty()) {
-                it.attach(MealIngredientDao::class.java).insertAll(ingredients.map { ingredientInput ->
-                    DbMealIngredientDto(
-                            //We know fields are not null due to validation checks
-                            meal_submission_id = mealSubmissionId,
-                            ingredient_submission_id = ingredientInput.identifier!!,
-                            quantity = ingredientInput.quantity!!
-                    )
-                })
-            }
+            it.attach(MealIngredientDao::class.java).insertAll(ingredients.map { ingredientInput ->
+                DbMealIngredientDto(
+                        //We know fields are not null due to validation checks
+                        meal_submission_id = mealSubmissionId,
+                        ingredient_submission_id = ingredientInput.identifier!!,
+                        quantity = ingredientInput.quantity!!
+                )
+            })
 
             return@inTransaction mealDto
         }
     }
 
-    fun update(
+    fun insertSuggestedMeal(
+            submitterId: Int,
+            mealName: String,
+            quantity: Int,
+            carbs: Int,
+            cuisines: Collection<String>,
+            type: MealType
+    ): DbMealDto {
+
+        if (cuisines.isEmpty()) {
+            throw InvalidInputException("A meal must have at least a cuisine!")
+        }
+
+        return databaseContext.inTransaction {
+            //Insert submission
+            val mealSubmissionId = it.attach(SubmissionDao::class.java)
+                    .insert(SubmissionType.MEAL.toString())
+                    .submission_id
+
+            if (type == MealType.SUGGESTED_MEAL) {
+                //Insert contract FAVORABLE
+                it.attach(SubmissionContractDao::class.java)
+                        .insertAll(mutableListOf(FAVORABLE).map {
+                            SubmissionContractParam(mealSubmissionId, it.toString())
+                        })
+            }
+
+            //Insert SubmissionSubmitter associations for user
+            it.attach(SubmissionSubmitterDao::class.java).insert(mealSubmissionId, submitterId)
+
+            //Insert Meal
+            val mealDto = it
+                    .attach(mealDaoClass)
+                    .insert(mealSubmissionId, mealName, carbs, quantity, mealType = type.toString())
+
+            //Insert all MealCuisine associations
+            //TODO Make this better
+            val cuisineIds = cuisineDbRepository
+                    .getAllByNames(cuisines.asSequence())
+                    .map { DbMealCuisineDto(mealSubmissionId, it.submission_id) }
+
+            it.attach(MealCuisineDao::class.java).insertAll(cuisineIds.toList())
+
+            return@inTransaction mealDto
+        }
+    }
+
+    fun updateCustomMeal(
             submissionId: Int,
             submitterId: Int,
             mealName: String,
@@ -204,6 +253,10 @@ class MealDbRepository(
             ingredients: Collection<IngredientInput>,
             type: MealType
     ): DbMealDto {
+        if (ingredients.isEmpty()) {
+            throw InvalidInputException("A meal must have at least an ingredient")
+        }
+
         if (cuisines.isEmpty()) {
             throw InvalidInputException("A meal must have at least a cuisine!")
         }
@@ -244,16 +297,14 @@ class MealDbRepository(
             mealIngredientDao.deleteAllByMealId(submissionId)
 
             //Insert meal's ingredients
-            if (ingredients.isNotEmpty()) {
-                mealIngredientDao.insertAll(ingredients.map { ingredientInput ->
-                    DbMealIngredientDto(
-                            //We know fields are not null due to validation checks
-                            meal_submission_id = submissionId,
-                            ingredient_submission_id = ingredientInput.identifier!!,
-                            quantity = ingredientInput.quantity!!
-                    )
-                })
-            }
+            mealIngredientDao.insertAll(ingredients.map { ingredientInput ->
+                DbMealIngredientDto(
+                        //We know fields are not null due to validation checks
+                        meal_submission_id = submissionId,
+                        ingredient_submission_id = ingredientInput.identifier!!,
+                        quantity = ingredientInput.quantity!!
+                )
+            })
 
             return@inTransaction mealDto
         }

@@ -68,7 +68,7 @@ export default function LoginPage() {
 
     function buildRequest() {
         return {
-            url: "http://localhost:9000/api/user/login",
+            url: "http://localhost:8080/user/login",
             method: "POST",
             body: credentials
         }

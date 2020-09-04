@@ -14,7 +14,7 @@ export default function UserProvider({ children }) {
     //No need to trigger a request if no session cookie is present
     if (!authToken) return provideUserContext({ error: true })
 
-    const request = { url: "http://localhost:9000/api/user", authToken: authToken }
+    const request = { url: "http://localhost:8080/user", authToken: authToken }
 
     return <RequestingEntity
         request={request}

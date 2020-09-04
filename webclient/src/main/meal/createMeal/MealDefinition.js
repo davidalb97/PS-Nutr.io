@@ -21,7 +21,7 @@ export default function MealDefinition({ setCanAdvance, setMeal, meal }) {
         unit: meal.unit || "gr",
         cuisines: meal.cuisines || []
     })
-    const [fetchState, response, json, error] = useFetch({ url: "http://localhost:9000/api/cuisine" })
+    const [fetchState, response, json, error] = useFetch({ url: "http://localhost:8080/cuisine" })
 
     //References for form inputs in order to access values
     const mealNameInput = useRef()

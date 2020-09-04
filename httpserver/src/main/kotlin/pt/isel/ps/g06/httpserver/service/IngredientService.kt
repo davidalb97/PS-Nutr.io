@@ -4,7 +4,6 @@ import org.springframework.stereotype.Service
 import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.restaurant.DbIngredientResponseMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.MealType
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.MealDbRepository
-import pt.isel.ps.g06.httpserver.dataAccess.input.meal.CustomMealInput
 import pt.isel.ps.g06.httpserver.dataAccess.input.meal.SuggestedMealInput
 import pt.isel.ps.g06.httpserver.model.MealIngredient
 
@@ -22,12 +21,12 @@ class IngredientService(
 
     fun insertSuggestedIngredient(submitterId: Int, mealIngredientInput: SuggestedMealInput): MealIngredient {
         return mealDbRepository
-                .insert(
+                .insertSuggestedMeal(
                         submitterId = submitterId,
                         mealName = mealIngredientInput.name!!,
                         quantity = mealIngredientInput.quantity!!,
                         cuisines = mealIngredientInput.cuisines!!,
-                        ingredients = emptyList(),
+                        carbs = mealIngredientInput.carbs!!,
                         type = MealType.SUGGESTED_INGREDIENT
                 ).let(ingredientResponseMapper::mapTo)
     }

@@ -28,7 +28,7 @@ const staticProfiles = [
 
 // export default function InsulinProfile() {
 //     const [fetchState, response, json, error] = useFetch({
-//         url: "http://localhost:9000/api/user/profile",
+//         url: "http://localhost:8080/user/profile",
 //     })
 
 //     const [profiles, updateProfiles] = useState([])
@@ -124,7 +124,7 @@ export default function InsulinProfile() {
             when eating meals at a restaurant.
             <hr />
             <RequestingEntity
-                request={{ url: "http://localhost:9000/api/user/profile" }}
+                request={{ url: "http://localhost:8080/user/profile" }}
                 onDefault={Loading}
                 onSuccess={ProfileList}
             />

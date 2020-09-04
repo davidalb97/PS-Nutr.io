@@ -6,7 +6,7 @@ import AddFoodForm from './AddFoodForm'
 import Loading from '../../bootstrap-common/Loading'
 export default function AddFoodPage() {
     return <RequestingEntity
-        request={{ url: "http://localhost:9000/api/cuisine" }}
+        request={{ url: "http://localhost:8080/cuisine" }}
         onDefault={Loading}
         onSuccess={({ json }) => <AddFoodForm cuisines={json.cuisines} />}
     />
