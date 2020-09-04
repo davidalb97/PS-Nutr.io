@@ -5,11 +5,9 @@ import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.util.UriComponentsBuilder
-import pt.isel.ps.g06.httpserver.common.MAX_COUNT
-import pt.isel.ps.g06.httpserver.common.MEAL_ID_VALUE
+import pt.isel.ps.g06.httpserver.common.*
 import pt.isel.ps.g06.httpserver.common.exception.problemJson.forbidden.NotSubmissionOwnerException
 import pt.isel.ps.g06.httpserver.common.exception.problemJson.notFound.MealNotFoundException
-import pt.isel.ps.g06.httpserver.common.suggested
 import pt.isel.ps.g06.httpserver.dataAccess.db.MealType
 import pt.isel.ps.g06.httpserver.dataAccess.input.meal.MealInput
 import pt.isel.ps.g06.httpserver.dataAccess.input.userActions.FavoriteInput
