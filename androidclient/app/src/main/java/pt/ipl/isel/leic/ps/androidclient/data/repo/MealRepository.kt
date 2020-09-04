@@ -55,6 +55,7 @@ class MealRepository(private val dataSource: MealDataSource) {
         ingredientMapper = outputIngredientMapper
     )
     private val outputPortionMapper = OutputPortionMapper()
+    private val outputRestaurantMealMapper = OutputRestaurantMealMapper()
 
     fun getByIdAndSource(dbId: Long, source: Source) =
         roomDb.mealInfoDao().getByIdAndSource(dbId, source.ordinal)
@@ -114,6 +115,24 @@ class MealRepository(private val dataSource: MealDataSource) {
         error: (VolleyError) -> Unit
     ) {
         dataSource.getFavoriteMeals(
+            jwt = userSession.jwt,
+            skip = skip,
+            count = count,
+            cuisines = cuisines?.let(cuisineOutputMapper::mapToOutputModelCollection),
+            success = { dtos -> success(inputMealItemMapper.mapToListModel(dtos)) },
+            error = error
+        )
+    }
+
+    fun getFavoriteRestaurantMeals(
+        userSession: UserSession,
+        skip: Int? = 0,
+        count: Int? = 30,
+        cuisines: Collection<Cuisine>? = null,
+        success: (List<MealItem>) -> Unit,
+        error: (VolleyError) -> Unit
+    ) {
+        dataSource.getFavoriteRestaurantMeals(
             jwt = userSession.jwt,
             skip = skip,
             count = count,
@@ -193,6 +212,20 @@ class MealRepository(private val dataSource: MealDataSource) {
             error = error
         )
     }
+
+    fun addRestaurantMeal(
+        restaurantItem: RestaurantItem,
+        mealItem: MealItem,
+        onSuccess: () -> Unit,
+        onError: (VolleyError) -> Unit,
+        userSession: UserSession
+    ) = dataSource.postRestaurantMeal(
+        restaurantId = restaurantItem.id!!,
+        restaurantMealOutput = outputRestaurantMealMapper.mapToOutputModel(mealItem),
+        onSuccess = { onSuccess() },
+        onError = onError,
+        jwt = userSession.jwt
+    )
 
     fun addCustomMeal(
         customMeal: CustomMeal,

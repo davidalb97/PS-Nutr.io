@@ -25,7 +25,7 @@ class CustomMealRecyclerVMProviderFactory(
             MealItemListViewModel::class.java -> MealItemListViewModel(
                 navDestination = arguments?.getNavigation() ?: Navigation.SEND_TO_RESTAURANT_DETAIL,
                 actions = arguments?.getItemActions() ?: listOf(DELETE, CALCULATE),
-                source = Source.CUSTOM
+                source = Source.CUSTOM_MEAL
             )
             else -> null
         }

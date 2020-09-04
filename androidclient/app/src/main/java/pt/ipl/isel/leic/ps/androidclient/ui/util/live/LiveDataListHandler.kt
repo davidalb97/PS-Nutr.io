@@ -6,6 +6,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.Observer
+import pt.ipl.isel.leic.ps.androidclient.ui.modular.filter.IItemListFilter
 import pt.ipl.isel.leic.ps.androidclient.ui.util.Logger
 import kotlin.reflect.KClass
 
@@ -17,6 +18,7 @@ class LiveDataListHandler<M : Parcelable> {
     private val prevLiveData: LiveData<*>? = null
     private var restoredItems: List<M>? = null
     val mapped: List<M> get() = mediatorLiveData.value ?: emptyList()
+    var filter: IItemListFilter<M>? = null
 
     /**
      * Observes a [LiveData]<[T]> and passes the observed values to the [consumer].
@@ -33,7 +35,6 @@ class LiveDataListHandler<M : Parcelable> {
         synchronized(_monitor) {
             removeLastSource()
             mediatorLiveData.addSource(newLiveData) { newList ->
-                log.v("Changing ${newList.size} items")
                 consumer(newList.map(mapper))
             }
         }
@@ -47,7 +48,6 @@ class LiveDataListHandler<M : Parcelable> {
      */
     fun <T> set(newLiveData: LiveData<List<T>>, mapper: (T) -> M) {
         observeExternal(newLiveData, mapper) {
-            log.v("Setting ${it.size} items")
             set(it)
         }
     }
@@ -58,7 +58,9 @@ class LiveDataListHandler<M : Parcelable> {
      */
     fun set(newList: List<M>) {
         log.v("Setting ${newList.size} items")
-        mediatorLiveData.value = newList
+        mediatorLiveData.value = filter?.let { filter ->
+            newList.filter(filter::filter)
+        } ?: newList
     }
 
     /**
@@ -70,7 +72,6 @@ class LiveDataListHandler<M : Parcelable> {
      */
     fun <T> add(newLiveData: LiveData<List<T>>, mapper: (T) -> M) {
         observeExternal(newLiveData, mapper) {
-            log.v("Adding ${it.size} items")
             add(it)
         }
     }
@@ -81,7 +82,7 @@ class LiveDataListHandler<M : Parcelable> {
      */
     fun add(newList: List<M>) {
         log.v("Adding ${newList.size} items")
-        mediatorLiveData.value = mapped.plus(newList)
+        set(mapped.plus(newList))
     }
 
     /**
@@ -90,7 +91,7 @@ class LiveDataListHandler<M : Parcelable> {
      */
     fun add(item: M) {
         log.v("Adding 1 item")
-        mediatorLiveData.value = mapped.plus(item)
+        set(mapped.plus(item))
     }
 
     /**
@@ -100,7 +101,8 @@ class LiveDataListHandler<M : Parcelable> {
     fun remove(item: M) {
         val currentVal = mediatorLiveData.value
         if (currentVal != null) {
-            mediatorLiveData.value = currentVal.minus(item)
+            log.v("Removing 1 item")
+            set(currentVal.minus(item))
         }
     }
 

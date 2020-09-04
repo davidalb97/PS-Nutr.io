@@ -15,6 +15,11 @@ private const val AS_table = ApiSubmissionDao.table
 private const val AS_submissionId = ApiSubmissionDao.submissionId
 private const val AS_apiId = ApiSubmissionDao.apiId
 
+//Favorite constants
+private const val F_table = FavoriteDao.table
+private const val F_submitter_id = FavoriteDao.submitterId
+private const val F_submission_id = FavoriteDao.submissionId
+
 interface RestaurantDao {
 
     companion object {
@@ -24,6 +29,7 @@ interface RestaurantDao {
         const val latitude = "latitude"
         const val longitude = "longitude"
         const val ownerId = "owner_id"
+        const val attributes = "$table.$id, $table.$name, $table.$ownerId, $table.$latitude, $table.$longitude"
     }
 
     @SqlQuery("SELECT * FROM $table WHERE " +
@@ -38,7 +44,7 @@ interface RestaurantDao {
     @SqlQuery("SELECT * FROM $table WHERE $id = :submissionId")
     fun getBySubmissionId(@Bind submissionId: Int): DbRestaurantDto?
 
-    @SqlQuery("SELECT $table.$id, $table.$name, $table.$latitude, $table.$longitude, $table.$ownerId " +
+    @SqlQuery("SELECT $attributes " +
             "FROM $table " +
             "INNER JOIN $SS_table " +
             "ON $SS_table.$SS_submissionId = $table.$id " +
@@ -49,9 +55,22 @@ interface RestaurantDao {
     )
     fun getApiRestaurant(@Bind apiSubmitterId: Int, @Bind apiId: String): DbRestaurantDto?
 
+    @SqlQuery("SELECT $attributes " +
+            "FROM $table " +
+            "INNER JOIN $F_table " +
+            "ON $F_table.$F_submission_id = $table.$id " +
+            "WHERE $F_table.$F_submitter_id = :submitterId " +
+            "LIMIT :count " +
+            "OFFSET :skip * :count"
+    )
+    fun getAllUserFavorites(
+            @Bind submitterId: Int,
+            @Bind count: Int?,
+            @Bind skip: Int?
+    ): ResultIterable<DbRestaurantDto>
 
-    @SqlQuery("INSERT INTO $table($id, $name, $latitude, $longitude, $ownerId)" +
-            " VALUES(:submissionId, :restaurantName, :latitude, :longitude, :ownerId) RETURNING *")
+    @SqlQuery("INSERT INTO $table($id, $name, $ownerId, $latitude, $longitude)" +
+            " VALUES(:submissionId, :restaurantName, :ownerId, :latitude, :longitude) RETURNING *")
     fun insert(@Bind submissionId: Int,
                @Bind restaurantName: String,
                @Bind latitude: Float,

@@ -43,7 +43,7 @@ abstract class BaseSpinnerAdapter<M : Parcelable, VM : BaseListViewModel<M>>(
         newViewHolder: (View) -> BaseRecyclerViewHolder<M>
     ): View {
         val newView: View
-        var viewHolder: BaseRecyclerViewHolder<M>? = null
+        val viewHolder: BaseRecyclerViewHolder<M>?
         if (convertView == null) {
             newView = LayoutInflater.from(parent.context)
                 .inflate(layout, parent, false)
