@@ -42,12 +42,10 @@ class UserRepository(private val userDataSource: UserDataSource) {
 
     fun deleteAccount(
         userSession: UserSession,
-        userLogin: UserLogin,
         onSuccess: () -> Unit,
         onError: (VolleyError) -> Unit
     ) = userDataSource.deleteAccount(
         jwt = userSession.jwt,
-        loginOutput = outputLoginMapper.mapToOutputModel(model = userLogin),
         onSuccess = onSuccess,
         onError = onError,
     )

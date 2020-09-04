@@ -85,7 +85,6 @@ class UserDataSource(
 
     fun deleteAccount(
         jwt: String,
-        loginOutput: LoginOutput,
         onSuccess: () -> Unit,
         onError: (VolleyError) -> Unit
     ) {
@@ -97,7 +96,7 @@ class UserDataSource(
                 .appendPath(USER)
                 .build()
                 .toString(),
-            reqPayload = loginOutput,
+            reqHeader = buildAuthHeader(jwt),
             onError = onError,
             responseConsumer = { onSuccess() }
         )

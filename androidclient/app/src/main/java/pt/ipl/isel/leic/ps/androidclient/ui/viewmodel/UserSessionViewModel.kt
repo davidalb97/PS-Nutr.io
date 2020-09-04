@@ -29,12 +29,10 @@ class UserSessionViewModel : ViewModel() {
 
     fun deleteAccount(
         userSession: UserSession,
-        userLogin: UserLogin,
         onSuccess: () -> Unit,
         onError: (VolleyError) -> Unit
     ) = userRepository.deleteAccount(
         userSession = userSession,
-        userLogin = userLogin,
         onSuccess = onSuccess,
         onError = onError
     )

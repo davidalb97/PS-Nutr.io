@@ -114,12 +114,18 @@ class RegisterFragment : BaseFragment(), IRegister, IAccountSettings {
         onSuccess: () -> Unit,
         onError: (Throwable) -> Unit
     ) {
-        viewModel.deleteAccount(
-            userSession = requireUserSession(),
+        // HTTP workaround - DELETE requests' payloads are not defined in the RFC
+        viewModel.login(
             userLogin = userLogin,
             onSuccess = {
-                Toast.makeText(context, R.string.remove_account_success, Toast.LENGTH_SHORT).show()
-                requireView().findNavController().navigate(R.id.nav_home)
+                viewModel.deleteAccount(
+                    userSession = it,
+                    onSuccess = {
+                        Toast.makeText(context, R.string.remove_account_success, Toast.LENGTH_SHORT).show()
+                        requireView().findNavController().navigate(R.id.nav_home)
+                    },
+                    onError = onError
+                )
             },
             onError = onError
         )
