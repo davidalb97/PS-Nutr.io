@@ -604,8 +604,8 @@ After these steps, the user is ready to calculate the insulin dosage that corres
 
 \section{Web browser application}
 
-This web browser application will only serve the propose of moderation inside our platform, as we agreed that a good way to provide a good propose for this 
-component was to not duplicate the mobile application functionalities and to extend the platform's features.\\
+This web browser application will only serve the propose of moderation inside our platform, as we agreed that a good way to provide a good reason for this 
+component's existence was to not duplicate the mobile application functionalities and to extend the platform's features.\\
 
 \subsection{Used tecnologies}
 
@@ -613,6 +613,8 @@ component was to not duplicate the mobile application functionalities and to ext
 
 We chose to build the website with JavaScript \cite{javascript} using the React framework \cite{react} , as it was the framework lectured in the Web applications
 development course and has innumerous advantages to other frameworks, such as Node.JS.
+
+\subsubsection{Bootstrap}
 
 \subsection{Code structure}
 
@@ -635,6 +637,76 @@ navigation and routing inside it.
 
 \subsection{Functionalities}
 
-\subsubsection{Consult reports}
+\subsubsection{Register and login}
 
-\subsubsection{Ban users}
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[scale=0.4]{_figures/register-page.png}
+        \caption{The register and login page}
+    \end{center}
+\end{figure}
+
+\subsubsection{Moderator: Create a meal or ingredient}
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[scale=0.4]{_figures/hardcoded-meal-creation.png}
+        \caption{Create a hardcoded meal or ingredient}
+    \end{center}
+\end{figure}
+
+\subsubsection{User: Create a custom meal}
+
+Meal creation is done in 5 steps and each can only be advanced when all fields are valid
+Going back and forth on each step remembers your choices, so editing a previous input is not cumbersome on the user.\\
+
+The sum of all ingredient quantities can not be higher than the original quantity. 
+But a meal can always have a leftover quantity which is considered undefined ingredient(s) or ingredients with no carbs.\\
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[scale=0.4]{_figures/custom-1.png}
+        \caption{Meal description (name, quantity and cuisines)}
+    \end{center}
+\end{figure}
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[scale=0.4]{_figures/custom-2.png}
+        \caption{Ingredients (in the form of basic ingredients and other complex meals) are chosen}
+    \end{center}
+\end{figure}
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[scale=0.4]{_figures/custom-3.png}
+        \caption{User chooses quantity for all chosen ingredients}
+    \end{center}
+\end{figure}
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[scale=0.4]{_figures/custom-4.png}
+        \caption{Input confirmation}
+    \end{center}
+\end{figure}
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[scale=0.4]{_figures/custom-5.png}
+        \caption{Send}
+    \end{center}
+\end{figure}
+
+\subsubsection{User: Create an insulin profile}
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[scale=0.4]{_figures/web-insulin-profile-creation.png}
+        \caption{Create a hardcoded meal or ingredient}
+    \end{center}
+\end{figure}
+
+\subsubsection{Moderator: Consult reports}
+
+\subsubsection{Moderator: Ban users}
