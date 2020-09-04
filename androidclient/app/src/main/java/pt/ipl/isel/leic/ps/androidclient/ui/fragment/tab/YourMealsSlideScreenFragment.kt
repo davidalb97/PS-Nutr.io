@@ -19,7 +19,9 @@ class YourMealsSlideScreenFragment : BaseSlideScreenFragment(propagateArguments 
         val bundle = Bundle()
         bundle.putSource(Source.CUSTOM_MEAL)
         bundle.putNavigation(Navigation.SEND_TO_MEAL_DETAIL)
-        bundle.putItemActions(ItemAction.CALCULATE, ItemAction.EDIT, ItemAction.DELETE)
+        bundle.putItemActions(
+            ItemAction.CALCULATE, ItemAction.EDIT, ItemAction.DELETE, ItemAction.ADD
+        )
         return CustomMealListFragment().also {
             it.arguments = bundle
         }
