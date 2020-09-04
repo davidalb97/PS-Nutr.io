@@ -604,8 +604,10 @@ After these steps, the user is ready to calculate the insulin dosage that corres
 
 \section{Web browser application}
 
-This web browser application will only serve the propose of moderation inside our platform, as we agreed that a good way to provide a good reason for this 
-component's existence was to not duplicate the mobile application functionalities and to extend the platform's features.\\
+This web browser application will mainly serve the propose of moderation inside our platform, as we agreed that a good way to provide a good reason for this 
+component's existence was to not duplicate all mobile application functionalities and to extend the platform's features.\\
+
+However some user's features are also present in this client, such as: insulin profile creation and custom meal creation.\\
 
 \subsection{Used tecnologies}
 
@@ -617,7 +619,7 @@ development course and has innumerous advantages to other frameworks, such as No
 \subsubsection{Bootstrap}
 
 We chose to use bootstrap as it is a front-end framework that facilitates the CSS implementation and interface construction of our application, being also widely
-used in web client applications.\\
+used in other web client applications.\\
 
 \subsection{Code structure}
 
@@ -661,6 +663,9 @@ message is presented.\\
 It should be noted that the landing page will activate more options once the user has logged in.\\
 
 \subsubsection{Moderator: Create a meal or ingredient}
+
+This feature provides moderators a way to insert hardcoded meals and ingredients into the database without
+needing to manually insert them using SQL queries.\\
 
 \begin{figure}[H]
     \begin{center}
@@ -713,6 +718,12 @@ But a meal can always have a leftover quantity which is considered undefined ing
 \end{figure}
 
 \subsubsection{User: Create an insulin profile}
+
+Like in the mobile application, the user can also create insulin profiles by filling in this form 
+and moving the slider to adjust their time periods.\\
+
+If certain time periods are already taken by other created insulin profiles, these will appear with
+grey tone inside the slider.\\
 
 \begin{figure}[H]
     \begin{center}
