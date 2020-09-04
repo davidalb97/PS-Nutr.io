@@ -35,6 +35,7 @@ open class MealItemListViewModel : BaseMealListViewModel<MealItem> {
         if (!super.tryRestore()) {
             when (source) {
                 Source.API -> {
+                    val restaurantId = restaurantId
                     if (restaurantId != null) {
                         mealRepository.getRestaurantMealItems(
                             restaurantId = restaurantId,

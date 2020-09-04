@@ -62,7 +62,9 @@ class HomeFragment : BaseFragment() {
             val bundle = Bundle()
             bundle.putSource(Source.CUSTOM)
             bundle.putNavigation(Navigation.SEND_TO_MEAL_DETAIL)
-            bundle.putItemActions(ItemAction.CALCULATE, ItemAction.EDIT, ItemAction.DELETE)
+            bundle.putItemActions(
+                ItemAction.CALCULATE, ItemAction.EDIT, ItemAction.DELETE, ItemAction.ADD
+            )
             view.findNavController().navigate(Navigation.SEND_TO_MEAL_LIST_CUSTOM.navId, bundle)
         }
     }

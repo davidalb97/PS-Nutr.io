@@ -6,6 +6,8 @@ import android.view.View
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealItem
 import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.meal.MealItemRecyclerAdapter
+import pt.ipl.isel.leic.ps.androidclient.ui.modular.filter.IItemListFilter
+import pt.ipl.isel.leic.ps.androidclient.ui.modular.filter.IItemListFilterOwner
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.listener.check.ICheckListener
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.listener.check.ICheckListenerOwner
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.listener.click.IItemClickListener
@@ -17,11 +19,13 @@ import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.meal.MealItemListView
 open class MealItemListFragment :
     BaseListFragment<MealItem, MealItemListViewModel, MealItemRecyclerAdapter>(),
     ICheckListenerOwner<MealItem>,
-    IItemClickListenerOwner<MealItem> {
+    IItemClickListenerOwner<MealItem>,
+    IItemListFilterOwner<MealItem> {
 
     override var restoredItemPredicator: ((MealItem) -> Boolean)? = null
     override var onCheckListener: ICheckListener<MealItem>? = null
     override var onClickListener: IItemClickListener<MealItem>? = null
+    override var itemFilter: IItemListFilter<MealItem>? = null
     override val recyclerAdapter by lazy {
         MealItemRecyclerAdapter(
             recyclerViewModel,
@@ -34,6 +38,7 @@ open class MealItemListFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        recyclerViewModel.liveDataHandler.filter = itemFilter
         recyclerViewModel.update()
     }
 
@@ -57,5 +62,4 @@ open class MealItemListFragment :
     }
 
     override fun getRecyclerViewModelClass() = MealItemListViewModel::class.java
-
 }

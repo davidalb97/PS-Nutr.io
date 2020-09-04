@@ -23,7 +23,7 @@ class MealRecyclerVMProviderFactory(
                 MealItemListViewModel(
                     navDestination = arguments?.getNavigation()
                         ?: Navigation.SEND_TO_MEAL_DETAIL,
-                    actions = requireNotNull(arguments?.getItemActions()),
+                    actions = arguments?.getItemActions() ?: emptyList(),
                     source = requireNotNull(arguments?.getSource()),
                     restaurantId = arguments?.getRestaurantSubmissionId(),
                     cuisines = arguments?.getCuisines() ?: emptyList()

@@ -9,8 +9,11 @@ import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.ui.adapter.TabAdapter
+import pt.ipl.isel.leic.ps.androidclient.ui.util.Logger
 
 abstract class BaseSlideScreenFragment(private val propagateArguments: Boolean): Fragment() {
+
+    val log: Logger by lazy { Logger(javaClass) }
 
     private lateinit var tabPagerAdapter: TabAdapter
     private lateinit var viewPager: ViewPager

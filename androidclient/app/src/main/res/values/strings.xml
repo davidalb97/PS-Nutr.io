@@ -229,4 +229,7 @@
     <string name="portion_edit_fail">Could not edit portion</string>
     <string name="portion_deleted">Portion deleted</string>
     <string name="portion_delete_fail">Could not delete portion</string>
+    <string name="confirm">Confirm</string>
+    <string name="add_restaurant_meal">Add restaurant meal</string>
+    <string name="meal_added">Added meal</string>
 </resources>
