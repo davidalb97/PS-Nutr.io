@@ -25,11 +25,11 @@ class DetailedRestaurantMealOutput(
         isReportable: Boolean,
         nutritionalInfo: NutritionalInfoOutput,
         isVerified: Boolean,
+        @JsonSerialize(using = ToStringSerializer::class)
         val creationDate: OffsetDateTime?,
+        val createdBy: SimplifiedUserOutput?,
         val composedBy: MealCompositionOutput?,
         val portions: PortionsOutput,
-        @JsonSerialize(using = ToStringSerializer::class)
-        val createdBy: SimplifiedUserOutput?,
         override val cuisines: CuisinesOutput
 ) : SimplifiedRestaurantMealOutput(
         identifier = identifier,

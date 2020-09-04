@@ -47,7 +47,6 @@ class MealDbRepository(
                     .getAllUserFavorites(submitterId, count, skip)
                     .asCachedSequence()
         }
-
     }
 
     fun getMealIngredients(mealId: Int): Sequence<DbMealIngredientDto> {

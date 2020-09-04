@@ -87,7 +87,9 @@ interface MealDao {
             "INNER JOIN $F_table " +
             "ON $F_table.$F_submission_id = $table.$id " +
             "WHERE $F_table.$F_submitter_id = :submitterId " +
-            "LIMIT :count OFFSET :skip")
+            "LIMIT :count " +
+            "OFFSET :skip * :count"
+    )
     fun getAllUserFavorites(
             @Bind submitterId: Int,
             @Bind count: Int?,

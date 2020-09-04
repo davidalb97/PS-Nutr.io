@@ -35,6 +35,14 @@ class RestaurantDbRepository(private val databaseContext: DatabaseContext, priva
         }
     }
 
+    fun getAllUserFavorites(submitterId: Int, count: Int?, skip: Int?): Sequence<DbRestaurantDto> {
+        return databaseContext.inTransaction { handle ->
+            return@inTransaction handle.attach(restaurantDaoClass)
+                    .getAllUserFavorites(submitterId, count, skip)
+                    .asCachedSequence()
+        }
+    }
+
     fun insert(
             submitterId: Int,
             restaurantName: String,

@@ -8,38 +8,44 @@ import pt.isel.ps.g06.httpserver.dataAccess.output.modular.IVotableOutput
 import pt.isel.ps.g06.httpserver.model.RestaurantMeal
 import java.net.URI
 
-open class SimplifiedRestaurantMealOutput(
+open class SimplifiedFavoriteRestaurantMealOutput(
         //This is the MEAL identifier!
         identifier: Int,
+        val restaurantIdentifier: String,
         name: String,
         favorites: FavoritesOutput,
         image: URI?,
         nutritionalInfo: NutritionalInfoOutput,
-        val isVerified: Boolean,
-        val isSuggested: Boolean,
-        override val isReportable: Boolean,
-        override val votes: VotesOutput
-) : BaseMealOutput(
+        isVerified: Boolean,
+        isSuggested: Boolean,
+        isReportable: Boolean,
+        votes: VotesOutput
+) : SimplifiedRestaurantMealOutput(
         identifier = identifier,
         name = name,
         favorites = favorites,
         image = image,
-        nutritionalInfo = nutritionalInfo
+        nutritionalInfo = nutritionalInfo,
+        isVerified = isVerified,
+        isSuggested = isSuggested,
+        isReportable = isReportable,
+        votes = votes
 ), IReportableOutput, IVotableOutput
 
 
-fun toSimplifiedRestaurantMealOutput(
+fun toSimplifiedFavoriteRestaurantMealOutput(
         restaurantMeal: RestaurantMeal,
         userId: Int? = null
-): SimplifiedRestaurantMealOutput {
+): SimplifiedFavoriteRestaurantMealOutput {
     val meal = restaurantMeal.meal
     val restaurantMealInfo = restaurantMeal.info
     val isMealOwner = meal.isUserMeal() && userId?.let { meal.submitterInfo.value?.identifier == userId } ?: false
-    return SimplifiedRestaurantMealOutput(
+    return SimplifiedFavoriteRestaurantMealOutput(
             identifier = meal.identifier,
             name = meal.name,
             image = meal.image,
             nutritionalInfo = toNutritionalInfoOutput(meal.nutritionalInfo),
+            restaurantIdentifier = restaurantMeal.restaurant.identifier.value.toString(),
             //All RestaurantMeal info is only available when inserted on the database
             favorites = FavoritesOutput(
                     isFavorite = restaurantMealInfo?.isFavorite?.invoke(userId) ?: false,
