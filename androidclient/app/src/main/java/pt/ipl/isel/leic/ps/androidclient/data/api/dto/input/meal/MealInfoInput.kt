@@ -17,6 +17,7 @@ class MealInfoInput(
     isReportable: Boolean?,
     nutritionalInfo: NutritionalInfoInput,
     isVerified: Boolean?,
+    restaurantIdentifier: String?,
     val creationDate: String?,
     val composedBy: MealCompositionInput?,
     val portions: PortionsInput?,
@@ -24,6 +25,7 @@ class MealInfoInput(
     val cuisines: CuisinesInput?
 ) : MealItemInput(
     identifier = identifier,
+    restaurantIdentifier = restaurantIdentifier,
     name = name,
     image = image,
     votes = votes,

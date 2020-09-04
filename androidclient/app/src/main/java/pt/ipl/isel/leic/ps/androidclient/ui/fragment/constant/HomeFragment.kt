@@ -59,13 +59,7 @@ class HomeFragment : BaseFragment() {
     private fun setupMealsCustomBtn(view: View) {
         val button: ViewGroup = view.findViewById(R.id.secondSection_button2)
         button.setOnClickListener {
-            val bundle = Bundle()
-            bundle.putSource(Source.CUSTOM)
-            bundle.putNavigation(Navigation.SEND_TO_MEAL_DETAIL)
-            bundle.putItemActions(
-                ItemAction.CALCULATE, ItemAction.EDIT, ItemAction.DELETE, ItemAction.ADD
-            )
-            view.findNavController().navigate(Navigation.SEND_TO_MEAL_LIST_CUSTOM.navId, bundle)
+            view.findNavController().navigate(Navigation.SEND_TO_MEAL_LIST_CUSTOM.navId)
         }
     }
 

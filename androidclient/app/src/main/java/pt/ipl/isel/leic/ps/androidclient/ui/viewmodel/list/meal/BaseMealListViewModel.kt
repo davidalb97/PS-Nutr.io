@@ -83,7 +83,7 @@ abstract class BaseMealListViewModel<M : Parcelable> : BaseListViewModel<M> {
         }
 
         mealRepository.putFavorite(
-            restaurantId = mealItem.restaurantSubmissionId!!,
+            restaurantId = mealItem.restaurantSubmissionId,
             submissionId = submissionId,
             isFavorite = !favorites.isFavorite,
             success = {

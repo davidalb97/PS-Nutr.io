@@ -101,7 +101,6 @@ class MealInfoFragment :
     private fun setupView(view: View, receivedMeal: MealInfo) {
 
         super.setupImage(view, receivedMeal.imageUri)
-        val isVotable = receivedMeal.votes?.isVotable ?: false
         super.setupVoteBarCounters(view, receivedMeal.votes)
         super.setupVoteButtons(view, receivedMeal.votes)
         super.setupFavoriteButton(view, receivedMeal.favorites)
@@ -116,7 +115,7 @@ class MealInfoFragment :
         val title: TextView = view.findViewById(R.id.meal_detail_title)
         title.text = receivedMeal.name
 
-        if (receivedMeal.source != Source.CUSTOM && receivedMeal.isSuggested == true) {
+        if (receivedMeal.source != Source.CUSTOM_MEAL && receivedMeal.isSuggested == true) {
             val suggestedLayout: RelativeLayout = view.findViewById(R.id.meal_info_suggested_rl)
             suggestedLayout.visibility = View.VISIBLE
         }
@@ -173,7 +172,7 @@ class MealInfoFragment :
                         WeightUnits.fromValue(sharedPreferences.getWeightUnitOrDefault())
                     ),
                     userSession = requireUserSession(),
-                    onSuccess = { status -> onAddPortion(preciseGrams, status) },
+                    onSuccess = { onAddPortion(preciseGrams) },
                     onError = { error -> onAddPortion(preciseGrams, exception = error) }
                 )
             }
@@ -198,7 +197,7 @@ class MealInfoFragment :
                         WeightUnits.fromValue(sharedPreferences.getWeightUnitOrDefault())
                     ),
                     userSession = requireUserSession(),
-                    onSuccess = { status -> onEditPortion(preciseGrams, status) },
+                    onSuccess = { onEditPortion(preciseGrams) },
                     onError = { error -> onEditPortion(preciseGrams, exception = error) }
                 )
             }
@@ -212,7 +211,7 @@ class MealInfoFragment :
                 restaurantId = receivedMeal.restaurantSubmissionId!!,
                 mealId = receivedMeal.submissionId!!,
                 userSession = requireUserSession(),
-                onSuccess = { status -> onDeletePortion(status) },
+                onSuccess = { onDeletePortion() },
                 onError = { error -> onDeletePortion(exception = error) }
             )
         }
@@ -231,7 +230,7 @@ class MealInfoFragment :
             .setChartDescription(false)
     }
 
-    private fun onAddPortion(amount: Float, status: Int? = null, exception: Exception? = null) {
+    private fun onAddPortion(amount: Float, exception: Exception? = null) {
         if (exception == null) {
             Toast.makeText(app, R.string.portion_added, Toast.LENGTH_SHORT).show()
             addPortionLayout.visibility = View.GONE
@@ -239,7 +238,7 @@ class MealInfoFragment :
 
             addPortionToGraph(amount)
             setupChartSettings(portionEntries)
-            if(portionEntries.size == 1) {
+            if (portionEntries.size == 1) {
                 setupChartData(portionEntries)
             }
             refreshChart()
@@ -248,7 +247,7 @@ class MealInfoFragment :
         }
     }
 
-    private fun onEditPortion(amount: Float, status: Int? = null, exception: Exception? = null) {
+    private fun onEditPortion(amount: Float, exception: Exception? = null) {
         if (exception == null) {
             Toast.makeText(app, R.string.portion_edited, Toast.LENGTH_SHORT).show()
 
@@ -261,7 +260,7 @@ class MealInfoFragment :
         }
     }
 
-    private fun onDeletePortion(status: Int? = null, exception: Exception? = null) {
+    private fun onDeletePortion(exception: Exception? = null) {
         if (exception == null) {
             Toast.makeText(app, R.string.portion_deleted, Toast.LENGTH_SHORT).show()
             editPortionLayout.visibility = View.GONE

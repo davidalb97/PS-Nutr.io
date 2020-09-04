@@ -4,7 +4,6 @@ import android.os.Parcel
 import android.os.Parcelable
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.mealRepository
 import pt.ipl.isel.leic.ps.androidclient.data.model.Cuisine
-import pt.ipl.isel.leic.ps.androidclient.data.model.MealInfo
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealItem
 import pt.ipl.isel.leic.ps.androidclient.data.model.Source
 import pt.ipl.isel.leic.ps.androidclient.ui.util.ItemAction
@@ -56,14 +55,21 @@ open class MealItemListViewModel : BaseMealListViewModel<MealItem> {
                         )
                     }
                 }
-                Source.FAVORITE -> mealRepository.getFavoriteMeals(
+                Source.FAVORITE_MEAL -> mealRepository.getFavoriteMeals(
                     userSession = requireUserSession(),
                     count = count,
                     skip = skip,
                     success = liveDataHandler::add,
                     error = onError
                 )
-                Source.CUSTOM -> mealRepository.getCustomMeals(
+                Source.FAVORITE_RESTAURANT_MEAL -> mealRepository.getFavoriteRestaurantMeals(
+                    userSession = requireUserSession(),
+                    count = count,
+                    skip = skip,
+                    success = liveDataHandler::add,
+                    error = onError
+                )
+                Source.CUSTOM_MEAL -> mealRepository.getCustomMeals(
                     userSession = requireUserSession(),
                     count = count,
                     skip = skip,
