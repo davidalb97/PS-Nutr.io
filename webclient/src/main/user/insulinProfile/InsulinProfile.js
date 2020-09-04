@@ -148,7 +148,7 @@ function ProfileList({ json }) {
         {newProfileView != null ?
             <> </> :
             <Button
-                variant="outline-primary"
+                variant="info"
                 onClick={() => setNewProfileView(
                     <NewProfile
                         onProfileCreation={onProfileCreation}
