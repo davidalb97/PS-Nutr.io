@@ -42,12 +42,6 @@
         tools:layout="@layout/tab_fragment" />
 
     <fragment
-        android:id="@+id/nav_restaurant_detail"
-        android:name="pt.ipl.isel.leic.ps.androidclient.ui.fragment.list.detail.RestaurantInfoFragment"
-        android:label="@string/tab_restaurants"
-        tools:layout="@layout/restaurant_detail" />
-
-    <fragment
         android:id="@+id/nav_meal_detail"
         android:name="pt.ipl.isel.leic.ps.androidclient.ui.fragment.list.detail.MealInfoFragment"
         android:label="@string/tab_meal_detail"
@@ -166,6 +160,29 @@
             <action
                 android:id="@+id/nav_action_back_to_calculator"
                 app:popUpTo="@id/nav_add_meal_to_calculator"
+                app:popUpToInclusive="true" />
+        </fragment>
+    </navigation>
+
+    <navigation android:id="@+id/nav_restaurant_info_nested"
+        app:startDestination="@id/nav_restaurant_detail">
+        <fragment
+            android:id="@+id/nav_restaurant_detail"
+            android:name="pt.ipl.isel.leic.ps.androidclient.ui.fragment.list.detail.RestaurantInfoFragment"
+            android:label="@string/tab_restaurants"
+            tools:layout="@layout/restaurant_detail" >
+            <action
+                android:id="@+id/nav_action_restaurant_info_to_pick_meals"
+                app:destination="@id/nav_add_restaurant_meal" />
+        </fragment>
+        <fragment
+            android:id="@+id/nav_add_restaurant_meal"
+            android:name="pt.ipl.isel.leic.ps.androidclient.ui.fragment.tab.AddRestaurantMealSlideScreenFragment"
+            android:label="@string/tab_meals"
+            tools:layout="@layout/tab_fragment"  >
+            <action
+                android:id="@+id/nav_action_back_to_restaurant_info"
+                app:popUpTo="@id/nav_add_restaurant_meal"
                 app:popUpToInclusive="true" />
         </fragment>
     </navigation>
