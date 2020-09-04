@@ -45,11 +45,9 @@ class RestaurantService(
         val restaurantApi = restaurantApiMapper.getRestaurantApi(type)
 
         //Get API restaurants
-        val apiRestaurants =
-                restaurantApi.searchNearbyRestaurants(latitude, longitude, chosenRadius, name, skip, count)
-                        .thenApply {
-                            it.map(restaurantResponseMapper::mapTo)
-                        }
+        val apiRestaurants = restaurantApi
+                .searchNearbyRestaurants(latitude, longitude, chosenRadius, name, skip, count)
+                .thenApply { it.map(restaurantResponseMapper::mapTo) }
 
         //TODO Build API Restaurants Sequence from Completable Future
         return dbRestaurantRepository.getAllByCoordinates(latitude, longitude, chosenRadius)
@@ -179,6 +177,8 @@ class RestaurantService(
             dbRestaurants: Sequence<Restaurant>,
             apiRestaurants: Sequence<Restaurant>
     ): Sequence<Restaurant> {
+        //TODO Avoid eager call or maybe cache values with a stream cache implementation
+        val aux = dbRestaurants.toList()
         //Filter api restaurants that already exist in db
         val filteredApiRestaurants = apiRestaurants.filter { apiRestaurant ->
             //Db does not contain a restaurant with the api identifier

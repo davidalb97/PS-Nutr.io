@@ -180,7 +180,7 @@ class MealDbRepository(
             //TODO Make this better
             val cuisineIds = cuisineDbRepository
                     .getAllByNames(cuisines.asSequence())
-                    .map { DbMealCuisineDto(submitterId, it.submission_id) }
+                    .map { DbMealCuisineDto(mealSubmissionId, it.submission_id) }
 
             it.attach(MealCuisineDao::class.java).insertAll(cuisineIds.toList())
 

@@ -18,7 +18,7 @@ abstract class BaseMealListViewModel<M : Parcelable> : BaseListViewModel<M> {
     val navDestination: Navigation
     val actions: List<ItemAction>
     val source: Source?
-    val restaurantId: String?
+    var restaurantId: String?
     val cuisines: List<Cuisine>
 
     constructor(

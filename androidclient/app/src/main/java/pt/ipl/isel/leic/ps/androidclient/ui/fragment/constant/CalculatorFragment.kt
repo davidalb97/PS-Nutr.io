@@ -28,7 +28,7 @@ class CalculatorFragment : BaseAddMealFragment(), IRequiredTextInput, IGlucoseUn
     override lateinit var currentGlucoseUnit: GlucoseUnits
     override val nestedNavigation = Navigation.SEND_TO_CALCULATOR
     override val toAddMealsActionNestedNavigation = Navigation.SEND_TO_PICK_CALCULATOR_INGREDIENTS
-    override val baskNestedActionNavigation = Navigation.BACK_TO_CALCULATOR
+    override val backNestedActionNavigation = Navigation.BACK_TO_CALCULATOR
     override val mealsRecyclerViewId: Int = R.id.calculator_meals_list
     override val weightUnitSpinnerId: Int = R.id.calculator_units_spinner
     override val addIngredientsImgButtonId = R.id.add_custom_meal_add_meal_ingredient
