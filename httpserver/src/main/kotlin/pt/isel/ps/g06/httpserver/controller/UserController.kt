@@ -60,30 +60,10 @@ class UserController(
                             ?: throw UserNotFoundException()
             )
 
-
-    @DeleteMapping(USER_ID_PATH)
-    fun removeAccount(@PathVariable userIdentifier: Int, user: User): ResponseEntity<Void> {
-        if (user.identifier != userIdentifier && user.userRole != MOD_USER) {
-            throw UnauthorizedException()
-        }
-
-        val removedUser = userService.getUserFromSubmitterId(userIdentifier)
-                ?: throw UserNotFoundException()
-
-        userService.deleteUser(userEmail = removedUser.userEmail)
-
-        return ResponseEntity.ok().build()
-    }
-
     @DeleteMapping(USER_PATH)
-    fun removeOwnAccount(@Valid @RequestBody userLoginInput: UserLoginInput): ResponseEntity<Void> {
+    fun removeAccount(user: User): ResponseEntity<Void> {
 
-        val userEmail = userLoginInput.email
-
-        // Authenticates the user, throwing UnauthorizedException if the credentials are wrong
-        authenticationService.login(userEmail, userLoginInput.password)
-
-        userService.deleteUser(userEmail)
+        userService.deleteUser(user.userEmail)
 
         return ResponseEntity.ok().build()
     }
