@@ -9,6 +9,8 @@ import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealItem
 import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.meal.MealItemRecyclerAdapter
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.IUserSession
+import pt.ipl.isel.leic.ps.androidclient.ui.modular.filter.IItemListFilter
+import pt.ipl.isel.leic.ps.androidclient.ui.modular.filter.IItemListFilterOwner
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.listener.check.ICheckListener
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.listener.check.ICheckListenerOwner
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.listener.click.IItemClickListener
@@ -22,11 +24,13 @@ class CustomMealListFragment
     : BaseListFragment<MealItem, MealItemListViewModel, MealItemRecyclerAdapter>(),
     ICheckListenerOwner<MealItem>,
     IItemClickListenerOwner<MealItem>,
+    IItemListFilterOwner<MealItem>,
     IUserSession {
 
     override var restoredItemPredicator: ((MealItem) -> Boolean)? = null
     override var onCheckListener: ICheckListener<MealItem>? = null
     override var onClickListener: IItemClickListener<MealItem>? = null
+    override var itemFilter: IItemListFilter<MealItem>? = null
     lateinit var addButton: ImageButton
 
     override val recyclerAdapter by lazy {
@@ -49,7 +53,7 @@ class CustomMealListFragment
             addButton.visibility = View.VISIBLE
             addButton.setOnClickListener {
                 ensureUserSession(requireContext()) {
-                    view.findNavController().navigate(R.id.nav_custom_meal_nested)
+                    view.findNavController().navigate(Navigation.SEND_TO_ADD_CUSTOM_MEAL.navId)
                 }
             }
         }
@@ -57,6 +61,7 @@ class CustomMealListFragment
         ensureUserSession(requireContext(), failConsumer = {
             super.recyclerHandler.onNoRecyclerItems()
         }) {
+            recyclerViewModel.liveDataHandler.filter = itemFilter
             recyclerViewModel.update()
         }
     }
