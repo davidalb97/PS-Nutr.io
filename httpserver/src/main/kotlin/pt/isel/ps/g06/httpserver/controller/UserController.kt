@@ -15,19 +15,13 @@ import pt.isel.ps.g06.httpserver.dataAccess.output.user.UserRegisterOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.user.mapUserToOutput
 import pt.isel.ps.g06.httpserver.model.User
 import pt.isel.ps.g06.httpserver.service.AuthenticationService
-import pt.isel.ps.g06.httpserver.service.MealService
-import pt.isel.ps.g06.httpserver.service.RestaurantMealService
 import pt.isel.ps.g06.httpserver.service.UserService
 import javax.validation.Valid
-import javax.validation.constraints.Max
-import javax.validation.constraints.Min
 
 @RestController
 class UserController(
         private val userService: UserService,
-        private val authenticationService: AuthenticationService,
-        private val mealService: MealService,
-        private val restaurantMealService: RestaurantMealService
+        private val authenticationService: AuthenticationService
 ) {
 
     @PostMapping(REGISTER_PATH)
@@ -67,15 +61,16 @@ class UserController(
             )
 
 
-    @DeleteMapping("/user/{userIdentifier}")
+    @DeleteMapping(USER_ID_PATH)
     fun removeAccount(@PathVariable userIdentifier: Int, user: User): ResponseEntity<Void> {
         if (user.identifier != userIdentifier && user.userRole != MOD_USER) {
             throw UnauthorizedException()
         }
 
-        val userEmail = userService.getUserSubmitterId(userIdentifier)
+        val removedUser = userService.getUserFromSubmitterId(userIdentifier)
+                ?: throw UserNotFoundException()
 
-        userService.deleteUser(userEmail = userEmail)
+        userService.deleteUser(userEmail = removedUser.userEmail)
 
         return ResponseEntity.ok().build()
     }
