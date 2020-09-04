@@ -209,7 +209,8 @@ class MealDataSource(
         jwt: String
     ) {
         requestParser.request(
-            method = HTTPMethod.POST,
+            //TODO replace with POST once httpserver/improvements has been merged
+            method = HTTPMethod.PUT,
             uri = Uri.Builder()
                 .scheme(SCHEME)
                 .encodedAuthority(ADDRESS_PORT)
