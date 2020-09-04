@@ -15,13 +15,22 @@ import pt.isel.ps.g06.httpserver.dataAccess.output.user.UserRegisterOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.user.mapUserToOutput
 import pt.isel.ps.g06.httpserver.model.User
 import pt.isel.ps.g06.httpserver.service.AuthenticationService
+import pt.isel.ps.g06.httpserver.service.MealService
+import pt.isel.ps.g06.httpserver.service.RestaurantMealService
 import pt.isel.ps.g06.httpserver.service.UserService
 import javax.validation.Valid
+import javax.validation.constraints.Max
+import javax.validation.constraints.Min
 
 @RestController
-class UserController(private val userService: UserService, private val authenticationService: AuthenticationService) {
+class UserController(
+        private val userService: UserService,
+        private val authenticationService: AuthenticationService,
+        private val mealService: MealService,
+        private val restaurantMealService: RestaurantMealService
+) {
 
-    @PostMapping(REGISTER)
+    @PostMapping(REGISTER_PATH)
     fun register(@Valid @RequestBody userRegisterInput: UserRegisterInput): ResponseEntity<UserRegisterOutput> {
 
         userService.registerUser(
@@ -34,7 +43,7 @@ class UserController(private val userService: UserService, private val authentic
         return ResponseEntity.ok(UserRegisterOutput(jwt))
     }
 
-    @PostMapping(LOGIN)
+    @PostMapping(LOGIN_PATH)
     fun login(@Valid @RequestBody userLoginInput: UserLoginInput): ResponseEntity<UserLoginOutput> {
         val user = userService.getUserFromEmail(userLoginInput.email)
                 ?: throw UnauthorizedException()
@@ -48,7 +57,7 @@ class UserController(private val userService: UserService, private val authentic
         return ResponseEntity.ok(UserLoginOutput(jwt))
     }
 
-    @GetMapping(USER)
+    @GetMapping(USER_PATH)
     fun getUserAdditionalInfo(user: User): ResponseEntity<UserInfoOutput> =
             ResponseEntity.ok(
                     userService
@@ -57,19 +66,35 @@ class UserController(private val userService: UserService, private val authentic
                             ?: throw UserNotFoundException()
             )
 
+
     @DeleteMapping("/user/{userIdentifier}")
     fun removeAccount(@PathVariable userIdentifier: Int, user: User): ResponseEntity<Void> {
         if (user.identifier != userIdentifier && user.userRole != MOD_USER) {
             throw UnauthorizedException()
         }
 
-        userService.deleteUser(userEmail = user.userEmail)
+        val userEmail = userService.getUserSubmitterId(userIdentifier)
+
+        userService.deleteUser(userEmail = userEmail)
+
+        return ResponseEntity.ok().build()
+    }
+
+    @DeleteMapping(USER_PATH)
+    fun removeOwnAccount(@Valid @RequestBody userLoginInput: UserLoginInput): ResponseEntity<Void> {
+
+        val userEmail = userLoginInput.email
+
+        // Authenticates the user, throwing UnauthorizedException if the credentials are wrong
+        authenticationService.login(userEmail, userLoginInput.password)
+
+        userService.deleteUser(userEmail)
 
         return ResponseEntity.ok().build()
     }
 
 
-    @PutMapping(BAN)
+    @PutMapping(BAN_PATH)
     fun putBanUser(
             user: User,
             @RequestBody banInput: BanInput
@@ -82,4 +107,6 @@ class UserController(private val userService: UserService, private val authentic
 
         return ResponseEntity.ok().build()
     }
+
+
 }

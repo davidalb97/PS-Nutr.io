@@ -24,7 +24,7 @@ class CustomRestaurant : RestaurantInfo, Parcelable {
         favorites = Favorites(false, false),
         isReportable = false,
         image = image,
-        source = Source.CUSTOM,
+        source = Source.CUSTOM_MEAL,
         creationDate = null,
         cuisines = cuisines,
         meals = emptyList(),

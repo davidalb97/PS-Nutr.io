@@ -19,12 +19,6 @@ interface FavoriteDao {
     @SqlQuery("SELECT * FROM $table WHERE $submissionId = :submissionId AND $submitterId = :userId")
     fun getByIds(submissionId: Int, userId: Int): DbFavoriteDto?
 
-    @SqlQuery("SELECT * FROM $table WHERE $submissionId = :submissionId")
-    fun getAllBySubmissionId(submissionId: Int): ResultIterable<DbFavoriteDto>
-
-    @SqlQuery("SELECT * FROM $table WHERE $submitterId = :userId")
-    fun getAllBySubmitterId(userId: Int): ResultIterable<DbFavoriteDto>
-
     @SqlQuery("INSERT INTO $table($submissionId, $submitterId)" +
             " VALUES(:submissionId, :submitterId) RETURNING *")
     fun insert(@Bind submissionId: Int, @Bind submitterId: Int): DbFavoriteDto

@@ -26,7 +26,7 @@ abstract class BaseAddMealFragment : BaseFragment(), IWeightUnitSpinner, IPicked
 
     protected abstract val nestedNavigation: Navigation
     protected abstract val toAddMealsActionNestedNavigation: Navigation
-    protected abstract val baskNestedActionNavigation: Navigation
+    protected abstract val backNestedActionNavigation: Navigation
 
     //Meals
     protected abstract val mealsRecyclerViewId: Int
@@ -92,7 +92,7 @@ abstract class BaseAddMealFragment : BaseFragment(), IWeightUnitSpinner, IPicked
         addIngredientsImgButton = view.findViewById(addIngredientsImgButtonId)
         addIngredientsImgButton.setOnClickListener {
             val bundle = Bundle()
-            bundle.putNavigation(baskNestedActionNavigation)
+            bundle.putNavigation(backNestedActionNavigation)
             bundle.putParentNavigation(nestedNavigation)
             view.findNavController().navigate(toAddMealsActionNestedNavigation.navId, bundle)
         }

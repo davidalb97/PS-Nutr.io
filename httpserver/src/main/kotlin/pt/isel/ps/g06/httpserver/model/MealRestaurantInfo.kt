@@ -10,6 +10,8 @@ class MealRestaurantInfo(
         override val userVote: UserVote,
         override val votes: Lazy<Votes>,
         override val isReportable: UserPredicate,
+        val restaurantIdentifier: Int,
+        val mealIdentifier: Int,
         val portions: Sequence<Portion>,
         val userPortion: UserPortion,
         val isVerified: Boolean

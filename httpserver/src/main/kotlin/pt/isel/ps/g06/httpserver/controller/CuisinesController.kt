@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
-import pt.isel.ps.g06.httpserver.common.CUISINES
+import pt.isel.ps.g06.httpserver.common.CUISINES_PATH
 import pt.isel.ps.g06.httpserver.common.MAX_COUNT
 import pt.isel.ps.g06.httpserver.dataAccess.output.cuisines.CuisinesOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.cuisines.toSimplifiedCuisinesOutput
@@ -18,7 +18,7 @@ import javax.validation.constraints.Min
 @Validated
 @RestController
 @RequestMapping(
-        CUISINES,
+        CUISINES_PATH,
         produces = [MediaType.APPLICATION_JSON_VALUE],
         consumes = [MediaType.ALL_VALUE]
 )

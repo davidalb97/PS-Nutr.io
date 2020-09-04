@@ -10,7 +10,7 @@ import pt.ipl.isel.leic.ps.androidclient.data.api.dto.output.RegisterOutput
 import pt.ipl.isel.leic.ps.androidclient.data.api.request.HTTPMethod
 import pt.ipl.isel.leic.ps.androidclient.data.api.request.RequestParser
 
-const val USER = "user"
+const val USER_PATH = "user"
 private const val LOGIN_PATH = "login"
 private const val REGISTER_PATH = "register"
 
@@ -31,7 +31,7 @@ class UserDataSource(
             uri = Uri.Builder()
                 .scheme(SCHEME)
                 .encodedAuthority(ADDRESS_PORT)
-                .appendPath(USER)
+                .appendPath(USER_PATH)
                 .appendPath(REGISTER_PATH)
                 .build()
                 .toString(),
@@ -52,7 +52,7 @@ class UserDataSource(
             uri = Uri.Builder()
                 .scheme(SCHEME)
                 .encodedAuthority(ADDRESS_PORT)
-                .appendPath(USER)
+                .appendPath(USER_PATH)
                 .appendPath(LOGIN_PATH)
                 .build()
                 .toString(),
@@ -73,7 +73,7 @@ class UserDataSource(
             uri = Uri.Builder()
                 .scheme(SCHEME)
                 .encodedAuthority(ADDRESS_PORT)
-                .appendPath(USER)
+                .appendPath(USER_PATH)
                 .build()
                 .toString(),
             reqHeader = buildAuthHeader(jwt),

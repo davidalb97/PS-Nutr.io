@@ -17,6 +17,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.output.meal.toDetailedMealOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.meal.toSimplifiedMealContainer
 import pt.isel.ps.g06.httpserver.model.User
 import pt.isel.ps.g06.httpserver.service.MealService
+import pt.isel.ps.g06.httpserver.service.RestaurantMealService
 import pt.isel.ps.g06.httpserver.service.SubmissionService
 import pt.isel.ps.g06.httpserver.service.UserService
 import javax.validation.Valid
@@ -29,6 +30,7 @@ import javax.validation.constraints.Min
 @RequestMapping(produces = [MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_PROBLEM_JSON_VALUE])
 class MealController(
         private val mealService: MealService,
+        private val restaurantMealService: RestaurantMealService,
         private val submissionService: SubmissionService,
         private val userService: UserService
 ) {
@@ -40,7 +42,7 @@ class MealController(
      * @param cuisines filters obtained meals by specific cuisine(s).
      * An empty collection will not filter any meal.
      */
-    @GetMapping(MEALS_SUGGESTED)
+    @GetMapping(MEALS_PATH)
     fun getMeals(
             user: User?,
             @RequestParam cuisines: Collection<String>?,
@@ -74,7 +76,7 @@ class MealController(
                 .body(toSimplifiedMealContainer(meals, user?.identifier))
     }
 
-    @PostMapping(MEALS_SUGGESTED)
+    @PostMapping(MEALS_PATH)
     fun createSuggestedMeal(
             @Valid @RequestBody meal: MealInput,
             user: User
@@ -95,89 +97,13 @@ class MealController(
 
         return ResponseEntity.created(
                 UriComponentsBuilder
-                        .fromUriString(MEAL)
+                        .fromUriString(MEAL_ID_PATH)
                         .buildAndExpand(createdMeal.identifier)
                         .toUri()
         ).build()
     }
 
-    @GetMapping(MEALS_CUSTOM)
-    fun getCustomMealsFromUser(
-            user: User,
-            @RequestParam @Min(0) skip: Int?,
-            @RequestParam @Min(0) @Max(MAX_COUNT) count: Int?
-    ): ResponseEntity<SimplifiedMealContainer> {
-
-        val userCustomMeals = mealService
-                .getUserCustomMeals(user.identifier, skip, count)
-
-        return ResponseEntity.ok().body(toSimplifiedMealContainer(userCustomMeals, user.identifier))
-    }
-
-    // TODO - has different repo method
-    @PostMapping(MEALS_CUSTOM)
-    fun createCustomMeal(
-            @Valid @RequestBody meal: MealInput,
-            user: User
-    ): ResponseEntity<Void> {
-        //Due to validators we are sure fields are never null
-        val createdMeal = mealService.createMeal(
-                submitterId = user.identifier,
-                name = meal.name!!,
-                quantity = meal.quantity!!,
-                ingredients = meal.ingredients!!,
-                cuisines = meal.cuisines!!,
-                mealType = MealType.CUSTOM
-        )
-
-        return ResponseEntity.created(
-                UriComponentsBuilder
-                        .fromUriString(MEAL)
-                        .buildAndExpand(createdMeal.identifier)
-                        .toUri()
-        ).build()
-    }
-
-    @PutMapping(MEAL)
-    fun editCustomMeal(
-            @PathVariable(MEAL_ID_VALUE) mealId: Int,
-            @Valid @RequestBody meal: MealInput,
-            user: User
-    ): ResponseEntity<Void> {
-        //Due to validators we are sure fields are never null
-        val updatedMeal = mealService.editMeal(
-                submissionId = mealId,
-                submitterId = user.identifier,
-                name = meal.name!!,
-                quantity = meal.quantity!!,
-                ingredients = meal.ingredients!!,
-                cuisines = meal.cuisines!!,
-                mealType = MealType.CUSTOM
-        )
-
-        return ResponseEntity.created(
-                UriComponentsBuilder
-                        .fromUriString(MEAL)
-                        .buildAndExpand(updatedMeal.identifier)
-                        .toUri()
-        ).build()
-    }
-
-    @GetMapping(MEALS_FAVORITE)
-    fun getFavoriteMealsFromUser(
-            user: User,
-            @RequestParam @Min(0) skip: Int?,
-            @RequestParam @Min(0) @Max(MAX_COUNT) count: Int?
-    ): ResponseEntity<SimplifiedMealContainer> {
-
-        val userCustomMeals = mealService
-                .getUserFavoriteMeals(user.identifier, count, skip)
-
-        return ResponseEntity.ok()
-                .body(toSimplifiedMealContainer(userCustomMeals, user.identifier))
-    }
-
-    @PutMapping(MEAL_FAVORITE)
+    @PutMapping(MEAL_ID_FAVORITE_PATH)
     fun setFavoriteMeal(
             @PathVariable(MEAL_ID_VALUE) mealId: Int,
             @Valid @RequestBody favorite: FavoriteInput,
@@ -187,7 +113,7 @@ class MealController(
         return ResponseEntity.ok().build()
     }
 
-    @GetMapping(MEAL)
+    @GetMapping(MEAL_ID_PATH)
     fun getMealInformation(
             @PathVariable(MEAL_ID_VALUE) mealId: Int,
             user: User?
@@ -203,7 +129,7 @@ class MealController(
                 .body(toDetailedMealOutput(meal, user?.identifier))
     }
 
-    @DeleteMapping(MEAL)
+    @DeleteMapping(MEAL_ID_PATH)
     fun deleteMeal(
             @PathVariable(MEAL_ID_VALUE) mealId: Int,
             user: User

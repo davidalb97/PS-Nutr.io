@@ -21,7 +21,7 @@ class ReportController(
         private val userService: UserService
 ) {
 
-    @GetMapping(REPORTS)
+    @GetMapping(REPORTS_PATH)
     fun getReports(
             user: User,
             @RequestParam type: SubmissionType?,
@@ -41,7 +41,7 @@ class ReportController(
     }
 
 
-    @GetMapping(SUBMISSION_REPORT)
+    @GetMapping(REPORT_SUBMISSION_ID)
     fun getAllReportsFromSubmission(
             @PathVariable(SUBMISSION_ID_VALUE) submissionId: Int,
             user: User
@@ -63,7 +63,7 @@ class ReportController(
         )
     }
 
-    @DeleteMapping(REPORT)
+    @DeleteMapping(REPORT_ID)
     fun deleteReport(
             @PathVariable(REPORT_ID_VALUE) reportId: Int,
             user: User

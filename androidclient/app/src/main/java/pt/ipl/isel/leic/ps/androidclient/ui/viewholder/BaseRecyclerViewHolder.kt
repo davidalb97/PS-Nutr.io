@@ -22,7 +22,7 @@ abstract class BaseRecyclerViewHolder<T : Any>(
     val log: Logger by lazy { Logger(javaClass) }
     lateinit var item: T
 
-    override var onClickListener: IItemClickListener<T>? = IItemClickListener { model, idx ->
+    override var onClickListener: IItemClickListener<T>? = IItemClickListener { _, _ ->
         log.v("Clicked item at index $layoutPosition")
         sendToDestination(view, navDestination)
     }
