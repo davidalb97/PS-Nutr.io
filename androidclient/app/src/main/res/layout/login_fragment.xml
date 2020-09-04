@@ -79,13 +79,70 @@
         </RelativeLayout>
 
         <RelativeLayout
+            android:id="@+id/deleteAccountBox"
+            android:padding="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone">
+
+            <EditText
+                android:id="@+id/deleteUserEmailInput"
+                android:padding="5dp"
+                android:layout_centerHorizontal="true"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="100dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/textbox_shape"
+                android:drawableStart="@drawable/ic_email"
+                android:drawablePadding="10dp"
+                android:hint="@string/email"
+                android:focusable="true"
+                >
+            </EditText>
+
+            <EditText
+                android:id="@+id/deleteUserPasswordInput"
+                android:inputType="textPassword"
+                android:padding="5dp"
+                android:layout_marginTop="10dp"
+                android:layout_below="@+id/deleteUserEmailInput"
+                android:layout_centerHorizontal="true"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="100dp"
+                android:drawableStart="@drawable/ic_password"
+                android:drawablePadding="10dp"
+                android:background="@drawable/textbox_shape"
+                android:hint="@string/password"
+                android:focusable="true"
+                >
+            </EditText>
+
+            <Button
+                android:id="@+id/deleteAccountButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:layout_below="@id/deleteUserPasswordInput"
+                android:layout_marginTop="30dp"
+                android:layout_centerHorizontal="true"
+                android:text="@string/delete_account"
+                android:textColor="@android:color/background_light"
+                android:background="@drawable/rect_material_button_shape">
+            </Button>
+
+        </RelativeLayout>
+
+
+        <RelativeLayout
             android:id="@+id/logoutBox"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="gone"
             android:padding="10dp"
             android:layout_centerInParent="true"
-            android:layout_below="@id/loginBox">
+            android:layout_below="@id/deleteAccountBox">
 
             <TextView
                 android:id="@+id/already_logged_in_warning"
