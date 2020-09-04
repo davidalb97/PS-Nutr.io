@@ -20,17 +20,15 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.repo.RestaurantDbRepository
 import pt.isel.ps.g06.httpserver.model.restaurant.Restaurant
 import pt.isel.ps.g06.httpserver.model.restaurant.RestaurantIdentifier
 import java.util.concurrent.CompletableFuture
-import java.util.stream.Stream
-import kotlin.streams.toList
 
 @RunWith(SpringJUnit4ClassRunner::class)
 class RestaurantServiceTests {
-    lateinit var dbRestaurantRepository: RestaurantDbRepository
-    lateinit var restaurantApiMapper: RestaurantApiMapper
-    lateinit var restaurantResponseMapper: RestaurantResponseMapper
-    lateinit var apiSubmitterMapper: ApiSubmitterMapper
-    lateinit var dbFavoriteDbRepository: FavoriteDbRepository
-    lateinit var dbReportDbRepository: ReportDbRepository
+    private lateinit var dbRestaurantRepository: RestaurantDbRepository
+    private lateinit var restaurantApiMapper: RestaurantApiMapper
+    private lateinit var restaurantResponseMapper: RestaurantResponseMapper
+    private lateinit var apiSubmitterMapper: ApiSubmitterMapper
+    private lateinit var dbFavoriteDbRepository: FavoriteDbRepository
+    private lateinit var dbReportDbRepository: ReportDbRepository
 
     lateinit var restaurantService: RestaurantService
 
@@ -99,7 +97,7 @@ class RestaurantServiceTests {
         `when`(restaurantApiMapper.getRestaurantApi(anyNonNull())).thenReturn(restaurantApi)
 
         //Setup database search result
-        `when`(dbRestaurantRepository.getAllByCoordinates(latitude, longitude, radius)).thenReturn(Stream.of(firstDatabaseDto))
+        `when`(dbRestaurantRepository.getAllByCoordinates(latitude, longitude, radius)).thenReturn(sequenceOf(firstDatabaseDto))
 
         //Call to action
         val nearbyRestaurants = restaurantService.getNearbyRestaurants(

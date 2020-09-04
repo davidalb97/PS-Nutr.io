@@ -17,7 +17,7 @@ class DatabaseAccessTests {
     @Test
     fun `stream result from database should not close after repository call`() {
         val maxCount = 10L
-        val ingredients = mealDbRepository.getAllIngredients(0, maxCount)
+        val ingredients = mealDbRepository.getAllIngredients(0, null)
 
         //Perform some basic mapping operations to check if value is there and valid
         val count = ingredients
