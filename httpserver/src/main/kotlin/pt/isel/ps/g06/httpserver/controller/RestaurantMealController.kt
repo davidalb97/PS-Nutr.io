@@ -17,9 +17,9 @@ import pt.isel.ps.g06.httpserver.dataAccess.input.userActions.FavoriteInput
 import pt.isel.ps.g06.httpserver.dataAccess.input.userActions.ReportInput
 import pt.isel.ps.g06.httpserver.dataAccess.input.userActions.VoteInput
 import pt.isel.ps.g06.httpserver.dataAccess.output.restaurantMeal.DetailedRestaurantMealOutput
-import pt.isel.ps.g06.httpserver.dataAccess.output.restaurantMeal.RestaurantMealsFromRestaurantContainerOutput
+import pt.isel.ps.g06.httpserver.dataAccess.output.restaurantMeal.RestaurantMealsContainerOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.restaurantMeal.toDetailedRestaurantMealOutput
-import pt.isel.ps.g06.httpserver.dataAccess.output.restaurantMeal.toRestaurantMealsFromRestaurantContainerOutput
+import pt.isel.ps.g06.httpserver.dataAccess.output.restaurantMeal.toRestaurantMealsContainerOutput
 import pt.isel.ps.g06.httpserver.model.User
 import pt.isel.ps.g06.httpserver.model.restaurant.RestaurantIdentifier
 import pt.isel.ps.g06.httpserver.service.MealService
@@ -46,7 +46,7 @@ class RestaurantMealController(
             @Min(0) skip: Int?,
             @Min(0) @Max(MAX_COUNT) count: Int?,
             user: User?
-    ): ResponseEntity<RestaurantMealsFromRestaurantContainerOutput> {
+    ): ResponseEntity<RestaurantMealsContainerOutput> {
         val (submitterId, submissionId, apiId) = restaurantIdentifierBuilder.extractIdentifiers(restaurantId)
 
         val restaurant = restaurantService
@@ -55,7 +55,7 @@ class RestaurantMealController(
 
         return ResponseEntity
                 .ok()
-                .body(toRestaurantMealsFromRestaurantContainerOutput(restaurant, user?.identifier))
+                .body(toRestaurantMealsContainerOutput(restaurant, user?.identifier))
     }
 
 

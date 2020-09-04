@@ -9,7 +9,9 @@ import pt.isel.ps.g06.httpserver.dataAccess.output.meal.SimplifiedMealContainer
 import pt.isel.ps.g06.httpserver.dataAccess.output.meal.toSimplifiedMealContainer
 import pt.isel.ps.g06.httpserver.dataAccess.output.restaurant.SimplifiedRestaurantContainerOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.restaurant.toSimplifiedRestaurantContainerOutput
+import pt.isel.ps.g06.httpserver.dataAccess.output.restaurantMeal.FavoriteRestaurantMealsContainerOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.restaurantMeal.RestaurantMealsContainerOutput
+import pt.isel.ps.g06.httpserver.dataAccess.output.restaurantMeal.toFavoriteRestaurantMealsContainerOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.restaurantMeal.toRestaurantMealsContainerOutput
 import pt.isel.ps.g06.httpserver.model.RestaurantMeal
 import pt.isel.ps.g06.httpserver.model.User
@@ -64,13 +66,13 @@ class FavoriteControllerController(
             user: User,
             @RequestParam @Min(0) skip: Int?,
             @RequestParam @Min(0) @Max(MAX_COUNT) count: Int?
-    ): ResponseEntity<RestaurantMealsContainerOutput> {
+    ): ResponseEntity<FavoriteRestaurantMealsContainerOutput> {
 
 
         val favoriteRestaurantMeals: Sequence<RestaurantMeal> = restaurantMealService
                 .getUserFavoriteMeals(user.identifier, count, skip)
 
         return ResponseEntity.ok()
-                .body(toRestaurantMealsContainerOutput(favoriteRestaurantMeals.toList(), user.identifier))
+                .body(toFavoriteRestaurantMealsContainerOutput(favoriteRestaurantMeals.toList(), user.identifier))
     }
 }
