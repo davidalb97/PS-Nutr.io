@@ -3,6 +3,10 @@ package pt.isel.ps.g06.httpserver.controller
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import pt.isel.ps.g06.httpserver.common.BAN_PATH
+import pt.isel.ps.g06.httpserver.common.LOGIN_PATH
+import pt.isel.ps.g06.httpserver.common.REGISTER_PATH
+import pt.isel.ps.g06.httpserver.common.USER_PATH
 import pt.isel.ps.g06.httpserver.common.exception.problemJson.notFound.UserNotFoundException
 import pt.isel.ps.g06.httpserver.common.exception.problemJson.unauthorized.UnauthorizedException
 import pt.isel.ps.g06.httpserver.dataAccess.input.moderation.BanInput
@@ -14,17 +18,13 @@ import pt.isel.ps.g06.httpserver.dataAccess.output.user.UserRegisterOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.user.mapUserToOutput
 import pt.isel.ps.g06.httpserver.model.User
 import pt.isel.ps.g06.httpserver.service.AuthenticationService
-import pt.isel.ps.g06.httpserver.service.MealService
-import pt.isel.ps.g06.httpserver.service.RestaurantMealService
 import pt.isel.ps.g06.httpserver.service.UserService
 import javax.validation.Valid
 
 @RestController
 class UserController(
         private val userService: UserService,
-        private val authenticationService: AuthenticationService,
-        private val mealService: MealService,
-        private val restaurantMealService: RestaurantMealService
+        private val authenticationService: AuthenticationService
 ) {
 
     @PostMapping(REGISTER_PATH)
