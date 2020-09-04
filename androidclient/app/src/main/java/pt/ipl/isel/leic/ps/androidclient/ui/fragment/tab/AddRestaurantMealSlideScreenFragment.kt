@@ -10,7 +10,6 @@ import pt.ipl.isel.leic.ps.androidclient.NutrioApp
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealItem
 import pt.ipl.isel.leic.ps.androidclient.data.model.Source
-import pt.ipl.isel.leic.ps.androidclient.ui.fragment.list.BaseListFragment
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.list.CustomMealListFragment
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.list.FavoriteMealListFragment
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.list.MealItemListFragment
@@ -19,8 +18,10 @@ import pt.ipl.isel.leic.ps.androidclient.ui.modular.filter.IItemListFilter
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.filter.IItemListFilterOwner
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.listener.click.IItemClickListener
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.listener.click.IItemClickListenerOwner
-import pt.ipl.isel.leic.ps.androidclient.ui.util.*
+import pt.ipl.isel.leic.ps.androidclient.ui.util.Navigation
 import pt.ipl.isel.leic.ps.androidclient.ui.util.prompt.PromptConfirm
+import pt.ipl.isel.leic.ps.androidclient.ui.util.putNavigation
+import pt.ipl.isel.leic.ps.androidclient.ui.util.putSource
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.meal.info.RestaurantInfoViewModel
 
 class AddRestaurantMealSlideScreenFragment : BaseSlideScreenFragment(propagateArguments = false),
@@ -44,25 +45,26 @@ class AddRestaurantMealSlideScreenFragment : BaseSlideScreenFragment(propagateAr
     }
 
     override fun addFragments(fragments: HashMap<Fragment, String>) {
-        fragments[setCheckArguments(MealItemListFragment())] = "Suggested Meals"
-        fragments[setCheckArguments(FavoriteMealListFragment())] = "Favorite Meals"
-        fragments[setCheckArguments(CustomMealListFragment())] = "Custom meals"
+        fragments[setupFragment(MealItemListFragment(), Source.API)] =
+            "Suggested Meals"
+        fragments[setupFragment(FavoriteMealListFragment(), Source.FAVORITE_MEAL)] =
+            "Favorite Meals"
+        fragments[setupFragment(FavoriteMealListFragment(), Source.FAVORITE_RESTAURANT_MEAL)] =
+            "Favorite Restaurant Meals"
+        fragments[setupFragment(CustomMealListFragment(), Source.CUSTOM_MEAL)] =
+            "Custom meals"
     }
 
-    private fun <F> setCheckArguments(fragment: F): F
-            where F : BaseListFragment<MealItem, *, *>,
+    private fun <F> setupFragment(fragment: F, source: Source): F
+            where F : Fragment,
                   F : IItemListFilterOwner<MealItem>,
                   F : IItemClickListenerOwner<MealItem> {
-
-        //Configure checkbox module activation
         val bundle = Bundle()
+        bundle.putSource(source)
         bundle.putNavigation(Navigation.IGNORE)
-        bundle.putSource(Source.API)
-
         fragment.arguments = bundle
         fragment.itemFilter = itemFilter
         fragment.onClickListener = onClickListener
-
         return fragment
     }
 
