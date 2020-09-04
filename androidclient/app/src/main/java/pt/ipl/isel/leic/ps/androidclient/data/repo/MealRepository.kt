@@ -123,6 +123,24 @@ class MealRepository(private val dataSource: MealDataSource) {
         )
     }
 
+    fun getFavoriteRestaurantMeals(
+        userSession: UserSession,
+        skip: Int? = 0,
+        count: Int? = 30,
+        cuisines: Collection<Cuisine>? = null,
+        success: (List<MealItem>) -> Unit,
+        error: (VolleyError) -> Unit
+    ) {
+        dataSource.getFavoriteRestaurantMeals(
+            jwt = userSession.jwt,
+            skip = skip,
+            count = count,
+            cuisines = cuisines?.let(cuisineOutputMapper::mapToOutputModelCollection),
+            success = { dtos -> success(inputMealItemMapper.mapToListModel(dtos)) },
+            error = error
+        )
+    }
+
     fun getApiMealInfo(
         mealId: Int,
         userSession: UserSession?,
