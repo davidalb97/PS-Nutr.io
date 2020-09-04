@@ -6,6 +6,7 @@ import pt.isel.ps.g06.httpserver.common.exception.problemJson.notFound.Restauran
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.RestaurantApiType
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.mapper.RestaurantApiMapper
 import pt.isel.ps.g06.httpserver.dataAccess.common.dto.RestaurantDto
+import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.restaurant.DbRestaurantResponseMapper
 import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.restaurant.RestaurantResponseMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.ApiSubmitterMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.FavoriteDbRepository
@@ -23,6 +24,7 @@ class RestaurantService(
         private val dbRestaurantRepository: RestaurantDbRepository,
         private val restaurantApiMapper: RestaurantApiMapper,
         private val restaurantResponseMapper: RestaurantResponseMapper,
+        private val dbRestaurantResponseMapper: DbRestaurantResponseMapper,
         private val apiSubmitterMapper: ApiSubmitterMapper,
         private val dbFavoriteDbRepository: FavoriteDbRepository,
         private val dbReportDbRepository: ReportDbRepository
@@ -82,8 +84,10 @@ class RestaurantService(
      */
     fun getRestaurant(submitterId: Int, submissionId: Int?, apiId: String?): Restaurant? {
         val restaurant = when {
-            submissionId != null -> searchRestaurantSubmission(submissionId)
+            //If submissionId exists, get information from the database
+            submissionId != null -> dbRestaurantRepository.getById(submissionId)
 
+            //If it is an API restaurant that is not yet submitted in the database
             apiId != null -> {
                 val apiType = apiSubmitterMapper
                         .getApiType(submitterId)
@@ -91,7 +95,6 @@ class RestaurantService(
 
                 searchApiRestaurant(submitterId, apiId, apiType)
             }
-
             else -> null
         }
 
@@ -207,8 +210,9 @@ class RestaurantService(
                         .get()
     }
 
-    private fun searchRestaurantSubmission(submissionId: Int): RestaurantDto? {
+    fun getRestaurantSubmission(submissionId: Int): Restaurant? {
         return dbRestaurantRepository.getById(submissionId)
+                ?.let(dbRestaurantResponseMapper::mapTo)
     }
 
     fun getUserFavoriteRestaurants(submitterId: Int, count: Int?, skip: Int?): Sequence<Restaurant> =

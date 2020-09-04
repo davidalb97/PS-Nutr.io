@@ -27,9 +27,7 @@ class RestaurantMealService(
         private val dbPortionRepository: PortionDbRepository,
         private val dbFavoriteDbRepository: FavoriteDbRepository,
         private val dbReportDbRepository: ReportDbRepository,
-        private val dbRestaurantRepository: RestaurantDbRepository,
-        private val dbRestaurantMealResponseMapper: DbRestaurantMealInfoResponseMapper,
-        private val dbRestaurantResponseMapper: DbRestaurantResponseMapper
+        private val dbRestaurantMealResponseMapper: DbRestaurantMealInfoResponseMapper
 ) {
 
     /**
@@ -207,10 +205,9 @@ class RestaurantMealService(
                     .getAllUserFavorites(submitterId, count, skip)
                     .map(dbRestaurantMealResponseMapper::mapTo)
                     .map {
-                        val restaurant = dbRestaurantRepository.getById(it.restaurantIdentifier)!!
                         RestaurantMeal(
                                 meal = mealService.getMeal(it.mealIdentifier)!!,
-                                restaurant = dbRestaurantResponseMapper.mapTo(restaurant),
+                                restaurant = restaurantService.getRestaurantSubmission(it.restaurantIdentifier)!!,
                                 info = it
                         )
                     }
