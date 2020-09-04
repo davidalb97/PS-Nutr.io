@@ -626,6 +626,9 @@ used in web client applications.\\
 As website design pattern, we chose to conceive a single-page application. This pattern was chosen for a 
 variety of reasons, being the main one a better performance comparing to a traditional multi-page application.\\
 
+Although being a single-page application, every endpoint used here allows bookmarking, so the user can visit a page
+later without needing to start by the homepage.
+
 \subsubsection{Routing}
 
 As mentioned that the web client application will only serve the propose of moderation, this routing diagram shows the
@@ -638,6 +641,12 @@ navigation and routing inside it.
     \end{center}
 \end{figure}
 
+\subsubsection{Error handling}
+
+Every error that is shown to the user takes advantage of the content type \textbf{problem-json}
+so the gets an adapted message for every situation. When this is not possible, a generic error
+message is presented.\\
+
 \subsection{Functionalities}
 
 \subsubsection{Register and login}
@@ -648,6 +657,8 @@ navigation and routing inside it.
         \caption{The register and login page}
     \end{center}
 \end{figure}
+
+It should be noted that the landing page will activate more options once the user has logged in.\\
 
 \subsubsection{Moderator: Create a meal or ingredient}
 
