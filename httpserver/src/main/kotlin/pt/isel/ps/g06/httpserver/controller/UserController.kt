@@ -59,7 +59,7 @@ class UserController(private val userService: UserService, private val authentic
 
     @DeleteMapping("/user/{userIdentifier}")
     fun removeAccount(@PathVariable userIdentifier: Int, user: User): ResponseEntity<Void> {
-        if (user.identifier != userIdentifier || user.userRole != MOD_USER) {
+        if (user.identifier != userIdentifier && user.userRole != MOD_USER) {
             throw UnauthorizedException()
         }
 

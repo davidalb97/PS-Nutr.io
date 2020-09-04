@@ -1,7 +1,6 @@
 import React, { useContext, useState, useReducer } from 'react'
 import { Link, Redirect } from 'react-router-dom'
 import useFetch, { FetchStates } from '../../common/useFetch'
-import { deleteCookie } from '../../authentication/CookieService'
 
 import Card from 'react-bootstrap/Card'
 import Figure from 'react-bootstrap/Figure'
@@ -33,11 +32,11 @@ export default function ProfilePage() {
         if (!context.initialized) return <Loading />
 
         if (!context.user) return (
-            <Row>
+            <span>
                 You are not logged in!
-                Either <Link to="/login">log in</Link>
-                or <Link to="/register">register</Link> if you don't have an account.
-            </Row>
+                    Either <Link to="/login">log in </Link>
+                    or <Link to="/register">register</Link> if you don't have an account.
+            </span>
         )
 
         return <>
@@ -71,16 +70,25 @@ export default function ProfilePage() {
 
             <ConfirmationModal
                 show={showModal}
-                onClose={success => { setShowModal(success); setRedirect(success) }}
+                onClose={handleProfileDeletion}
+                user={context.user}
             />
         </>
+
+        function handleProfileDeletion(success) {
+            setShowModal(success);
+            setRedirect(success)
+            if (success) context.onLogout()
+        }
+
+
     }
 }
 
-function ConfirmationModal({ show, onClose }) {
+function ConfirmationModal({ show, onClose, user }) {
     const [request, triggerRequest] = useReducer(() => {
         return {
-            url: "http://localhost:9000/api/user/1",
+            url: `http://localhost:9000/api/user/${user.identifier}`,
             method: "DELETE",
         }
     }, {})
@@ -92,7 +100,6 @@ function ConfirmationModal({ show, onClose }) {
         case FetchStates.fetching: body = <Loading />; break
         case FetchStates.error: body = <FetchError error={error} json={json} />; break
         case FetchStates.done: {
-            deleteCookie()
             body = <SuccessAlert
                 heading="Deleted account with success!"
                 body="Thank you for being part of our journey."
