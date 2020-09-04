@@ -133,7 +133,7 @@ The color code used in this diagram represents where each endpoint starts provid
 and visualization, e.g.: /restaurant/:restaurantId/meal/:mealId (endpoint for a specific restaurant meal) starts with a blue
 node (/restaurant); /meal/suggested (endpoint for suggested meals) starts with a yellow node (/meal).\\
 
-\subsection{Kotlin sequences}
+\subsection{Kotlin sequences and Java stream}
 
 As previously stated, Kotlin is completely interoperable with Java and, as such, streams are also supported. However Kotlin introduced sequences which bring
 advantages over Java streams. In this subsection it will be presented the reasons why we chose sequences over streams during development.
@@ -283,6 +283,10 @@ The user can also delete its account. When an account is deleted all user sensit
 username, password, insulin profile and custom meals. However, its submitter identifier, which is a database generated number,
 is maintained in order to preserve its public submissions, in order to keep the platform's data consistent, so a user that makes many 
 public insertions does not compromise our data's consistency if its account is deleted.\\
+
+This way we also comply to the General Data Protection Regulation (GDRP), as we are keeping data safe by encrypting it into the database and
+we are not collecting user's data for other interests and, the most import of all, we provide the user the right to be erased from our 
+platform removing every personal detail from it when an account deletion happens.\\
 
 \section{Geolocation}
 
@@ -723,7 +727,7 @@ Like in the mobile application, the user can also create insulin profiles by fil
 and moving the slider to adjust their time periods.\\
 
 If certain time periods are already taken by other created insulin profiles, these will appear with
-grey tone inside the slider.\\
+gray tone inside the slider.\\
 
 \begin{figure}[H]
     \begin{center}
