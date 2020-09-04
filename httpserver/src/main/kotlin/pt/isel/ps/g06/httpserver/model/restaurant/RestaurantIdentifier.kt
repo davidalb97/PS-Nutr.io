@@ -1,4 +1,4 @@
-package pt.isel.ps.g06.httpserver.model
+package pt.isel.ps.g06.httpserver.model.restaurant
 
 import pt.isel.ps.g06.httpserver.common.ID_SEPARATOR
 

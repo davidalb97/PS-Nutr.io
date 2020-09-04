@@ -1,5 +1,9 @@
-package pt.isel.ps.g06.httpserver.model
+package pt.isel.ps.g06.httpserver.model.restaurant
 
+import pt.isel.ps.g06.httpserver.model.Cuisine
+import pt.isel.ps.g06.httpserver.model.Meal
+import pt.isel.ps.g06.httpserver.model.Submitter
+import pt.isel.ps.g06.httpserver.model.Votes
 import pt.isel.ps.g06.httpserver.model.modular.*
 import java.net.URI
 import java.time.OffsetDateTime
@@ -22,7 +26,7 @@ class Restaurant(
         val meals: Sequence<Meal>,
         val suggestedMeals: Sequence<Meal>,
         override val cuisines: Sequence<Cuisine>
-): BasePublicSubmission<Lazy<RestaurantIdentifier>>(
+) : BasePublicSubmission<Lazy<RestaurantIdentifier>>(
         identifier = identifier,
         image = image,
         name = name,

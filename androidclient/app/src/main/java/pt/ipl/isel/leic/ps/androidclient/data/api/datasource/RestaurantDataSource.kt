@@ -78,6 +78,32 @@ class RestaurantDataSource(
         )
     }
 
+    fun getFavoriteRestaurants(
+        jwt: String?,
+        count: Int?,
+        skip: Int?,
+        success: (RestaurantItemContainerInput) -> Unit,
+        error: (VolleyError) -> Unit
+    ) {
+        requestParser.requestAndParse(
+            method = HTTPMethod.GET,
+            uri = Uri.Builder()
+                .scheme(SCHEME)
+                .encodedAuthority(ADDRESS_PORT)
+                .appendPath(USER_PATH)
+                .appendPath(FAVORITE_PATH)
+                .appendPath(RESTAURANT_PATH)
+                .appendQueryNotNullParameter(COUNT_PARAM, count)
+                .appendQueryNotNullParameter(SKIP_PARAM, skip)
+                .build()
+                .toString(),
+            reqHeader = jwt?.let { buildAuthHeader(jwt) },
+            dtoClass = RestaurantItemContainerInput::class.java,
+            onSuccess = success,
+            onError = error
+        )
+    }
+
     /**
      * ----------------------------- POSTs -----------------------------
      */

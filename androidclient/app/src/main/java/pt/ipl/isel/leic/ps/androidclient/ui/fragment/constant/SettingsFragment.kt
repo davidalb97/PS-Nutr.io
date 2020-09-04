@@ -40,7 +40,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         }
 
         darkModeSwitch!!.onPreferenceChangeListener =
-            Preference.OnPreferenceChangeListener { preference: Preference, value: Any ->
+            Preference.OnPreferenceChangeListener { _: Preference, value: Any ->
                 if (!(value as Boolean)) {
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
                     editor.setIsNightMode(false)

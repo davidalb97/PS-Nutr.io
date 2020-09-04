@@ -6,14 +6,13 @@ import pt.isel.ps.g06.httpserver.common.exception.problemJson.badRequest.NoSuchA
 import pt.isel.ps.g06.httpserver.common.exception.problemJson.notFound.RestaurantNotFoundException
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.RestaurantApiType
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.mapper.RestaurantApiMapper
-import pt.isel.ps.g06.httpserver.dataAccess.common.dto.RestaurantDto
 import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.restaurant.RestaurantResponseMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.ApiSubmitterMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.FavoriteDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.ReportDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.RestaurantDbRepository
-import pt.isel.ps.g06.httpserver.model.Restaurant
-import pt.isel.ps.g06.httpserver.model.RestaurantIdentifier
+import pt.isel.ps.g06.httpserver.model.restaurant.Restaurant
+import pt.isel.ps.g06.httpserver.model.restaurant.RestaurantIdentifier
 import pt.isel.ps.g06.httpserver.util.log
 
 private const val MAX_RADIUS = 1000
@@ -23,6 +22,7 @@ class RestaurantService(
         private val dbRestaurantRepository: RestaurantDbRepository,
         private val restaurantApiMapper: RestaurantApiMapper,
         private val restaurantResponseMapper: RestaurantResponseMapper,
+        private val dbRestaurantResponseMapper: DbRestaurantResponseMapper,
         private val apiSubmitterMapper: ApiSubmitterMapper,
         private val dbFavoriteDbRepository: FavoriteDbRepository,
         private val dbReportDbRepository: ReportDbRepository
@@ -46,11 +46,9 @@ class RestaurantService(
         val restaurantApi = restaurantApiMapper.getRestaurantApi(type)
 
         //Get API restaurants
-        val apiRestaurants =
-                restaurantApi.searchNearbyRestaurants(latitude, longitude, chosenRadius, name, skip, count)
-                        .thenApply {
-                            it.map(restaurantResponseMapper::mapTo)
-                        }
+        val apiRestaurants = restaurantApi
+                .searchNearbyRestaurants(latitude, longitude, chosenRadius, name, skip, count)
+                .thenApply { it.map(restaurantResponseMapper::mapTo) }
 
         return dbRestaurantRepository.getAllByCoordinates(latitude, longitude, chosenRadius, skip, count)
                 .map(restaurantResponseMapper::mapTo)
@@ -82,8 +80,10 @@ class RestaurantService(
      */
     fun getRestaurant(submitterId: Int, submissionId: Int?, apiId: String?): Restaurant? {
         val restaurant = when {
-            submissionId != null -> searchRestaurantSubmission(submissionId)
+            //If submissionId exists, get information from the database
+            submissionId != null -> dbRestaurantRepository.getById(submissionId)
 
+            //If it is an API restaurant that is not yet submitted in the database
             apiId != null -> {
                 val apiType = apiSubmitterMapper
                         .getApiType(submitterId)
@@ -91,7 +91,6 @@ class RestaurantService(
 
                 searchApiRestaurant(submitterId, apiId, apiType)
             }
-
             else -> null
         }
 
@@ -156,6 +155,7 @@ class RestaurantService(
                     apiId = restaurant.identifier.value.apiId,
                     restaurantName = restaurant.name,
                     //TODO use cuisine mapper
+                    //TODO Avoid eager call
                     cuisines = restaurant.cuisines.map { it.name }.toList(),
                     latitude = restaurant.latitude,
                     longitude = restaurant.longitude,
@@ -180,16 +180,20 @@ class RestaurantService(
             apiRestaurants: Sequence<Restaurant>,
             count: Int
     ): Sequence<Restaurant> {
-        //Join db restaurants with filtered api restaurants
-        return dbRestaurants.plus(
-                //Filter api restaurants that already exist in db
-                apiRestaurants.filter { apiRestaurant ->
-                    //Db does not contain a restaurant with the api identifier
-                    dbRestaurants.none { dbRestaurant ->
-                        apiRestaurant.identifier.value.apiId == dbRestaurant.identifier.value.apiId
-                    }
-                }
-        ).take(count)
+        //TODO Avoid eager call or maybe cache values with a stream cache implementation
+        val aux = dbRestaurants.toList()
+        //Filter api restaurants that already exist in db
+        val filteredApiRestaurants = apiRestaurants.filter { apiRestaurant ->
+            //Db does not contain a restaurant with the api identifier
+            dbRestaurants.none { dbRestaurant ->
+                //Same apiId
+                apiRestaurant.identifier.value.apiId == dbRestaurant.identifier.value.apiId
+                        //Same API
+                        && apiRestaurant.identifier.value.submitterId == dbRestaurant.identifier.value.submitterId
+            }
+        }
+
+        return dbRestaurants.plus(filteredApiRestaurants).take(count)
     }
 
     private fun searchApiRestaurant(apiSubmitterId: Int, apiId: String, apiType: RestaurantApiType): RestaurantDto? {
@@ -205,7 +209,13 @@ class RestaurantService(
                         .get()
     }
 
-    private fun searchRestaurantSubmission(submissionId: Int): RestaurantDto? {
+    fun getRestaurantSubmission(submissionId: Int): Restaurant? {
         return dbRestaurantRepository.getById(submissionId)
+                ?.let(dbRestaurantResponseMapper::mapTo)
     }
+
+    fun getUserFavoriteRestaurants(submitterId: Int, count: Int?, skip: Int?): Sequence<Restaurant> =
+            dbRestaurantRepository
+                    .getAllUserFavorites(submitterId, count, skip)
+                    .map(restaurantResponseMapper::mapTo)
 }

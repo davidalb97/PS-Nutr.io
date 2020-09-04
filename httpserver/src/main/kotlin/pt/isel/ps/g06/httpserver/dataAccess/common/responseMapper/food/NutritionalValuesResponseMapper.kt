@@ -1,4 +1,4 @@
-package pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.restaurant
+package pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.food
 
 import org.springframework.stereotype.Component
 import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.ResponseMapper

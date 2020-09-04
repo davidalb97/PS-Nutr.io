@@ -1,5 +1,6 @@
 package pt.isel.ps.g06.httpserver.dataAccess.db.dao
 
+import org.jdbi.v3.core.result.ResultIterable
 import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.customizer.BindList
 import org.jdbi.v3.sqlobject.statement.SqlQuery
@@ -40,10 +41,10 @@ interface CuisineDao {
             "ORDER BY $table.$name ASC " +
             "LIMIT :count " +
             "OFFSET :skip * :count")
-    fun getAll(skip: Int?, count: Int?): Collection<DbCuisineDto>
+    fun getAll(skip: Int?, count: Int?): ResultIterable<DbCuisineDto>
 
     @SqlQuery("SELECT * FROM $table WHERE $name = :name")
-    fun getByName(@Bind name: String): Collection<DbCuisineDto>
+    fun getByName(@Bind name: String): ResultIterable<DbCuisineDto>
 
     @SqlQuery("SELECT $table.$id, $table.$name" +
             " FROM $table " +
@@ -51,7 +52,7 @@ interface CuisineDao {
             " ON $MC_table.$MC_cuisineId = $table.$id" +
             " WHERE $MC_table.$MC_mealId = :mealId"
     )
-    fun getByMealId(@Bind mealId: Int): Collection<DbCuisineDto>
+    fun getByMealId(@Bind mealId: Int): ResultIterable<DbCuisineDto>
 
     @SqlQuery("SELECT $table.$id, $table.$name" +
             " FROM $table " +
@@ -59,13 +60,13 @@ interface CuisineDao {
             " ON $RC_table.$RC_cuisineId = $table.$id" +
             " WHERE $RC_table.$RC_restaurantId = :restaurantId"
     )
-    fun getAllByRestaurantId(@Bind restaurantId: Int): Collection<DbCuisineDto>
+    fun getAllByRestaurantId(@Bind restaurantId: Int): ResultIterable<DbCuisineDto>
 
     @SqlQuery("SELECT * FROM $table WHERE $name in (<cuisineIds>)")
-    fun getAllByNames(@BindList cuisineIds: Collection<String>): Collection<DbCuisineDto>
+    fun getAllByNames(@BindList cuisineIds: Collection<String>): ResultIterable<DbCuisineDto>
 
     @SqlQuery("SELECT * FROM $table WHERE $id = :cuisineId")
-    fun getById(@Bind cuisineId: String): Collection<DbCuisineDto>
+    fun getById(@Bind cuisineId: String): ResultIterable<DbCuisineDto>
 
     @SqlQuery("SELECT $table.$id, $table.$name" +
             " FROM $table " +
@@ -81,5 +82,5 @@ interface CuisineDao {
     fun getAllByApiSubmitterAndApiIds(
             @Bind submitterId: Int,
             @BindList apiIds: Collection<String>
-    ): Collection<DbCuisineDto>
+    ): ResultIterable<DbCuisineDto>
 }

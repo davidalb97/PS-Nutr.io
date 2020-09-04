@@ -140,6 +140,7 @@
     <string name="password">Password</string>
     <string name="register">Register</string>
     <string name="login">Login</string>
+    <string name="delete_account">Delete account</string>
     <string name="login_success">Successfully logged in</string>
     <string name="login_error">Could not login</string>
     <string name="register_success">Successfully registered</string>
@@ -156,6 +157,8 @@
     <string name="setup_a_profile_before_proceed">Please setup a profile before proceed</string>
     <string name="logout">Logout</string>
     <string name="logout_success">Successfully logged out</string>
+    <string name="remove_account_success">Successfully removed account</string>
+    <string name="remove_account_error">Could not remove account</string>
 
     <!-- ##################################### Arrays #####################################-->
     <string-array name="calculator_units">
@@ -207,13 +210,29 @@
     <string name="meal_carbs_amout">Carbohydrates: %1$.2f gr</string>
     <string name="meal_amout">Amount: %1$.2f</string>
     <string name="select_meal_amount">Select meal amount</string>
+    <string name="add_your_portion_for_this_meal">Add your portion for this meal</string>
     <string name="created_restaurant">Restaurant created!</string>
     <string name="field_required">Required</string>
     <string name="calculator_ingredients_required">Please add food portions</string>
     <string name="calculator_result">You need to inject %1$.2f insulin doses</string>
+    <string name="edit">Edit</string>
+    <string name="you_already_inserted_a_portion_for_this_meal">You already inserted a portion for this meal.</string>
+    <string name="delete">Delete</string>
+    <string name="no_portions_chart_message">There are no portions available. Be the first to add one!</string>
+    <string name="entries">Entries</string>
+    <string name="portion_weights">Portion weights</string>
     <string name="select_cuisine">Please select at least one cuisine</string>
     <string name="select_ingredients">Please select at least one ingredient</string>
     <string name="created_custom_meal">Meal created!</string>
     <string name="edited_custom_meal">Meal saved!</string>
     <string name="submit_fail_custom_meal">Submission failed!</string>
+    <string name="portion_added">Portion added</string>
+    <string name="portion_add_fail">Could not add portion</string>
+    <string name="portion_edited">Portion edited</string>
+    <string name="portion_edit_fail">Could not edit portion</string>
+    <string name="portion_deleted">Portion deleted</string>
+    <string name="portion_delete_fail">Could not delete portion</string>
+    <string name="confirm">Confirm</string>
+    <string name="add_restaurant_meal">Add restaurant meal</string>
+    <string name="meal_added">Added meal</string>
 </resources>

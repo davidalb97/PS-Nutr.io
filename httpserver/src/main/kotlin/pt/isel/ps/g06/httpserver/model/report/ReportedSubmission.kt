@@ -1,6 +1,6 @@
 package pt.isel.ps.g06.httpserver.model.report
 
-class ReportedSubmission (
+class ReportedSubmission(
         val submissionDetail: ReportSubmissionDetail,
         val count: Int
 )

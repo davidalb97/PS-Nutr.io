@@ -22,9 +22,9 @@ open class RestaurantInfo : RestaurantItem, Parcelable {
         name: String,
         latitude: Float,
         longitude: Float,
-        votes: Votes?,
-        isFavorite: Boolean,
-        isVotable: Boolean,
+        votes: Votes,
+        favorites: Favorites,
+        isReportable: Boolean,
         image: Uri?,
         source: Source,
         creationDate: TimestampWithTimeZone?,
@@ -39,8 +39,8 @@ open class RestaurantInfo : RestaurantItem, Parcelable {
         latitude = latitude,
         longitude = longitude,
         votes = votes,
-        isFavorite = isFavorite,
-        isVotable = isVotable,
+        favorites = favorites,
+        isReportable = isReportable,
         image = image,
         source = source
     ) {

@@ -1,5 +1,6 @@
 package pt.isel.ps.g06.httpserver.dataAccess.db.dao
 
+import org.jdbi.v3.core.result.ResultIterable
 import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.customizer.BindBeanList
 import org.jdbi.v3.sqlobject.customizer.BindList
@@ -28,7 +29,7 @@ interface MealIngredientDao {
             "WHERE $M_table.$M_type = '$MEAL_TYPE_SUGGESTED_INGREDIENT' " +
             "AND $table.$mealId = :mealId"
     )
-    fun getMealIngredientsByMealId(@Bind mealId: Int): Collection<DbMealIngredientDto>
+    fun getMealIngredientsByMealId(@Bind mealId: Int): ResultIterable<DbMealIngredientDto>
 
     @SqlQuery("SELECT $attributes " +
             "FROM $table " +
@@ -37,7 +38,7 @@ interface MealIngredientDao {
             "WHERE $M_table.$M_type != '$MEAL_TYPE_SUGGESTED_INGREDIENT' " +
             "AND $table.$mealId = :mealId"
     )
-    fun getMealComponentsByMealId(@Bind mealId: Int): Collection<DbMealIngredientDto>
+    fun getMealComponentsByMealId(@Bind mealId: Int): ResultIterable<DbMealIngredientDto>
 
     @SqlQuery("INSERT INTO $table($mealId, $ingredientId, $quantity) values <mealIngredientParams> RETURNING *")
     fun insertAll(

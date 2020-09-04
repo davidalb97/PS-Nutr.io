@@ -5,12 +5,12 @@ import android.os.Parcelable
 import androidx.lifecycle.LifecycleOwner
 import com.android.volley.VolleyError
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.mealRepository
+import pt.ipl.isel.leic.ps.androidclient.data.api.dto.output.PortionOutput
 import pt.ipl.isel.leic.ps.androidclient.data.model.*
 import pt.ipl.isel.leic.ps.androidclient.ui.util.ItemAction
 import pt.ipl.isel.leic.ps.androidclient.ui.util.Navigation
 import pt.ipl.isel.leic.ps.androidclient.ui.util.getUserSession
 import pt.ipl.isel.leic.ps.androidclient.ui.util.live.LiveDataHandler
-import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.RestaurantListViewModel
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.meal.MealItemListViewModel
 import kotlin.reflect.KClass
 
@@ -132,6 +132,58 @@ open class MealInfoViewModel : MealItemListViewModel {
             },
             error = onError,
             userSession = userSession
+        )
+    }
+
+    fun addMealPortion(
+        restaurantId: String,
+        mealId: Int,
+        portion: Portion,
+        userSession: UserSession,
+        onSuccess: (Int) -> Unit,
+        onError: (VolleyError) -> Unit
+    ) {
+        mealRepository.addMealPortion(
+            restaurantId = restaurantId,
+            mealId = mealId,
+            portion = portion,
+            userSession = userSession,
+            onSuccess = onSuccess,
+            onError =  onError
+        )
+    }
+
+    fun editMealPortion(
+        restaurantId: String,
+        mealId: Int,
+        portion: Portion,
+        userSession: UserSession,
+        onSuccess: (Int) -> Unit,
+        onError: (VolleyError) -> Unit
+    ) {
+        mealRepository.editMealPortion(
+            restaurantId = restaurantId,
+            mealId = mealId,
+            portion = portion,
+            userSession = userSession,
+            onSuccess = onSuccess,
+            onError =  onError
+        )
+    }
+
+    fun deleteMealPortion(
+        restaurantId: String,
+        mealId: Int,
+        userSession: UserSession,
+        onSuccess: (Int) -> Unit,
+        onError: (VolleyError) -> Unit
+    ) {
+        mealRepository.deleteMealPortion(
+            restaurantId = restaurantId,
+            mealId = mealId,
+            userSession = userSession,
+            onSuccess = onSuccess,
+            onError =  onError
         )
     }
 

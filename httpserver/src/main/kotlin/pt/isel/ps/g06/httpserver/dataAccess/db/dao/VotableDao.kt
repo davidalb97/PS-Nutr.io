@@ -27,7 +27,4 @@ interface VotableDao {
             " RETURNING *"
     )
     fun incrementVotes(@Bind submissionId: Int, @Bind positiveOffset: Int, @Bind negativeOffset: Int): DbVotesDto
-
-    @SqlQuery("DELETE FROM $table WHERE $id = :submissionId RETURNING *")
-    fun deleteById(@Bind submissionId: Int): DbVotesDto?
 }

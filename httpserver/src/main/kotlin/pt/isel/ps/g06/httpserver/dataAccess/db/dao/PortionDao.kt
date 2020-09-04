@@ -1,5 +1,6 @@
 package pt.isel.ps.g06.httpserver.dataAccess.db.dao
 
+import org.jdbi.v3.core.result.ResultIterable
 import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.customizer.BindList
 import org.jdbi.v3.sqlobject.statement.SqlQuery
@@ -20,7 +21,7 @@ interface PortionDao {
     }
 
     @SqlQuery("SELECT * FROM $table WHERE $restaurantMealId = :restaurantMealId")
-    fun getAllForRestaurantMealId(@Bind restaurantMealId: Int): List<DbPortionDto>
+    fun getAllForRestaurantMealId(@Bind restaurantMealId: Int): ResultIterable<DbPortionDto>
 
     @SqlQuery(
             "SELECT $table.$id, $table.$restaurantMealId, $table.$quantity" +
@@ -40,13 +41,4 @@ interface PortionDao {
             " WHERE $id = :portionIdentifier RETURNING *"
     )
     fun update(portionIdentifier: Int, quantity: Int): DbPortionDto
-
-    @SqlQuery("DELETE FROM $table WHERE $id = :submissionId RETURNING *")
-    fun deleteById(@Bind submissionId: Int): DbPortionDto
-
-    @SqlQuery("DELETE FROM $table" +
-            " WHERE $restaurantMealId in (<restaurantMealIds>) RETURNING *")
-    fun deleteAllByRestaurantMealIds(
-            @BindList restaurantMealIds: List<Int>
-    ): List<DbPortionDto>
 }

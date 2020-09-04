@@ -2,7 +2,6 @@ package pt.isel.ps.g06.httpserver.dataAccess.output.restaurantMeal
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer
-import pt.isel.ps.g06.httpserver.common.user
 import pt.isel.ps.g06.httpserver.dataAccess.output.*
 import pt.isel.ps.g06.httpserver.dataAccess.output.cuisines.CuisinesOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.cuisines.toSimplifiedCuisinesOutput
@@ -26,11 +25,11 @@ class DetailedRestaurantMealOutput(
         isReportable: Boolean,
         nutritionalInfo: NutritionalInfoOutput,
         isVerified: Boolean,
+        @JsonSerialize(using = ToStringSerializer::class)
         val creationDate: OffsetDateTime?,
+        val createdBy: SimplifiedUserOutput?,
         val composedBy: MealCompositionOutput?,
         val portions: PortionsOutput,
-        @JsonSerialize(using = ToStringSerializer::class)
-        val createdBy: SimplifiedUserOutput?,
         override val cuisines: CuisinesOutput
 ) : SimplifiedRestaurantMealOutput(
         identifier = identifier,

@@ -6,6 +6,6 @@ class Portion(
         identifier: Int,
         val amount: Int,
         val unit: String
-): BaseSubmission<Int>(
+) : BaseSubmission<Int>(
         identifier = identifier
 )

@@ -17,6 +17,7 @@ abstract class BaseViewModelProviderFactory(
 
     abstract fun <T : ViewModel?> newViewModel(modelClass: Class<T>): ViewModel?
 
+    @Suppress("UNCHECKED_CAST")
     override fun <T> create(modelClass: Class<T>): T where T : ViewModel {
         if (savedInstanceState != null) {
             val model: Parcelable? = savedInstanceState.getParcelable(modelClass.simpleName)

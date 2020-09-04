@@ -26,6 +26,8 @@ data class Votes(
         parcel.writeInt(negative)
     }
 
+    fun hasVotes(): Boolean = positive != 0 || negative != 0
+
     override fun describeContents(): Int {
         return 0
     }

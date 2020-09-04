@@ -7,10 +7,9 @@ import pt.isel.ps.g06.httpserver.common.exception.problemJson.forbidden.NotSubmi
 import pt.isel.ps.g06.httpserver.common.exception.problemJson.notFound.SubmissionNotFoundException
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.SubmissionDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.VoteDbRepository
-import pt.isel.ps.g06.httpserver.model.MealRestaurantInfo
-import pt.isel.ps.g06.httpserver.model.Restaurant
 import pt.isel.ps.g06.httpserver.model.User
 import pt.isel.ps.g06.httpserver.model.VoteState
+import pt.isel.ps.g06.httpserver.model.restaurant.Restaurant
 
 /**
  * Handles actions that are common to any Submission (like Restaurant, Meal, RestaurantMeal),

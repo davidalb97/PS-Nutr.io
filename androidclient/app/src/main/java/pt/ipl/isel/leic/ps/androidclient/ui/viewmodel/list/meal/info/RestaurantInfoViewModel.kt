@@ -4,10 +4,9 @@ import android.os.Parcel
 import android.os.Parcelable
 import androidx.lifecycle.LifecycleOwner
 import com.android.volley.VolleyError
+import pt.ipl.isel.leic.ps.androidclient.NutrioApp
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.restaurantRepository
-import pt.ipl.isel.leic.ps.androidclient.data.model.RestaurantInfo
-import pt.ipl.isel.leic.ps.androidclient.data.model.Source
-import pt.ipl.isel.leic.ps.androidclient.data.model.VoteState
+import pt.ipl.isel.leic.ps.androidclient.data.model.*
 import pt.ipl.isel.leic.ps.androidclient.ui.util.ItemAction
 import pt.ipl.isel.leic.ps.androidclient.ui.util.Navigation
 import pt.ipl.isel.leic.ps.androidclient.ui.util.getUserSession
@@ -19,24 +18,25 @@ class RestaurantInfoViewModel : MealItemListViewModel {
 
     private val restaurantInfoLiveDataHandler = LiveDataHandler<RestaurantInfo>()
     val restaurantInfo get() = restaurantInfoLiveDataHandler.value
+    var addedMeal: MealItem? = null
 
-    constructor(restaurantId: String) : super(
+    //Parameterless constructor
+    constructor(): super(
         navDestination = Navigation.SEND_TO_MEAL_DETAIL,
         actions = listOf(
             ItemAction.FAVORITE,
             ItemAction.CALCULATE,
             ItemAction.REPORT,
-            ItemAction.EDIT,
             ItemAction.VOTE
         ),
-        source = Source.API,
-        restaurantId = restaurantId
+        source = Source.API
     )
 
     constructor(parcel: Parcel) : super(parcel) {
         val restaurantInfo: RestaurantInfo? =
             parcel.readParcelable(RestaurantInfo::class.java.classLoader)
         restaurantInfoLiveDataHandler.restoreFromValue(restaurantInfo)
+        addedMeal = parcel.readParcelable(MealItem::class.java.classLoader)
     }
 
     override fun update() {
@@ -89,9 +89,9 @@ class RestaurantInfoViewModel : MealItemListViewModel {
         val restaurantInfo = restaurantInfo!!
         restaurantRepository.changeFavorite(
             restaurantId = restaurantId!!,
-            isFavorite = !restaurantInfo.isFavorite,
+            isFavorite = !restaurantInfo.favorites.isFavorite,
             success = {
-                restaurantInfo.isFavorite = !restaurantInfo.isFavorite
+                restaurantInfo.favorites.isFavorite = !restaurantInfo.favorites.isFavorite
                 onSuccess()
             },
             error = onError,
@@ -99,9 +99,24 @@ class RestaurantInfoViewModel : MealItemListViewModel {
         )
     }
 
+    fun addRestaurantMeal(
+        mealItem: MealItem,
+        onError: (Throwable) -> Unit,
+        onSuccess: () -> Unit
+    ) {
+        NutrioApp.mealRepository.addRestaurantMeal(
+            mealItem = mealItem,
+            restaurantItem = restaurantInfo!!,
+            onSuccess = onSuccess,
+            onError = onError,
+            userSession = requireUserSession()
+        )
+    }
+
     override fun writeToParcel(dest: Parcel?, flags: Int) {
         super.writeToParcel(dest, flags)
         restaurantInfoLiveDataHandler.writeToParcel(dest, flags)
+        dest?.writeParcelable(addedMeal, flags)
     }
 
     override fun describeContents(): Int {

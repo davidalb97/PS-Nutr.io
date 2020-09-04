@@ -1,4 +1,4 @@
-package pt.ipl.isel.leic.ps.androidclient.ui.util
+package pt.ipl.isel.leic.ps.androidclient.ui.util.prompt
 
 import android.app.AlertDialog
 import android.content.Context
@@ -9,6 +9,7 @@ import android.widget.Spinner
 import android.widget.TextView
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.unit.IWeightUnitSpinner
+import pt.ipl.isel.leic.ps.androidclient.ui.util.Logger
 import pt.ipl.isel.leic.ps.androidclient.ui.util.units.WeightUnits
 
 private const val MAX_WEIGHT_GRAMS = 1000

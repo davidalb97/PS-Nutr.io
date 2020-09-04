@@ -1,25 +1,38 @@
 package pt.isel.ps.g06.httpserver.dataAccess.db.repo
 
-import org.jdbi.v3.core.Jdbi
-import org.jdbi.v3.core.transaction.TransactionIsolationLevel
 import org.springframework.stereotype.Repository
+import pt.isel.ps.g06.httpserver.common.exception.problemJson.badRequest.InvalidInputException
+import pt.isel.ps.g06.httpserver.common.exception.problemJson.notFound.MealNotFoundException
+import pt.isel.ps.g06.httpserver.common.exception.problemJson.notFound.RestaurantNotFoundException
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionContractType.*
-import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType.*
+import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType.RESTAURANT_MEAL
+import pt.isel.ps.g06.httpserver.dataAccess.db.common.DatabaseContext
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.*
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbRestaurantMealDto
-import pt.isel.ps.g06.httpserver.common.exception.problemJson.badRequest.InvalidInputException
+import pt.isel.ps.g06.httpserver.util.asCachedSequence
 import java.util.*
 
-private val isolationLevel = TransactionIsolationLevel.SERIALIZABLE
 private val restaurantMealDao = RestaurantMealDao::class.java
 
 @Repository
-class RestaurantMealDbRepository(jdbi: Jdbi) : SubmissionDbRepository(jdbi) {
+class RestaurantMealDbRepository(
+        private val databaseContext: DatabaseContext,
+        private val restaurantDbRepository: RestaurantDbRepository,
+        private val mealDbRepository: MealDbRepository
+) {
     fun getRestaurantMeal(restaurantId: Int, mealId: Int): DbRestaurantMealDto? {
-        return jdbi.inTransaction<DbRestaurantMealDto, Exception>(isolationLevel) {
+        return databaseContext.inTransaction {
             return@inTransaction it
                     .attach(restaurantMealDao)
                     .getByRestaurantAndMealId(restaurantId, mealId)
+        }
+    }
+
+    fun getAllUserFavorites(submitterId: Int, count: Int?, skip: Int?): Sequence<DbRestaurantMealDto> {
+        return databaseContext.inTransaction { handle ->
+            return@inTransaction handle.attach(restaurantMealDao)
+                    .getAllUserFavorites(submitterId, count, skip)
+                    .asCachedSequence()
         }
     }
 
@@ -29,20 +42,17 @@ class RestaurantMealDbRepository(jdbi: Jdbi) : SubmissionDbRepository(jdbi) {
             restaurantId: Int,
             verified: Boolean
     ): DbRestaurantMealDto {
-        return jdbi.inTransaction<DbRestaurantMealDto, Exception>(isolationLevel) {
+        return databaseContext.inTransaction {
             // Check if the mealId is from a Meal
-            requireSubmission(mealId, MEAL, isolationLevel)
-
-            // Check if the restaurantId is from a Restaurant
-            requireSubmission(restaurantId, RESTAURANT, isolationLevel)
+            restaurantDbRepository.getById(restaurantId) ?: throw RestaurantNotFoundException()
+            mealDbRepository.getById(mealId) ?: throw MealNotFoundException()
 
             val restaurantMealDao = it.attach(restaurantMealDao)
 
-            //Check if restaurantMeal already exists
-            val existingRestaurantMeal = restaurantMealDao
-                    .getByRestaurantAndMealId(restaurantId, mealId)
 
-            if (existingRestaurantMeal != null) {
+            //Check if restaurantMeal already exists
+            if (restaurantMealDao.getByRestaurantAndMealId(restaurantId, mealId) != null) {
+                //TODO Change exception
                 throw InvalidInputException("The restaurant with id $restaurantId already has a meal with id $mealId!")
             }
 
@@ -70,7 +80,7 @@ class RestaurantMealDbRepository(jdbi: Jdbi) : SubmissionDbRepository(jdbi) {
     }
 
     fun putVerification(submissionId: Int, verification: Boolean): DbRestaurantMealDto {
-        return jdbi.inTransaction<DbRestaurantMealDto, Exception>(isolationLevel) {
+        return databaseContext.inTransaction {
             return@inTransaction it
                     .attach(restaurantMealDao)
                     .updateRestaurantMealVerification(submissionId, verification)

@@ -2,6 +2,7 @@ package pt.ipl.isel.leic.ps.androidclient.data.api.mapper.input
 
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.meal.MealItemContainerInput
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.meal.MealItemInput
+import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.restaurantMeal.SimplifiedFavoriteRestaurantMealContainerInput
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.restaurantMeal.SimplifiedRestaurantMealContainerInput
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealItem
 import pt.ipl.isel.leic.ps.androidclient.data.model.Source
@@ -12,17 +13,17 @@ class InputMealItemMapper(
     private val inputFavoriteMapper: InputFavoriteMapper
 ) {
 
-    fun mapToModel(dto: MealItemInput, restaurantId: String?) = MealItem(
+    fun mapToModel(dto: MealItemInput) = MealItem(
         dbId = null,
         dbRestaurantId = null,
         submissionId = dto.identifier,
-        restaurantSubmissionId = restaurantId,
+        restaurantSubmissionId = dto.restaurantIdentifier,
         carbs = dto.nutritionalInfo.carbs,
         amount = dto.nutritionalInfo.amount.toFloat(),
         unit = WeightUnits.fromValue(dto.nutritionalInfo.unit),
         imageUri = dto.image,
         name = dto.name,
-        votes = inputVotesMapper.mapToModel(dto.votes),
+        votes = dto.votes?.let { inputVotesMapper.mapToModel(it) },
         favorites = inputFavoriteMapper.mapToModel(dto.favorites),
         isVerified = dto.isVerified ?: false,
         isSuggested = dto.isSuggested ?: false,
@@ -31,13 +32,13 @@ class InputMealItemMapper(
     )
 
     fun mapToListModel(dtos: Iterable<MealItemInput>, restaurantId: String?) =
-        dtos.map { mapToModel(it, restaurantId) }
+        dtos.map { mapToModel(it).also { it.restaurantSubmissionId = restaurantId } }
 
     fun mapToListModel(dtos: Collection<MealItemInput>, restaurantId: String?) =
-        dtos.map { mapToModel(it, restaurantId) }
+        dtos.map { mapToModel(it).also { it.restaurantSubmissionId = restaurantId } }
 
     fun mapToListModel(dtos: Array<MealItemInput>, restaurantId: String?) =
-        dtos.map { mapToModel(it, restaurantId) }
+        dtos.map { mapToModel(it).also { it.restaurantSubmissionId = restaurantId } }
 
     fun mapToListModel(dto: MealItemContainerInput, restaurantId: String? = null) =
         mapToListModel(dto.meals, restaurantId)
@@ -45,4 +46,7 @@ class InputMealItemMapper(
     fun mapToListModel(dto: SimplifiedRestaurantMealContainerInput) =
         mapToListModel(dto.suggestedMeals, dto.restaurantIdentifier)
             .plus(mapToListModel(dto.userMeals, dto.restaurantIdentifier))
+
+    fun mapToListModel(dto: SimplifiedFavoriteRestaurantMealContainerInput) =
+        dto.meals.map(::mapToModel)
 }
