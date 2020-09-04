@@ -34,13 +34,12 @@ class DbRestaurantItemMapper {
         longitude = model.longitude,
         isFavorable = model.favorites.isFavorable,
         isFavorite = model.favorites.isFavorite,
-        isVotable = model.votes.isVotable,
         isReportable = model.isReportable,
         image = model.image?.toString(),
-        positiveVotes = model.votes?.positive,
-        negativeVotes = model.votes?.negative,
-        userVoteOrdinal = model.votes?.userHasVoted?.ordinal,
-        hasVote = model.votes != null,
+        isVotable = model.votes.isVotable,
+        userVoteOrdinal = model.votes.userHasVoted.ordinal,
+        positiveVotes = model.votes.positive,
+        negativeVotes = model.votes.negative,
         sourceOrdinal = model.source.ordinal
     ).also { dto ->
         dto.primaryKey = model.dbId ?: DbRestaurantItemEntity.DEFAULT_DB_ID
