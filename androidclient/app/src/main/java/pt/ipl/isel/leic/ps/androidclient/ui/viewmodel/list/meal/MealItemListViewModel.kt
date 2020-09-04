@@ -54,14 +54,21 @@ open class MealItemListViewModel : BaseMealListViewModel<MealItem> {
                         )
                     }
                 }
-                Source.FAVORITE -> mealRepository.getFavoriteMeals(
+                Source.FAVORITE_MEAL -> mealRepository.getFavoriteMeals(
                     userSession = requireUserSession(),
                     count = count,
                     skip = skip,
                     success = liveDataHandler::add,
                     error = onError
                 )
-                Source.CUSTOM -> mealRepository.getCustomMeals(
+                Source.FAVORITE_RESTAURANT_MEAL -> mealRepository.getFavoriteRestaurantMeals(
+                    userSession = requireUserSession(),
+                    count = count,
+                    skip = skip,
+                    success = liveDataHandler::add,
+                    error = onError
+                )
+                Source.CUSTOM_MEAL -> mealRepository.getCustomMeals(
                     userSession = requireUserSession(),
                     count = count,
                     skip = skip,

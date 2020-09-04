@@ -114,7 +114,7 @@ class MealInfoFragment :
         val title: TextView = view.findViewById(R.id.meal_detail_title)
         title.text = receivedMeal.name
 
-        if (receivedMeal.source != Source.CUSTOM && receivedMeal.isSuggested == true) {
+        if (receivedMeal.source != Source.CUSTOM_MEAL && receivedMeal.isSuggested == true) {
             val suggestedLayout: RelativeLayout = view.findViewById(R.id.meal_info_suggested_rl)
             suggestedLayout.visibility = View.VISIBLE
         }
