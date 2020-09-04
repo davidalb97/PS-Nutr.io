@@ -15,15 +15,17 @@ import androidx.navigation.findNavController
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.app
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.UserInfo
+import pt.ipl.isel.leic.ps.androidclient.data.model.UserLogin
 import pt.ipl.isel.leic.ps.androidclient.data.model.UserRegister
 import pt.ipl.isel.leic.ps.androidclient.data.model.UserSession
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.BaseFragment
-import pt.ipl.isel.leic.ps.androidclient.ui.modular.auth.ILogout
+import pt.ipl.isel.leic.ps.androidclient.ui.modular.auth.IAccountSettings
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.auth.IRegister
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.UserProfileVMProviderFactory
+import pt.ipl.isel.leic.ps.androidclient.ui.util.requireUserSession
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.UserSessionViewModel
 
-class RegisterFragment : BaseFragment(), IRegister, ILogout {
+class RegisterFragment : BaseFragment(), IRegister, IAccountSettings {
 
     private lateinit var viewModel: UserSessionViewModel
 
@@ -50,6 +52,12 @@ class RegisterFragment : BaseFragment(), IRegister, ILogout {
     override lateinit var alreadyLoggedInTextView: TextView
     override val logoutButtonId = R.id.logoutButton
     override lateinit var logoutButton: Button
+
+    //Remove account
+    override lateinit var removeAccountView: ViewGroup
+    override var removeAccountId: Int = R.id.deleteAccountBox
+    override lateinit var removeAccountButton: Button
+    override val removeAccountButtonId: Int = R.id.deleteAccountButton
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -97,6 +105,28 @@ class RegisterFragment : BaseFragment(), IRegister, ILogout {
         viewModel.requestUserInfo(
             userSession = userSession,
             onSuccess = onSuccess,
+            onError = onError
+        )
+    }
+
+    override fun onDeleteAccount(
+        userLogin: UserLogin,
+        onSuccess: () -> Unit,
+        onError: (Throwable) -> Unit
+    ) {
+        // HTTP workaround - DELETE requests' payloads are not defined in the RFC
+        viewModel.login(
+            userLogin = userLogin,
+            onSuccess = {
+                viewModel.deleteAccount(
+                    userSession = it,
+                    onSuccess = {
+                        Toast.makeText(context, R.string.remove_account_success, Toast.LENGTH_SHORT).show()
+                        requireView().findNavController().navigate(R.id.nav_home)
+                    },
+                    onError = onError
+                )
+            },
             onError = onError
         )
     }
