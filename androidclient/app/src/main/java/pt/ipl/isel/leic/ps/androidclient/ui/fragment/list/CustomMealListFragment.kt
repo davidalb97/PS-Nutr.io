@@ -14,6 +14,7 @@ import pt.ipl.isel.leic.ps.androidclient.ui.modular.listener.check.ICheckListene
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.listener.click.IItemClickListener
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.listener.click.IItemClickListenerOwner
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.CustomMealRecyclerVMProviderFactory
+import pt.ipl.isel.leic.ps.androidclient.ui.util.ItemAction
 import pt.ipl.isel.leic.ps.androidclient.ui.util.Navigation
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.meal.MealItemListViewModel
 
@@ -44,7 +45,7 @@ class CustomMealListFragment
 
         addButton = view.findViewById(R.id.add_meal)
 
-        if (recyclerViewModel.navDestination != Navigation.BACK_TO_CALCULATOR) {
+        if (recyclerViewModel.actions.contains(ItemAction.ADD)) {
             addButton.visibility = View.VISIBLE
             addButton.setOnClickListener {
                 ensureUserSession(requireContext()) {
