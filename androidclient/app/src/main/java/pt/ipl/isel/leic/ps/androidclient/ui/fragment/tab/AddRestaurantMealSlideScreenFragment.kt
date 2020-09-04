@@ -3,8 +3,10 @@ package pt.ipl.isel.leic.ps.androidclient.ui.fragment.tab
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.navGraphViewModels
+import pt.ipl.isel.leic.ps.androidclient.NutrioApp
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealItem
 import pt.ipl.isel.leic.ps.androidclient.data.model.Source
@@ -78,6 +80,7 @@ class AddRestaurantMealSlideScreenFragment : BaseSlideScreenFragment(propagateAr
             ) {
                 viewModel.addedMeal = mealItem
                 viewModel.addRestaurantMeal(mealItem, log::e) {
+                    Toast.makeText(NutrioApp.app, R.string.meal_added, Toast.LENGTH_SHORT).show()
                     sendToDestination(requireView(), Navigation.BACK_TO_RESTAURANT_DETAIL)
                 }
             }.show()
