@@ -22,7 +22,7 @@ import SuccessAlert from '../../bootstrap-common/SuccessAlert'
 import FetchError from '../../bootstrap-common/FetchError'
 
 const INGREDIENTS_URL = "http://localhost:9000/api/ingredient"
-const MEALS_URL = "http://localhost:9000/api/meal/suggested"
+const MEALS_URL = "http://localhost:9000/api/meal"
 
 export default function AddFoodForm({ cuisines }) {
     const [controller, body, allFieldsAreValid] = InputController()
