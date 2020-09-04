@@ -9,10 +9,8 @@ import pt.isel.ps.g06.httpserver.common.exception.problemJson.notFound.PortionNo
 import pt.isel.ps.g06.httpserver.common.exception.problemJson.notFound.RestaurantMealNotFound
 import pt.isel.ps.g06.httpserver.common.exception.problemJson.notFound.RestaurantNotFoundException
 import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.restaurant.DbRestaurantMealInfoResponseMapper
-import pt.isel.ps.g06.httpserver.dataAccess.db.repo.FavoriteDbRepository
-import pt.isel.ps.g06.httpserver.dataAccess.db.repo.PortionDbRepository
-import pt.isel.ps.g06.httpserver.dataAccess.db.repo.ReportDbRepository
-import pt.isel.ps.g06.httpserver.dataAccess.db.repo.RestaurantMealDbRepository
+import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.restaurant.DbRestaurantResponseMapper
+import pt.isel.ps.g06.httpserver.dataAccess.db.repo.*
 import pt.isel.ps.g06.httpserver.dataAccess.input.restaurantMeal.PortionInput
 import pt.isel.ps.g06.httpserver.model.Meal
 import pt.isel.ps.g06.httpserver.model.MealRestaurantInfo
@@ -29,7 +27,9 @@ class RestaurantMealService(
         private val dbPortionRepository: PortionDbRepository,
         private val dbFavoriteDbRepository: FavoriteDbRepository,
         private val dbReportDbRepository: ReportDbRepository,
-        private val dbRestaurantMealResponseMapper: DbRestaurantMealInfoResponseMapper
+        private val dbRestaurantRepository: RestaurantDbRepository,
+        private val dbRestaurantMealResponseMapper: DbRestaurantMealInfoResponseMapper,
+        private val dbRestaurantResponseMapper: DbRestaurantResponseMapper
 ) {
 
     /**
@@ -201,4 +201,17 @@ class RestaurantMealService(
 
         dbFavoriteDbRepository.setFavorite(restaurantMeal.info!!.identifier!!, submitterId, isFavorite)
     }
+
+    fun getUserFavoriteMeals(submitterId: Int, count: Int?, skip: Int?): Sequence<RestaurantMeal> =
+            dbRestaurantMealRepository
+                    .getAllUserFavorites(submitterId, count, skip)
+                    .map(dbRestaurantMealResponseMapper::mapTo)
+                    .map {
+                        val restaurant = dbRestaurantRepository.getById(it.restaurantIdentifier)!!
+                        RestaurantMeal(
+                                meal = mealService.getMeal(it.mealIdentifier)!!,
+                                restaurant = dbRestaurantResponseMapper.mapTo(restaurant),
+                                info = it
+                        )
+                    }
 }

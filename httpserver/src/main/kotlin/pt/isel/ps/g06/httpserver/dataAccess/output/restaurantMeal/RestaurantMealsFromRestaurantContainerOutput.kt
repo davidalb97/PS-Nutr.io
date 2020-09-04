@@ -4,13 +4,13 @@ import pt.isel.ps.g06.httpserver.model.Meal
 import pt.isel.ps.g06.httpserver.model.RestaurantMeal
 import pt.isel.ps.g06.httpserver.model.restaurant.Restaurant
 
-data class RestaurantMealContainerOutput(
+data class RestaurantMealsFromRestaurantContainerOutput(
         val restaurantIdentifier: String,
         val suggestedMeals: Collection<SimplifiedRestaurantMealOutput>,
         val userMeals: Collection<SimplifiedRestaurantMealOutput>
 )
 
-fun toRestaurantMealContainerOutput(restaurant: Restaurant, userId: Int? = null): RestaurantMealContainerOutput {
+fun toRestaurantMealsFromRestaurantContainerOutput(restaurant: Restaurant, userId: Int? = null): RestaurantMealsFromRestaurantContainerOutput {
     val mealToRestaurantMeal: (Meal) -> SimplifiedRestaurantMealOutput = { meal: Meal ->
         toSimplifiedRestaurantMealOutput(
                 restaurantMeal = RestaurantMeal(
@@ -21,7 +21,7 @@ fun toRestaurantMealContainerOutput(restaurant: Restaurant, userId: Int? = null)
                 userId = userId
         )
     }
-    return RestaurantMealContainerOutput(
+    return RestaurantMealsFromRestaurantContainerOutput(
             restaurantIdentifier = restaurant.identifier.value.toString(),
             suggestedMeals = restaurant.suggestedMeals
                     .map { mealToRestaurantMeal(it) }

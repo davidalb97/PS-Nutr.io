@@ -5,10 +5,11 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.util.UriComponentsBuilder
 import pt.isel.ps.g06.httpserver.common.*
+import pt.isel.ps.g06.httpserver.common.exception.problemJson.badRequest.InvalidInputException
 import pt.isel.ps.g06.httpserver.common.exception.problemJson.forbidden.BaseForbiddenException
-import pt.isel.ps.g06.httpserver.common.exception.problemJson.forbidden.NotSubmissionOwnerException
 import pt.isel.ps.g06.httpserver.common.exception.problemJson.notFound.MealNotFoundException
 import pt.isel.ps.g06.httpserver.common.exception.problemJson.notFound.RestaurantNotFoundException
+import pt.isel.ps.g06.httpserver.dataAccess.db.MealType
 import pt.isel.ps.g06.httpserver.dataAccess.input.moderation.VerifyInput
 import pt.isel.ps.g06.httpserver.dataAccess.input.restaurantMeal.PortionInput
 import pt.isel.ps.g06.httpserver.dataAccess.input.restaurantMeal.RestaurantMealInput
@@ -16,9 +17,9 @@ import pt.isel.ps.g06.httpserver.dataAccess.input.userActions.FavoriteInput
 import pt.isel.ps.g06.httpserver.dataAccess.input.userActions.ReportInput
 import pt.isel.ps.g06.httpserver.dataAccess.input.userActions.VoteInput
 import pt.isel.ps.g06.httpserver.dataAccess.output.restaurantMeal.DetailedRestaurantMealOutput
-import pt.isel.ps.g06.httpserver.dataAccess.output.restaurantMeal.RestaurantMealContainerOutput
+import pt.isel.ps.g06.httpserver.dataAccess.output.restaurantMeal.RestaurantMealsFromRestaurantContainerOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.restaurantMeal.toDetailedRestaurantMealOutput
-import pt.isel.ps.g06.httpserver.dataAccess.output.restaurantMeal.toRestaurantMealContainerOutput
+import pt.isel.ps.g06.httpserver.dataAccess.output.restaurantMeal.toRestaurantMealsFromRestaurantContainerOutput
 import pt.isel.ps.g06.httpserver.model.User
 import pt.isel.ps.g06.httpserver.model.restaurant.RestaurantIdentifier
 import pt.isel.ps.g06.httpserver.service.MealService
@@ -39,13 +40,13 @@ class RestaurantMealController(
         private val restaurantMealService: RestaurantMealService,
         private val restaurantIdentifierBuilder: RestaurantIdentifierBuilder
 ) {
-    @GetMapping(RESTAURANT_MEALS, consumes = [MediaType.ALL_VALUE])
+    @GetMapping(RESTAURANT_MEALS_PATH, consumes = [MediaType.ALL_VALUE])
     fun getMealsForRestaurant(
             @PathVariable(RESTAURANT_ID_VALUE) restaurantId: String,
             @Min(0) skip: Int?,
             @Min(0) @Max(MAX_COUNT) count: Int?,
             user: User?
-    ): ResponseEntity<RestaurantMealContainerOutput> {
+    ): ResponseEntity<RestaurantMealsFromRestaurantContainerOutput> {
         val (submitterId, submissionId, apiId) = restaurantIdentifierBuilder.extractIdentifiers(restaurantId)
 
         val restaurant = restaurantService
@@ -54,11 +55,11 @@ class RestaurantMealController(
 
         return ResponseEntity
                 .ok()
-                .body(toRestaurantMealContainerOutput(restaurant, user?.identifier))
+                .body(toRestaurantMealsFromRestaurantContainerOutput(restaurant, user?.identifier))
     }
 
 
-    @GetMapping(RESTAURANT_MEAL, consumes = [MediaType.ALL_VALUE])
+    @GetMapping(RESTAURANT_MEAL_ID_PATH, consumes = [MediaType.ALL_VALUE])
     fun getRestaurantMeal(
             @PathVariable(RESTAURANT_ID_VALUE) restaurantId: String,
             @PathVariable(MEAL_ID_VALUE) mealId: Int,
@@ -83,7 +84,7 @@ class RestaurantMealController(
      *
      *  This logic does not change the client's behavior on accessing that restaurant.
      */
-    @PutMapping(RESTAURANT_MEALS, consumes = [MediaType.APPLICATION_JSON_VALUE])
+    @PostMapping(RESTAURANT_MEALS_PATH, consumes = [MediaType.APPLICATION_JSON_VALUE])
     fun addRestaurantMeal(
             @PathVariable(RESTAURANT_ID_VALUE) id: String,
             @Valid @RequestBody restaurantMeal: RestaurantMealInput,
@@ -95,26 +96,27 @@ class RestaurantMealController(
                 .getRestaurant(restaurantIdentifier)
                 ?: throw RestaurantNotFoundException()
 
-        val meal = mealService
-                .getMeal(restaurantMeal.mealId!!)
+        val meal = mealService.getMeal(restaurantMeal.mealId!!)
                 ?: throw MealNotFoundException()
 
-        if (!meal.isUserMeal()) {
-            throw NotSubmissionOwnerException("Only meals created by you can be inserted!")
+        //TODO check with group
+        //This allows for any favorite/custom/suggested meal to be inserted
+        if (meal.type == MealType.SUGGESTED_INGREDIENT) {
+            throw InvalidInputException("Cannot insert ingredients!")
         }
 
         restaurantMealService.addRestaurantMeal(restaurantIdentifier, meal, user.identifier)
 
         return ResponseEntity
                 .created(UriComponentsBuilder
-                        .fromUriString(RESTAURANT_MEAL)
+                        .fromUriString(RESTAURANT_MEAL_ID_PATH)
                         .buildAndExpand(restaurant.identifier.value.toString(), meal.identifier)
                         .toUri())
                 .build()
     }
 
 
-    @PostMapping(RESTAURANT_MEAL_PORTION)
+    @PostMapping(RESTAURANT_MEAL_PORTION_PATH)
     fun addMealPortion(
             @PathVariable(RESTAURANT_ID_VALUE) restaurantId: String,
             @PathVariable(MEAL_ID_VALUE) mealId: Int,
@@ -135,7 +137,7 @@ class RestaurantMealController(
                 .build()
     }
 
-    @PutMapping(RESTAURANT_MEAL_VOTE)
+    @PutMapping(RESTAURANT_MEAL_VOTE_PATH)
     fun alterRestaurantMealVote(
             @PathVariable(RESTAURANT_ID_VALUE) restaurantId: String,
             @PathVariable(MEAL_ID_VALUE) mealId: Int,
@@ -156,7 +158,7 @@ class RestaurantMealController(
                 .build()
     }
 
-    @PutMapping(RESTAURANT_MEAL)
+    @PutMapping(RESTAURANT_MEAL_ID_PATH)
     fun putVerifyRestaurantMeal(
             @PathVariable(RESTAURANT_ID_VALUE) restaurantId: String,
             @PathVariable(MEAL_ID_VALUE) mealId: Int,
@@ -181,7 +183,7 @@ class RestaurantMealController(
                 .build()
     }
 
-    @PutMapping(RESTAURANT_MEAL_REPORT)
+    @PutMapping(RESTAURANT_MEAL_REPORT_PATH)
     fun addReport(
             @PathVariable(RESTAURANT_ID_VALUE) restaurantId: String,
             @PathVariable(MEAL_ID_VALUE) mealId: Int,
@@ -198,7 +200,7 @@ class RestaurantMealController(
                 .build()
     }
 
-    @PutMapping(RESTAURANT_MEAL_PORTION)
+    @PutMapping(RESTAURANT_MEAL_PORTION_PATH)
     fun updateMealPortion(
             @PathVariable(RESTAURANT_ID_VALUE) restaurantId: String,
             @PathVariable(MEAL_ID_VALUE) mealId: Int,
@@ -214,7 +216,7 @@ class RestaurantMealController(
                 .build()
     }
 
-    @DeleteMapping(RESTAURANT_MEAL_PORTION)
+    @DeleteMapping(RESTAURANT_MEAL_PORTION_PATH)
     fun deleteMealPortion(
             @PathVariable(RESTAURANT_ID_VALUE) restaurantId: String,
             @PathVariable(MEAL_ID_VALUE) mealId: Int,
@@ -229,7 +231,7 @@ class RestaurantMealController(
                 .build()
     }
 
-    @DeleteMapping(RESTAURANT_MEAL)
+    @DeleteMapping(RESTAURANT_MEAL_ID_PATH)
     fun deleteRestaurantMeal(
             @PathVariable(RESTAURANT_ID_VALUE) restaurantId: String,
             @PathVariable(MEAL_ID_VALUE) mealId: Int,
@@ -244,7 +246,7 @@ class RestaurantMealController(
                 .build()
     }
 
-    @PutMapping(RESTAURANT_MEAL_FAVORITE)
+    @PutMapping(RESTAURANT_MEAL_FAVORITE_PATH)
     fun setFavoriteRestaurant(
             @PathVariable(RESTAURANT_ID_VALUE) restaurantId: String,
             @PathVariable(MEAL_ID_VALUE) mealId: Int,

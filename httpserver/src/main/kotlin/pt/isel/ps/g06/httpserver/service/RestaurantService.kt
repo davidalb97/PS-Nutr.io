@@ -11,6 +11,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.ApiSubmitterMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.FavoriteDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.ReportDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.RestaurantDbRepository
+import pt.isel.ps.g06.httpserver.model.Meal
 import pt.isel.ps.g06.httpserver.model.restaurant.Restaurant
 import pt.isel.ps.g06.httpserver.model.restaurant.RestaurantIdentifier
 import pt.isel.ps.g06.httpserver.util.log
@@ -209,4 +210,9 @@ class RestaurantService(
     private fun searchRestaurantSubmission(submissionId: Int): RestaurantDto? {
         return dbRestaurantRepository.getById(submissionId)
     }
+
+    fun getUserFavoriteRestaurants(submitterId: Int, count: Int?, skip: Int?): Sequence<Restaurant> =
+            dbRestaurantRepository
+                    .getAllUserFavorites(submitterId, count, skip)
+                    .map(restaurantResponseMapper::mapTo)
 }
