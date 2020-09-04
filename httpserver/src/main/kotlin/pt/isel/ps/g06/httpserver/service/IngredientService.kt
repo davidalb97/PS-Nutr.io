@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service
 import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.restaurant.DbIngredientResponseMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.MealType
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.MealDbRepository
-import pt.isel.ps.g06.httpserver.dataAccess.input.meal.MealInput
+import pt.isel.ps.g06.httpserver.dataAccess.input.meal.CustomMealInput
 import pt.isel.ps.g06.httpserver.model.MealIngredient
 
 @Service
@@ -19,7 +19,7 @@ class IngredientService(
                 .map(ingredientResponseMapper::mapTo)
     }
 
-    fun insertSuggestedIngredient(submitterId: Int, mealIngredientInput: MealInput): MealIngredient {
+    fun insertSuggestedIngredient(submitterId: Int, mealIngredientInput: CustomMealInput): MealIngredient {
         return mealDbRepository
                 .insert(
                         submitterId = submitterId,

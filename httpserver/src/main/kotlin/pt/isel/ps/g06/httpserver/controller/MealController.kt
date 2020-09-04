@@ -9,7 +9,8 @@ import pt.isel.ps.g06.httpserver.common.*
 import pt.isel.ps.g06.httpserver.common.exception.problemJson.forbidden.NotSubmissionOwnerException
 import pt.isel.ps.g06.httpserver.common.exception.problemJson.notFound.MealNotFoundException
 import pt.isel.ps.g06.httpserver.dataAccess.db.MealType
-import pt.isel.ps.g06.httpserver.dataAccess.input.meal.MealInput
+import pt.isel.ps.g06.httpserver.dataAccess.input.meal.CustomMealInput
+import pt.isel.ps.g06.httpserver.dataAccess.input.meal.SuggestedMealInput
 import pt.isel.ps.g06.httpserver.dataAccess.input.userActions.FavoriteInput
 import pt.isel.ps.g06.httpserver.dataAccess.output.meal.DetailedMealOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.meal.SimplifiedMealContainer
@@ -78,7 +79,7 @@ class MealController(
 
     @PostMapping(MEALS_PATH)
     fun createSuggestedMeal(
-            @Valid @RequestBody meal: MealInput,
+            @Valid @RequestBody meal: SuggestedMealInput,
             user: User
     ): ResponseEntity<Void> {
 
@@ -88,7 +89,7 @@ class MealController(
         //Due to validators we are sure fields are never null
         val createdMeal = mealService.createMeal(
                 name = meal.name!!,
-                ingredients = meal.ingredients!!,
+                ingredients = emptyList(),
                 cuisines = meal.cuisines!!,
                 quantity = meal.quantity!!,
                 submitterId = user.identifier,

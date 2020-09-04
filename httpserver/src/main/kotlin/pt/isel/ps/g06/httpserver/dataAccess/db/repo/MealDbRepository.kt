@@ -135,10 +135,6 @@ class MealDbRepository(
             throw InvalidInputException("A meal must have at least a cuisine!")
         }
 
-        if (ingredients.isEmpty()) {
-            throw InvalidInputException("A meal must have at least one ingredient!")
-        }
-
         return databaseContext.inTransaction {
             //Validate given ingredients to see if they are all in the database
             //TODO See if eager call is possible to avoid
@@ -184,14 +180,16 @@ class MealDbRepository(
             it.attach(MealCuisineDao::class.java).insertAll(cuisineIds.toList())
 
             //Insert meal's ingredients
-            it.attach(MealIngredientDao::class.java).insertAll(ingredients.map { ingredientInput ->
-                DbMealIngredientDto(
-                        //We know fields are not null due to validation checks
-                        meal_submission_id = mealSubmissionId,
-                        ingredient_submission_id = ingredientInput.identifier!!,
-                        quantity = ingredientInput.quantity!!
-                )
-            })
+            if (ingredients.isNotEmpty()) {
+                it.attach(MealIngredientDao::class.java).insertAll(ingredients.map { ingredientInput ->
+                    DbMealIngredientDto(
+                            //We know fields are not null due to validation checks
+                            meal_submission_id = mealSubmissionId,
+                            ingredient_submission_id = ingredientInput.identifier!!,
+                            quantity = ingredientInput.quantity!!
+                    )
+                })
+            }
 
             return@inTransaction mealDto
         }
@@ -208,10 +206,6 @@ class MealDbRepository(
     ): DbMealDto {
         if (cuisines.isEmpty()) {
             throw InvalidInputException("A meal must have at least a cuisine!")
-        }
-
-        if (ingredients.isEmpty()) {
-            throw InvalidInputException("A meal must have at least one ingredient!")
         }
 
         return databaseContext.inTransaction {
@@ -248,14 +242,18 @@ class MealDbRepository(
             //Insert meal's ingredients
             val mealIngredientDao = it.attach(MealIngredientDao::class.java)
             mealIngredientDao.deleteAllByMealId(submissionId)
-            mealIngredientDao.insertAll(ingredients.map { ingredientInput ->
-                DbMealIngredientDto(
-                        //We know fields are not null due to validation checks
-                        meal_submission_id = submissionId,
-                        ingredient_submission_id = ingredientInput.identifier!!,
-                        quantity = ingredientInput.quantity!!
-                )
-            })
+
+            //Insert meal's ingredients
+            if (ingredients.isNotEmpty()) {
+                mealIngredientDao.insertAll(ingredients.map { ingredientInput ->
+                    DbMealIngredientDto(
+                            //We know fields are not null due to validation checks
+                            meal_submission_id = submissionId,
+                            ingredient_submission_id = ingredientInput.identifier!!,
+                            quantity = ingredientInput.quantity!!
+                    )
+                })
+            }
 
             return@inTransaction mealDto
         }
