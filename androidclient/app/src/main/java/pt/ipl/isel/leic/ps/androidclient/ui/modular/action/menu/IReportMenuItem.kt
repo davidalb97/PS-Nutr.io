@@ -8,7 +8,7 @@ import pt.ipl.isel.leic.ps.androidclient.ui.modular.ILog
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.IUserSession
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.IAction
 import pt.ipl.isel.leic.ps.androidclient.ui.util.ItemAction
-import pt.ipl.isel.leic.ps.androidclient.ui.util.PromptInput
+import pt.ipl.isel.leic.ps.androidclient.ui.util.prompt.PromptInput
 
 interface IReportMenuItem : IMenu, IContext, IAction, ILog, IUserSession {
 
