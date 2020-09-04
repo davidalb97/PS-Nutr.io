@@ -53,7 +53,7 @@ fun toSimplifiedFavoriteRestaurantMealOutput(
             ),
             votes = restaurantMealInfo?.let {
                 toVotesOutput(
-                        isVotable = it.isFavorable.invoke(userId),
+                        isVotable = it.isFavorable(userId),
                         votes = it.votes.value,
                         userVote = it.userVote(userId)
                 )
