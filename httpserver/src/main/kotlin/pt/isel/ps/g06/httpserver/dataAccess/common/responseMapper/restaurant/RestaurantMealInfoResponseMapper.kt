@@ -43,6 +43,8 @@ class DbRestaurantMealInfoResponseMapper(
         }
         return MealRestaurantInfo(
                 identifier = dto.submission_id,
+                restaurantIdentifier = dto.restaurant_submission_id,
+                mealIdentifier = dto.meal_submission_id,
                 isVerified = dto.verified,
                 votes = lazy {
                     dto.submission_id?.let {
