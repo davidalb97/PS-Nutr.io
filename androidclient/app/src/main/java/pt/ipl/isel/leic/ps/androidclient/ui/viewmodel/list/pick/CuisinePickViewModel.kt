@@ -12,6 +12,11 @@ class CuisinePickViewModel : BaseItemPickerViewModel<Cuisine> {
 
     constructor() : super()
 
+    init {
+        skip = null
+        count = null
+    }
+
     override fun update() {
         if (!tryRestore()) {
             cuisineRepository.getCuisines(count, skip, liveDataHandler::set, onError)
