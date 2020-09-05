@@ -6,34 +6,35 @@ import UserContext from './UserContext'
 import { get as getAuthToken, deleteCookie as deleteAuthToken } from './CookieService'
 
 export default function UserProvider({ children }) {
-    const defaultUser = useContext(UserContext)
+    const unitializedUser = useContext(UserContext)
     const [authToken, setAuthToken] = useState(getAuthToken())
-    // const authToken = getAuthToken()
-    console.log("user provider")
 
     //No need to trigger a request if no session cookie is present
     if (!authToken) return provideUserContext({ error: true })
 
     const request = { url: "http://localhost:8080/user", authToken: authToken }
+    // console.log(request)
 
     return <RequestingEntity
         request={request}
         onSuccess={provideUserContext}
-        onInit={() => provideUserContext({})}
-        onLoad={() => provideUserContext({})}
-        onError={provideUserContext}
+        onDefault={provideUserContext}
+        onError={() => { deleteAuthToken(); provideUserContext({ error: true }) }}
     />
 
-    function provideUserContext({ json, error }) {
-        let user = defaultUser
+    function provideUserContext({ error, json }) {
+        let user = unitializedUser
 
-        if (json && !error) user = { authToken: authToken, user: json, initialized: true, onLogout: aux }
-        if (error) user = { ...defaultUser, initialized: true, onLogin: setAuthToken }
+        // console.log(error)
+        // console.log(json)
 
+        if (json && !error) user = { authToken: authToken, user: json, initialized: true, onLogout: logout }
+        if (error) user = { ...unitializedUser, initialized: true, onLogin: setAuthToken }
+
+        // console.log(user)
         return <UserContext.Provider value={user}> {children} </UserContext.Provider>
 
-        function aux() {
-            console.log("Profile logout")
+        function logout() {
             deleteAuthToken()
             setAuthToken(undefined)
         }
