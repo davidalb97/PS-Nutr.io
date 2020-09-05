@@ -64,11 +64,6 @@ class MealController(
             }
         }
 
-        //Perform final result reductions
-        meals = meals.drop(skip ?: 0)
-        if (count != null) {
-            meals = meals.take(count)
-        }
         return ResponseEntity
                 .ok()
                 .body(toSimplifiedMealContainer(meals, user?.identifier))
