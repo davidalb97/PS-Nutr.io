@@ -29,14 +29,13 @@ class HereUriBuilder : RestaurantUri {
             longitude: Float,
             radius: Int,
             restaurantName: String?,
-            skip: Int?,
-            count: Int?
+            count: Int,
+            skip: Int?
     ): URI {
         return UriComponentsBuilder
                 .fromHttpUrl(DISCOVER_PATH)
                 .queryParam(IN, nearbyCircleByGeocode(latitude, longitude, radius))
                 .queryParam(QUERY, queryRestaurantName(restaurantName))
-                .queryParam(SKIP, skip)
                 .queryParam(LIMIT, count)
                 .queryParam(API_KEY, KEY)
                 .build()

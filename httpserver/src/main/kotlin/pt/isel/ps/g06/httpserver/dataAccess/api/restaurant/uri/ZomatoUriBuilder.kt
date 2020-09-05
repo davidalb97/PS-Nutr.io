@@ -24,8 +24,8 @@ class ZomatoUriBuilder : RestaurantUri {
             longitude: Float,
             radius: Int,
             restaurantName: String?,
-            skip: Int?,
-            count: Int?
+            count: Int,
+            skip: Int?
     ): URI {
         return UriComponentsBuilder
                 .fromHttpUrl(ZOMATO_SEARCH_URL)

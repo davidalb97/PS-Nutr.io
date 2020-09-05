@@ -73,7 +73,7 @@ class RestaurantController(
                 radius = radius,
                 apiType = apiType,
                 skip = skip,
-                count = count
+                count = count!!
         )
 
         return ResponseEntity

@@ -1,7 +1,6 @@
 package pt.isel.ps.g06.httpserver.service
 
 import org.springframework.stereotype.Service
-import pt.isel.ps.g06.httpserver.common.DEFAULT_COUNT
 import pt.isel.ps.g06.httpserver.common.exception.problemJson.badRequest.NoSuchApiResponseStatusException
 import pt.isel.ps.g06.httpserver.common.exception.problemJson.notFound.RestaurantNotFoundException
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.RestaurantApiType
@@ -16,6 +15,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.repo.RestaurantDbRepository
 import pt.isel.ps.g06.httpserver.model.restaurant.Restaurant
 import pt.isel.ps.g06.httpserver.model.restaurant.RestaurantIdentifier
 import pt.isel.ps.g06.httpserver.util.log
+import java.util.concurrent.CompletableFuture
 
 private const val MAX_RADIUS = 1000
 
@@ -41,20 +41,29 @@ class RestaurantService(
             radius: Int?,
             apiType: String?,
             skip: Int?,
-            count: Int?
+            count: Int
     ): Sequence<Restaurant> {
         val chosenRadius = if (radius != null && radius <= MAX_RADIUS) radius else MAX_RADIUS
+        val chosenApiCount = if (skip == null || skip == 0) count else count.plus(count.times(skip))
         val type = RestaurantApiType.getOrDefault(apiType)
         val restaurantApi = restaurantApiMapper.getRestaurantApi(type)
 
+        var apiRestaurants: CompletableFuture<Collection<Restaurant>>? = null
         //Get API restaurants
-        val apiRestaurants = restaurantApi
-                .searchNearbyRestaurants(latitude, longitude, chosenRadius, name, skip, count)
-                .thenApply { it.map(restaurantResponseMapper::mapTo) }
+        if (chosenApiCount <= 100) {
+            apiRestaurants = restaurantApi
+                    .searchNearbyRestaurants(latitude, longitude, chosenRadius, name, chosenApiCount)
+                    .thenApply { it.map(restaurantResponseMapper::mapTo) }
+        }
 
         return dbRestaurantRepository.getAllByCoordinates(latitude, longitude, chosenRadius, skip, count)
                 .map(restaurantResponseMapper::mapTo)
-                .let { filterRedundantApiRestaurants(it, apiRestaurants.get().asSequence(), count ?: DEFAULT_COUNT) }
+                .let { filterRedundantApiRestaurants(
+                        it,
+                        apiRestaurants?.get()?.asSequence() ?: sequenceOf(),
+                        skip,
+                        count
+                ) }
 
         //Keeps an open transaction while we iterate the DB response Stream
 //        return transactionHolder.inTransaction {
@@ -180,10 +189,21 @@ class RestaurantService(
     private fun filterRedundantApiRestaurants(
             dbRestaurants: Sequence<Restaurant>,
             apiRestaurants: Sequence<Restaurant>,
+            skip: Int?,
             count: Int
     ): Sequence<Restaurant> {
         //TODO Avoid eager call or maybe cache values with a stream cache implementation
-        val aux = dbRestaurants.toList()
+        val dbRestaurantListSize = dbRestaurants.toList().size
+        val apiRestaurantListSize = apiRestaurants.toList().size
+
+        if (dbRestaurantListSize == count && apiRestaurantListSize == 0) {
+            return dbRestaurants
+        }
+
+        if (skip != null && apiRestaurantListSize == count * (skip + 1) && dbRestaurantListSize == 0) {
+            return apiRestaurants.drop(apiRestaurantListSize - count)
+        }
+
         //Filter api restaurants that already exist in db
         val filteredApiRestaurants = apiRestaurants.filter { apiRestaurant ->
             //Db does not contain a restaurant with the api identifier
@@ -195,7 +215,21 @@ class RestaurantService(
             }
         }
 
-        return dbRestaurants.plus(filteredApiRestaurants).take(count)
+        var filteredApiRestaurantList = filteredApiRestaurants.toList()
+        val filteredApiRestaurantListSize = filteredApiRestaurantList.size
+
+        if (filteredApiRestaurantListSize > count) {
+            filteredApiRestaurantList =
+                    filteredApiRestaurantList.drop(filteredApiRestaurantListSize - count)
+        }
+
+        val totalCount = dbRestaurantListSize.plus(filteredApiRestaurantList.size)
+
+        if (totalCount > count) {
+            filteredApiRestaurantList = filteredApiRestaurantList.drop(totalCount - count)
+        }
+
+        return dbRestaurants.plus(filteredApiRestaurantList.asSequence())
     }
 
     private fun searchApiRestaurant(apiSubmitterId: Int, apiId: String, apiType: RestaurantApiType): RestaurantDto? {
