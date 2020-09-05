@@ -14,9 +14,9 @@ open class RestaurantItem(
     val name: String,
     val latitude: Float,
     val longitude: Float,
-    val votes: Votes?,
-    var isFavorite: Boolean,
-    val isVotable: Boolean,
+    val votes: Votes,
+    var favorites: Favorites,
+    val isReportable: Boolean,
     val image: Uri?,
     val source: Source
 ) : Parcelable {
@@ -27,9 +27,9 @@ open class RestaurantItem(
         name = parcel.readString()!!,
         latitude = parcel.readFloat(),
         longitude = parcel.readFloat(),
-        votes = parcel.readParcelable<Votes>(Votes::class.java.classLoader),
-        isFavorite = parcel.readBooleanCompat(),
-        isVotable = parcel.readBooleanCompat(),
+        votes = parcel.readParcelable<Votes>(Votes::class.java.classLoader)!!,
+        favorites = parcel.readParcelable<Favorites>(Favorites::class.java.classLoader)!!,
+        isReportable = parcel.readBooleanCompat(),
         image = parcel.readUri(),
         source = Source.values()[parcel.readInt()]
     )
@@ -41,8 +41,8 @@ open class RestaurantItem(
         parcel.writeFloat(latitude)
         parcel.writeFloat(longitude)
         parcel.writeParcelable(votes, flags)
-        parcel.writeBooleanCompat(isFavorite)
-        parcel.writeBooleanCompat(isVotable)
+        parcel.writeParcelable(favorites, flags)
+        parcel.writeBooleanCompat(isReportable)
         parcel.writeUri(image)
         parcel.writeInt(source.ordinal)
     }

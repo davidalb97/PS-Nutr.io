@@ -5,7 +5,10 @@ import org.springframework.web.bind.annotation.*
 import pt.isel.ps.g06.httpserver.common.*
 import pt.isel.ps.g06.httpserver.common.exception.problemJson.notFound.SubmissionNotFoundException
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType
-import pt.isel.ps.g06.httpserver.dataAccess.output.report.*
+import pt.isel.ps.g06.httpserver.dataAccess.output.report.SubmissionReportsContainerOutput
+import pt.isel.ps.g06.httpserver.dataAccess.output.report.toGenericReportsOutputContainer
+import pt.isel.ps.g06.httpserver.dataAccess.output.report.toReportedSubmissionsOutputContainer
+import pt.isel.ps.g06.httpserver.dataAccess.output.report.toSubmissionReportsContainerOutput
 import pt.isel.ps.g06.httpserver.model.User
 import pt.isel.ps.g06.httpserver.service.ReportService
 import pt.isel.ps.g06.httpserver.service.UserService
@@ -18,7 +21,7 @@ class ReportController(
         private val userService: UserService
 ) {
 
-    @GetMapping(REPORTS)
+    @GetMapping(REPORTS_PATH)
     fun getReports(
             user: User,
             @RequestParam type: SubmissionType?,
@@ -38,11 +41,11 @@ class ReportController(
     }
 
 
-    @GetMapping(SUBMISSION_REPORT)
+    @GetMapping(REPORT_SUBMISSION_ID)
     fun getAllReportsFromSubmission(
             @PathVariable(SUBMISSION_ID_VALUE) submissionId: Int,
             user: User
-    ): ResponseEntity<SubmissionReportsContainerOutput>  {
+    ): ResponseEntity<SubmissionReportsContainerOutput> {
 
         // Check if the user is a moderator
         userService.ensureModerator(user)
@@ -60,11 +63,11 @@ class ReportController(
         )
     }
 
-    @DeleteMapping(REPORT)
+    @DeleteMapping(REPORT_ID)
     fun deleteReport(
             @PathVariable(REPORT_ID_VALUE) submissionId: Int,
             user: User
-    ): ResponseEntity<Void>  {
+    ): ResponseEntity<Void> {
 
         // Check if the user is a moderator
         userService.ensureModerator(user)

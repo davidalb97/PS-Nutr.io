@@ -2,10 +2,7 @@ package pt.ipl.isel.leic.ps.androidclient.data.db.mapper
 
 import android.net.Uri
 import pt.ipl.isel.leic.ps.androidclient.data.db.entity.DbRestaurantItemEntity
-import pt.ipl.isel.leic.ps.androidclient.data.model.RestaurantItem
-import pt.ipl.isel.leic.ps.androidclient.data.model.Source
-import pt.ipl.isel.leic.ps.androidclient.data.model.VoteState
-import pt.ipl.isel.leic.ps.androidclient.data.model.Votes
+import pt.ipl.isel.leic.ps.androidclient.data.model.*
 
 class DbRestaurantItemMapper {
 
@@ -15,14 +12,17 @@ class DbRestaurantItemMapper {
         name = entity.name,
         latitude = entity.latitude,
         longitude = entity.longitude,
-        votes = if (entity.hasVote) Votes(
+        votes = Votes(
             isVotable = entity.isVotable,
             userHasVoted = VoteState.values()[entity.userVoteOrdinal!!],
             positive = entity.positiveVotes!!,
             negative = entity.negativeVotes!!
-        ) else null,
-        isFavorite = entity.isFavorite,
-        isVotable = entity.isVotable,
+        ),
+        favorites = Favorites(
+            entity.isFavorable,
+            entity.isFavorite
+        ),
+        isReportable = entity.isReportable,
         image = Uri.parse(entity.image),
         source = Source.values()[entity.sourceOrdinal]
     )
@@ -32,13 +32,14 @@ class DbRestaurantItemMapper {
         name = model.name,
         latitude = model.latitude,
         longitude = model.longitude,
-        isFavorite = model.isFavorite,
-        isVotable = model.isVotable,
+        isFavorable = model.favorites.isFavorable,
+        isFavorite = model.favorites.isFavorite,
+        isReportable = model.isReportable,
         image = model.image?.toString(),
-        positiveVotes = model.votes?.positive,
-        negativeVotes = model.votes?.negative,
-        userVoteOrdinal = model.votes?.userHasVoted?.ordinal,
-        hasVote = model.votes != null,
+        isVotable = model.votes.isVotable,
+        userVoteOrdinal = model.votes.userHasVoted.ordinal,
+        positiveVotes = model.votes.positive,
+        negativeVotes = model.votes.negative,
         sourceOrdinal = model.source.ordinal
     ).also { dto ->
         dto.primaryKey = model.dbId ?: DbRestaurantItemEntity.DEFAULT_DB_ID

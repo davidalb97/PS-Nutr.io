@@ -3,30 +3,28 @@ package pt.ipl.isel.leic.ps.androidclient.ui.fragment.list.detail
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.navigation.findNavController
+import androidx.navigation.navGraphViewModels
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealItem
 import pt.ipl.isel.leic.ps.androidclient.data.model.RestaurantInfo
 import pt.ipl.isel.leic.ps.androidclient.data.model.VoteState
-import pt.ipl.isel.leic.ps.androidclient.data.model.Votes
 import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.meal.MealItemRecyclerAdapter
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.list.BaseListFragment
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.IImage
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.ISend
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.IFavoriteActionButton
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.IVoteActionButtons
-import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.menu.MenuItemFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.menu.IEditMenuItem
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.menu.IPopupMenuButton
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.menu.IReportMenuItem
+import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.menu.MenuItemFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.BaseViewModelProviderFactory
-import pt.ipl.isel.leic.ps.androidclient.ui.provider.RestaurantInfoVMProviderFactory
-import pt.ipl.isel.leic.ps.androidclient.ui.util.ItemAction
-import pt.ipl.isel.leic.ps.androidclient.ui.util.Navigation
-import pt.ipl.isel.leic.ps.androidclient.ui.util.putNavigation
-import pt.ipl.isel.leic.ps.androidclient.ui.util.putRestaurantInfo
+import pt.ipl.isel.leic.ps.androidclient.ui.util.*
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.meal.info.RestaurantInfoViewModel
 
 class RestaurantInfoFragment :
@@ -68,6 +66,23 @@ class RestaurantInfoFragment :
     override val menuButtonId: Int = R.id.options
     override lateinit var menuButton: ImageButton
 
+    lateinit var addMealButton: Button
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        //Bypass generic Recycler ViewModel creation
+        val viewModel: RestaurantInfoViewModel
+                by navGraphViewModels(Navigation.SEND_TO_RESTAURANT_DETAIL.navId)
+        recyclerViewModel = viewModel
+        recyclerViewModel.restaurantId = requireNotNull(arguments?.getRestaurantItem()?.id) {
+            "Restaurant detail requires submission ID"
+        }
+        return inflater.inflate(getLayout(), container, false)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -80,18 +95,32 @@ class RestaurantInfoFragment :
 
     private fun setupRestaurantInfoView(view: View, restaurantInfo: RestaurantInfo) {
         super.setupImage(view, restaurantInfo.image)
-        super.setupVoteBarCounters(view, restaurantInfo.votes, restaurantInfo.isVotable)
-        super.setupFavoriteButton(view)
-        super.setupReportMenuItem()
+        super.setupVoteBarCounters(view, restaurantInfo.votes)
+        super.setupFavoriteButton(view, restaurantInfo.favorites)
+        super.setupReportMenuItem(restaurantInfo.isReportable)
         super.setupEditMenuItem()
         super.setupPopupMenuButton(view)
-        super.setupVoteButtons(view, restaurantInfo.isVotable)
+        super.setupVoteButtons(view, restaurantInfo.votes)
 
         val title: TextView = view.findViewById(R.id.restaurant_detail_title)
         title.text = restaurantInfo.name
 
-        //val restaurantAddMealButton: Button = view.findViewById(R.id.add_meal_button)
-        //TODO add meal button
+        addMealButton = view.findViewById(R.id.add_meal_button)
+        addMealButton.setOnClickListener {
+            ensureUserSession(requireContext()) {
+                view.findNavController().navigate(Navigation.SEND_TO_PICK_RESTAURANT_MEAL.navId)
+            }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        val addedMeal = recyclerViewModel.addedMeal
+        if (addedMeal != null) {
+            recyclerViewModel.liveDataHandler.add(addedMeal)
+            recyclerViewModel.addedMeal = null
+        }
     }
 
     override fun onFavorite(onSuccess: () -> Unit, onError: (Throwable) -> Unit) {
@@ -126,11 +155,7 @@ class RestaurantInfoFragment :
         bundle.putNavigation(Navigation.SEND_TO_RESTAURANT_DETAIL)  //Edit restaurant back
     }
 
-    override fun fetchVotes(): Votes? = recyclerViewModel.restaurantInfo?.votes
-
     override fun fetchCtx(): Context = requireContext()
-
-    override fun isFavorite(): Boolean = recyclerViewModel.restaurantInfo!!.isFavorite
 
     override fun getRecyclerId() = R.id.restaurant_meals_list
 
@@ -143,9 +168,7 @@ class RestaurantInfoFragment :
     override fun getVMProviderFactory(
         savedInstanceState: Bundle?,
         intent: Intent
-    ): BaseViewModelProviderFactory {
-        return RestaurantInfoVMProviderFactory(arguments, savedInstanceState, intent)
-    }
+    ): BaseViewModelProviderFactory = throw UnsupportedOperationException("Not used")
 
     override fun getRecyclerViewModelClass() = RestaurantInfoViewModel::class.java
 }

@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.util.UriComponentsBuilder
-import pt.isel.ps.g06.httpserver.common.INGREDIENTS
+import pt.isel.ps.g06.httpserver.common.INGREDIENTS_PATH
 import pt.isel.ps.g06.httpserver.common.MAX_COUNT
 import pt.isel.ps.g06.httpserver.common.exception.problemJson.badRequest.InvalidInputException
 import pt.isel.ps.g06.httpserver.dataAccess.input.meal.MealInput
@@ -19,7 +19,7 @@ import javax.validation.constraints.Min
 
 @Validated
 @RestController
-@RequestMapping(INGREDIENTS,
+@RequestMapping(INGREDIENTS_PATH,
         produces = [MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_PROBLEM_JSON_VALUE],
         consumes = [MediaType.ALL_VALUE]
 )
@@ -50,7 +50,6 @@ class IngredientController(
     /**
      * Create a hardcoded ingredient as moderator
      * @param   user    ModAuthorizationArgumentResolver's parameter
-     * @param   ingredientInput    The ingredient to be inserted
      * @return  [ResponseEntity]<[IngredientsContainerOutput]>
      * @throws InvalidInputException On invalid cuisines passed
      */
@@ -68,7 +67,7 @@ class IngredientController(
         return ResponseEntity
                 .created(
                         UriComponentsBuilder
-                                .fromUriString(INGREDIENTS)
+                                .fromUriString(INGREDIENTS_PATH)
                                 .buildAndExpand(createdIngredient.identifier)
                                 .toUri()
                 )

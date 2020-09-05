@@ -5,12 +5,10 @@ import pt.ipl.isel.leic.ps.androidclient.data.model.Votes
 
 class InputVotesMapper {
 
-    fun mapToModel(dto: VotesInput?): Votes? = dto?.let {
-        Votes(
-            isVotable = dto.isVotable,
-            userHasVoted = dto.userVote,
-            positive = dto.positive,
-            negative = dto.negative
-        )
-    }
+    fun mapToModel(dto: VotesInput): Votes = Votes(
+        isVotable = dto.isVotable,
+        userHasVoted = dto.userVote,
+        positive = dto.positive,
+        negative = dto.negative
+    )
 }

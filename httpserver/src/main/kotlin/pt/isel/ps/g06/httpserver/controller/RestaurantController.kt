@@ -10,14 +10,17 @@ import pt.isel.ps.g06.httpserver.common.exception.problemJson.badRequest.Invalid
 import pt.isel.ps.g06.httpserver.common.exception.problemJson.forbidden.NotSubmissionOwnerException
 import pt.isel.ps.g06.httpserver.common.exception.problemJson.notFound.RestaurantNotFoundException
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.RestaurantApiType
-import pt.isel.ps.g06.httpserver.dataAccess.input.userActions.FavoriteInput
 import pt.isel.ps.g06.httpserver.dataAccess.input.restaurant.RestaurantInput
 import pt.isel.ps.g06.httpserver.dataAccess.input.restaurant.RestaurantOwnerInput
+import pt.isel.ps.g06.httpserver.dataAccess.input.userActions.FavoriteInput
 import pt.isel.ps.g06.httpserver.dataAccess.input.userActions.ReportInput
 import pt.isel.ps.g06.httpserver.dataAccess.input.userActions.VoteInput
-import pt.isel.ps.g06.httpserver.dataAccess.output.restaurant.*
-import pt.isel.ps.g06.httpserver.model.Restaurant
+import pt.isel.ps.g06.httpserver.dataAccess.output.restaurant.DetailedRestaurantOutput
+import pt.isel.ps.g06.httpserver.dataAccess.output.restaurant.SimplifiedRestaurantContainerOutput
+import pt.isel.ps.g06.httpserver.dataAccess.output.restaurant.toDetailedRestaurantOutput
+import pt.isel.ps.g06.httpserver.dataAccess.output.restaurant.toSimplifiedRestaurantContainerOutput
 import pt.isel.ps.g06.httpserver.model.User
+import pt.isel.ps.g06.httpserver.model.restaurant.Restaurant
 import pt.isel.ps.g06.httpserver.service.AuthenticationService
 import pt.isel.ps.g06.httpserver.service.RestaurantService
 import pt.isel.ps.g06.httpserver.service.SubmissionService
@@ -48,7 +51,7 @@ class RestaurantController(
      * @param radius optional, changes the search radius in a circle (meters).
      * @param apiType allows the user to select which API to search from. See [RestaurantApiType].
      */
-    @GetMapping(RESTAURANTS, consumes = [MediaType.ALL_VALUE])
+    @GetMapping(RESTAURANTS_PATH, consumes = [MediaType.ALL_VALUE])
     fun searchRestaurants(
             @RequestParam latitude: Float?,
             @RequestParam longitude: Float?,
@@ -78,7 +81,7 @@ class RestaurantController(
                 .body(toSimplifiedRestaurantContainerOutput(nearbyRestaurants.toList()))
     }
 
-    @GetMapping(RESTAURANT, consumes = [MediaType.ALL_VALUE])
+    @GetMapping(RESTAURANT_ID_PATH, consumes = [MediaType.ALL_VALUE])
     fun getRestaurantInformation(
             @PathVariable(RESTAURANT_ID_VALUE) restaurantId: String,
             user: User?
@@ -90,7 +93,7 @@ class RestaurantController(
                 .body(toDetailedRestaurantOutput(restaurant, user?.identifier))
     }
 
-    @PostMapping(RESTAURANTS, consumes = [MediaType.APPLICATION_JSON_VALUE])
+    @PostMapping(RESTAURANTS_PATH, consumes = [MediaType.APPLICATION_JSON_VALUE])
     fun createRestaurant(
             @Valid @RequestBody restaurant: RestaurantInput,
             user: User
@@ -107,13 +110,13 @@ class RestaurantController(
 
         return ResponseEntity
                 .created(UriComponentsBuilder
-                        .fromUriString(RESTAURANT)
+                        .fromUriString(RESTAURANT_ID_PATH)
                         .buildAndExpand(createdRestaurant.identifier.value.toString())
                         .toUri())
                 .build()
     }
 
-    @DeleteMapping(RESTAURANT, consumes = [MediaType.ALL_VALUE])
+    @DeleteMapping(RESTAURANT_ID_PATH, consumes = [MediaType.ALL_VALUE])
     fun deleteRestaurant(
             @PathVariable(RESTAURANT_ID_VALUE) restaurantId: String,
             user: User
@@ -133,7 +136,7 @@ class RestaurantController(
                 .build()
     }
 
-    @PutMapping(RESTAURANT_VOTE, consumes = [MediaType.APPLICATION_JSON_VALUE])
+    @PutMapping(RESTAURANT_VOTE_PATH, consumes = [MediaType.APPLICATION_JSON_VALUE])
     fun putRestaurantVote(
             @PathVariable(RESTAURANT_ID_VALUE) restaurantId: String,
             @Valid @RequestBody userVote: VoteInput,
@@ -153,7 +156,7 @@ class RestaurantController(
                 .build()
     }
 
-    @PutMapping(RESTAURANT_FAVORITE)
+    @PutMapping(RESTAURANT_FAVORITE_PATH)
     fun setFavoriteRestaurant(
             @PathVariable(RESTAURANT_ID_VALUE) restaurantId: String,
             @Valid @RequestBody favorite: FavoriteInput,
@@ -171,7 +174,7 @@ class RestaurantController(
         return ResponseEntity.ok().build()
     }
 
-    @PutMapping(RESTAURANT_REPORT)
+    @PutMapping(RESTAURANT_REPORT_PATH)
     fun addReport(
             @PathVariable(RESTAURANT_ID_VALUE) restaurantId: String,
             @RequestBody reportInput: ReportInput,
@@ -187,7 +190,7 @@ class RestaurantController(
                 .build()
     }
 
-    @PutMapping(RESTAURANT)
+    @PutMapping(RESTAURANT_ID_PATH)
     fun addOwner(
             @PathVariable(RESTAURANT_ID_VALUE) restaurantId: String,
             @RequestBody restaurantOwnerInput: RestaurantOwnerInput,

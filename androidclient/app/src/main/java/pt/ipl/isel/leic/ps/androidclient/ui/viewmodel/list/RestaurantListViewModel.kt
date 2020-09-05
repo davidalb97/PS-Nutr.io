@@ -51,9 +51,9 @@ class RestaurantListViewModel(
         onError: (Throwable) -> Unit
     ) = restaurantRepository.changeFavorite(
         restaurantId = requireNotNull(restaurantItem.id),
-        isFavorite = !restaurantItem.isFavorite,
+        isFavorite = !restaurantItem.favorites.isFavorite,
         success = {
-            restaurantItem.isFavorite = !restaurantItem.isFavorite
+            restaurantItem.favorites.isFavorite = !restaurantItem.favorites.isFavorite
             onSuccess()
         },
         error = onError,
@@ -69,7 +69,7 @@ class RestaurantListViewModel(
         restaurantId = requireNotNull(restaurantItem.id),
         reportMsg = reportMsg,
         onSuccess = {
-            restaurantItem.isFavorite = !restaurantItem.isFavorite
+            restaurantItem.favorites.isFavorite = !restaurantItem.favorites.isFavorite
             onSuccess()
         },
         onError = onError,

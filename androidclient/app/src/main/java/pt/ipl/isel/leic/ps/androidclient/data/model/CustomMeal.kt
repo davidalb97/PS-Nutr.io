@@ -37,11 +37,11 @@ class CustomMeal : MealInfo, Parcelable {
         ingredientComponents = ingredientComponents,
         mealComponents = mealComponents,
         cuisines = cuisines,
-        portions = emptyList(),
+        portions = null,
         isReportable = false,
         isVerified = false,
         isSuggested = false,
-        source = Source.CUSTOM,
+        source = Source.CUSTOM_MEAL,
         //TODO pass owner to custom meal ctor
         submissionOwner = null
     )

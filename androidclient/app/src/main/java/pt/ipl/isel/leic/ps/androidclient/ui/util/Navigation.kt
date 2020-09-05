@@ -19,7 +19,9 @@ enum class Navigation(@IdRes private val _navId: Int?) {
     SEND_TO_MEAL_LIST_BY_NAME(R.id.nav_tab_meals),
     SEND_TO_MEAL_LIST_CUSTOM(R.id.nav_tab_your_meals),
     SEND_TO_INGREDIENT_LIST(R.id.nav_ingredients),
-    SEND_TO_RESTAURANT_DETAIL(R.id.nav_restaurant_detail),
+    SEND_TO_RESTAURANT_DETAIL(R.id.nav_restaurant_info_nested),
+    SEND_TO_PICK_RESTAURANT_MEAL(R.id.nav_action_restaurant_info_to_pick_meals),
+    BACK_TO_RESTAURANT_DETAIL(R.id.nav_action_back_to_restaurant_info),
     SEND_TO_RESTAURANT_LIST(R.id.nav_tab_restaurants),
     SEND_TO_RESTAURANT_LIST_MAP(R.id.nav_map);
 

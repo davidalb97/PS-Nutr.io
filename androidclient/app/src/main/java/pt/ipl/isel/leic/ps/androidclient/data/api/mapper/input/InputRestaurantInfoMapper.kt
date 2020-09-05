@@ -9,7 +9,8 @@ import pt.ipl.isel.leic.ps.androidclient.util.TimestampWithTimeZone
 class InputRestaurantInfoMapper(
     private val mealInputMapper: InputMealItemMapper,
     private val cuisineInputMapper: InputCuisineMapper,
-    private val votesInputMapper: InputVotesMapper
+    private val votesInputMapper: InputVotesMapper,
+    private val inputFavoriteMapper: InputFavoriteMapper
 ) {
 
     fun mapToModel(dto: RestaurantInfoInput): RestaurantInfo = RestaurantInfo(
@@ -20,8 +21,8 @@ class InputRestaurantInfoMapper(
         longitude = dto.longitude,
         votes = votesInputMapper.mapToModel(dto.votes),
         creationDate = TimestampWithTimeZone.parse(dto.creationDate),
-        isFavorite = dto.favorites.isFavorite,
-        isVotable = dto.votes.isVotable,
+        favorites = inputFavoriteMapper.mapToModel(dto.favorites),
+        isReportable = dto.isReportable,
         cuisines = cuisineInputMapper.mapToListModel(dto.cuisines),
         meals = mealInputMapper.mapToListModel(dto.meals, dto.identifier),
         suggestedMeals = mealInputMapper.mapToListModel(dto.suggestedMeals, dto.identifier),

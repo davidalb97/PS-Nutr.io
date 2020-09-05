@@ -4,12 +4,12 @@ import android.net.Uri
 import com.android.volley.VolleyError
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.meal.MealInfoInput
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.meal.MealItemContainerInput
+import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.restaurantMeal.SimplifiedFavoriteRestaurantMealContainerInput
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.restaurantMeal.SimplifiedRestaurantMealContainerInput
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.output.*
 import pt.ipl.isel.leic.ps.androidclient.data.api.request.HTTPMethod
 import pt.ipl.isel.leic.ps.androidclient.data.api.request.PayloadResponse
 import pt.ipl.isel.leic.ps.androidclient.data.api.request.RequestParser
-import pt.ipl.isel.leic.ps.androidclient.data.model.MealInfo
 import pt.ipl.isel.leic.ps.androidclient.data.util.appendPath
 import pt.ipl.isel.leic.ps.androidclient.data.util.appendQueryNotNullListParameter
 import pt.ipl.isel.leic.ps.androidclient.data.util.appendQueryNotNullParameter
@@ -36,7 +36,6 @@ class MealDataSource(
                 .scheme(SCHEME)
                 .encodedAuthority(ADDRESS_PORT)
                 .appendPath(MEAL_PATH)
-                .appendPath(SUGGESTED_PATH)
                 .appendQueryNotNullParameter(COUNT_PARAM, count)
                 .appendQueryNotNullParameter(SKIP_PARAM, skip)
                 .appendQueryNotNullListParameter(CUISINES_PARAM, cuisines)
@@ -136,8 +135,9 @@ class MealDataSource(
             uri = Uri.Builder()
                 .scheme(SCHEME)
                 .encodedAuthority(ADDRESS_PORT)
-                .appendPath(MEAL_PATH)
+                .appendPath(USER_PATH)
                 .appendPath(FAVORITE_PATH)
+                .appendPath(MEAL_PATH)
                 .appendQueryNotNullParameter(COUNT_PARAM, count)
                 .appendQueryNotNullParameter(SKIP_PARAM, skip)
                 .appendQueryNotNullListParameter(CUISINES_PARAM, cuisines)
@@ -145,6 +145,35 @@ class MealDataSource(
                 .toString(),
             reqHeader = buildAuthHeader(jwt),
             dtoClass = MealItemContainerInput::class.java,
+            onSuccess = success,
+            onError = error
+        )
+    }
+
+    fun getFavoriteRestaurantMeals(
+        jwt: String,
+        count: Int? = 30,
+        skip: Int? = 0,
+        cuisines: Collection<String>? = null,
+        success: (SimplifiedFavoriteRestaurantMealContainerInput) -> Unit,
+        error: (VolleyError) -> Unit
+    ) {
+        requestParser.requestAndParse(
+            method = HTTPMethod.GET,
+            uri = Uri.Builder()
+                .scheme(SCHEME)
+                .encodedAuthority(ADDRESS_PORT)
+                .appendPath(USER_PATH)
+                .appendPath(FAVORITE_PATH)
+                .appendPath(RESTAURANT_PATH)
+                .appendPath(MEAL_PATH)
+                .appendQueryNotNullParameter(COUNT_PARAM, count)
+                .appendQueryNotNullParameter(SKIP_PARAM, skip)
+                .appendQueryNotNullListParameter(CUISINES_PARAM, cuisines)
+                .build()
+                .toString(),
+            reqHeader = buildAuthHeader(jwt),
+            dtoClass = SimplifiedFavoriteRestaurantMealContainerInput::class.java,
             onSuccess = success,
             onError = error
         )
@@ -163,8 +192,9 @@ class MealDataSource(
             uri = Uri.Builder()
                 .scheme(SCHEME)
                 .encodedAuthority(ADDRESS_PORT)
-                .appendPath(MEAL_PATH)
+                .appendPath(USER_PATH)
                 .appendPath(CUSTOM_PATH)
+                .appendPath(MEAL_PATH)
                 .appendQueryNotNullParameter(COUNT_PARAM, count)
                 .appendQueryNotNullParameter(SKIP_PARAM, skip)
                 .appendQueryNotNullListParameter(CUISINES_PARAM, cuisines)
@@ -191,8 +221,9 @@ class MealDataSource(
             uri = Uri.Builder()
                 .scheme(SCHEME)
                 .encodedAuthority(ADDRESS_PORT)
-                .appendPath(MEAL_PATH)
+                .appendPath(USER_PATH)
                 .appendPath(CUSTOM_PATH)
+                .appendPath(MEAL_PATH)
                 .build()
                 .toString(),
             reqHeader = buildAuthHeader(jwt),
@@ -205,11 +236,11 @@ class MealDataSource(
     fun postRestaurantMeal(
         restaurantId: String,
         restaurantMealOutput: RestaurantMealOutput,
-        success: (CustomMealOutput) -> Unit,
-        error: (VolleyError) -> Unit,
+        onSuccess: () -> Unit,
+        onError: (VolleyError) -> Unit,
         jwt: String
     ) {
-        requestParser.requestAndParse(
+        requestParser.request(
             method = HTTPMethod.POST,
             uri = Uri.Builder()
                 .scheme(SCHEME)
@@ -220,10 +251,39 @@ class MealDataSource(
                 .build()
                 .toString(),
             reqHeader = buildAuthHeader(jwt),
-            dtoClass = CustomMealOutput::class.java,
-            onSuccess = success,
-            onError = error,
+            onError = onError,
+            responseConsumer = { onSuccess() },
             reqPayload = restaurantMealOutput
+        )
+    }
+
+    fun postRestaurantMealPortion(
+        restaurantId: String,
+        mealId: Int,
+        portionOutput: PortionOutput,
+        onSuccess: (Int) -> Unit,
+        onError: (VolleyError) -> Unit,
+        jwt: String
+    ) {
+
+        requestParser.request(
+            method = HTTPMethod.POST,
+            uri = Uri.Builder()
+                .scheme(SCHEME)
+                .encodedAuthority(ADDRESS_PORT)
+                .appendPath(RESTAURANT_PATH)
+                .appendEncodedPath(restaurantId)
+                .appendPath(MEAL_PATH)
+                .appendPath(mealId)
+                .appendPath(PORTION_PATH)
+                .build()
+                .toString(),
+            reqHeader = buildAuthHeader(jwt),
+            reqPayload = portionOutput,
+            onError = onError,
+            responseConsumer = { payloadResponse ->
+                onSuccess(payloadResponse.status)
+            }
         )
     }
 
@@ -406,6 +466,58 @@ class MealDataSource(
             reqPayload = reportOutput,
             onError = error,
             responseConsumer = { success() }
+        )
+    }
+
+    fun putRestaurantMealPortion(
+        restaurantId: String,
+        mealId: Int,
+        portionOutput: PortionOutput,
+        onSuccess: (Int) -> Unit,
+        onError: (VolleyError) -> Unit,
+        jwt: String
+    ) {
+        requestParser.request(
+            method = HTTPMethod.PUT,
+            uri = Uri.Builder()
+                .scheme(SCHEME)
+                .encodedAuthority(ADDRESS_PORT)
+                .appendPath(RESTAURANT_PATH)
+                .appendEncodedPath(restaurantId)
+                .appendPath(MEAL_PATH)
+                .appendPath(mealId)
+                .appendPath(PORTION_PATH)
+                .build()
+                .toString(),
+            reqHeader = buildAuthHeader(jwt),
+            reqPayload = portionOutput,
+            onError = onError,
+            responseConsumer = { onSuccess(it.status) }
+        )
+    }
+
+    fun deleteRestaurantMealPortion(
+        restaurantId: String,
+        mealId: Int,
+        onSuccess: (Int) -> Unit,
+        onError: (VolleyError) -> Unit,
+        jwt: String
+    ) {
+        requestParser.request(
+            method = HTTPMethod.DELETE,
+            uri = Uri.Builder()
+                .scheme(SCHEME)
+                .encodedAuthority(ADDRESS_PORT)
+                .appendPath(RESTAURANT_PATH)
+                .appendEncodedPath(restaurantId)
+                .appendPath(MEAL_PATH)
+                .appendPath(mealId)
+                .appendPath(PORTION_PATH)
+                .build()
+                .toString(),
+            reqHeader = buildAuthHeader(jwt),
+            onError = onError,
+            responseConsumer = { onSuccess(it.status) }
         )
     }
 }
