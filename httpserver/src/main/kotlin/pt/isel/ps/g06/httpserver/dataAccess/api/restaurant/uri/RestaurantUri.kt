@@ -10,8 +10,8 @@ interface RestaurantUri {
             longitude: Float,
             radius: Int,
             restaurantName: String? = null,
-            count: Int,
-            skip: Int? = null
+            skip: Int? = null,
+            count: Int? = null
     ): URI
 
     fun getRestaurantInfo(restaurantId: String): URI

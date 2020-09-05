@@ -44,19 +44,17 @@ class RestaurantService(
             count: Int
     ): Sequence<Restaurant> {
         val chosenRadius = if (radius != null && radius <= MAX_RADIUS) radius else MAX_RADIUS
-        val chosenApiCount = if (skip == null || skip == 0) count else count.plus(count.times(skip))
         val type = RestaurantApiType.getOrDefault(apiType)
         val restaurantApi = restaurantApiMapper.getRestaurantApi(type)
 
         var apiRestaurants: CompletableFuture<Collection<Restaurant>>? = null
         //Get API restaurants
-        if (chosenApiCount <= 100) {
-            apiRestaurants = restaurantApi
-                    .searchNearbyRestaurants(latitude, longitude, chosenRadius, name, chosenApiCount)
-                    .thenApply { it.map(restaurantResponseMapper::mapTo) }
-        }
 
-        return dbRestaurantRepository.getAllByCoordinates(latitude, longitude, chosenRadius, skip, count)
+        apiRestaurants = restaurantApi
+                .searchNearbyRestaurants(latitude, longitude, chosenRadius, name, skip, count / 2)
+                .thenApply { it.map(restaurantResponseMapper::mapTo) }
+
+        return dbRestaurantRepository.getAllByCoordinates(latitude, longitude, chosenRadius, skip, count / 2)
                 .map(restaurantResponseMapper::mapTo)
                 .let { filterRedundantApiRestaurants(
                         it,
@@ -193,16 +191,6 @@ class RestaurantService(
             count: Int
     ): Sequence<Restaurant> {
         //TODO Avoid eager call or maybe cache values with a stream cache implementation
-        val dbRestaurantListSize = dbRestaurants.toList().size
-        val apiRestaurantListSize = apiRestaurants.toList().size
-
-        if (dbRestaurantListSize == count && apiRestaurantListSize == 0) {
-            return dbRestaurants
-        }
-
-        if (skip != null && apiRestaurantListSize == count * (skip + 1) && dbRestaurantListSize == 0) {
-            return apiRestaurants.drop(apiRestaurantListSize - count)
-        }
 
         //Filter api restaurants that already exist in db
         val filteredApiRestaurants = apiRestaurants.filter { apiRestaurant ->
@@ -215,7 +203,7 @@ class RestaurantService(
             }
         }
 
-        var filteredApiRestaurantList = filteredApiRestaurants.toList()
+        /*var filteredApiRestaurantList = filteredApiRestaurants.toList()
         val filteredApiRestaurantListSize = filteredApiRestaurantList.size
 
         if (filteredApiRestaurantListSize > count) {
@@ -227,9 +215,9 @@ class RestaurantService(
 
         if (totalCount > count) {
             filteredApiRestaurantList = filteredApiRestaurantList.drop(totalCount - count)
-        }
+        }*/
 
-        return dbRestaurants.plus(filteredApiRestaurantList.asSequence())
+        return dbRestaurants.plus(filteredApiRestaurants)
     }
 
     private fun searchApiRestaurant(apiSubmitterId: Int, apiId: String, apiType: RestaurantApiType): RestaurantDto? {
