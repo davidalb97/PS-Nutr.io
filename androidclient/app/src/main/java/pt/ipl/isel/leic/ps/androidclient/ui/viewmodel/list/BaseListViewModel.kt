@@ -28,8 +28,8 @@ abstract class BaseListViewModel<T : Parcelable>() : ViewModel(), Parcelable {
     val items: List<T> get() = liveDataHandler.mapped
     var currItems: Int = 1
     var pendingRequest: Boolean = false
-    var skip: Int = DEFAULT_SKIP
-    var count: Int = DEFAULT_COUNT
+    var skip: Int? = DEFAULT_SKIP
+    var count: Int? = DEFAULT_COUNT
     var onError: (Throwable) -> Unit = log::e
 
     abstract fun update()
