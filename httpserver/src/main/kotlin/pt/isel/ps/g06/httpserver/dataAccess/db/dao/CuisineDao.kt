@@ -40,7 +40,7 @@ interface CuisineDao {
     @SqlQuery("SELECT * FROM $table " +
             "ORDER BY $table.$name ASC " +
             "LIMIT :count " +
-            "OFFSET :skip")
+            "OFFSET :skip * :count")
     fun getAll(skip: Int?, count: Int?): ResultIterable<DbCuisineDto>
 
     @SqlQuery("SELECT * FROM $table WHERE $name = :name")

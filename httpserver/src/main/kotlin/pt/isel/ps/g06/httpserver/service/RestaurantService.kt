@@ -1,6 +1,7 @@
 package pt.isel.ps.g06.httpserver.service
 
 import org.springframework.stereotype.Service
+import pt.isel.ps.g06.httpserver.common.DEFAULT_COUNT
 import pt.isel.ps.g06.httpserver.common.exception.problemJson.badRequest.NoSuchApiResponseStatusException
 import pt.isel.ps.g06.httpserver.common.exception.problemJson.notFound.RestaurantNotFoundException
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.RestaurantApiType
@@ -12,7 +13,6 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.ApiSubmitterMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.FavoriteDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.ReportDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.RestaurantDbRepository
-import pt.isel.ps.g06.httpserver.model.Meal
 import pt.isel.ps.g06.httpserver.model.restaurant.Restaurant
 import pt.isel.ps.g06.httpserver.model.restaurant.RestaurantIdentifier
 import pt.isel.ps.g06.httpserver.util.log
@@ -52,10 +52,10 @@ class RestaurantService(
                 .searchNearbyRestaurants(latitude, longitude, chosenRadius, name, skip, count)
                 .thenApply { it.map(restaurantResponseMapper::mapTo) }
 
-        //TODO Build API Restaurants Sequence from Completable Future
-        return dbRestaurantRepository.getAllByCoordinates(latitude, longitude, chosenRadius)
+        return dbRestaurantRepository.getAllByCoordinates(latitude, longitude, chosenRadius, skip, count)
                 .map(restaurantResponseMapper::mapTo)
-                .let { filterRedundantApiRestaurants(it, apiRestaurants.get().asSequence()) }
+                .let { filterRedundantApiRestaurants(it, apiRestaurants.get().asSequence(), count ?: DEFAULT_COUNT) }
+
         //Keeps an open transaction while we iterate the DB response Stream
 //        return transactionHolder.inTransaction {
 //
@@ -179,7 +179,8 @@ class RestaurantService(
 
     private fun filterRedundantApiRestaurants(
             dbRestaurants: Sequence<Restaurant>,
-            apiRestaurants: Sequence<Restaurant>
+            apiRestaurants: Sequence<Restaurant>,
+            count: Int
     ): Sequence<Restaurant> {
         //TODO Avoid eager call or maybe cache values with a stream cache implementation
         val aux = dbRestaurants.toList()
@@ -194,7 +195,7 @@ class RestaurantService(
             }
         }
 
-        return dbRestaurants.plus(filteredApiRestaurants)
+        return dbRestaurants.plus(filteredApiRestaurants).take(count)
     }
 
     private fun searchApiRestaurant(apiSubmitterId: Int, apiId: String, apiType: RestaurantApiType): RestaurantDto? {
