@@ -167,8 +167,8 @@
     </string-array>
 
     <string-array name="weight_units">
-        <item>grams</item>
-        <item>ounces</item>
+        <item>gr</item>
+        <item>oz</item>
     </string-array>
     <string name="title_activity_login">LoginActivity</string>
     <!-- Strings used for fragments for navigation -->
