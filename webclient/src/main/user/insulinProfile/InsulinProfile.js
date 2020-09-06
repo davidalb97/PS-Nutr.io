@@ -141,7 +141,12 @@ function ProfileList({ json }) {
         <strong>{profiles.length > 0 ? HAS_PROFILES_MSG : NO_PROFILES_MSG}</strong>
         <p />
         <ListGroup>
-            {profiles.map((profile, idx) => <Profile key={idx} profile={profile} disabledIntervals={sumDisabledIntervals()} />)}
+            {profiles.map((profile, idx) => <Profile
+                key={idx}
+                profile={profile}
+                disabledIntervals={sumDisabledIntervals()}
+                onProfileDeletion={onProfileDeletion.bind(profile)}
+            />)}
             {newProfileView}
         </ListGroup>
         <p />
@@ -169,6 +174,11 @@ function ProfileList({ json }) {
         setNewProfileView(null)
     }
 
+    //Where 'this' is binded profile
+    function onProfileDeletion() {
+        updateProfiles(profiles.filter(profile => profile.name != this.name))
+    }
+
     function sumDisabledIntervals() {
         function reducer(intervals, profile) {
             return [...intervals, {
@@ -176,6 +186,7 @@ function ProfileList({ json }) {
                 end: getTodayAtSpecificHour(profile.endTime.match(/.+?(?=:)/)[0])
             }]
         }
+        console.log(profiles)
         return profiles.reduce(reducer, [])
     }
 }
