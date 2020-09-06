@@ -7,11 +7,13 @@ import Button from 'react-bootstrap/Button'
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 import Popover from 'react-bootstrap/Popover'
 import Alert from 'react-bootstrap/Alert'
+import Card from 'react-bootstrap/Card'
 
 import { endOfToday, startOfToday, areIntervalsOverlapping } from 'date-fns'
 import TimeRange from 'react-timeline-range-slider'
 
 import UserContext from '../../authentication/UserContext'
+import FetchError from '../../bootstrap-common/FetchError'
 
 const defaultNewProfile = {
     profileName: undefined,
@@ -57,7 +59,7 @@ export default function NewProfile({ onProfileCreation, disabledIntervals }) {
 
     if (fetchState === FetchStates.error) {
         return <ListGroup.Item>
-            <ErrorAlert />
+            <FetchError json={json} error={error} />
         </ListGroup.Item>
     }
 
@@ -67,59 +69,64 @@ export default function NewProfile({ onProfileCreation, disabledIntervals }) {
         </ListGroup.Item>
     }
 
-    return <ListGroup.Item>
-        <Form>
-            <Form.Group controlId="profileName">
-                <Form.Label>Name (optional)</Form.Label>
-                <Form.Control
-                    value={status.profile.profileName}
-                    onChange={() => onInput(profileName.current)}
-                    ref={profileName}
-                    autoComplete="off"
-                    type="text"
+    return <>
+        <Card.Header as="h3">
+            New profile creation
+        </Card.Header>
+        <ListGroup.Item>
+            <Form>
+                <Form.Group controlId="profileName">
+                    <Form.Label>Profile name</Form.Label>
+                    <Form.Control
+                        value={status.profile.profileName}
+                        onChange={() => onInput(profileName.current)}
+                        ref={profileName}
+                        autoComplete="off"
+                        type="text"
+                    />
+                </Form.Group>
+                <Form.Group controlId="glucoseObjective">
+                    <Form.Label>Glucose objective</Form.Label>
+                    <Form.Control
+                        onChange={() => onInput(glucoseObjective.current)}
+                        ref={glucoseObjective}
+                        type="number"
+                        value={status.profile.glucoseObjective}
+                    />
+                </Form.Group>
+                <Form.Group controlId="carbohydrateRatio">
+                    <Form.Label>Carbohydrate ratio</Form.Label>
+                    <Form.Control
+                        onChange={() => onInput(carbRatio.current)}
+                        ref={carbRatio}
+                        type="number"
+                        value={status.profile.carbohydrateRatio}
+                    />
+                </Form.Group>
+                <Form.Group controlId="insulinSensitivityFactor">
+                    <Form.Label>Sensitivity factor</Form.Label>
+                    <Form.Control
+                        onChange={() => onInput(insulinSensitivityFactor.current)}
+                        ref={insulinSensitivityFactor}
+                        type="number"
+                        value={status.profile.insulinSensitivityFactor}
+                    />
+                </Form.Group>
+                <p />
+                <TimeRange
+                    error={status.timesCollide}
+                    ticksNumber={18}
+                    selectedInterval={[status.profile.startTime, status.profile.endTime]}
+                    timelineInterval={[startOfToday(), endOfToday()]}
+                    disabledIntervals={disabledIntervals}
+                    onUpdateCallback={() => { }}
+                    onChangeCallback={onChangeCallback}
                 />
-            </Form.Group>
-            <Form.Group controlId="glucoseObjective">
-                <Form.Label>Glucose objective</Form.Label>
-                <Form.Control
-                    onChange={() => onInput(glucoseObjective.current)}
-                    ref={glucoseObjective}
-                    type="number"
-                    value={status.profile.glucoseObjective}
-                />
-            </Form.Group>
-            <Form.Group controlId="carbohydrateRatio">
-                <Form.Label>Carbohydrate ratio</Form.Label>
-                <Form.Control
-                    onChange={() => onInput(carbRatio.current)}
-                    ref={carbRatio}
-                    type="number"
-                    value={status.profile.carbohydrateRatio}
-                />
-            </Form.Group>
-            <Form.Group controlId="insulinSensitivityFactor">
-                <Form.Label>Sensitivity factor</Form.Label>
-                <Form.Control
-                    onChange={() => onInput(insulinSensitivityFactor.current)}
-                    ref={insulinSensitivityFactor}
-                    type="number"
-                    value={status.profile.insulinSensitivityFactor}
-                />
-            </Form.Group>
-            <p />
-            <TimeRange
-                error={status.timesCollide}
-                ticksNumber={18}
-                selectedInterval={[status.profile.startTime, status.profile.endTime]}
-                timelineInterval={[startOfToday(), endOfToday()]}
-                disabledIntervals={disabledIntervals}
-                onUpdateCallback={() => { }}
-                onChangeCallback={onChangeCallback}
-            />
-            <p />
-            <ActionButton />
-        </Form>
-    </ListGroup.Item>
+                <p />
+                <ActionButton />
+            </Form>
+        </ListGroup.Item>
+    </>
 
 
     function onInput(ref) {
@@ -136,7 +143,7 @@ export default function NewProfile({ onProfileCreation, disabledIntervals }) {
     function ActionButton() {
         return <>
             <Button variant="danger" onClick={onProfileCreation} block>
-                Delete
+                Cancel creation
             </Button>
             <p />
             <RequestButton />
@@ -215,37 +222,36 @@ export default function NewProfile({ onProfileCreation, disabledIntervals }) {
         }
     }
 
-    function ErrorAlert() {
-        return <Alert variant="danger">
-            <Alert.Heading>Failed to create insulin profile!</Alert.Heading>
-            <p>
-                You should try again later.
-            </p>
-            <hr />
-            <div className="d-flex justify-content-end">
-                <Button onClick={onProfileCreation} variant="outline-danger">
-                    Close
-                </Button>
-            </div>
-        </Alert >
-    }
-
     function SuccessAlert() {
-        return <Alert show={show} variant="success">
+        return <Alert variant="success">
             <Alert.Heading>Added meal with success!</Alert.Heading>
             <p>
                 You can close this menu and continue editing your profiles.
             </p>
             <hr />
             <div className="d-flex justify-content-end">
-                <Button onClick={() => { onProfileCreation({ profile: status.profile }) }} variant="outline-sucess">
+                <Button
+                    onClick={() => {
+                        onProfileCreation({
+                            profile: {
+                                ...status.profile,
+                                name: status.profile.profileName,
+                                sensitivityFactor: status.profile.insulinSensitivityFactor,
+                                startTime: toString(status.profile.startTime),
+                                endTime: toString(status.profile.endTime)
+                            }
+                        })
+                    }}
+                    variant="outline-sucess"
+                >
                     Close
-          </Button>
+                </Button>
             </div>
         </Alert >
     }
 }
 
 function toString(date) {
-    return `${date.getHours()}:00`
+    const hours = ("0" + date.getHours()).slice(-2)
+    return `${hours}:00`
 }
