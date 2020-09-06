@@ -65,14 +65,14 @@ class ReportController(
 
     @DeleteMapping(REPORT_ID)
     fun deleteReport(
-            @PathVariable(REPORT_ID_VALUE) submissionId: Int,
+            @PathVariable(REPORT_ID_VALUE) reportId: Int,
             user: User
     ): ResponseEntity<Void> {
 
         // Check if the user is a moderator
         userService.ensureModerator(user)
 
-        reportService.deleteReport(submissionId)
+        reportService.deleteReport(reportId)
 
         return ResponseEntity.ok().build()
     }

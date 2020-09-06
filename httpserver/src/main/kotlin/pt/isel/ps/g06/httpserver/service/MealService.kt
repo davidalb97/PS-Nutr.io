@@ -41,7 +41,27 @@ class MealService(
                 .getAllUserFavorites(submitterId, count, skip)
                 .map(dbMealResponseMapper::mapTo)
 
-    fun createMeal(
+    fun createSuggestedMeal(
+            submitterId: Int,
+            name: String,
+            quantity: Int,
+            carbs: Int,
+            cuisines: Collection<String>,
+            mealType: MealType
+    ): Meal {
+        val createdMeal = dbMealRepository.insertSuggestedMeal(
+                submitterId = submitterId,
+                mealName = name,
+                cuisines = cuisines,
+                carbs = carbs,
+                quantity = quantity,
+                type = mealType
+        )
+
+        return dbMealResponseMapper.mapTo(createdMeal)
+    }
+
+    fun createCustomMeal(
             submitterId: Int,
             name: String,
             quantity: Int,
@@ -51,7 +71,7 @@ class MealService(
     ): Meal {
         validateMealQuantity(ingredients, quantity)
 
-        val createdMeal = dbMealRepository.insert(
+        val createdMeal = dbMealRepository.insertCustomMeal(
                 submitterId = submitterId,
                 mealName = name,
                 cuisines = cuisines,
@@ -63,7 +83,7 @@ class MealService(
         return dbMealResponseMapper.mapTo(createdMeal)
     }
 
-    fun editMeal(
+    fun editCustomMeal(
             submissionId: Int,
             submitterId: Int,
             name: String,
@@ -74,7 +94,7 @@ class MealService(
     ): Meal {
         validateMealQuantity(ingredients, quantity)
 
-        val updatedMeal = dbMealRepository.update(
+        val updatedMeal = dbMealRepository.updateCustomMeal(
                 submissionId = submissionId,
                 submitterId = submitterId,
                 mealName = name,

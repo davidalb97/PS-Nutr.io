@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*
 import org.springframework.web.util.UriComponentsBuilder
 import pt.isel.ps.g06.httpserver.common.*
 import pt.isel.ps.g06.httpserver.dataAccess.db.MealType
-import pt.isel.ps.g06.httpserver.dataAccess.input.meal.MealInput
+import pt.isel.ps.g06.httpserver.dataAccess.input.meal.CustomMealInput
 import pt.isel.ps.g06.httpserver.dataAccess.output.meal.SimplifiedMealContainer
 import pt.isel.ps.g06.httpserver.dataAccess.output.meal.toSimplifiedMealContainer
 import pt.isel.ps.g06.httpserver.model.User
@@ -40,11 +40,11 @@ class CustomMealController(private val mealService: MealService) {
     // TODO - has different repo method
     @PostMapping(USER_CUSTOM_MEALS_PATH)
     fun createCustomMeal(
-            @Valid @RequestBody meal: MealInput,
+            @Valid @RequestBody meal: CustomMealInput,
             user: User
     ): ResponseEntity<Void> {
         //Due to validators we are sure fields are never null
-        val createdMeal = mealService.createMeal(
+        val createdMeal = mealService.createCustomMeal(
                 submitterId = user.identifier,
                 name = meal.name!!,
                 quantity = meal.quantity!!,
@@ -64,11 +64,11 @@ class CustomMealController(private val mealService: MealService) {
     @PutMapping(USER_CUSTOM_MEAL_ID_PATH)
     fun editCustomMeal(
             @PathVariable(MEAL_ID_VALUE) mealId: Int,
-            @Valid @RequestBody meal: MealInput,
+            @Valid @RequestBody meal: CustomMealInput,
             user: User
     ): ResponseEntity<Void> {
         //Due to validators we are sure fields are never null
-        val updatedMeal = mealService.editMeal(
+        val updatedMeal = mealService.editCustomMeal(
                 submissionId = mealId,
                 submitterId = user.identifier,
                 name = meal.name!!,

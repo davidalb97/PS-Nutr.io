@@ -73,4 +73,9 @@ class UserService(
             throw BaseForbiddenException()
         }
     }
+
+    fun getUserFromSubmitterId(submitterId: Int): pt.isel.ps.g06.httpserver.model.User? =
+        userDbRepository.getBySubmitter(submitterId)
+                ?.let(userMapper::mapTo)
+
 }

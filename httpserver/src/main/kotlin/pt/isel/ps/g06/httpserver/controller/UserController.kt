@@ -3,10 +3,7 @@ package pt.isel.ps.g06.httpserver.controller
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import pt.isel.ps.g06.httpserver.common.BAN_PATH
-import pt.isel.ps.g06.httpserver.common.LOGIN_PATH
-import pt.isel.ps.g06.httpserver.common.REGISTER_PATH
-import pt.isel.ps.g06.httpserver.common.USER_PATH
+import pt.isel.ps.g06.httpserver.common.*
 import pt.isel.ps.g06.httpserver.common.exception.problemJson.notFound.UserNotFoundException
 import pt.isel.ps.g06.httpserver.common.exception.problemJson.unauthorized.UnauthorizedException
 import pt.isel.ps.g06.httpserver.dataAccess.input.moderation.BanInput
