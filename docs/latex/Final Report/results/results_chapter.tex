@@ -21,7 +21,7 @@ tutor's considerations and the need for a model capable of
 providing quick results when querying around a geolocation, 
 a relational model was chosen.
 
-\subsection{Used tecnologies}
+\subsection{Used technologies}
 
 When the project was in a planning phase, we decided that a relational database was the most suitable option for this project
 instead of a No-SQL database, because of the project's structure - there are many hierarchies between entities, which invalidated the
@@ -33,7 +33,7 @@ is supported by Heroku - allowing to
 deploy the application in later stages of development.\\
 
 \subsection{Conceptual model}
-As a result of multiples redesigns, here is the database's conceptual model.
+Below is the database's conceptual model.
 
 \begin{figure}[H]    
     \includegraphics[scale=0.2]{_figures/Nutr.io_Database_Diagram.eps}
@@ -45,16 +45,19 @@ The database's relational model is present inside this report's appendix [\namer
 In the relational model there are tables which are not specified in the conceptual model.
 These are a product from the normalization and associations between entities which will simplify queries' complexity.\\
 
-Now the submission can fall into 4 categories: ApiSubmission, Reportable, Favorable and Votable, in order to disguish between submissions that
+A submission can fit into 4 categories: ApiSubmission, Reportable, Favorable and Votable, in order to disguish between submissions that
 are from the user or from APIs and to separate which ones can be reportable, favorable and votable by the user.\\
 
-The cuisine entity has now an associated entity called ApiCuisine, to save cuisine information provided by the Here API.\\
+The cuisine entity has an association called ApiCuisine in order to map cuisine identifiers unique to the Here API to our own cuisines.\\
 
-Meals and ingredients were now condensed into one entity called food - now each meal can have meals inside it that can also be considered
-ingredients in other contexts.\\
+A food is always one of the following: a suggested meal, a custom meal or an ingredient - all identified by their submission type (SM, CM and I, respectively).\\
 
-Therefore each meal possesses nutritional information, which is essential to the user especially to the insulin calculations. That information is composed by
-'carbs' - meal's carbohydrates; and quantity - meal's quantity.\\
+A meal can also be composed by other meals or ingredients, represented by the 1-N Food association.\\
+
+Regarding security and encryption, all sensible user information such as medical records in the InsulinProfile table 
+or passwords in the User table are encrypted or hashed.\\
+
+More details about security can be found in [Chapter 8 - Encryption and Sensitive data]\\
 
 \section{HTTP server}
 
@@ -608,37 +611,47 @@ After these steps, the user is ready to calculate the insulin dosage that corres
 
 \section{Web browser application}
 
-This web browser application will mainly serve the propose of moderation inside our platform, as we agreed that a good way to provide a good reason for this 
-component's existence was to not duplicate all mobile application functionalities and to extend the platform's features.\\
+Seeing as the goal of our application is provide nutritional information for meals served in restaurants,
+we assumed that a typical user would not search for nearby restaurants on their computer's browser.\\
 
-However some user's features are also present in this client, such as: insulin profile creation and custom meal creation.\\
+As such, we decided to develop a minimalist version of our application for browsers with extended moderating functionalities -
+an authenticated user can only view and create custom meals and edit their insulin profiles; while a moderator can create suggested ingredients
+and meals for cuisines, and view submission reports and act on them, either by banning the submitter, removing the submission or dismissing the report.\\
 
 \subsection{Used tecnologies}
 
 \subsubsection{React framework}
 
 We chose to build the website with JavaScript \cite{javascript} using the React framework \cite{react} , as it was the framework lectured in the Web applications
-development course and has innumerous advantages to other frameworks, such as Node.JS.
+development course.
 
-\subsubsection{Bootstrap}
+\subsubsection{React bootstrap}
 
-We chose to use bootstrap as it is a front-end framework that facilitates the CSS implementation and interface construction of our application, being also widely
-used in other web client applications.\\
+We chose to use React Bootstrap not only because it offers tools to quickly build responsive and appealing User Interfaces,
+but also because of some familiarity with it due to previous courses such as Internet Programming.\\
+
+Additionally, React Bootstrap was chosen over Bootstrap as it is easy to code due to "each component has been built from scratch
+as a true React component, without unneeded dependencies like jQuery." and "each component is implemented with accessibility in mind.
+The result is a set of accessible-by-default components, over what is possible from plain Bootstrap."  (from https://react-bootstrap.github.io/)\\
+
 
 \subsection{Code structure}
 
 \subsubsection{Single-page application}
 
-As website design pattern, we chose to conceive a single-page application. This pattern was chosen for a 
-variety of reasons, being the main one a better performance comparing to a traditional multi-page application.\\
+Regarding design patterns, we decided to develop our web browser application using a Single Page Application approach over
+a Multi Page Application. This pattern was chosen as it is faster for the user to navigate after the initial load, allows for
+a better user experience and interaction, and it reduces the load on the server, as most resouces (such as HTML and CSS) are
+only requested and loaded once by the user.\\
 
-Although being a single-page application, every endpoint used here allows bookmarking, so the user can visit a page
-later without needing to start by the homepage.
+Additionally, React-Router is also used to solve shortcomings that Single Page Applications used to have -
+the inability to go back and forth on the browser history without reloading the page and the lack of bookmarking.\\
 
 \subsubsection{Routing}
 
-As mentioned that the web client application will only serve the propose of moderation, this routing diagram shows the
-navigation and routing inside it.
+Bellow is the diagram containing every possible endpoint that can be visited and bookmarked throughout the application.\\
+
+Green marked endpoints require the user to be authenticated; while red marked ones require the moderator role to access.\\
 
 \begin{figure}[H]
     \begin{center}
@@ -649,9 +662,9 @@ navigation and routing inside it.
 
 \subsubsection{Error handling}
 
-Every error that is shown to the user takes advantage of the content type \textbf{problem-json}
-so, the user gets an adapted message for every situation. When this is not possible, a generic error
-message is presented.\\
+Whenever an HTTP request is sent to the server and an error occurs, the application takes
+advantage of the \textbf{problem-json} content-type to display a specialized error message
+to the user. When this is not possible, a generic error message is displayed instead.\\
 
 \subsection{Functionalities}
 
@@ -660,7 +673,7 @@ message is presented.\\
 \begin{figure}[H]
     \begin{center}
         \includegraphics[scale=0.4]{_figures/register-page.png}
-        \caption{The register and login page}
+        \caption{Register and login page}
     \end{center}
 \end{figure}
 
@@ -680,8 +693,8 @@ needing to manually insert them using SQL queries.\\
 
 \subsubsection{User: Create a custom meal}
 
-Meal creation is done in 5 steps and each can only be advanced when all fields are valid
-Going back and forth on each step remembers your choices, so editing a previous input is not cumbersome on the user.\\
+Meal creation is done in 5 steps and each can only be advanced when all fields are valid.
+Going back and forth on each step remembers your choices, so editing a previous input is not cumbersome to the user.\\
 
 The sum of all ingredient quantities can not be higher than the original quantity. 
 But a meal can always have a leftover quantity which is considered undefined ingredient(s) or ingredients with no carbs.\\
@@ -732,7 +745,7 @@ gray tone inside the slider.\\
 \begin{figure}[H]
     \begin{center}
         \includegraphics[scale=0.4]{_figures/web-insulin-profile-creation.png}
-        \caption{Create a hardcoded meal or ingredient}
+        \caption{Insulin profile creation}
     \end{center}
 \end{figure}
 
