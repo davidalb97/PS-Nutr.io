@@ -11,7 +11,7 @@ import Nav from 'react-bootstrap/Nav'
 import Button from 'react-bootstrap/Button'
 
 import Loading from '../../bootstrap-common/Loading'
-
+import FetchError from '../../bootstrap-common/FetchError'
 export default function MealList({ meals }) {
     const [activeMeals, setActiveMeals] = useState(meals)
 
@@ -31,8 +31,8 @@ export default function MealList({ meals }) {
                     {activeMeals.map((meal, idx) => {
                         return <Tab.Pane key={idx} eventKey={idx}>
                             <Meal
-                                onMealDelete={removeFromList.bind(meal.mealIdentifier)}
-                                identifier={meal.mealIdentifier}
+                                onMealDelete={removeFromList.bind(meal.identifier)}
+                                identifier={meal.identifier}
                             />
                         </Tab.Pane>
                     })}
@@ -43,7 +43,7 @@ export default function MealList({ meals }) {
 
     function removeFromList() {
         //Where 'this' is meal identifier defined by bind() call
-        const newList = [...activeMeals].filter(meal => meal.mealIdentifier !== this)
+        const newList = [...activeMeals].filter(meal => meal.identifier !== this)
         setActiveMeals(newList)
     }
 }
@@ -67,7 +67,7 @@ function Meal({ onMealDelete, identifier }) {
     }, [fetchState, setMealDetail])
 
 
-    if (error) return <FetchError error={error} json={json} />
+    if (fetchState == FetchStates.error) return <FetchError error={error} json={json} />
     if (!meal || fetchState === FetchStates.fetching) return <Loading />
 
     const meals = meal

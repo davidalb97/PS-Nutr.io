@@ -5,8 +5,6 @@ import Navbar from 'react-bootstrap/Navbar'
 import Nav from 'react-bootstrap/Nav'
 import NavDropdown from 'react-bootstrap/NavDropdown'
 import Button from 'react-bootstrap/Button'
-import Row from 'react-bootstrap/Row'
-import Col from 'react-bootstrap/Col'
 
 import { LinkContainer } from 'react-router-bootstrap'
 
@@ -19,44 +17,49 @@ export default function TopNavigation() {
 
     if (!init) return <> </>
 
-    const disabled = !userContext.initialized || (userContext.initialized && !userContext.user)
-    //If user was still not obtained from server, do not display Login/Register buttons
-    const authenticationContext = !userContext.initialized ? <> </> : userContext.user ?
-        //Logged in, display info
-        <>
-            <Navbar.Text>Signed in as: <Link to="/user">{`${userContext.user.username}`}</Link></Navbar.Text>
-            <Button variant="primary" onClick={() => userContext.onLogout()}>Sign out</Button>
-        </> :
-        //----
-        //Not signed in, but tried to obtain from server
-        <>
-            <LinkContainer to="/login"><Button variant="primary">Login</Button></LinkContainer>
-            <LinkContainer to="/register"><Button variant="primary">Register</Button></LinkContainer>
-        </>
+    const navigation = !userContext.initialized ? <> </> : userContext.user ?
+        <AuthenticatedNavigation /> :
+        <UnauthenticatedNavigation />
 
     return <Navbar bg="dark" variant="dark" expand="lg" fixed="top">
         <Navbar.Brand><Link to="/" >Nutr.io</Link></Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
-            <Nav className="mr-auto d-flex">
+            {navigation}
+        </Navbar.Collapse>
+    </Navbar >
+
+    function AuthenticatedNavigation() {
+        return <>
+            <Nav className="d-flex justify-content-start top-navbar">
                 {/* MEALS */}
-                <NavDropdown title="Meal" id="collasible-nav-dropdown" disabled={disabled}>
+                <NavDropdown title="Meal" id="collasible-nav-dropdown">
                     <NavDropdown.Item><Link to="/meals">View custom meals</Link></NavDropdown.Item>
                     <NavDropdown.Item><Link to="/meals/create">Add custom meal</Link></NavDropdown.Item>
                 </NavDropdown>
                 {/* USER */}
-                <NavDropdown title="User" id="collasible-nav-dropdown" disabled={disabled}>
+                <NavDropdown title="User" id="collasible-nav-dropdown">
                     <NavDropdown.Item><Link to="/user">View profile</Link></NavDropdown.Item>
                     <NavDropdown.Item><Link to="/user/insulin">View insulin profiles</Link></NavDropdown.Item>
                 </NavDropdown>
                 {/* MODERATION */}
-                <NavDropdown title="Moderation" id="collasible-nav-dropdown" disabled={disabled}>
+                <NavDropdown title="Moderation" id="collasible-nav-dropdown">
                     <NavDropdown.Item><Link to="/moderation/newFood">Food creator</Link></NavDropdown.Item>
                     <NavDropdown.Item><Link to="/moderation/reports">Reports</Link></NavDropdown.Item>
                 </NavDropdown>
-
-                {authenticationContext}
             </Nav>
-        </Navbar.Collapse>
-    </Navbar >
+
+            <Nav className="d-flex justify-content-end top-navbar">
+                <Navbar.Text>Signed in as: <Link to="/user">{`${userContext.user.username}`}</Link></Navbar.Text>
+                <Button variant="primary" className="nav-register-btn" onClick={() => userContext.onLogout()}>Sign out</Button>
+            </Nav>
+        </>
+    }
+
+    function UnauthenticatedNavigation() {
+        return <Nav className="d-flex justify-content-end top-navbar">
+            <LinkContainer to="/login"><Button variant="outline-primary" active={false}>Login</Button></LinkContainer>
+            <LinkContainer to="/register"><Button variant="primary" className="nav-register-btn">Register</Button></LinkContainer>
+        </Nav>
+    }
 }

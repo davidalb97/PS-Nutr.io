@@ -38,7 +38,7 @@ export default function Finish({ meal, setCanAdvance }) {
                 .map(component => component.value)
                 .map(component => {
                     return {
-                        identifier: component.id || component.mealIdentifier,
+                        identifier: component.identifier,
                         quantity: component.userQuantity.amount
                     }
                 })
