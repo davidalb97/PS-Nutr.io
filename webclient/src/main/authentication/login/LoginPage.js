@@ -28,7 +28,7 @@ export default function LoginPage() {
     if (userContext.user) return <Redirect to="/" />
     if (fetchState === FetchStates.done && json) return <Redirect to="/" />
 
-    return <Container className="login">
+    return <Container>
         <Form>
             <h1>Please enter login credentials</h1>
             <Form.Group controlId="email">
