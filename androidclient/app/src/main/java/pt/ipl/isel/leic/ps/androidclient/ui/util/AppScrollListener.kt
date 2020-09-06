@@ -34,7 +34,7 @@ class AppScrollListener<M : Parcelable>(
     private fun loadMore() {
         recyclerViewModel.currItems = recyclerViewModel.items.size + 1
         recyclerViewModel.skip = recyclerViewModel.skip?.inc()
-        recyclerViewModel.update()
+        recyclerViewModel.fetch()
     }
 
     private fun shouldGetMore(): Boolean =
