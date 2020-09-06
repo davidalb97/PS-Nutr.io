@@ -43,25 +43,25 @@ interface ReportDao {
         const val description = "description"
     }
 
-    @SqlQuery("SELECT * FROM $table LIMIT :count OFFSET :skip")
+    @SqlQuery("SELECT * FROM $table LIMIT :count OFFSET :skip * :count")
     fun getAll(skip: Int?, count: Int?): ResultIterable<DbReportDto>
 
-    @SqlQuery("SELECT $S_table.$S_submission_id as _submission_id, " +
-            "COALESCE($R_table.$R_restaurant_name, _RestaurantMeal.meal_name) as _name, " +
-            "$SS_table.$SS_submitterId as _submitter_id, " +
-            "COUNT($S_table.$S_submission_id) as _count FROM $table " +
-            "INNER JOIN $S_table ON $S_table.$S_submission_id = $table.$submissionId " +
-            "FULL OUTER JOIN $R_table ON $R_table.$R_submission_id = $table.$submissionId " +
-            "FULL OUTER JOIN " +
-            "(SELECT $RM_table.$RM_submission_id, $M_table.$M_meal_name " +
-            "FROM $RM_table INNER JOIN $M_table ON " +
-            "$M_table.$M_submission_id = $RM_table.$RM_restaurant_meal_id) as _RestaurantMeal " +
-            "ON _RestaurantMeal.submission_id = $S_table.$S_submission_id " +
-            "INNER JOIN $SS_table ON $SS_table.$SS_submissionId = $S_table.$S_submission_id " +
-            "WHERE $S_table.$S_submission_type IN (:submissionType) " +
-            "GROUP BY $S_table.$S_submission_id, $R_table.$R_restaurant_name, _RestaurantMeal.meal_name, _submitter_id " +
-            "ORDER BY _count DESC, _name ASC " +
-            "LIMIT :count OFFSET :skip"
+    @SqlQuery( "SELECT $S_table.$S_submission_id as _submission_id, " +
+                    "COALESCE($R_table.$R_restaurant_name, _RestaurantMeal.meal_name) as _name, " +
+                    "$SS_table.$SS_submitterId as _submitter_id, " +
+                    "COUNT($S_table.$S_submission_id) as _count FROM $table " +
+                    "INNER JOIN $S_table ON $S_table.$S_submission_id = $table.$submissionId " +
+                    "FULL OUTER JOIN $R_table ON $R_table.$R_submission_id = $table.$submissionId " +
+                    "FULL OUTER JOIN " +
+                    "(SELECT $RM_table.$RM_submission_id, $M_table.$M_meal_name " +
+                    "FROM $RM_table INNER JOIN $M_table ON " +
+                    "$M_table.$M_submission_id = $RM_table.$RM_restaurant_meal_id) as _RestaurantMeal " +
+                    "ON _RestaurantMeal.submission_id = $S_table.$S_submission_id " +
+                    "INNER JOIN $SS_table ON $SS_table.$SS_submissionId = $S_table.$S_submission_id " +
+                    "WHERE $S_table.$S_submission_type IN (:submissionType) " +
+                    "GROUP BY $S_table.$S_submission_id, $R_table.$R_restaurant_name, _RestaurantMeal.meal_name, _submitter_id " +
+                    "ORDER BY _count DESC, _name ASC " +
+                    "LIMIT :count OFFSET :skip * :count"
     )
     fun getAllReportedSubmissionsByType(
             submissionType: String,

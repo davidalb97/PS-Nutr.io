@@ -11,6 +11,7 @@ import pt.isel.ps.g06.httpserver.anyNonNull
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.RestaurantApi
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.mapper.RestaurantApiMapper
 import pt.isel.ps.g06.httpserver.dataAccess.common.dto.RestaurantDto
+import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.restaurant.DbRestaurantResponseMapper
 import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.restaurant.RestaurantResponseMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.ApiSubmitterMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbRestaurantDto
@@ -28,6 +29,7 @@ class RestaurantServiceTests {
     lateinit var dbRestaurantRepository: RestaurantDbRepository
     lateinit var restaurantApiMapper: RestaurantApiMapper
     lateinit var restaurantResponseMapper: RestaurantResponseMapper
+    lateinit var dbRestaurantResponseMapper: DbRestaurantResponseMapper
     lateinit var apiSubmitterMapper: ApiSubmitterMapper
     lateinit var dbFavoriteDbRepository: FavoriteDbRepository
     lateinit var dbReportDbRepository: ReportDbRepository
@@ -39,6 +41,7 @@ class RestaurantServiceTests {
         dbRestaurantRepository = mock(RestaurantDbRepository::class.java)
         restaurantApiMapper = mock(RestaurantApiMapper::class.java)
         restaurantResponseMapper = mock(RestaurantResponseMapper::class.java)
+        dbRestaurantResponseMapper = mock(DbRestaurantResponseMapper::class.java)
         apiSubmitterMapper = mock(ApiSubmitterMapper::class.java)
         dbFavoriteDbRepository = mock(FavoriteDbRepository::class.java)
         dbReportDbRepository = mock(ReportDbRepository::class.java)
@@ -47,6 +50,7 @@ class RestaurantServiceTests {
                 dbRestaurantRepository = dbRestaurantRepository,
                 restaurantApiMapper = restaurantApiMapper,
                 restaurantResponseMapper = restaurantResponseMapper,
+                dbRestaurantResponseMapper = dbRestaurantResponseMapper,
                 apiSubmitterMapper = apiSubmitterMapper,
                 dbFavoriteDbRepository = dbFavoriteDbRepository,
                 dbReportDbRepository = dbReportDbRepository
@@ -99,7 +103,13 @@ class RestaurantServiceTests {
         `when`(restaurantApiMapper.getRestaurantApi(anyNonNull())).thenReturn(restaurantApi)
 
         //Setup database search result
-        `when`(dbRestaurantRepository.getAllByCoordinates(latitude, longitude, radius)).thenReturn(Stream.of(firstDatabaseDto))
+        `when`(dbRestaurantRepository.getAllByCoordinates(
+                latitude,
+                longitude,
+                radius,
+                count,
+                skip
+        )).thenReturn(sequenceOf(firstDatabaseDto))
 
         //Call to action
         val nearbyRestaurants = restaurantService.getNearbyRestaurants(
