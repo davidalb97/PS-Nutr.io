@@ -47,7 +47,7 @@ abstract class BaseListFragment<
         initRecyclerView(view)
     }
 
-    fun initRecyclerView(view: View) {
+    open fun initRecyclerView(view: View) {
         recyclerHandler = RecyclerHandler(
             recyclerId = getRecyclerId(),
             noItemsTxt = getNoItemsLabelId(),
@@ -57,6 +57,7 @@ abstract class BaseListFragment<
             view = view,
             onError = ::onError
         )
+        recyclerHandler.startScrollListener()
         recyclerHandler.startObserver(this)
     }
 }

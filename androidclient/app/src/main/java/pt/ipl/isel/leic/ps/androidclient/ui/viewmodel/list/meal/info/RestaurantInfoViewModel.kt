@@ -16,7 +16,7 @@ import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.meal.MealItemListView
 
 class RestaurantInfoViewModel : MealItemListViewModel {
 
-    private val restaurantInfoLiveDataHandler = LiveDataHandler<RestaurantInfo>()
+    val restaurantInfoLiveDataHandler = LiveDataHandler<RestaurantInfo>()
     val restaurantInfo get() = restaurantInfoLiveDataHandler.value
     var addedMeal: MealItem? = null
 

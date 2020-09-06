@@ -36,7 +36,7 @@ class RecyclerHandler<M : Parcelable, VM : BaseListViewModel<M>, A : BaseRecycle
 
         recyclerViewModel.onError = this::errorFunction
 
-        startScrollListener()
+        //startScrollListener()
     }
 
     /**
@@ -54,7 +54,7 @@ class RecyclerHandler<M : Parcelable, VM : BaseListViewModel<M>, A : BaseRecycle
      * Recycler list scroll listener
      * Receives the fetch from the specific view model
      */
-    private fun startScrollListener() {
+    fun startScrollListener() {
         recyclerView.addOnScrollListener(
             AppScrollListener(
                 layoutManager = recyclerView.layoutManager as LinearLayoutManager,

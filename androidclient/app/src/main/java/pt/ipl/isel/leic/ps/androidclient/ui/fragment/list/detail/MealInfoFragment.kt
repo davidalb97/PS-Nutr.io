@@ -12,6 +12,7 @@ import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
+import pt.ipl.isel.leic.ps.androidclient.NutrioApp
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.app
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.sharedPreferences
 import pt.ipl.isel.leic.ps.androidclient.R
@@ -86,9 +87,15 @@ class MealInfoFragment :
     private lateinit var portionEntries: MutableList<BarEntry>
     private var userPortionEntry: BarEntry? = null
 
+    /*override fun onCreate(savedInstanceState: Bundle?) {
+        setHasOptionsMenu(true)
+        super.onCreate(savedInstanceState)
+    }
+*/
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setHasOptionsMenu(true)
         actions = recyclerViewModel.actions
         recyclerViewModel.observeInfo(this) { mealInfo ->
             setupView(view, mealInfo)
@@ -96,6 +103,19 @@ class MealInfoFragment :
 
         //Fetch meal info
         recyclerViewModel.update()
+    }
+
+    override fun initRecyclerView(view: View) {
+        recyclerHandler = RecyclerHandler(
+            recyclerId = getRecyclerId(),
+            noItemsTxt = getNoItemsLabelId(),
+            progressBar = getProgressBarId(),
+            adapter = recyclerAdapter,
+            recyclerViewModel = recyclerViewModel,
+            view = view,
+            onError = ::onError
+        )
+        recyclerHandler.startObserver(this)
     }
 
     private fun setupView(view: View, receivedMeal: MealInfo) {
@@ -111,6 +131,7 @@ class MealInfoFragment :
         setupPortionEntries(receivedMeal)
         super.setupChart(view, portionEntries)
         setupPortionButtons(view, receivedMeal)
+        populateMenu(NutrioApp.menu)
 
         val title: TextView = view.findViewById(R.id.meal_detail_title)
         title.text = receivedMeal.name

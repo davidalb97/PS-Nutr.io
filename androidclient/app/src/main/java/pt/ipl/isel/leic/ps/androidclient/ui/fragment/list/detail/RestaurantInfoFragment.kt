@@ -3,12 +3,14 @@ package pt.ipl.isel.leic.ps.androidclient.ui.fragment.list.detail
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.system.Os.close
+import android.view.*
 import android.widget.*
+import androidx.core.app.ActivityCompat.invalidateOptionsMenu
+import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.navigation.navGraphViewModels
+import pt.ipl.isel.leic.ps.androidclient.NutrioApp
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealItem
 import pt.ipl.isel.leic.ps.androidclient.data.model.RestaurantInfo
@@ -19,12 +21,10 @@ import pt.ipl.isel.leic.ps.androidclient.ui.modular.IImage
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.ISend
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.IFavoriteActionButton
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.IVoteActionButtons
-import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.menu.IEditMenuItem
-import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.menu.IPopupMenuButton
-import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.menu.IReportMenuItem
-import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.menu.MenuItemFactory
+import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.menu.*
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.BaseViewModelProviderFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.util.*
+import pt.ipl.isel.leic.ps.androidclient.ui.util.prompt.PromptInput
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.meal.info.RestaurantInfoViewModel
 
 class RestaurantInfoFragment :
@@ -32,7 +32,6 @@ class RestaurantInfoFragment :
     IImage,
     IVoteActionButtons,
     IFavoriteActionButton,
-    IPopupMenuButton,
     IReportMenuItem,
     IEditMenuItem,
     ISend {
@@ -63,8 +62,6 @@ class RestaurantInfoFragment :
     override lateinit var upVoteButton: ImageButton
     override val downVoteButtonId: Int = R.id.down_vote_button
     override lateinit var downVoteButton: ImageButton
-    override val menuButtonId: Int = R.id.options
-    override lateinit var menuButton: ImageButton
 
     lateinit var addMealButton: Button
 
@@ -74,6 +71,7 @@ class RestaurantInfoFragment :
         savedInstanceState: Bundle?
     ): View? {
         //Bypass generic Recycler ViewModel creation
+        setHasOptionsMenu(true)
         val viewModel: RestaurantInfoViewModel
                 by navGraphViewModels(Navigation.SEND_TO_RESTAURANT_DETAIL.navId)
         recyclerViewModel = viewModel
@@ -88,9 +86,23 @@ class RestaurantInfoFragment :
 
         actions = recyclerViewModel.actions
         recyclerViewModel.observeInfo(this) { restaurantInfo ->
+            recyclerViewModel.restaurantInfoLiveDataHandler.removeObservers(this)
             setupRestaurantInfoView(view, restaurantInfo)
         }
         recyclerViewModel.update()
+    }
+
+    override fun initRecyclerView(view: View) {
+        recyclerHandler = RecyclerHandler(
+            recyclerId = getRecyclerId(),
+            noItemsTxt = getNoItemsLabelId(),
+            progressBar = getProgressBarId(),
+            adapter = recyclerAdapter,
+            recyclerViewModel = recyclerViewModel,
+            view = view,
+            onError = ::onError
+        )
+        recyclerHandler.startObserver(this)
     }
 
     private fun setupRestaurantInfoView(view: View, restaurantInfo: RestaurantInfo) {
@@ -99,8 +111,8 @@ class RestaurantInfoFragment :
         super.setupFavoriteButton(view, restaurantInfo.favorites)
         super.setupReportMenuItem(restaurantInfo.isReportable)
         super.setupEditMenuItem()
-        super.setupPopupMenuButton(view)
         super.setupVoteButtons(view, restaurantInfo.votes)
+        populateMenu(NutrioApp.menu)
 
         val title: TextView = view.findViewById(R.id.restaurant_detail_title)
         title.text = restaurantInfo.name

@@ -2,7 +2,6 @@ package pt.ipl.isel.leic.ps.androidclient.ui.modular.action
 
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.ImageButton
 import androidx.core.content.ContextCompat
 import pt.ipl.isel.leic.ps.androidclient.R
@@ -13,7 +12,6 @@ import pt.ipl.isel.leic.ps.androidclient.ui.modular.ILog
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.IUserSession
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.IVoteProgress
 import pt.ipl.isel.leic.ps.androidclient.ui.util.ItemAction
-import pt.ipl.isel.leic.ps.androidclient.ui.util.changeColor
 
 interface IVoteActionButtons : IVoteProgress, IContext, IAction, IUserSession, ILog {
 
@@ -60,9 +58,9 @@ interface IVoteActionButtons : IVoteProgress, IContext, IAction, IUserSession, I
         voteButtonsLayout.visibility = View.VISIBLE
     }
 
-    private fun vote(votes: Votes, upVote: Boolean) {
+    private fun vote(votes: Votes, isPositive: Boolean) {
         val currentState = votes.userHasVoted
-        val nextVoteState = currentState.nextState(upVote)
+        val nextVoteState = currentState.nextState(isPositive)
         onVote(
             voteState = nextVoteState,
             onSuccess = {
