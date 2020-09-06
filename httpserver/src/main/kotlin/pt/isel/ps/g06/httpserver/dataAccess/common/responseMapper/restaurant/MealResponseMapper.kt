@@ -39,11 +39,12 @@ class DbMealResponseMapper(
                         meals = mealComponentMapper.mapTo(dto),
                         ingredients = ingredientMapper.mapTo(dto)
                 ),
-                cuisines = dbCuisineRepo.getAllByMealId(dto.submission_id).map(dbCuisineMapper::mapTo),
+                cuisines = dbCuisineRepo.getAllByMealId(dto.submission_id)
+                        .map(dbCuisineMapper::mapTo),
                 submitterInfo = lazy {
                     dbSubmitterRepo
                             .getSubmitterForSubmission(dto.submission_id)
-                            ?.let { submitter -> dbSubmitterMapper.mapTo(submitter) }
+                            ?.let(dbSubmitterMapper::mapTo)
                 },
                 creationDate = lazy { dbSubmissionRepository.getCreationDate(dto.submission_id) },
                 type = MealType.fromValue(dto.meal_type),

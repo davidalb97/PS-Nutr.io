@@ -27,19 +27,23 @@ class DbRestaurantMealInfoResponseMapper(
 ) : ResponseMapper<DbRestaurantMealDto, MealRestaurantInfo> {
 
     override fun mapTo(dto: DbRestaurantMealDto): MealRestaurantInfo {
+        if(dto.meal_submission_id == 255) {
+            println()
+        }
         val isReportable = lazy {
+
             dto.submission_id?.let {
                 //Restaurant meal requires contract
                 submissionDbRepository.hasContract(it, SubmissionContractType.REPORTABLE)
                 //A a future restaurant meal is only reportable if the type is custom
-            } ?: dbMealRepo.getById(dto.meal_submission_id)!!.meal_type == MEAL_TYPE_CUSTOM
+            } ?: (dbMealRepo.getById(dto.meal_submission_id)!!.meal_type == MEAL_TYPE_CUSTOM)
         }
         val isVotable = lazy {
             dto.submission_id?.let {
                 //Restaurant meal requires contract
                 submissionDbRepository.hasContract(it, SubmissionContractType.VOTABLE)
                 //A a future restaurant meal is only votable if it's a suggested meal
-            } ?: dbMealRepo.getById(dto.meal_submission_id)!!.meal_type == MEAL_TYPE_CUSTOM
+            } ?: (dbMealRepo.getById(dto.meal_submission_id)!!.meal_type == MEAL_TYPE_CUSTOM)
         }
         return MealRestaurantInfo(
                 identifier = dto.submission_id,
@@ -76,7 +80,7 @@ class DbRestaurantMealInfoResponseMapper(
                         //Cannot report on self submitted resource
                         !submissionDbRepository.isSubmissionOwner(it, userId)
                                 //It is only reportable once per user
-                                && dbReportRepo.userHasReported(userId, it)
+                                && !dbReportRepo.userHasReported(userId, it)
                     } ?: true
                 },
                 isVotable = toUserPredicate({ isVotable.value }) { userId ->
