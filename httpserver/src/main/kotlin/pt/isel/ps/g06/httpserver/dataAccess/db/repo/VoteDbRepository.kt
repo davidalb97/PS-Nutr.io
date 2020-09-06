@@ -51,6 +51,7 @@ class VoteDbRepository(private val databaseContext: DatabaseContext, private val
                         voteDao.delete(submissionId, voterId)
                     }
                     VoteState.POSITIVE -> {
+                        voteDao.delete(submissionId, voterId)
                         positiveOffset++
                         negativeOffset--
                         voteDao.insert(submissionId, voterId, true)
@@ -62,6 +63,7 @@ class VoteDbRepository(private val databaseContext: DatabaseContext, private val
                         voteDao.delete(submissionId, voterId)
                     }
                     VoteState.NEGATIVE -> {
+                        voteDao.delete(submissionId, voterId)
                         positiveOffset--
                         negativeOffset++
                         voteDao.insert(submissionId, voterId, false)

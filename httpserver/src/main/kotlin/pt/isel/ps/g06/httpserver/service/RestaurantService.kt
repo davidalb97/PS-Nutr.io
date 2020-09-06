@@ -12,10 +12,10 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.ApiSubmitterMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.FavoriteDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.ReportDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.RestaurantDbRepository
-import pt.isel.ps.g06.httpserver.model.Meal
 import pt.isel.ps.g06.httpserver.model.restaurant.Restaurant
 import pt.isel.ps.g06.httpserver.model.restaurant.RestaurantIdentifier
 import pt.isel.ps.g06.httpserver.util.log
+import java.util.concurrent.CompletableFuture
 
 private const val MAX_RADIUS = 1000
 
@@ -41,21 +41,28 @@ class RestaurantService(
             radius: Int?,
             apiType: String?,
             skip: Int?,
-            count: Int?
+            count: Int
     ): Sequence<Restaurant> {
         val chosenRadius = if (radius != null && radius <= MAX_RADIUS) radius else MAX_RADIUS
         val type = RestaurantApiType.getOrDefault(apiType)
         val restaurantApi = restaurantApiMapper.getRestaurantApi(type)
 
+        var apiRestaurants: CompletableFuture<Collection<Restaurant>>? = null
         //Get API restaurants
-        val apiRestaurants = restaurantApi
-                .searchNearbyRestaurants(latitude, longitude, chosenRadius, name, skip, count)
+
+        apiRestaurants = restaurantApi
+                .searchNearbyRestaurants(latitude, longitude, chosenRadius, name, skip, count / 2)
                 .thenApply { it.map(restaurantResponseMapper::mapTo) }
 
-        //TODO Build API Restaurants Sequence from Completable Future
-        return dbRestaurantRepository.getAllByCoordinates(latitude, longitude, chosenRadius)
+        return dbRestaurantRepository.getAllByCoordinates(latitude, longitude, chosenRadius, skip, count / 2)
                 .map(restaurantResponseMapper::mapTo)
-                .let { filterRedundantApiRestaurants(it, apiRestaurants.get().asSequence()) }
+                .let { filterRedundantApiRestaurants(
+                        it,
+                        apiRestaurants?.get()?.asSequence() ?: sequenceOf(),
+                        skip,
+                        count
+                ) }
+
         //Keeps an open transaction while we iterate the DB response Stream
 //        return transactionHolder.inTransaction {
 //
@@ -179,10 +186,12 @@ class RestaurantService(
 
     private fun filterRedundantApiRestaurants(
             dbRestaurants: Sequence<Restaurant>,
-            apiRestaurants: Sequence<Restaurant>
+            apiRestaurants: Sequence<Restaurant>,
+            skip: Int?,
+            count: Int
     ): Sequence<Restaurant> {
         //TODO Avoid eager call or maybe cache values with a stream cache implementation
-        val aux = dbRestaurants.toList()
+
         //Filter api restaurants that already exist in db
         val filteredApiRestaurants = apiRestaurants.filter { apiRestaurant ->
             //Db does not contain a restaurant with the api identifier
@@ -193,6 +202,20 @@ class RestaurantService(
                         && apiRestaurant.identifier.value.submitterId == dbRestaurant.identifier.value.submitterId
             }
         }
+
+        /*var filteredApiRestaurantList = filteredApiRestaurants.toList()
+        val filteredApiRestaurantListSize = filteredApiRestaurantList.size
+
+        if (filteredApiRestaurantListSize > count) {
+            filteredApiRestaurantList =
+                    filteredApiRestaurantList.drop(filteredApiRestaurantListSize - count)
+        }
+
+        val totalCount = dbRestaurantListSize.plus(filteredApiRestaurantList.size)
+
+        if (totalCount > count) {
+            filteredApiRestaurantList = filteredApiRestaurantList.drop(totalCount - count)
+        }*/
 
         return dbRestaurants.plus(filteredApiRestaurants)
     }

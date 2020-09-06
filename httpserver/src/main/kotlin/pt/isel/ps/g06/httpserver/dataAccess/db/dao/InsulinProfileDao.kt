@@ -21,7 +21,7 @@ interface InsulinProfileDao {
         const val carbRatio = "carbohydrate_ratio"
     }
 
-    @SqlQuery("SELECT * FROM $table WHERE $submitterId = :submitterId LIMIT :count OFFSET :skip")
+    @SqlQuery("SELECT * FROM $table WHERE $submitterId = :submitterId LIMIT :count OFFSET :skip * :count")
     fun getAllFromUser(submitterId: Int, count: Int?, skip: Int?): ResultIterable<DbUserEncInsulinProfileDto>
 
     @SqlQuery("SELECT * FROM $table WHERE $submitterId = :submitterId AND $profileName = :profileName")

@@ -13,6 +13,10 @@ import kotlin.reflect.KClass
 /**
  * A generic View Model for [RecyclerView] lists, using a [LiveDataListHandler] to handle the list.
  */
+
+const val DEFAULT_COUNT = 10
+const val DEFAULT_SKIP = 0
+
 abstract class BaseListViewModel<T : Parcelable>() : ViewModel(), Parcelable {
 
     constructor(parcel: Parcel) : this() {
@@ -22,8 +26,10 @@ abstract class BaseListViewModel<T : Parcelable>() : ViewModel(), Parcelable {
     val log: Logger by lazy { Logger(javaClass) }
     val liveDataHandler = LiveDataListHandler<T>()
     val items: List<T> get() = liveDataHandler.mapped
-    var skip: Int? = null
-    var count: Int? = null
+    var currItems: Int = 1
+    var pendingRequest: Boolean = false
+    var skip: Int? = DEFAULT_SKIP
+    var count: Int? = DEFAULT_COUNT
     var onError: (Throwable) -> Unit = log::e
 
     open fun setupList() {

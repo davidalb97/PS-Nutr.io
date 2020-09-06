@@ -74,7 +74,7 @@ interface MealDao {
             "ON $SS_table.$SS_submissionId = $table.$id " +
             "WHERE $SS_table.$SS_submitterId = :submitterId " +
             "AND $table.$meal_type = :mealType " +
-            "LIMIT :count OFFSET :skip")
+            "LIMIT :count OFFSET :skip * :count")
     fun getAllBySubmitterIdAndType(
             @Bind submitterId: Int,
             @Bind mealType: String,
@@ -134,7 +134,7 @@ interface MealDao {
             " FROM $table" +
             " WHERE $table.$meal_type = '$MEAL_TYPE_SUGGESTED_MEAL'" +
             " ORDER BY $table.$name ASC" +
-            " LIMIT :count OFFSET :skip"
+            " LIMIT :count OFFSET :skip * :count"
     )
     fun getAllSuggestedMeals(
             @Bind skip: Int?,
@@ -178,7 +178,7 @@ interface MealDao {
             "WHERE $table.$meal_type = :mealType " +
             "ORDER BY $table.$name ASC " +
             "LIMIT :count " +
-            "OFFSET :skip"
+            "OFFSET :skip * :count"
     )
     fun getAllByType(@Bind mealType: String, @Bind skip: Int?, @Bind count: Int?): ResultIterable<DbMealDto>
 
