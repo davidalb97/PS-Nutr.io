@@ -93,7 +93,7 @@ class UserDataSource(
             uri = Uri.Builder()
                 .scheme(SCHEME)
                 .encodedAuthority(ADDRESS_PORT)
-                .appendPath(USER)
+                .appendPath(USER_PATH)
                 .build()
                 .toString(),
             reqHeader = buildAuthHeader(jwt),
