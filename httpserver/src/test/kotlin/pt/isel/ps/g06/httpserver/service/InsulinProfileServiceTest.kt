@@ -1,13 +1,12 @@
 package pt.isel.ps.g06.httpserver.service
 
+import org.junit.Assert
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import org.junit.runner.RunWith
 import org.mockito.Mockito.*
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
 import pt.isel.ps.g06.httpserver.anyNonNull
+import pt.isel.ps.g06.httpserver.common.exception.problemJson.badRequest.InvalidInsulinProfileTimesException
 import pt.isel.ps.g06.httpserver.common.exception.problemJson.badRequest.OverlappingInsulinProfilesException
 import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.InsulinProfileResponseMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbUserInsulinProfileDto
@@ -16,8 +15,6 @@ import pt.isel.ps.g06.httpserver.model.InsulinProfile
 import java.time.LocalTime
 import java.time.OffsetDateTime
 
-@SpringBootTest
-@RunWith(SpringJUnit4ClassRunner::class)
 class InsulinProfileServiceTest {
     private lateinit var repository: InsulinProfileDbRepository
     private lateinit var mapper: InsulinProfileResponseMapper
@@ -126,5 +123,44 @@ class InsulinProfileServiceTest {
                 anyNonNull(),
                 anyNonNull()
         )
+    }
+
+    @Test
+    fun `inserting an insulin profile with equal start and end time should throw an exception`() {
+        val time = LocalTime.NOON
+
+        assertThrows<InvalidInsulinProfileTimesException> {
+            service.createProfile(
+                    submitterId = 1,
+                    profileName = "Profile 1",
+                    startTime = time,
+                    endTime = time,
+                    glucoseObjective = 100,
+                    insulinSensitivityFactor = 40,
+                    carbohydrateRatio = 12
+            )
+
+            Assert.fail()
+        }
+    }
+
+    @Test
+    fun `inserting an insulin profile with end time happening before start time should throw an exception`() {
+        val startTime = LocalTime.NOON
+        val endTime = startTime.minusHours(1)
+
+        assertThrows<InvalidInsulinProfileTimesException> {
+            service.createProfile(
+                    submitterId = 1,
+                    profileName = "Profile 1",
+                    startTime = startTime,
+                    endTime = endTime,
+                    glucoseObjective = 100,
+                    insulinSensitivityFactor = 40,
+                    carbohydrateRatio = 12
+            )
+
+            Assert.fail()
+        }
     }
 }

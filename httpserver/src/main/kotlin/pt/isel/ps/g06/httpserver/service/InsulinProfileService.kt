@@ -1,6 +1,7 @@
 package pt.isel.ps.g06.httpserver.service
 
 import org.springframework.stereotype.Service
+import pt.isel.ps.g06.httpserver.common.exception.problemJson.badRequest.InvalidInsulinProfileTimesException
 import pt.isel.ps.g06.httpserver.common.exception.problemJson.badRequest.OverlappingInsulinProfilesException
 import pt.isel.ps.g06.httpserver.common.exception.problemJson.notFound.MissingInsulinProfileException
 import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.InsulinProfileResponseMapper
@@ -35,6 +36,10 @@ class InsulinProfileService(
             insulinSensitivityFactor: Int,
             carbohydrateRatio: Int
     ): InsulinProfile {
+        if (startTime.hour >= endTime.hour) {
+            throw InvalidInsulinProfileTimesException()
+        }
+
         //See if dates overlap with active insulin profile
         val overlappingProfile = getAllProfilesFromUser(submitterId, null, null).find {
             val start = LocalTime.parse(it.startTime)
