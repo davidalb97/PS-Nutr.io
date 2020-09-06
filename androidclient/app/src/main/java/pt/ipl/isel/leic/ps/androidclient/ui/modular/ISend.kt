@@ -5,7 +5,7 @@ import android.view.View
 import androidx.navigation.findNavController
 import pt.ipl.isel.leic.ps.androidclient.ui.util.Navigation
 
-interface ISend {
+interface ISend: ILog {
 
     fun onSendToDestination(bundle: Bundle)
 
@@ -13,6 +13,7 @@ interface ISend {
         if (destination != Navigation.IGNORE) {
             val bundle = Bundle()
             onSendToDestination(bundle)
+            log.v("Sending to $destination...")
             view.findNavController().navigate(destination.navId, bundle)
         }
     }

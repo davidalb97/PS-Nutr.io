@@ -12,12 +12,13 @@ import pt.ipl.isel.leic.ps.androidclient.NutrioApp
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.UserLogin
 import pt.ipl.isel.leic.ps.androidclient.data.model.UserSession
+import pt.ipl.isel.leic.ps.androidclient.ui.modular.ILog
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.IRequiredTextInput
 import pt.ipl.isel.leic.ps.androidclient.ui.util.Navigation
 import pt.ipl.isel.leic.ps.androidclient.ui.util.deleteSession
 import pt.ipl.isel.leic.ps.androidclient.ui.util.getUsername
 
-interface IAccountSettings: IRequiredTextInput {
+interface IAccountSettings: IRequiredTextInput, ILog {
 
     val nonLogoutViewId: Int
     var nonLogoutView: ViewGroup
@@ -83,9 +84,10 @@ interface IAccountSettings: IRequiredTextInput {
     private fun setupLogoutButton(view: View, context: Context) {
         logoutButton = view.findViewById(logoutButtonId)
         logoutButton.setOnClickListener {
+            log.v("Logging out...")
             deleteSession()
-            Toast.makeText(context, R.string.logout_success, Toast.LENGTH_SHORT)
-                .show()
+            Toast.makeText(context, R.string.logout_success, Toast.LENGTH_SHORT).show()
+            log.v("Logout completed!")
             view.findNavController().navigate(Navigation.SEND_TO_HOME.navId)
         }
     }

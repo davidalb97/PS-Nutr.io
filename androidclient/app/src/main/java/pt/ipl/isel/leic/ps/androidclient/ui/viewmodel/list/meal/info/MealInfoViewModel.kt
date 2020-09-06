@@ -16,6 +16,7 @@ import kotlin.reflect.KClass
 
 open class MealInfoViewModel : MealItemListViewModel {
 
+    //TODO Override removeObservers
     private val mealInfoLiveDataHandler = LiveDataHandler<MealInfo>()
     val mealInfo get() = mealInfoLiveDataHandler.value
     val mealItem: MealItem?
@@ -68,7 +69,13 @@ open class MealInfoViewModel : MealItemListViewModel {
         mealInfoLiveDataHandler.restoreFromParcel(parcel, MealInfo::class)
     }
 
-    override fun update() {
+    override fun setupList() {
+        if(mealInfo != null) {
+            mealInfoLiveDataHandler.notifyChanged()
+        } else fetch()
+    }
+
+    override fun fetch() {
         if (mealInfoLiveDataHandler.tryRestore()) {
             return
         }
@@ -109,6 +116,11 @@ open class MealInfoViewModel : MealItemListViewModel {
             onMealInfo(mealInfo)
             observer(mealInfo)
         }
+    }
+
+    override fun removeObservers(owner: LifecycleOwner) {
+        mealInfoLiveDataHandler.removeObservers(owner)
+        super.removeObservers(owner)
     }
 
     private fun onMealInfo(mealInfo: MealInfo) {
@@ -197,10 +209,6 @@ open class MealInfoViewModel : MealItemListViewModel {
 
     override fun describeContents(): Int {
         return 0
-    }
-
-    fun removeObservers(owner: LifecycleOwner) {
-        liveDataHandler.removeObservers(owner)
     }
 
     companion object CREATOR : Parcelable.Creator<MealInfoViewModel> {

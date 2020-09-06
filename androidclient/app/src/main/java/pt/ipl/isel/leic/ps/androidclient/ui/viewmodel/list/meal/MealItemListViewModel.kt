@@ -30,7 +30,7 @@ open class MealItemListViewModel : BaseMealListViewModel<MealItem> {
 
     constructor(parcel: Parcel) : super(parcel)
 
-    override fun update() {
+    override fun fetch() {
         if (!super.tryRestore()) {
             when (source) {
                 Source.API -> {

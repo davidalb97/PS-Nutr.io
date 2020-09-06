@@ -22,7 +22,7 @@ open class CuisineListViewModel(
         super.restoreFromParcel(parcel)
     }
 
-    override fun update() {
+    override fun fetch() {
         if (!super.tryRestore()) {
             cuisineRepository.getCuisines(count, skip, liveDataHandler::set, onError)
         }

@@ -31,7 +31,7 @@ class RestaurantListViewModel(
         super.restoreFromParcel(parcel)
     }
 
-    override fun update() {
+    override fun fetch() {
         restaurantRepository.getNearbyRestaurants(
             latitude = latitude!!,
             longitude = longitude!!,

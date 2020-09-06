@@ -1,7 +1,6 @@
 package pt.ipl.isel.leic.ps.androidclient.ui.fragment.auth
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -19,15 +18,18 @@ import pt.ipl.isel.leic.ps.androidclient.data.model.UserLogin
 import pt.ipl.isel.leic.ps.androidclient.data.model.UserRegister
 import pt.ipl.isel.leic.ps.androidclient.data.model.UserSession
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.BaseFragment
+import pt.ipl.isel.leic.ps.androidclient.ui.modular.IViewModelManager
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.auth.IAccountSettings
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.auth.IRegister
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.UserProfileVMProviderFactory
-import pt.ipl.isel.leic.ps.androidclient.ui.util.requireUserSession
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.UserSessionViewModel
 
-class RegisterFragment : BaseFragment(), IRegister, IAccountSettings {
+class RegisterFragment : BaseFragment(), IViewModelManager, IRegister, IAccountSettings {
+
+    override val layout = R.layout.register_fragment
 
     private lateinit var viewModel: UserSessionViewModel
+    override val vMProviderFactorySupplier = ::UserProfileVMProviderFactory
 
     //Loading
     override val loadingCardId = R.id.loadingCard
@@ -64,7 +66,12 @@ class RegisterFragment : BaseFragment(), IRegister, IAccountSettings {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        viewModel = buildViewModel(savedInstanceState, UserSessionViewModel::class.java)
+        viewModel = buildViewModel(
+            arguments = arguments,
+            intent = requireActivity().intent,
+            savedInstanceState = savedInstanceState,
+            vmClass = UserSessionViewModel::class.java
+        )
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
@@ -121,7 +128,8 @@ class RegisterFragment : BaseFragment(), IRegister, IAccountSettings {
                 viewModel.deleteAccount(
                     userSession = it,
                     onSuccess = {
-                        Toast.makeText(context, R.string.remove_account_success, Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, R.string.remove_account_success, Toast.LENGTH_SHORT)
+                            .show()
                         requireView().findNavController().navigate(R.id.nav_home)
                     },
                     onError = onError
@@ -132,14 +140,4 @@ class RegisterFragment : BaseFragment(), IRegister, IAccountSettings {
     }
 
     override fun fetchCtx(): Context = requireContext()
-
-    override fun getVMProviderFactory(
-        savedInstanceState: Bundle?,
-        intent: Intent
-    ): UserProfileVMProviderFactory {
-        return UserProfileVMProviderFactory(arguments, savedInstanceState, intent)
-    }
-
-    override fun getLayout() = R.layout.register_fragment
-
 }

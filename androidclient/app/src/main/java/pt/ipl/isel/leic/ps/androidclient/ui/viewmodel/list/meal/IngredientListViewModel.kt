@@ -22,7 +22,7 @@ open class IngredientListViewModel : BaseMealListViewModel<MealIngredient> {
 
     constructor(parcel: Parcel) : super(parcel)
 
-    override fun update() {
+    override fun fetch() {
         if (!tryRestore()) {
             when (source) {
                 Source.API -> ingredientRepository.getIngredients(

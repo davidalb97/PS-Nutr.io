@@ -11,7 +11,7 @@ class MealInfoPickViewModel : BaseItemPickerViewModel<MealInfo> {
 
     constructor() : super()
 
-    override fun update() {
+    override fun fetch() {
         tryRestore()
     }
 

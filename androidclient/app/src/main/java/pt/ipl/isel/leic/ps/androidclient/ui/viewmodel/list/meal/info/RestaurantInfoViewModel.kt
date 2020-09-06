@@ -16,6 +16,7 @@ import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.meal.MealItemListView
 
 class RestaurantInfoViewModel : MealItemListViewModel {
 
+    //TODO override removeObservers
     private val restaurantInfoLiveDataHandler = LiveDataHandler<RestaurantInfo>()
     val restaurantInfo get() = restaurantInfoLiveDataHandler.value
     var addedMeal: MealItem? = null
@@ -39,13 +40,19 @@ class RestaurantInfoViewModel : MealItemListViewModel {
         addedMeal = parcel.readParcelable(MealItem::class.java.classLoader)
     }
 
-    override fun update() {
+    override fun setupList() {
+        if(restaurantInfo != null) {
+            restaurantInfoLiveDataHandler.notifyChanged()
+        } else fetch()
+    }
+
+    override fun fetch() {
         if (!restaurantInfoLiveDataHandler.tryRestore()) {
             restaurantRepository.getRestaurantInfoById(
-                restaurantId = restaurantId!!,
-                userSession = getUserSession(),
-                success = restaurantInfoLiveDataHandler::set,
-                error = onError
+                    restaurantId = restaurantId!!,
+            userSession = getUserSession(),
+            success = restaurantInfoLiveDataHandler::set,
+            error = onError
             )
         }
     }
@@ -55,6 +62,11 @@ class RestaurantInfoViewModel : MealItemListViewModel {
             onRestaurantInfo(restaurantInfo)
             observer(restaurantInfo)
         }
+    }
+
+    override fun removeObservers(owner: LifecycleOwner) {
+        restaurantInfoLiveDataHandler.removeObservers(owner)
+        super.removeObservers(owner)
     }
 
     private fun onRestaurantInfo(restaurantInfo: RestaurantInfo) {

@@ -25,7 +25,7 @@ open class InsulinProfilesListViewModel(
     fun deleteItem(profileName: String, userSession: UserSession?) =
         insulinProfilesRepository.deleteProfile(profileName, userSession, onError)
 
-    override fun update() {
+    override fun fetch() {
         if (!tryRestore()) {
             this.liveDataHandler.set(insulinProfilesRepository.getAllProfiles()) {
                 insulinProfilesRepository.insulinProfileMapper.mapToModel(it)

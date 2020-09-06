@@ -7,8 +7,11 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import pt.ipl.isel.leic.ps.androidclient.R
+import pt.ipl.isel.leic.ps.androidclient.ui.fragment.BaseFragment
 
-class SignFragment : Fragment() {
+class SignFragment : BaseFragment() {
+
+    override val layout: Int = R.layout.sign_fragment
 
     private val onNavigationItemSelectedListener =
         BottomNavigationView.OnNavigationItemSelectedListener { item ->
@@ -24,14 +27,6 @@ class SignFragment : Fragment() {
                 else -> false
             }
         }
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.sign_fragment, container, false)
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

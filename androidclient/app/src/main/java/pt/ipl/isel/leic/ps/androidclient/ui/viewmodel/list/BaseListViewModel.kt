@@ -26,7 +26,13 @@ abstract class BaseListViewModel<T : Parcelable>() : ViewModel(), Parcelable {
     var count: Int? = null
     var onError: (Throwable) -> Unit = log::e
 
-    abstract fun update()
+    open fun setupList() {
+        if(items.isNotEmpty()) {
+            liveDataHandler.notifyChanged()
+        } else fetch()
+    }
+
+    abstract fun fetch()
 
     /**
      * Observes the [LiveDataListHandler], given a [LifecycleOwner] and a [MutableList].
@@ -73,4 +79,8 @@ abstract class BaseListViewModel<T : Parcelable>() : ViewModel(), Parcelable {
     open fun tryRestore(): Boolean = liveDataHandler.tryRestore()
 
     abstract fun getModelClass(): KClass<T>
+
+    open fun removeObservers(owner: LifecycleOwner) {
+        liveDataHandler.removeObservers(owner)
+    }
 }

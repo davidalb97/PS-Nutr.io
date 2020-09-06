@@ -13,7 +13,7 @@ class MealItemPickViewModel : BaseItemPickerViewModel<MealItem> {
 
     constructor() : super()
 
-    override fun update() {
+    override fun fetch() {
         tryRestore()
     }
 

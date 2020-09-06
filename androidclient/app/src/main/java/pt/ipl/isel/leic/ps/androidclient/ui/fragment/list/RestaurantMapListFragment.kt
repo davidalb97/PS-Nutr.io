@@ -32,6 +32,12 @@ private const val DEFAULT_MAX_WAIT_TIME = DEFAULT_INTERVAL_IN_MILLISECONDS * 5
 
 class MapFragment : RestaurantListFragment(), OnMapReadyCallback {
 
+    override val paginated = true
+    override val recyclerViewId = R.id.itemList
+    override val progressBarId = R.id.progressBar
+    override val layout = R.layout.map_fragment
+    override val noItemsTextViewId = R.id.no_restaurants_found
+
     private var mapView: MapView? = null
     private var locationEngine: LocationEngine? = null
     private val callback = initLocationEngineCallback()
@@ -162,9 +168,9 @@ class MapFragment : RestaurantListFragment(), OnMapReadyCallback {
                 mapBoxMap?.locationComponent?.forceLocationUpdate(location)
 
                 //Update viewmodel with new location
-                recyclerViewModel.latitude = location.latitude
-                recyclerViewModel.longitude = location.longitude
-                recyclerViewModel.update()
+                viewModel.latitude = location.latitude
+                viewModel.longitude = location.longitude
+                viewModel.setupList()
             }
 
             /**
@@ -216,12 +222,4 @@ class MapFragment : RestaurantListFragment(), OnMapReadyCallback {
         super.onLowMemory()
         mapView?.onLowMemory()
     }
-
-    override fun getRecyclerId() = R.id.itemList
-
-    override fun getProgressBarId() = R.id.progressBar
-
-    override fun getLayout() = R.layout.map_fragment
-
-    override fun getNoItemsLabelId() = R.id.no_restaurants_found
 }
