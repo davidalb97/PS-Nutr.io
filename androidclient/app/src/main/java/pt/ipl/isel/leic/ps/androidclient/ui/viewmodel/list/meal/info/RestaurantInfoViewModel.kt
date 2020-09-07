@@ -24,7 +24,7 @@ class RestaurantInfoViewModel : MealItemListViewModel {
     val restaurantInfo get() = restaurantInfoLiveDataHandler.value
     var addedMeal: MealItem? = null
 
-    //Parameterless constructor
+    //Parameterless constructor due to byNavGraphsViewModel
     constructor() : super(
         navDestination = Navigation.SEND_TO_MEAL_DETAIL,
         actions = listOf(

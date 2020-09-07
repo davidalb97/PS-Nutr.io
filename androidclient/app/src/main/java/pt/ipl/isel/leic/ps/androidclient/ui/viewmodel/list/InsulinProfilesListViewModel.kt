@@ -9,14 +9,16 @@ import pt.ipl.isel.leic.ps.androidclient.ui.util.ItemAction
 import pt.ipl.isel.leic.ps.androidclient.util.readListCompat
 import kotlin.reflect.KClass
 
-open class InsulinProfilesListViewModel(
-    val actions: List<ItemAction>
-) : BaseListViewModel<InsulinProfile>() {
+open class InsulinProfilesListViewModel : BaseListViewModel<InsulinProfile> {
 
-    constructor(parcel: Parcel) : this(
+    val actions: List<ItemAction>
+
+    constructor(actions: List<ItemAction>) {
+        this.actions = actions
+    }
+
+    constructor(parcel: Parcel) : super(parcel) {
         actions = parcel.readListCompat(ItemAction::class)
-    ) {
-        super.restoreFromParcel(parcel)
     }
 
     fun addDbInsulinProfile(profile: InsulinProfile, userSession: UserSession?) =
@@ -32,8 +34,8 @@ open class InsulinProfilesListViewModel(
     }
 
     override fun writeToParcel(dest: Parcel?, flags: Int) {
-        dest?.writeList(actions)
         super.writeToParcel(dest, flags)
+        dest?.writeList(actions)
     }
 
     override fun getModelClass(): KClass<InsulinProfile> = InsulinProfile::class

@@ -182,8 +182,6 @@ open class MealInfoViewModel : MealItemListViewModel {
         mealInfoLiveDataHandler.writeToParcel(dest, flags)
     }
 
-
-
     override fun getModelClass(): KClass<MealItem> = MealItem::class
 
     override fun describeContents(): Int {
