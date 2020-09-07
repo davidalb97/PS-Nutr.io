@@ -3,10 +3,8 @@ package pt.isel.ps.g06.httpserver.service
 import org.junit.Assert
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.runner.RunWith
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
 import pt.isel.ps.g06.httpserver.anyNonNull
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.RestaurantApi
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.mapper.RestaurantApiMapper
@@ -37,7 +35,6 @@ class RestaurantServiceTests {
         dbRestaurantRepository = mock(RestaurantDbRepository::class.java)
         restaurantApiMapper = mock(RestaurantApiMapper::class.java)
         restaurantResponseMapper = mock(RestaurantResponseMapper::class.java)
-        dbRestaurantResponseMapper = mock(DbRestaurantResponseMapper::class.java)
         apiSubmitterMapper = mock(ApiSubmitterMapper::class.java)
         dbFavoriteDbRepository = mock(FavoriteDbRepository::class.java)
         dbReportDbRepository = mock(ReportDbRepository::class.java)
@@ -46,10 +43,10 @@ class RestaurantServiceTests {
                 dbRestaurantRepository = dbRestaurantRepository,
                 restaurantApiMapper = restaurantApiMapper,
                 restaurantResponseMapper = restaurantResponseMapper,
-                dbRestaurantResponseMapper = dbRestaurantResponseMapper,
                 apiSubmitterMapper = apiSubmitterMapper,
                 dbFavoriteDbRepository = dbFavoriteDbRepository,
-                dbReportDbRepository = dbReportDbRepository
+                dbReportDbRepository = dbReportDbRepository,
+                dbRestaurantResponseMapper = mock(DbRestaurantResponseMapper::class.java) //TODO This is to be removed.
         )
     }
 

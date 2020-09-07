@@ -3,13 +3,11 @@ package pt.isel.ps.g06.httpserver.dataAccess.db.common
 import org.junit.Assert
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.MealDbRepository
 
 /**
  * Test class that tests common features of every Data Access Object (DAO)
  */
-@SpringBootTest
 class DatabaseAccessTests {
     @Autowired
     lateinit var mealDbRepository: MealDbRepository
