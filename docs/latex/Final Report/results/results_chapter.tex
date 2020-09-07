@@ -130,7 +130,7 @@ The HTTP server uses a Spring MVC implementation, structuring its' code in sever
 The picture presented above represents a simplified diagram that shows how the navigation between endpoints occurs.
 It should be taken in consideration that, as the picture's label says, some nodes represented in this diagram are used by 
 both users and moderators and the diagram can not label those situations with detail. Those details can be better analysed
-in this report appendix about endpoints.\\
+in this report appendix about endpoints.\ref{app:endpoints_table} \\
 
 The color code used in this diagram represents where each endpoint starts providing a better comprehension
 and visualization, e.g.: /restaurant/:restaurantId/meal/:mealId (endpoint for a specific restaurant meal) starts with a blue
@@ -168,7 +168,7 @@ It provides access to fluent statement APIs that can bind arguments, execute the
 Every database operation opens a new handle and is wrapped in a transactional call using \textit{databaseContext.inTransaction(Function<Handle, T>)}.
 Said transaction is committed when given function is successfully finished, or rollbacked if an exception is thrown. Finally, underlying handle
 is only closed after the HTTP request that triggered the repository call is finished. This is due to Stream integration when returning database
-elements and is explained in greater detail in **Chapter 5.2.4**. [link]
+elements and is explained in greater detail in next subsection.
 
 \subsubsection{Performance operations - Imperative and Declarative API}
 
@@ -219,11 +219,11 @@ imperative one. The following is an example of a typical database operation in o
 When it comes to fetching collections of data (such as restaurants, meals, etc.) from either the database or an API, said data can be obtained
 and iterated in an \textbf{eager} approach or a \textbf{lazy} approach.\\
 
-In order to support a \textbf{lazy} approach using Java 8 Streams [ref], the following code structure was created:
+In order to support a \textbf{lazy} approach using Java 8 Streams\cite{streams}, the following code structure was created:
 
 \subsubsection{Database fetching}
 
-According to the JDBI documentation [https://jdbi.org/], a query method supports the return of Streams:\\
+According to the JDBI documentation\cite{jdbi}, a query method supports the return of Streams:\\
 
 "\textbf{Stream} integration allows you to use a RowMapper to adapt a ResultSet into the new Java 8 Streams framework.
 As long as your database supports streaming results (for example, PostgreSQL will do it as long as you are in a transaction and set a fetch size),
@@ -231,7 +231,7 @@ the stream will lazily fetch rows from the database as necessary."\\
 
 (...)\\
 
-"Query methods may also return a [ResultIterable], [ResultIterator] or a Stream."\\
+"Query methods may also return a ResultIterable\cite{resultiterable}, ResultIterator\cite{resultiterator} or a Stream."\\
 
 However, it also warns that:\\
 
@@ -335,7 +335,6 @@ Spring Security is a customizable authentication and access-control framework.\\
 
 The picture below shows how the server handles an user login using this framework.\\
 
-\newpage
 \begin{figure}[H]
     \begin{center}
         \includegraphics[scale=0.60]{_figures/Spring-jwt-diagram.eps}
@@ -377,7 +376,7 @@ username, password, insulin profile and custom meals. However, its submitter ide
 is maintained in order to preserve its public submissions, in order to keep the platform's data consistent, so a user that makes many 
 public insertions does not compromise our data's consistency if its account is deleted.\\
 
-This way we also comply to the General Data Protection Regulation (GDRP), as we are keeping data safe by encrypting it into the database and
+This way we also comply to the General Data Protection Regulation (GDRP)\cite{gdpr}, as we are keeping data safe by encrypting it into the database and
 we are not collecting user's data for other interests and, the most import of all, we provide the user the right to be erased from our 
 platform removing every personal detail from it when an account deletion happens.\\
 
@@ -417,6 +416,8 @@ Here are the dependencies that were included in the mobile application which gav
     \item \textbf{MapBox} - A framework to provide maps and geolocation tools;
     \item \textbf{MPAndroidChart} - provides custom graphs inside the application;
     \item \textbf{Glide} - a framework for image loading;
+    \item \textbf{FlexBox} - a library which adds the flexible box layout, in order to hold multiple items
+    inside the same box;
     \item \textbf{Androidx crypto} - a new crypto library made by Google, used to encrypt User credentials.
 \end{itemize}
 
@@ -502,22 +503,6 @@ If that approach was taken, the user had to login each time it was needed to rea
 As this platform is not, for example, a bank application that needs top protection. We found this level of protection
 unnecessary for the application and inconvenient for the user and decided that only the essential protection should be provided - 
 user credentials encryption to avoid information leaks from rooted devices.
-
-\subsection{Data synchronization}
-
-Background data synchronization will happen after a successful login or register. The only user data that will be synchronized are:
-\begin{itemize}
-    \item Insulin profiles;
-    \item Custom meals made by the user;
-    \item Favorites.
-\end{itemize}
-
-When logged in, the data can be synchronized in two ways:
-\begin{itemize}
-    \item the user forces the synchronization by swiping down on a list;
-    \item The Android WorkManager will make sure that the data is synchronized at least once a 
-    day when the phone is inactive and connected to the internet.    
-\end{itemize}
 
 \subsection{Android version compatibility}
 
@@ -909,5 +894,5 @@ gray tone inside the slider.\\
     \end{center}
 \end{figure}
 
-Observing a report, a moderator have the options either to remove the faulty submission or ban
+Observing a report, a moderator has the options either to remove the faulty submission or ban
 the user who submitted it.\\
