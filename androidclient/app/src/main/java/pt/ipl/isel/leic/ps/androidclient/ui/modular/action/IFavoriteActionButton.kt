@@ -19,20 +19,23 @@ interface IFavoriteActionButton : IContext, IAction, IUserSession, ILog {
 
     fun setupFavoriteButton(view: View, favorites: Favorites) {
         favoriteButton = view.findViewById(favoriteButtonId)
+        val ctx = fetchCtx()
 
         if (!actions.contains(ItemAction.FAVORITE) || !favorites.isFavorable) {
+            //Set visibility to GONE to avoid recycled view holders invalid info
+            favoriteButton.visibility = View.GONE
             return
         }
-        val ctx = fetchCtx()
-        if (favorites.isFavorite) {
-            favoriteButton.changeColor(ctx, R.color.colorYellow)
-        }
+
+        //Update favorite mark to avoid recycled view holders invalid info
+        renderFavoriteMark(favorites.isFavorite)
+
         favoriteButton.setOnClickListener {
             ensureUserSession(ctx) {
                 val favoriteNextState = !favorites.isFavorite
                 onFavorite(
                     onSuccess = {
-                        onItemFavorable(favoriteNextState)
+                        renderFavoriteMark(favoriteNextState)
                     },
                     onError = log::e
                 )
@@ -41,12 +44,20 @@ interface IFavoriteActionButton : IContext, IAction, IUserSession, ILog {
         favoriteButton.visibility = View.VISIBLE
     }
 
-    fun onItemFavorable(isFavorite: Boolean) {
+    fun renderFavoriteMark(isFavorite: Boolean) {
         log.v("Setting favorite to \"$isFavorite\"")
         if (isFavorite) {
-            favoriteButton.changeColor(fetchCtx(), R.color.colorYellow)
+            setFavoriteMark()
         } else {
-            favoriteButton.changeColor(fetchCtx(), R.color.colorBlack)
+            clearFavoriteMark()
         }
+    }
+
+    fun setFavoriteMark() {
+        favoriteButton.changeColor(fetchCtx(), R.color.colorYellow)
+    }
+
+    fun clearFavoriteMark() {
+        favoriteButton.changeColor(fetchCtx(), R.color.colorBlack)
     }
 }
