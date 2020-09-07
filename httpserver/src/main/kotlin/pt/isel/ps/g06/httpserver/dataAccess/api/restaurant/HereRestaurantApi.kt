@@ -8,8 +8,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.dto.here.HereResultCo
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.dto.here.HereResultItem
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.uri.HereUriBuilder
 import pt.isel.ps.g06.httpserver.dataAccess.common.dto.RestaurantDto
-import pt.isel.ps.g06.httpserver.exception.problemJson.badGateway.BadGatewayException
-import pt.isel.ps.g06.httpserver.util.log
+import pt.isel.ps.g06.httpserver.exception.problemJson.badGateway.HereBadGatewayException
 import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
@@ -86,7 +85,6 @@ class HereRestaurantApi(
 
     private fun mapApiException(body: String?): Throwable {
         val error = responseMapper.readValue(body, HereErrorDto::class.java)
-        log("Failed to obtain HERE restaurants - Status code is ${error.status} with cause '${error.cause}'")
-        throw BadGatewayException(detail = error.cause)
+        throw HereBadGatewayException(error)
     }
 }
