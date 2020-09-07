@@ -26,7 +26,6 @@ abstract class BaseListViewModel<T : Parcelable>() : ViewModel(), Parcelable {
     val log: Logger by lazy { Logger(javaClass) }
     val liveDataHandler = LiveDataListHandler<T>()
     val items: List<T> get() = liveDataHandler.mapped
-    var currItems: Int = 1
     var pendingRequest: Boolean = false
     var skip: Int? = DEFAULT_SKIP
     var count: Int? = DEFAULT_COUNT
