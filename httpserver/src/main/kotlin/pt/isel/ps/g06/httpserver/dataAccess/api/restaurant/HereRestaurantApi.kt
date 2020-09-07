@@ -6,10 +6,10 @@ import org.springframework.stereotype.Repository
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.dto.here.HereErrorDto
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.dto.here.HereResultContainer
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.dto.here.HereResultItem
-import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.exception.HereBadGatewayException
-import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.exception.HereBadRequestException
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.uri.HereUriBuilder
 import pt.isel.ps.g06.httpserver.dataAccess.common.dto.RestaurantDto
+import pt.isel.ps.g06.httpserver.exception.problemJson.badGateway.BadGatewayException
+import pt.isel.ps.g06.httpserver.util.log
 import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
@@ -33,7 +33,7 @@ class HereRestaurantApi(
                 HttpStatus.OK.value() -> mapToRestaurantDto(body)
                 HttpStatus.BAD_REQUEST.value() -> null
                 HttpStatus.NOT_FOUND.value() -> null
-                else -> throw mapToBadGateway(body)
+                else -> throw mapApiException(body)
             }
         }
 
@@ -46,8 +46,8 @@ class HereRestaurantApi(
             return@thenApply when (response.statusCode()) {
                 HttpStatus.OK.value() -> mapToNearbyRestaurants(body)
                 HttpStatus.NOT_FOUND.value() -> emptyList()
-                HttpStatus.BAD_REQUEST.value() -> throw mapToBadRequest(body)
-                else -> throw mapToBadGateway(body)
+                HttpStatus.BAD_REQUEST.value() -> throw mapApiException(body)
+                else -> throw mapApiException(body)
             }
         }
     }
@@ -84,13 +84,9 @@ class HereRestaurantApi(
         return responseMapper.readValue(body, HereResultContainer::class.java).items
     }
 
-    private fun mapToBadGateway(body: String?): Throwable {
+    private fun mapApiException(body: String?): Throwable {
         val error = responseMapper.readValue(body, HereErrorDto::class.java)
-        throw HereBadGatewayException(error)
-    }
-
-    private fun mapToBadRequest(body: String?): Throwable {
-        val error = responseMapper.readValue(body, HereErrorDto::class.java)
-        throw HereBadRequestException(error)
+        log("Failed to obtain HERE restaurants - Status code is ${error.status} with cause '${error.cause}'")
+        throw BadGatewayException(detail = error.cause)
     }
 }
