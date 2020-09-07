@@ -136,9 +136,88 @@ The color code used in this diagram represents where each endpoint starts provid
 and visualization, e.g.: /restaurant/:restaurantId/meal/:mealId (endpoint for a specific restaurant meal) starts with a blue
 node (/restaurant); /meal/suggested (endpoint for suggested meals) starts with a yellow node (/meal).\\
 
+\subsection{JDBI}
+
+We decided to use JDBI as the library responsible for allowing communication between the server and the database due to teacher's
+recommendations, integration with Spring and Kotlin, and finally its' declarative functionalities, which are explained further on.\\
+
+As a brief description, JDBI is, according to the documentation:\\
+
+"Jdbi is built on top of JDBC. If your database has a JDBC driver, you can use Jdbi with it.
+Jdbi improves JDBC’s rough interface, providing a more natural Java database interface that is easy to bind to your domain data types.
+Unlike an ORM, we do not aim to provide a complete object relational mapping framework - instead of that hidden complexity, we provide
+building blocks that allow you to construct the mapping between relations and objects as appropriate for your application."\\
+
+Although the documentation provided by JDBI describes in great detail its' functionalities and how to utilize them,
+some key aspects and differences which are specific to the project are explained in the following sections.\\
+
+\subsubsection{Getting started}
+
+The \textit{Jdbi} class is the main entry point into the library and each instance requires a \textit{DataSource} connection,
+which is created in the \textit{DatabaseConfig} class according to the application properties provided in the resources folder.
+A single instance of \textit{Jdbi}, which in turn is used to create a single instance of \textit{DatabaseContext}, the dependency that all
+repositories require in order to perform database connections. 
+
+\subsubsection{Database connection}
+
+An active database connection is represented by a \textit{Handle}, and according to the JDBI documentation:\\
+
+A handle is used to prepare and run SQL statements against the database, and manage database transactions.
+It provides access to fluent statement APIs that can bind arguments, execute the statement, and then map any results into Java objects.\\
+
+Every database operation opens a new handle and is wrapped in a transactional call using \textit{databaseContext.inTransaction(Function<Handle, T>)}.
+Said transaction is committed when given function is successfully finished, or rollbacked if an exception is thrown. Finally, underlying handle
+is only closed after the HTTP request that triggered the repository call is finished. This is due to Stream integration when returning database
+elements and is explained in greater detail in **Chapter 5.2.4**. [link]
+
+\subsubsection{Performance operations - Imperative and Declarative API}
+
+When a repository uses previously mentioned method \textit{databaseContext.inTransaction(Function<Handle, T>)}, given argument function is responsible
+for performing a database operation with the open handle, either using an \textbf{imperative} implementation or a \textbf{declarative} one.\\
+
+The JDBI documentation describes both the imperative and declarative style as follows, respectively:\\
+
+"The Core API provides a fluent, imperative interface, which uses Builder style objects to wire up your SQL to rich Java data types."\\
+
+"The SQL Object extension sits atop Core, and provides a declarative interface. Tell Jdbi what SQL to execute and the shape of the results
+you like by declaring an annotated Java \textit{interface}, and it will provide the implementation."\\
+
+Additionally, the JDBI documentation offers a simple query example using both styles:\\
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[scale=0.5]{_figures/imperative.png}
+        \caption{JDBI imperative style}
+    \end{center}
+\end{figure}
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[scale=0.5]{_figures/declarative.png}
+        \caption{JDBI declarative style - defining Data Access Objects}
+    \end{center}
+\end{figure}
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[scale=0.5]{_figures/calling-declarative.png}
+        \caption{JDBI declarative style - Calling defined Data Access Objects}
+    \end{center}
+\end{figure}
+
+In the context of our project, we use the declarative API due to its convenience and code simplicity over the
+imperative one. The following is an example of a typical database operation in our application:\
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[scale=0.8]{_figures/jdbi-nutrio.png}
+        \caption{Example of a database operation usin jdbi declarative type in our application}
+    \end{center}
+\end{figure}
+
 \subsection{Fetching collections of data}
 When it comes to fetching collections of data (such as restaurants, meals, etc.) from either the database or an API, said data can be obtained
-and iterated in an \textbf{eager}\ref{eager} approach or a \textbf{lazy}\ref{lazy} approach.\\
+and iterated in an \textbf{eager} approach or a \textbf{lazy} approach.\\
 
 In order to support a \textbf{lazy} approach using Java 8 Streams [ref], the following code structure was created:
 
@@ -194,30 +273,6 @@ Repositories are used on the service level to handle all \textit{DAO} interactio
 the database and other HTTP API requests. The resulting responses (input and database \textit{DTOs})
 are converted to the model \textit{DTOs} according to their response mappers.
 All API calls are made from asynchronous HTTP requests, while database calls block the calling thread.\\
-
-\subsection{JDBI}
-
-After some discussion of which driver should be used to allow communication between the server and database, we decided that the JDBI\cite{jdbi} was the best
-option as it is a library built on JDBC\cite{jdbc}.\\
-
-The library also exposes two different API's styles: a fluent/imperative style and a declarative style (used during development), as shown below.
-
-\begin{figure}[H]
-    \begin{center}
-        \includegraphics[scale=0.5]{_figures/fluentApiJdbi.png}
-        \caption{JDBI using an imperative API style}
-    \end{center}
-\end{figure}
-
-\begin{figure}[H]
-    \begin{center}
-        \includegraphics[scale=0.5]{_figures/sqlObjectJdbi.png}
-        \caption{JDBI using a declarative API style (example from HTTP server)}
-    \end{center}
-\end{figure}
-
-We chose to use a declarative style due to its convenience and code simplicity
-over the imperative one. It was also the more adequate style to the project's structure. 
 
 \subsection{Restaurants}
 
