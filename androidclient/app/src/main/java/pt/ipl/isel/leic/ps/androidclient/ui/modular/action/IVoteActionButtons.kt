@@ -61,9 +61,11 @@ interface IVoteActionButtons : IVoteProgress, IContext, IAction, IUserSession, I
     private fun vote(votes: Votes, isPositive: Boolean) {
         val currentState = votes.userHasVoted
         val nextVoteState = currentState.nextState(isPositive)
+        log.v("Setting vote from $currentState to $nextVoteState...")
         onVote(
             voteState = nextVoteState,
             onSuccess = {
+                log.v("Setting vote from $currentState to $nextVoteState completed!")
                 changeVoteButtonColors(currentState, nextVoteState)
             },
             onError = log::e

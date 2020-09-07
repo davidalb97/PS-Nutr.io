@@ -37,7 +37,7 @@ class SelectMealsSlideScreenFragment : BaseSlideScreenFragment(propagateArgument
         viewModel = extractViewModelFromParent()
 
         //Restore picked items to items list
-        viewModel.update()
+        viewModel.setupList()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

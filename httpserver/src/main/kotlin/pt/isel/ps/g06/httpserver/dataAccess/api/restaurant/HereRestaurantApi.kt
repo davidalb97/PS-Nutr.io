@@ -33,7 +33,6 @@ class HereRestaurantApi(
                 HttpStatus.OK.value() -> mapToRestaurantDto(body)
                 HttpStatus.BAD_REQUEST.value() -> null
                 HttpStatus.NOT_FOUND.value() -> null
-//            HttpStatus.BAD_REQUEST.value() -> throw mapToBadRequest(body)
                 else -> throw mapToBadGateway(body)
             }
         }
@@ -69,7 +68,7 @@ class HereRestaurantApi(
             count: Int
     ): CompletableFuture<Collection<RestaurantDto>> {
         val apiCount = if (skip == null || skip == 0) count else count.plus(count.times(skip))
-        return if (apiCount <= 100) {
+        return if (apiCount <= HERE_API_MAX_COUNT) {
             super.searchNearbyRestaurants(latitude, longitude, radiusMeters, name, skip, apiCount)
                     .thenApply { it.drop(apiCount - count) }
         } else {

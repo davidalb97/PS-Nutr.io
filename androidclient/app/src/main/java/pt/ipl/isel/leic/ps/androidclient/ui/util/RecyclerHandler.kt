@@ -13,21 +13,22 @@ import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.BaseListViewModel
 
 class RecyclerHandler<M : Parcelable, VM : BaseListViewModel<M>, A : BaseRecyclerAdapter<*, *, *>>(
     @IdRes val recyclerId: Int,
-    @IdRes val noItemsTxt: Int,
-    @IdRes val progressBar: Int,
-    val adapter: A,
+    @IdRes val noItemsTextViewId: Int,
+    @IdRes val progressBarId: Int,
+    val recyclerAdapter: A,
     val recyclerViewModel: VM,
     val view: View,
+    val paginated: Boolean,
     val onError: (Throwable) -> Unit
 ) {
 
     private val recyclerView: RecyclerView = view.findViewById(recyclerId)
-    private val recyclerNoItemsTxtView: TextView = view.findViewById(noItemsTxt)
-    private val recyclerProgressWheel: ProgressBar = view.findViewById(progressBar)
+    private val recyclerNoItemsTxtView: TextView = view.findViewById(noItemsTextViewId)
+    private val recyclerProgressWheel: ProgressBar = view.findViewById(progressBarId)
 
     init {
 
-        recyclerView.adapter = adapter
+        recyclerView.adapter = recyclerAdapter
         recyclerView.layoutManager = LinearLayoutManager(view.context)
         recyclerProgressWheel.visibility = View.VISIBLE
 
@@ -36,7 +37,9 @@ class RecyclerHandler<M : Parcelable, VM : BaseListViewModel<M>, A : BaseRecycle
 
         recyclerViewModel.onError = this::errorFunction
 
-        //startScrollListener()
+        if(paginated) {
+            startScrollListener()
+        }
     }
 
     /**
@@ -54,7 +57,7 @@ class RecyclerHandler<M : Parcelable, VM : BaseListViewModel<M>, A : BaseRecycle
      * Recycler list scroll listener
      * Receives the fetch from the specific view model
      */
-    fun startScrollListener() {
+    private fun startScrollListener() {
         recyclerView.addOnScrollListener(
             AppScrollListener(
                 layoutManager = recyclerView.layoutManager as LinearLayoutManager,

@@ -62,7 +62,7 @@ class LiveDataHandler<M : Parcelable> {
      * @param observer The callback to receive [MediatorLiveData.setValue] changes.
      */
     fun observe(owner: LifecycleOwner, observer: (M) -> Unit) {
-        mediatorLiveData.observe(owner, Observer {
+        mediatorLiveData.observe(owner, {
             observer(it)
         })
     }
@@ -129,6 +129,10 @@ class LiveDataHandler<M : Parcelable> {
             return true
         }
         return false
+    }
+
+    fun notifyChanged() {
+        mediatorLiveData.value = mediatorLiveData.value
     }
 }
 

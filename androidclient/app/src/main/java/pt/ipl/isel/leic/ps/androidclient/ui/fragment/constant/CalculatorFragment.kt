@@ -1,8 +1,8 @@
 package pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant
 
 import android.app.AlertDialog
-import android.content.Intent
 import android.os.Bundle
+import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -35,7 +35,10 @@ class CalculatorFragment : BaseAddMealFragment(), IRequiredTextInput, IGlucoseUn
     override val totalIngredientsWeightTextViewId = R.id.total_ingredient_amount
     override val totalIngredientsCarbohydratesTextViewId = R.id.total_ingredient_carbs
 
+    override val layout = R.layout.calculator_fragment
+    override val vMProviderFactorySupplier = ::CalculatorVMProviderFactory
     private lateinit var viewModelProfiles: InsulinProfilesListViewModel
+
     private var currentProfile: InsulinProfile? = null
     private val calculator = InsulinCalculator()
     private lateinit var bloodGlucoseEditText: EditText
@@ -52,8 +55,11 @@ class CalculatorFragment : BaseAddMealFragment(), IRequiredTextInput, IGlucoseUn
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        viewModelProfiles =
-            buildViewModel(savedInstanceState, InsulinProfilesListViewModel::class.java)
+        viewModelProfiles = buildViewModel(
+            savedInstanceState = savedInstanceState,
+            clazz = InsulinProfilesListViewModel::class.java
+        )
+        //Build super's viewModel (selected meals)
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
@@ -75,9 +81,9 @@ class CalculatorFragment : BaseAddMealFragment(), IRequiredTextInput, IGlucoseUn
 
     override fun setupIngredients(view: View) {
         super.setupIngredients(view)
-        arguments?.getMealItem()?.let(mealsViewModel::pick)
-        arguments?.getMealIngredient()?.let(mealsViewModel::pick)
-        arguments?.getMealInfo()?.let(mealsViewModel::pick)
+        arguments?.getMealItem()?.let(viewModel::pick)
+        arguments?.getMealIngredient()?.let(viewModel::pick)
+        arguments?.getMealInfo()?.let(viewModel::pick)
     }
 
     /**
@@ -102,7 +108,7 @@ class CalculatorFragment : BaseAddMealFragment(), IRequiredTextInput, IGlucoseUn
                 setupCalculateButton()
             }
         }
-        viewModelProfiles.update()
+        viewModelProfiles.setupList()
     }
 
     /**
@@ -197,7 +203,7 @@ class CalculatorFragment : BaseAddMealFragment(), IRequiredTextInput, IGlucoseUn
         if (!validateTextViews(requireContext(), bloodGlucoseEditText)) {
             return false
         }
-        if (mealsViewModel.pickedItems.isEmpty()) {
+        if (viewModel.pickedItems.isEmpty()) {
             Toast.makeText(
                 requireContext(),
                 R.string.calculator_ingredients_required,
@@ -231,16 +237,6 @@ class CalculatorFragment : BaseAddMealFragment(), IRequiredTextInput, IGlucoseUn
         }
     }
 
-    override fun getLayout() = R.layout.calculator_fragment
-
-    override fun getVMProviderFactory(
-        savedInstanceState: Bundle?,
-        intent: Intent
-    ): CalculatorVMProviderFactory {
-        return CalculatorVMProviderFactory(
-            arguments,
-            savedInstanceState,
-            intent
-        )
-    }
+    override fun getViewModels(): Iterable<Parcelable> = super.getViewModels()
+        .plus(viewModelProfiles)
 }

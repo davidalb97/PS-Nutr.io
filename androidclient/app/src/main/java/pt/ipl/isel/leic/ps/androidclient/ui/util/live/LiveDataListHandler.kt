@@ -112,7 +112,7 @@ class LiveDataListHandler<M : Parcelable> {
      * @param observer The callback to receive [MediatorLiveData.setValue] changes.
      */
     fun observe(owner: LifecycleOwner, observer: (List<M>) -> Unit) {
-        mediatorLiveData.observe(owner, Observer {
+        mediatorLiveData.observe(owner, {
             observer(it)
         })
     }
@@ -152,6 +152,7 @@ class LiveDataListHandler<M : Parcelable> {
      * @param src The [Parcel] to read the lists from.
      * @param kClass the [KClass] of the generic type [M].
      */
+    @Suppress("UNCHECKED_CAST")
     fun restoreFromParcel(src: Parcel, kClass: KClass<M>) {
         restoredItems = src.readArrayList(kClass.java.classLoader) as List<M>?
     }
@@ -183,6 +184,10 @@ class LiveDataListHandler<M : Parcelable> {
             return true
         }
         return false
+    }
+
+    fun notifyChanged() {
+        mediatorLiveData.value = mediatorLiveData.value
     }
 }
 

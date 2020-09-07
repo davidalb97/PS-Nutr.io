@@ -19,7 +19,7 @@ abstract class BaseRecyclerViewHolder<T : Any>(
     val ctx: Context
 ) : RecyclerView.ViewHolder(view), ISend, IContext, IItemClickListenerOwner<T> {
 
-    val log: Logger by lazy { Logger(javaClass) }
+    override val log: Logger by lazy { Logger(javaClass) }
     lateinit var item: T
 
     override var onClickListener: IItemClickListener<T>? = IItemClickListener { _, _ ->

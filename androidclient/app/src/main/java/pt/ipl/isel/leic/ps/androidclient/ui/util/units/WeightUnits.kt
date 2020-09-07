@@ -8,7 +8,7 @@ val DEFAULT_WEIGHT_UNIT = WeightUnits.GRAMS
 
 enum class WeightUnits(private val str: String) {
     GRAMS("gr"),
-    OUNCES("ounces");
+    OUNCES("oz");
 
     fun convert(targetUnit: WeightUnits, value: Float): Float {
         if (this == targetUnit) {

@@ -16,7 +16,6 @@ const val SECRET_PREFERENCES = "encryptedPreferences"
 const val PREFERENCES = "preferences"
 const val DARK_MODE = "dark_mode"
 
-
 class SettingsFragment : PreferenceFragmentCompat() {
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {

@@ -6,7 +6,10 @@ import androidx.lifecycle.LifecycleOwner
 import com.android.volley.VolleyError
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.restaurantRepository
-import pt.ipl.isel.leic.ps.androidclient.data.model.*
+import pt.ipl.isel.leic.ps.androidclient.data.model.MealItem
+import pt.ipl.isel.leic.ps.androidclient.data.model.RestaurantInfo
+import pt.ipl.isel.leic.ps.androidclient.data.model.Source
+import pt.ipl.isel.leic.ps.androidclient.data.model.VoteState
 import pt.ipl.isel.leic.ps.androidclient.ui.util.ItemAction
 import pt.ipl.isel.leic.ps.androidclient.ui.util.Navigation
 import pt.ipl.isel.leic.ps.androidclient.ui.util.getUserSession
@@ -16,12 +19,13 @@ import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.meal.MealItemListView
 
 class RestaurantInfoViewModel : MealItemListViewModel {
 
-    val restaurantInfoLiveDataHandler = LiveDataHandler<RestaurantInfo>()
+    //TODO override removeObservers
+    private val restaurantInfoLiveDataHandler = LiveDataHandler<RestaurantInfo>()
     val restaurantInfo get() = restaurantInfoLiveDataHandler.value
     var addedMeal: MealItem? = null
 
-    //Parameterless constructor
-    constructor(): super(
+    //Parameterless constructor due to byNavGraphsViewModel
+    constructor() : super(
         navDestination = Navigation.SEND_TO_MEAL_DETAIL,
         actions = listOf(
             ItemAction.FAVORITE,
@@ -39,15 +43,23 @@ class RestaurantInfoViewModel : MealItemListViewModel {
         addedMeal = parcel.readParcelable(MealItem::class.java.classLoader)
     }
 
-    override fun update() {
-        if (!restaurantInfoLiveDataHandler.tryRestore()) {
-            restaurantRepository.getRestaurantInfoById(
-                restaurantId = restaurantId!!,
-                userSession = getUserSession(),
-                success = restaurantInfoLiveDataHandler::set,
-                error = onError
-            )
-        }
+    override fun setupList() {
+        if (restaurantInfo != null) {
+            restaurantInfoLiveDataHandler.notifyChanged()
+        } else triggerFetch()
+    }
+
+    override fun tryRestore(): Boolean {
+        return restaurantInfoLiveDataHandler.tryRestore()
+    }
+
+    override fun fetch() {
+        restaurantRepository.getRestaurantInfoById(
+            restaurantId = restaurantId!!,
+            userSession = getUserSession(),
+            success = restaurantInfoLiveDataHandler::set,
+            error = onError
+        )
     }
 
     fun observeInfo(owner: LifecycleOwner, observer: (RestaurantInfo) -> Unit) {
@@ -55,6 +67,11 @@ class RestaurantInfoViewModel : MealItemListViewModel {
             onRestaurantInfo(restaurantInfo)
             observer(restaurantInfo)
         }
+    }
+
+    override fun removeObservers(owner: LifecycleOwner) {
+        restaurantInfoLiveDataHandler.removeObservers(owner)
+        super.removeObservers(owner)
     }
 
     private fun onRestaurantInfo(restaurantInfo: RestaurantInfo) {

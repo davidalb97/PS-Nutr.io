@@ -42,6 +42,7 @@ interface IFavoriteActionButton : IContext, IAction, IUserSession, ILog {
     }
 
     fun onItemFavorable(isFavorite: Boolean) {
+        log.v("Setting favorite to \"$isFavorite\"")
         if (isFavorite) {
             favoriteButton.changeColor(fetchCtx(), R.color.colorYellow)
         } else {

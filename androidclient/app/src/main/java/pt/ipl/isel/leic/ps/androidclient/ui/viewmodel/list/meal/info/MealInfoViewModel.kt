@@ -5,7 +5,6 @@ import android.os.Parcelable
 import androidx.lifecycle.LifecycleOwner
 import com.android.volley.VolleyError
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.mealRepository
-import pt.ipl.isel.leic.ps.androidclient.data.api.dto.output.PortionOutput
 import pt.ipl.isel.leic.ps.androidclient.data.model.*
 import pt.ipl.isel.leic.ps.androidclient.ui.util.ItemAction
 import pt.ipl.isel.leic.ps.androidclient.ui.util.Navigation
@@ -16,6 +15,7 @@ import kotlin.reflect.KClass
 
 open class MealInfoViewModel : MealItemListViewModel {
 
+    //TODO Override removeObservers
     private val mealInfoLiveDataHandler = LiveDataHandler<MealInfo>()
     val mealInfo get() = mealInfoLiveDataHandler.value
     val mealItem: MealItem?
@@ -54,24 +54,22 @@ open class MealInfoViewModel : MealItemListViewModel {
         mealItem = null
     }
 
-    //TODO remove if not in use
-//    constructor(ingredientActions: List<ItemAction>) : super(
-//        source = null,
-//        navDestination = Navigation.SEND_TO_MEAL_DETAIL,
-//        actions = ingredientActions
-//    ) {
-//        mealItem = null
-//    }
-
     constructor(parcel: Parcel) : super(parcel) {
         mealItem = parcel.readParcelable(MealItem::class.java.classLoader)
         mealInfoLiveDataHandler.restoreFromParcel(parcel, MealInfo::class)
     }
 
-    override fun update() {
-        if (mealInfoLiveDataHandler.tryRestore()) {
-            return
-        }
+    override fun setupList() {
+        if (mealInfo != null) {
+            mealInfoLiveDataHandler.notifyChanged()
+        } else triggerFetch()
+    }
+
+    override fun tryRestore(): Boolean {
+        return mealInfoLiveDataHandler.tryRestore()
+    }
+
+    override fun fetch() {
         if (mealItem!!.restaurantSubmissionId != null) {
             mealRepository.getApiRestaurantMealInfo(
                 restaurantId = mealItem.restaurantSubmissionId!!,
@@ -90,25 +88,16 @@ open class MealInfoViewModel : MealItemListViewModel {
         }
     }
 
-    //TODO remove if not in use
-//    private fun fetchDbBySource(dbId: Long, source: Source) {
-//        mealInfoLiveDataHandler.set(
-//            mealRepository.getByIdAndSource(
-//                dbId = dbId,
-//                source = source
-//            )
-//        ) { dbDto ->
-//            mealRepository.dbMealInfoMapper.mapToModel(dbDto).also { mapped ->
-//                onMealInfo(mapped)
-//            }
-//        }
-//    }
-
     fun observeInfo(owner: LifecycleOwner, observer: (MealInfo) -> Unit) {
         mealInfoLiveDataHandler.observe(owner) { mealInfo ->
             onMealInfo(mealInfo)
             observer(mealInfo)
         }
+    }
+
+    override fun removeObservers(owner: LifecycleOwner) {
+        mealInfoLiveDataHandler.removeObservers(owner)
+        super.removeObservers(owner)
     }
 
     private fun onMealInfo(mealInfo: MealInfo) {
@@ -149,7 +138,7 @@ open class MealInfoViewModel : MealItemListViewModel {
             portion = portion,
             userSession = userSession,
             onSuccess = onSuccess,
-            onError =  onError
+            onError = onError
         )
     }
 
@@ -167,7 +156,7 @@ open class MealInfoViewModel : MealItemListViewModel {
             portion = portion,
             userSession = userSession,
             onSuccess = onSuccess,
-            onError =  onError
+            onError = onError
         )
     }
 
@@ -183,7 +172,7 @@ open class MealInfoViewModel : MealItemListViewModel {
             mealId = mealId,
             userSession = userSession,
             onSuccess = onSuccess,
-            onError =  onError
+            onError = onError
         )
     }
 
@@ -197,10 +186,6 @@ open class MealInfoViewModel : MealItemListViewModel {
 
     override fun describeContents(): Int {
         return 0
-    }
-
-    fun removeObservers(owner: LifecycleOwner) {
-        liveDataHandler.removeObservers(owner)
     }
 
     companion object CREATOR : Parcelable.Creator<MealInfoViewModel> {

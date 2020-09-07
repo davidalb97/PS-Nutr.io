@@ -1,7 +1,6 @@
 package pt.ipl.isel.leic.ps.androidclient.ui.fragment.list.detail
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
@@ -29,7 +28,6 @@ import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.menu.IEditMenuItem
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.menu.IPopupMenuButton
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.menu.IReportMenuItem
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.menu.MenuItemFactory
-import pt.ipl.isel.leic.ps.androidclient.ui.provider.BaseViewModelProviderFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.MealInfoVMProviderFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.util.*
 import pt.ipl.isel.leic.ps.androidclient.ui.util.prompt.MealAmountSelector
@@ -47,12 +45,7 @@ class MealInfoFragment :
     IReportMenuItem,
     IEditMenuItem {
 
-    override val recyclerAdapter by lazy {
-        MealItemRecyclerAdapter(
-            recyclerViewModel,
-            this.requireContext()
-        )
-    }
+    override val paginated = false
     override val menus: MutableMap<String, MenuItemFactory> = mutableMapOf()
     override lateinit var actions: List<ItemAction>
     override val imageId: Int = R.id.meal_detail_image
@@ -79,40 +72,37 @@ class MealInfoFragment :
     override lateinit var chart: BarChart
     override var noDataText: String? = app.getString(R.string.no_portions_chart_message)
 
+    override val recyclerViewId = R.id.meal_info_ingredient_item_list
+    override val progressBarId = R.id.meal_info_progress_bar
+    override val noItemsTextViewId = R.id.meal_info_no_ingredients
+    override val layout = R.layout.meal_detail
+
+    override val vmClass = MealInfoViewModel::class.java
+    override val vMProviderFactorySupplier = ::MealInfoVMProviderFactory
+    override val recyclerAdapter by lazy {
+        MealItemRecyclerAdapter(
+            viewModel,
+            this.requireContext()
+        )
+    }
+
     private lateinit var addPortionLayout: RelativeLayout
     private lateinit var editPortionLayout: RelativeLayout
     private lateinit var portionEntries: MutableList<BarEntry>
     private var userPortionEntry: BarEntry? = null
 
-    /*override fun onCreate(savedInstanceState: Bundle?) {
-        setHasOptionsMenu(true)
-        super.onCreate(savedInstanceState)
-    }
-*/
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         setHasOptionsMenu(true)
-        actions = recyclerViewModel.actions
-        recyclerViewModel.observeInfo(this) { mealInfo ->
+        actions = viewModel.actions
+        viewModel.observeInfo(this) { mealInfo ->
             setupView(view, mealInfo)
+            viewModel.removeObservers(this)
         }
 
         //Fetch meal info
-        recyclerViewModel.update()
-    }
-
-    override fun initRecyclerView(view: View) {
-        recyclerHandler = RecyclerHandler(
-            recyclerId = getRecyclerId(),
-            noItemsTxt = getNoItemsLabelId(),
-            progressBar = getProgressBarId(),
-            adapter = recyclerAdapter,
-            recyclerViewModel = recyclerViewModel,
-            view = view,
-            onError = ::onError
-        )
-        recyclerHandler.startObserver(this)
+        viewModel.setupList()
     }
 
     private fun setupView(view: View, receivedMeal: MealInfo) {
@@ -181,7 +171,7 @@ class MealInfoFragment :
                 baseAmountGrams = receivedMeal.amount,
                 mealUnit = WeightUnits.fromValue(sharedPreferences.getWeightUnitOrDefault())
             ) { preciseGrams, _ ->
-                recyclerViewModel.addMealPortion(
+                viewModel.addMealPortion(
                     restaurantId = receivedMeal.restaurantSubmissionId!!,
                     mealId = receivedMeal.submissionId!!,
                     portion = Portion(
@@ -206,7 +196,7 @@ class MealInfoFragment :
                 baseAmountGrams = userPortionEntry!!.x,
                 mealUnit = WeightUnits.fromValue(sharedPreferences.getWeightUnitOrDefault())
             ) { preciseGrams, _ ->
-                recyclerViewModel.editMealPortion(
+                viewModel.editMealPortion(
                     restaurantId = receivedMeal.restaurantSubmissionId!!,
                     mealId = receivedMeal.submissionId!!,
                     portion = Portion(
@@ -224,7 +214,7 @@ class MealInfoFragment :
     private fun setupDeletePortion(view: View, receivedMeal: MealInfo) {
         val deletePortionButton: Button = view.findViewById(R.id.delete_portion_button)
         deletePortionButton.setOnClickListener {
-            recyclerViewModel.deleteMealPortion(
+            viewModel.deleteMealPortion(
                 restaurantId = receivedMeal.restaurantSubmissionId!!,
                 mealId = receivedMeal.submissionId!!,
                 userSession = requireUserSession(),
@@ -329,16 +319,16 @@ class MealInfoFragment :
     }
 
     override fun onFavorite(onSuccess: () -> Unit, onError: (Throwable) -> Unit) {
-        recyclerViewModel.putFavorite(
-            mealItem = recyclerViewModel.mealInfo!!,
+        viewModel.putFavorite(
+            mealItem = viewModel.mealInfo!!,
             onSuccess = onSuccess,
             onError = onError
         )
     }
 
     override fun onReport(reportStr: String, onSuccess: () -> Unit, onError: (Throwable) -> Unit) {
-        recyclerViewModel.report(
-            mealItem = recyclerViewModel.mealInfo!!,
+        viewModel.report(
+            mealItem = viewModel.mealInfo!!,
             reportStr = reportStr,
             onSuccess = onSuccess,
             onError = onError
@@ -350,7 +340,7 @@ class MealInfoFragment :
         onSuccess: () -> Unit,
         onError: (Throwable) -> Unit
     ) {
-        recyclerViewModel.setVote(
+        viewModel.setVote(
             vote = voteState,
             userSession = requireUserSession(),
             onSuccess = onSuccess,
@@ -359,30 +349,9 @@ class MealInfoFragment :
     }
 
     override fun onSendToDestination(bundle: Bundle) {
-        bundle.putMealInfo(recyclerViewModel.mealInfo)
+        bundle.putMealInfo(viewModel.mealInfo)
         bundle.putNavigation(Navigation.SEND_TO_MEAL_DETAIL)    //Edit meal / calculator back
     }
 
     override fun fetchCtx(): Context = requireContext()
-
-    override fun getRecyclerId() = R.id.meal_info_ingredient_item_list
-
-    override fun getProgressBarId() = R.id.meal_info_progress_bar
-
-    override fun getNoItemsLabelId() = R.id.meal_info_no_ingredients
-
-    override fun getLayout() = R.layout.meal_detail
-
-    override fun getVMProviderFactory(
-        savedInstanceState: Bundle?,
-        intent: Intent
-    ): BaseViewModelProviderFactory {
-        return MealInfoVMProviderFactory(
-            arguments,
-            savedInstanceState,
-            intent
-        )
-    }
-
-    override fun getRecyclerViewModelClass() = MealInfoViewModel::class.java
 }

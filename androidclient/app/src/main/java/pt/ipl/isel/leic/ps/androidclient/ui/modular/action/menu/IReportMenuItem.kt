@@ -28,9 +28,13 @@ interface IReportMenuItem : IMenu, IContext, IAction, ILog, IUserSession {
                                 ctx = fetchCtx(),
                                 titleId = R.string.report_menu_item_title,
                                 confirmConsumer = { reportMsg ->
+                                    log.v("Sending report...")
                                     onReport(
                                         reportStr = reportMsg,
-                                        onSuccess = menu::close,
+                                        onSuccess = {
+                                            log.v("Sending report completed!")
+                                            menu.close()
+                                        },
                                         onError = log::e
                                     )
                                 }
