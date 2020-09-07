@@ -17,7 +17,7 @@ class InsulinProfilesListFragment : BaseListFragment<
         InsulinProfileRecyclerAdapter
         >() {
 
-    override val paginated = true
+    override val paginated = false
     override val recyclerViewId = R.id.itemList
     override val progressBarId = R.id.progressBar
     override val layout = R.layout.insulin_profiles_fragment
@@ -46,14 +46,12 @@ class InsulinProfilesListFragment : BaseListFragment<
         }
 
         // Setups a listener that refresh the displayed information by swiping down
-        refreshLayout!!.setOnRefreshListener(object :
-            SwipeRefreshLayout(this.requireContext()),
-            SwipeRefreshLayout.OnRefreshListener {
-            override fun onRefresh() {
-                //TODO Should clear and then fetch
-                viewModel.triggerFetch()
-            }
-        })
+        refreshLayout!!.setOnRefreshListener { //TODO Should clear and then fetch
+            viewModel.triggerFetch()
+        }
+        viewModel.observe(this) {
+            refreshLayout!!.isRefreshing = false
+        }
         viewModel.setupList()
     }
 }
