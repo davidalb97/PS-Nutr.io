@@ -6,11 +6,11 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.mockito.Mockito.*
 import pt.isel.ps.g06.httpserver.anyNonNull
-import pt.isel.ps.g06.httpserver.common.exception.problemJson.badRequest.InvalidInsulinProfileTimesException
-import pt.isel.ps.g06.httpserver.common.exception.problemJson.badRequest.OverlappingInsulinProfilesException
-import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.InsulinProfileResponseMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbUserInsulinProfileDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.InsulinProfileDbRepository
+import pt.isel.ps.g06.httpserver.dataAccess.model.mapper.InsulinProfileResponseMapper
+import pt.isel.ps.g06.httpserver.exception.problemJson.badRequest.InvalidInsulinProfileTimesException
+import pt.isel.ps.g06.httpserver.exception.problemJson.badRequest.OverlappingInsulinProfilesException
 import pt.isel.ps.g06.httpserver.model.InsulinProfile
 import java.time.LocalTime
 import java.time.OffsetDateTime

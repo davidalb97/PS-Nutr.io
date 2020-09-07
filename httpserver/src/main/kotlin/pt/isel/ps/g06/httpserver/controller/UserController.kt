@@ -7,8 +7,6 @@ import pt.isel.ps.g06.httpserver.common.BAN_PATH
 import pt.isel.ps.g06.httpserver.common.LOGIN_PATH
 import pt.isel.ps.g06.httpserver.common.REGISTER_PATH
 import pt.isel.ps.g06.httpserver.common.USER_PATH
-import pt.isel.ps.g06.httpserver.common.exception.problemJson.notFound.UserNotFoundException
-import pt.isel.ps.g06.httpserver.common.exception.problemJson.unauthorized.UnauthorizedException
 import pt.isel.ps.g06.httpserver.dataAccess.input.moderation.BanInput
 import pt.isel.ps.g06.httpserver.dataAccess.input.user.UserLoginInput
 import pt.isel.ps.g06.httpserver.dataAccess.input.user.UserRegisterInput
@@ -16,6 +14,8 @@ import pt.isel.ps.g06.httpserver.dataAccess.output.user.UserInfoOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.user.UserLoginOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.user.UserRegisterOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.user.mapUserToOutput
+import pt.isel.ps.g06.httpserver.exception.problemJson.notFound.UserNotFoundException
+import pt.isel.ps.g06.httpserver.exception.problemJson.unauthorized.UnauthorizedException
 import pt.isel.ps.g06.httpserver.model.User
 import pt.isel.ps.g06.httpserver.service.AuthenticationService
 import pt.isel.ps.g06.httpserver.service.UserService

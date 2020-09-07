@@ -1,12 +1,12 @@
 package pt.isel.ps.g06.httpserver.dataAccess.db.repo
 
 import org.springframework.stereotype.Repository
-import pt.isel.ps.g06.httpserver.common.exception.problemJson.badRequest.NonVotableSubmissionException
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionContractType.VOTABLE
 import pt.isel.ps.g06.httpserver.dataAccess.db.common.DatabaseContext
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.UserVoteDao
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.VotableDao
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbVotesDto
+import pt.isel.ps.g06.httpserver.exception.problemJson.badRequest.NonVotableSubmissionException
 import pt.isel.ps.g06.httpserver.model.VoteState
 
 private val voteDaoClass = UserVoteDao::class.java

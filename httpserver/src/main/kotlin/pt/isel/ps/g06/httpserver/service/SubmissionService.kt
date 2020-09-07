@@ -2,11 +2,11 @@ package pt.isel.ps.g06.httpserver.service
 
 import org.springframework.stereotype.Service
 import pt.isel.ps.g06.httpserver.common.MOD_USER
-import pt.isel.ps.g06.httpserver.common.exception.problemJson.badRequest.SubmissionNotVotableException
-import pt.isel.ps.g06.httpserver.common.exception.problemJson.forbidden.NotSubmissionOwnerException
-import pt.isel.ps.g06.httpserver.common.exception.problemJson.notFound.SubmissionNotFoundException
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.SubmissionDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.VoteDbRepository
+import pt.isel.ps.g06.httpserver.exception.problemJson.badRequest.SubmissionNotVotableException
+import pt.isel.ps.g06.httpserver.exception.problemJson.forbidden.NotSubmissionOwnerException
+import pt.isel.ps.g06.httpserver.exception.problemJson.notFound.SubmissionNotFoundException
 import pt.isel.ps.g06.httpserver.model.User
 import pt.isel.ps.g06.httpserver.model.VoteState
 import pt.isel.ps.g06.httpserver.model.restaurant.Restaurant

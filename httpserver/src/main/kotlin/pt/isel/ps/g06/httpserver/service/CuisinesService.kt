@@ -1,8 +1,8 @@
 package pt.isel.ps.g06.httpserver.service
 
 import org.springframework.stereotype.Service
-import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.cuisines.CuisinesResponseMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.CuisineDbRepository
+import pt.isel.ps.g06.httpserver.dataAccess.model.mapper.cuisines.CuisinesResponseMapper
 import pt.isel.ps.g06.httpserver.model.Cuisine
 
 @Service

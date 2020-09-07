@@ -1,14 +1,14 @@
 package pt.isel.ps.g06.httpserver.service
 
 import org.springframework.stereotype.Service
-import pt.isel.ps.g06.httpserver.common.exception.problemJson.badRequest.InvalidInputException
-import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.BaseReportResponseMapper
-import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.ReportResponseMapper
-import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.ReportSubmissionDetailMapper
-import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.ReportedSubmissionResponseMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.REPORTABLE_TYPES
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.ReportDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.SubmissionDbRepository
+import pt.isel.ps.g06.httpserver.dataAccess.model.mapper.BaseReportResponseMapper
+import pt.isel.ps.g06.httpserver.dataAccess.model.mapper.ReportResponseMapper
+import pt.isel.ps.g06.httpserver.dataAccess.model.mapper.ReportSubmissionDetailMapper
+import pt.isel.ps.g06.httpserver.dataAccess.model.mapper.ReportedSubmissionResponseMapper
+import pt.isel.ps.g06.httpserver.exception.problemJson.badRequest.InvalidInputException
 import pt.isel.ps.g06.httpserver.model.report.BaseReport
 import pt.isel.ps.g06.httpserver.model.report.ReportSubmissionDetail
 import pt.isel.ps.g06.httpserver.model.report.ReportedSubmission
