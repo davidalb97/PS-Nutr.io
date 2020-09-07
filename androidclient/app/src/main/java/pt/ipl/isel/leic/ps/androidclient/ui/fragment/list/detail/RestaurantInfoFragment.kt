@@ -128,6 +128,12 @@ class RestaurantInfoFragment :
     override fun onResume() {
         super.onResume()
 
+        if (recyclerViewModel.restaurantInfo != null) {
+            super.setupReportMenuItem(recyclerViewModel.restaurantInfo!!.isReportable)
+            super.setupEditMenuItem()
+            populateMenu(NutrioApp.menu)
+        }
+
         val addedMeal = recyclerViewModel.addedMeal
         if (addedMeal != null) {
             recyclerViewModel.liveDataHandler.add(addedMeal)

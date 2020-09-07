@@ -44,7 +44,6 @@ class MealInfoFragment :
     IBarChart,
     ISend,
     IFavoriteActionButton,
-    IPopupMenuButton,
     IReportMenuItem,
     IEditMenuItem {
 
@@ -76,8 +75,6 @@ class MealInfoFragment :
     override lateinit var upVoteButton: ImageButton
     override val downVoteButtonId: Int = R.id.down_vote_button
     override lateinit var downVoteButton: ImageButton
-    override val menuButtonId: Int = R.id.options
-    override lateinit var menuButton: ImageButton
     override val chartId: Int = R.id.portion_chart
     override lateinit var chart: BarChart
     override var noDataText: String? = app.getString(R.string.no_portions_chart_message)
@@ -127,7 +124,6 @@ class MealInfoFragment :
         super.setupCalculateAction(view)
         super.setupReportMenuItem(receivedMeal.isReportable ?: false)
         super.setupEditMenuItem()
-        super.setupPopupMenuButton(view)
         setupPortionEntries(receivedMeal)
         super.setupChart(view, portionEntries)
         setupPortionButtons(view, receivedMeal)
