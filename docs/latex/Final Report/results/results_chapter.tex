@@ -219,6 +219,35 @@ The library also exposes two different API's styles: a fluent/imperative style a
 We chose to use a declarative style due to its convenience and code simplicity
 over the imperative one. It was also the more adequate style to the project's structure. 
 
+\subsection{Restaurants}
+
+Unlike other submissions, restaurants can be obtained from two sources of truth - APIs and the database -
+creating obstacles that needed to be solved and explained in this section, such as data consistency and defining unique identifiers.\\
+
+\subsubsection{Data consistency}
+
+Restaurants provided by APIs are only copied to the database when new metadata is added (such as a user vote, meal or favorite) in order
+to avoid creation of unnecessary and duplicate tuples. After a restaurant is copied to the database with new metadata, the server ensures
+that subsequent requests always return the database submission and not the API one by prioritizing database results.\\
+
+When searching nearby restaurants by location, this is done by querying both the database and the API and removing API results if their
+identifier already exists in the database result. When requesting a specific restaurant, the server prioritizes searching the database
+first and only the API afterwards, if no initial result was found.\\
+
+\subsubsection{Unique identifiers}
+
+Given that restaurants can be obtained from two sources of truth, then we can consider that each source provides its' own unique identifier.
+A mechanism that merges identifiers needed to be implemented in order to avoid not knowing which source contains requested restaurant with
+identifier \textbf{"ID1"} or worse - having two different restaurants from different sources with the same identifier.\\
+
+Said mechanism is \textit{RestaurantIdentifier}, which always contains the submitter in order for the server to know from which source the restaurant
+is from, and may contain a database submission identifier and/or an API identifier. Additionally, when an API restaurant is copied to the database,
+its' \textit{RestaurantIdentifier} will now contain both API and database identifier.\\
+
+When a request is done with an outdated \textit{RestaurantIdentifier} (one that represents a restaurant which is contained in the database but has no respective
+identifier), the server always queries the database first under the submitter and API submission pair in order to ensure data consistency. This behavior
+can be observed in the \textit{RestaurantServiceTests} class.
+
 \subsection{Spring Security}
 
 \subsubsection{JSON Web Tokens}
