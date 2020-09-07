@@ -574,8 +574,45 @@ The user can search for restaurant in two ways:
     \end{center}
 \end{figure}
 
+Restaurants can also be created by a user and added to a certain location, more specifically the current user's geolocation when 
+the restaurant is being created. This can be done by clicking on the plus icon in the images above.\\
+
+When clicking on a restaurant, the user can observe its menu. However if no submissions were made for this restaurant the menu will
+be filled with suggested meals from the database, as shown below.\\
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[scale=0.1]{_figures/restaurant_detail.png}
+        \caption{Restaurant detail} 
+    \end{center}
+\end{figure}
+
+If a meal that exist in the restaurant's menu is not present in this list, the user can add it by clicking on the 
+'submit a meal for this menu' button.\\
+
+If a certain meal in this list exist in the restaurant's menu, the user can add a portion by clicking on the meal inside the list
+and following this procedure:\\
+
+\begin{figure}[H]
+    \captionsetup[subfigure]{justification=centering}
+    \begin{center}
+        \begin{subfigure}{.3\textwidth}
+            \includegraphics[scale=0.1, width=\textwidth]{_figures/meal_detail.png}
+            \caption{Meal detail} 
+        \end{subfigure}
+        \begin{subfigure}{.3\textwidth}
+            \includegraphics[scale=0.1, width=\textwidth]{_figures/add_portion.png}
+            \caption{Adding a portion for this meal} 
+        \end{subfigure}%        
+        \begin{subfigure}{.3\textwidth}
+            \includegraphics[scale=0.1, width=\textwidth]{_figures/portion_added.png}
+            \caption{Portion added with graph showing the result} 
+        \end{subfigure}%        
+    \end{center}
+\end{figure}
+
 The user can also access available meals by accessing 'By name' inside the Meals box, which will display a tab menu with the
-platform's suggested meals and meals' ingredients.
+platform's suggested meals and meals' ingredients.\\
 
 \begin{figure}[H]
     \captionsetup[subfigure]{justification=centering}
@@ -592,6 +629,23 @@ platform's suggested meals and meals' ingredients.
 \end{figure}
 
 \subsubsection{Creating custom meals}
+
+\begin{figure}[H]
+    \captionsetup[subfigure]{justification=centering}
+    \begin{center}
+        \begin{subfigure}{.3\textwidth}
+            \includegraphics[scale=0.1, width=\textwidth]{_figures/create_custom_meal.png}
+            \caption{Custom meal creation} 
+        \end{subfigure}
+        \begin{subfigure}{.3\textwidth}
+            \includegraphics[scale=0.1, width=\textwidth]{_figures/custom_meal_after_creation.png}
+            \caption{List to access custom meals} 
+        \end{subfigure}%        
+    \end{center}
+\end{figure}
+
+As seen above, the user can create custom meals in order to add to a restaurant menu later or to use it 
+with the insulin calculator, which will be explained in the next section.
 
 \subsubsection{Using the insulin calculator}
 
