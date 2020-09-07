@@ -14,7 +14,7 @@ class MealItemPickViewModel : BaseItemPickerViewModel<MealItem> {
     constructor() : super()
 
     override fun fetch() {
-        tryRestore()
+        //Unused
     }
 
     override fun getModelClass(): KClass<MealItem> = MealItem::class

@@ -34,10 +34,17 @@ abstract class BaseListViewModel<T : Parcelable>() : ViewModel(), Parcelable {
     open fun setupList() {
         if(items.isNotEmpty()) {
             liveDataHandler.notifyChanged()
-        } else fetch()
+        } else triggerFetch()
     }
 
-    abstract fun fetch()
+    fun triggerFetch() {
+        pendingRequest = true
+        if (!tryRestore()) {
+            fetch()
+        }
+    }
+
+    protected abstract fun fetch()
 
     /**
      * Observes the [LiveDataListHandler], given a [LifecycleOwner] and a [MutableList].

@@ -23,16 +23,14 @@ open class IngredientListViewModel : BaseMealListViewModel<MealIngredient> {
     constructor(parcel: Parcel) : super(parcel)
 
     override fun fetch() {
-        if (!tryRestore()) {
-            when (source) {
-                Source.API -> ingredientRepository.getIngredients(
-                    count = count,
-                    skip = skip,
-                    success = liveDataHandler::add,
-                    error = onError
-                )
-                else -> throw UnsupportedOperationException("Can only obtain ingredients from API!")
-            }
+        when (source) {
+            Source.API -> ingredientRepository.getIngredients(
+                count = count,
+                skip = skip,
+                success = liveDataHandler::add,
+                error = onError
+            )
+            else -> throw UnsupportedOperationException("Can only obtain ingredients from API!")
         }
     }
 

@@ -23,9 +23,7 @@ open class CuisineListViewModel(
     }
 
     override fun fetch() {
-        if (!super.tryRestore()) {
-            cuisineRepository.getCuisines(count, skip, liveDataHandler::set, onError)
-        }
+        cuisineRepository.getCuisines(count, skip, liveDataHandler::set, onError)
     }
 
     override fun writeToParcel(dest: Parcel?, flags: Int) {

@@ -5,7 +5,6 @@ import android.os.Parcelable
 import androidx.lifecycle.LifecycleOwner
 import com.android.volley.VolleyError
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.mealRepository
-import pt.ipl.isel.leic.ps.androidclient.data.api.dto.output.PortionOutput
 import pt.ipl.isel.leic.ps.androidclient.data.model.*
 import pt.ipl.isel.leic.ps.androidclient.ui.util.ItemAction
 import pt.ipl.isel.leic.ps.androidclient.ui.util.Navigation
@@ -55,30 +54,22 @@ open class MealInfoViewModel : MealItemListViewModel {
         mealItem = null
     }
 
-    //TODO remove if not in use
-//    constructor(ingredientActions: List<ItemAction>) : super(
-//        source = null,
-//        navDestination = Navigation.SEND_TO_MEAL_DETAIL,
-//        actions = ingredientActions
-//    ) {
-//        mealItem = null
-//    }
-
     constructor(parcel: Parcel) : super(parcel) {
         mealItem = parcel.readParcelable(MealItem::class.java.classLoader)
         mealInfoLiveDataHandler.restoreFromParcel(parcel, MealInfo::class)
     }
 
     override fun setupList() {
-        if(mealInfo != null) {
+        if (mealInfo != null) {
             mealInfoLiveDataHandler.notifyChanged()
-        } else fetch()
+        } else triggerFetch()
+    }
+
+    override fun tryRestore(): Boolean {
+        return mealInfoLiveDataHandler.tryRestore()
     }
 
     override fun fetch() {
-        if (mealInfoLiveDataHandler.tryRestore()) {
-            return
-        }
         if (mealItem!!.restaurantSubmissionId != null) {
             mealRepository.getApiRestaurantMealInfo(
                 restaurantId = mealItem.restaurantSubmissionId!!,
@@ -96,20 +87,6 @@ open class MealInfoViewModel : MealItemListViewModel {
             )
         }
     }
-
-    //TODO remove if not in use
-//    private fun fetchDbBySource(dbId: Long, source: Source) {
-//        mealInfoLiveDataHandler.set(
-//            mealRepository.getByIdAndSource(
-//                dbId = dbId,
-//                source = source
-//            )
-//        ) { dbDto ->
-//            mealRepository.dbMealInfoMapper.mapToModel(dbDto).also { mapped ->
-//                onMealInfo(mapped)
-//            }
-//        }
-//    }
 
     fun observeInfo(owner: LifecycleOwner, observer: (MealInfo) -> Unit) {
         mealInfoLiveDataHandler.observe(owner) { mealInfo ->
@@ -161,7 +138,7 @@ open class MealInfoViewModel : MealItemListViewModel {
             portion = portion,
             userSession = userSession,
             onSuccess = onSuccess,
-            onError =  onError
+            onError = onError
         )
     }
 
@@ -179,7 +156,7 @@ open class MealInfoViewModel : MealItemListViewModel {
             portion = portion,
             userSession = userSession,
             onSuccess = onSuccess,
-            onError =  onError
+            onError = onError
         )
     }
 
@@ -195,7 +172,7 @@ open class MealInfoViewModel : MealItemListViewModel {
             mealId = mealId,
             userSession = userSession,
             onSuccess = onSuccess,
-            onError =  onError
+            onError = onError
         )
     }
 
@@ -204,6 +181,8 @@ open class MealInfoViewModel : MealItemListViewModel {
         dest?.writeParcelable(mealItem, flags)
         mealInfoLiveDataHandler.writeToParcel(dest, flags)
     }
+
+
 
     override fun getModelClass(): KClass<MealItem> = MealItem::class
 

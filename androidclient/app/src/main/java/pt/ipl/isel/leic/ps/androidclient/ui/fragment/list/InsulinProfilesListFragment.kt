@@ -51,7 +51,7 @@ class InsulinProfilesListFragment : BaseListFragment<
             SwipeRefreshLayout.OnRefreshListener {
             override fun onRefresh() {
                 //TODO Should clear and then fetch
-                viewModel.fetch()
+                viewModel.triggerFetch()
             }
         })
         viewModel.setupList()

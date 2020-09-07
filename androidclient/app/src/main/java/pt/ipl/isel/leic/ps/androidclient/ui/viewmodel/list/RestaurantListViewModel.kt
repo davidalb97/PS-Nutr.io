@@ -32,7 +32,6 @@ class RestaurantListViewModel(
     }
 
     override fun fetch() {
-        this.pendingRequest = true
         restaurantRepository.getNearbyRestaurants(
             latitude = latitude!!,
             longitude = longitude!!,
