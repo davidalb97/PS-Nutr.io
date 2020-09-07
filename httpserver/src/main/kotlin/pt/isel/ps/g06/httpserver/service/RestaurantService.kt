@@ -47,7 +47,7 @@ class RestaurantService(
         val type = RestaurantApiType.getOrDefault(apiType)
         val restaurantApi = restaurantApiMapper.getRestaurantApi(type)
 
-        var apiRestaurants: CompletableFuture<Collection<Restaurant>>? = null
+        val apiRestaurants: CompletableFuture<Collection<Restaurant>>?
         //Get API restaurants
 
         apiRestaurants = restaurantApi
@@ -58,27 +58,8 @@ class RestaurantService(
                 .map(restaurantResponseMapper::mapTo)
                 .let { filterRedundantApiRestaurants(
                         it,
-                        apiRestaurants?.get()?.asSequence() ?: sequenceOf(),
-                        skip,
-                        count
+                        apiRestaurants?.get()?.asSequence() ?: sequenceOf()
                 ) }
-
-        //Keeps an open transaction while we iterate the DB response Stream
-//        return transactionHolder.inTransaction {
-//
-//            //Get db restaurants
-//            dbRestaurantRepository
-//                    .getAllByCoordinates(latitude, longitude, chosenRadius)
-//                    //Must close database resources even when database row iteration fails
-//                    .use {
-//                        //Convert to sequence & map
-//                        val mapped = it.asSequence()
-//                                .map(restaurantResponseMapper::mapTo)
-//
-//                        //Return all restaurants
-//                        return@inTransaction filterRedundantApiRestaurants(mapped, apiRestaurants.get())
-//                    }
-//        }
     }
 
     /**
@@ -186,11 +167,8 @@ class RestaurantService(
 
     private fun filterRedundantApiRestaurants(
             dbRestaurants: Sequence<Restaurant>,
-            apiRestaurants: Sequence<Restaurant>,
-            skip: Int?,
-            count: Int
+            apiRestaurants: Sequence<Restaurant>
     ): Sequence<Restaurant> {
-        //TODO Avoid eager call or maybe cache values with a stream cache implementation
 
         //Filter api restaurants that already exist in db
         val filteredApiRestaurants = apiRestaurants.filter { apiRestaurant ->
@@ -202,20 +180,6 @@ class RestaurantService(
                         && apiRestaurant.identifier.value.submitterId == dbRestaurant.identifier.value.submitterId
             }
         }
-
-        /*var filteredApiRestaurantList = filteredApiRestaurants.toList()
-        val filteredApiRestaurantListSize = filteredApiRestaurantList.size
-
-        if (filteredApiRestaurantListSize > count) {
-            filteredApiRestaurantList =
-                    filteredApiRestaurantList.drop(filteredApiRestaurantListSize - count)
-        }
-
-        val totalCount = dbRestaurantListSize.plus(filteredApiRestaurantList.size)
-
-        if (totalCount > count) {
-            filteredApiRestaurantList = filteredApiRestaurantList.drop(totalCount - count)
-        }*/
 
         return dbRestaurants.plus(filteredApiRestaurants)
     }
