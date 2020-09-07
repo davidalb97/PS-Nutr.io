@@ -3,10 +3,11 @@ package pt.isel.ps.g06.httpserver.service
 import org.junit.Assert
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.mockito.Mockito.`when`
-import org.mockito.Mockito.mock
+import org.mockito.Mockito.*
 import pt.isel.ps.g06.httpserver.anyNonNull
+import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.HereRestaurantApi
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.RestaurantApi
+import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.RestaurantApiType
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.mapper.RestaurantApiMapper
 import pt.isel.ps.g06.httpserver.dataAccess.common.dto.RestaurantDto
 import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.restaurant.DbRestaurantResponseMapper
@@ -21,32 +22,34 @@ import pt.isel.ps.g06.httpserver.model.restaurant.RestaurantIdentifier
 import java.util.concurrent.CompletableFuture
 
 class RestaurantServiceTests {
-    private lateinit var dbRestaurantRepository: RestaurantDbRepository
+    private lateinit var restaurantRepository: RestaurantDbRepository
     private lateinit var restaurantApiMapper: RestaurantApiMapper
     private lateinit var restaurantResponseMapper: RestaurantResponseMapper
     private lateinit var apiSubmitterMapper: ApiSubmitterMapper
-    private lateinit var dbFavoriteDbRepository: FavoriteDbRepository
-    private lateinit var dbReportDbRepository: ReportDbRepository
+    private lateinit var favoriteRepository: FavoriteDbRepository
+    private lateinit var reportRepository: ReportDbRepository
+    private lateinit var dbRestaurantResponseMapper: DbRestaurantResponseMapper
 
-    lateinit var restaurantService: RestaurantService
+    private lateinit var service: RestaurantService
 
     @BeforeEach
     fun mockDependencies() {
-        dbRestaurantRepository = mock(RestaurantDbRepository::class.java)
+        restaurantRepository = mock(RestaurantDbRepository::class.java)
         restaurantApiMapper = mock(RestaurantApiMapper::class.java)
         restaurantResponseMapper = mock(RestaurantResponseMapper::class.java)
         apiSubmitterMapper = mock(ApiSubmitterMapper::class.java)
-        dbFavoriteDbRepository = mock(FavoriteDbRepository::class.java)
-        dbReportDbRepository = mock(ReportDbRepository::class.java)
+        favoriteRepository = mock(FavoriteDbRepository::class.java)
+        reportRepository = mock(ReportDbRepository::class.java)
+        dbRestaurantResponseMapper = mock(DbRestaurantResponseMapper::class.java)
 
-        restaurantService = RestaurantService(
-                dbRestaurantRepository = dbRestaurantRepository,
+        service = RestaurantService(
+                dbRestaurantRepository = restaurantRepository,
                 restaurantApiMapper = restaurantApiMapper,
                 restaurantResponseMapper = restaurantResponseMapper,
                 apiSubmitterMapper = apiSubmitterMapper,
-                dbFavoriteDbRepository = dbFavoriteDbRepository,
-                dbReportDbRepository = dbReportDbRepository,
-                dbRestaurantResponseMapper = mock(DbRestaurantResponseMapper::class.java) //TODO This is to be removed.
+                dbFavoriteDbRepository = favoriteRepository,
+                dbReportDbRepository = reportRepository,
+                dbRestaurantResponseMapper = dbRestaurantResponseMapper
         )
     }
 
@@ -96,7 +99,7 @@ class RestaurantServiceTests {
         `when`(restaurantApiMapper.getRestaurantApi(anyNonNull())).thenReturn(restaurantApi)
 
         //Setup database search result
-        `when`(dbRestaurantRepository.getAllByCoordinates(
+        `when`(restaurantRepository.getAllByCoordinates(
                 latitude,
                 longitude,
                 radius,
@@ -105,7 +108,7 @@ class RestaurantServiceTests {
         )).thenReturn(sequenceOf(firstDatabaseDto))
 
         //Call to action
-        val nearbyRestaurants = restaurantService.getNearbyRestaurants(
+        val nearbyRestaurants = service.getNearbyRestaurants(
                 latitude,
                 longitude,
                 name,
@@ -118,5 +121,28 @@ class RestaurantServiceTests {
         //Assert
         Assert.assertEquals(2, nearbyRestaurants.size)
         Assert.assertNotNull(nearbyRestaurants.find { it.identifier.value.submissionId == databaseSubmissionId })
+    }
+
+    @Test
+    fun `searching a restaurant with an outdated restaurant identifier should still return the database one`() {
+        val submitter = 1
+        val apiSubmissionIdentifier = "ABC"
+
+        val hereRestaurantRepository = mock(HereRestaurantApi::class.java)
+        val restaurantDatabaseResult = mock(DbRestaurantDto::class.java)
+        val expected = mock(Restaurant::class.java)
+
+        `when`(apiSubmitterMapper.getApiType(submitter)).thenReturn(RestaurantApiType.Here)
+        `when`(restaurantApiMapper.getRestaurantApi(RestaurantApiType.Here)).thenReturn(hereRestaurantRepository)
+        `when`(restaurantRepository.getApiRestaurant(submitter, apiSubmissionIdentifier)).thenReturn(restaurantDatabaseResult)
+        `when`(restaurantResponseMapper.mapTo(restaurantDatabaseResult)).thenReturn(expected)
+
+
+        val result = service.getRestaurant(submitter, null, apiSubmissionIdentifier)
+
+        verify(restaurantRepository, times(1)).getApiRestaurant(submitter, apiSubmissionIdentifier)
+        //Restaurant should never be searched on API since a database restaurant was returned
+        verifyNoInteractions(hereRestaurantRepository)
+        Assert.assertEquals(expected, result)
     }
 }
