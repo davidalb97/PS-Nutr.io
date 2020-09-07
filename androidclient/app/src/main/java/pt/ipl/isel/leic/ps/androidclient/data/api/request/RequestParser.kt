@@ -37,6 +37,7 @@ class RequestParser(
         }
     }
 
+    // TODO delete if not used
     /*suspend fun <Dto> coroutineRequestAndParse(
         method: Method,
         urlStr: String,

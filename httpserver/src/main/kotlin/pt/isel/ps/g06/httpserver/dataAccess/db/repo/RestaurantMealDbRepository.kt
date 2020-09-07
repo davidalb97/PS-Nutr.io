@@ -9,6 +9,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType.RESTAURANT_MEAL
 import pt.isel.ps.g06.httpserver.dataAccess.db.common.DatabaseContext
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.*
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbRestaurantMealDto
+import pt.isel.ps.g06.httpserver.util.asCachedSequence
 import java.util.*
 
 private val restaurantMealDao = RestaurantMealDao::class.java
@@ -24,6 +25,14 @@ class RestaurantMealDbRepository(
             return@inTransaction it
                     .attach(restaurantMealDao)
                     .getByRestaurantAndMealId(restaurantId, mealId)
+        }
+    }
+
+    fun getAllUserFavorites(submitterId: Int, count: Int?, skip: Int?): Sequence<DbRestaurantMealDto> {
+        return databaseContext.inTransaction { handle ->
+            return@inTransaction handle.attach(restaurantMealDao)
+                    .getAllUserFavorites(submitterId, count, skip)
+                    .asCachedSequence()
         }
     }
 

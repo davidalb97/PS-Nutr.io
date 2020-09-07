@@ -1,4 +1,4 @@
-package pt.ipl.isel.leic.ps.androidclient.ui.util
+package pt.ipl.isel.leic.ps.androidclient.ui.util.prompt
 
 import android.content.Context
 import android.text.InputType

@@ -36,7 +36,6 @@ class HereUriBuilder : RestaurantUri {
                 .fromHttpUrl(DISCOVER_PATH)
                 .queryParam(IN, nearbyCircleByGeocode(latitude, longitude, radius))
                 .queryParam(QUERY, queryRestaurantName(restaurantName))
-                .queryParam(SKIP, skip)
                 .queryParam(LIMIT, count)
                 .queryParam(API_KEY, KEY)
                 .build()

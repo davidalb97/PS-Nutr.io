@@ -41,7 +41,7 @@ class CustomMeal : MealInfo, Parcelable {
         isReportable = false,
         isVerified = false,
         isSuggested = false,
-        source = Source.CUSTOM,
+        source = Source.CUSTOM_MEAL,
         //TODO pass owner to custom meal ctor
         submissionOwner = null
     )

@@ -13,10 +13,16 @@ private val restaurantDaoClass = RestaurantDao::class.java
 
 @Repository
 class RestaurantDbRepository(private val databaseContext: DatabaseContext, private val cuisineDbRepository: CuisineDbRepository) {
-    fun getAllByCoordinates(latitude: Float, longitude: Float, radius: Int): Sequence<DbRestaurantDto> {
+    fun getAllByCoordinates(
+            latitude: Float,
+            longitude: Float,
+            radius: Int,
+            skip: Int?,
+            count: Int?
+    ): Sequence<DbRestaurantDto> {
         return databaseContext.inTransaction {
             return@inTransaction it.attach(RestaurantDao::class.java)
-                    .getByCoordinates(latitude, longitude, radius)
+                    .getByCoordinates(latitude, longitude, radius, skip, count)
                     .asCachedSequence()
         }
     }
@@ -32,6 +38,14 @@ class RestaurantDbRepository(private val databaseContext: DatabaseContext, priva
         return databaseContext.inTransaction {
             return@inTransaction it.attach(restaurantDaoClass)
                     .getApiRestaurant(apiSubmitterId, apiId)
+        }
+    }
+
+    fun getAllUserFavorites(submitterId: Int, count: Int?, skip: Int?): Sequence<DbRestaurantDto> {
+        return databaseContext.inTransaction { handle ->
+            return@inTransaction handle.attach(restaurantDaoClass)
+                    .getAllUserFavorites(submitterId, count, skip)
+                    .asCachedSequence()
         }
     }
 

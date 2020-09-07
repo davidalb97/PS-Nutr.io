@@ -32,6 +32,7 @@ class RestaurantListViewModel(
     }
 
     override fun update() {
+        this.pendingRequest = true
         restaurantRepository.getNearbyRestaurants(
             latitude = latitude!!,
             longitude = longitude!!,

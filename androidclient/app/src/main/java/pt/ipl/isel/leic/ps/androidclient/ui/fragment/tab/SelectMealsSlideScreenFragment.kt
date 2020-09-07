@@ -15,9 +15,10 @@ import pt.ipl.isel.leic.ps.androidclient.ui.modular.listener.check.ICheckListene
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.listener.click.IItemClickListener
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.listener.click.IItemClickListenerOwner
 import pt.ipl.isel.leic.ps.androidclient.ui.util.*
+import pt.ipl.isel.leic.ps.androidclient.ui.util.prompt.MealAmountSelector
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.pick.MealItemPickViewModel
 
-class AddMealSlideScreenFragment : BaseSlideScreenFragment(propagateArguments = false), ISend {
+class SelectMealsSlideScreenFragment : BaseSlideScreenFragment(propagateArguments = false), ISend {
 
     private lateinit var okButton: Button
     private lateinit var viewModel: MealItemPickViewModel

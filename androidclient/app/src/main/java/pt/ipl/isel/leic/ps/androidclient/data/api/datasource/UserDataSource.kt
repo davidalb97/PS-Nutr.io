@@ -10,7 +10,7 @@ import pt.ipl.isel.leic.ps.androidclient.data.api.dto.output.RegisterOutput
 import pt.ipl.isel.leic.ps.androidclient.data.api.request.HTTPMethod
 import pt.ipl.isel.leic.ps.androidclient.data.api.request.RequestParser
 
-const val USER = "user"
+const val USER_PATH = "user"
 private const val LOGIN_PATH = "login"
 private const val REGISTER_PATH = "register"
 
@@ -21,7 +21,7 @@ class UserDataSource(
     /**
      * ################ Auth methods ################
      */
-    fun portRegister(
+    fun postRegister(
         registerOutput: RegisterOutput,
         consumerDto: (UserRegisterInput) -> Unit,
         error: (VolleyError) -> Unit
@@ -31,7 +31,7 @@ class UserDataSource(
             uri = Uri.Builder()
                 .scheme(SCHEME)
                 .encodedAuthority(ADDRESS_PORT)
-                .appendPath(USER)
+                .appendPath(USER_PATH)
                 .appendPath(REGISTER_PATH)
                 .build()
                 .toString(),
@@ -52,7 +52,7 @@ class UserDataSource(
             uri = Uri.Builder()
                 .scheme(SCHEME)
                 .encodedAuthority(ADDRESS_PORT)
-                .appendPath(USER)
+                .appendPath(USER_PATH)
                 .appendPath(LOGIN_PATH)
                 .build()
                 .toString(),
@@ -73,13 +73,32 @@ class UserDataSource(
             uri = Uri.Builder()
                 .scheme(SCHEME)
                 .encodedAuthority(ADDRESS_PORT)
-                .appendPath(USER)
+                .appendPath(USER_PATH)
                 .build()
                 .toString(),
             reqHeader = buildAuthHeader(jwt),
             dtoClass = UserInfoInput::class.java,
             onSuccess = consumerDto,
             onError = error
+        )
+    }
+
+    fun deleteAccount(
+        jwt: String,
+        onSuccess: () -> Unit,
+        onError: (VolleyError) -> Unit
+    ) {
+        requestParser.request(
+            method = HTTPMethod.DELETE,
+            uri = Uri.Builder()
+                .scheme(SCHEME)
+                .encodedAuthority(ADDRESS_PORT)
+                .appendPath(USER_PATH)
+                .build()
+                .toString(),
+            reqHeader = buildAuthHeader(jwt),
+            onError = onError,
+            responseConsumer = { onSuccess() }
         )
     }
 }

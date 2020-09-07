@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "29f04da4-274a-4b6d-8f4b-5e3674a8ca0d",
+		"_postman_id": "fd0ddce3-8c59-4031-b726-5329a65a1bd3",
 		"name": "PS",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -447,13 +447,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{DOMAIN}}/meal/suggested",
+							"raw": "{{DOMAIN}}/meal",
 							"host": [
 								"{{DOMAIN}}"
 							],
 							"path": [
-								"meal",
-								"suggested"
+								"meal"
 							]
 						}
 					},
@@ -749,6 +748,31 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "favoriteRestaurants",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{USER_JWT}}"
+							}
+						],
+						"url": {
+							"raw": "{{DOMAIN}}/user/favorite/restaurant",
+							"host": [
+								"{{DOMAIN}}"
+							],
+							"path": [
+								"user",
+								"favorite",
+								"restaurant"
+							]
+						}
+					},
+					"response": []
 				}
 			],
 			"protocolProfileBehavior": {}
@@ -916,7 +940,7 @@
 				{
 					"name": "mealForRestaurant (Requires user meal)",
 					"request": {
-						"method": "PUT",
+						"method": "POST",
 						"header": [
 							{
 								"key": "Authorization",
@@ -1135,6 +1159,32 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "favoriteRestaurantMeals",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{USER_JWT}}"
+							}
+						],
+						"url": {
+							"raw": "{{DOMAIN}}/user/favorite/restaurant/meal",
+							"host": [
+								"{{DOMAIN}}"
+							],
+							"path": [
+								"user",
+								"favorite",
+								"restaurant",
+								"meal"
+							]
+						}
+					},
+					"response": []
 				}
 			],
 			"protocolProfileBehavior": {}
@@ -1154,13 +1204,14 @@
 							}
 						],
 						"url": {
-							"raw": "{{DOMAIN}}/meal/favorite",
+							"raw": "{{DOMAIN}}/user/favorite/meal",
 							"host": [
 								"{{DOMAIN}}"
 							],
 							"path": [
-								"meal",
-								"favorite"
+								"user",
+								"favorite",
+								"meal"
 							]
 						}
 					},
@@ -1178,13 +1229,12 @@
 							}
 						],
 						"url": {
-							"raw": "{{DOMAIN}}/meal/suggested?count=10&skip=0",
+							"raw": "{{DOMAIN}}/meal?count=10&skip=0",
 							"host": [
 								"{{DOMAIN}}"
 							],
 							"path": [
-								"meal",
-								"suggested"
+								"meal"
 							],
 							"query": [
 								{
@@ -1212,13 +1262,14 @@
 							}
 						],
 						"url": {
-							"raw": "{{DOMAIN}}/meal/custom",
+							"raw": "{{DOMAIN}}/user/custom/meal",
 							"host": [
 								"{{DOMAIN}}"
 							],
 							"path": [
-								"meal",
-								"custom"
+								"user",
+								"custom",
+								"meal"
 							]
 						}
 					},
@@ -1245,13 +1296,14 @@
 							}
 						},
 						"url": {
-							"raw": "{{DOMAIN}}/meal/custom",
+							"raw": "{{DOMAIN}}/user/custom/meal",
 							"host": [
 								"{{DOMAIN}}"
 							],
 							"path": [
-								"meal",
-								"custom"
+								"user",
+								"custom",
+								"meal"
 							]
 						}
 					},
@@ -1292,6 +1344,41 @@
 									"key": "mealId",
 									"value": "200"
 								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "customMeal",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{USER_JWT}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"TestCustomMeal\",\r\n    \"quantity\": 100,\r\n    \"unit\": \"gr\",\r\n    \"ingredients\":  [\r\n        {\r\n            \"identifier\": 143,\r\n            \"quantity\": 100\r\n        }\r\n    ],\r\n    \"cuisines\": [\"Italian\"]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{DOMAIN}}/user/custom/meal/257",
+							"host": [
+								"{{DOMAIN}}"
+							],
+							"path": [
+								"user",
+								"custom",
+								"meal",
+								"257"
 							]
 						}
 					},
@@ -1384,7 +1471,6 @@
 							"variable": [
 								{
 									"key": "submissionId",
-									"type": "string",
 									"value": "227"
 								}
 							]

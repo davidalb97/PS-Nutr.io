@@ -28,7 +28,7 @@ abstract class RestaurantApi(
             radiusMeters: Int,
             name: String?,
             skip: Int?,
-            count: Int?
+            count: Int
     ): CompletableFuture<Collection<RestaurantDto>> {
         val uri = restaurantUri.nearbyRestaurants(latitude, longitude, radiusMeters, name, skip, count)
         val response = httpClient.sendAsync(buildGetRequest(uri), HttpResponse.BodyHandlers.ofString())

@@ -6,6 +6,7 @@ import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.vote.VotesInput
 
 open class MealItemInput(
     val identifier: Int,
+    val restaurantIdentifier: String?,
     val name: String,
     val favorites: FavoritesInput,
     val isSuggested: Boolean?,
