@@ -136,47 +136,55 @@ The color code used in this diagram represents where each endpoint starts provid
 and visualization, e.g.: /restaurant/:restaurantId/meal/:mealId (endpoint for a specific restaurant meal) starts with a blue
 node (/restaurant); /meal/suggested (endpoint for suggested meals) starts with a yellow node (/meal).\\
 
-\subsection{Kotlin sequences and Java streams}
+\subsection{Fetching collections of data}
+When it comes to fetching collections of data (such as restaurants, meals, etc.) from either the database or an API, said data can be obtained
+and iterated in an \textbf{eager} approach or a \textbf{lazy} approach.\\
 
-As previously stated, Kotlin is completely interoperable with Java and, as such, streams are also supported. However Kotlin introduced sequences which bring
-advantages over Java streams. In this subsection it will be presented the reasons why we chose sequences over streams during development.
+[Put references to both approaches]
 
-\subsubsection{Performance}
+In order to support a \textbf{lazy} approach using Java 8 Streams [ref], the following code structure was created:
 
-There are 3 main aspects that affect the performance overhead of sequences and streams:
- \begin{itemize}
-     \item \textbf{Primitive handling}: Sequences include methods which simplify common actions and thus avoid primitive values autoboxing, even if sequences don't have primitive variants like streams.
-     \item \textbf{Optional values}: Streams create optional wrappers when values might not be present, while sequences use nullable types, being more efficient by not creating optional wrappers.
-     \item \textbf{Lambda creation}: Sequences create fewer lambda instances than streams, resulting in more efficiency.
- \end{itemize}
+\subsubsection{Database fetching}
 
- \subsubsection{Simplicity}
+According to the JDBI documentation [https://jdbi.org/], a query method supports the return of Streams:\\
 
- Sequences have more specialized actions and functions making the code more simple and easy to read.
+"\textbf{Stream} integration allows you to use a RowMapper to adapt a ResultSet into the new Java 8 Streams framework.
+As long as your database supports streaming results (for example, PostgreSQL will do it as long as you are in a transaction and set a fetch size),
+the stream will lazily fetch rows from the database as necessary."\\
 
- \subsubsection{Null safety}
+(...)\\
 
- Sequences use Kotlin nullable types so safe usage is enforced at compile time, being safer from a null safety prespective. It becomes more efficient as streams force Optional-wrapping of values which are not present.
+"Query methods may also return a [ResultIterable], [ResultIterator] or a Stream."\\
 
- \subsubsection{Overall}
+However, it also warns that:\\
 
- \textbf{Stream advantages}
- \begin{itemize}
-     \item Have primitive variants to avoid unnecessary autoboxing;
-     \item Enables easy parallelism via parallel streams.
- \end{itemize}
+"\textit{ResultIterable}, \textit{ResultIterator} and \textit{Stream} methods do not play nice with on-demand SQL Objects.
+Unless the methods are called in a nested way, the returned object will already be closed."\\
 
- \textbf{Sequence advantages}
- \begin{itemize}
-     \item Don’t introduce platform types;
-     \item Use compile-time null-safety and scale well with safe-call and Elvis operators;
-     \item Are shorter due to fewer operations;
-     \item Simpler aggregates;
-     \item Simpler terminal operations;
-     \item Don’t create wrapper objects for values that might be missing;
-     \item Create fewer lambda instances and most terminal operations are inlined resulting in improved efficiency;
- \end{itemize}
+(...)\\
 
+"This stream must be closed to release any database resources held, so we recommend \textbf{useStream} \textbf{withStream}
+or alternately a \textbf{try-with-resources} block to ensure that no resources are leaked."\\
+
+Given the following, it is simply not enough to have every \textit{DAO} and Repository class return a Stream when a collection
+of data is needed after a handle/transaction call, as the returned Stream would be closed; so a solution was needed.\\
+
+An initial solution involved opening a connection handle to fetch a Stream of data and closing it on Stream close requiring every
+repository method to explicitly invoke \textit{stream.onClose{handle.close()}} and then expect calling services and/or controllers to close
+returned Stream after iteration, either with a \textit{try-with-resources} block or via \textit{stream.close()}. This solution proved to not be programmer
+friendly and as such was discarded, as it introduced a lot of boilerplate code and pitfalls, since nothing "forced" the programmer to call mentioned
+methods and forgetting to do so would not release held database resources.\\
+
+Another possible solution, and the adopted one, is to automatically close the connection handle (assuming one was open during said request)
+\textit{after} an incoming HTTP request is completed using \textit{Spring's} interceptors, as we can safely assume that database Streams are no longer needed.\\
+
+This is done by having the interceptor \textit{DatabaseCleanupInterceptor} and every repository depend on a single instance of the \textit{DatabaseContext} class which opens a
+connection handle when needed and stores it in a \textit{ThreadLocal} map, allowing for later removal by the interceptor.\\
+
+Given implementation avoids mentioned issues of boilerplate code and pitfalls, however it also introduces new issues that need to be taken into consideration,
+such as only closing transactions when the interceptor is called - meaning that lengthy controller operations may lock database tuples for longer periods of time,
+depending on the used transactional isolation level;  or the fact that a handle is linked to a Thread identifier when created and deleted, so repositories calls must
+not be done under a different Thread than the interceptor one.
 
 \subsection{Request lifecycle}
 Each request is received in a spring controller mapping, with input object,
