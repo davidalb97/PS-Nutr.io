@@ -168,15 +168,12 @@ class DbRestaurantResponseMapper(
                 .map(dbCuisineMapper::mapTo)
         val submitterInfo = lazy {
             //Restaurants always have a submitter, even if it's from the API
-            dbSubmitterRepo
-                    .getSubmitterForSubmission(dto.submission_id)
-                    ?.let { submitter -> dbSubmitterMapper.mapTo(submitter) }!!
+            dbSubmitterRepo.getSubmitterForSubmission(dto.submission_id)
+                    ?.let(dbSubmitterMapper::mapTo)!!
         }
+        //Restaurant meal requires contract
         val isReportable = lazy {
-            dto.submission_id.let {
-                //Restaurant meal requires contract
-                submissionDbRepository.hasContract(it, SubmissionContractType.REPORTABLE)
-            }
+            submissionDbRepository.hasContract(dto.submission_id, SubmissionContractType.REPORTABLE)
         }
         return Restaurant(
                 identifier = lazy {
@@ -215,7 +212,7 @@ class DbRestaurantResponseMapper(
                             //Submitter cannot report it's own submission
                             && submitterInfo.value.identifier != userId
                             //It is only reportable once per user
-                            && dbReportRepo.getReportFromSubmitter(userId, userId) == null
+                            && !dbReportRepo.userHasReported(userId, dto.submission_id)
                 },
                 image = dto.image,
                 creationDate = lazy { submissionDbRepository.getCreationDate(dto.submission_id) },
