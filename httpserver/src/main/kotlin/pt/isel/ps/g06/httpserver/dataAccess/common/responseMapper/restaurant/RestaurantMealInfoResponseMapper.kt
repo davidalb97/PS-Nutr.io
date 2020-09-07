@@ -27,9 +27,6 @@ class DbRestaurantMealInfoResponseMapper(
 ) : ResponseMapper<DbRestaurantMealDto, MealRestaurantInfo> {
 
     override fun mapTo(dto: DbRestaurantMealDto): MealRestaurantInfo {
-        if(dto.meal_submission_id == 255) {
-            println()
-        }
         val isReportable = lazy {
 
             dto.submission_id?.let {
