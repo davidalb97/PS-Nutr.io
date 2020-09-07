@@ -14,7 +14,6 @@ import pt.ipl.isel.leic.ps.androidclient.ui.util.Logger
 
 abstract class BaseFragment : Fragment(), ILog {
 
-    lateinit var menu: Menu
     override val log: Logger by lazy { Logger(javaClass) }
 
     abstract val layout: Int

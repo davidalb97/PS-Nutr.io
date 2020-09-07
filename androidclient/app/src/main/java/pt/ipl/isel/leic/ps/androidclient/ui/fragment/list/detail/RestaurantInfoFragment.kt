@@ -110,9 +110,6 @@ class RestaurantInfoFragment :
         super.setupFavoriteButton(view, restaurantInfo.favorites)
         super.setupReportMenuItem(restaurantInfo.isReportable)
         super.setupEditMenuItem()
-        menus.values.forEach { menuItemFactory ->
-            menuItemFactory.newMenuItem(menu)
-        }
         super.setupPopupMenuButton(view)
         super.setupVoteButtons(view, restaurantInfo.votes)
 
