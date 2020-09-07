@@ -21,7 +21,6 @@ import pt.isel.ps.g06.httpserver.dataAccess.output.restaurant.toDetailedRestaura
 import pt.isel.ps.g06.httpserver.dataAccess.output.restaurant.toSimplifiedRestaurantContainerOutput
 import pt.isel.ps.g06.httpserver.model.User
 import pt.isel.ps.g06.httpserver.model.restaurant.Restaurant
-import pt.isel.ps.g06.httpserver.service.AuthenticationService
 import pt.isel.ps.g06.httpserver.service.RestaurantService
 import pt.isel.ps.g06.httpserver.service.SubmissionService
 import pt.isel.ps.g06.httpserver.service.UserService
@@ -39,7 +38,6 @@ class RestaurantController(
         private val restaurantService: RestaurantService,
         private val submissionService: SubmissionService,
         private val userService: UserService,
-        private val authenticationService: AuthenticationService,
         private val restaurantIdentifierBuilder: RestaurantIdentifierBuilder
 ) {
     /**
@@ -49,7 +47,6 @@ class RestaurantController(
      *
      * @param name optional, filters results by restaurant name
      * @param radius optional, changes the search radius in a circle (meters).
-     * @param apiType allows the user to select which API to search from. See [RestaurantApiType].
      */
     @GetMapping(RESTAURANTS_PATH, consumes = [MediaType.ALL_VALUE])
     fun searchRestaurants(
@@ -57,7 +54,6 @@ class RestaurantController(
             @RequestParam longitude: Float?,
             @RequestParam name: String?,
             @RequestParam radius: Int?,
-            @RequestParam apiType: String?,
             @RequestParam @Min(0) skip: Int?,
             @RequestParam(defaultValue = DEFAULT_COUNT_STR) @Min(0) @Max(MAX_COUNT) count: Int?,
             user: User?
@@ -71,7 +67,6 @@ class RestaurantController(
                 longitude = longitude,
                 name = name,
                 radius = radius,
-                apiType = apiType,
                 skip = skip,
                 count = count!!
         )

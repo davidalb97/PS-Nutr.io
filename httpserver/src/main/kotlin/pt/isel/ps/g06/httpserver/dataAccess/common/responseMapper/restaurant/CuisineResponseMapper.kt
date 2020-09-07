@@ -19,17 +19,6 @@ class DbCuisineResponseMapper : ResponseMapper<DbCuisineDto, Cuisine> {
 }
 
 @Component
-class ZomatoCuisineResponseMapper(
-        private val dbCuisineRepo: CuisineDbRepository,
-        private val dbCuisineMapper: DbCuisineResponseMapper
-) : ResponseMapper<Sequence<String>, Sequence<Cuisine>> {
-    override fun mapTo(dto: Sequence<String>): Sequence<Cuisine> {
-        return dbCuisineRepo.getAllByNames(dto)
-                .map(dbCuisineMapper::mapTo)
-    }
-}
-
-@Component
 class HereCuisineResponseMapper(
         private val dbCuisineRepo: CuisineDbRepository,
         private val dbCuisineMapper: DbCuisineResponseMapper,

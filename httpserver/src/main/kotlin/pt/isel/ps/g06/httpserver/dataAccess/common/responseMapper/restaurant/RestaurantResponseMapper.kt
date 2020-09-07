@@ -3,7 +3,6 @@ package pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.restaurant
 import org.springframework.stereotype.Component
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.RestaurantApiType
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.dto.here.HereResultItem
-import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.dto.zomato.ZomatoRestaurantDto
 import pt.isel.ps.g06.httpserver.dataAccess.common.dto.RestaurantDto
 import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.ResponseMapper
 import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.submitter.DbSubmitterResponseMapper
@@ -23,7 +22,6 @@ import java.time.OffsetDateTime
 
 @Component
 class RestaurantResponseMapper(
-        private val zomatoResponseMapper: ZomatoRestaurantResponseMapper,
         private val hereResponseMapper: HereRestaurantResponseMapper,
         private val dbResponseMapper: DbRestaurantResponseMapper
 ) : ResponseMapper<RestaurantDto, Restaurant> {
@@ -31,7 +29,6 @@ class RestaurantResponseMapper(
     override fun mapTo(dto: RestaurantDto): Restaurant {
         return when (dto) {
             is HereResultItem -> hereResponseMapper.mapTo(dto)
-            is ZomatoRestaurantDto -> zomatoResponseMapper.mapTo(dto)
             is DbRestaurantDto -> dbResponseMapper.mapTo(dto)
             else -> {
                 log("ERROR: Unregistered mapper for RestaurantDto of type '${dto.javaClass.typeName}'!")
@@ -83,61 +80,6 @@ class HereRestaurantResponseMapper(
                     Submitter(
                             identifier = apiSubmitterId,
                             creationDate = null,
-                            //TODO return const image for Zomato api icon
-                            image = null,
-                            isUser = false
-                    )
-                }
-        )
-    }
-}
-
-@Component
-class ZomatoRestaurantResponseMapper(
-        private val dbMealRepository: MealDbRepository,
-        private val mealMapper: DbMealResponseMapper,
-        private val zomatoCuisineMapper: ZomatoCuisineResponseMapper,
-        private val apiSubmitterMapper: ApiSubmitterMapper
-) : ResponseMapper<ZomatoRestaurantDto, Restaurant> {
-
-    override fun mapTo(dto: ZomatoRestaurantDto): Restaurant {
-        val cuisineNames = dto.cuisines.split(",").asSequence()
-        val apiSubmitterId = apiSubmitterMapper.getSubmitter(RestaurantApiType.Zomato)!!
-        return Restaurant(
-                identifier = lazy {
-                    RestaurantIdentifier(
-                            apiId = dto.id,
-                            submitterId = apiSubmitterId
-                    )
-                },
-                name = dto.name,
-                ownerId = null,
-                latitude = dto.latitude,
-                longitude = dto.longitude,
-                cuisines = zomatoCuisineMapper.mapTo(cuisineNames),
-                suggestedMeals = dbMealRepository.getAllSuggestedMealsFromCuisineNames(cuisineNames)
-                        .map(mealMapper::mapTo),
-                meals = emptySequence(),
-                //There are no votes if it's not inserted on db yet
-                votes = lazy { Votes(0, 0) },
-                //User has not voted yet if not inserted
-                userVote = { VoteState.NOT_VOTED },
-                //An API restaurant is not reportable
-                isVotable = { false },
-                //An api restaurant is always favorable
-                isFavorable = { true },
-                //User has not favored yet if not inserted
-                isFavorite = { false },
-                //An API restaurant is always reportable as it is not inserted
-                isReportable = { true },
-                image = dto.image,
-                //Zomato api does not supply creation date
-                creationDate = lazy<OffsetDateTime?> { null },
-                submitterInfo = lazy {
-                    Submitter(
-                            identifier = apiSubmitterId,
-                            creationDate = null,
-                            //TODO return const image for Zomato api icon
                             image = null,
                             isUser = false
                     )
@@ -148,7 +90,6 @@ class ZomatoRestaurantResponseMapper(
 
 @Component
 class DbRestaurantResponseMapper(
-        private val dbRestaurantRepository: RestaurantDbRepository,
         private val dbMealRepository: MealDbRepository,
         private val dbCuisineRepository: CuisineDbRepository,
         private val dbFavoriteRepo: FavoriteDbRepository,
