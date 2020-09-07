@@ -3,9 +3,7 @@ package pt.ipl.isel.leic.ps.androidclient.ui.fragment.list.detail
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.*
 import androidx.navigation.findNavController
 import androidx.navigation.navGraphViewModels
@@ -37,9 +35,20 @@ class RestaurantInfoFragment :
     IEditMenuItem,
     ISend {
 
+    override val paginated = false
+    override val recyclerViewId = R.id.restaurant_meals_list
+    override val progressBarId = R.id.restaurant_meals_progress_bar
+    override val layout = R.layout.restaurant_detail
+    override val noItemsTextViewId = R.id.restaurant_info_no_meals_found
+
+    override val vmClass = RestaurantInfoViewModel::class.java
+    override val vMProviderFactorySupplier: (Bundle?, Bundle?, Intent) -> BaseViewModelProviderFactory =
+        { _, _, _ ->
+            throw UnsupportedOperationException("Not used")
+        }
     override val recyclerAdapter by lazy {
         MealItemRecyclerAdapter(
-            recyclerViewModel,
+            viewModel,
             this.requireContext()
         )
     }
@@ -73,24 +82,26 @@ class RestaurantInfoFragment :
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        //Bypass generic Recycler ViewModel creation
         val viewModel: RestaurantInfoViewModel
                 by navGraphViewModels(Navigation.SEND_TO_RESTAURANT_DETAIL.navId)
-        recyclerViewModel = viewModel
-        recyclerViewModel.restaurantId = requireNotNull(arguments?.getRestaurantItem()?.id) {
+        this.viewModel = viewModel
+        this.viewModel.restaurantId = requireNotNull(arguments?.getRestaurantItem()?.id) {
             "Restaurant detail requires submission ID"
         }
-        return inflater.inflate(getLayout(), container, false)
+        //Bypass generic Recycler ViewModel creation, ignoring super.onCreateView()
+        return super.inflate(inflater, container)
     }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        actions = recyclerViewModel.actions
-        recyclerViewModel.observeInfo(this) { restaurantInfo ->
+        actions = viewModel.actions
+        viewModel.observeInfo(this) { restaurantInfo ->
+            viewModel.removeObservers(this)
             setupRestaurantInfoView(view, restaurantInfo)
         }
-        recyclerViewModel.update()
+        viewModel.setupList()
     }
 
     private fun setupRestaurantInfoView(view: View, restaurantInfo: RestaurantInfo) {
@@ -99,6 +110,9 @@ class RestaurantInfoFragment :
         super.setupFavoriteButton(view, restaurantInfo.favorites)
         super.setupReportMenuItem(restaurantInfo.isReportable)
         super.setupEditMenuItem()
+        menus.values.forEach { menuItemFactory ->
+            menuItemFactory.newMenuItem(menu)
+        }
         super.setupPopupMenuButton(view)
         super.setupVoteButtons(view, restaurantInfo.votes)
 
@@ -116,22 +130,22 @@ class RestaurantInfoFragment :
     override fun onResume() {
         super.onResume()
 
-        val addedMeal = recyclerViewModel.addedMeal
+        val addedMeal = viewModel.addedMeal
         if (addedMeal != null) {
-            recyclerViewModel.liveDataHandler.add(addedMeal)
-            recyclerViewModel.addedMeal = null
+            viewModel.liveDataHandler.add(addedMeal)
+            viewModel.addedMeal = null
         }
     }
 
     override fun onFavorite(onSuccess: () -> Unit, onError: (Throwable) -> Unit) {
-        recyclerViewModel.favorite(
+        viewModel.favorite(
             onSuccess = onSuccess,
             onError = onError
         )
     }
 
     override fun onReport(reportStr: String, onSuccess: () -> Unit, onError: (Throwable) -> Unit) {
-        recyclerViewModel.report(
+        viewModel.report(
             reportMsg = reportStr,
             onSuccess = onSuccess,
             onError = onError
@@ -139,7 +153,7 @@ class RestaurantInfoFragment :
     }
 
     override fun onVote(voteState: VoteState, onSuccess: () -> Unit, onError: (Throwable) -> Unit) {
-        recyclerViewModel.vote(
+        viewModel.vote(
             vote = voteState,
             onSuccess = onSuccess,
             onError = onError
@@ -151,24 +165,10 @@ class RestaurantInfoFragment :
     }
 
     override fun onSendToDestination(bundle: Bundle) {
-        bundle.putRestaurantInfo(recyclerViewModel.restaurantInfo)  //Edit restaurant
+        bundle.putRestaurantInfo(viewModel.restaurantInfo)  //Edit restaurant
         bundle.putNavigation(Navigation.SEND_TO_RESTAURANT_DETAIL)  //Edit restaurant back
     }
 
     override fun fetchCtx(): Context = requireContext()
 
-    override fun getRecyclerId() = R.id.restaurant_meals_list
-
-    override fun getProgressBarId() = R.id.restaurant_meals_progress_bar
-
-    override fun getLayout() = R.layout.restaurant_detail
-
-    override fun getNoItemsLabelId() = R.id.restaurant_info_no_meals_found
-
-    override fun getVMProviderFactory(
-        savedInstanceState: Bundle?,
-        intent: Intent
-    ): BaseViewModelProviderFactory = throw UnsupportedOperationException("Not used")
-
-    override fun getRecyclerViewModelClass() = RestaurantInfoViewModel::class.java
 }

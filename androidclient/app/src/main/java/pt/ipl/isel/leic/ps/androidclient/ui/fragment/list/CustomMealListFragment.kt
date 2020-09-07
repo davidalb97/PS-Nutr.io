@@ -1,6 +1,5 @@
 package pt.ipl.isel.leic.ps.androidclient.ui.fragment.list
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageButton
@@ -27,15 +26,22 @@ class CustomMealListFragment
     IItemListFilterOwner<MealItem>,
     IUserSession {
 
+    override val paginated = true
+    override val recyclerViewId = R.id.itemList
+    override val progressBarId = R.id.progressBar
+    override val layout = R.layout.meal_list
+    override val noItemsTextViewId = R.id.no_meals_found
+
     override var restoredItemPredicator: ((MealItem) -> Boolean)? = null
     override var onCheckListener: ICheckListener<MealItem>? = null
     override var onClickListener: IItemClickListener<MealItem>? = null
     override var itemFilter: IItemListFilter<MealItem>? = null
-    lateinit var addButton: ImageButton
 
+    override val vmClass = MealItemListViewModel::class.java
+    override val vMProviderFactorySupplier = ::CustomMealRecyclerVMProviderFactory
     override val recyclerAdapter by lazy {
         MealItemRecyclerAdapter(
-            recyclerViewModel,
+            viewModel,
             this.requireContext(),
             restoredItemPredicator,
             onCheckListener,
@@ -44,12 +50,14 @@ class CustomMealListFragment
         )
     }
 
+    lateinit var addButton: ImageButton
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         addButton = view.findViewById(R.id.add_meal)
 
-        if (recyclerViewModel.actions.contains(ItemAction.ADD)) {
+        if (viewModel.actions.contains(ItemAction.ADD)) {
             addButton.visibility = View.VISIBLE
             addButton.setOnClickListener {
                 ensureUserSession(requireContext()) {
@@ -61,28 +69,8 @@ class CustomMealListFragment
         ensureUserSession(requireContext(), failConsumer = {
             super.recyclerHandler.onNoRecyclerItems()
         }) {
-            recyclerViewModel.liveDataHandler.filter = itemFilter
-            recyclerViewModel.update()
+            viewModel.liveDataHandler.filter = itemFilter
+            viewModel.setupList()
         }
     }
-
-    override fun getVMProviderFactory(
-        savedInstanceState: Bundle?,
-        intent: Intent
-    ) = CustomMealRecyclerVMProviderFactory(
-        arguments,
-        savedInstanceState,
-        intent
-    )
-
-    override fun getRecyclerViewModelClass() = MealItemListViewModel::class.java
-
-    override fun getRecyclerId() = R.id.itemList
-
-    override fun getProgressBarId() = R.id.progressBar
-
-    override fun getLayout() = R.layout.meal_list
-
-    override fun getNoItemsLabelId() = R.id.no_meals_found
-
 }

@@ -3,10 +3,10 @@ package pt.ipl.isel.leic.ps.androidclient.ui.fragment.create
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.os.Bundle
+import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,13 +14,12 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
-import pt.ipl.isel.leic.ps.androidclient.NutrioApp
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.app
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.CustomRestaurant
 import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.pick.CuisinePickRecyclerAdapter
 import pt.ipl.isel.leic.ps.androidclient.ui.adapter.spinner.pick.CuisinePickSpinnerAdapter
-import pt.ipl.isel.leic.ps.androidclient.ui.fragment.BaseFragment
+import pt.ipl.isel.leic.ps.androidclient.ui.fragment.BaseViewModelFragment
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.list.REQUEST_PERMISSIONS_CODE
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.IRequiredTextInput
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.pick.IPickedFlexBoxRecycler
@@ -29,9 +28,14 @@ import pt.ipl.isel.leic.ps.androidclient.ui.provider.AddRestaurantVMProviderFact
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.AddRestaurantViewModel
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.pick.CuisinePickViewModel
 
-class AddRestaurantFragment : BaseFragment(), IRemainingPickSpinner, IPickedFlexBoxRecycler, IRequiredTextInput {
+class AddRestaurantFragment : BaseViewModelFragment<AddRestaurantViewModel>(),
+    IRemainingPickSpinner,
+    IPickedFlexBoxRecycler,
+    IRequiredTextInput {
 
-    private lateinit var viewModel: AddRestaurantViewModel
+    override val layout: Int = R.layout.add_restaurant_fragment
+    override val vmClass = AddRestaurantViewModel::class.java
+    override val vMProviderFactorySupplier = ::AddRestaurantVMProviderFactory
 
     private lateinit var locationManager: LocationManager
     private var latitude: Double? = null
@@ -86,9 +90,8 @@ class AddRestaurantFragment : BaseFragment(), IRemainingPickSpinner, IPickedFlex
         ) == PackageManager.PERMISSION_GRANTED
     }
 
-    protected open fun onLocationRejected() {
-        Toast.makeText(NutrioApp.app, R.string.turn_on_geolocation, Toast.LENGTH_LONG)
-            .show()
+    private fun onLocationRejected() {
+        Toast.makeText(app, R.string.turn_on_geolocation, Toast.LENGTH_LONG).show()
         parentFragmentManager.popBackStack()
     }
 
@@ -105,16 +108,13 @@ class AddRestaurantFragment : BaseFragment(), IRemainingPickSpinner, IPickedFlex
     }
 
     @SuppressLint("MissingPermission")
-    protected open fun onLocationEnabled() {
-        locationManager =
-            NutrioApp.app.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+    private fun onLocationEnabled() {
+        locationManager = app.getSystemService(Context.LOCATION_SERVICE) as LocationManager
         val lastLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)!!
 
         latitude = lastLocation.latitude
         longitude = lastLocation.longitude
     }
-
-    override fun getLayout(): Int = R.layout.add_restaurant_fragment
 
     private fun getCurrentCustomRestaurant(): CustomRestaurant {
         return CustomRestaurant(
@@ -127,15 +127,6 @@ class AddRestaurantFragment : BaseFragment(), IRemainingPickSpinner, IPickedFlex
             cuisines = cuisinesViewModel.pickedItems
         )
     }
-
-    override fun getVMProviderFactory(
-        savedInstanceState: Bundle?,
-        intent: Intent
-    ): AddRestaurantVMProviderFactory = AddRestaurantVMProviderFactory(
-        arguments,
-        savedInstanceState,
-        intent
-    )
 
     private fun setupCuisines(view: View) {
         setupRecyclerView(
@@ -159,7 +150,7 @@ class AddRestaurantFragment : BaseFragment(), IRemainingPickSpinner, IPickedFlex
                 cuisinesViewModel.tryRestore()
                 cuisinesViewModel.pickedLiveDataHandler.add(cuisines)
             }
-            else -> cuisinesViewModel.update()
+            else -> cuisinesViewModel.setupList()
         }
     }
 
@@ -197,5 +188,7 @@ class AddRestaurantFragment : BaseFragment(), IRemainingPickSpinner, IPickedFlex
             }
         }
     }
+
+    override fun getViewModels(): Iterable<Parcelable> = listOf(viewModel, cuisinesViewModel)
 
 }

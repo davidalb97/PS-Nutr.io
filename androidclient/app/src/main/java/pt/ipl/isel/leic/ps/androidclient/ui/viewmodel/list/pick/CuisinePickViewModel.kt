@@ -17,10 +17,8 @@ class CuisinePickViewModel : BaseItemPickerViewModel<Cuisine> {
         count = null
     }
 
-    override fun update() {
-        if (!tryRestore()) {
-            cuisineRepository.getCuisines(count, skip, liveDataHandler::set, onError)
-        }
+    override fun fetch() {
+        cuisineRepository.getCuisines(count, skip, liveDataHandler::set, onError)
     }
 
     override fun getModelClass(): KClass<Cuisine> = Cuisine::class

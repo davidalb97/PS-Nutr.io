@@ -8,19 +8,25 @@ import android.widget.Button
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
-import androidx.lifecycle.ViewModelProvider
-import kotlinx.android.synthetic.main.login_activity.*
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.sharedPreferences
 import pt.ipl.isel.leic.ps.androidclient.R
-import pt.ipl.isel.leic.ps.androidclient.data.model.*
+import pt.ipl.isel.leic.ps.androidclient.data.model.UserInfo
+import pt.ipl.isel.leic.ps.androidclient.data.model.UserLogin
+import pt.ipl.isel.leic.ps.androidclient.data.model.UserRegister
+import pt.ipl.isel.leic.ps.androidclient.data.model.UserSession
+import pt.ipl.isel.leic.ps.androidclient.ui.modular.IViewModelManager
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.auth.ILogin
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.auth.IRegister
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.UserProfileVMProviderFactory
+import pt.ipl.isel.leic.ps.androidclient.ui.util.Logger
 import pt.ipl.isel.leic.ps.androidclient.ui.util.setIsFirstTime
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.UserSessionViewModel
 
-class LoginActivity : AppCompatActivity(), ILogin, IRegister {
+class LoginActivity : AppCompatActivity(), ILogin, IRegister, IViewModelManager {
 
+    override val log: Logger by lazy { Logger(javaClass) }
+
+    override val vMProviderFactorySupplier = ::UserProfileVMProviderFactory
     lateinit var viewModel: UserSessionViewModel
 
     //Loading
@@ -43,15 +49,15 @@ class LoginActivity : AppCompatActivity(), ILogin, IRegister {
     override val registerButtonId: Int = R.id.registerButton
     override lateinit var registerButton: Button
 
-    private fun buildViewModel(savedInstanceState: Bundle?) {
-        val factory = UserProfileVMProviderFactory(null, savedInstanceState, intent)
-        viewModel = ViewModelProvider(this, factory)[UserSessionViewModel::class.java]
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        buildViewModel(savedInstanceState)
+        viewModel = buildViewModel(
+            arguments = null,
+            intent = intent,
+            savedInstanceState = savedInstanceState,
+            vmClass = UserSessionViewModel::class.java
+        )
         setContentView(R.layout.login_activity)
 
         val view: View = findViewById(R.id.login_activity_layout)

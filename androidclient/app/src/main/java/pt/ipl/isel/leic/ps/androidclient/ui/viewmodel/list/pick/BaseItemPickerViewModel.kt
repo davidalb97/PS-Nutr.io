@@ -34,6 +34,11 @@ abstract class BaseItemPickerViewModel<M : Parcelable> : BaseListViewModel<M> {
         liveDataHandler.observe(owner, observer)
     }
 
+    override fun removeObservers(owner: LifecycleOwner) {
+        pickedLiveDataHandler.removeObservers(owner)
+        super.removeObservers(owner)
+    }
+
     fun pick(picked: M) {
         pickedLiveDataHandler.add(picked)
         liveDataHandler.remove(picked)

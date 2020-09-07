@@ -15,6 +15,8 @@ class AppScrollListener<M : Parcelable>(
     private val recyclerViewModel: BaseListViewModel<M>
 ) : RecyclerView.OnScrollListener() {
 
+    private var newItemCount: Int = 0
+
     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
         super.onScrolled(recyclerView, dx, dy)
 
@@ -32,11 +34,10 @@ class AppScrollListener<M : Parcelable>(
     private fun isLoading(): Boolean = recyclerViewModel.pendingRequest
 
     private fun loadMore() {
-        recyclerViewModel.currItems = recyclerViewModel.items.size + 1
+        newItemCount = recyclerViewModel.items.size
         recyclerViewModel.skip = recyclerViewModel.skip?.inc()
-        recyclerViewModel.update()
+        recyclerViewModel.triggerFetch()
     }
 
-    private fun shouldGetMore(): Boolean =
-        recyclerViewModel.currItems < recyclerViewModel.items.size
+    private fun shouldGetMore(): Boolean = newItemCount != recyclerViewModel.items.size
 }

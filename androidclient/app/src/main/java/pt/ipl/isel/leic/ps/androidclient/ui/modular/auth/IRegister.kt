@@ -7,13 +7,10 @@ import android.widget.Toast
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.UserRegister
 import pt.ipl.isel.leic.ps.androidclient.data.model.UserSession
-import pt.ipl.isel.leic.ps.androidclient.ui.modular.IContext
-import pt.ipl.isel.leic.ps.androidclient.ui.modular.ILoading
-import pt.ipl.isel.leic.ps.androidclient.ui.modular.IUserInfo
+import pt.ipl.isel.leic.ps.androidclient.ui.modular.*
 import pt.ipl.isel.leic.ps.androidclient.ui.util.saveSession
 
-interface IRegister : IUserInfo, ILoading,
-    IContext {
+interface IRegister : IUserInfo, ILoading, IContext, IRequiredTextInput, ILog {
 
     val userNameEditTextId: Int
     var userNameEditText: EditText
@@ -35,8 +32,9 @@ interface IRegister : IUserInfo, ILoading,
             val password = userPasswordEditText.text.toString()
             val email = userEmailEditText.text.toString()
 
-            if (arrayOf(userName, password, email).all { it.isNotBlank() }) {
+            if (validateTextViews(fetchCtx(), userNameEditText, userPasswordEditText, userEmailEditText)) {
                 startLoading()
+                log.v("Registering...")
                 onRegister(
                     userRegister = UserRegister(
                         email = email,
@@ -44,9 +42,11 @@ interface IRegister : IUserInfo, ILoading,
                         password = password
                     ),
                     onSuccess = { userSession ->
+                        log.v("Registration complete! Fetching user info...")
                         onRequestUserInfo(
                             userSession = userSession,
-                            onSuccess = {userInfo ->
+                            onSuccess = { userInfo ->
+                                log.v("Fetching user info completed!")
                                 saveSession(
                                     jwt = userSession.jwt,
                                     email = userInfo.email,
@@ -55,6 +55,7 @@ interface IRegister : IUserInfo, ILoading,
                                 )
                             },
                             onError = {
+                                log.v("Fetching user info error!")
                                 stopLoading()
                                 Toast.makeText(
                                     fetchCtx(),
@@ -66,6 +67,7 @@ interface IRegister : IUserInfo, ILoading,
                         stopLoading()
                     },
                     onError = {
+                        log.v("Registration error!")
                         stopLoading()
                         Toast.makeText(
                             fetchCtx(),

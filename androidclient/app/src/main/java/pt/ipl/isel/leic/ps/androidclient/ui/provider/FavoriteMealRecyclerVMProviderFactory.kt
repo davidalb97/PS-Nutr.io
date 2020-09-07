@@ -10,7 +10,7 @@ class FavoriteMealRecyclerVMProviderFactory(
     arguments: Bundle?,
     savedInstanceState: Bundle?,
     intent: Intent
-) : BaseViewModelProviderFactory(
+) : MealRecyclerVMProviderFactory(
     arguments,
     savedInstanceState,
     intent
