@@ -37,7 +37,7 @@ fun toSimplifiedRestaurantMealOutput(
     val isMealOwner = userId?.let { meal.submitterInfo.value?.identifier == userId } ?: false
     val defaultVotable = !isMealOwner
     val defaultFavorable = !isMealOwner
-    val defaultReportable = meal.isUserMeal() && !isMealOwner
+    val defaultReportable = !meal.isSuggestedMeal(restaurantMeal.restaurant) && !isMealOwner
     return SimplifiedRestaurantMealOutput(
             identifier = meal.identifier,
             name = meal.name,

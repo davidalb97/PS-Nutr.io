@@ -54,7 +54,7 @@ class Meal(
         return restaurantInfo.getOrPut(restaurantIdentifier) { restaurantInfoSupplier(restaurantIdentifier) }
     }
 
-    private fun isSuggestedMeal(restaurant: Restaurant): Boolean {
+    internal fun isSuggestedMeal(restaurant: Restaurant): Boolean {
         val restaurantCuisines = restaurant.cuisines.toList()
         val mealCuisines = cuisines.toList()
 
