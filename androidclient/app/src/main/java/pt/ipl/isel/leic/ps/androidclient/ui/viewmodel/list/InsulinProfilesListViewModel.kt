@@ -4,8 +4,8 @@ import android.os.Parcel
 import android.os.Parcelable
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.insulinProfilesRepository
 import pt.ipl.isel.leic.ps.androidclient.data.model.InsulinProfile
-import pt.ipl.isel.leic.ps.androidclient.data.model.UserSession
 import pt.ipl.isel.leic.ps.androidclient.ui.util.ItemAction
+import pt.ipl.isel.leic.ps.androidclient.ui.util.getUserSession
 import pt.ipl.isel.leic.ps.androidclient.util.readListCompat
 import kotlin.reflect.KClass
 
@@ -21,15 +21,41 @@ open class InsulinProfilesListViewModel : BaseListViewModel<InsulinProfile> {
         actions = parcel.readListCompat(ItemAction::class)
     }
 
-    fun addDbInsulinProfile(profile: InsulinProfile, userSession: UserSession?) =
-        insulinProfilesRepository.addProfile(profile, userSession, onError)
+    fun addDbInsulinProfile(
+        insulinProfile: InsulinProfile,
+        onError: (Exception) -> Unit,
+        onSuccess: () -> Unit
+    ) = insulinProfilesRepository.addProfile(
+        profileDb = insulinProfile,
+        userSession = getUserSession(),
+        onSuccess = onSuccess,
+        onError = onError
+    )
 
-    fun deleteItem(profileName: String, userSession: UserSession?) =
-        insulinProfilesRepository.deleteProfile(profileName, userSession, onError)
+    fun deleteItem(
+        insulinProfile: InsulinProfile,
+        onError: (Exception) -> Unit,
+        onSuccess: () -> Unit
+    ) = insulinProfilesRepository.deleteProfile(
+        insulinProfile = insulinProfile,
+        userSession = getUserSession(),
+        onSuccess = onSuccess,
+        onError = onError
+    )
 
     override fun fetch() {
-        this.liveDataHandler.set(insulinProfilesRepository.getAllProfiles()) {
-            insulinProfilesRepository.insulinProfileMapper.mapToModel(it)
+        val userSession = getUserSession()
+        if(userSession != null) {
+            insulinProfilesRepository.getRemoteProfiles(
+                userSession,
+                onError = onError,
+                onSuccess = liveDataHandler::set
+            )
+        }
+        else {
+            this.liveDataHandler.set(insulinProfilesRepository.getAllDbProfiles()) {
+                insulinProfilesRepository.insulinProfileMapper.mapToModel(it)
+            }
         }
     }
 

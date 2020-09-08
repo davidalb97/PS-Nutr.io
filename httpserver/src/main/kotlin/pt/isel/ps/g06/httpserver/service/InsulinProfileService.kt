@@ -1,18 +1,18 @@
 package pt.isel.ps.g06.httpserver.service
 
 import org.springframework.stereotype.Service
-import pt.isel.ps.g06.httpserver.common.exception.problemJson.badRequest.InvalidInsulinProfileTimesException
-import pt.isel.ps.g06.httpserver.common.exception.problemJson.badRequest.OverlappingInsulinProfilesException
-import pt.isel.ps.g06.httpserver.common.exception.problemJson.notFound.MissingInsulinProfileException
-import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.InsulinProfileResponseMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.InsulinProfileDbRepository
+import pt.isel.ps.g06.httpserver.dataAccess.db.mapper.InsulinProfileModelMapper
+import pt.isel.ps.g06.httpserver.exception.problemJson.badRequest.InvalidInsulinProfileTimesException
+import pt.isel.ps.g06.httpserver.exception.problemJson.badRequest.OverlappingInsulinProfilesException
+import pt.isel.ps.g06.httpserver.exception.problemJson.notFound.MissingInsulinProfileException
 import pt.isel.ps.g06.httpserver.model.InsulinProfile
 import java.time.LocalTime
 
 @Service
 class InsulinProfileService(
         private val insulinProfileDbRepository: InsulinProfileDbRepository,
-        private val insulinProfileMapper: InsulinProfileResponseMapper
+        private val insulinProfileMapper: InsulinProfileModelMapper
 ) {
 
     fun getAllProfilesFromUser(submitterId: Int, count: Int?, skip: Int?): Sequence<InsulinProfile> {

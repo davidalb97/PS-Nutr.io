@@ -6,7 +6,7 @@ import io.jsonwebtoken.SignatureAlgorithm
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Service
 import pt.isel.ps.g06.httpserver.common.JWT_EXPIRATION
-import pt.isel.ps.g06.httpserver.springConfig.ServerSecret
+import pt.isel.ps.g06.httpserver.springConfig.bean.ServerSecret
 import java.util.*
 import java.util.function.Function
 import javax.crypto.spec.SecretKeySpec
