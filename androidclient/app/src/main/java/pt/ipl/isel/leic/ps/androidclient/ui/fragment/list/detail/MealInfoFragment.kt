@@ -2,8 +2,7 @@ package pt.ipl.isel.leic.ps.androidclient.ui.fragment.list.detail
 
 import android.content.Context
 import android.os.Bundle
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.*
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.components.XAxis
@@ -126,6 +125,12 @@ class MealInfoFragment :
             val suggestedLayout: RelativeLayout = view.findViewById(R.id.meal_info_suggested_rl)
             suggestedLayout.visibility = View.VISIBLE
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        NutrioApp.menu = menu
+        populateMenu(menu)
+        super.onCreateOptionsMenu(menu, inflater)
     }
 
     private fun setupPortionEntries(receivedMeal: MealInfo) {

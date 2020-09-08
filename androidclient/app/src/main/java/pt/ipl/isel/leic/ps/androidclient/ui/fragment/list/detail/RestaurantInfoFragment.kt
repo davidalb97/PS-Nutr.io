@@ -5,8 +5,9 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat.invalidateOptionsMenu
-import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.navigation.navGraphViewModels
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp
@@ -20,10 +21,11 @@ import pt.ipl.isel.leic.ps.androidclient.ui.modular.IImage
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.ISend
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.IFavoriteActionButton
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.IVoteActionButtons
-import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.menu.*
+import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.menu.IEditMenuItem
+import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.menu.IReportMenuItem
+import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.menu.MenuItemFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.BaseViewModelProviderFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.util.*
-import pt.ipl.isel.leic.ps.androidclient.ui.util.prompt.PromptInput
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.meal.info.RestaurantInfoViewModel
 
 class RestaurantInfoFragment :
@@ -122,16 +124,16 @@ class RestaurantInfoFragment :
         }
     }
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        NutrioApp.menu = menu
+        populateMenu(menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
     override fun onResume() {
         super.onResume()
 
-        if (recyclerViewModel.restaurantInfo != null) {
-            super.setupReportMenuItem(recyclerViewModel.restaurantInfo!!.isReportable)
-            super.setupEditMenuItem()
-            populateMenu(NutrioApp.menu)
-        }
-
-        val addedMeal = recyclerViewModel.addedMeal
+        val addedMeal = viewModel.addedMeal
         if (addedMeal != null) {
             viewModel.liveDataHandler.add(addedMeal)
             viewModel.addedMeal = null

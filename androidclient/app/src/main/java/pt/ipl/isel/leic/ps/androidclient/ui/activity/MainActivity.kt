@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -116,11 +117,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        NutrioApp.menu = menu
-        return super.onCreateOptionsMenu(menu)
     }
 
     override fun onSupportNavigateUp(): Boolean {
