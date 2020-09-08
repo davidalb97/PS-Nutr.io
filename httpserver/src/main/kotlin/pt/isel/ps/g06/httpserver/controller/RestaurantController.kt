@@ -73,7 +73,7 @@ class RestaurantController(
 
         return ResponseEntity
                 .ok()
-                .body(toSimplifiedRestaurantContainerOutput(nearbyRestaurants.toList()))
+                .body(toSimplifiedRestaurantContainerOutput(nearbyRestaurants.toList(), user?.identifier))
     }
 
     @GetMapping(RESTAURANT_ID_PATH, consumes = [MediaType.ALL_VALUE])

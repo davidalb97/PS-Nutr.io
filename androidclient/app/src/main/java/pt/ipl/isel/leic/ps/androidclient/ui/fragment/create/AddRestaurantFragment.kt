@@ -60,7 +60,6 @@ class AddRestaurantFragment : BaseViewModelFragment<AddRestaurantViewModel>(),
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        viewModel = buildViewModel(savedInstanceState, AddRestaurantViewModel::class.java)
         cuisinesViewModel = buildViewModel(savedInstanceState, CuisinePickViewModel::class.java)
         return super.onCreateView(inflater, container, savedInstanceState)
     }
