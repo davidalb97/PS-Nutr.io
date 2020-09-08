@@ -2,11 +2,8 @@ package pt.isel.ps.g06.httpserver.dataAccess.db.repo
 
 import org.jdbi.v3.core.Handle
 import org.springframework.stereotype.Repository
-import pt.isel.ps.g06.httpserver.dataAccess.db.MEAL_TYPE_SUGGESTED_INGREDIENT
-import pt.isel.ps.g06.httpserver.dataAccess.db.MEAL_TYPE_SUGGESTED_MEAL
-import pt.isel.ps.g06.httpserver.dataAccess.db.MealType
+import pt.isel.ps.g06.httpserver.dataAccess.db.*
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionContractType.FAVORABLE
-import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType
 import pt.isel.ps.g06.httpserver.dataAccess.db.common.DatabaseContext
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.*
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbCuisineDto
@@ -258,6 +255,29 @@ class MealDbRepository(
             })
 
             return@inTransaction mealDto
+        }
+    }
+
+    fun deleteCustomMeal(mealId: Int, submitterId: Int) {
+        return databaseContext.inTransaction {
+            submissionDbRepository.requireSubmissionOwner(mealId, mealId)
+            submissionDbRepository.requireSubmissionType(mealId, SubmissionType.MEAL)
+
+            val meal = it.attach(MealDao::class.java).getById(mealId)!!
+
+            if(meal.meal_type != MEAL_TYPE_CUSTOM) {
+                throw InvalidInputException("Can only delete custom meals!")
+            }
+
+            val restaurantMeals = it
+                    .attach(RestaurantMealDao::class.java)
+                    .getAllByMealId(mealId)
+                    .asCachedSequence()
+
+            if(restaurantMeals.toList().isNotEmpty()) {
+                throw InvalidInputException("Cannot delete a public submission!")
+            }
+            submissionDbRepository.deleteSubmissionById(mealId)
         }
     }
 

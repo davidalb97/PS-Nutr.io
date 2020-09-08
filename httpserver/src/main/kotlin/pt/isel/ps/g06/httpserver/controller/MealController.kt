@@ -133,14 +133,7 @@ class MealController(
         val meal = mealService.getMeal(mealId) ?: throw MealNotFoundException()
 
         if (user.userRole != MOD_USER) {
-            if(!meal.isMealOwner(user)) {
-                throw NotSubmissionOwnerException()
-            }
-            //TODO replace with meal.isDeletable (send to output also to avoid this wrong request in the first place)
-            val restaurantMeals = restaurantMealService.getRestaurantMealsByMealId(mealId)
-            if(restaurantMeals.toList().isNotEmpty()) {
-                throw CannotDeletePublicSubmissionException()
-            }
+            mealService.deleteCustomMealById(mealId, user.identifier)
         }
 
         submissionService.deleteSubmission(meal.identifier, user)

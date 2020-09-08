@@ -92,4 +92,8 @@ class MealService(
             throw InvalidMealException("The sum of ingredient quantity must be lower than meal quantity!")
         }
     }
+
+    fun deleteCustomMealById(mealId: Int, userId: Int) {
+        dbMealRepository.deleteCustomMeal(mealId, userId)
+    }
 }

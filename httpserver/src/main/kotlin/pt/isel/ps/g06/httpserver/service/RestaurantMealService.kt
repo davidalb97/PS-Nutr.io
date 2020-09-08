@@ -208,9 +208,4 @@ class RestaurantMealService(
             dbRestaurantMealRepository
                     .getAllUserFavorites(submitterId, count, skip)
                     .map(dbRestaurantMealModelMapper::mapTo)
-
-    fun getRestaurantMealsByMealId(mealId: Int): Sequence<RestaurantMeal> {
-        return dbRestaurantMealRepository.getRestaurantMealsByMealId(mealId)
-                .map(dbRestaurantMealModelMapper::mapTo)
-    }
 }
