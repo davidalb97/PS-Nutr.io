@@ -1,6 +1,6 @@
 package pt.isel.ps.g06.httpserver.exception.problemJson.badGateway
 
-import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.dto.here.HereErrorDto
+import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.here.dto.HereErrorDto
 import pt.isel.ps.g06.httpserver.util.log
 
 class HereBadGatewayException(error: HereErrorDto) : BaseBadGatewayException(

@@ -2,8 +2,7 @@ package pt.isel.ps.g06.httpserver.dataAccess.api.restaurant
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.stereotype.Repository
-import pt.isel.ps.g06.httpserver.dataAccess.api.common.BaseApiRequester
-import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.uri.RestaurantUri
+import pt.isel.ps.g06.httpserver.dataAccess.api.BaseApiRequester
 import pt.isel.ps.g06.httpserver.dataAccess.common.dto.RestaurantDto
 import java.net.http.HttpClient
 import java.net.http.HttpResponse
@@ -13,8 +12,8 @@ import java.util.concurrent.CompletableFuture
 abstract class RestaurantApi(
         httpClient: HttpClient = HttpClient.newHttpClient(),
         private val restaurantUri: RestaurantUri,
-        responseMapper: ObjectMapper
-) : BaseApiRequester(httpClient, responseMapper) {
+        objectMapper: ObjectMapper
+) : BaseApiRequester(httpClient, objectMapper) {
 
     fun getRestaurantInfo(id: String): CompletableFuture<RestaurantDto?> {
         val uri = restaurantUri.getRestaurantInfo(id)

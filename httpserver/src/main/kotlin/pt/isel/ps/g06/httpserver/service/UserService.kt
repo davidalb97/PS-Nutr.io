@@ -9,8 +9,8 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.repo.InsulinProfileDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.SubmitterDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.UserDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.input.moderation.BanInput
-import pt.isel.ps.g06.httpserver.model.mapper.UserResponseMapper
-import pt.isel.ps.g06.httpserver.model.mapper.submitter.SubmitterResponseMapper
+import pt.isel.ps.g06.httpserver.dataAccess.db.mapper.UserModelMapper
+import pt.isel.ps.g06.httpserver.dataAccess.db.mapper.DbSubmitterModelMapper
 import pt.isel.ps.g06.httpserver.exception.problemJson.forbidden.BaseForbiddenException
 import pt.isel.ps.g06.httpserver.exception.problemJson.unauthorized.UnauthorizedException
 import pt.isel.ps.g06.httpserver.model.Submitter
@@ -20,8 +20,8 @@ class UserService(
         private val userDbRepository: UserDbRepository,
         private val submitterDbRepository: SubmitterDbRepository,
         private val insulinProfileDbRepository: InsulinProfileDbRepository,
-        private val submitterMapper: SubmitterResponseMapper,
-        private val userMapper: UserResponseMapper
+        private val submitterModelMapper: DbSubmitterModelMapper,
+        private val userMapper: UserModelMapper
 ) : UserDetailsService {
 
     override fun loadUserByUsername(email: String): UserDetails {
@@ -65,7 +65,7 @@ class UserService(
     fun getUserSubmitterInfo(user: pt.isel.ps.g06.httpserver.model.User): Submitter =
             submitterDbRepository
                     .getSubmitterBySubmitterId(user.identifier)
-                    ?.let(submitterMapper::mapTo)
+                    ?.let(submitterModelMapper::mapTo)
                     ?: throw NoSuchElementException()   //Remove this exception and make the code better
 
     fun ensureModerator(user: pt.isel.ps.g06.httpserver.model.User) {

@@ -5,7 +5,6 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.*
 import pt.isel.ps.g06.httpserver.anyNonNull
-import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.uri.RestaurantUri
 import pt.isel.ps.g06.httpserver.dataAccess.common.dto.RestaurantDto
 import pt.isel.ps.g06.httpserver.parameterizedMock
 import java.net.URI

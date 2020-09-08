@@ -6,7 +6,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.repo.PortionDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.ReportDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.RestaurantMealDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.input.restaurantMeal.PortionInput
-import pt.isel.ps.g06.httpserver.model.mapper.restaurant.DbRestaurantMealInfoResponseMapper
+import pt.isel.ps.g06.httpserver.dataAccess.db.mapper.DbRestaurantMealInfoModelMapper
 import pt.isel.ps.g06.httpserver.exception.problemJson.badRequest.InvalidInputException
 import pt.isel.ps.g06.httpserver.exception.problemJson.conflict.DuplicateMealException
 import pt.isel.ps.g06.httpserver.exception.problemJson.forbidden.NotSubmissionOwnerException
@@ -29,7 +29,7 @@ class RestaurantMealService(
         private val dbPortionRepository: PortionDbRepository,
         private val dbFavoriteDbRepository: FavoriteDbRepository,
         private val dbReportDbRepository: ReportDbRepository,
-        private val dbRestaurantMealResponseMapper: DbRestaurantMealInfoResponseMapper
+        private val dbRestaurantMealModelMapper: DbRestaurantMealInfoModelMapper
 ) {
 
     /**
@@ -56,7 +56,7 @@ class RestaurantMealService(
         //If the restaurant is inserted, get restaurant meal (if restaurant - meal is associated)
         val restaurantMeal = restaurantId.submissionId?.let {
             dbRestaurantMealRepository.getRestaurantMeal(it, mealId)
-        }?.let(dbRestaurantMealResponseMapper::mapTo)
+        }?.let(dbRestaurantMealModelMapper::mapTo)
 
         return RestaurantMeal(
                 info = restaurantMeal,
@@ -95,7 +95,7 @@ class RestaurantMealService(
         return RestaurantMeal(
                 restaurant = restaurant,
                 meal = meal,
-                info = dbRestaurantMealResponseMapper.mapTo(restaurantMeal)
+                info = dbRestaurantMealModelMapper.mapTo(restaurantMeal)
         )
     }
 
@@ -205,7 +205,7 @@ class RestaurantMealService(
     fun getUserFavoriteMeals(submitterId: Int, count: Int?, skip: Int?): Sequence<RestaurantMeal> =
             dbRestaurantMealRepository
                     .getAllUserFavorites(submitterId, count, skip)
-                    .map(dbRestaurantMealResponseMapper::mapTo)
+                    .map(dbRestaurantMealModelMapper::mapTo)
                     .map {
                         RestaurantMeal(
                                 meal = mealService.getMeal(it.mealIdentifier)!!,

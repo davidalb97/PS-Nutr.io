@@ -8,7 +8,7 @@ import org.mockito.Mockito.*
 import pt.isel.ps.g06.httpserver.anyNonNull
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbUserInsulinProfileDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.InsulinProfileDbRepository
-import pt.isel.ps.g06.httpserver.model.mapper.InsulinProfileResponseMapper
+import pt.isel.ps.g06.httpserver.dataAccess.db.mapper.InsulinProfileModelMapper
 import pt.isel.ps.g06.httpserver.exception.problemJson.badRequest.InvalidInsulinProfileTimesException
 import pt.isel.ps.g06.httpserver.exception.problemJson.badRequest.OverlappingInsulinProfilesException
 import pt.isel.ps.g06.httpserver.model.InsulinProfile
@@ -17,14 +17,14 @@ import java.time.OffsetDateTime
 
 class InsulinProfileServiceTest {
     private lateinit var repository: InsulinProfileDbRepository
-    private lateinit var mapper: InsulinProfileResponseMapper
+    private lateinit var mapper: InsulinProfileModelMapper
     private lateinit var service: InsulinProfileService
 
 
     @BeforeEach
     fun mockDependencies() {
         repository = mock(InsulinProfileDbRepository::class.java)
-        mapper = mock(InsulinProfileResponseMapper::class.java)
+        mapper = mock(InsulinProfileModelMapper::class.java)
 
         service = InsulinProfileService(
                 insulinProfileDbRepository = repository,
