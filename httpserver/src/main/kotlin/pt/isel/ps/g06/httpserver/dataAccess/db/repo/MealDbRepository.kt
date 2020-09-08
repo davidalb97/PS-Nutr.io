@@ -258,6 +258,11 @@ class MealDbRepository(
         }
     }
 
+    /**
+     * Deletes a user custom meal, if not inserted on a restaurant.
+     * @throws InvalidInputException if the submitter is not the owner of the submission,
+     * the submission is not a custom meal or if there is a restaurant meal that uses this custom meal.
+     */
     fun deleteCustomMeal(mealId: Int, submitterId: Int) {
         return databaseContext.inTransaction {
             submissionDbRepository.requireSubmissionOwner(mealId, mealId)
