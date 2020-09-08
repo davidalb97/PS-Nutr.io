@@ -236,4 +236,6 @@
     <string name="add_restaurant_meal">Add restaurant meal</string>
     <string name="meal_added">Added meal</string>
     <string name="insulin_profile_add_fail">Could not create insulin profile!</string>
+    <string name="item_deleted">Item deleted</string>
+    <string name="item_delete_fail">Failed to delete item</string>
 </resources>
