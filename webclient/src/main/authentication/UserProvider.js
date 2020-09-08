@@ -1,5 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react'
-import useFetch, { FetchStates } from '../common/useFetch'
+import React, { useState, useContext } from 'react'
 import RequestingEntity from '../common/RequestingEntity'
 
 import UserContext from './UserContext'
@@ -12,7 +11,7 @@ export default function UserProvider({ children }) {
     //No need to trigger a request if no session cookie is present
     if (!authToken) return provideUserContext({ error: true })
 
-    const request = { url: "http://localhost:8080/user", authToken: authToken }
+    const request = { url: "/user", authToken: authToken }
 
     return <RequestingEntity
         request={request}

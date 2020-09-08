@@ -24,7 +24,7 @@ export default function ViewMeals() {
             Want to create a new one? Head over to<Link to="/meals/create"> meal creation.</Link>
             <hr />
             <RequestingEntity
-                request={{ url: "http://localhost:8080/user/custom/meal" }}
+                request={{ url: "/user/custom/meal" }}
                 onSuccess={handleResult}
                 onDefault={Loading}
             />

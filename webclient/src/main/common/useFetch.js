@@ -1,5 +1,5 @@
 import { useEffect, useState, useContext } from 'react'
-import { devUri } from './Utils'
+import baseApiUri from '../../config'
 import UserContext from '../authentication/UserContext'
 export const FetchStates = {
     init: 'init',
@@ -86,7 +86,7 @@ function setupRequest({
     body
 }) {
     let result = {
-        url: devUri(url),
+        url: `baseApiUri`.concat(url),
         requestInit: {
             headers: {
                 'Content-Type': contentType || 'application/json',

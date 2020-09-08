@@ -15,7 +15,7 @@ import RequestingEntity from '../../common/RequestingEntity'
 export default function Profile({ profile, disabledIntervals, onProfileDeletion }) {
     const [request, triggerRequest] = useReducer(_ => {
         return {
-            url: `http://localhost:8080/user/profile/${profile.name}`,
+            url: `/user/profile/${profile.name}`,
             method: "DELETE"
         }
     }, {})
