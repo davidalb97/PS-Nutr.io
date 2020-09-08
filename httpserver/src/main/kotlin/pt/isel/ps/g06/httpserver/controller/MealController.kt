@@ -135,10 +135,10 @@ class MealController(
         if (user.userRole != MOD_USER) {
             //Meal existence asserted on repo
             mealService.deleteCustomMealById(mealId, user.identifier)
+        } else {
+            val meal = mealService.getMeal(mealId) ?: throw MealNotFoundException()
+            submissionService.deleteSubmission(meal.identifier, user)
         }
-
-        val meal = mealService.getMeal(mealId) ?: throw MealNotFoundException()
-        submissionService.deleteSubmission(meal.identifier, user)
 
         return ResponseEntity
                 .ok()
