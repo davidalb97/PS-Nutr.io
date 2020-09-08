@@ -17,7 +17,6 @@ private const val IN_CIRCLE = "circle:"
 private const val RADIUS = "r"
 private const val QUERY = "q"
 private const val LIMIT = "limit"
-private const val SKIP = "skip"
 private const val ID = "id"
 private const val API_KEY = "apiKey"
 

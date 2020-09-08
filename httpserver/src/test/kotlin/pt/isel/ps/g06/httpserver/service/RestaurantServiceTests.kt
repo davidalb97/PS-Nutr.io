@@ -17,7 +17,6 @@ import pt.isel.ps.g06.httpserver.dataAccess.model.mapper.restaurant.DbRestaurant
 import pt.isel.ps.g06.httpserver.dataAccess.model.mapper.restaurant.RestaurantResponseMapper
 import pt.isel.ps.g06.httpserver.model.restaurant.Restaurant
 import pt.isel.ps.g06.httpserver.model.restaurant.RestaurantIdentifier
-import java.util.concurrent.CompletableFuture
 
 class RestaurantServiceTests {
     private lateinit var restaurantRepository: RestaurantDbRepository
@@ -90,7 +89,7 @@ class RestaurantServiceTests {
                 name = anyNonNull(),
                 skip = anyNonNull(),
                 count = anyNonNull()
-        )).thenReturn(CompletableFuture.completedFuture(listOf(firstApiDto, secondApiDto)))
+        )).thenReturn(sequenceOf(firstApiDto, secondApiDto))
 
         //Setup database search result
         `when`(restaurantRepository.getAllByCoordinates(

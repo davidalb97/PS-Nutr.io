@@ -18,8 +18,10 @@ abstract class RestaurantApi(
 
     fun getRestaurantInfo(id: String): CompletableFuture<RestaurantDto?> {
         val uri = restaurantUri.getRestaurantInfo(id)
-        val response = httpClient.sendAsync(buildGetRequest(uri), HttpResponse.BodyHandlers.ofString())
-        return handleRestaurantInfoResponse(response)
+
+        return httpClient
+                .sendAsync(buildGetRequest(uri), HttpResponse.BodyHandlers.ofString())
+                .thenApply(::handleRestaurantInfoResponse)
     }
 
     fun searchNearbyRestaurants(
@@ -29,13 +31,26 @@ abstract class RestaurantApi(
             name: String?,
             skip: Int?,
             count: Int
-    ): CompletableFuture<Collection<RestaurantDto>> {
-        val uri = restaurantUri.nearbyRestaurants(latitude, longitude, radiusMeters, name, skip, count)
-        val response = httpClient.sendAsync(buildGetRequest(uri), HttpResponse.BodyHandlers.ofString())
-        return handleNearbyRestaurantsResponse(response)
+    ): Sequence<RestaurantDto> {
+        /*
+        Restaurant APIs dependencies do not offer pagination to obtain more restaurants when needed
+        or skipping results. As such, generate sequence always only requests once
+        and is unable to provide more when needed.
+
+        (See: https://developer.here.com/documentation/geocoding-search-api/api-reference-swagger.html)
+         */
+        return sequence {
+            val uri = restaurantUri.nearbyRestaurants(latitude, longitude, radiusMeters, name, skip, count)
+            val response = httpClient.send(
+                    buildGetRequest(uri),
+                    HttpResponse.BodyHandlers.ofString()
+            )
+
+            yieldAll(handleNearbyRestaurantsResponse(response))
+        }
     }
 
-    abstract fun handleRestaurantInfoResponse(responseFuture: CompletableFuture<HttpResponse<String>>): CompletableFuture<RestaurantDto?>
+    abstract fun handleRestaurantInfoResponse(response: HttpResponse<String>): RestaurantDto?
 
-    abstract fun handleNearbyRestaurantsResponse(responseFuture: CompletableFuture<HttpResponse<String>>): CompletableFuture<Collection<RestaurantDto>>
+    abstract fun handleNearbyRestaurantsResponse(response: HttpResponse<String>): Collection<RestaurantDto>
 }

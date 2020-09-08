@@ -46,14 +46,13 @@ class RestaurantService(
         //Get API restaurants
         val apiRestaurants = hereRestaurantApi
                 .searchNearbyRestaurants(latitude, longitude, chosenRadius, name, skip, count / 2)
-                .thenApply { it.map(restaurantResponseMapper::mapTo) }
+                .map(restaurantResponseMapper::mapTo)
 
         val databaseRestaurants = dbRestaurantRepository
                 .getAllByCoordinates(latitude, longitude, chosenRadius, skip, count / 2)
                 .map(restaurantResponseMapper::mapTo)
 
-        //TODO Make Get call from API return a Stream
-        return filterRedundantApiRestaurants(databaseRestaurants, apiRestaurants.get().asSequence())
+        return filterRedundantApiRestaurants(databaseRestaurants, apiRestaurants)
     }
 
     /**
