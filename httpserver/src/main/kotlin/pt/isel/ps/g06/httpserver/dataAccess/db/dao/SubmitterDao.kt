@@ -4,7 +4,7 @@ import org.jdbi.v3.sqlobject.config.RegisterRowMapper
 import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbSubmitterDto
-import pt.isel.ps.g06.httpserver.dataAccess.db.mapper.DbRowSubmitterMapper
+import pt.isel.ps.g06.httpserver.dataAccess.db.mapper.row.DbRowSubmitterMapper
 
 //SubmissionSubmitter table constants
 private const val SS_table = SubmissionSubmitterDao.table

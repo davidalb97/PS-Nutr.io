@@ -1,20 +1,23 @@
 package pt.isel.ps.g06.httpserver.service
 
 import org.springframework.stereotype.Service
-import pt.isel.ps.g06.httpserver.common.exception.problemJson.notFound.MissingInsulinProfileException
-import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.InsulinProfileResponseMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.InsulinProfileDbRepository
+import pt.isel.ps.g06.httpserver.dataAccess.db.mapper.InsulinProfileModelMapper
+import pt.isel.ps.g06.httpserver.exception.problemJson.badRequest.InvalidInsulinProfileTimesException
+import pt.isel.ps.g06.httpserver.exception.problemJson.badRequest.OverlappingInsulinProfilesException
+import pt.isel.ps.g06.httpserver.exception.problemJson.notFound.MissingInsulinProfileException
 import pt.isel.ps.g06.httpserver.model.InsulinProfile
 import java.time.LocalTime
 
 @Service
 class InsulinProfileService(
         private val insulinProfileDbRepository: InsulinProfileDbRepository,
-        private val insulinProfileMapper: InsulinProfileResponseMapper
+        private val insulinProfileMapper: InsulinProfileModelMapper
 ) {
 
     fun getAllProfilesFromUser(submitterId: Int, count: Int?, skip: Int?): Sequence<InsulinProfile> {
-        return insulinProfileDbRepository.getAllFromUser(submitterId, count, skip)
+        return insulinProfileDbRepository
+                .getAllFromUser(submitterId, count, skip)
                 .map(insulinProfileMapper::mapTo)
     }
 
@@ -33,6 +36,22 @@ class InsulinProfileService(
             insulinSensitivityFactor: Int,
             carbohydrateRatio: Int
     ): InsulinProfile {
+        if (startTime.hour >= endTime.hour) {
+            throw InvalidInsulinProfileTimesException()
+        }
+
+        //See if dates overlap with active insulin profile
+        val overlappingProfile = getAllProfilesFromUser(submitterId, null, null).find {
+            val start = LocalTime.parse(it.startTime)
+            val end = LocalTime.parse(it.endTime)
+
+            (start.hour <= endTime.hour) && (end.hour >= startTime.hour)
+        }
+
+        if (overlappingProfile != null) {
+            throw OverlappingInsulinProfilesException(overlappingProfile)
+        }
+
         return insulinProfileMapper.mapTo(
                 insulinProfileDbRepository.insertProfile(
                         submitterId,

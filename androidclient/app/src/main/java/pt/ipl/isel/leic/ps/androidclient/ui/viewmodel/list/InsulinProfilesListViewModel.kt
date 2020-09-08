@@ -4,38 +4,64 @@ import android.os.Parcel
 import android.os.Parcelable
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.insulinProfilesRepository
 import pt.ipl.isel.leic.ps.androidclient.data.model.InsulinProfile
-import pt.ipl.isel.leic.ps.androidclient.data.model.UserSession
 import pt.ipl.isel.leic.ps.androidclient.ui.util.ItemAction
+import pt.ipl.isel.leic.ps.androidclient.ui.util.getUserSession
 import pt.ipl.isel.leic.ps.androidclient.util.readListCompat
 import kotlin.reflect.KClass
 
-open class InsulinProfilesListViewModel(
-    val actions: List<ItemAction>
-) : BaseListViewModel<InsulinProfile>() {
+open class InsulinProfilesListViewModel : BaseListViewModel<InsulinProfile> {
 
-    constructor(parcel: Parcel) : this(
-        actions = parcel.readListCompat(ItemAction::class)
-    ) {
-        super.restoreFromParcel(parcel)
+    val actions: List<ItemAction>
+
+    constructor(actions: List<ItemAction>) {
+        this.actions = actions
     }
 
-    fun addDbInsulinProfile(profile: InsulinProfile, userSession: UserSession?) =
-        insulinProfilesRepository.addProfile(profile, userSession, onError)
+    constructor(parcel: Parcel) : super(parcel) {
+        actions = parcel.readListCompat(ItemAction::class)
+    }
 
-    fun deleteItem(profileName: String, userSession: UserSession?) =
-        insulinProfilesRepository.deleteProfile(profileName, userSession, onError)
+    fun addDbInsulinProfile(
+        insulinProfile: InsulinProfile,
+        onError: (Exception) -> Unit,
+        onSuccess: () -> Unit
+    ) = insulinProfilesRepository.addProfile(
+        profileDb = insulinProfile,
+        userSession = getUserSession(),
+        onSuccess = onSuccess,
+        onError = onError
+    )
 
-    override fun update() {
-        if (!tryRestore()) {
-            this.liveDataHandler.set(insulinProfilesRepository.getAllProfiles()) {
+    fun deleteItem(
+        insulinProfile: InsulinProfile,
+        onError: (Exception) -> Unit,
+        onSuccess: () -> Unit
+    ) = insulinProfilesRepository.deleteProfile(
+        insulinProfile = insulinProfile,
+        userSession = getUserSession(),
+        onSuccess = onSuccess,
+        onError = onError
+    )
+
+    override fun fetch() {
+        val userSession = getUserSession()
+        if(userSession != null) {
+            insulinProfilesRepository.getRemoteProfiles(
+                userSession,
+                onError = onError,
+                onSuccess = liveDataHandler::set
+            )
+        }
+        else {
+            this.liveDataHandler.set(insulinProfilesRepository.getAllDbProfiles()) {
                 insulinProfilesRepository.insulinProfileMapper.mapToModel(it)
             }
         }
     }
 
     override fun writeToParcel(dest: Parcel?, flags: Int) {
-        dest?.writeList(actions)
         super.writeToParcel(dest, flags)
+        dest?.writeList(actions)
     }
 
     override fun getModelClass(): KClass<InsulinProfile> = InsulinProfile::class

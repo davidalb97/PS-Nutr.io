@@ -4,7 +4,7 @@ import org.jdbi.v3.core.result.ResultIterable
 import org.jdbi.v3.sqlobject.config.RegisterRowMapper
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbUserEncInsulinProfileDto
-import pt.isel.ps.g06.httpserver.dataAccess.db.mapper.DbRowInsulinProfileMapper
+import pt.isel.ps.g06.httpserver.dataAccess.db.mapper.row.DbRowInsulinProfileMapper
 
 @RegisterRowMapper(DbRowInsulinProfileMapper::class)
 interface InsulinProfileDao {

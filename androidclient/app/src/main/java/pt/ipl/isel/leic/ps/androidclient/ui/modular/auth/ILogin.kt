@@ -7,12 +7,10 @@ import android.widget.Toast
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.UserLogin
 import pt.ipl.isel.leic.ps.androidclient.data.model.UserSession
-import pt.ipl.isel.leic.ps.androidclient.ui.modular.IContext
-import pt.ipl.isel.leic.ps.androidclient.ui.modular.ILoading
-import pt.ipl.isel.leic.ps.androidclient.ui.modular.IUserInfo
+import pt.ipl.isel.leic.ps.androidclient.ui.modular.*
 import pt.ipl.isel.leic.ps.androidclient.ui.util.saveSession
 
-interface ILogin : IUserInfo, ILoading, IContext {
+interface ILogin : IUserInfo, ILoading, IContext, IRequiredTextInput, ILog {
 
     var userEmailEditText: EditText
     val userEmailEditTextId: Int
@@ -31,17 +29,20 @@ interface ILogin : IUserInfo, ILoading, IContext {
             val userEmail = userEmailEditText.text.toString()
             val passWord = userPasswordEditText.text.toString()
 
-            if (arrayOf(userEmail, passWord).all { it.isNotBlank() }) {
+            if (validateTextViews(fetchCtx(), userEmailEditText, userPasswordEditText)) {
                 startLoading()
+                log.v("Logging in...")
                 onLogin(
                     userLogin = UserLogin(
                         email = userEmail,
                         password = passWord
                     ),
                     onSuccess = { userSession ->
+                        log.v("Logging in completed! Fetching user info...")
                         onRequestUserInfo(
                             userSession = userSession,
-                            onSuccess = {userInfo ->
+                            onSuccess = { userInfo ->
+                                log.v("Fetching user info completed!")
                                 saveSession(
                                     jwt = userSession.jwt,
                                     email = userInfo.email,
@@ -50,6 +51,7 @@ interface ILogin : IUserInfo, ILoading, IContext {
                                 )
                             },
                             onError = {
+                                log.v("Fetching user info error!")
                                 stopLoading()
                                 Toast.makeText(
                                     fetchCtx(),
@@ -61,6 +63,7 @@ interface ILogin : IUserInfo, ILoading, IContext {
                         stopLoading()
                     },
                     onError = {
+                        log.v("Login error!")
                         stopLoading()
                         Toast.makeText(
                             fetchCtx(),

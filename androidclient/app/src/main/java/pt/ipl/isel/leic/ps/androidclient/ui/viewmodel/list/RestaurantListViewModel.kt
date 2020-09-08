@@ -12,27 +12,35 @@ import pt.ipl.isel.leic.ps.androidclient.ui.util.requireUserSession
 import pt.ipl.isel.leic.ps.androidclient.util.readListCompat
 import kotlin.reflect.KClass
 
-class RestaurantListViewModel(
-    val navDestination: Navigation,
-    val actions: List<ItemAction>
-) : BaseListViewModel<RestaurantItem>() {
+class RestaurantListViewModel : BaseListViewModel<RestaurantItem> {
 
+    val navDestination: Navigation
+    val actions: List<ItemAction>
     var latitude: Double? = null
     var longitude: Double? = null
-    //TODO use cuisines search filter
-    var cuisines: Collection<Cuisine>? = null
 
-    constructor(parcel: Parcel) : this(
-        navDestination = Navigation.values()[parcel.readInt()],
-        actions = parcel.readListCompat(ItemAction::class)
+    //TODO use cuisines search filter
+    var cuisines: List<Cuisine>?
+
+    constructor(
+        navDestination: Navigation,
+        actions: List<ItemAction>,
+        cuisines: List<Cuisine>? = null
     ) {
-        latitude = parcel.readSerializable() as Double?
-        longitude = parcel.readSerializable() as Double?
-        super.restoreFromParcel(parcel)
+        this.navDestination = navDestination
+        this.actions = actions
+        this.cuisines = cuisines
     }
 
-    override fun update() {
-        this.pendingRequest = true
+    constructor(parcel: Parcel) : super(parcel) {
+        navDestination = Navigation.values()[parcel.readInt()]
+        actions = parcel.readListCompat(ItemAction::class)
+        cuisines = parcel.readListCompat(Cuisine::class)
+        latitude = parcel.readSerializable() as Double?
+        longitude = parcel.readSerializable() as Double?
+    }
+
+    override fun fetch() {
         restaurantRepository.getNearbyRestaurants(
             latitude = latitude!!,
             longitude = longitude!!,
@@ -77,11 +85,12 @@ class RestaurantListViewModel(
     )
 
     override fun writeToParcel(dest: Parcel?, flags: Int) {
+        super.writeToParcel(dest, flags)
         dest?.writeInt(navDestination.ordinal)
         dest?.writeList(actions)
+        dest?.writeList(cuisines ?: emptyList<Cuisine>())
         dest?.writeSerializable(latitude)
         dest?.writeSerializable(longitude)
-        super.writeToParcel(dest, flags)
     }
 
     override fun getModelClass(): KClass<RestaurantItem> = RestaurantItem::class
@@ -99,5 +108,4 @@ class RestaurantListViewModel(
             return arrayOfNulls(size)
         }
     }
-
 }

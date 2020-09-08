@@ -46,7 +46,10 @@ class DetailedRestaurantMealOutput(
 fun toDetailedRestaurantMealOutput(restaurantMeal: RestaurantMeal, userId: Int? = null): DetailedRestaurantMealOutput {
     val meal = restaurantMeal.meal
     val restaurantMealInfo = restaurantMeal.info
-    val isMealOwner = meal.isUserMeal() && userId?.let { meal.submitterInfo.value?.identifier == userId } ?: false
+    val isMealOwner = userId?.let { meal.submitterInfo.value?.identifier == userId } ?: false
+    val defaultVotable = !isMealOwner
+    val defaultFavorable = !isMealOwner
+    val defaultReportable = !meal.isSuggestedMeal(restaurantMeal.restaurant) && !isMealOwner
     return DetailedRestaurantMealOutput(
             identifier = meal.identifier,
             name = meal.name,
@@ -55,7 +58,7 @@ fun toDetailedRestaurantMealOutput(restaurantMeal: RestaurantMeal, userId: Int? 
             //All RestaurantMeal info is only available when inserted on the database
             favorites = FavoritesOutput(
                     isFavorite = restaurantMealInfo?.isFavorite?.invoke(userId) ?: false,
-                    isFavorable = restaurantMealInfo?.isFavorable?.invoke(userId) ?: !isMealOwner
+                    isFavorable = restaurantMealInfo?.isFavorable?.invoke(userId) ?: defaultFavorable
             ),
             votes = restaurantMealInfo?.let {
                 toVotesOutput(
@@ -63,10 +66,10 @@ fun toDetailedRestaurantMealOutput(restaurantMeal: RestaurantMeal, userId: Int? 
                         votes = it.votes.value,
                         userVote = it.userVote(userId)
                 )
-            } ?: toDefaultVotesOutput(isVotable = isMealOwner),
+            } ?: toDefaultVotesOutput(isVotable = defaultVotable),
             isSuggested = !meal.isUserMeal(),
             isVerified = restaurantMealInfo?.isVerified ?: false,
-            isReportable = restaurantMealInfo?.isReportable?.invoke(userId) ?: isMealOwner,
+            isReportable = restaurantMealInfo?.isReportable?.invoke(userId) ?: defaultReportable,
             //Info values bellow:
             createdBy = meal.submitterInfo.value?.let(::toSimplifiedUserOutput),
             creationDate = meal.creationDate.value,

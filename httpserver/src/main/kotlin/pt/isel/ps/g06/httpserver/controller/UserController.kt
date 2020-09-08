@@ -13,6 +13,8 @@ import pt.isel.ps.g06.httpserver.dataAccess.output.user.UserInfoOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.user.UserLoginOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.user.UserRegisterOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.user.mapUserToOutput
+import pt.isel.ps.g06.httpserver.problemJson.notFound.UserNotFoundException
+import pt.isel.ps.g06.httpserver.problemJson.unauthorized.UnauthorizedException
 import pt.isel.ps.g06.httpserver.model.User
 import pt.isel.ps.g06.httpserver.service.AuthenticationService
 import pt.isel.ps.g06.httpserver.service.UserService

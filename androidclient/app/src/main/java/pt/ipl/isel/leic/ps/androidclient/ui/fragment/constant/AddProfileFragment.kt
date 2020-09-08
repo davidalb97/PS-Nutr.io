@@ -1,16 +1,13 @@
 package pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant
 
 import android.app.TimePickerDialog
-import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.*
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.app
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.InsulinProfile
-import pt.ipl.isel.leic.ps.androidclient.ui.fragment.BaseFragment
+import pt.ipl.isel.leic.ps.androidclient.ui.fragment.BaseViewModelFragment
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.IRequiredTextInput
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.unit.IGlucoseUnitSpinner
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.unit.IWeightUnitSpinner
@@ -25,19 +22,20 @@ import pt.ipl.isel.leic.ps.androidclient.util.TimestampWithTimeZone
 import java.text.SimpleDateFormat
 import java.util.*
 
-class AddProfileFragment : BaseFragment(),
+class AddProfileFragment : BaseViewModelFragment<InsulinProfilesListViewModel>(),
     IWeightUnitSpinner,
     IGlucoseUnitSpinner,
-    IRequiredTextInput
-{
+    IRequiredTextInput {
 
+    override val layout = R.layout.add_insulin_profile_fragment
+    override val vmClass = InsulinProfilesListViewModel::class.java
+    override val vMProviderFactorySupplier = ::InsulinProfilesVMProviderFactory
 
     override lateinit var previousWeightUnit: WeightUnits
     override lateinit var currentWeightUnit: WeightUnits
     override lateinit var previousGlucoseUnit: GlucoseUnits
     override lateinit var currentGlucoseUnit: GlucoseUnits
 
-    private lateinit var viewModel: InsulinProfilesListViewModel
     private lateinit var profileName: EditText
     private lateinit var glucoseObjective: EditText
     private lateinit var glucoseAmount: EditText
@@ -52,15 +50,6 @@ class AddProfileFragment : BaseFragment(),
     private lateinit var calendar: Calendar
     private val defaultHour by lazy { calendar.get(Calendar.HOUR_OF_DAY) }
     private val defaultMinute by lazy { calendar.get(Calendar.MINUTE) }
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        viewModel = buildViewModel(savedInstanceState, InsulinProfilesListViewModel::class.java)
-        return super.onCreateView(inflater, container, savedInstanceState)
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -90,7 +79,7 @@ class AddProfileFragment : BaseFragment(),
         setupWeightUnitSpinner(requireContext(), carbUnitSpinner)
 
         // Get all profiles before the new insertion
-        viewModel.update()
+        viewModel.setupList()
 
         createButton.setOnClickListener {
             onCreateProfile()
@@ -154,10 +143,13 @@ class AddProfileFragment : BaseFragment(),
                     Toast.LENGTH_LONG
                 ).show()
             } else {
-                viewModel
-                    .addDbInsulinProfile(profile, getUserSession())
-                    .setOnPostExecute { parentFragmentManager.popBackStack() }
-                    .execute()
+                viewModel.addDbInsulinProfile(profile, onError = {
+                    log.e(it)
+                    Toast.makeText(app, R.string.insulin_profile_add_fail, Toast.LENGTH_SHORT)
+                        .show()
+                }) {
+                    parentFragmentManager.popBackStack()
+                }
             }
         }
     }
@@ -243,19 +235,6 @@ class AddProfileFragment : BaseFragment(),
             true
         ).show()
     }
-
-    override fun getVMProviderFactory(
-        savedInstanceState: Bundle?,
-        intent: Intent
-    ): InsulinProfilesVMProviderFactory {
-        return InsulinProfilesVMProviderFactory(
-            arguments,
-            savedInstanceState,
-            intent
-        )
-    }
-
-    override fun getLayout() = R.layout.add_insulin_profile_fragment
 
     /**
      * Converts the passed carbohydrate unit, based on the spinner's selected options

@@ -2,12 +2,9 @@ package pt.ipl.isel.leic.ps.androidclient.ui.fragment.list
 
 import android.os.Bundle
 import android.os.Parcelable
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import androidx.annotation.IdRes
 import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.BaseRecyclerAdapter
-import pt.ipl.isel.leic.ps.androidclient.ui.fragment.BaseFragment
+import pt.ipl.isel.leic.ps.androidclient.ui.fragment.BaseViewModelFragment
 import pt.ipl.isel.leic.ps.androidclient.ui.util.RecyclerHandler
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.BaseListViewModel
 
@@ -15,46 +12,33 @@ abstract class BaseListFragment<
         M : Parcelable,
         VM : BaseListViewModel<M>,
         A : BaseRecyclerAdapter<*, *, *>
-        > : BaseFragment() {
+        > : BaseViewModelFragment<VM>() {
 
-    protected lateinit var recyclerViewModel: VM
-    protected lateinit var recyclerHandler: RecyclerHandler<M, VM, A>
+    protected abstract val paginated: Boolean
+    protected abstract val recyclerViewId: Int
+    protected abstract val progressBarId: Int
+    protected abstract val noItemsTextViewId: Int
     abstract val recyclerAdapter: A
-
-    @IdRes
-    protected abstract fun getRecyclerId(): Int
-
-    @IdRes
-    protected abstract fun getProgressBarId(): Int
-
-    @IdRes
-    protected abstract fun getNoItemsLabelId(): Int
-    protected abstract fun getRecyclerViewModelClass(): Class<VM>
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        recyclerViewModel = buildViewModel(savedInstanceState, getRecyclerViewModelClass())
-        return super.onCreateView(inflater, container, savedInstanceState)
-    }
+    protected lateinit var recyclerHandler: RecyclerHandler<M, VM, A>
 
     /**
      * Gets the list elements and initializes them
      */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         initRecyclerView(view)
     }
 
     fun initRecyclerView(view: View) {
+        log.v("Initializing recycler handler...")
         recyclerHandler = RecyclerHandler(
-            recyclerId = getRecyclerId(),
-            noItemsTxt = getNoItemsLabelId(),
-            progressBar = getProgressBarId(),
-            adapter = recyclerAdapter,
-            recyclerViewModel = recyclerViewModel,
+            recyclerId = recyclerViewId,
+            noItemsTextViewId = noItemsTextViewId,
+            progressBarId = progressBarId,
+            recyclerAdapter = recyclerAdapter,
+            recyclerViewModel = viewModel,
             view = view,
+            paginated = paginated,
             onError = ::onError
         )
         recyclerHandler.startObserver(this)

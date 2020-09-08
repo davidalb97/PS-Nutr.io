@@ -167,8 +167,8 @@
     </string-array>
 
     <string-array name="weight_units">
-        <item>grams</item>
-        <item>ounces</item>
+        <item>gr</item>
+        <item>oz</item>
     </string-array>
     <string name="title_activity_login">LoginActivity</string>
     <!-- Strings used for fragments for navigation -->
@@ -235,4 +235,5 @@
     <string name="confirm">Confirm</string>
     <string name="add_restaurant_meal">Add restaurant meal</string>
     <string name="meal_added">Added meal</string>
+    <string name="insulin_profile_add_fail">Could not create insulin profile!</string>
 </resources>

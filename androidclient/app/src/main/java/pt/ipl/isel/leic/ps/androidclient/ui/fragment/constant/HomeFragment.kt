@@ -1,6 +1,5 @@
 package pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +10,8 @@ import pt.ipl.isel.leic.ps.androidclient.ui.fragment.BaseFragment
 import pt.ipl.isel.leic.ps.androidclient.ui.util.*
 
 class HomeFragment : BaseFragment() {
+
+    override val layout: Int = R.layout.home_fragment
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -76,9 +77,4 @@ class HomeFragment : BaseFragment() {
             view.findNavController().navigate(Navigation.SEND_TO_HISTORY.navId)
         }
     }
-
-    override fun getLayout() = R.layout.home_fragment
-
-    override fun getVMProviderFactory(savedInstanceState: Bundle?, intent: Intent) =
-        throw UnsupportedOperationException("Home fragment does not require a ViewModel")
 }

@@ -1,17 +1,19 @@
 package pt.isel.ps.g06.httpserver.service
 
 import org.springframework.stereotype.Service
-import pt.isel.ps.g06.httpserver.common.exception.problemJson.badRequest.InvalidInputException
-import pt.isel.ps.g06.httpserver.common.exception.problemJson.conflict.DuplicateMealException
-import pt.isel.ps.g06.httpserver.common.exception.problemJson.forbidden.NotSubmissionOwnerException
-import pt.isel.ps.g06.httpserver.common.exception.problemJson.notFound.MealNotFoundException
-import pt.isel.ps.g06.httpserver.common.exception.problemJson.notFound.PortionNotFoundException
-import pt.isel.ps.g06.httpserver.common.exception.problemJson.notFound.RestaurantMealNotFound
-import pt.isel.ps.g06.httpserver.common.exception.problemJson.notFound.RestaurantNotFoundException
-import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.restaurant.DbRestaurantMealInfoResponseMapper
-import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.restaurant.DbRestaurantResponseMapper
-import pt.isel.ps.g06.httpserver.dataAccess.db.repo.*
+import pt.isel.ps.g06.httpserver.dataAccess.db.repo.FavoriteDbRepository
+import pt.isel.ps.g06.httpserver.dataAccess.db.repo.PortionDbRepository
+import pt.isel.ps.g06.httpserver.dataAccess.db.repo.ReportDbRepository
+import pt.isel.ps.g06.httpserver.dataAccess.db.repo.RestaurantMealDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.input.restaurantMeal.PortionInput
+import pt.isel.ps.g06.httpserver.dataAccess.db.mapper.DbRestaurantMealInfoModelMapper
+import pt.isel.ps.g06.httpserver.exception.problemJson.badRequest.InvalidInputException
+import pt.isel.ps.g06.httpserver.exception.problemJson.conflict.DuplicateMealException
+import pt.isel.ps.g06.httpserver.exception.problemJson.forbidden.NotSubmissionOwnerException
+import pt.isel.ps.g06.httpserver.exception.problemJson.notFound.MealNotFoundException
+import pt.isel.ps.g06.httpserver.exception.problemJson.notFound.PortionNotFoundException
+import pt.isel.ps.g06.httpserver.exception.problemJson.notFound.RestaurantMealNotFound
+import pt.isel.ps.g06.httpserver.exception.problemJson.notFound.RestaurantNotFoundException
 import pt.isel.ps.g06.httpserver.model.Meal
 import pt.isel.ps.g06.httpserver.model.MealRestaurantInfo
 import pt.isel.ps.g06.httpserver.model.RestaurantMeal
@@ -27,7 +29,7 @@ class RestaurantMealService(
         private val dbPortionRepository: PortionDbRepository,
         private val dbFavoriteDbRepository: FavoriteDbRepository,
         private val dbReportDbRepository: ReportDbRepository,
-        private val dbRestaurantMealResponseMapper: DbRestaurantMealInfoResponseMapper
+        private val dbRestaurantMealModelMapper: DbRestaurantMealInfoModelMapper
 ) {
 
     /**
@@ -54,7 +56,7 @@ class RestaurantMealService(
         //If the restaurant is inserted, get restaurant meal (if restaurant - meal is associated)
         val restaurantMeal = restaurantId.submissionId?.let {
             dbRestaurantMealRepository.getRestaurantMeal(it, mealId)
-        }?.let(dbRestaurantMealResponseMapper::mapTo)
+        }?.let(dbRestaurantMealModelMapper::mapTo)
 
         return RestaurantMeal(
                 info = restaurantMeal,
@@ -93,7 +95,7 @@ class RestaurantMealService(
         return RestaurantMeal(
                 restaurant = restaurant,
                 meal = meal,
-                info = dbRestaurantMealResponseMapper.mapTo(restaurantMeal)
+                info = dbRestaurantMealModelMapper.mapTo(restaurantMeal)
         )
     }
 
@@ -203,7 +205,7 @@ class RestaurantMealService(
     fun getUserFavoriteMeals(submitterId: Int, count: Int?, skip: Int?): Sequence<RestaurantMeal> =
             dbRestaurantMealRepository
                     .getAllUserFavorites(submitterId, count, skip)
-                    .map(dbRestaurantMealResponseMapper::mapTo)
+                    .map(dbRestaurantMealModelMapper::mapTo)
                     .map {
                         RestaurantMeal(
                                 meal = mealService.getMeal(it.mealIdentifier)!!,

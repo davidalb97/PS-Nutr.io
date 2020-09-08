@@ -34,7 +34,10 @@ fun toSimplifiedRestaurantMealOutput(
 ): SimplifiedRestaurantMealOutput {
     val meal = restaurantMeal.meal
     val restaurantMealInfo = restaurantMeal.info
-    val isMealOwner = meal.isUserMeal() && userId?.let { meal.submitterInfo.value?.identifier == userId } ?: false
+    val isMealOwner = userId?.let { meal.submitterInfo.value?.identifier == userId } ?: false
+    val defaultVotable = !isMealOwner
+    val defaultFavorable = !isMealOwner
+    val defaultReportable = !meal.isSuggestedMeal(restaurantMeal.restaurant) && !isMealOwner
     return SimplifiedRestaurantMealOutput(
             identifier = meal.identifier,
             name = meal.name,
@@ -43,7 +46,7 @@ fun toSimplifiedRestaurantMealOutput(
             //All RestaurantMeal info is only available when inserted on the database
             favorites = FavoritesOutput(
                     isFavorite = restaurantMealInfo?.isFavorite?.invoke(userId) ?: false,
-                    isFavorable = restaurantMealInfo?.isFavorable?.invoke(userId) ?: !isMealOwner
+                    isFavorable = restaurantMealInfo?.isFavorable?.invoke(userId) ?: defaultFavorable
             ),
             votes = restaurantMealInfo?.let {
                 toVotesOutput(
@@ -51,9 +54,9 @@ fun toSimplifiedRestaurantMealOutput(
                         votes = it.votes.value,
                         userVote = it.userVote(userId)
                 )
-            } ?: toDefaultVotesOutput(isVotable = isMealOwner),
+            } ?: toDefaultVotesOutput(isVotable = defaultVotable),
             isSuggested = !meal.isUserMeal(),
             isVerified = restaurantMealInfo?.isVerified ?: false,
-            isReportable = restaurantMealInfo?.isReportable?.invoke(userId) ?: !isMealOwner
+            isReportable = restaurantMealInfo?.isReportable?.invoke(userId) ?: defaultReportable
     )
 }

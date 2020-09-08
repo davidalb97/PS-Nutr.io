@@ -1,6 +1,7 @@
 package pt.ipl.isel.leic.ps.androidclient.ui.fragment
 
 import android.os.Bundle
+import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,8 +13,8 @@ import androidx.navigation.navGraphViewModels
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealItem
 import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.pick.MealItemPickRecyclerAdapter
-import pt.ipl.isel.leic.ps.androidclient.ui.modular.unit.IWeightUnitSpinner
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.pick.IPickedFlexBoxRecycler
+import pt.ipl.isel.leic.ps.androidclient.ui.modular.unit.IWeightUnitSpinner
 import pt.ipl.isel.leic.ps.androidclient.ui.util.Navigation
 import pt.ipl.isel.leic.ps.androidclient.ui.util.putNavigation
 import pt.ipl.isel.leic.ps.androidclient.ui.util.putParentNavigation
@@ -22,17 +23,19 @@ import pt.ipl.isel.leic.ps.androidclient.ui.util.units.WeightUnits
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.pick.MealItemPickViewModel
 
 
-abstract class BaseAddMealFragment : BaseFragment(), IWeightUnitSpinner, IPickedFlexBoxRecycler {
+abstract class BaseAddMealFragment : BaseViewModelFragment<MealItemPickViewModel>(),
+    IWeightUnitSpinner,
+    IPickedFlexBoxRecycler {
 
     protected abstract val nestedNavigation: Navigation
     protected abstract val toAddMealsActionNestedNavigation: Navigation
     protected abstract val backNestedActionNavigation: Navigation
 
     //Meals
+    override val vmClass = MealItemPickViewModel::class.java
     protected abstract val mealsRecyclerViewId: Int
-    protected lateinit var mealsViewModel: MealItemPickViewModel
     private val mealsRecyclerAdapter by lazy {
-        MealItemPickRecyclerAdapter(mealsViewModel, requireContext())
+        MealItemPickRecyclerAdapter(viewModel, requireContext())
     }
 
     override lateinit var currentWeightUnit: WeightUnits
@@ -59,9 +62,20 @@ abstract class BaseAddMealFragment : BaseFragment(), IWeightUnitSpinner, IPicked
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        //Restore as no VMProviderFactory is used
         val viewModelLazy: MealItemPickViewModel by navGraphViewModels(nestedNavigation.navId)
-        mealsViewModel = viewModelLazy
-        return super.onCreateView(inflater, container, savedInstanceState)
+        viewModel = viewModelLazy
+
+        if (savedInstanceState != null) {
+            log.v("Restoring state to navGraphViewModels (${MealItemPickViewModel::class.java.simpleName})")
+            val tag = MealItemPickViewModel::class.java.simpleName
+            val savedViewModel = savedInstanceState.getParcelable<MealItemPickViewModel>(tag)!!
+            viewModel.itemsChanged = savedViewModel.itemsChanged
+            viewModel.pickedLiveDataHandler.set(savedViewModel.pickedItems)
+        }
+        //Bypass ViewModel's creation
+        log.v("onCreateView() finished! Inflating...")
+        return inflate(inflater, container)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -77,8 +91,8 @@ abstract class BaseAddMealFragment : BaseFragment(), IWeightUnitSpinner, IPicked
     override fun onResume() {
         super.onResume()
 
-        if (mealsViewModel.itemsChanged) {
-            mealsViewModel.itemsChanged = false
+        if (viewModel.itemsChanged) {
+            viewModel.itemsChanged = false
             mealsRecyclerAdapter.notifyDataSetChanged()
         }
     }
@@ -99,7 +113,8 @@ abstract class BaseAddMealFragment : BaseFragment(), IWeightUnitSpinner, IPicked
     }
 
     private fun setupTotalIngredientsCarbsTextView(view: View) {
-        totalIngredientsCarbohydratesTextView = view.findViewById(totalIngredientsCarbohydratesTextViewId)
+        totalIngredientsCarbohydratesTextView =
+            view.findViewById(totalIngredientsCarbohydratesTextViewId)
         _currentIngredientCarbohydrates = countIngredientCarbohydrates()
         refreshIngredientCarbohydratesTextView()
     }
@@ -127,7 +142,7 @@ abstract class BaseAddMealFragment : BaseFragment(), IWeightUnitSpinner, IPicked
     }
 
     private fun countIngredientCarbohydrates(): Int =
-        mealsViewModel.pickedItems.sumBy { ingredient ->
+        viewModel.pickedItems.sumBy { ingredient ->
             ingredient.carbs
         }
 
@@ -141,7 +156,7 @@ abstract class BaseAddMealFragment : BaseFragment(), IWeightUnitSpinner, IPicked
     }
 
     protected fun countIngredientQuantity(): Float =
-        countIngredientQuantity(currentWeightUnit, mealsViewModel.pickedItems)
+        countIngredientQuantity(currentWeightUnit, viewModel.pickedItems)
 
     protected open fun setupIngredients(view: View) {
 
@@ -151,7 +166,7 @@ abstract class BaseAddMealFragment : BaseFragment(), IWeightUnitSpinner, IPicked
             view = view,
             recyclerViewId = mealsRecyclerViewId,
             adapter = mealsRecyclerAdapter,
-            pickerViewModel = mealsViewModel
+            pickerViewModel = viewModel
         ) {
             _currentIngredientCarbohydrates = countIngredientCarbohydrates()
             refreshIngredientCarbohydratesTextView()
@@ -159,11 +174,13 @@ abstract class BaseAddMealFragment : BaseFragment(), IWeightUnitSpinner, IPicked
             refreshIngredientQuantityTextView()
         }
 
-        mealsViewModel.tryRestore()
+        viewModel.tryRestore()
     }
 
     override fun onWeightUnitChange(converter: (Float) -> Float) {
         _currentIngredientQuantity = converter(_currentIngredientQuantity)
         refreshIngredientQuantityTextView()
     }
+
+    override fun getViewModels(): Iterable<Parcelable> = listOf(viewModel)
 }

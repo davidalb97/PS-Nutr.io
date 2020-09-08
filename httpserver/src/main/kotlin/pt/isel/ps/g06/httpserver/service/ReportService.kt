@@ -1,14 +1,14 @@
 package pt.isel.ps.g06.httpserver.service
 
 import org.springframework.stereotype.Service
-import pt.isel.ps.g06.httpserver.common.exception.problemJson.badRequest.InvalidInputException
-import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.BaseReportResponseMapper
-import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.ReportResponseMapper
-import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.ReportSubmissionDetailMapper
-import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.ReportedSubmissionResponseMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.REPORTABLE_TYPES
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.ReportDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.SubmissionDbRepository
+import pt.isel.ps.g06.httpserver.dataAccess.db.mapper.BaseReportModelMapper
+import pt.isel.ps.g06.httpserver.dataAccess.db.mapper.ReportModelMapper
+import pt.isel.ps.g06.httpserver.dataAccess.db.mapper.ReportSubmissionDetailMapper
+import pt.isel.ps.g06.httpserver.dataAccess.db.mapper.ReportedSubmissionModelMapper
+import pt.isel.ps.g06.httpserver.exception.problemJson.badRequest.InvalidInputException
 import pt.isel.ps.g06.httpserver.model.report.BaseReport
 import pt.isel.ps.g06.httpserver.model.report.ReportSubmissionDetail
 import pt.isel.ps.g06.httpserver.model.report.ReportedSubmission
@@ -20,9 +20,9 @@ class ReportService(
         val submissionDbRepository: SubmissionDbRepository
 ) {
 
-    val reportDbMapper = ReportResponseMapper()
-    val simpleReportDbMapper = ReportedSubmissionResponseMapper()
-    val detailedReportMapper = BaseReportResponseMapper()
+    val reportDbMapper = ReportModelMapper()
+    val simpleReportDbMapper = ReportedSubmissionModelMapper()
+    val detailedReportMapper = BaseReportModelMapper()
     val reportSubmissionDetailMapper = ReportSubmissionDetailMapper()
 
     /**

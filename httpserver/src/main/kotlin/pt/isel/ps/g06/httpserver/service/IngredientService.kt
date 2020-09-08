@@ -1,22 +1,23 @@
 package pt.isel.ps.g06.httpserver.service
 
 import org.springframework.stereotype.Service
-import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.restaurant.DbIngredientResponseMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.MealType
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.MealDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.input.meal.SuggestedMealInput
+import pt.isel.ps.g06.httpserver.dataAccess.input.meal.MealInput
+import pt.isel.ps.g06.httpserver.dataAccess.db.mapper.DbIngredientModelMapper
 import pt.isel.ps.g06.httpserver.model.MealIngredient
 
 @Service
 class IngredientService(
         private val mealDbRepository: MealDbRepository,
-        private val ingredientResponseMapper: DbIngredientResponseMapper
+        private val dbIngredientModelMapper: DbIngredientModelMapper
 ) {
 
     fun getIngredients(skip: Int?, count: Int?): Sequence<MealIngredient> {
         return mealDbRepository
                 .getAllIngredients(skip, count)
-                .map(ingredientResponseMapper::mapTo)
+                .map(dbIngredientModelMapper::mapTo)
     }
 
     fun insertSuggestedIngredient(submitterId: Int, mealIngredientInput: SuggestedMealInput): MealIngredient {
@@ -28,6 +29,6 @@ class IngredientService(
                         cuisines = mealIngredientInput.cuisines!!,
                         carbs = mealIngredientInput.carbs!!,
                         type = MealType.SUGGESTED_INGREDIENT
-                ).let(ingredientResponseMapper::mapTo)
+                ).let(dbIngredientModelMapper::mapTo)
     }
 }

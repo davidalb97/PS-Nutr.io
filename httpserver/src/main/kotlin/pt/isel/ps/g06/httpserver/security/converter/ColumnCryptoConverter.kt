@@ -1,38 +1,23 @@
 package pt.isel.ps.g06.httpserver.security.converter
 
 import org.springframework.stereotype.Component
-import pt.isel.ps.g06.httpserver.springConfig.InsulinProfilesSecret
+import pt.isel.ps.g06.httpserver.springConfig.bean.InsulinProfilesSecret
 import java.util.*
 import javax.crypto.Cipher
-import javax.crypto.spec.SecretKeySpec
-
-private const val ALGORITHM = "AES/ECB/PKCS5Padding"
-private const val AES = "AES"
 
 @Component
 class ColumnCryptoConverter(private val insulinProfilesSecret: InsulinProfilesSecret) {
 
     fun convertToDatabaseColumn(plainText: String?): String {
-        val key = SecretKeySpec(insulinProfilesSecret.secret.toByteArray(), AES)
-        try {
-            val cipher = Cipher.getInstance(ALGORITHM)
-            cipher.init(Cipher.ENCRYPT_MODE, key)
-            return encrypt(cipher, plainText)
-        } catch (e: Exception) {
-            throw RuntimeException(e)
-        }
+        val cipher = Cipher.getInstance(insulinProfilesSecret.transformation)
+        cipher.init(Cipher.ENCRYPT_MODE, insulinProfilesSecret.key)
+        return encrypt(cipher, plainText)
     }
 
     fun convertToEntityAttribute(encryptedText: String?): String {
-        val key = SecretKeySpec(insulinProfilesSecret.secret.toByteArray(), AES)
-
-        try {
-            val cipher = Cipher.getInstance(ALGORITHM)
-            cipher.init(Cipher.DECRYPT_MODE, key)
-            return decrypt(cipher, encryptedText)
-        } catch (e: Exception) {
-            throw RuntimeException(e)
-        }
+        val cipher = Cipher.getInstance(insulinProfilesSecret.transformation)
+        cipher.init(Cipher.DECRYPT_MODE, insulinProfilesSecret.key)
+        return decrypt(cipher, encryptedText)
     }
 
     private fun encrypt(cipher: Cipher, plainText: String?): String =
