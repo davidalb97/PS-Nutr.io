@@ -303,6 +303,30 @@ When a request is done with an outdated \textit{RestaurantIdentifier} (one that 
 identifier), the server always queries the database first under the submitter and API submission pair in order to ensure data consistency. This behavior
 can be observed in the \textit{RestaurantServiceTests} class.
 
+\subsection{Pagination}
+
+Some endpoints return lists to the clients, as such these endpoints should not return all the items available that are associated to them as it would
+overwhelm the clients and cause performance issues.\\
+
+To solve this issue, the group decided to implement a basic pagination mechanism, by implementing features in these layers:
+
+\subsubsection{Controller}
+
+For endpoints that have pagination, two optional query parameters where added: skip and count. These two, for most cases, have a
+default value which is used when the client does not specify these parameters. When a client specifies a skip and count, they also
+pass through a validation that checks if the parameters are valid according to the server rules:
+\begin{itemize}
+    \item The skip and count must not be a negative value.
+    \item The count must not be higher than the server maximum defined value: currently 40 items.
+\end{itemize}
+
+\subsubsection{DAO}
+
+The skip and count parameters are propagated until this layer and then the server ask the database for a specific page, using the
+PostgreSQL LIMIT and OFFSET keywords. The first one is equivalent to the count and specifies how many items should a page hold, the 
+second one acts differently from the tipical skip, as it only asks for how many objects should be skipped and not pages, to solve 
+this issue we only needed to multiply the skip by the count to get the right value and add it to the OFFSET parameter.
+
 \subsection{Spring Security}
 
 \subsubsection{JSON Web Tokens}
