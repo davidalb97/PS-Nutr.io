@@ -1,4 +1,4 @@
-package pt.isel.ps.g06.httpserver.common.interceptor
+package pt.isel.ps.g06.httpserver.exception
 
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity

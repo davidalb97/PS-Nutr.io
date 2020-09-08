@@ -1,4 +1,4 @@
-package pt.isel.ps.g06.httpserver.common.interceptor
+package pt.isel.ps.g06.httpserver.exception
 
 import org.postgresql.util.PSQLException
 import org.slf4j.LoggerFactory
