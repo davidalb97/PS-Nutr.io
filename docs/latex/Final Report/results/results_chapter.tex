@@ -215,53 +215,69 @@ imperative one. The following is an example of a typical database operation in o
     \end{center}
 \end{figure}
 
+\subsubsection{Avoiding multiple connections}
+
+Throughout a single HTTP request lifetime, multiple database accesses can be performed. This is done in order to avoid querying
+large quantities of data and then not needing it, and to support lazily acquired fields when building a model class.\\
+
+However, if we consider that the information for each field is obtained in its' own and new transactional context then this
+implementation can be performance heavy if we open multiple database connections as needed.\\
+
+In order to avoid this, each HTTP request holds a single database connection if needed and closes it when completed, as we
+can assume that no more database data is needed afterwards. This implementation is done by having every repository depend on
+a single instance of the \texttt{DatabaseContext} class which opens a connection handle when needed and stores it in a 
+\texttt{ThreadLocal} map, allowing for later removal by the \texttt{DatabaseCleanupInterceptor} interceptor.\\
+
+Given implementation avoids mentioned issues, however it also introduces new issues that need to be taken into consideration,
+such as only closing transactions when the interceptor is called - meaning that lengthy controller operations may lock database
+tuples for longer periods of time, depending on the used transactional isolation level;  or the fact that a handle is linked to
+a Thread identifier when created and deleted, so repositories calls must not be done under a different Thread than the interceptor one.\\
+
 \subsection{Fetching collections of data}
+
 When it comes to fetching collections of data (such as restaurants, meals, etc.) from either the database or an API, said data can be obtained
 and iterated in an \textbf{eager} approach or a \textbf{lazy} approach.\\
 
-In order to support a \textbf{lazy} approach using Java 8 Streams\cite{streams}, the following code structure was created:
+We decided to implement the fetching of data in a \textbf{lazy} manner using Kotlin's \textbf{Sequences} [ref] instead of Java 8
+\textbf{Streams}\cite{streams} due to their additional iterating operations, easier caching mechanisms (when compared to Streams)
+and finally improved performance when processing data, according to the documentation:\\
+
+"Sequences let you avoid building results of intermediate steps, therefore improving the performance of the whole collection processing chain."\\
+
+With that in consideration, the following sections describe in greater detail the code structure needed to lazily acquire data.\\
 
 \subsubsection{Database fetching}
 
-According to the JDBI documentation\cite{jdbi}, a query method supports the return of Streams:\\
+According to the JDBI documentation\cite{jdbi}, a query method supports the return of lazy
+collections using \textbf{Streams}, \textbf{ResultIterables} and \textbf{ResultIterators}:\\
 
-"\textbf{Stream} integration allows you to use a RowMapper to adapt a ResultSet into the new Java 8 Streams framework.
-As long as your database supports streaming results (for example, PostgreSQL will do it as long as you are in a transaction and set a fetch size),
-the stream will lazily fetch rows from the database as necessary."\\
+"Query methods may also return a ResultIterable\cite{resultiterable}, ResultIterator\cite{resultiterator}, or a Stream\cite{streams}."\\
 
-(...)\\
+"As long as your database supports streaming results (for example, PostgreSQL will do it as long as you are in a transaction and set a fetch size), the
+stream will lazily fetch rows from the database as necessary."\\
 
-"Query methods may also return a ResultIterable\cite{resultiterable}, ResultIterator\cite{resultiterator} or a Stream."\\
+Since no native support for Sequences exist, every DAO class returns a ResultIterable of data and calling repository is then responsible of mapping it to
+a Sequence via IterableUtils.asCachedSequence(), which also caches acquired values allowing for subsequent iterations.\\
 
-However, it also warns that:\\
+However, this approach is not enough on its' own as JDBI warns that:\\
 
-"\textit{ResultIterable}, \textit{ResultIterator} and \textit{Stream} methods do not play nice with on-demand SQL Objects.
-Unless the methods are called in a nested way, the returned object will already be closed."\\
+\texttt{ResultIterable}, \texttt{ResultIterator} and \texttt{Stream} methods do not play nice with on-demand SQL Objects. Unless the methods are called in a nested way, the
+returned object will already be closed.\\
 
-(...)\\
+Given the following, it is simply not enough to have every \textit{DAO} and Repository class return a lazy collection after a handle/transaction call,
+as the returned collection would be closed; so a solution was needed.\\
 
-"This stream must be closed to release any database resources held, so we recommend \textbf{useStream} \textbf{withStream}
-or alternately a \textbf{try-with-resources} block to ensure that no resources are leaked."\\
+An initial solution involved opening a connection handle to fetch a Sequence of data and closing said handle when a terminal operation is executed, meaning that all data was
+safely extracted and cached. This solution proved to not be programmer friendly and with dangerous pitfalls, and as such was discarded since nothing "forced" the programmer to
+perform a terminal operation which would lead to resource leakage.\\ 
 
-Given the following, it is simply not enough to have every \textit{DAO} and Repository class return a Stream when a collection
-of data is needed after a handle/transaction call, as the returned Stream would be closed; so a solution was needed.\\
+Another alternative is to wrap a repository call in a nested way, as the JDBI documentation suggests. This approach relies on leaking database logic and dependencies to Controller
+and/or Service classes, which goes against a clean dependency injection design and as such was also discarded.\\
 
-An initial solution involved opening a connection handle to fetch a Stream of data and closing it on Stream close requiring every
-repository method to explicitly invoke \textit{stream.onClose{handle.close()}} and then expect calling services and/or controllers to close
-returned Stream after iteration, either with a \textit{try-with-resources} block or via \textit{stream.close()}. This solution proved to not be programmer
-friendly and as such was discarded, as it introduced a lot of boilerplate code and pitfalls, since nothing "forced" the programmer to call mentioned
-methods and forgetting to do so would not release held database resources.\\
+Finally, the adopted solution ties perfectly with the issues and developed solutions mentioned previously in chapter \textbf{5.2.4 JDBI} regarding \textbf{"Avoiding multiple connections"}.
+If we assume that a Sequence and its' resources are no longer needed after the underlying HTTP request is closed, then having the \texttt{DatabaseCleanupInterceptor} class close the
+database connection avoids resource leakage when given sequences are not operated in a terminal way and having Controller and Service classes rely on database  related logic.
 
-Another possible solution, and the adopted one, is to automatically close the connection handle (assuming one was open during said request)
-\textit{after} an incoming HTTP request is completed using \textit{Spring's} interceptors, as we can safely assume that database Streams are no longer needed.\\
-
-This is done by having the interceptor \textit{DatabaseCleanupInterceptor} and every repository depend on a single instance of the \textit{DatabaseContext} class which opens a
-connection handle when needed and stores it in a \textit{ThreadLocal} map, allowing for later removal by the interceptor.\\
-
-Given implementation avoids mentioned issues of boilerplate code and pitfalls, however it also introduces new issues that need to be taken into consideration,
-such as only closing transactions when the interceptor is called - meaning that lengthy controller operations may lock database tuples for longer periods of time,
-depending on the used transactional isolation level;  or the fact that a handle is linked to a Thread identifier when created and deleted, so repositories calls must
-not be done under a different Thread than the interceptor one.
 
 \subsection{Request lifecycle}
 Each request is received in a spring controller mapping, with input object,
@@ -305,27 +321,29 @@ can be observed in the \textit{RestaurantServiceTests} class.
 
 \subsection{Pagination}
 
-Some endpoints return lists to the clients, as such these endpoints should not return all the items available that are associated to them as it would
-overwhelm the clients and cause performance issues.\\
+Some endpoints return lists to the clients, and as such these endpoints should not return all the items available that are associated
+to them in order to avoid the server from fetching big quantities of data, high transfer times of said data to the client and 
+high memory usage on the client side.\\
 
-To solve this issue, the group decided to implement a basic pagination mechanism, by implementing features in these layers:
+To solve this issue we decided to implement a basic pagination mechanism, by implementing features in the following layers:\\
 
 \subsubsection{Controller}
 
-For endpoints that have pagination, two optional query parameters where added: skip and count. These two, for most cases, have a
-default value which is used when the client does not specify these parameters. When a client specifies a skip and count, they also
-pass through a validation that checks if the parameters are valid according to the server rules:
+For endpoints that have pagination, two optional query parameters were added: skip and count. These two, for most cases, have a
+default value which is used when the client does not specify these parameters and, when they do, said values are also validated 
+according to the following constraints:
 \begin{itemize}
-    \item The skip and count must not be a negative value.
-    \item The count must not be higher than the server maximum defined value: currently 40 items.
+    \item Skip and count must not be negative;
+    \item Count must not be higher than the server maximum defined value: currently 40 items.
 \end{itemize}
 
 \subsubsection{DAO}
 
-The skip and count parameters are propagated until this layer and then the server ask the database for a specific page, using the
-PostgreSQL LIMIT and OFFSET keywords. The first one is equivalent to the count and specifies how many items should a page hold, the 
-second one acts differently from the tipical skip, as it only asks for how many objects should be skipped and not pages, to solve 
-this issue we only needed to multiply the skip by the count to get the right value and add it to the OFFSET parameter.
+Database pagination is achieved using PostgreSQL LIMIT and OFFSET keywords.\\
+
+The first one specifies how many items a result should hold and its' value is equal to count,
+while the second one represents how many objects should be skipped and as such, its' value is count
+parameter multipled by the skip parameter.\\
 
 \subsection{Spring Security}
 
