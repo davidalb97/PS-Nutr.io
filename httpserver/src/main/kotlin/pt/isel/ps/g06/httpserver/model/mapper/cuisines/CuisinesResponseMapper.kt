@@ -1,8 +1,8 @@
-package pt.isel.ps.g06.httpserver.dataAccess.model.mapper.cuisines
+package pt.isel.ps.g06.httpserver.model.mapper.cuisines
 
 import org.springframework.stereotype.Component
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbCuisineDto
-import pt.isel.ps.g06.httpserver.dataAccess.model.mapper.ResponseMapper
+import pt.isel.ps.g06.httpserver.model.mapper.ResponseMapper
 import pt.isel.ps.g06.httpserver.model.Cuisine
 
 @Component

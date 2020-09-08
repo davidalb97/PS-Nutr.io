@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service
 import pt.isel.ps.g06.httpserver.dataAccess.db.MealType
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.MealDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.input.meal.MealInput
-import pt.isel.ps.g06.httpserver.dataAccess.model.mapper.restaurant.DbIngredientResponseMapper
+import pt.isel.ps.g06.httpserver.model.mapper.restaurant.DbIngredientResponseMapper
 import pt.isel.ps.g06.httpserver.model.MealIngredient
 
 @Service

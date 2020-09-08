@@ -1,4 +1,4 @@
-package pt.isel.ps.g06.httpserver.dataAccess.model.mapper
+package pt.isel.ps.g06.httpserver.model.mapper
 
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbReportSubmissionDetailDto
 import pt.isel.ps.g06.httpserver.model.report.ReportSubmissionDetail

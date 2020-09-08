@@ -6,7 +6,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.repo.PortionDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.ReportDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.RestaurantMealDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.input.restaurantMeal.PortionInput
-import pt.isel.ps.g06.httpserver.dataAccess.model.mapper.restaurant.DbRestaurantMealInfoResponseMapper
+import pt.isel.ps.g06.httpserver.model.mapper.restaurant.DbRestaurantMealInfoResponseMapper
 import pt.isel.ps.g06.httpserver.exception.problemJson.badRequest.InvalidInputException
 import pt.isel.ps.g06.httpserver.exception.problemJson.conflict.DuplicateMealException
 import pt.isel.ps.g06.httpserver.exception.problemJson.forbidden.NotSubmissionOwnerException

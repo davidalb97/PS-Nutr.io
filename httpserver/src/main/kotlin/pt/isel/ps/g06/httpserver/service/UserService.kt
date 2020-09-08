@@ -9,8 +9,8 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.repo.InsulinProfileDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.SubmitterDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.UserDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.input.moderation.BanInput
-import pt.isel.ps.g06.httpserver.dataAccess.model.mapper.UserResponseMapper
-import pt.isel.ps.g06.httpserver.dataAccess.model.mapper.submitter.SubmitterResponseMapper
+import pt.isel.ps.g06.httpserver.model.mapper.UserResponseMapper
+import pt.isel.ps.g06.httpserver.model.mapper.submitter.SubmitterResponseMapper
 import pt.isel.ps.g06.httpserver.exception.problemJson.forbidden.BaseForbiddenException
 import pt.isel.ps.g06.httpserver.exception.problemJson.unauthorized.UnauthorizedException
 import pt.isel.ps.g06.httpserver.model.Submitter

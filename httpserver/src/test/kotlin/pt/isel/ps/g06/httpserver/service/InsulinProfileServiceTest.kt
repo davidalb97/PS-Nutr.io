@@ -8,7 +8,7 @@ import org.mockito.Mockito.*
 import pt.isel.ps.g06.httpserver.anyNonNull
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbUserInsulinProfileDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.InsulinProfileDbRepository
-import pt.isel.ps.g06.httpserver.dataAccess.model.mapper.InsulinProfileResponseMapper
+import pt.isel.ps.g06.httpserver.model.mapper.InsulinProfileResponseMapper
 import pt.isel.ps.g06.httpserver.exception.problemJson.badRequest.InvalidInsulinProfileTimesException
 import pt.isel.ps.g06.httpserver.exception.problemJson.badRequest.OverlappingInsulinProfilesException
 import pt.isel.ps.g06.httpserver.model.InsulinProfile

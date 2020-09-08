@@ -1,12 +1,12 @@
-package pt.isel.ps.g06.httpserver.dataAccess.model.mapper.restaurant
+package pt.isel.ps.g06.httpserver.model.mapper.restaurant
 
 import org.springframework.stereotype.Component
 import pt.isel.ps.g06.httpserver.dataAccess.db.MealType
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbMealDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.*
-import pt.isel.ps.g06.httpserver.dataAccess.model.mapper.ResponseMapper
-import pt.isel.ps.g06.httpserver.dataAccess.model.mapper.food.DbNutritionalValuesResponseMapper
-import pt.isel.ps.g06.httpserver.dataAccess.model.mapper.submitter.DbSubmitterResponseMapper
+import pt.isel.ps.g06.httpserver.model.mapper.ResponseMapper
+import pt.isel.ps.g06.httpserver.model.mapper.food.DbNutritionalValuesResponseMapper
+import pt.isel.ps.g06.httpserver.model.mapper.submitter.DbSubmitterResponseMapper
 import pt.isel.ps.g06.httpserver.model.Meal
 import pt.isel.ps.g06.httpserver.model.MealComposition
 import pt.isel.ps.g06.httpserver.model.modular.toUserPredicate

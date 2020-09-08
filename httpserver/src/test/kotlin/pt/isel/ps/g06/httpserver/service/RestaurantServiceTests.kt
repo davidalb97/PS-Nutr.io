@@ -13,8 +13,8 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbRestaurantDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.FavoriteDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.ReportDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.RestaurantDbRepository
-import pt.isel.ps.g06.httpserver.dataAccess.model.mapper.restaurant.DbRestaurantResponseMapper
-import pt.isel.ps.g06.httpserver.dataAccess.model.mapper.restaurant.RestaurantResponseMapper
+import pt.isel.ps.g06.httpserver.model.mapper.restaurant.DbRestaurantResponseMapper
+import pt.isel.ps.g06.httpserver.model.mapper.restaurant.RestaurantResponseMapper
 import pt.isel.ps.g06.httpserver.model.restaurant.Restaurant
 import pt.isel.ps.g06.httpserver.model.restaurant.RestaurantIdentifier
 

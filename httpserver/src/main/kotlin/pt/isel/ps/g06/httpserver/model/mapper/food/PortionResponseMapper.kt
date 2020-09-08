@@ -1,8 +1,8 @@
-package pt.isel.ps.g06.httpserver.dataAccess.model.mapper.food
+package pt.isel.ps.g06.httpserver.model.mapper.food
 
 import org.springframework.stereotype.Component
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbPortionDto
-import pt.isel.ps.g06.httpserver.dataAccess.model.mapper.ResponseMapper
+import pt.isel.ps.g06.httpserver.model.mapper.ResponseMapper
 import pt.isel.ps.g06.httpserver.model.Portion
 
 @Component

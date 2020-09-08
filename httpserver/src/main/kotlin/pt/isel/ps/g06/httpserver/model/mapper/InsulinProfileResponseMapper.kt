@@ -1,4 +1,4 @@
-package pt.isel.ps.g06.httpserver.dataAccess.model.mapper
+package pt.isel.ps.g06.httpserver.model.mapper
 
 import org.springframework.stereotype.Component
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbUserInsulinProfileDto

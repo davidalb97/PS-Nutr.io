@@ -4,10 +4,10 @@ import org.springframework.stereotype.Service
 import pt.isel.ps.g06.httpserver.dataAccess.db.REPORTABLE_TYPES
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.ReportDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.SubmissionDbRepository
-import pt.isel.ps.g06.httpserver.dataAccess.model.mapper.BaseReportResponseMapper
-import pt.isel.ps.g06.httpserver.dataAccess.model.mapper.ReportResponseMapper
-import pt.isel.ps.g06.httpserver.dataAccess.model.mapper.ReportSubmissionDetailMapper
-import pt.isel.ps.g06.httpserver.dataAccess.model.mapper.ReportedSubmissionResponseMapper
+import pt.isel.ps.g06.httpserver.model.mapper.BaseReportResponseMapper
+import pt.isel.ps.g06.httpserver.model.mapper.ReportResponseMapper
+import pt.isel.ps.g06.httpserver.model.mapper.ReportSubmissionDetailMapper
+import pt.isel.ps.g06.httpserver.model.mapper.ReportedSubmissionResponseMapper
 import pt.isel.ps.g06.httpserver.exception.problemJson.badRequest.InvalidInputException
 import pt.isel.ps.g06.httpserver.model.report.BaseReport
 import pt.isel.ps.g06.httpserver.model.report.ReportSubmissionDetail

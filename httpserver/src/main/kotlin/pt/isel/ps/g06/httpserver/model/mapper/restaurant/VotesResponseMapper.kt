@@ -1,8 +1,8 @@
-package pt.isel.ps.g06.httpserver.dataAccess.model.mapper.restaurant
+package pt.isel.ps.g06.httpserver.model.mapper.restaurant
 
 import org.springframework.stereotype.Component
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbVotesDto
-import pt.isel.ps.g06.httpserver.dataAccess.model.mapper.ResponseMapper
+import pt.isel.ps.g06.httpserver.model.mapper.ResponseMapper
 import pt.isel.ps.g06.httpserver.model.Votes
 
 @Component
