@@ -265,7 +265,7 @@ class MealDbRepository(
      */
     fun deleteCustomMeal(mealId: Int, submitterId: Int) {
         return databaseContext.inTransaction {
-            submissionDbRepository.requireSubmissionOwner(mealId, mealId)
+            submissionDbRepository.requireSubmissionOwner(mealId, submitterId)
             submissionDbRepository.requireSubmissionType(mealId, SubmissionType.MEAL)
 
             val meal = it.attach(MealDao::class.java).getById(mealId)!!
