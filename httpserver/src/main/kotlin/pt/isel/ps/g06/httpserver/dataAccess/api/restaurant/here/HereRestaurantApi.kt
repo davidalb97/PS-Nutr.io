@@ -47,7 +47,7 @@ class HereRestaurantApi(
             count: Int
     ): Sequence<RestaurantDto> {
         val apiCount = if (skip == null || skip == 0) count else count.plus(count.times(skip))
-        if(apiCount <= MAX_HERE_ITEMS) {
+        if(apiCount > MAX_HERE_ITEMS) {
             return emptySequence()
         }
         return sequence {
