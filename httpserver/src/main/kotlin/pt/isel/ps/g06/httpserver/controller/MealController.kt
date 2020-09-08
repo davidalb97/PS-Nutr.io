@@ -13,6 +13,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.output.meal.DetailedMealOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.meal.SimplifiedMealContainer
 import pt.isel.ps.g06.httpserver.dataAccess.output.meal.toDetailedMealOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.meal.toSimplifiedMealContainer
+import pt.isel.ps.g06.httpserver.exception.problemJson.badRequest.CannotDeletePublicSubmissionException
 import pt.isel.ps.g06.httpserver.exception.problemJson.forbidden.NotSubmissionOwnerException
 import pt.isel.ps.g06.httpserver.exception.problemJson.notFound.MealNotFoundException
 import pt.isel.ps.g06.httpserver.model.User
@@ -131,8 +132,15 @@ class MealController(
     ): ResponseEntity<Void> {
         val meal = mealService.getMeal(mealId) ?: throw MealNotFoundException()
 
-        if (meal.isMealOwner(user)) {
-            throw NotSubmissionOwnerException()
+        if (user.userRole != MOD_USER) {
+            if(!meal.isMealOwner(user)) {
+                throw NotSubmissionOwnerException()
+            }
+            //TODO replace with meal.isDeletable (send to output also to avoid this wrong request in the first place)
+            val restaurantMeals = restaurantMealService.getRestaurantMealsByMealId(mealId)
+            if(restaurantMeals.toList().isNotEmpty()) {
+                throw CannotDeletePublicSubmissionException()
+            }
         }
 
         submissionService.deleteSubmission(meal.identifier, user)

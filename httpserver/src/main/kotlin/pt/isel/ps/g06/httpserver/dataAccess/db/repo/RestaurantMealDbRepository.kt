@@ -20,6 +20,15 @@ class RestaurantMealDbRepository(
         private val restaurantDbRepository: RestaurantDbRepository,
         private val mealDbRepository: MealDbRepository
 ) {
+    fun getRestaurantMealsByMealId(mealId: Int): Sequence<DbRestaurantMealDto> {
+        return databaseContext.inTransaction {
+            return@inTransaction it
+                    .attach(restaurantMealDao)
+                    .getAllByMealId(mealId)
+                    .asCachedSequence()
+        }
+    }
+
     fun getRestaurantMeal(restaurantId: Int, mealId: Int): DbRestaurantMealDto? {
         return databaseContext.inTransaction {
             return@inTransaction it
