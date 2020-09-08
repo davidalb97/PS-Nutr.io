@@ -1,16 +1,14 @@
 package pt.isel.ps.g06.httpserver.dataAccess.db.repo
 
-import org.jdbi.v3.core.result.ResultIterable
 import org.jdbi.v3.core.transaction.TransactionIsolationLevel
 import org.springframework.stereotype.Repository
-import pt.isel.ps.g06.httpserver.common.exception.problemJson.badRequest.SubmissionNotFavorableException
-import pt.isel.ps.g06.httpserver.common.exception.problemJson.notFound.SubmissionNotFoundException
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionContractType
 import pt.isel.ps.g06.httpserver.dataAccess.db.common.DatabaseContext
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.FavoriteDao
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.SubmissionContractDao
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.SubmissionDao
-import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbSubmissionDto
+import pt.isel.ps.g06.httpserver.exception.problemJson.badRequest.SubmissionNotFavorableException
+import pt.isel.ps.g06.httpserver.exception.problemJson.notFound.SubmissionNotFoundException
 import pt.isel.ps.g06.httpserver.util.asCachedSequence
 
 @Repository

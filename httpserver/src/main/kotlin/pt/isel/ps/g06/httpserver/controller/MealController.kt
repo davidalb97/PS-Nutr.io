@@ -6,8 +6,6 @@ import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.util.UriComponentsBuilder
 import pt.isel.ps.g06.httpserver.common.*
-import pt.isel.ps.g06.httpserver.common.exception.problemJson.forbidden.NotSubmissionOwnerException
-import pt.isel.ps.g06.httpserver.common.exception.problemJson.notFound.MealNotFoundException
 import pt.isel.ps.g06.httpserver.dataAccess.db.MealType
 import pt.isel.ps.g06.httpserver.dataAccess.input.meal.MealInput
 import pt.isel.ps.g06.httpserver.dataAccess.input.userActions.FavoriteInput
@@ -15,6 +13,8 @@ import pt.isel.ps.g06.httpserver.dataAccess.output.meal.DetailedMealOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.meal.SimplifiedMealContainer
 import pt.isel.ps.g06.httpserver.dataAccess.output.meal.toDetailedMealOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.meal.toSimplifiedMealContainer
+import pt.isel.ps.g06.httpserver.exception.problemJson.forbidden.NotSubmissionOwnerException
+import pt.isel.ps.g06.httpserver.exception.problemJson.notFound.MealNotFoundException
 import pt.isel.ps.g06.httpserver.model.User
 import pt.isel.ps.g06.httpserver.service.MealService
 import pt.isel.ps.g06.httpserver.service.RestaurantMealService

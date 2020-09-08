@@ -15,14 +15,9 @@ class ColumnCryptoConverter(private val insulinProfilesSecret: InsulinProfilesSe
     }
 
     fun convertToEntityAttribute(encryptedText: String?): String {
-
-        try {
-            val cipher = Cipher.getInstance(insulinProfilesSecret.transformation)
-            cipher.init(Cipher.DECRYPT_MODE, insulinProfilesSecret.key)
-            return decrypt(cipher, encryptedText)
-        } catch (e: Exception) {
-            throw RuntimeException(e)
-        }
+        val cipher = Cipher.getInstance(insulinProfilesSecret.transformation)
+        cipher.init(Cipher.DECRYPT_MODE, insulinProfilesSecret.key)
+        return decrypt(cipher, encryptedText)
     }
 
     private fun encrypt(cipher: Cipher, plainText: String?): String =
