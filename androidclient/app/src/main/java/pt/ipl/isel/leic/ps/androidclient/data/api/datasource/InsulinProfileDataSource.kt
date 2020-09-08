@@ -57,6 +57,7 @@ class InsulinProfileDataSource(
     fun postInsulinProfile(
         insulinProfileOutput: InsulinProfileOutput,
         jwt: String,
+        onSuccess: () -> Unit,
         onError: (VolleyError) -> Unit
     ) {
         requestParser.request(
@@ -71,13 +72,14 @@ class InsulinProfileDataSource(
             reqHeader = buildAuthHeader(jwt),
             reqPayload = insulinProfileOutput,
             onError = onError,
-            responseConsumer = {}
+            responseConsumer = { onSuccess() }
         )
     }
 
     fun deleteInsulinProfile(
         profileName: String,
         jwt: String,
+        onSuccess: () -> Unit,
         onError: (VolleyError) -> Unit
     ) {
         requestParser.request(
@@ -93,7 +95,7 @@ class InsulinProfileDataSource(
             buildAuthHeader(jwt),
             null,
             onError = onError,
-            responseConsumer = {}
+            responseConsumer = { onSuccess() }
         )
     }
 }

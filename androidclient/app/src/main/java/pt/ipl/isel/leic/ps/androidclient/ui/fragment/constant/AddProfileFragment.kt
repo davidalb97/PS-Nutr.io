@@ -143,10 +143,13 @@ class AddProfileFragment : BaseViewModelFragment<InsulinProfilesListViewModel>()
                     Toast.LENGTH_LONG
                 ).show()
             } else {
-                viewModel
-                    .addDbInsulinProfile(profile, getUserSession())
-                    .setOnPostExecute { parentFragmentManager.popBackStack() }
-                    .execute()
+                viewModel.addDbInsulinProfile(profile, onError = {
+                    log.e(it)
+                    Toast.makeText(app, R.string.insulin_profile_add_fail, Toast.LENGTH_SHORT)
+                        .show()
+                }) {
+                    parentFragmentManager.popBackStack()
+                }
             }
         }
     }

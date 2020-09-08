@@ -5,7 +5,6 @@ import android.view.View
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.InsulinProfile
 import pt.ipl.isel.leic.ps.androidclient.ui.util.Navigation
-import pt.ipl.isel.leic.ps.androidclient.ui.util.getUserSession
 import pt.ipl.isel.leic.ps.androidclient.ui.viewholder.InsulinProfileRecyclerViewHolder
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.InsulinProfilesListViewModel
 
@@ -28,10 +27,11 @@ class InsulinProfileRecyclerAdapter(
             ctx = ctx
         ) {
             override fun onDelete(onSuccess: () -> Unit, onError: (Throwable) -> Unit) {
-                viewModel.deleteItem(item.profileName, getUserSession())
-                    .setOnPostExecute {
-                        onSuccess()
-                    }.execute()
+                viewModel.deleteItem(
+                    insulinProfile = item,
+                    onSuccess = onSuccess,
+                    onError = onError
+                )
             }
         }
     }
