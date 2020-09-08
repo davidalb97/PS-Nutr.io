@@ -3,8 +3,8 @@ package pt.isel.ps.g06.httpserver.springConfig
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import pt.isel.ps.g06.httpserver.common.exception.server.InvalidSecretEnvVariableException
-import pt.isel.ps.g06.httpserver.common.exception.server.SecretEnvVariableNotSetupException
+import pt.isel.ps.g06.httpserver.exception.server.InvalidSecretEnvVariableException
+import pt.isel.ps.g06.httpserver.exception.server.SecretEnvVariableNotSetupException
 import pt.isel.ps.g06.httpserver.springConfig.bean.InsulinProfilesSecret
 import pt.isel.ps.g06.httpserver.springConfig.dto.InsulinProfilesConfigDto
 import java.security.InvalidKeyException

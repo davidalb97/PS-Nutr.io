@@ -1,4 +1,4 @@
-package pt.isel.ps.g06.httpserver.common.exception.server
+package pt.isel.ps.g06.httpserver.exception.server
 
 import java.security.InvalidKeyException
 
