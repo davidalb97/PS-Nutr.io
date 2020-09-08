@@ -86,7 +86,7 @@ function setupRequest({
     body
 }) {
     let result = {
-        url: `baseApiUri`.concat(url),
+        url: baseApiUri.concat(url),
         requestInit: {
             headers: {
                 'Content-Type': contentType || 'application/json',
