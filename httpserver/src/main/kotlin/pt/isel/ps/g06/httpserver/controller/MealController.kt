@@ -130,12 +130,14 @@ class MealController(
             @PathVariable(MEAL_ID_VALUE) mealId: Int,
             user: User
     ): ResponseEntity<Void> {
-        val meal = mealService.getMeal(mealId) ?: throw MealNotFoundException()
+
 
         if (user.userRole != MOD_USER) {
+            //Meal existence asserted on repo
             mealService.deleteCustomMealById(mealId, user.identifier)
         }
 
+        val meal = mealService.getMeal(mealId) ?: throw MealNotFoundException()
         submissionService.deleteSubmission(meal.identifier, user)
 
         return ResponseEntity
