@@ -5,10 +5,6 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.util.UriComponentsBuilder
 import pt.isel.ps.g06.httpserver.common.*
-import pt.isel.ps.g06.httpserver.common.exception.problemJson.badRequest.InvalidInputException
-import pt.isel.ps.g06.httpserver.common.exception.problemJson.forbidden.BaseForbiddenException
-import pt.isel.ps.g06.httpserver.common.exception.problemJson.notFound.MealNotFoundException
-import pt.isel.ps.g06.httpserver.common.exception.problemJson.notFound.RestaurantNotFoundException
 import pt.isel.ps.g06.httpserver.dataAccess.db.MealType
 import pt.isel.ps.g06.httpserver.dataAccess.input.moderation.VerifyInput
 import pt.isel.ps.g06.httpserver.dataAccess.input.restaurantMeal.PortionInput
@@ -20,6 +16,10 @@ import pt.isel.ps.g06.httpserver.dataAccess.output.restaurantMeal.DetailedRestau
 import pt.isel.ps.g06.httpserver.dataAccess.output.restaurantMeal.RestaurantMealsContainerOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.restaurantMeal.toDetailedRestaurantMealOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.restaurantMeal.toRestaurantMealsContainerOutput
+import pt.isel.ps.g06.httpserver.exception.problemJson.badRequest.InvalidInputException
+import pt.isel.ps.g06.httpserver.exception.problemJson.forbidden.BaseForbiddenException
+import pt.isel.ps.g06.httpserver.exception.problemJson.notFound.MealNotFoundException
+import pt.isel.ps.g06.httpserver.exception.problemJson.notFound.RestaurantNotFoundException
 import pt.isel.ps.g06.httpserver.model.User
 import pt.isel.ps.g06.httpserver.model.restaurant.RestaurantIdentifier
 import pt.isel.ps.g06.httpserver.service.MealService

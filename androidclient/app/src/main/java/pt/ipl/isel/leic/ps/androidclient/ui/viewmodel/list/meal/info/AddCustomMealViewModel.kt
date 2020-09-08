@@ -38,12 +38,6 @@ class AddCustomMealViewModel: MealInfoViewModel {
         ingredientActions = emptyList()
     )
 
-    override fun update() {
-        if(mealItem != null) {
-            super.update()
-        }
-    }
-
     fun addCustomMeal(customMeal: CustomMeal, error: (Throwable) -> Unit, success: () -> Unit) =
         mealRepository.addCustomMeal(
             customMeal = customMeal,

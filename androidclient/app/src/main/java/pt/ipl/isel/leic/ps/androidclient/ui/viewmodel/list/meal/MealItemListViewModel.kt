@@ -30,56 +30,54 @@ open class MealItemListViewModel : BaseMealListViewModel<MealItem> {
 
     constructor(parcel: Parcel) : super(parcel)
 
-    override fun update() {
-        if (!super.tryRestore()) {
-            when (source) {
-                Source.API -> {
-                    val restaurantId = restaurantId
-                    if (restaurantId != null) {
-                        mealRepository.getRestaurantMealItems(
-                            restaurantId = restaurantId,
-                            count = count,
-                            skip = skip,
-                            userSession = getUserSession(),
-                            success = liveDataHandler::add,
-                            error = onError
-                        )
-                    } else {
-                        mealRepository.getMealItems(
-                            count = count,
-                            skip = skip,
-                            cuisines = cuisines,
-                            userSession = getUserSession(),
-                            success = liveDataHandler::add,
-                            error = onError
-                        )
-                    }
+    override fun fetch() {
+        when (source) {
+            Source.API -> {
+                val restaurantId = restaurantId
+                if (restaurantId != null) {
+                    mealRepository.getRestaurantMealItems(
+                        restaurantId = restaurantId,
+                        count = count,
+                        skip = skip,
+                        userSession = getUserSession(),
+                        success = liveDataHandler::add,
+                        error = onError
+                    )
+                } else {
+                    mealRepository.getMealItems(
+                        count = count,
+                        skip = skip,
+                        cuisines = cuisines,
+                        userSession = getUserSession(),
+                        success = liveDataHandler::add,
+                        error = onError
+                    )
                 }
-                Source.FAVORITE_MEAL -> mealRepository.getFavoriteMeals(
-                    userSession = requireUserSession(),
-                    count = count,
-                    skip = skip,
-                    success = liveDataHandler::add,
-                    error = onError
-                )
-                Source.FAVORITE_RESTAURANT_MEAL -> mealRepository.getFavoriteRestaurantMeals(
-                    userSession = requireUserSession(),
-                    count = count,
-                    skip = skip,
-                    success = liveDataHandler::add,
-                    error = onError
-                )
-                Source.CUSTOM_MEAL -> mealRepository.getCustomMeals(
-                    userSession = requireUserSession(),
-                    count = count,
-                    skip = skip,
-                    success = liveDataHandler::add,
-                    error = onError
-                )
-                else -> fetchDbInfoBySource(requireNotNull(source) {
-                    "Cannot meal items from db without a source!"
-                })
             }
+            Source.FAVORITE_MEAL -> mealRepository.getFavoriteMeals(
+                userSession = requireUserSession(),
+                count = count,
+                skip = skip,
+                success = liveDataHandler::add,
+                error = onError
+            )
+            Source.FAVORITE_RESTAURANT_MEAL -> mealRepository.getFavoriteRestaurantMeals(
+                userSession = requireUserSession(),
+                count = count,
+                skip = skip,
+                success = liveDataHandler::add,
+                error = onError
+            )
+            Source.CUSTOM_MEAL -> mealRepository.getCustomMeals(
+                userSession = requireUserSession(),
+                count = count,
+                skip = skip,
+                success = liveDataHandler::add,
+                error = onError
+            )
+            else -> fetchDbInfoBySource(requireNotNull(source) {
+                "Cannot meal items from db without a source!"
+            })
         }
     }
 

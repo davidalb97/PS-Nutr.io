@@ -15,3 +15,5 @@ inline fun <reified T> anyNonNull(): T = Mockito.any(T::class.java)
  * not nullable.
  */
 private fun <T> anyNonNull(type: Class<T>): T = Mockito.any(type)
+
+inline fun <reified T : Any> parameterizedMock() = Mockito.mock(T::class.java)

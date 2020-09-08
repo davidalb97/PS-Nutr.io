@@ -1,8 +1,8 @@
 package pt.ipl.isel.leic.ps.androidclient.ui.fragment.create
 
-import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,9 +18,9 @@ import pt.ipl.isel.leic.ps.androidclient.ui.fragment.BaseAddMealFragment
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.IRequiredTextInput
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.pick.IRemainingPickSpinner
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.AddCustomMealRecyclerVMProviderFactory
-import pt.ipl.isel.leic.ps.androidclient.ui.util.prompt.MealAmountSelector
 import pt.ipl.isel.leic.ps.androidclient.ui.util.Navigation
 import pt.ipl.isel.leic.ps.androidclient.ui.util.getDbId
+import pt.ipl.isel.leic.ps.androidclient.ui.util.prompt.MealAmountSelector
 import pt.ipl.isel.leic.ps.androidclient.ui.util.units.DEFAULT_WEIGHT_UNIT
 import pt.ipl.isel.leic.ps.androidclient.ui.util.units.WeightUnits
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.meal.info.AddCustomMealViewModel
@@ -30,7 +30,9 @@ import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.pick.CuisinePickViewM
 class AddCustomMealFragment : BaseAddMealFragment(), IRemainingPickSpinner, IRequiredTextInput {
 
     //All data
-    private lateinit var viewModel: AddCustomMealViewModel
+    override val layout = R.layout.add_custom_meal
+    override val vMProviderFactorySupplier = ::AddCustomMealRecyclerVMProviderFactory
+    private lateinit var addViewModel: AddCustomMealViewModel
 
     //Cuisines
     private val cuisinesRecyclerViewId: Int = R.id.custom_meal_cuisines_list
@@ -59,41 +61,38 @@ class AddCustomMealFragment : BaseAddMealFragment(), IRemainingPickSpinner, IReq
     override val totalIngredientsWeightTextViewId: Int = R.id.total_ingredient_amount
     override val totalIngredientsCarbohydratesTextViewId: Int = R.id.total_ingredient_carbs
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        viewModel = buildViewModel(savedInstanceState, AddCustomMealViewModel::class.java)
+        addViewModel = buildViewModel(savedInstanceState, AddCustomMealViewModel::class.java)
         cuisinesViewModel = buildViewModel(savedInstanceState, CuisinePickViewModel::class.java)
+        //Build super's viewModel (selected meals)
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         //If it is editing meal and it is not the first time loading the fragment
-        if (viewModel.mealItem != null && viewModel.mealInfo == null) {
-            viewModel.observeInfo(this) { editMeal ->
-                viewModel.removeObservers(this)
+        if (addViewModel.mealItem != null && addViewModel.mealInfo == null) {
+            addViewModel.observeInfo(this) { editMeal ->
+                addViewModel.removeObservers(this)
 
                 //Restore name
-                viewModel.currentName = editMeal.name
+                addViewModel.currentName = editMeal.name
 
                 //Restore unit
-                viewModel.currentWeightUnits = editMeal.unit
+                addViewModel.currentWeightUnits = editMeal.unit
 
                 //Restore image
-                viewModel.currentImg = editMeal.imageUri?.toString()
+                addViewModel.currentImg = editMeal.imageUri?.toString()
 
                 //Restore ingredients
                 val ingredients = editMeal.ingredientComponents.plus(editMeal.mealComponents)
-                mealsViewModel.pickedLiveDataHandler.restoreFromValues(ingredients)
+                viewModel.pickedLiveDataHandler.restoreFromValues(ingredients)
 
                 //Restore additional meal amount
-                viewModel.currentAdditionalAmount = editMeal.amount - countIngredientQuantity(
+                addViewModel.currentAdditionalAmount = editMeal.amount - countIngredientQuantity(
                     editMeal.unit,
                     ingredients
                 )
@@ -103,7 +102,7 @@ class AddCustomMealFragment : BaseAddMealFragment(), IRemainingPickSpinner, IReq
 
                 setupView(view, savedInstanceState)
             }
-            viewModel.update()
+            viewModel.setupList()
         } else setupView(view, savedInstanceState)
     }
 
@@ -114,12 +113,12 @@ class AddCustomMealFragment : BaseAddMealFragment(), IRemainingPickSpinner, IReq
         setupSubmit(view)
 
         mMealNameEditText = view.findViewById(R.id.meal_name)
-        mMealNameEditText.setText(viewModel.currentName)
+        mMealNameEditText.setText(addViewModel.currentName)
 
         setupAdditionalAmount(view)
 
         imageUrlEditText = view.findViewById(R.id.custom_meal_image_url)
-        imageUrlEditText.setText(viewModel.currentImg)
+        imageUrlEditText.setText(addViewModel.currentImg)
     }
 
     private fun setupAdditionalAmount(view: View) {
@@ -133,12 +132,12 @@ class AddCustomMealFragment : BaseAddMealFragment(), IRemainingPickSpinner, IReq
                 baseCarbs = 0.0F,
                 baseAmountGrams = currentWeightUnit.convert(
                     WeightUnits.GRAMS,
-                    viewModel.currentAdditionalAmount
+                    addViewModel.currentAdditionalAmount
                 ),
                 mealUnit = currentWeightUnit,
                 hideCarbs = true
             ) { amountGrams: Float, _: Float ->
-                viewModel.currentAdditionalAmount = DEFAULT_WEIGHT_UNIT.convert(
+                addViewModel.currentAdditionalAmount = DEFAULT_WEIGHT_UNIT.convert(
                     targetUnit = currentWeightUnit,
                     value = amountGrams
                 )
@@ -151,10 +150,10 @@ class AddCustomMealFragment : BaseAddMealFragment(), IRemainingPickSpinner, IReq
     private fun refreshAdditionalAmount() {
         additionalAmountTextView.text = String.format(
             getString(R.string.custom_meal_additional_quantity),
-            viewModel.currentAdditionalAmount
+            addViewModel.currentAdditionalAmount
         )
         addAdditionalAmountTextView.text = getString(
-            if (viewModel.currentAdditionalAmount != 0.0F)
+            if (addViewModel.currentAdditionalAmount != 0.0F)
                 R.string.edit_amount
             else R.string.add_amount
         )
@@ -176,7 +175,7 @@ class AddCustomMealFragment : BaseAddMealFragment(), IRemainingPickSpinner, IReq
             adapter = cuisinesSpinnerAdapter,
             pickerViewModel = cuisinesViewModel
         )
-        cuisinesViewModel.update()
+        cuisinesViewModel.setupList()
     }
 
     private fun setupSubmit(view: View) {
@@ -186,15 +185,15 @@ class AddCustomMealFragment : BaseAddMealFragment(), IRemainingPickSpinner, IReq
                 return@setOnClickListener
             }
             val customMeal = getCurrentCustomMeal()
-            val editMeal = viewModel.mealItem
+            val editMeal = addViewModel.mealItem
             if (editMeal == null) {
-                viewModel.addCustomMeal(
+                addViewModel.addCustomMeal(
                     customMeal = customMeal,
                     error = ::onSubmitError,
                     success = ::onCreateSuccess
                 )
             } else {
-                viewModel.editCustomMeal(
+                addViewModel.editCustomMeal(
                     submission = requireNotNull(editMeal.submissionId),
                     customMeal = customMeal,
                     error = ::onSubmitError,
@@ -232,7 +231,7 @@ class AddCustomMealFragment : BaseAddMealFragment(), IRemainingPickSpinner, IReq
             ).show()
             return false
         }
-        if (mealsViewModel.pickedItems.isEmpty()) {
+        if (viewModel.pickedItems.isEmpty()) {
             Toast.makeText(
                 app,
                 getString(R.string.select_ingredients),
@@ -244,15 +243,15 @@ class AddCustomMealFragment : BaseAddMealFragment(), IRemainingPickSpinner, IReq
     }
 
     private fun getCurrentCustomMeal(): CustomMeal {
-        val ingredients = mealsViewModel.pickedItems.map(::toMealIngredient)
+        val ingredients = viewModel.pickedItems.map(::toMealIngredient)
         return CustomMeal(
-            dbId = viewModel.mealItem?.dbId,
-            submissionId = viewModel.mealItem?.submissionId,
+            dbId = addViewModel.mealItem?.dbId,
+            submissionId = addViewModel.mealItem?.submissionId,
             name = mMealNameEditText.text.toString(),
             carbs = currentIngredientsCarbohydrates,
             amount = currentWeightUnit.convert(
                 DEFAULT_WEIGHT_UNIT,
-                currentIngredientsAmount + viewModel.currentAdditionalAmount
+                currentIngredientsAmount + addViewModel.currentAdditionalAmount
             ),
             unit = DEFAULT_WEIGHT_UNIT,
             imageUri = imageUrlEditText.text?.toString()?.let(Uri::parse),
@@ -284,21 +283,11 @@ class AddCustomMealFragment : BaseAddMealFragment(), IRemainingPickSpinner, IReq
 
     override fun onWeightUnitChange(converter: (Float) -> Float) {
         super.onWeightUnitChange(converter)
-        viewModel.currentWeightUnits = currentWeightUnit
-        viewModel.currentAdditionalAmount = converter(viewModel.currentAdditionalAmount)
+        addViewModel.currentWeightUnits = currentWeightUnit
+        addViewModel.currentAdditionalAmount = converter(addViewModel.currentAdditionalAmount)
         refreshAdditionalAmount()
     }
 
-    override fun getVMProviderFactory(
-        savedInstanceState: Bundle?,
-        intent: Intent
-    ): AddCustomMealRecyclerVMProviderFactory {
-        return AddCustomMealRecyclerVMProviderFactory(
-            arguments,
-            savedInstanceState,
-            intent
-        )
-    }
-
-    override fun getLayout() = R.layout.add_custom_meal
+    override fun getViewModels(): Iterable<Parcelable> = super.getViewModels()
+        .plus(listOf(addViewModel, cuisinesViewModel))
 }

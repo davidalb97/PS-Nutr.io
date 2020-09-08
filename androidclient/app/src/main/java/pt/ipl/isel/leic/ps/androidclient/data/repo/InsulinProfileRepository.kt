@@ -16,18 +16,20 @@ class InsulinProfileRepository(private val dataSource: InsulinProfileDataSource)
     val insulinProfileMapper = DbInsulinProfileMapper()
     private val inputInsulinProfileMapper = InputInsulinProfileMapper()
 
-    fun getAllProfiles() = roomDb.insulinProfileDao().getAll()
+    fun getAllDbProfiles() = roomDb.insulinProfileDao().getAll()
 
-    fun getRemoteProfiles() {
-        /*if (!jwt.isNullOrBlank() && hasInternetConnection()) {
-            dataSource.getAllInsulinProfiles(
-                jwt,
-                {
-                    onSuccess(inputInsulinProfileMapper.mapToListInputModel(it.asIterable()))
-                },
-                onError
-            )
-        }*/
+    fun getRemoteProfiles(
+        userSession: UserSession,
+        onError: (VolleyError) -> Unit,
+        onSuccess: (List<InsulinProfile>) -> Unit
+    ) {
+        dataSource.getAllInsulinProfiles(
+            userSession.jwt,
+            {
+                onSuccess(inputInsulinProfileMapper.mapToListInputModel(it.asIterable()))
+            },
+            onError
+        )
     }
 
     /*fun getProfile(
@@ -53,35 +55,50 @@ class InsulinProfileRepository(private val dataSource: InsulinProfileDataSource)
     fun addProfile(
         profileDb: InsulinProfile,
         userSession: UserSession?,
+        onSuccess: () -> Unit,
         onError: (VolleyError) -> Unit
-    ) =
-        AsyncWorker<Unit, Unit> {
-            roomDb.insulinProfileDao().insert(insulinProfileMapper.mapToRelation(profileDb))
-
-            if (userSession != null && hasInternetConnection()) {
-                dataSource.postInsulinProfile(
-                    InsulinProfileOutput(
-                        profileName = profileDb.profileName,
-                        startTime = profileDb.startTime,
-                        endTime = profileDb.endTime,
-                        glucoseObjective = profileDb.glucoseObjective,
-                        insulinSensitivityFactor = profileDb.glucoseAmountPerInsulin,
-                        carbohydrateRatio = profileDb.carbsAmountPerInsulin
-                    ),
-                    userSession.jwt,
-                    onError
-                )
-            }
+    ) {
+        if (userSession != null && hasInternetConnection()) {
+            dataSource.postInsulinProfile(
+                insulinProfileOutput = InsulinProfileOutput(
+                    profileName = profileDb.profileName,
+                    startTime = profileDb.startTime,
+                    endTime = profileDb.endTime,
+                    glucoseObjective = profileDb.glucoseObjective,
+                    insulinSensitivityFactor = profileDb.glucoseAmountPerInsulin,
+                    carbohydrateRatio = profileDb.carbsAmountPerInsulin
+                ),
+                jwt = userSession.jwt,
+                onSuccess = onSuccess,
+                onError = onError
+            )
+        } else {
+            AsyncWorker<Unit, Unit> {
+                roomDb.insulinProfileDao().insert(insulinProfileMapper.mapToRelation(profileDb))
+            }.setOnPostExecute { onSuccess() }
+                .execute()
         }
+    }
 
     fun deleteProfile(
-        profileName: String,
+        insulinProfile: InsulinProfile,
         userSession: UserSession?,
+        onSuccess: () -> Unit,
         onError: (VolleyError) -> Unit
-    ) = AsyncWorker<Unit, Unit> {
-        if (userSession != null && hasInternetConnection())
-            dataSource.deleteInsulinProfile(profileName, userSession.jwt, onError)
-        roomDb.insulinProfileDao().delete(profileName)
+    ) {
+        if (userSession != null && hasInternetConnection()) {
+            dataSource.deleteInsulinProfile(
+                profileName = insulinProfile.profileName,
+                jwt = userSession.jwt,
+                onSuccess = onSuccess,
+                onError = onError
+            )
+        } else {
+            AsyncWorker<Unit, Unit> {
+                roomDb.insulinProfileDao().delete(insulinProfile.profileName)
+            }.setOnPostExecute { onSuccess() }
+                .execute()
+        }
     }
 }
 

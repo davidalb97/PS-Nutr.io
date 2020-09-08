@@ -19,11 +19,10 @@ interface ICheckBox<T> : IAction {
             return
         }
         checkBox = view.findViewById(checkBoxId)
+        checkBox.setOnCheckedChangeListener(null)
+        checkBox.isChecked = isRestored()
         checkBox.setOnCheckedChangeListener { _, isChecked ->
             onCheck(isChecked)
-        }
-        if(isRestored()) {
-            checkBox.isChecked = true
         }
         checkBox.visibility = View.VISIBLE
     }

@@ -7,11 +7,10 @@ import org.springframework.web.bind.annotation.*
 import org.springframework.web.util.UriComponentsBuilder
 import pt.isel.ps.g06.httpserver.common.INGREDIENTS_PATH
 import pt.isel.ps.g06.httpserver.common.MAX_COUNT
-import pt.isel.ps.g06.httpserver.common.exception.problemJson.badRequest.InvalidInputException
-import pt.isel.ps.g06.httpserver.dataAccess.input.meal.CustomMealInput
-import pt.isel.ps.g06.httpserver.dataAccess.input.meal.SuggestedMealInput
+import pt.isel.ps.g06.httpserver.dataAccess.input.meal.MealInput
 import pt.isel.ps.g06.httpserver.dataAccess.output.ingredient.IngredientsContainerOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.ingredient.toIngredientsContainerOutput
+import pt.isel.ps.g06.httpserver.exception.problemJson.badRequest.InvalidInputException
 import pt.isel.ps.g06.httpserver.model.User
 import pt.isel.ps.g06.httpserver.service.IngredientService
 import pt.isel.ps.g06.httpserver.service.UserService
@@ -32,7 +31,7 @@ class IngredientController(
     /**
      * Obtain a list of ingredients.
      * @param   skip    Number of pages to be skipped
-     * @param   count   Page limit
+     * @param   limit   Page limit
      * @return  [ResponseEntity]<[IngredientsContainerOutput]>
      */
     @GetMapping
@@ -56,7 +55,7 @@ class IngredientController(
      */
     @PostMapping
     fun createSuggestedIngredient(
-            @RequestBody mealIngredientInput: SuggestedMealInput,
+            @RequestBody mealIngredientInput: MealInput,
             user: User
     ): ResponseEntity<IngredientsContainerOutput> {
 

@@ -26,13 +26,25 @@ abstract class BaseListViewModel<T : Parcelable>() : ViewModel(), Parcelable {
     val log: Logger by lazy { Logger(javaClass) }
     val liveDataHandler = LiveDataListHandler<T>()
     val items: List<T> get() = liveDataHandler.mapped
-    var currItems: Int = 1
     var pendingRequest: Boolean = false
     var skip: Int? = DEFAULT_SKIP
     var count: Int? = DEFAULT_COUNT
     var onError: (Throwable) -> Unit = log::e
 
-    abstract fun update()
+    open fun setupList() {
+        if(items.isNotEmpty()) {
+            liveDataHandler.notifyChanged()
+        } else triggerFetch()
+    }
+
+    fun triggerFetch() {
+        pendingRequest = true
+        if (!tryRestore()) {
+            fetch()
+        }
+    }
+
+    protected abstract fun fetch()
 
     /**
      * Observes the [LiveDataListHandler], given a [LifecycleOwner] and a [MutableList].
@@ -79,4 +91,8 @@ abstract class BaseListViewModel<T : Parcelable>() : ViewModel(), Parcelable {
     open fun tryRestore(): Boolean = liveDataHandler.tryRestore()
 
     abstract fun getModelClass(): KClass<T>
+
+    open fun removeObservers(owner: LifecycleOwner) {
+        liveDataHandler.removeObservers(owner)
+    }
 }

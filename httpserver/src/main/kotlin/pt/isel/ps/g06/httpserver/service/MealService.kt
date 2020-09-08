@@ -1,19 +1,19 @@
 package pt.isel.ps.g06.httpserver.service
 
 import org.springframework.stereotype.Service
-import pt.isel.ps.g06.httpserver.common.exception.problemJson.badRequest.InvalidMealException
-import pt.isel.ps.g06.httpserver.dataAccess.common.responseMapper.restaurant.DbMealResponseMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.MealType
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.FavoriteDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.MealDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.input.ingredient.IngredientInput
+import pt.isel.ps.g06.httpserver.dataAccess.db.mapper.DbMealModelMapper
+import pt.isel.ps.g06.httpserver.exception.problemJson.badRequest.InvalidMealException
 import pt.isel.ps.g06.httpserver.model.Meal
 
 @Service
 class MealService(
         private val dbMealRepository: MealDbRepository,
         private val dbFavoriteRepository: FavoriteDbRepository,
-        private val dbMealResponseMapper: DbMealResponseMapper
+        private val dbMealModelMapper: DbMealModelMapper
 ) {
     fun setFavorite(mealId: Int, userId: Int, isFavorite: Boolean): Boolean {
         return dbFavoriteRepository.setFavorite(mealId, userId, isFavorite)
@@ -22,24 +22,24 @@ class MealService(
     fun getMeal(mealId: Int): Meal? {
         return dbMealRepository
                 .getById(mealId)
-                ?.let(dbMealResponseMapper::mapTo)
+                ?.let(dbMealModelMapper::mapTo)
     }
 
     fun getSuggestedMeals(skip: Int?, count: Int?, cuisines: Collection<String>?): Sequence<Meal> {
         return dbMealRepository
                 .getAllSuggestedMeals(skip, count, cuisines)
-                .map { dbMealResponseMapper.mapTo(it) }
+                .map { dbMealModelMapper.mapTo(it) }
     }
 
     fun getUserCustomMeals(submitterId: Int, skip: Int?, count: Int?): Sequence<Meal> =
             dbMealRepository
                     .getBySubmitterId(submitterId, skip, count)
-                    .map(dbMealResponseMapper::mapTo)
+                    .map(dbMealModelMapper::mapTo)
 
     fun getUserFavoriteMeals(submitterId: Int, count: Int?, skip: Int?): Sequence<Meal> =
         dbMealRepository
                 .getAllUserFavorites(submitterId, count, skip)
-                .map(dbMealResponseMapper::mapTo)
+                .map(dbMealModelMapper::mapTo)
 
     fun createSuggestedMeal(
             submitterId: Int,
@@ -80,7 +80,7 @@ class MealService(
                 type = mealType
         )
 
-        return dbMealResponseMapper.mapTo(createdMeal)
+        return dbMealModelMapper.mapTo(createdMeal)
     }
 
     fun editCustomMeal(
@@ -104,7 +104,7 @@ class MealService(
                 type = mealType
         )
 
-        return dbMealResponseMapper.mapTo(updatedMeal)
+        return dbMealModelMapper.mapTo(updatedMeal)
     }
 
     private fun validateMealQuantity(ingredients: Collection<IngredientInput>, quantity: Int) {
