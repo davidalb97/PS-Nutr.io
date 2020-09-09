@@ -406,7 +406,7 @@ BCrypt is a password-hashing function based on the Blowfish\cite{blowfish} ciphe
 
 The JwtUtil is the core class which validates, generates and adds claims to the tokens.\\
 
-\subsubsection{User data safety}
+\subsection{User data safety}
 
 In the previous section it was shown that the user can register an account. It was made this way so the server can store
 insulin profiles, which will be better explained in the mobile application's section. The insulin profiles store user sensitive
@@ -938,3 +938,40 @@ gray tone inside the slider.\\
 
 Observing a report, a moderator has the options either to remove the faulty submission or ban
 the user who submitted it.\\
+
+\section{Deployment}
+
+As planned, we decided to deploy the server to the Heroku\cite{heroku} cloud platform, to do this we had to follow a procedure and change some settings presented below.\\
+
+After setting up the CLI tool and creating an app inside Heroku, we started to install the Heroku Postgres plugin which will provide our database to the
+deployed server.
+
+Configured the plugin, the next step was to create a file called \texttt{system.properties} inside
+the server's root directory with the following setting: \texttt{java.runtime.version=11}. This setting forces Heroku to setup the
+environment with Java JDK 11 when deploying the remote app.\\
+
+The next step was to create the environment variables, which were being used during development inside the 
+application settings.\\
+
+As the Heroku application has now our database, the plugin automatically created a environment variable to link the server to the remote
+tables and, as such, the \texttt{spring.datasource.url} value inside the \texttt{application.properties} needed to be changed to that 
+variable name, as shown below.\\
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[scale=0.5]{_figures/heroku-env-db.png}
+        \caption{Environment variable change inside application.properties} 
+    \end{center}
+\end{figure}
+
+The last procedure to do before deployment is to run the command \texttt{npm run-script build}
+inside the web client folder, which will execute a script that copies the web client's 
+\texttt{index.html} and \texttt{main.js} to the HTTP server resources folder, in order to 
+send HTML when an endpoint is being requested for the first time by a client. It is also important
+to note that the web client is a single-page application, thus only the first request will send
+HTML + JSON and the consequents only JSON, as the HTML will be cached inside the user's browser.\\
+
+Concluded those steps, a successful deployment can now be achieved by following the commands inside
+application's deploy tab.
+
+
