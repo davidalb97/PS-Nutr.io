@@ -88,6 +88,8 @@ class MealInfoFragment :
         )
     }
 
+    private val chartLayoutId: Int = R.id.chart_container
+    private lateinit var chartLayout: ViewGroup
     private lateinit var addPortionLayout: RelativeLayout
     private lateinit var editPortionLayout: RelativeLayout
     private lateinit var portionEntries: MutableList<BarEntry>
@@ -122,6 +124,8 @@ class MealInfoFragment :
             setupPortionEntries(receivedMeal)
             super.setupChart(view, portionEntries)
             setupPortionButtons(view, receivedMeal)
+            chartLayout = view.findViewById(chartLayoutId)
+            chartLayout.visibility = View.VISIBLE
         }
 
         val title: TextView = view.findViewById(R.id.meal_detail_title)
