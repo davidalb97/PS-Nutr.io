@@ -52,7 +52,6 @@
                 android:id="@+id/meal_detail_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/meal_example"
                 android:textStyle="bold"
                 android:textColor="?attr/textColor"
                 android:textSize="26sp">
