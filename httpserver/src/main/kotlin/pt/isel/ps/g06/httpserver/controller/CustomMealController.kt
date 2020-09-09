@@ -49,8 +49,7 @@ class CustomMealController(private val mealService: MealService) {
                 name = meal.name!!,
                 quantity = meal.quantity!!,
                 ingredients = meal.ingredients!!,
-                cuisines = meal.cuisines!!,
-                mealType = MealType.CUSTOM
+                cuisines = meal.cuisines!!
         )
 
         return ResponseEntity.created(

@@ -46,8 +46,7 @@ class MealService(
             name: String,
             quantity: Int,
             carbs: Int,
-            cuisines: Collection<String>,
-            mealType: MealType
+            cuisines: Collection<String>
     ): Meal {
         val createdMeal = dbMealRepository.insertSuggestedMeal(
                 submitterId = submitterId,
@@ -55,10 +54,10 @@ class MealService(
                 cuisines = cuisines,
                 carbs = carbs,
                 quantity = quantity,
-                type = mealType
+                type = MealType.SUGGESTED_MEAL
         )
 
-        return dbMealResponseMapper.mapTo(createdMeal)
+        return dbMealModelMapper.mapTo(createdMeal)
     }
 
     fun createCustomMeal(
@@ -66,8 +65,7 @@ class MealService(
             name: String,
             quantity: Int,
             ingredients: Collection<IngredientInput>,
-            cuisines: Collection<String>,
-            mealType: MealType
+            cuisines: Collection<String>
     ): Meal {
         validateMealQuantity(ingredients, quantity)
 
@@ -77,7 +75,7 @@ class MealService(
                 cuisines = cuisines,
                 ingredients = ingredients,
                 quantity = quantity,
-                type = mealType
+                type = MealType.CUSTOM
         )
 
         return dbMealModelMapper.mapTo(createdMeal)

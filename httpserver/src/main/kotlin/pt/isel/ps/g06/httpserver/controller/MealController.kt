@@ -84,8 +84,7 @@ class MealController(
                 carbs = meal.carbs!!,
                 cuisines = meal.cuisines!!,
                 quantity = meal.quantity!!,
-                submitterId = user.identifier,
-                mealType = MealType.SUGGESTED_MEAL
+                submitterId = user.identifier
         )
 
         return ResponseEntity.created(

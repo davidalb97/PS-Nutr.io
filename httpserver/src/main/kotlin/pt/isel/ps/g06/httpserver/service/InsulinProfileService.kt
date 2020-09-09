@@ -66,7 +66,6 @@ class InsulinProfileService(
     }
 
     fun deleteProfile(submitterId: Int, profileName: String) {
-        //TODO Get insulin profile before deleting it
         insulinProfileDbRepository.deleteProfile(submitterId, profileName)
     }
 

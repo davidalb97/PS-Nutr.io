@@ -98,6 +98,7 @@ class InsulinProfileDbRepository(
         val encProfileName = columnCryptoConverter.convertToDatabaseColumn(profileName)
 
         return databaseContext.inTransaction { handle ->
+            //TODO Get insulin profile before deleting it
             return@inTransaction handle
                     .attach(insulinProfileDaoClass)
                     .deleteProfile(submitterId, encProfileName)
