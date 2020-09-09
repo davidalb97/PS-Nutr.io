@@ -102,7 +102,7 @@ class AddCustomMealFragment : BaseAddMealFragment(), IRemainingPickSpinner, IReq
 
                 setupView(view, savedInstanceState)
             }
-            viewModel.setupList()
+            addViewModel.setupList()
         } else setupView(view, savedInstanceState)
     }
 
