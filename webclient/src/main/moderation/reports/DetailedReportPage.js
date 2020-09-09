@@ -26,7 +26,7 @@ export default function DetailedReportPage() {
         </Card.Header>
         <Card.Body>
             <RequestingEntity
-                request={{ url: `http://localhost:8080/report/${submissionId}` }}
+                request={{ url: `/report/${submissionId}` }}
                 onSuccess={({ json }) => { return <Report report={json} /> }}
                 onDefault={Loading}
             />

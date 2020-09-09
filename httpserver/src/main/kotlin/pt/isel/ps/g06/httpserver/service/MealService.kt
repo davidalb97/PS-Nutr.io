@@ -2,10 +2,10 @@ package pt.isel.ps.g06.httpserver.service
 
 import org.springframework.stereotype.Service
 import pt.isel.ps.g06.httpserver.dataAccess.db.MealType
+import pt.isel.ps.g06.httpserver.dataAccess.db.mapper.DbMealModelMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.FavoriteDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.MealDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.input.ingredient.IngredientInput
-import pt.isel.ps.g06.httpserver.dataAccess.db.mapper.DbMealModelMapper
 import pt.isel.ps.g06.httpserver.exception.problemJson.badRequest.InvalidMealException
 import pt.isel.ps.g06.httpserver.model.Meal
 

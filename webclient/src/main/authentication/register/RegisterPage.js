@@ -75,7 +75,7 @@ export default function RegisterPage() {
 
     function buildRequest() {
         return {
-            url: "http://localhost:8080/user/register",
+            url: "/user/register",
             method: "POST",
             body: credentials
         }

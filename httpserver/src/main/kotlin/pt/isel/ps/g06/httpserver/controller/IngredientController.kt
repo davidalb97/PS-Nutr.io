@@ -31,7 +31,7 @@ class IngredientController(
     /**
      * Obtain a list of ingredients.
      * @param   skip    Number of pages to be skipped
-     * @param   count   Page limit
+     * @param   limit   Page limit
      * @return  [ResponseEntity]<[IngredientsContainerOutput]>
      */
     @GetMapping
@@ -55,14 +55,14 @@ class IngredientController(
      */
     @PostMapping
     fun createSuggestedIngredient(
-            @RequestBody mealIngredientInput: SuggestedMealInput,
+            @RequestBody suggestedIngredientInput: SuggestedMealInput,
             user: User
     ): ResponseEntity<IngredientsContainerOutput> {
 
         // Check if the user is a moderator
         userService.ensureModerator(user)
 
-        val createdIngredient = ingredientService.insertSuggestedIngredient(user.identifier, mealIngredientInput)
+        val createdIngredient = ingredientService.insertSuggestedIngredient(user.identifier, suggestedIngredientInput)
 
         return ResponseEntity
                 .created(

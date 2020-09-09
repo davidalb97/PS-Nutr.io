@@ -14,7 +14,7 @@ import SuccessAlert from '../../bootstrap-common/SuccessAlert'
 
 export default function Finish({ meal, setCanAdvance }) {
     const [request] = useState({
-        url: "http://localhost:8080/user/custom/meal",
+        url: "/user/custom/meal",
         method: "POST",
         body: buildRequestBody(meal)
     })

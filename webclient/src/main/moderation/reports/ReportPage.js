@@ -27,13 +27,13 @@ export default function ReportPage() {
             >
                 <Tab className="tab-item-wrapper" eventKey="restaurants" title="Restaurants">
                     <Card.Body>
-                        <Reports url="http://localhost:8080/report?type=RESTAURANT" />
+                        <Reports url="/report?type=RESTAURANT" />
                     </Card.Body>
                 </Tab>
 
                 <Tab eventKey="meals" title="Meals">
                     <Card.Body>
-                        <Reports url="http://localhost:8080/report?type=RESTAURANT_MEAL" />
+                        <Reports url="/report?type=RESTAURANT_MEAL" />
                     </Card.Body>
                 </Tab>
             </Tabs>

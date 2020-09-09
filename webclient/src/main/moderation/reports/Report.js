@@ -16,7 +16,7 @@ class ReportActions {
     }
     BAN() {
         const request = {
-            url: `http://localhost:8080/user`,
+            url: `/user`,
             method: `PUT`,
             body: { submitterId: this.report.submissionDetail.submitterId, isBanned: true }
         }
@@ -25,7 +25,7 @@ class ReportActions {
     }
     DISMISS() {
         const request = {
-            url: `http://localhost:8080/report/${this.reportId}`,
+            url: `/report/${this.reportId}`,
             method: `DELETE`
         }
 
@@ -33,7 +33,7 @@ class ReportActions {
     }
     REMOVE() {
         const request = {
-            url: `http://localhost:8080/submission/${this.report.submissionDetail.submissionId}`,
+            url: `/submission/${this.report.submissionDetail.submissionId}`,
             method: `DELETE`
         }
 
