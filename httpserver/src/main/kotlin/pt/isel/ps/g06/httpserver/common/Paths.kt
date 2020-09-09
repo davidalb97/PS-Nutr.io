@@ -1,5 +1,7 @@
 package pt.isel.ps.g06.httpserver.common
 
+const val INDEX_FILE_PATH = "index.html"
+const val MAIN_FILE_PATH = "main.js"
 const val SUBMISSION_ID_VALUE = "submissionId"
 const val RESTAURANT_ID_VALUE = "restaurantId"
 const val MEAL_ID_VALUE = "mealId"

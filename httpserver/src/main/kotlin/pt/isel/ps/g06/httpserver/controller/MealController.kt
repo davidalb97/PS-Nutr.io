@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*
 import org.springframework.web.util.UriComponentsBuilder
 import pt.isel.ps.g06.httpserver.common.*
 import pt.isel.ps.g06.httpserver.dataAccess.db.MealType
-import pt.isel.ps.g06.httpserver.dataAccess.input.meal.MealInput
+import pt.isel.ps.g06.httpserver.dataAccess.input.meal.SuggestedMealInput
 import pt.isel.ps.g06.httpserver.dataAccess.input.userActions.FavoriteInput
 import pt.isel.ps.g06.httpserver.dataAccess.output.meal.DetailedMealOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.meal.SimplifiedMealContainer
@@ -17,7 +17,6 @@ import pt.isel.ps.g06.httpserver.exception.problemJson.forbidden.NotSubmissionOw
 import pt.isel.ps.g06.httpserver.exception.problemJson.notFound.MealNotFoundException
 import pt.isel.ps.g06.httpserver.model.User
 import pt.isel.ps.g06.httpserver.service.MealService
-import pt.isel.ps.g06.httpserver.service.RestaurantMealService
 import pt.isel.ps.g06.httpserver.service.SubmissionService
 import pt.isel.ps.g06.httpserver.service.UserService
 import javax.validation.Valid
@@ -30,7 +29,6 @@ import javax.validation.constraints.Min
 @RequestMapping(produces = [MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_PROBLEM_JSON_VALUE])
 class MealController(
         private val mealService: MealService,
-        private val restaurantMealService: RestaurantMealService,
         private val submissionService: SubmissionService,
         private val userService: UserService
 ) {
@@ -73,7 +71,7 @@ class MealController(
 
     @PostMapping(MEALS_PATH)
     fun createSuggestedMeal(
-            @Valid @RequestBody meal: MealInput,
+            @Valid @RequestBody meal: SuggestedMealInput,
             user: User
     ): ResponseEntity<Void> {
 
@@ -81,13 +79,12 @@ class MealController(
         userService.ensureModerator(user)
 
         //Due to validators we are sure fields are never null
-        val createdMeal = mealService.createMeal(
+        val createdMeal = mealService.createSuggestedMeal(
                 name = meal.name!!,
-                ingredients = meal.ingredients!!,
+                carbs = meal.carbs!!,
                 cuisines = meal.cuisines!!,
                 quantity = meal.quantity!!,
-                submitterId = user.identifier,
-                mealType = MealType.SUGGESTED_MEAL
+                submitterId = user.identifier
         )
 
         return ResponseEntity.created(

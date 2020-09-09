@@ -123,7 +123,7 @@ class MealDbRepository(
         }
     }
 
-    fun insert(
+    fun insertCustomMeal(
             submitterId: Int,
             mealName: String,
             quantity: Int,
@@ -131,12 +131,12 @@ class MealDbRepository(
             ingredients: Collection<IngredientInput>,
             type: MealType
     ): DbMealDto {
-        if (cuisines.isEmpty()) {
-            throw InvalidInputException("A meal must have at least a cuisine!")
+        if (ingredients.isEmpty()) {
+            throw InvalidInputException("A meal must have at least an ingredient")
         }
 
-        if (ingredients.isEmpty()) {
-            throw InvalidInputException("A meal must have at least one ingredient!")
+        if (cuisines.isEmpty()) {
+            throw InvalidInputException("A meal must have at least a cuisine!")
         }
 
         return databaseContext.inTransaction {
@@ -197,7 +197,54 @@ class MealDbRepository(
         }
     }
 
-    fun update(
+    fun insertSuggestedMeal(
+            submitterId: Int,
+            mealName: String,
+            quantity: Int,
+            carbs: Int,
+            cuisines: Collection<String>,
+            type: MealType
+    ): DbMealDto {
+
+        if (cuisines.isEmpty()) {
+            throw InvalidInputException("A meal must have at least a cuisine!")
+        }
+
+        return databaseContext.inTransaction {
+            //Insert submission
+            val mealSubmissionId = it.attach(SubmissionDao::class.java)
+                    .insert(SubmissionType.MEAL.toString())
+                    .submission_id
+
+            if (type == MealType.SUGGESTED_MEAL) {
+                //Insert contract FAVORABLE
+                it.attach(SubmissionContractDao::class.java)
+                        .insertAll(mutableListOf(FAVORABLE).map {
+                            SubmissionContractParam(mealSubmissionId, it.toString())
+                        })
+            }
+
+            //Insert SubmissionSubmitter associations for user
+            it.attach(SubmissionSubmitterDao::class.java).insert(mealSubmissionId, submitterId)
+
+            //Insert Meal
+            val mealDto = it
+                    .attach(mealDaoClass)
+                    .insert(mealSubmissionId, mealName, carbs, quantity, mealType = type.toString())
+
+            //Insert all MealCuisine associations
+            //TODO Make this better
+            val cuisineIds = cuisineDbRepository
+                    .getAllByNames(cuisines.asSequence())
+                    .map { DbMealCuisineDto(mealSubmissionId, it.submission_id) }
+
+            it.attach(MealCuisineDao::class.java).insertAll(cuisineIds.toList())
+
+            return@inTransaction mealDto
+        }
+    }
+
+    fun updateCustomMeal(
             submissionId: Int,
             submitterId: Int,
             mealName: String,
@@ -206,12 +253,12 @@ class MealDbRepository(
             ingredients: Collection<IngredientInput>,
             type: MealType
     ): DbMealDto {
-        if (cuisines.isEmpty()) {
-            throw InvalidInputException("A meal must have at least a cuisine!")
+        if (ingredients.isEmpty()) {
+            throw InvalidInputException("A meal must have at least an ingredient")
         }
 
-        if (ingredients.isEmpty()) {
-            throw InvalidInputException("A meal must have at least one ingredient!")
+        if (cuisines.isEmpty()) {
+            throw InvalidInputException("A meal must have at least a cuisine!")
         }
 
         return databaseContext.inTransaction {
@@ -248,6 +295,8 @@ class MealDbRepository(
             //Insert meal's ingredients
             val mealIngredientDao = it.attach(MealIngredientDao::class.java)
             mealIngredientDao.deleteAllByMealId(submissionId)
+
+            //Insert meal's ingredients
             mealIngredientDao.insertAll(ingredients.map { ingredientInput ->
                 DbMealIngredientDto(
                         //We know fields are not null due to validation checks

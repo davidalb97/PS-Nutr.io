@@ -2,10 +2,10 @@ package pt.isel.ps.g06.httpserver.service
 
 import org.springframework.stereotype.Service
 import pt.isel.ps.g06.httpserver.dataAccess.db.MealType
+import pt.isel.ps.g06.httpserver.dataAccess.db.mapper.DbMealModelMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.FavoriteDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.MealDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.input.ingredient.IngredientInput
-import pt.isel.ps.g06.httpserver.dataAccess.db.mapper.DbMealModelMapper
 import pt.isel.ps.g06.httpserver.exception.problemJson.badRequest.InvalidMealException
 import pt.isel.ps.g06.httpserver.model.Meal
 
@@ -41,29 +41,47 @@ class MealService(
                 .getAllUserFavorites(submitterId, count, skip)
                 .map(dbMealModelMapper::mapTo)
 
-    fun createMeal(
+    fun createSuggestedMeal(
             submitterId: Int,
             name: String,
             quantity: Int,
-            ingredients: Collection<IngredientInput>,
-            cuisines: Collection<String>,
-            mealType: MealType
+            carbs: Int,
+            cuisines: Collection<String>
     ): Meal {
-        validateMealQuantity(ingredients, quantity)
-
-        val createdMeal = dbMealRepository.insert(
+        val createdMeal = dbMealRepository.insertSuggestedMeal(
                 submitterId = submitterId,
                 mealName = name,
                 cuisines = cuisines,
-                ingredients = ingredients,
+                carbs = carbs,
                 quantity = quantity,
-                type = mealType
+                type = MealType.SUGGESTED_MEAL
         )
 
         return dbMealModelMapper.mapTo(createdMeal)
     }
 
-    fun editMeal(
+    fun createCustomMeal(
+            submitterId: Int,
+            name: String,
+            quantity: Int,
+            ingredients: Collection<IngredientInput>,
+            cuisines: Collection<String>
+    ): Meal {
+        validateMealQuantity(ingredients, quantity)
+
+        val createdMeal = dbMealRepository.insertCustomMeal(
+                submitterId = submitterId,
+                mealName = name,
+                cuisines = cuisines,
+                ingredients = ingredients,
+                quantity = quantity,
+                type = MealType.CUSTOM
+        )
+
+        return dbMealModelMapper.mapTo(createdMeal)
+    }
+
+    fun editCustomMeal(
             submissionId: Int,
             submitterId: Int,
             name: String,
@@ -74,7 +92,7 @@ class MealService(
     ): Meal {
         validateMealQuantity(ingredients, quantity)
 
-        val updatedMeal = dbMealRepository.update(
+        val updatedMeal = dbMealRepository.updateCustomMeal(
                 submissionId = submissionId,
                 submitterId = submitterId,
                 mealName = name,
