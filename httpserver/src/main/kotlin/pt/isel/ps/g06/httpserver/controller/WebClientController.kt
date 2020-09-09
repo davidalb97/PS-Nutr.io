@@ -20,7 +20,7 @@ class WebClientController(private val webClientService: WebClientService) {
     /**
      * Gets release index.html from [INDEX_FILE_PATH] resource.
      */
-    @GetMapping(path = ["/**    "], produces = [MediaType.TEXT_HTML_VALUE])
+    @GetMapping(path = ["/**"], produces = [MediaType.TEXT_HTML_VALUE])
     fun getIndex(): ResponseEntity<Any> {
         return ResponseEntity.ok(webClientService.getIndex())
     }
