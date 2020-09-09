@@ -56,7 +56,6 @@ class DbRestaurantInfoMapper(
             positiveVotes = model.votes.positive,
             negativeVotes = model.votes.negative,
             userVoteOrdinal = model.votes.userHasVoted.ordinal,
-            hasVote = model.votes != null,
             ownerId = null,
             sourceOrdinal = model.source.ordinal
         ).also { dto ->

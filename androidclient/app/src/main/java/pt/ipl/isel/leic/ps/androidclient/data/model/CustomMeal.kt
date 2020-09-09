@@ -11,7 +11,7 @@ class CustomMeal : MealInfo, Parcelable {
         dbId: Long?,
         submissionId: Int?,
         name: String,
-        carbs: Int,
+        carbs: Float,
         amount: Float,
         unit: WeightUnits,
         imageUri: Uri?,

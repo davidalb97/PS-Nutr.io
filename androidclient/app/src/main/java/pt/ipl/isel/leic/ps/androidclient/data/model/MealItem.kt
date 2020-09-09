@@ -13,7 +13,7 @@ open class MealItem(
     var submissionId: Int?,
     var restaurantSubmissionId: String?,
     var name: String,
-    var carbs: Int,
+    var carbs: Float,
     var amount: Float,
     var unit: WeightUnits,
     var imageUri: Uri?,
@@ -31,7 +31,7 @@ open class MealItem(
         submissionId = parcel.readSerializable() as Int?,
         restaurantSubmissionId = parcel.readString(),
         name = parcel.readString()!!,
-        carbs = parcel.readInt(),
+        carbs = parcel.readFloat(),
         amount = parcel.readFloat(),
         unit = parcel.readWeightUnit(),
         imageUri = parcel.readUri(),
@@ -49,7 +49,7 @@ open class MealItem(
         parcel.writeSerializable(submissionId)
         parcel.writeString(restaurantSubmissionId)
         parcel.writeString(name)
-        parcel.writeInt(carbs)
+        parcel.writeFloat(carbs)
         parcel.writeFloat(amount)
         parcel.writeWeightUnit(unit)
         parcel.writeUri(imageUri)

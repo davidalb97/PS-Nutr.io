@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey
 class DbComponentMealEntity(
     val submissionId: Int?,
     val name: String,
-    val carbs: Int,
+    val carbs: Float,
     val amount: Float,
     val unit: Int,
     val isFavorite: Boolean,

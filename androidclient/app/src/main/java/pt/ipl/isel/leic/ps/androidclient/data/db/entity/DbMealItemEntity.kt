@@ -8,7 +8,7 @@ open class DbMealItemEntity(
     val submissionId: Int?,
     val restaurantSubmissionId: String?,
     val name: String,
-    val carbs: Int,
+    val carbs: Float,
     val amount: Float,
     val unit: Int,
     val imageUri: String?,
