@@ -33,12 +33,6 @@ abstract class BaseMealRecyclerAdapter
         )
     }
 
-    fun onDelete(mealItem: MealItem, onSuccess: () -> Unit) {
-        viewModel.deleteItemById(requireNotNull(mealItem.dbId))
-            .setOnPostExecute { onSuccess() }
-            .execute()
-    }
-
     fun onReport(
         mealItem: MealItem,
         reportStr: String,

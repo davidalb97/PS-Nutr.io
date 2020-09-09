@@ -36,12 +36,17 @@ open class InsulinProfilesListViewModel : BaseListViewModel<InsulinProfile> {
         insulinProfile: InsulinProfile,
         onError: (Exception) -> Unit,
         onSuccess: () -> Unit
-    ) = insulinProfilesRepository.deleteProfile(
-        insulinProfile = insulinProfile,
-        userSession = getUserSession(),
-        onSuccess = onSuccess,
-        onError = onError
-    )
+    ) {
+        insulinProfilesRepository.deleteProfile(
+            insulinProfile = insulinProfile,
+            userSession = getUserSession(),
+            onError = onError,
+            onSuccess = {
+                liveDataHandler.remove(insulinProfile)
+                onSuccess()
+            }
+        )
+    }
 
     override fun fetch() {
         val userSession = getUserSession()

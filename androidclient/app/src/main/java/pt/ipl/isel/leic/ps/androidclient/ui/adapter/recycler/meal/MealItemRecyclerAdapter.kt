@@ -37,8 +37,9 @@ class MealItemRecyclerAdapter(
                 this@MealItemRecyclerAdapter.setupOnClick(this)
             }
 
-            override fun onDelete(onSuccess: () -> Unit, onError: (Throwable) -> Unit) =
-                this@MealItemRecyclerAdapter.onDelete(this.item, onSuccess)
+            override fun onDelete(onSuccess: () -> Unit, onError: (Throwable) -> Unit) {
+                viewModel.deleteCustomMeal(item, onSuccess, onError)
+            }
 
             override fun onFavorite(onSuccess: () -> Unit, onError: (Throwable) -> Unit) =
                 this@MealItemRecyclerAdapter.onFavorite(this.item, onSuccess, onError)
