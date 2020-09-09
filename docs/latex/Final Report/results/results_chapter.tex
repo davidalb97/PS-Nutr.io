@@ -153,26 +153,27 @@ some key aspects and differences which are specific to the project are explained
 
 \subsubsection{Getting started}
 
-The \textit{Jdbi} class is the main entry point into the library and each instance requires a \textit{DataSource} connection,
-which is created in the \textit{DatabaseConfig} class according to the application properties provided in the resources folder.
-A single instance of \textit{Jdbi}, which in turn is used to create a single instance of \textit{DatabaseContext}, the dependency that all
+The \texttt{Jdbi} class is the main entry point into the library and each instance requires a \texttt{DataSource} connection,
+which is created in the \texttt{DatabaseConfig} class according to the application properties provided in the resources folder.
+A single instance of \texttt{Jdbi}, which in turn is used to create a single instance of \texttt{DatabaseContext}, the dependency that all
 repositories require in order to perform database connections. 
 
 \subsubsection{Database connection}
 
-An active database connection is represented by a \textit{Handle}, and according to the JDBI documentation:\\
+An active database connection is represented by a \texttt{Handle}, and according to the JDBI documentation:\\
 
 A handle is used to prepare and run SQL statements against the database, and manage database transactions.
 It provides access to fluent statement APIs that can bind arguments, execute the statement, and then map any results into Java objects.\\
 
-Every database operation opens a new handle and is wrapped in a transactional call using \textit{databaseContext.inTransaction(Function<Handle, T>)}.
+Every database operation opens a new handle and is wrapped in a transactional call using \texttt{databaseContext.inTransaction(Function<Handle, T>)}.
 Said transaction is committed when given function is successfully finished, or rollbacked if an exception is thrown. Finally, underlying handle
 is only closed after the HTTP request that triggered the repository call is finished. This is due to Stream integration when returning database
-elements and is explained in greater detail in next subsection.
+elements and is explained in greater detail in next subsection: 5.2.5 - Fetching collections of data.
 
 \subsubsection{Performance operations - Imperative and Declarative API}
 
-When a repository uses previously mentioned method \textit{databaseContext.inTransaction(Function<Handle, T>)}, given argument function is responsible
+When a repository uses previously mentioned method\\
+\texttt{databaseContext.inTransaction(Function<Handle, T>)}, given argument function is responsible
 for performing a database operation with the open handle, either using an \textbf{imperative} implementation or a \textbf{declarative} one.\\
 
 The JDBI documentation describes both the imperative and declarative style as follows, respectively:\\
@@ -238,11 +239,13 @@ a Thread identifier when created and deleted, so repositories calls must not be 
 When it comes to fetching collections of data (such as restaurants, meals, etc.) from either the database or an API, said data can be obtained
 and iterated in an \textbf{eager} approach or a \textbf{lazy} approach.\\
 
-We decided to implement the fetching of data in a \textbf{lazy} manner using Kotlin's \textbf{Sequences} [ref] instead of Java 8
+We decided to implement the fetching of data in a \textbf{lazy} manner using Kotlin's \textbf{Sequences}\cite{sequences} instead of Java 8
 \textbf{Streams}\cite{streams} due to their additional iterating operations, easier caching mechanisms (when compared to Streams)
 and finally improved performance when processing data, according to the documentation:\\
 
 "Sequences let you avoid building results of intermediate steps, therefore improving the performance of the whole collection processing chain."\\
+
+Finally, sequences were chosen over streams because they can be reused and are not \textit{onceOf}(can only be used once) like streams.\\
 
 With that in consideration, the following sections describe in greater detail the code structure needed to lazily acquire data.\\
 
@@ -257,7 +260,8 @@ collections using \textbf{Streams}, \textbf{ResultIterables} and \textbf{ResultI
 stream will lazily fetch rows from the database as necessary."\\
 
 Since no native support for Sequences exist, every DAO class returns a ResultIterable of data and calling repository is then responsible of mapping it to
-a Sequence via IterableUtils.asCachedSequence(), which also caches acquired values allowing for subsequent iterations.\\
+a Sequence via\\
+\texttt{IterableUtils.asCachedSequence()}, an created extension method which also caches acquired values allowing for subsequent iterations.\\
 
 However, this approach is not enough on its' own as JDBI warns that:\\
 
