@@ -49,20 +49,7 @@ open class RestaurantListFragment : BaseListFragment<
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val searchBar = view.findViewById<SearchView>(R.id.search_restaurant)
         val addButton = view.findViewById<ImageButton>(R.id.add_restaurant)
-
-        searchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                if (query.isNullOrEmpty()) return false
-                //viewModel.restaurantName = query //TODO: Actually use query text listener
-                //viewModel.getRestaurantById()
-                searchBar.clearFocus()
-                return true
-            }
-
-            override fun onQueryTextChange(query: String?): Boolean = true
-        })
 
         addButton.setOnClickListener {
             ensureUserSession(requireContext()) {

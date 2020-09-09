@@ -5,21 +5,9 @@
     android:background="?attr/backgroundColor"
     android:layout_height="match_parent">
 
-    <SearchView
-        android:id="@+id/search_restaurant"
-        android:background="@drawable/searchview_background"
-        android:layout_marginTop="10dp"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:queryHint="@string/hint_restaurant_search"
-        android:layoutDirection="rtl">
-    </SearchView>
-
     <RelativeLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/search_restaurant"
-        >
+        android:layout_height="wrap_content">
 
         <ProgressBar
             android:id="@+id/progressBar"

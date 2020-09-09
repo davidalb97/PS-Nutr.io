@@ -5,16 +5,6 @@
     android:background="?attr/backgroundColor"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <SearchView
-        android:id="@+id/search_meal"
-        android:layout_width="match_parent"
-        android:background="@drawable/searchview_background"
-        android:layout_marginTop="10dp"
-        android:layout_height="50dp"
-        android:queryHint="@string/hint_meal_search"
-        android:layoutDirection="rtl">
-    </SearchView>
-
     <ProgressBar
         android:id="@+id/progressBar"
         android:layout_width="wrap_content"
@@ -46,7 +36,6 @@
         android:id="@+id/itemList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/search_meal"
         tools:listitem="@layout/meal_card">
     </androidx.recyclerview.widget.RecyclerView>
 

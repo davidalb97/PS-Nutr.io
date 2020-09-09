@@ -77,20 +77,6 @@ class MapFragment : RestaurantListFragment(), OnMapReadyCallback {
 
         val addButton = view.findViewById<ImageButton>(R.id.add_restaurant)
 
-        val searchBar = view.findViewById<SearchView>(R.id.search_restaurant)
-
-        searchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                if (query.isNullOrEmpty()) return false
-                //viewModel.restaurantName = query //TODO Use query for restaurant name filter
-                //viewModel.getRestaurantById()
-                searchBar.clearFocus()
-                return true
-            }
-
-            override fun onQueryTextChange(query: String?): Boolean = true
-        })
-
         addButton.setOnClickListener {
             ensureUserSession(requireContext()) {
                 view.findNavController().navigate(Navigation.SEND_TO_ADD_RESTAURANT.navId)
