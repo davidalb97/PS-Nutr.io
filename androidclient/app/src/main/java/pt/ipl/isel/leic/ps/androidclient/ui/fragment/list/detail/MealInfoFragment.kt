@@ -116,9 +116,13 @@ class MealInfoFragment :
         super.setupReportMenuItem(receivedMeal.isReportable ?: false)
         super.setupEditMenuItem()
         super.setupPopupMenuButton(view)
-        setupPortionEntries(receivedMeal)
-        super.setupChart(view, portionEntries)
-        setupPortionButtons(view, receivedMeal)
+
+        //Only restaurant meals have portions
+        if(receivedMeal.restaurantSubmissionId != null) {
+            setupPortionEntries(receivedMeal)
+            super.setupChart(view, portionEntries)
+            setupPortionButtons(view, receivedMeal)
+        }
 
         val title: TextView = view.findViewById(R.id.meal_detail_title)
         title.text = receivedMeal.name
