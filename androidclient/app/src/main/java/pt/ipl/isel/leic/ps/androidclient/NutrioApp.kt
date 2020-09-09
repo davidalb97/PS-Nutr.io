@@ -6,6 +6,7 @@ import android.content.SharedPreferences
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
+import android.view.Menu
 import android.widget.Toast
 import androidx.room.Room
 import androidx.security.crypto.EncryptedSharedPreferences
@@ -40,6 +41,8 @@ class NutrioApp : Application() {
     private val log = Logger(NutrioApp::class)
 
     companion object {
+        lateinit var menu: Menu
+
         /**
          * Application context
          */

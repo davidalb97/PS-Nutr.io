@@ -8,9 +8,9 @@ class InsulinProfile(
         identifier: Int,
         val startTime: String,
         val endTime: String,
-        val glucoseObjective: Int,
-        val insulinSensitivityFactor: Int,
-        val carbohydrateRatio: Int,
+        val glucoseObjective: Float,
+        val insulinSensitivityFactor: Float,
+        val carbohydrateRatio: Float,
         val modificationDate: OffsetDateTime,
         override val name: String
 ) : BaseSubmission<Int>(

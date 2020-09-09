@@ -15,7 +15,6 @@ data class DbRestaurantInfoEntity(
     val isReportable: Boolean,
     val imageUri: String?,
     val isVotable: Boolean,
-    val hasVote: Boolean,
     val positiveVotes: Int?,
     val negativeVotes: Int?,
     val userVoteOrdinal: Int?,

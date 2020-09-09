@@ -17,9 +17,9 @@ class DbInsulinProfileDtoMapper(
                 columnCryptoConverter.convertToEntityAttribute(dbUserEncInsulinProfileDto.profileName),
                 columnCryptoConverter.convertToEntityAttribute(dbUserEncInsulinProfileDto.startTime),
                 columnCryptoConverter.convertToEntityAttribute(dbUserEncInsulinProfileDto.endTime),
-                columnCryptoConverter.convertToEntityAttribute(dbUserEncInsulinProfileDto.glucoseObjective).toInt(),
-                columnCryptoConverter.convertToEntityAttribute(dbUserEncInsulinProfileDto.insulinSensitivityFactor).toInt(),
-                columnCryptoConverter.convertToEntityAttribute(dbUserEncInsulinProfileDto.carbohydrateRatio).toInt(),
+                columnCryptoConverter.convertToEntityAttribute(dbUserEncInsulinProfileDto.glucoseObjective).toFloat(),
+                columnCryptoConverter.convertToEntityAttribute(dbUserEncInsulinProfileDto.insulinSensitivityFactor).toFloat(),
+                columnCryptoConverter.convertToEntityAttribute(dbUserEncInsulinProfileDto.carbohydrateRatio).toFloat(),
                 OffsetDateTime.parse(columnCryptoConverter.convertToEntityAttribute(dbUserEncInsulinProfileDto.modificationDate))
         )
     }

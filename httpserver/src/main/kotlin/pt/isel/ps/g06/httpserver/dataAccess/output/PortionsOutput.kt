@@ -3,8 +3,8 @@ package pt.isel.ps.g06.httpserver.dataAccess.output
 import pt.isel.ps.g06.httpserver.model.RestaurantMeal
 
 data class PortionsOutput(
-        val userPortion: Int?,
-        val portions: Collection<Int>
+        val userPortion: Float?,
+        val portions: Collection<Float>
 )
 
 fun toPortionsOutput(restaurantMeal: RestaurantMeal, userId: Int? = null): PortionsOutput {

@@ -25,7 +25,7 @@ open class MealInfo : MealItem {
         submissionId: Int?,
         restaurantSubmissionId: String?,
         name: String,
-        carbs: Int,
+        carbs: Float,
         amount: Float,
         unit: WeightUnits,
         votes: Votes?,

@@ -5,8 +5,12 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
+import androidx.core.app.ActivityCompat.invalidateOptionsMenu
 import androidx.navigation.findNavController
 import androidx.navigation.navGraphViewModels
+import pt.ipl.isel.leic.ps.androidclient.NutrioApp
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealItem
 import pt.ipl.isel.leic.ps.androidclient.data.model.RestaurantInfo
@@ -18,7 +22,6 @@ import pt.ipl.isel.leic.ps.androidclient.ui.modular.ISend
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.IFavoriteActionButton
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.IVoteActionButtons
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.menu.IEditMenuItem
-import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.menu.IPopupMenuButton
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.menu.IReportMenuItem
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.menu.MenuItemFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.BaseViewModelProviderFactory
@@ -30,7 +33,6 @@ class RestaurantInfoFragment :
     IImage,
     IVoteActionButtons,
     IFavoriteActionButton,
-    IPopupMenuButton,
     IReportMenuItem,
     IEditMenuItem,
     ISend {
@@ -72,8 +74,6 @@ class RestaurantInfoFragment :
     override lateinit var upVoteButton: ImageButton
     override val downVoteButtonId: Int = R.id.down_vote_button
     override lateinit var downVoteButton: ImageButton
-    override val menuButtonId: Int = R.id.options
-    override lateinit var menuButton: ImageButton
 
     lateinit var addMealButton: Button
 
@@ -82,6 +82,7 @@ class RestaurantInfoFragment :
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        setHasOptionsMenu(true)
         val viewModel: RestaurantInfoViewModel
                 by navGraphViewModels(Navigation.SEND_TO_RESTAURANT_DETAIL.navId)
         this.viewModel = viewModel
@@ -91,7 +92,6 @@ class RestaurantInfoFragment :
         //Bypass generic Recycler ViewModel creation, ignoring super.onCreateView()
         return super.inflate(inflater, container)
     }
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -110,8 +110,8 @@ class RestaurantInfoFragment :
         super.setupFavoriteButton(view, restaurantInfo.favorites)
         super.setupReportMenuItem(restaurantInfo.isReportable)
         super.setupEditMenuItem()
-        super.setupPopupMenuButton(view)
         super.setupVoteButtons(view, restaurantInfo.votes)
+        populateMenu(NutrioApp.menu)
 
         val title: TextView = view.findViewById(R.id.restaurant_detail_title)
         title.text = restaurantInfo.name
@@ -122,6 +122,12 @@ class RestaurantInfoFragment :
                 view.findNavController().navigate(Navigation.SEND_TO_PICK_RESTAURANT_MEAL.navId)
             }
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        NutrioApp.menu = menu
+        populateMenu(menu)
+        super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onResume() {

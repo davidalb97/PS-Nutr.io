@@ -11,7 +11,7 @@ data class CustomMealInput(
         @field:NotBlank(message = "A name must be given for the meal!")
         val name: String?,
         @field:Min(value = 1, message = "A meal quantity must be given!")
-        val quantity: Int?,
+        val quantity: Float?,
         @field:Pattern(regexp = "(gr)", message = "You must provide a valid unit! Allowed ones are: 'gr'")
         val unit: String?,
         @field:NotEmpty(message = "You must give at least one ingredient!")

@@ -54,7 +54,7 @@ abstract class BaseAddMealFragment : BaseViewModelFragment<MealItemPickViewModel
 
     protected abstract val totalIngredientsCarbohydratesTextViewId: Int
     private lateinit var totalIngredientsCarbohydratesTextView: TextView
-    private var _currentIngredientCarbohydrates: Int = 0
+    private var _currentIngredientCarbohydrates: Float = 0.0F
     protected val currentIngredientsCarbohydrates get() = _currentIngredientCarbohydrates
 
     override fun onCreateView(
@@ -141,9 +141,9 @@ abstract class BaseAddMealFragment : BaseViewModelFragment<MealItemPickViewModel
         )
     }
 
-    private fun countIngredientCarbohydrates(): Int =
-        viewModel.pickedItems.sumBy { ingredient ->
-            ingredient.carbs
+    private fun countIngredientCarbohydrates(): Float =
+        viewModel.pickedItems.fold(0.0F) { sum, ingredient ->
+            sum + ingredient.carbs
         }
 
     protected fun countIngredientQuantity(

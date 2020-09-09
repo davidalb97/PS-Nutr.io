@@ -2,8 +2,7 @@ package pt.ipl.isel.leic.ps.androidclient.ui.fragment.list.detail
 
 import android.content.Context
 import android.os.Bundle
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.*
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.components.XAxis
@@ -11,6 +10,7 @@ import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
+import pt.ipl.isel.leic.ps.androidclient.NutrioApp
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.app
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.sharedPreferences
 import pt.ipl.isel.leic.ps.androidclient.R
@@ -41,7 +41,6 @@ class MealInfoFragment :
     IBarChart,
     ISend,
     IFavoriteActionButton,
-    IPopupMenuButton,
     IReportMenuItem,
     IEditMenuItem {
 
@@ -68,8 +67,6 @@ class MealInfoFragment :
     override lateinit var upVoteButton: ImageButton
     override val downVoteButtonId: Int = R.id.down_vote_button
     override lateinit var downVoteButton: ImageButton
-    override val menuButtonId: Int = R.id.options
-    override lateinit var menuButton: ImageButton
     override val chartId: Int = R.id.portion_chart
     override lateinit var chart: BarChart
     override var noDataText: String? = app.getString(R.string.no_portions_chart_message)
@@ -98,6 +95,7 @@ class MealInfoFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setHasOptionsMenu(true)
         actions = viewModel.actions
         viewModel.observeInfo(this) { mealInfo ->
             setupView(view, mealInfo)
@@ -117,7 +115,7 @@ class MealInfoFragment :
         super.setupCalculateAction(view)
         super.setupReportMenuItem(receivedMeal.isReportable ?: false)
         super.setupEditMenuItem()
-        super.setupPopupMenuButton(view)
+        populateMenu(NutrioApp.menu)
 
         //Only restaurant meals have portions
         if(receivedMeal.restaurantSubmissionId != null) {
@@ -135,6 +133,12 @@ class MealInfoFragment :
             val suggestedLayout: RelativeLayout = view.findViewById(R.id.meal_info_suggested_rl)
             suggestedLayout.visibility = View.VISIBLE
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        NutrioApp.menu = menu
+        populateMenu(menu)
+        super.onCreateOptionsMenu(menu, inflater)
     }
 
     private fun setupPortionEntries(receivedMeal: MealInfo) {

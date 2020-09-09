@@ -15,9 +15,9 @@ class DbRowInsulinProfileMapper : RowMapper<DbUserInsulinProfileDto> {
                 profileName = rs.getString(InsulinProfileDao.profileName),
                 startTime = rs.getString(InsulinProfileDao.startTime),
                 endTime = rs.getString(InsulinProfileDao.endTime),
-                glucoseObjective = rs.getInt(InsulinProfileDao.glucoseObjective),
-                insulinSensitivityFactor = rs.getInt(InsulinProfileDao.sensitivityFactor),
-                carbohydrateRatio = rs.getInt(InsulinProfileDao.carbRatio),
+                glucoseObjective = rs.getFloat(InsulinProfileDao.glucoseObjective),
+                insulinSensitivityFactor = rs.getFloat(InsulinProfileDao.sensitivityFactor),
+                carbohydrateRatio = rs.getFloat(InsulinProfileDao.carbRatio),
                 modificationDate = OffsetDateTimeSupport.parseFromDateTimeWithWithTimeZone(
                         rs.getString(InsulinProfileDao.modificationDate)
                 )

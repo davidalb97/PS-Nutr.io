@@ -123,7 +123,7 @@ class MealDbRepository(
     fun insertCustomMeal(
             submitterId: Int,
             mealName: String,
-            quantity: Int,
+            quantity: Float,
             cuisines: Collection<String>,
             ingredients: Collection<IngredientInput>,
             type: MealType
@@ -165,7 +165,6 @@ class MealDbRepository(
             val carbs = databaseIngredients
                     .zip(ingredients, this::getCarbsForInputQuantity)
                     .sum()
-                    .toInt()
 
             //Insert Meal
             val mealDto = it
@@ -197,8 +196,8 @@ class MealDbRepository(
     fun insertSuggestedMeal(
             submitterId: Int,
             mealName: String,
-            quantity: Int,
-            carbs: Int,
+            quantity: Float,
+            carbs: Float,
             cuisines: Collection<String>,
             type: MealType
     ): DbMealDto {
@@ -245,7 +244,7 @@ class MealDbRepository(
             submissionId: Int,
             submitterId: Int,
             mealName: String,
-            quantity: Int,
+            quantity: Float,
             cuisines: Collection<String>,
             ingredients: Collection<IngredientInput>,
             type: MealType
@@ -272,7 +271,6 @@ class MealDbRepository(
             val carbs = databaseIngredients
                     .zip(ingredients, this::getCarbsForInputQuantity)
                     .sum()
-                    .toInt()
 
             //Insert Meal
             val mealDto = it
@@ -349,6 +347,6 @@ class MealDbRepository(
 
     //TODO Remove this and use 'carbsTool'
     private fun getCarbsForInputQuantity(dbIngredientDto: DbMealDto, ingredientInput: IngredientInput): Float {
-        return (ingredientInput.quantity!!.times(dbIngredientDto.carbs).toFloat()).div(dbIngredientDto.amount)
+        return (ingredientInput.quantity!!.times(dbIngredientDto.carbs)).div(dbIngredientDto.amount)
     }
 }

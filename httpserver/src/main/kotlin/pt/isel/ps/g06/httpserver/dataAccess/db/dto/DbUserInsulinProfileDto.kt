@@ -14,11 +14,11 @@ class DbUserInsulinProfileDto(
         @ColumnName(InsulinProfileDao.endTime)
         val endTime: String,
         @ColumnName(InsulinProfileDao.glucoseObjective)
-        val glucoseObjective: Int,
+        val glucoseObjective: Float,
         @ColumnName(InsulinProfileDao.sensitivityFactor)
-        val insulinSensitivityFactor: Int,
+        val insulinSensitivityFactor: Float,
         @ColumnName(InsulinProfileDao.carbRatio)
-        val carbohydrateRatio: Int,
+        val carbohydrateRatio: Float,
         @ColumnName(InsulinProfileDao.modificationDate)
         val modificationDate: OffsetDateTime
 )

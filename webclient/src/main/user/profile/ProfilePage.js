@@ -1,5 +1,5 @@
 import React, { useContext, useState, useReducer } from 'react'
-import { Link, Redirect } from 'react-router-dom'
+import { Redirect } from 'react-router-dom'
 import useFetch, { FetchStates } from '../../common/useFetch'
 
 import Card from 'react-bootstrap/Card'
@@ -29,16 +29,6 @@ export default function ProfilePage() {
     </Card>
 
     function Body() {
-        if (!context.initialized) return <Loading />
-
-        if (!context.user) return (
-            <span>
-                You are not logged in!
-                    Either <Link to="/login">log in </Link>
-                    or <Link to="/register">register</Link> if you don't have an account.
-            </span>
-        )
-
         return <>
             <Row>
                 <Col>
@@ -80,8 +70,6 @@ export default function ProfilePage() {
             setRedirect(success)
             if (success) context.onLogout()
         }
-
-
     }
 }
 

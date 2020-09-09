@@ -40,7 +40,7 @@ class DbMealItemMapper {
         carbs = model.carbs,
         amount = model.amount,
         unit = model.unit.ordinal,
-        isFavorite = model.favorites?.isFavorite ?: false,
+        isFavorite = model.favorites.isFavorite,
         isVotable = model.votes?.isVotable ?: false,
         imageUri = model.imageUri?.toString(),
         positiveVotes = model.votes?.positive,

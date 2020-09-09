@@ -31,7 +31,7 @@ class DbMealIngredientModelMapper(
                             //An ingredient is always favorable
                             isFavorable = { true },
                             nutritionalValues = NutritionalValues(
-                                    carbs = calculateCarbsFromBase(ingredient.amount, ingredient.carbs, it.quantity).toInt(),
+                                    carbs = calculateCarbsFromBase(ingredient.amount, ingredient.carbs, it.quantity),
                                     amount = it.quantity,
                                     unit = "gr"
                             )

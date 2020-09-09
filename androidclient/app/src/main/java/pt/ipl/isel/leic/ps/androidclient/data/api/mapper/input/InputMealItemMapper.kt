@@ -19,7 +19,7 @@ class InputMealItemMapper(
         submissionId = dto.identifier,
         restaurantSubmissionId = dto.restaurantIdentifier,
         carbs = dto.nutritionalInfo.carbs,
-        amount = dto.nutritionalInfo.amount.toFloat(),
+        amount = dto.nutritionalInfo.amount,
         unit = WeightUnits.fromValue(dto.nutritionalInfo.unit),
         imageUri = dto.image,
         name = dto.name,

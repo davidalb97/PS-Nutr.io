@@ -44,8 +44,8 @@ class MealService(
     fun createSuggestedMeal(
             submitterId: Int,
             name: String,
-            quantity: Int,
-            carbs: Int,
+            quantity: Float,
+            carbs: Float,
             cuisines: Collection<String>
     ): Meal {
         val createdMeal = dbMealRepository.insertSuggestedMeal(
@@ -63,7 +63,7 @@ class MealService(
     fun createCustomMeal(
             submitterId: Int,
             name: String,
-            quantity: Int,
+            quantity: Float,
             ingredients: Collection<IngredientInput>,
             cuisines: Collection<String>
     ): Meal {
@@ -85,7 +85,7 @@ class MealService(
             submissionId: Int,
             submitterId: Int,
             name: String,
-            quantity: Int,
+            quantity: Float,
             ingredients: Collection<IngredientInput>,
             cuisines: Collection<String>,
             mealType: MealType
@@ -105,8 +105,8 @@ class MealService(
         return dbMealModelMapper.mapTo(updatedMeal)
     }
 
-    private fun validateMealQuantity(ingredients: Collection<IngredientInput>, quantity: Int) {
-        if (ingredients.sumBy { it.quantity!! } > quantity) {
+    private fun validateMealQuantity(ingredients: Collection<IngredientInput>, quantity: Float) {
+        if (ingredients.fold(0.0F) { old, next -> old + next.quantity!! } > quantity) {
             throw InvalidMealException("The sum of ingredient quantity must be lower than meal quantity!")
         }
     }

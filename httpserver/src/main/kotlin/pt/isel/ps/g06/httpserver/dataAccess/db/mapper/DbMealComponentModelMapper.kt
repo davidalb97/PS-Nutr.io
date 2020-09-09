@@ -55,7 +55,7 @@ class DbMealComponentModelMapper(
                                         ?.let(dbRestaurantMealModelMapper::mapTo)
                             },
                             nutritionalInfo = NutritionalValues(
-                                    carbs = calculateCarbsFromBase(mealComponent.amount, mealComponent.carbs, it.quantity).toInt(),
+                                    carbs = calculateCarbsFromBase(mealComponent.amount, mealComponent.carbs, it.quantity),
                                     amount = it.quantity,
                                     unit = "gr"     //TODO From an enum
                             )

@@ -3,6 +3,7 @@ package pt.ipl.isel.leic.ps.androidclient.ui.modular.action
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
+import androidx.core.content.ContextCompat
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.VoteState
 import pt.ipl.isel.leic.ps.androidclient.data.model.Votes
@@ -11,7 +12,6 @@ import pt.ipl.isel.leic.ps.androidclient.ui.modular.ILog
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.IUserSession
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.IVoteProgress
 import pt.ipl.isel.leic.ps.androidclient.ui.util.ItemAction
-import pt.ipl.isel.leic.ps.androidclient.ui.util.changeColor
 
 interface IVoteActionButtons : IVoteProgress, IContext, IAction, IUserSession, ILog {
 
@@ -29,25 +29,38 @@ interface IVoteActionButtons : IVoteProgress, IContext, IAction, IUserSession, I
         downVoteButton = view.findViewById(downVoteButtonId)
         voteButtonsLayout = view.findViewById(voteButtonsLayoutId)
 
+        val userVote = votes?.userHasVoted
+        val ctx = fetchCtx()
+
         if (!actions.contains(ItemAction.VOTE) || votes == null || !votes.isVotable) {
             return
         }
+
+        if (userVote == VoteState.POSITIVE) {
+            upVoteButton.background =
+                ContextCompat.getDrawable(ctx, R.drawable.upvote_button_triggered)
+        }
+        if (userVote == VoteState.NEGATIVE) {
+            downVoteButton.background =
+                ContextCompat.getDrawable(ctx, R.drawable.downvote_button_triggered)
+        }
+
         upVoteButton.setOnClickListener {
-            ensureUserSession(fetchCtx()) {
+            ensureUserSession(ctx) {
                 vote(votes, true)
             }
         }
         downVoteButton.setOnClickListener {
-            ensureUserSession(fetchCtx()) {
+            ensureUserSession(ctx) {
                 vote(votes, false)
             }
         }
         voteButtonsLayout.visibility = View.VISIBLE
     }
 
-    private fun vote(votes: Votes, upVote: Boolean) {
+    private fun vote(votes: Votes, isPositive: Boolean) {
         val currentState = votes.userHasVoted
-        val nextVoteState = currentState.nextState(upVote)
+        val nextVoteState = currentState.nextState(isPositive)
         log.v("Setting vote from $currentState to $nextVoteState...")
         onVote(
             voteState = nextVoteState,
@@ -62,14 +75,18 @@ interface IVoteActionButtons : IVoteProgress, IContext, IAction, IUserSession, I
     fun changeVoteButtonColors(previousState: VoteState, currentState: VoteState) {
         val ctx = fetchCtx()
         if (previousState == VoteState.POSITIVE) {
-            upVoteButton.changeColor(ctx, R.color.colorGray)
+            upVoteButton.background =
+                ContextCompat.getDrawable(ctx, R.drawable.upvote_button)
         } else if (previousState == VoteState.NEGATIVE) {
-            downVoteButton.changeColor(ctx, R.color.colorGray)
+            downVoteButton.background =
+                ContextCompat.getDrawable(ctx, R.drawable.downvote_button)
         }
         if (currentState == VoteState.POSITIVE) {
-            upVoteButton.changeColor(ctx, R.color.colorAccent)
+            upVoteButton.background =
+                ContextCompat.getDrawable(ctx, R.drawable.upvote_button_triggered)
         } else if (currentState == VoteState.NEGATIVE) {
-            downVoteButton.changeColor(ctx, R.color.colorAccent)
+            downVoteButton.background =
+                ContextCompat.getDrawable(ctx, R.drawable.downvote_button_triggered)
         }
     }
 }

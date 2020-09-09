@@ -1,7 +1,7 @@
 package pt.isel.ps.g06.httpserver.model
 
 data class NutritionalValues(
-        val carbs: Int,
-        val amount: Int,
+        val carbs: Float,
+        val amount: Float,
         val unit: String
 )
