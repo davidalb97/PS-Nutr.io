@@ -21,7 +21,7 @@ class InputMealInfoMapper(
         restaurantSubmissionId = restaurantId,
         name = dto.name,
         carbs = dto.nutritionalInfo.carbs,
-        amount = dto.nutritionalInfo.amount.toFloat(),
+        amount = dto.nutritionalInfo.amount,
         unit = WeightUnits.fromValue(dto.nutritionalInfo.unit),
         votes = null,
         favorites = inputFavoriteMapper.mapToModel(dto.favorites),

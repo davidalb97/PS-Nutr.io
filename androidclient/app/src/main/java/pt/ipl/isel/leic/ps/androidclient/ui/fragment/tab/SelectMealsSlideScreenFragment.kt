@@ -111,10 +111,9 @@ class SelectMealsSlideScreenFragment : BaseSlideScreenFragment(propagateArgument
                     baseCarbs = item.carbs.toFloat(),
                     baseAmountGrams = item.amount,
                     mealUnit = item.unit
-                ) { preciseGrams, preciseCarbs ->
-                    val roundedCarbs = preciseCarbs.toInt()
-                    item.amount = preciseGrams
-                    item.carbs = roundedCarbs
+                ) { selectedGrams, selectedCarbohydrates ->
+                    item.amount = selectedGrams
+                    item.carbs = selectedCarbohydrates
                     viewModel.pick(item)
                     onChangeCallback()
                 }
@@ -145,12 +144,11 @@ class SelectMealsSlideScreenFragment : BaseSlideScreenFragment(propagateArgument
                     baseCarbs = existingItem.carbs.toFloat(),
                     baseAmountGrams = existingItem.amount,
                     mealUnit = item.unit
-                ) { preciseGrams, preciseCarbs ->
-                    val roundedCarbs = preciseCarbs.toInt()
-                    item.amount = preciseGrams
-                    item.carbs = roundedCarbs
-                    existingItem.amount = preciseGrams
-                    existingItem.carbs = roundedCarbs
+                ) { selectedGrams, selectedCarbohydrates ->
+                    item.amount = selectedGrams
+                    item.carbs = selectedCarbohydrates
+                    existingItem.amount = selectedGrams
+                    existingItem.carbs = selectedCarbohydrates
                     onChangeCallback()
                 }
             }
