@@ -200,7 +200,9 @@
                 android:id="@+id/chart_container"
                 android:layout_width="wrap_content"
                 android:layout_margin="10dp"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                >
 
                 <TextView
                     android:id="@+id/y_axis_label"
@@ -214,7 +216,8 @@
                 <com.github.mikephil.charting.charts.BarChart
                     android:id="@+id/portion_chart"
                     android:layout_width="match_parent"
-                    android:layout_height="150dp" />
+                    android:layout_height="150dp"
+                    />
 
                 <TextView
                     android:id="@+id/x_axis_label"
