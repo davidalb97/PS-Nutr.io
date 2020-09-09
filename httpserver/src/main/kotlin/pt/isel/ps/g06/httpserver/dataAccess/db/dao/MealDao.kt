@@ -149,8 +149,8 @@ interface MealDao {
     fun insert(
             @Bind submissionId: Int,
             @Bind mealName: String,
-            @Bind carbs: Int,
-            @Bind quantity: Int,
+            @Bind carbs: Float,
+            @Bind quantity: Float,
             @Bind unit: String = "gr",
             @Bind mealType: String
     ): DbMealDto
@@ -167,8 +167,8 @@ interface MealDao {
     fun update(
             @Bind submissionId: Int,
             @Bind mealName: String,
-            @Bind carbs: Int,
-            @Bind quantity: Int,
+            @Bind carbs: Float,
+            @Bind quantity: Float,
             @Bind unit: String = "gr",
             @Bind mealType: String
     ): DbMealDto

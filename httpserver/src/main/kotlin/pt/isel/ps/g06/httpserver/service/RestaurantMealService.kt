@@ -143,7 +143,7 @@ class RestaurantMealService(
      * @throws InvalidInputException If the [mealId] is not from a meal or
      * the [restaurantId]'s submission id is not from a restaurant.
      */
-    fun addRestaurantMealPortion(restaurantId: RestaurantIdentifier, mealId: Int, submitterId: Int, quantity: Int) {
+    fun addRestaurantMealPortion(restaurantId: RestaurantIdentifier, mealId: Int, submitterId: Int, quantity: Float) {
         val restaurantMeal = getOrAddRestaurantMeal(restaurantId, mealId)
 
         dbPortionRepository.insert(submitterId, restaurantMeal.info!!.identifier!!, quantity)

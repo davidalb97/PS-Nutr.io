@@ -4,8 +4,8 @@ open class DbMealDto(
         val submission_id: Int,
         val meal_name: String,
         val meal_type: String,
-        carbs: Int,
-        quantity: Int,
+        carbs: Float,
+        quantity: Float,
         unit: String
 ) : DbNutritionalDto(
         carbs = carbs,
