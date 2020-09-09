@@ -99,11 +99,12 @@ Afterwards, select created virtual device and press the start button on Android 
 
 ### Web client
 
-To run the web client locally, the **Node.Js** framework must first be installed.
+Assuming that the following operations are done inside the `./webclient` folder, to compile the web client, all dependencies must first be installed using **NPM** and the command `npm install`. 
 
-After the installation, go to the `webclient` inside the project's source, open a terminal and run `npm install` to install all the required dependencies.
+- To run the client in *development* mode, execute the script `npm run dev` and navigate to `http://localhost:9000`;
+- To run the client in *production* mode, execute the script `npm run build`, execute the HTTP server and navigate to `http://localhost:8080`;
 
-Afterwards run the command `npm dev` in order start the client in development mode.
+The differences between each mode are described in greater detail in our project's report in **Chapter 5.2 - Running the client**. 
 
 ## Demo
 
