@@ -17,6 +17,7 @@ The following software is required on your machine in order for the project to b
 - **Java JDK 11.06** (LTS) - Required in order to execute generated project's *jar*.
 - **Gradle** - Required in order to build and generate project's server *jar*.
 - **Android Studio** - Required in order to execute the android application.
+- **NPM** - Required in order to install all dependencies required by the web client and run it.
 
 ## Setup
 
@@ -94,21 +95,21 @@ To run the mobile application, an emulator with the proper API level is needed. 
 
 Afterwards, select created virtual device and press the start button on Android Studio's top bar to launch the emulator, build the project, install all the required dependencies and execute the Android application.
 
+**Alternately, **the application's executable can also be downloaded from the Github repository in the `./aaa/` folder in order to run the application in your preferred device.
+
 ### Web client
 
-To run the web client locally, the **Node.Js** framework must be installed first.
+To run the web client locally, the **Node.Js** framework must first be installed.
 
 After the installation, go to the `webclient` inside the project's source, open a terminal and run `npm install` to install all the required dependencies.
 
-To start the client just type `npm dev`.
+Afterwards run the command `npm dev` in order start the client in development mode.
 
 ## Demo
 
-The server was later deployed to **Heroku** along with the web client for demonstration proposes.
+For demonstration purposes, the server is deployed and hosted on **Heroku** with both the API and web client functionalities on the following url: [**Nutr.io-app**](https://nutrio-app.herokuapp.com/) 
 
-[**Nutr.io-app**](https://nutrio-app.herokuapp.com/) 
-
-To test the web client you can use the following credentials:
+A new client can be created in order to visit most pages, but to experience most moderating functions the following credentials can be used:
 
 - **Email**: TestModerator@email.com
 
