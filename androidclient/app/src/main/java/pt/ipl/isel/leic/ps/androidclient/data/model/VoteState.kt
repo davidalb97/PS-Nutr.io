@@ -5,11 +5,11 @@ enum class VoteState {
     NEGATIVE,
     NOT_VOTED;
 
-    fun nextState(upVote: Boolean): VoteState {
+    fun nextState(isPositive: Boolean): VoteState {
         return when (this) {
-            NOT_VOTED -> if (upVote) POSITIVE else NEGATIVE
-            POSITIVE -> if (upVote) NOT_VOTED else POSITIVE
-            NEGATIVE -> if (upVote) NEGATIVE else NOT_VOTED
+            NOT_VOTED -> if (isPositive) POSITIVE else NEGATIVE
+            POSITIVE -> if (isPositive) NOT_VOTED else NEGATIVE
+            NEGATIVE -> if (isPositive) POSITIVE else NOT_VOTED
         }
     }
 }

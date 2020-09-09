@@ -8,7 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <RelativeLayout>
+        <!--<RelativeLayout>
             <ImageButton
                 android:id="@+id/options"
                 android:layout_width="50dp"
@@ -22,7 +22,7 @@
                 android:visibility="gone"
                 >
             </ImageButton>
-        </RelativeLayout>
+        </RelativeLayout>-->
 
         <RelativeLayout
             android:id="@+id/restaurant_general_details"
@@ -151,12 +151,8 @@
                     android:id="@+id/up_vote_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="25dp"
-                    android:text="@string/upvote"
-                    android:textColor="@color/cardview_light_background"
-                    android:background="@drawable/rect_material_button_shape"
-                    android:src="@drawable/ic_upvote_ico"
-                    >
+                    android:layout_marginEnd="25dp"
+                    android:background="@drawable/upvote_button">
                 </ImageButton>
 
                 <ImageButton
@@ -164,11 +160,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_toEndOf="@+id/up_vote_button"
-                    android:text="@string/downvote"
-                    android:textColor="@color/cardview_light_background"
-                    android:background="@drawable/rect_material_button_shape"
-                    android:src="@drawable/ic_downvote_ico"
-                    >
+                    android:background="@drawable/downvote_button">
                 </ImageButton>
 
             </RelativeLayout>
