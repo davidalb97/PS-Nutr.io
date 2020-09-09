@@ -292,7 +292,7 @@ class MealDataSource(
      */
 
     fun deleteMeal(
-        mealId: Int,
+        submissionId: Int,
         success: (PayloadResponse) -> Unit,
         error: (VolleyError) -> Unit,
         jwt: String
@@ -303,7 +303,7 @@ class MealDataSource(
                 .scheme(SCHEME)
                 .encodedAuthority(ADDRESS_PORT)
                 .appendPath(MEAL_PATH)
-                .appendPath(mealId)
+                .appendPath(submissionId)
                 .build()
                 .toString(),
             reqHeader = buildAuthHeader(jwt),

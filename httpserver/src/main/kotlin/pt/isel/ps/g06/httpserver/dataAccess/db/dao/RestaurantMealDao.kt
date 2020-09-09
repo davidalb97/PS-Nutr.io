@@ -25,6 +25,9 @@ interface RestaurantMealDao {
         const val attributes = "$table.$id, $table.$restaurantId, $table.$mealId, $table.$verified"
     }
 
+    @SqlQuery("SELECT * FROM $table WHERE $mealId = :mealId")
+    fun getAllByMealId(@Bind mealId: Int): ResultIterable<DbRestaurantMealDto>
+
     @SqlQuery("SELECT * FROM $table WHERE $restaurantId = :restaurantId AND $mealId = :mealId")
     fun getByRestaurantAndMealId(@Bind restaurantId: Int, @Bind mealId: Int): DbRestaurantMealDto?
 

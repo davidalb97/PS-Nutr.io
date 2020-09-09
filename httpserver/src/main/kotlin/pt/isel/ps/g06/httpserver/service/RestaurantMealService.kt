@@ -7,6 +7,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.repo.ReportDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.RestaurantMealDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.input.restaurantMeal.PortionInput
 import pt.isel.ps.g06.httpserver.dataAccess.db.mapper.DbRestaurantMealInfoModelMapper
+import pt.isel.ps.g06.httpserver.dataAccess.db.mapper.DbRestaurantMealModelMapper
 import pt.isel.ps.g06.httpserver.exception.problemJson.badRequest.InvalidInputException
 import pt.isel.ps.g06.httpserver.exception.problemJson.conflict.DuplicateMealException
 import pt.isel.ps.g06.httpserver.exception.problemJson.forbidden.NotSubmissionOwnerException
@@ -29,7 +30,8 @@ class RestaurantMealService(
         private val dbPortionRepository: PortionDbRepository,
         private val dbFavoriteDbRepository: FavoriteDbRepository,
         private val dbReportDbRepository: ReportDbRepository,
-        private val dbRestaurantMealModelMapper: DbRestaurantMealInfoModelMapper
+        private val dbRestaurantMealInfoModelMapper: DbRestaurantMealInfoModelMapper,
+        private val dbRestaurantMealModelMapper: DbRestaurantMealModelMapper
 ) {
 
     /**
@@ -56,7 +58,7 @@ class RestaurantMealService(
         //If the restaurant is inserted, get restaurant meal (if restaurant - meal is associated)
         val restaurantMeal = restaurantId.submissionId?.let {
             dbRestaurantMealRepository.getRestaurantMeal(it, mealId)
-        }?.let(dbRestaurantMealModelMapper::mapTo)
+        }?.let(dbRestaurantMealInfoModelMapper::mapTo)
 
         return RestaurantMeal(
                 info = restaurantMeal,
@@ -95,7 +97,7 @@ class RestaurantMealService(
         return RestaurantMeal(
                 restaurant = restaurant,
                 meal = meal,
-                info = dbRestaurantMealModelMapper.mapTo(restaurantMeal)
+                info = dbRestaurantMealInfoModelMapper.mapTo(restaurantMeal)
         )
     }
 
@@ -141,7 +143,7 @@ class RestaurantMealService(
      * @throws InvalidInputException If the [mealId] is not from a meal or
      * the [restaurantId]'s submission id is not from a restaurant.
      */
-    fun addRestaurantMealPortion(restaurantId: RestaurantIdentifier, mealId: Int, submitterId: Int, quantity: Int) {
+    fun addRestaurantMealPortion(restaurantId: RestaurantIdentifier, mealId: Int, submitterId: Int, quantity: Float) {
         val restaurantMeal = getOrAddRestaurantMeal(restaurantId, mealId)
 
         dbPortionRepository.insert(submitterId, restaurantMeal.info!!.identifier!!, quantity)
@@ -206,11 +208,4 @@ class RestaurantMealService(
             dbRestaurantMealRepository
                     .getAllUserFavorites(submitterId, count, skip)
                     .map(dbRestaurantMealModelMapper::mapTo)
-                    .map {
-                        RestaurantMeal(
-                                meal = mealService.getMeal(it.mealIdentifier)!!,
-                                restaurant = restaurantService.getRestaurantSubmission(it.restaurantIdentifier)!!,
-                                info = it
-                        )
-                    }
 }

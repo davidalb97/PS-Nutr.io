@@ -11,7 +11,7 @@ import java.util.concurrent.CompletableFuture
 @Repository
 abstract class RestaurantApi(
         httpClient: HttpClient = HttpClient.newHttpClient(),
-        private val restaurantUri: RestaurantUri,
+        protected val restaurantUri: RestaurantUri,
         objectMapper: ObjectMapper
 ) : BaseApiRequester(httpClient, objectMapper) {
 

@@ -9,7 +9,7 @@ class InputPortionMapper {
     fun mapToModel(dto: PortionsInput) = Portions(
         dbId = DbPortionEntity.DEFAULT_DB_ID,
         dbMealId = DbPortionEntity.DEFAULT_DB_ID,
-        userPortion = dto.userPortion?.toFloat(),
-        allPortions = dto.portions.map { it.toFloat() }.toList()
+        userPortion = dto.userPortion,
+        allPortions = dto.portions.toList()
     )
 }

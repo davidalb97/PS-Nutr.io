@@ -8,6 +8,7 @@ import pt.ipl.isel.leic.ps.androidclient.ui.modular.listener.check.ICheckListene
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.listener.click.IItemClickListener
 import pt.ipl.isel.leic.ps.androidclient.ui.viewholder.meal.IngredientRecyclerViewHolder
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.meal.IngredientListViewModel
+import java.lang.UnsupportedOperationException
 
 class MealIngredientRecyclerAdapter(
     viewModel: IngredientListViewModel,
@@ -35,7 +36,7 @@ class MealIngredientRecyclerAdapter(
             }
 
             override fun onDelete(onSuccess: () -> Unit, onError: (Throwable) -> Unit) =
-                this@MealIngredientRecyclerAdapter.onDelete(this.item, onSuccess)
+                throw UnsupportedOperationException()
 
             override fun onFavorite(onSuccess: () -> Unit, onError: (Throwable) -> Unit) =
                 this@MealIngredientRecyclerAdapter.onFavorite(this.item, onSuccess, onError)

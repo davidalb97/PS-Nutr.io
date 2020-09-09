@@ -52,9 +52,9 @@ class InsulinProfileDbRepository(
             profileName: String,
             startTime: LocalTime,
             endTime: LocalTime,
-            glucoseObjective: Int,
-            insulinSensitivityFactor: Int,
-            carbohydrateRatio: Int
+            glucoseObjective: Float,
+            insulinSensitivityFactor: Float,
+            carbohydrateRatio: Float
     ): DbUserInsulinProfileDto {
         return databaseContext.inTransaction { handle ->
             val insulinProfileDao = handle.attach(insulinProfileDaoClass)
@@ -98,6 +98,7 @@ class InsulinProfileDbRepository(
         val encProfileName = columnCryptoConverter.convertToDatabaseColumn(profileName)
 
         return databaseContext.inTransaction { handle ->
+            //TODO Get insulin profile before deleting it
             return@inTransaction handle
                     .attach(insulinProfileDaoClass)
                     .deleteProfile(submitterId, encProfileName)

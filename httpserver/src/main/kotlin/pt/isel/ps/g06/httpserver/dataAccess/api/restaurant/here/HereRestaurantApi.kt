@@ -13,6 +13,12 @@ import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
 import java.net.http.HttpResponse
+import java.util.concurrent.CompletableFuture
+
+/**
+ * This is an API limitation
+ */
+private const val MAX_HERE_ITEMS = 100
 
 @Repository
 class HereRestaurantApi(
@@ -29,6 +35,29 @@ class HereRestaurantApi(
             HttpStatus.BAD_REQUEST.value() -> null
             HttpStatus.NOT_FOUND.value() -> null
             else -> throw mapApiException(body)
+        }
+    }
+
+    override fun searchNearbyRestaurants(
+            latitude: Float,
+            longitude: Float,
+            radiusMeters: Int,
+            name: String?,
+            skip: Int?,
+            count: Int
+    ): Sequence<RestaurantDto> {
+        val apiCount = if (skip == null || skip == 0) count else count.plus(count.times(skip))
+        if(apiCount > MAX_HERE_ITEMS) {
+            return emptySequence()
+        }
+        return sequence {
+            val uri = restaurantUri.nearbyRestaurants(latitude, longitude, radiusMeters, name, skip, apiCount)
+            val response = httpClient.send(
+                    buildGetRequest(uri),
+                    HttpResponse.BodyHandlers.ofString()
+            )
+
+            yieldAll(handleNearbyRestaurantsResponse(response).drop(apiCount - count))
         }
     }
 

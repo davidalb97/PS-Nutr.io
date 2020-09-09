@@ -6,6 +6,6 @@ package pt.isel.ps.g06.httpserver.common.nutrition
  * originalQuantity -- originalCarbs
  * newQuantity      --   RETURN
  */
-fun calculateCarbsFromBase(originalQuantity: Int, originalCarbs: Int, newQuantity: Int): Float {
-    return (newQuantity.times(originalCarbs).toFloat()).div(originalQuantity)
+fun calculateCarbsFromBase(originalQuantity: Float, originalCarbs: Float, newQuantity: Float): Float {
+    return (newQuantity.times(originalCarbs)).div(originalQuantity)
 }

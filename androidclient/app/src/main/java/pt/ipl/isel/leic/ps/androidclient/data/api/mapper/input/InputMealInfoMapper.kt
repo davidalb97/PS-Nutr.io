@@ -22,7 +22,7 @@ class InputMealInfoMapper(
         restaurantSubmissionId = restaurantId,
         name = dto.name,
         carbs = dto.nutritionalInfo.carbs,
-        amount = dto.nutritionalInfo.amount.toFloat(),
+        amount = dto.nutritionalInfo.amount,
         unit = WeightUnits.fromValue(dto.nutritionalInfo.unit),
         votes = dto.votes?.let { inputVotesMapper.mapToModel(it) },
         favorites = inputFavoriteMapper.mapToModel(dto.favorites),

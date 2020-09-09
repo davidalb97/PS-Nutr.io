@@ -38,9 +38,9 @@ class InsulinProfileServiceTest {
                 identifier = 1,
                 startTime = LocalTime.MIN.toString(),
                 endTime = LocalTime.MIN.plusHours(6).toString(),
-                glucoseObjective = 100,
-                insulinSensitivityFactor = 40,
-                carbohydrateRatio = 12,
+                glucoseObjective = 100F,
+                insulinSensitivityFactor = 40F,
+                carbohydrateRatio = 12F,
                 modificationDate = OffsetDateTime.now(),
                 name = "Profile 1"
         )
@@ -51,9 +51,9 @@ class InsulinProfileServiceTest {
                 profileName = "Profile 1",
                 startTime = LocalTime.parse(existingProfile.startTime),
                 endTime = LocalTime.parse(existingProfile.startTime).plusHours(1),
-                glucoseObjective = 100,
-                insulinSensitivityFactor = 40,
-                carbohydrateRatio = 10
+                glucoseObjective = 100F,
+                insulinSensitivityFactor = 40F,
+                carbohydrateRatio = 10F
         )).thenCallRealMethod()
 
         `when`(mock.getAllProfilesFromUser(1, null, null)).thenReturn(sequenceOf(existingProfile))
@@ -64,9 +64,9 @@ class InsulinProfileServiceTest {
                     profileName = "Profile 1",
                     startTime = LocalTime.parse(existingProfile.startTime),
                     endTime = LocalTime.parse(existingProfile.startTime).plusHours(1),
-                    glucoseObjective = 100,
-                    insulinSensitivityFactor = 40,
-                    carbohydrateRatio = 10
+                    glucoseObjective = 100F,
+                    insulinSensitivityFactor = 40F,
+                    carbohydrateRatio = 10F
             )
         }
     }
@@ -78,9 +78,9 @@ class InsulinProfileServiceTest {
                 identifier = submitterId,
                 startTime = LocalTime.MIN.toString(),
                 endTime = LocalTime.MIN.plusHours(1).toString(),
-                glucoseObjective = 100,
-                insulinSensitivityFactor = 40,
-                carbohydrateRatio = 12,
+                glucoseObjective = 100F,
+                insulinSensitivityFactor = 40F,
+                carbohydrateRatio = 12F,
                 modificationDate = OffsetDateTime.now(),
                 name = "Profile 1"
         )
@@ -108,9 +108,9 @@ class InsulinProfileServiceTest {
                 profileName = "Profile 2",
                 startTime = LocalTime.parse(existingProfile.endTime).plusHours(1),
                 endTime = LocalTime.parse(existingProfile.endTime).plusHours(2),
-                glucoseObjective = 100,
-                insulinSensitivityFactor = 40,
-                carbohydrateRatio = 10
+                glucoseObjective = 100F,
+                insulinSensitivityFactor = 40F,
+                carbohydrateRatio = 10F
         )
 
         //See if repository is called once
@@ -135,9 +135,9 @@ class InsulinProfileServiceTest {
                     profileName = "Profile 1",
                     startTime = time,
                     endTime = time,
-                    glucoseObjective = 100,
-                    insulinSensitivityFactor = 40,
-                    carbohydrateRatio = 12
+                    glucoseObjective = 100F,
+                    insulinSensitivityFactor = 40F,
+                    carbohydrateRatio = 12F
             )
 
             Assert.fail()
@@ -155,9 +155,9 @@ class InsulinProfileServiceTest {
                     profileName = "Profile 1",
                     startTime = startTime,
                     endTime = endTime,
-                    glucoseObjective = 100,
-                    insulinSensitivityFactor = 40,
-                    carbohydrateRatio = 12
+                    glucoseObjective = 100F,
+                    insulinSensitivityFactor = 40F,
+                    carbohydrateRatio = 12F
             )
 
             Assert.fail()

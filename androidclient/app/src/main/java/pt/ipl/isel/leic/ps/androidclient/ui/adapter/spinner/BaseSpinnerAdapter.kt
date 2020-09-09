@@ -35,6 +35,7 @@ abstract class BaseSpinnerAdapter<M : Parcelable, VM : BaseListViewModel<M>>(
         )
     }
 
+    @Suppress("UNCHECKED_CAST")
     open fun createView(
         idx: Int,
         convertView: View?,

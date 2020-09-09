@@ -9,9 +9,9 @@ data class InsulinProfileOutput(
         val name: String,
         val startTime: String,
         val endTime: String,
-        val glucoseObjective: Int,
-        val sensitivityFactor: Int,
-        val carbohydrateRatio: Int,
+        val glucoseObjective: Float,
+        val sensitivityFactor: Float,
+        val carbohydrateRatio: Float,
         @JsonSerialize(using = ToStringSerializer::class)
         val modificationDate: OffsetDateTime
 )

@@ -21,7 +21,7 @@ class MealIngredient : MealItem, Parcelable {
         dbId: Long?,
         submissionId: Int?,
         name: String,
-        carbs: Int,
+        carbs: Float,
         amount: Float,
         favorites: Favorites,
         unit: WeightUnits,

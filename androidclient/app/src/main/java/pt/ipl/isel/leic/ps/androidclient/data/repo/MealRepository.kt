@@ -254,6 +254,18 @@ class MealRepository(private val dataSource: MealDataSource) {
         jwt = userSession.jwt
     )
 
+    fun deleteCustomMeal(
+        mealItem: MealItem,
+        success: () -> Unit,
+        error: (VolleyError) -> Unit,
+        userSession: UserSession
+    ) = dataSource.deleteMeal(
+        submissionId = requireNotNull(mealItem.submissionId),
+        error = error,
+        success = { success() },
+        jwt = userSession.jwt
+    )
+
     fun putVote(
         restaurantId: String,
         mealId: Int,

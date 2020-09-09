@@ -8,7 +8,7 @@ class InsulinCalculator {
     fun calculateMealInsulin(
         insulinProfile: InsulinProfile,
         currentGlucose: Float,
-        mealCarbs: Int
+        mealCarbs: Float
     ): Float {
         //The correction factor based on current glucose, glucose objective and user's ISF
         val correctionFactor: Float =

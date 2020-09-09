@@ -8,7 +8,7 @@ class CarbToolsTest {
 
     @Test
     fun `carb tool should provide correct values`() {
-        val result = calculateCarbsFromBase(100, 10, 200)
+        val result = calculateCarbsFromBase(100F, 10F, 200F)
         Assert.assertEquals(20F, result)
     }
 }

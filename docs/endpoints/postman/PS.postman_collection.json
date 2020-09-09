@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "fd0ddce3-8c59-4031-b726-5329a65a1bd3",
+		"_postman_id": "0c681a41-0cc8-4047-a692-82794857f2e0",
 		"name": "PS",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -255,7 +255,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"profileName\": \"Profile1\",\r\n    \"startTime\": \"21:10\",\r\n    \"endTime\": \"23:10\",\r\n    \"glucoseObjective\": 110,\r\n    \"insulinSensitivityFactor\": 25,\r\n    \"carbohydrateRatio\": 15\r\n}",
+							"raw": "{\r\n    \"profileName\": \"Profile1\",\r\n    \"startTime\": \"21:10\",\r\n    \"endTime\": \"23:10\",\r\n    \"glucoseObjective\": 110.0,\r\n    \"insulinSensitivityFactor\": 25.0,\r\n    \"carbohydrateRatio\": 15.0\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -407,7 +407,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"TestIngredient\",\r\n    \"quantity\": 100,\r\n    \"unit\": \"gr\",\r\n    \"ingredients\": [\r\n        {\r\n            \"identifier\": 143,\r\n            \"quantity\": 100\r\n        }\r\n    ],\r\n    \"cuisines\": [\"Filipino\"]\r\n}",
+							"raw": "{\r\n    \"name\": \"TestIngredient\",\r\n    \"quantity\": 100.0,\r\n    \"carbs\": 30.0,\r\n    \"unit\": \"gr\",\r\n    \"cuisines\": [\"Filipino\"]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -439,7 +439,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"TestMeal\",\r\n    \"quantity\": 100,\r\n    \"unit\": \"gr\",\r\n    \"ingredients\": [\r\n        {\r\n            \"identifier\": 143,\r\n            \"quantity\": 100\r\n        }\r\n    ],\r\n    \"cuisines\": [\"Italian\"]\r\n}",
+							"raw": "{\r\n    \"name\": \"TestMeal\",\r\n    \"quantity\": 100.0,\r\n    \"carbs\": 30.0,\r\n    \"unit\": \"gr\",\r\n    \"cuisines\": [\"Italian\"]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1288,7 +1288,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"TestCustomMeal\",\r\n    \"quantity\": 100,\r\n    \"unit\": \"gr\",\r\n    \"ingredients\":  [\r\n        {\r\n            \"identifier\": 143,\r\n            \"quantity\": 100\r\n        }\r\n    ],\r\n    \"cuisines\": [\"Italian\"]\r\n}",
+							"raw": "{\r\n    \"name\": \"TestCustomMeal\",\r\n    \"quantity\": 100.0,\r\n    \"unit\": \"gr\",\r\n    \"ingredients\":  [\r\n        {\r\n            \"identifier\": 143,\r\n            \"quantity\": 100.0\r\n        }\r\n    ],\r\n    \"cuisines\": [\"Italian\"]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1362,7 +1362,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"TestCustomMeal\",\r\n    \"quantity\": 100,\r\n    \"unit\": \"gr\",\r\n    \"ingredients\":  [\r\n        {\r\n            \"identifier\": 143,\r\n            \"quantity\": 100\r\n        }\r\n    ],\r\n    \"cuisines\": [\"Italian\"]\r\n}",
+							"raw": "{\r\n    \"name\": \"TestCustomMeal\",\r\n    \"quantity\": 100.0,\r\n    \"unit\": \"gr\",\r\n    \"ingredients\":  [\r\n        {\r\n            \"identifier\": 143,\r\n            \"quantity\": 100.0\r\n        }\r\n    ],\r\n    \"cuisines\": [\"Italian\"]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"

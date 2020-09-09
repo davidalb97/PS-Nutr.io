@@ -53,19 +53,20 @@ class SelectMealsSlideScreenFragment : BaseSlideScreenFragment(propagateArgument
     }
 
     override fun addFragments(fragments: HashMap<Fragment, String>) {
-        fragments[setCheckArguments(IngredientsListFragment())] = "Meal Ingredients"
-        fragments[setCheckArguments(MealItemListFragment())] = "Suggested Meals"
-        fragments[setCheckArguments(FavoriteMealListFragment())] = "Favorite Meals"
-        fragments[setCheckArguments(CustomMealListFragment())] = "Custom meals"
+        fragments[setCheckArguments(IngredientsListFragment(), Source.API)] = "Meal Ingredients"
+        fragments[setCheckArguments(MealItemListFragment(), Source.API)] = "Suggested Meals"
+        fragments[setCheckArguments(FavoriteMealListFragment(), Source.FAVORITE_MEAL)] = "Favorite Meals"
+        fragments[setCheckArguments(FavoriteMealListFragment(), Source.FAVORITE_RESTAURANT_MEAL)] = "Favorite Restaurant Meals"
+        fragments[setCheckArguments(CustomMealListFragment(), Source.CUSTOM_MEAL)] = "Custom Meals"
     }
 
-    private fun <M : MealItem, F> setCheckArguments(fragment: F): F
+    private fun <M : MealItem, F> setCheckArguments(fragment: F, source: Source): F
             where F : BaseListFragment<M, *, *>, F : ICheckListenerOwner<M>, F : IItemClickListenerOwner<M> {
 
         //Configure checkbox module activation
         val bundle = Bundle()
         bundle.putItemActions(ItemAction.CHECK)
-        bundle.putSource(Source.API)
+        bundle.putSource(source)
 
         fragment.arguments = bundle
         fragment.restoredItemPredicator = ::restoredItemPredicator
@@ -110,10 +111,9 @@ class SelectMealsSlideScreenFragment : BaseSlideScreenFragment(propagateArgument
                     baseCarbs = item.carbs.toFloat(),
                     baseAmountGrams = item.amount,
                     mealUnit = item.unit
-                ) { preciseGrams, preciseCarbs ->
-                    val roundedCarbs = preciseCarbs.toInt()
-                    item.amount = preciseGrams
-                    item.carbs = roundedCarbs
+                ) { selectedGrams, selectedCarbohydrates ->
+                    item.amount = selectedGrams
+                    item.carbs = selectedCarbohydrates
                     viewModel.pick(item)
                     onChangeCallback()
                 }
@@ -144,12 +144,11 @@ class SelectMealsSlideScreenFragment : BaseSlideScreenFragment(propagateArgument
                     baseCarbs = existingItem.carbs.toFloat(),
                     baseAmountGrams = existingItem.amount,
                     mealUnit = item.unit
-                ) { preciseGrams, preciseCarbs ->
-                    val roundedCarbs = preciseCarbs.toInt()
-                    item.amount = preciseGrams
-                    item.carbs = roundedCarbs
-                    existingItem.amount = preciseGrams
-                    existingItem.carbs = roundedCarbs
+                ) { selectedGrams, selectedCarbohydrates ->
+                    item.amount = selectedGrams
+                    item.carbs = selectedCarbohydrates
+                    existingItem.amount = selectedGrams
+                    existingItem.carbs = selectedCarbohydrates
                     onChangeCallback()
                 }
             }

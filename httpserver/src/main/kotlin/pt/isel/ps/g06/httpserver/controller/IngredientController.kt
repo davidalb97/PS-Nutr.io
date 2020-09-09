@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*
 import org.springframework.web.util.UriComponentsBuilder
 import pt.isel.ps.g06.httpserver.common.INGREDIENTS_PATH
 import pt.isel.ps.g06.httpserver.common.MAX_COUNT
-import pt.isel.ps.g06.httpserver.dataAccess.input.meal.MealInput
+import pt.isel.ps.g06.httpserver.dataAccess.input.meal.SuggestedMealInput
 import pt.isel.ps.g06.httpserver.dataAccess.output.ingredient.IngredientsContainerOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.ingredient.toIngredientsContainerOutput
 import pt.isel.ps.g06.httpserver.exception.problemJson.badRequest.InvalidInputException
@@ -55,14 +55,14 @@ class IngredientController(
      */
     @PostMapping
     fun createSuggestedIngredient(
-            @RequestBody mealIngredientInput: MealInput,
+            @RequestBody suggestedIngredientInput: SuggestedMealInput,
             user: User
     ): ResponseEntity<IngredientsContainerOutput> {
 
         // Check if the user is a moderator
         userService.ensureModerator(user)
 
-        val createdIngredient = ingredientService.insertSuggestedIngredient(user.identifier, mealIngredientInput)
+        val createdIngredient = ingredientService.insertSuggestedIngredient(user.identifier, suggestedIngredientInput)
 
         return ResponseEntity
                 .created(

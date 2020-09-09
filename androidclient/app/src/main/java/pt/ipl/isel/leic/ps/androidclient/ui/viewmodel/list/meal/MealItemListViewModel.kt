@@ -87,6 +87,13 @@ open class MealItemListViewModel : BaseMealListViewModel<MealItem> {
         }
     }
 
+    fun deleteCustomMeal(mealItem: MealItem, onSuccess: () -> Unit, onError: (Throwable) -> Unit) {
+        mealRepository.deleteCustomMeal(mealItem, {
+            liveDataHandler.remove(mealItem)
+            onSuccess()
+        }, onError, requireUserSession())
+    }
+
     override fun describeContents(): Int {
         TODO("Not yet implemented")
     }

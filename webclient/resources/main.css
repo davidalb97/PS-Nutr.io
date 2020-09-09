@@ -1,0 +1,69 @@
+#container{
+    max-width: 1024px;
+    position: relative;
+    top: 90px;
+    margin: 0 auto;
+    padding: 0 30px;
+}
+
+.body{background-color: aquamarine; }
+.overflow{overflow:scroll;}
+
+/* .navbar-nav {width: 100%; border: 1px solid red} */
+.nav-register-btn {margin-left: 10px;}
+.top-navbar {width: 100%}
+
+.primary-cta {
+  background-color: red;
+  display: inline-block;
+  font-weight: 400;
+  color: #ffffff;
+  text-align: center;
+  vertical-align: middle;
+  padding: .375rem .75rem;
+  font-size: 1rem;
+  line-height: 1.5;
+  border-radius: .25rem;
+}
+.primary-cta:hover {background-color:green; color: #ffffff;}
+.primary-cta:active {background-color:yellow; color: #ffffff;}
+
+.primary-cta {
+  background-color: red;
+  display: inline-block;
+  font-weight: 400;
+  color: #ffffff;
+  text-align: center;
+  vertical-align: middle;
+  padding: .375rem .75rem;
+  font-size: 1rem;
+  line-height: 1.5;
+  border-radius: .25rem;;
+}
+.primary-cta:hover {background-color:green; color: #ffffff;}
+.primary-cta:active {background-color:yellow; color: #ffffff;}
+
+.panel-content {height: 170px;}
+.multiselect-cta {max-width: 140px; display: block; text-align: center;}
+.ingredients-cta {width: 180px;}
+.profile-delete-cta {width: 200px}
+
+.spacer {height: 100px; display: block;}
+.spacer-20 {height: 20px; display: block;}
+
+.mealCreation{padding-top:20px; padding-bottom: 20px;}
+
+.ingredient{ width:100%; height:480px;}
+
+.nav-tab{height: 480px; width: 100%;}
+
+.footer-text {
+  text-align: center;
+}
+
+
+@media only screen and (max-width: 600px) {
+  body {
+    background-color: lightblue;
+  }
+}

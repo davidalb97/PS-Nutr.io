@@ -2,11 +2,8 @@ package pt.isel.ps.g06.httpserver.dataAccess.db.repo
 
 import org.jdbi.v3.core.Handle
 import org.springframework.stereotype.Repository
-import pt.isel.ps.g06.httpserver.dataAccess.db.MEAL_TYPE_SUGGESTED_INGREDIENT
-import pt.isel.ps.g06.httpserver.dataAccess.db.MEAL_TYPE_SUGGESTED_MEAL
-import pt.isel.ps.g06.httpserver.dataAccess.db.MealType
+import pt.isel.ps.g06.httpserver.dataAccess.db.*
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionContractType.FAVORABLE
-import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType
 import pt.isel.ps.g06.httpserver.dataAccess.db.common.DatabaseContext
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.*
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbCuisineDto
@@ -123,20 +120,20 @@ class MealDbRepository(
         }
     }
 
-    fun insert(
+    fun insertCustomMeal(
             submitterId: Int,
             mealName: String,
-            quantity: Int,
+            quantity: Float,
             cuisines: Collection<String>,
             ingredients: Collection<IngredientInput>,
             type: MealType
     ): DbMealDto {
-        if (cuisines.isEmpty()) {
-            throw InvalidInputException("A meal must have at least a cuisine!")
+        if (ingredients.isEmpty()) {
+            throw InvalidInputException("A meal must have at least an ingredient")
         }
 
-        if (ingredients.isEmpty()) {
-            throw InvalidInputException("A meal must have at least one ingredient!")
+        if (cuisines.isEmpty()) {
+            throw InvalidInputException("A meal must have at least a cuisine!")
         }
 
         return databaseContext.inTransaction {
@@ -168,7 +165,6 @@ class MealDbRepository(
             val carbs = databaseIngredients
                     .zip(ingredients, this::getCarbsForInputQuantity)
                     .sum()
-                    .toInt()
 
             //Insert Meal
             val mealDto = it
@@ -197,21 +193,68 @@ class MealDbRepository(
         }
     }
 
-    fun update(
-            submissionId: Int,
+    fun insertSuggestedMeal(
             submitterId: Int,
             mealName: String,
-            quantity: Int,
+            quantity: Float,
+            carbs: Float,
             cuisines: Collection<String>,
-            ingredients: Collection<IngredientInput>,
             type: MealType
     ): DbMealDto {
+
         if (cuisines.isEmpty()) {
             throw InvalidInputException("A meal must have at least a cuisine!")
         }
 
+        return databaseContext.inTransaction {
+            //Insert submission
+            val mealSubmissionId = it.attach(SubmissionDao::class.java)
+                    .insert(SubmissionType.MEAL.toString())
+                    .submission_id
+
+            if (type == MealType.SUGGESTED_MEAL) {
+                //Insert contract FAVORABLE
+                it.attach(SubmissionContractDao::class.java)
+                        .insertAll(mutableListOf(FAVORABLE).map {
+                            SubmissionContractParam(mealSubmissionId, it.toString())
+                        })
+            }
+
+            //Insert SubmissionSubmitter associations for user
+            it.attach(SubmissionSubmitterDao::class.java).insert(mealSubmissionId, submitterId)
+
+            //Insert Meal
+            val mealDto = it
+                    .attach(mealDaoClass)
+                    .insert(mealSubmissionId, mealName, carbs, quantity, mealType = type.toString())
+
+            //Insert all MealCuisine associations
+            //TODO Make this better
+            val cuisineIds = cuisineDbRepository
+                    .getAllByNames(cuisines.asSequence())
+                    .map { DbMealCuisineDto(mealSubmissionId, it.submission_id) }
+
+            it.attach(MealCuisineDao::class.java).insertAll(cuisineIds.toList())
+
+            return@inTransaction mealDto
+        }
+    }
+
+    fun updateCustomMeal(
+            submissionId: Int,
+            submitterId: Int,
+            mealName: String,
+            quantity: Float,
+            cuisines: Collection<String>,
+            ingredients: Collection<IngredientInput>,
+            type: MealType
+    ): DbMealDto {
         if (ingredients.isEmpty()) {
-            throw InvalidInputException("A meal must have at least one ingredient!")
+            throw InvalidInputException("A meal must have at least an ingredient")
+        }
+
+        if (cuisines.isEmpty()) {
+            throw InvalidInputException("A meal must have at least a cuisine!")
         }
 
         return databaseContext.inTransaction {
@@ -228,7 +271,6 @@ class MealDbRepository(
             val carbs = databaseIngredients
                     .zip(ingredients, this::getCarbsForInputQuantity)
                     .sum()
-                    .toInt()
 
             //Insert Meal
             val mealDto = it
@@ -248,6 +290,8 @@ class MealDbRepository(
             //Insert meal's ingredients
             val mealIngredientDao = it.attach(MealIngredientDao::class.java)
             mealIngredientDao.deleteAllByMealId(submissionId)
+
+            //Insert meal's ingredients
             mealIngredientDao.insertAll(ingredients.map { ingredientInput ->
                 DbMealIngredientDto(
                         //We know fields are not null due to validation checks
@@ -258,6 +302,34 @@ class MealDbRepository(
             })
 
             return@inTransaction mealDto
+        }
+    }
+
+    /**
+     * Deletes a user custom meal, if not inserted on a restaurant.
+     * @throws InvalidInputException if the submitter is not the owner of the submission,
+     * the submission is not a custom meal or if there is a restaurant meal that uses this custom meal.
+     */
+    fun deleteCustomMeal(mealId: Int, submitterId: Int) {
+        return databaseContext.inTransaction {
+            submissionDbRepository.requireSubmissionOwner(mealId, submitterId)
+            submissionDbRepository.requireSubmissionType(mealId, SubmissionType.MEAL)
+
+            val meal = it.attach(MealDao::class.java).getById(mealId)!!
+
+            if(meal.meal_type != MEAL_TYPE_CUSTOM) {
+                throw InvalidInputException("Can only delete custom meals!")
+            }
+
+            val restaurantMeals = it
+                    .attach(RestaurantMealDao::class.java)
+                    .getAllByMealId(mealId)
+                    .asCachedSequence()
+
+            if(restaurantMeals.toList().isNotEmpty()) {
+                throw InvalidInputException("Cannot delete a public submission!")
+            }
+            submissionDbRepository.deleteSubmissionById(mealId)
         }
     }
 
@@ -275,6 +347,6 @@ class MealDbRepository(
 
     //TODO Remove this and use 'carbsTool'
     private fun getCarbsForInputQuantity(dbIngredientDto: DbMealDto, ingredientInput: IngredientInput): Float {
-        return (ingredientInput.quantity!!.times(dbIngredientDto.carbs).toFloat()).div(dbIngredientDto.amount)
+        return (ingredientInput.quantity!!.times(dbIngredientDto.carbs)).div(dbIngredientDto.amount)
     }
 }
