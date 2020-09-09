@@ -145,7 +145,8 @@
                 <EditText
                     android:id="@+id/user_blood_glucose"
                     android:layout_width="100dp"
-                    android:inputType="number"
+                    android:inputType="numberDecimal"
+                    android:maxLength="6"
                     android:layout_height="wrap_content"
                     android:background="@drawable/textbox_shape"
                     android:padding="5dp"
@@ -168,7 +169,6 @@
                     android:id="@+id/calculate_button"
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/quantity_slider"
                     android:layout_marginTop="10dp"
                     android:layout_centerHorizontal="true"
                     android:text="@string/calculate"
