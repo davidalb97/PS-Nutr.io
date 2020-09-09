@@ -1,8 +1,8 @@
 import React, { useContext } from 'react'
 import { Redirect, Route, Switch } from 'react-router-dom'
+import RequireCredentials, { moderator, loggedIn } from './authentication/RequireCredentials'
 
-import ViewMeals from '../main/meal/ViewMeals'
-import CreateMeal from '../main/meal/CreateMeal'
+//Login and register
 import LoginPage from '../main/authentication/login/LoginPage'
 import RegisterPage from '../main/authentication/register/RegisterPage'
 
@@ -10,6 +10,10 @@ import RegisterPage from '../main/authentication/register/RegisterPage'
 import UserContext from './authentication/UserContext'
 import ProfilePage from '../main/user/profile/ProfilePage'
 import InsulinProfile from '../main/user/insulinProfile/InsulinProfile'
+
+//Meals
+import ViewMeals from '../main/meal/ViewMeals'
+import CreateMeal from '../main/meal/CreateMeal'
 
 //Moderation
 import AddFoodPage from '../main/moderation/addFood/AddFoodPage'
@@ -22,27 +26,41 @@ export default function RouteRenderer() {
 
     return <Switch>
         <Route path="/meals/create" >
-            <CreateMeal />
+            <RequireCredentials requiredCredentials={loggedIn}>
+                <CreateMeal />
+            </RequireCredentials>
         </Route>
         <Route path="/meals">
-            <ViewMeals />
+            <RequireCredentials requiredCredentials={loggedIn}>
+                <ViewMeals />
+            </RequireCredentials>
         </Route>
 
         <Route path="/user/insulin">
-            <InsulinProfile />
+            <RequireCredentials requiredCredentials={loggedIn}>
+                <InsulinProfile />
+            </RequireCredentials>
         </Route>
         <Route path="/user">
-            <ProfilePage />
+            <RequireCredentials requiredCredentials={loggedIn}>
+                <ProfilePage />
+            </RequireCredentials>
         </Route>
 
         <Route path="/moderation/newFood">
-            <AddFoodPage />
+            <RequireCredentials requiredCredentials={moderator}>
+                <AddFoodPage />
+            </RequireCredentials>
         </Route>
         <Route path="/moderation/reports/:submissionId">
-            <DetailedReport />
+            <RequireCredentials requiredCredentials={moderator}>
+                <DetailedReport />
+            </RequireCredentials>
         </Route>
         <Route path="/moderation/reports">
-            <Reports />
+            <RequireCredentials requiredCredentials={moderator}>
+                <Reports />
+            </RequireCredentials>
         </Route>
 
         <Route path="/login">

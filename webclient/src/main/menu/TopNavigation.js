@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { Link } from 'react-router-dom'
+import { LinkContainer } from 'react-router-bootstrap'
 
 import Navbar from 'react-bootstrap/Navbar'
 import Nav from 'react-bootstrap/Nav'
 import NavDropdown from 'react-bootstrap/NavDropdown'
 import Button from 'react-bootstrap/Button'
 
-import { LinkContainer } from 'react-router-bootstrap'
-
+import { moderator } from '../authentication/RequireCredentials'
 import UserContext from '../authentication/UserContext'
 export default function TopNavigation() {
     const [init, setInit] = useState(false)
@@ -43,10 +43,12 @@ export default function TopNavigation() {
                     <NavDropdown.Item><Link to="/user/insulin">View insulin profiles</Link></NavDropdown.Item>
                 </NavDropdown>
                 {/* MODERATION */}
-                <NavDropdown title="Moderation" id="collasible-nav-dropdown">
-                    <NavDropdown.Item><Link to="/moderation/newFood">Food creator</Link></NavDropdown.Item>
-                    <NavDropdown.Item><Link to="/moderation/reports">Reports</Link></NavDropdown.Item>
-                </NavDropdown>
+                {!moderator.predicate(userContext.user) ? undefined :
+                    <NavDropdown title="Moderation" id="collasible-nav-dropdown">
+                        <NavDropdown.Item><Link to="/moderation/newFood">Food creator</Link></NavDropdown.Item>
+                        <NavDropdown.Item><Link to="/moderation/reports">Reports</Link></NavDropdown.Item>
+                    </NavDropdown>
+                }
             </Nav>
 
             <Nav className="d-flex justify-content-end top-navbar">
