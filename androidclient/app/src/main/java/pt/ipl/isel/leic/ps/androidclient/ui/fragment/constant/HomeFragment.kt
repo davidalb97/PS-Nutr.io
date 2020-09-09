@@ -21,7 +21,6 @@ class HomeFragment : BaseFragment() {
         setupMealsByNameBtn(view)
         setupMealsCustomBtn(view)
         setupCalculatorBtn(view)
-        setupHistoryBtn(view)
     }
 
     private fun setupRestaurantsByNameBtn(view: View) {
@@ -68,13 +67,6 @@ class HomeFragment : BaseFragment() {
         val button: ViewGroup = view.findViewById(R.id.thirdSection_button1)
         button.setOnClickListener {
             view.findNavController().navigate(Navigation.SEND_TO_CALCULATOR.navId)
-        }
-    }
-
-    private fun setupHistoryBtn(view: View) {
-        val button: ViewGroup = view.findViewById(R.id.thirdSection_button2)
-        button.setOnClickListener {
-            view.findNavController().navigate(Navigation.SEND_TO_HISTORY.navId)
         }
     }
 }

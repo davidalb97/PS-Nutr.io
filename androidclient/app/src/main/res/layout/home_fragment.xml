@@ -191,7 +191,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="@string/insulin_values"
+                android:text="@string/calculator_home"
                 android:textColor="?attr/cardTextAccentColor"
                 android:textSize="20sp"
                 android:textStyle="bold">
@@ -206,8 +206,7 @@
                 <RelativeLayout
                     android:id="@+id/thirdSection_button1"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="50dp">
+                    android:layout_height="wrap_content">
 
                     <ImageView
                         android:id="@+id/thirdSection_image1"
@@ -223,32 +222,6 @@
                         android:layout_alignParentBottom="true"
                         android:layout_centerHorizontal="true"
                         android:text="@string/calculator"
-                        android:textColor="?attr/cardTextAccentColor"
-                        android:textSize="18sp"
-                        android:textStyle="bold">
-                    </TextView>
-
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:id="@+id/thirdSection_button2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
-
-                    <ImageView
-                        android:id="@+id/thirdSection_image2"
-                        android:layout_width="130dp"
-                        android:layout_height="130dp"
-                        android:src="@drawable/ic_history">
-                    </ImageView>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/thirdSection_image2"
-                        android:layout_alignParentBottom="true"
-                        android:layout_centerHorizontal="true"
-                        android:text="@string/history"
                         android:textColor="?attr/cardTextAccentColor"
                         android:textSize="18sp"
                         android:textStyle="bold">

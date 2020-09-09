@@ -34,6 +34,7 @@
     <string name="saved">Saved</string>
     <string name="insulin_values">Insulin</string>
     <string name="calculator">Calculator</string>
+    <string name="calculator_home">Insulin calculator</string>
     <string name="history">History</string>
     <string name="meal_example">Hamburguer</string>
     <string name="meal_detail_info">info</string>

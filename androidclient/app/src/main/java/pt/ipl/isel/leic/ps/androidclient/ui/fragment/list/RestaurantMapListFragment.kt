@@ -2,6 +2,7 @@ package pt.ipl.isel.leic.ps.androidclient.ui.fragment.list
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.os.Looper.getMainLooper
 import android.view.LayoutInflater
@@ -14,6 +15,9 @@ import androidx.annotation.NonNull
 import androidx.navigation.findNavController
 import com.mapbox.android.core.location.*
 import com.mapbox.android.core.permissions.PermissionsManager
+import com.mapbox.geojson.Feature
+import com.mapbox.geojson.FeatureCollection
+import com.mapbox.geojson.Point
 import com.mapbox.mapboxsdk.Mapbox
 import com.mapbox.mapboxsdk.location.LocationComponent
 import com.mapbox.mapboxsdk.location.LocationComponentActivationOptions
@@ -23,12 +27,21 @@ import com.mapbox.mapboxsdk.maps.MapView
 import com.mapbox.mapboxsdk.maps.MapboxMap
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback
 import com.mapbox.mapboxsdk.maps.Style
+import com.mapbox.mapboxsdk.style.layers.PropertyFactory
+import com.mapbox.mapboxsdk.style.layers.SymbolLayer
+import com.mapbox.mapboxsdk.style.sources.GeoJsonSource
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.app
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.ui.util.Navigation
 
 private const val DEFAULT_INTERVAL_IN_MILLISECONDS: Long = 100000L
 private const val DEFAULT_MAX_WAIT_TIME = DEFAULT_INTERVAL_IN_MILLISECONDS * 5
+
+private const val STYLE_URI = "mapbox://styles/mapbox/cjf4m44iw0uza2spb3q0a7s41"
+private const val ICON_ID = "ICON_ID"
+private const val SOURCE_ID = "SOURCE_ID"
+private const val LAYER_ID = "LAYER_ID"
+
 
 class MapFragment : RestaurantListFragment(), OnMapReadyCallback {
 
@@ -42,6 +55,7 @@ class MapFragment : RestaurantListFragment(), OnMapReadyCallback {
     private var locationEngine: LocationEngine? = null
     private val callback = initLocationEngineCallback()
     private var mapBoxMap: MapboxMap? = null
+    private var points: MutableList<Feature> = mutableListOf()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -56,6 +70,7 @@ class MapFragment : RestaurantListFragment(), OnMapReadyCallback {
         //Bypass super's onLocationEnabled()
         //super.onViewCreated(view, savedInstanceState)
         super.initRecyclerView(view)
+        observeAndAddPoints()
         mapView = view.findViewById(R.id.mapBoxView)
         mapView?.onCreate(savedInstanceState)
         mapView?.getMapAsync(this)
@@ -169,6 +184,7 @@ class MapFragment : RestaurantListFragment(), OnMapReadyCallback {
                 //Update viewmodel with new location
                 viewModel.latitude = location.latitude
                 viewModel.longitude = location.longitude
+
                 viewModel.setupList()
             }
 
@@ -185,6 +201,38 @@ class MapFragment : RestaurantListFragment(), OnMapReadyCallback {
                 ).show()
             }
         }
+    }
+
+    private fun observeAndAddPoints() {
+        viewModel.observe(this, { restaurantList ->
+            restaurantList.forEach {
+                points.add(
+                    Feature.fromGeometry(
+                        Point.fromLngLat(it.longitude.toDouble(), it.latitude.toDouble())
+                    )
+                )
+            }
+            mapBoxMap?.setStyle(
+                Style.Builder()
+                    .fromUri(STYLE_URI)
+                    .withImage(
+                        ICON_ID, BitmapFactory.decodeResource(
+                            resources, R.drawable.mapbox_marker_icon_default
+                        )
+                    )
+                    .withSource(
+                        GeoJsonSource(SOURCE_ID, FeatureCollection.fromFeatures(points))
+                    )
+                    .withLayer(
+                        SymbolLayer(LAYER_ID, SOURCE_ID)
+                            .withProperties(
+                                PropertyFactory.iconImage(ICON_ID),
+                                PropertyFactory.iconAllowOverlap(true),
+                                PropertyFactory.iconIgnorePlacement(true)
+                            )
+                    )
+            )
+        })
     }
 
     /**

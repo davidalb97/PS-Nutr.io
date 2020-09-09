@@ -146,7 +146,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="100dp"
                 android:layout_marginTop="10dp"
-                android:background="@drawable/textbox_shape"
+                android:background="@drawable/textbox_shape_red"
                 android:drawableStart="@drawable/ic_email"
                 android:drawablePadding="10dp"
                 android:hint="@string/email"
@@ -166,7 +166,7 @@
                 android:layout_marginStart="100dp"
                 android:drawableStart="@drawable/ic_password"
                 android:drawablePadding="10dp"
-                android:background="@drawable/textbox_shape"
+                android:background="@drawable/textbox_shape_red"
                 android:hint="@string/password"
                 android:focusable="true"
                 >
@@ -182,7 +182,7 @@
                 android:layout_centerHorizontal="true"
                 android:text="@string/delete_account"
                 android:textColor="@android:color/background_light"
-                android:background="@drawable/rect_material_button_shape">
+                android:background="@drawable/rect_material_button_shape_red">
             </Button>
 
         </RelativeLayout>

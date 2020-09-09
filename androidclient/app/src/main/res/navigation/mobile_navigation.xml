@@ -29,17 +29,6 @@
         android:label="@string/menu_about"
         tools:layout="@layout/about_fragment" />
 
-    <fragment
-        android:id="@+id/nav_tab_restaurants"
-        android:name="pt.ipl.isel.leic.ps.androidclient.ui.fragment.tab.RestaurantSlideScreenFragment"
-        android:label="@string/tab_restaurants"
-        tools:layout="@layout/tab_fragment" />
-
-    <fragment
-        android:id="@+id/nav_tab_location_restaurants"
-        android:name="pt.ipl.isel.leic.ps.androidclient.ui.fragment.tab.RestaurantLocationSlideScreenFragment"
-        android:label="@string/tab_restaurants"
-        tools:layout="@layout/tab_fragment" />
 
     <fragment
         android:id="@+id/nav_meal_detail"
@@ -64,6 +53,12 @@
         android:name="pt.ipl.isel.leic.ps.androidclient.ui.fragment.list.MapFragment"
         android:label="@string/restaurant_map_nav"
         tools:layout="@layout/map_fragment" />
+
+    <fragment
+        android:id="@+id/nav_restaurants"
+        android:name="pt.ipl.isel.leic.ps.androidclient.ui.fragment.list.RestaurantListFragment"
+        android:label="@string/restaurant_map_nav"
+        tools:layout="@layout/restaurant_list" />
 
     <fragment
         android:id="@+id/nav_history"
