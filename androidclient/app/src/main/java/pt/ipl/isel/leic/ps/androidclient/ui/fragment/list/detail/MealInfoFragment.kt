@@ -61,7 +61,7 @@ class MealInfoFragment :
     override val favoriteButtonId: Int = R.id.favorite
     override lateinit var favoriteButton: ImageButton
     override val calculatorButtonId: Int = R.id.add_to_calc_action
-    override lateinit var calculatorButton: ImageButton
+    override lateinit var calculatorButton: View
     override val upVoteButtonId: Int = R.id.up_vote_button
     override lateinit var upVoteButton: ImageButton
     override val downVoteButtonId: Int = R.id.down_vote_button
@@ -182,7 +182,7 @@ class MealInfoFragment :
     }
 
     private fun setupAddPortion(view: View, receivedMeal: MealInfo) {
-        val addPortionButton: ImageButton = view.findViewById(R.id.add_portion_button)
+        val addPortionButton: Button = view.findViewById(R.id.add_portion_button)
         addPortionButton.setOnClickListener {
             MealAmountSelector(
                 ctx = requireContext(),

@@ -1,7 +1,6 @@
 package pt.ipl.isel.leic.ps.androidclient.ui.modular.action
 
 import android.view.View
-import android.widget.ImageButton
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.ISend
 import pt.ipl.isel.leic.ps.androidclient.ui.util.ItemAction
 import pt.ipl.isel.leic.ps.androidclient.ui.util.Navigation
@@ -9,7 +8,7 @@ import pt.ipl.isel.leic.ps.androidclient.ui.util.Navigation
 interface ICalculatorActionButton : ISend, IAction {
 
     val calculatorButtonId: Int
-    var calculatorButton: ImageButton
+    var calculatorButton: View
 
     fun setupCalculateAction(view: View) {
         calculatorButton = view.findViewById(calculatorButtonId)

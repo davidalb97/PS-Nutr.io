@@ -1,6 +1,7 @@
 package pt.ipl.isel.leic.ps.androidclient.ui.modular
 
 import android.view.View
+import android.widget.TextView
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarData
