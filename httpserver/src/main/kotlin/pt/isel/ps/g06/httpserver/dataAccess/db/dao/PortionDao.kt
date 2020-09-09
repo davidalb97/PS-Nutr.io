@@ -34,11 +34,11 @@ interface PortionDao {
 
     @SqlQuery("INSERT INTO $table($id, $restaurantMealId, $quantity)" +
             " VALUES(:submissionId, :restaurantMealId, :quantity) RETURNING *")
-    fun insert(@Bind submissionId: Int, @Bind restaurantMealId: Int, @Bind quantity: Int): DbPortionDto
+    fun insert(@Bind submissionId: Int, @Bind restaurantMealId: Int, @Bind quantity: Float): DbPortionDto
 
     @SqlQuery("UPDATE $table" +
             " SET $quantity = :quantity" +
             " WHERE $id = :portionIdentifier RETURNING *"
     )
-    fun update(portionIdentifier: Int, quantity: Int): DbPortionDto
+    fun update(portionIdentifier: Int, quantity: Float): DbPortionDto
 }

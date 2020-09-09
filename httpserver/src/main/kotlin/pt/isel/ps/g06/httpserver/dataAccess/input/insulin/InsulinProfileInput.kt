@@ -20,13 +20,13 @@ data class InsulinProfileInput(
 
         @field:NotNull(message = "A glucose objective must be given!")
         @field:Min(value = 0, message = "Glucose objective must be positive!")
-        val glucoseObjective: Int?,
+        val glucoseObjective: Float?,
 
         @field:NotNull(message = "A positive insulin sensitivity factor must be given!")
         @field:Min(value = 0, message = "Insulin sensitivity factor must be positive!")
-        val insulinSensitivityFactor: Int?,
+        val insulinSensitivityFactor: Float?,
 
         @field:NotNull(message = "A carbohydrate ratio must be given!")
         @field:Min(value = 0, message = "Carbohydrate ratio must be positive!")
-        val carbohydrateRatio: Int?
+        val carbohydrateRatio: Float?
 )

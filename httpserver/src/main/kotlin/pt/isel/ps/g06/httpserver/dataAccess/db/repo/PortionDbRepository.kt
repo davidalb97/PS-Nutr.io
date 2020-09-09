@@ -33,7 +33,7 @@ class PortionDbRepository(
     }
 
     //TODO Should receive a restaurant Meal
-    fun insert(submitterId: Int, restaurantMealId: Int, quantity: Int): DbPortionDto {
+    fun insert(submitterId: Int, restaurantMealId: Int, quantity: Float): DbPortionDto {
         return databaseContext.inTransaction {
             val submissionId = it.attach(SubmissionDao::class.java)
                     .insert(PORTION.toString())
@@ -47,7 +47,7 @@ class PortionDbRepository(
     fun update(
             submitterId: Int,
             portionIdentifier: Int,
-            quantity: Int
+            quantity: Float
     ): DbPortionDto {
         return databaseContext.inTransaction {
 

@@ -32,9 +32,9 @@ class InsulinProfileService(
             profileName: String,
             startTime: LocalTime,
             endTime: LocalTime,
-            glucoseObjective: Int,
-            insulinSensitivityFactor: Int,
-            carbohydrateRatio: Int
+            glucoseObjective: Float,
+            insulinSensitivityFactor: Float,
+            carbohydrateRatio: Float
     ): InsulinProfile {
         if (startTime.hour >= endTime.hour) {
             throw InvalidInsulinProfileTimesException()
