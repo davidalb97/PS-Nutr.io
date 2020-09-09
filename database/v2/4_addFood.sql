@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION AddFood(name varchar, carbs float, quantity float, type varchar) 
+CREATE OR REPLACE FUNCTION AddFood(name varchar, carbs real, quantity real, type varchar) 
 RETURNS void
 AS $$ 
 	BEGIN 
