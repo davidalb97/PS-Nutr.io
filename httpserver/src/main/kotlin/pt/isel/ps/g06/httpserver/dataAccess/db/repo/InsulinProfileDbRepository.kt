@@ -98,10 +98,12 @@ class InsulinProfileDbRepository(
         val encProfileName = columnCryptoConverter.convertToDatabaseColumn(profileName)
 
         return databaseContext.inTransaction { handle ->
+            val dao = handle.attach(insulinProfileDaoClass)
+            if(dao.getFromUser(submitterId, profileName) == null) {
+                throw MissingInsulinProfileException(profileName)
+            }
             //TODO Get insulin profile before deleting it
-            return@inTransaction handle
-                    .attach(insulinProfileDaoClass)
-                    .deleteProfile(submitterId, encProfileName)
+            return@inTransaction dao.deleteProfile(submitterId, encProfileName)
                     ?.let(dbInsulinProfileDtoMapper::toDbUserInsulinProfileDto)
                     ?: throw MissingInsulinProfileException(profileName)
         }
