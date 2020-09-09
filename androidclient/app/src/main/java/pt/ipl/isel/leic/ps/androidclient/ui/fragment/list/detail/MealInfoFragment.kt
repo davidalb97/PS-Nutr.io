@@ -24,7 +24,6 @@ import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.ICalculatorActionButt
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.IFavoriteActionButton
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.IVoteActionButtons
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.menu.IEditMenuItem
-import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.menu.IPopupMenuButton
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.menu.IReportMenuItem
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.menu.MenuItemFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.MealInfoVMProviderFactory
@@ -85,15 +84,25 @@ class MealInfoFragment :
         )
     }
 
+    private val chartLayoutId: Int = R.id.chart_container
+    private lateinit var chartLayout: ViewGroup
     private lateinit var addPortionLayout: RelativeLayout
     private lateinit var editPortionLayout: RelativeLayout
     private lateinit var portionEntries: MutableList<BarEntry>
     private var userPortionEntry: BarEntry? = null
 
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        setHasOptionsMenu(true)
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setHasOptionsMenu(true)
         actions = viewModel.actions
         viewModel.observeInfo(this) { mealInfo ->
             setupView(view, mealInfo)
@@ -113,10 +122,16 @@ class MealInfoFragment :
         super.setupCalculateAction(view)
         super.setupReportMenuItem(receivedMeal.isReportable ?: false)
         super.setupEditMenuItem()
-        setupPortionEntries(receivedMeal)
-        super.setupChart(view, portionEntries)
-        setupPortionButtons(view, receivedMeal)
         populateMenu(NutrioApp.menu)
+
+        //Only restaurant meals have portions
+        if (receivedMeal.restaurantSubmissionId != null) {
+            setupPortionEntries(receivedMeal)
+            super.setupChart(view, portionEntries)
+            setupPortionButtons(view, receivedMeal)
+            chartLayout = view.findViewById(chartLayoutId)
+            chartLayout.visibility = View.VISIBLE
+        }
 
         val title: TextView = view.findViewById(R.id.meal_detail_title)
         title.text = receivedMeal.name
@@ -172,7 +187,7 @@ class MealInfoFragment :
             MealAmountSelector(
                 ctx = requireContext(),
                 layoutInflater = layoutInflater,
-                baseCarbs = receivedMeal.carbs.toFloat(),
+                baseCarbs = receivedMeal.carbs,
                 baseAmountGrams = receivedMeal.amount,
                 mealUnit = WeightUnits.fromValue(sharedPreferences.getWeightUnitOrDefault())
             ) { preciseGrams, _ ->
@@ -197,7 +212,7 @@ class MealInfoFragment :
             MealAmountSelector(
                 ctx = requireContext(),
                 layoutInflater = layoutInflater,
-                baseCarbs = receivedMeal.carbs.toFloat(),
+                baseCarbs = receivedMeal.carbs,
                 baseAmountGrams = userPortionEntry!!.x,
                 mealUnit = WeightUnits.fromValue(sharedPreferences.getWeightUnitOrDefault())
             ) { preciseGrams, _ ->

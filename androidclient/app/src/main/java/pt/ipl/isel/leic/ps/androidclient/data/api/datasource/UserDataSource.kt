@@ -31,6 +31,7 @@ class UserDataSource(
             uri = Uri.Builder()
                 .scheme(SCHEME)
                 .encodedAuthority(ADDRESS_PORT)
+                .appendPath(API_PATH)
                 .appendPath(USER_PATH)
                 .appendPath(REGISTER_PATH)
                 .build()
@@ -52,6 +53,7 @@ class UserDataSource(
             uri = Uri.Builder()
                 .scheme(SCHEME)
                 .encodedAuthority(ADDRESS_PORT)
+                .appendPath(API_PATH)
                 .appendPath(USER_PATH)
                 .appendPath(LOGIN_PATH)
                 .build()
@@ -73,6 +75,7 @@ class UserDataSource(
             uri = Uri.Builder()
                 .scheme(SCHEME)
                 .encodedAuthority(ADDRESS_PORT)
+                .appendPath(API_PATH)
                 .appendPath(USER_PATH)
                 .build()
                 .toString(),
@@ -93,6 +96,7 @@ class UserDataSource(
             uri = Uri.Builder()
                 .scheme(SCHEME)
                 .encodedAuthority(ADDRESS_PORT)
+                .appendPath(API_PATH)
                 .appendPath(USER_PATH)
                 .build()
                 .toString(),

@@ -24,6 +24,7 @@ class CuisineDataSource(
             uri = Uri.Builder()
                 .scheme(SCHEME)
                 .encodedAuthority(ADDRESS_PORT)
+                .appendPath(API_PATH)
                 .appendPath(CUISINES_PATH)
                 .appendQueryNotNullParameter(COUNT_PARAM, count)
                 .appendQueryNotNullParameter(SKIP_PARAM, skip)

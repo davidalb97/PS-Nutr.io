@@ -80,6 +80,7 @@ class AddRestaurantMealSlideScreenFragment : BaseSlideScreenFragment(propagateAr
                 ctx = requireContext(),
                 titleId = R.string.add_restaurant_meal
             ) {
+                mealItem.restaurantSubmissionId = viewModel.restaurantInfo?.id!!
                 viewModel.addedMeal = mealItem
                 viewModel.addRestaurantMeal(mealItem, log::e) {
                     Toast.makeText(NutrioApp.app, R.string.meal_added, Toast.LENGTH_SHORT).show()

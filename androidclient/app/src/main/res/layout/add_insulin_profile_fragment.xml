@@ -157,7 +157,8 @@
 
             <EditText
                 android:id="@+id/glucose_objective"
-                android:inputType="number"
+                android:inputType="numberDecimal"
+                android:maxLength="6"
                 android:layout_width="100dp"
                 android:layout_height="30dp"
                 android:background="@drawable/textbox_shape"
@@ -183,7 +184,8 @@
 
         <EditText
             android:id="@+id/glucose_amount"
-            android:inputType="number"
+            android:inputType="numberDecimal"
+            android:maxLength="6"
             android:layout_width="100dp"
             android:layout_height="30dp"
             android:layout_marginTop="10dp"
@@ -221,7 +223,8 @@
 
             <EditText
                 android:id="@+id/carbo_amount"
-                android:inputType="number"
+                android:inputType="numberDecimal"
+                android:maxLength="6"
                 android:layout_width="100dp"
                 android:layout_height="30dp"
                 android:background="@drawable/textbox_shape"
