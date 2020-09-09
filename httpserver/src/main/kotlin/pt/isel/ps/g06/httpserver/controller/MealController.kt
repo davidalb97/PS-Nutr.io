@@ -13,6 +13,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.output.meal.DetailedMealOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.meal.SimplifiedMealContainer
 import pt.isel.ps.g06.httpserver.dataAccess.output.meal.toDetailedMealOutput
 import pt.isel.ps.g06.httpserver.dataAccess.output.meal.toSimplifiedMealContainer
+import pt.isel.ps.g06.httpserver.exception.problemJson.badRequest.CannotDeletePublicSubmissionException
 import pt.isel.ps.g06.httpserver.exception.problemJson.forbidden.NotSubmissionOwnerException
 import pt.isel.ps.g06.httpserver.exception.problemJson.notFound.MealNotFoundException
 import pt.isel.ps.g06.httpserver.model.User
@@ -126,13 +127,15 @@ class MealController(
             @PathVariable(MEAL_ID_VALUE) mealId: Int,
             user: User
     ): ResponseEntity<Void> {
-        val meal = mealService.getMeal(mealId) ?: throw MealNotFoundException()
 
-        if (meal.isMealOwner(user)) {
-            throw NotSubmissionOwnerException()
+
+        if (user.userRole != MOD_USER) {
+            //Meal existence asserted on repo
+            mealService.deleteCustomMealById(mealId, user.identifier)
+        } else {
+            val meal = mealService.getMeal(mealId) ?: throw MealNotFoundException()
+            submissionService.deleteSubmission(meal.identifier, user)
         }
-
-        submissionService.deleteSubmission(meal.identifier, user)
 
         return ResponseEntity
                 .ok()

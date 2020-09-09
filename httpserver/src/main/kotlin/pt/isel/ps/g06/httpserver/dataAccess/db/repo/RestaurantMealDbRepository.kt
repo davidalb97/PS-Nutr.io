@@ -1,7 +1,10 @@
 package pt.isel.ps.g06.httpserver.dataAccess.db.repo
 
 import org.springframework.stereotype.Repository
+import pt.isel.ps.g06.httpserver.dataAccess.db.MEAL_TYPE_CUSTOM
+import pt.isel.ps.g06.httpserver.dataAccess.db.MealType
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionContractType.*
+import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType.MEAL
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType.RESTAURANT_MEAL
 import pt.isel.ps.g06.httpserver.dataAccess.db.common.DatabaseContext
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.*
@@ -17,9 +20,11 @@ private val restaurantMealDao = RestaurantMealDao::class.java
 @Repository
 class RestaurantMealDbRepository(
         private val databaseContext: DatabaseContext,
+        private val submissionDbRepository: SubmissionDbRepository,
         private val restaurantDbRepository: RestaurantDbRepository,
         private val mealDbRepository: MealDbRepository
 ) {
+
     fun getRestaurantMeal(restaurantId: Int, mealId: Int): DbRestaurantMealDto? {
         return databaseContext.inTransaction {
             return@inTransaction it
