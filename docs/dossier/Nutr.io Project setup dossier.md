@@ -21,7 +21,7 @@ The following software is required on your machine in order for the project to b
 
 ## Setup
 
-Once previously required software is installed, all steps must be followed in given order to allow project's build and execution for both the project's HTTP-based server** and the **android application**:
+Once previously required software is installed, all steps must be followed in given order to allow project's build and execution for both the project's **HTTP-based server** and the **android application**:
 
 ### Retrieve project's code using Git
 
