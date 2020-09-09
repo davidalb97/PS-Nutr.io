@@ -24,7 +24,6 @@ import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.ICalculatorActionButt
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.IFavoriteActionButton
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.IVoteActionButtons
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.menu.IEditMenuItem
-import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.menu.IPopupMenuButton
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.menu.IReportMenuItem
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.menu.MenuItemFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.MealInfoVMProviderFactory
@@ -92,10 +91,18 @@ class MealInfoFragment :
     private lateinit var portionEntries: MutableList<BarEntry>
     private var userPortionEntry: BarEntry? = null
 
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        setHasOptionsMenu(true)
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setHasOptionsMenu(true)
         actions = viewModel.actions
         viewModel.observeInfo(this) { mealInfo ->
             setupView(view, mealInfo)
@@ -118,7 +125,7 @@ class MealInfoFragment :
         populateMenu(NutrioApp.menu)
 
         //Only restaurant meals have portions
-        if(receivedMeal.restaurantSubmissionId != null) {
+        if (receivedMeal.restaurantSubmissionId != null) {
             setupPortionEntries(receivedMeal)
             super.setupChart(view, portionEntries)
             setupPortionButtons(view, receivedMeal)
@@ -180,7 +187,7 @@ class MealInfoFragment :
             MealAmountSelector(
                 ctx = requireContext(),
                 layoutInflater = layoutInflater,
-                baseCarbs = receivedMeal.carbs.toFloat(),
+                baseCarbs = receivedMeal.carbs,
                 baseAmountGrams = receivedMeal.amount,
                 mealUnit = WeightUnits.fromValue(sharedPreferences.getWeightUnitOrDefault())
             ) { preciseGrams, _ ->
@@ -205,7 +212,7 @@ class MealInfoFragment :
             MealAmountSelector(
                 ctx = requireContext(),
                 layoutInflater = layoutInflater,
-                baseCarbs = receivedMeal.carbs.toFloat(),
+                baseCarbs = receivedMeal.carbs,
                 baseAmountGrams = userPortionEntry!!.x,
                 mealUnit = WeightUnits.fromValue(sharedPreferences.getWeightUnitOrDefault())
             ) { preciseGrams, _ ->
