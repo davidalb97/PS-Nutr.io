@@ -17,6 +17,7 @@ interface IEditMenuItem : IMenu, IAction {
         menus["edit"] = object : MenuItemFactory() {
             override fun newMenuItem(menu: Menu): MenuItem {
                 return menu.add(R.string.edit_menu_item_title).also { menuItem ->
+                    menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_WITH_TEXT)
                     menuItem.setOnMenuItemClickListener {
                         onEdit {
                             menu.close()

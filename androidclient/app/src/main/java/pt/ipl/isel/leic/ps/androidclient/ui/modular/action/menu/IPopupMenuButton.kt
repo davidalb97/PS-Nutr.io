@@ -16,18 +16,12 @@ interface IPopupMenuButton : IMenu, IContext {
         if (menus.isEmpty()) {
             return
         }
-        menuButton.setOnClickListener {
-            newMenu(it)
+        menuButton.setOnClickListener { viewAnchor ->
+            val popupMenu = PopupMenu(fetchCtx(), viewAnchor)
+            val menu = popupMenu.menu
+            populateMenu(menu)
+            popupMenu.show()
         }
         menuButton.visibility = View.VISIBLE
-    }
-
-    fun newMenu(viewAnchor: View) {
-        val popupMenu = PopupMenu(fetchCtx(), viewAnchor)
-        val menu = popupMenu.menu
-        menus.values.forEach { menuItemFactory ->
-            menuItemFactory.newMenuItem(menu)
-        }
-        popupMenu.show()
     }
 }

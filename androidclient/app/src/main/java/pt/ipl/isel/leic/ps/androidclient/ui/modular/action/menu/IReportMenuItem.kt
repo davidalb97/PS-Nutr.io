@@ -21,6 +21,7 @@ interface IReportMenuItem : IMenu, IContext, IAction, ILog, IUserSession {
         menus["report"] = object : MenuItemFactory() {
             override fun newMenuItem(menu: Menu): MenuItem {
                 return menu.add(R.string.report_menu_item_title).also { menuItem ->
+                    menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_WITH_TEXT)
                     menuItem.setOnMenuItemClickListener {
                         ensureUserSession(fetchCtx()) {
                             PromptInput(

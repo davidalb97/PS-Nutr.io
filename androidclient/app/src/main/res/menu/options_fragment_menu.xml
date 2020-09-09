@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/editButton"
+        android:title="@string/edit_menu_item_title">
+    </item>
+
+    <item
+        android:id="@+id/reportButton"
+        android:title="@string/report_menu_item_title">
+    </item>
+</menu>

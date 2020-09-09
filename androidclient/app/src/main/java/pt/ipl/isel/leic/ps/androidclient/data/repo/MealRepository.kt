@@ -41,6 +41,7 @@ class MealRepository(private val dataSource: MealDataSource) {
         inputMealIngredientMapper = inputMealIngredientMapper,
         inputUserMapper = inputUserMapper,
         inputFavoriteMapper = inputFavoriteMapper,
+        inputVotesMapper = inputVotesMapper,
         inputPortionMapper = inputPortionMapper
     )
     private val inputMealItemMapper = InputMealItemMapper(

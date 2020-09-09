@@ -11,7 +11,8 @@ class InputMealInfoMapper(
     private val inputMealIngredientMapper: InputMealIngredientMapper,
     private val inputUserMapper: InputSubmissionOwnerMapper,
     private val inputFavoriteMapper: InputFavoriteMapper,
-    private val inputPortionMapper: InputPortionMapper
+    private val inputPortionMapper: InputPortionMapper,
+    private val inputVotesMapper: InputVotesMapper
 ) {
 
     fun mapToModel(dto: MealInfoInput, restaurantId: String?) = MealInfo(
@@ -23,7 +24,7 @@ class InputMealInfoMapper(
         carbs = dto.nutritionalInfo.carbs,
         amount = dto.nutritionalInfo.amount,
         unit = WeightUnits.fromValue(dto.nutritionalInfo.unit),
-        votes = null,
+        votes = dto.votes?.let { inputVotesMapper.mapToModel(it) },
         favorites = inputFavoriteMapper.mapToModel(dto.favorites),
         imageUri = dto.image,
         isSuggested = dto.isSuggested ?: false,
