@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController
 import pt.isel.ps.g06.httpserver.common.INDEX_FILE_PATH
 import pt.isel.ps.g06.httpserver.common.MAIN_FILE_PATH
 import pt.isel.ps.g06.httpserver.common.hypermedia.APPLICATION_JAVASCRIPT_VALUE
+import pt.isel.ps.g06.httpserver.exception.problemJson.notFound.BaseNotFoundException
 import pt.isel.ps.g06.httpserver.service.WebClientService
 
 @Validated
@@ -20,7 +21,7 @@ class WebClientController(private val webClientService: WebClientService) {
     /**
      * Gets release index.html from [INDEX_FILE_PATH] resource.
      */
-    @GetMapping(path = ["/**    "], produces = [MediaType.TEXT_HTML_VALUE])
+    @GetMapping(path = ["/**"], produces = [MediaType.TEXT_HTML_VALUE])
     fun getIndex(): ResponseEntity<Any> {
         return ResponseEntity.ok(webClientService.getIndex())
     }
@@ -34,5 +35,11 @@ class WebClientController(private val webClientService: WebClientService) {
     )
     fun getClientApp(): ResponseEntity<Any> {
         return ResponseEntity.ok(webClientService.getMain())
+    }
+
+    //Defining no method will catch all HTTP methods, not just GET
+    @RequestMapping(value = ["/api/**"])
+    fun handleUnknownApiEndpointRequest() {
+        throw BaseNotFoundException("No such API endpoint exists!")
     }
 }

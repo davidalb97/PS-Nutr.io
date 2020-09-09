@@ -9,14 +9,14 @@ module.exports = merge(common, {
     contentBase: './dist',
     port: 9000,
     proxy: {
-      '/api': {
+      '/development': {
         target: {
           host: "localhost",
           protocol: 'http:',
           port: 8080
         },
         pathRewrite: {
-          '^/api': ''
+          '^/development': ''
         }
       }
     },

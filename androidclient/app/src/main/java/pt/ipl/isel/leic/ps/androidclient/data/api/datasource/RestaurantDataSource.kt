@@ -37,6 +37,7 @@ class RestaurantDataSource(
             uri = Uri.Builder()
                 .scheme(SCHEME)
                 .encodedAuthority(ADDRESS_PORT)
+                .appendPath(API_PATH)
                 .appendPath(RESTAURANT_PATH)
                 .appendEncodedPath(restaurantId)
                 .build()
@@ -63,6 +64,7 @@ class RestaurantDataSource(
             uri = Uri.Builder()
                 .scheme(SCHEME)
                 .encodedAuthority(ADDRESS_PORT)
+                .appendPath(API_PATH)
                 .appendPath(RESTAURANT_PATH)
                 .appendQueryParameter(LATITUDE_PARAM, latitude)
                 .appendQueryParameter(LONGITUDE_PARAM, longitude)
@@ -90,6 +92,7 @@ class RestaurantDataSource(
             uri = Uri.Builder()
                 .scheme(SCHEME)
                 .encodedAuthority(ADDRESS_PORT)
+                .appendPath(API_PATH)
                 .appendPath(USER_PATH)
                 .appendPath(FAVORITE_PATH)
                 .appendPath(RESTAURANT_PATH)
@@ -119,6 +122,7 @@ class RestaurantDataSource(
             uri = Uri.Builder()
                 .scheme(SCHEME)
                 .encodedAuthority(ADDRESS_PORT)
+                .appendPath(API_PATH)
                 .appendPath(RESTAURANT_PATH)
                 .build()
                 .toString(),
@@ -144,6 +148,7 @@ class RestaurantDataSource(
             uri = Uri.Builder()
                 .scheme(SCHEME)
                 .encodedAuthority(ADDRESS_PORT)
+                .appendPath(API_PATH)
                 .appendPath(RESTAURANT_PATH)
                 .appendEncodedPath(restaurantId)
                 .appendPath(VOTE_PATH)
@@ -168,6 +173,7 @@ class RestaurantDataSource(
             uri = Uri.Builder()
                 .scheme(SCHEME)
                 .encodedAuthority(ADDRESS_PORT)
+                .appendPath(API_PATH)
                 .appendPath(RESTAURANT_PATH)
                 .appendEncodedPath(restaurantId)
                 .appendPath(FAVORITE_PATH)
@@ -192,6 +198,7 @@ class RestaurantDataSource(
             uri = Uri.Builder()
                 .scheme(SCHEME)
                 .encodedAuthority(ADDRESS_PORT)
+                .appendPath(API_PATH)
                 .appendPath(RESTAURANT_PATH)
                 .appendEncodedPath(restaurantId)
                 .appendPath(REPORT_PATH)
@@ -199,31 +206,6 @@ class RestaurantDataSource(
                 .toString(),
             reqHeader = buildAuthHeader(jwt),
             reqPayload = reportOutput,
-            onError = error,
-            responseConsumer = { success() }
-        )
-    }
-
-    /**
-     * ----------------------------- DELETEs ---------------------------
-     */
-
-    fun deleteRestaurant(
-        restaurantId: String,
-        success: () -> Unit,
-        error: (VolleyError) -> Unit,
-        jwt: String
-    ) {
-        requestParser.request(
-            method = HTTPMethod.DELETE,
-            uri = Uri.Builder()
-                .scheme(SCHEME)
-                .encodedAuthority(ADDRESS_PORT)
-                .appendPath(RESTAURANT_PATH)
-                .appendEncodedPath(restaurantId)
-                .build()
-                .toString(),
-            reqHeader = buildAuthHeader(jwt),
             onError = error,
             responseConsumer = { success() }
         )
