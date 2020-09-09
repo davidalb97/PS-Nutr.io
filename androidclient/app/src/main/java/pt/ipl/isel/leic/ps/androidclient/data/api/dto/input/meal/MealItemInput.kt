@@ -8,7 +8,7 @@ open class MealItemInput(
     val identifier: Int,
     val restaurantIdentifier: String?,
     val name: String,
-    val favorites: FavoritesInput,
+    val favorites: FavoritesInput?,
     val isSuggested: Boolean?,
     val isVerified: Boolean?,
     val image: Uri?,

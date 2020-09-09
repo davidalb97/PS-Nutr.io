@@ -10,16 +10,15 @@ open class SimplifiedRestaurantOutput(
         identifier: String,
         name: String,
         image: URI?,
-        favorites: FavoritesOutput,
         val latitude: Float,
         val longitude: Float,
+        override val favorites: FavoritesOutput,
         override val votes: VotesOutput,
         override val isReportable: Boolean
 ) : BasePublicSubmissionOutput<String>(
         identifier = identifier,
         name = name,
-        image = image,
-        favorites = favorites
+        image = image
 ), IVotableOutput, IReportableOutput, IFavorableOutput
 
 fun toSimplifiedRestaurantOutput(restaurant: Restaurant, userId: Int? = null): SimplifiedRestaurantOutput {

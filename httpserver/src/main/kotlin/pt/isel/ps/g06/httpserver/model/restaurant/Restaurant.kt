@@ -12,27 +12,25 @@ class Restaurant(
         identifier: Lazy<RestaurantIdentifier>,
         name: String,
         image: URI?,
-        isFavorite: UserPredicate,
-        isFavorable: UserPredicate,
+        override val isFavorite: UserPredicate,
+        override val isFavorable: UserPredicate,
         override val userVote: UserVote,
         override val votes: Lazy<Votes>,
         override val isVotable: UserPredicate,
         override val isReportable: UserPredicate,
+        override val cuisines: Sequence<Cuisine>,
         val ownerId: Int?,
         val latitude: Float,
         val longitude: Float,
         val submitterInfo: Lazy<Submitter>,
         val creationDate: Lazy<OffsetDateTime?>,
         val meals: Sequence<Meal>,
-        val suggestedMeals: Sequence<Meal>,
-        override val cuisines: Sequence<Cuisine>
+        val suggestedMeals: Sequence<Meal>
 ) : BasePublicSubmission<Lazy<RestaurantIdentifier>>(
         identifier = identifier,
         image = image,
-        name = name,
-        isFavorable = isFavorable,
-        isFavorite = isFavorite
-), IVotable, IReportable, ICuisines {
+        name = name
+), IVotable, IReportable, ICuisines, IFavorable {
     /**
      * Checks if given restaurant is present in the database or not.
      * *This operation is stateful and initializes [identifier] value.*

@@ -87,10 +87,11 @@ interface MealDao {
             "INNER JOIN $F_table " +
             "ON $F_table.$F_submission_id = $table.$id " +
             "WHERE $F_table.$F_submitter_id = :submitterId " +
+            "AND $table.$meal_type = '$MEAL_TYPE_SUGGESTED_MEAL'" +
             "LIMIT :count " +
             "OFFSET :skip * :count"
     )
-    fun getAllUserFavorites(
+    fun getAllUserSuggestedFavorites(
             @Bind submitterId: Int,
             @Bind count: Int?,
             @Bind skip: Int?

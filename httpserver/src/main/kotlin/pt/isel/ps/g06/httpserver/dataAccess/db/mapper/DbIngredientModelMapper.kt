@@ -10,20 +10,13 @@ import pt.isel.ps.g06.httpserver.model.modular.toUserPredicate
 
 //TODO Replace this with first mapper
 @Component
-class DbIngredientModelMapper(
-        private val dbFavoriteRepo: FavoriteDbRepository
-) : ModelMapper<DbMealDto, MealIngredient> {
+class DbIngredientModelMapper : ModelMapper<DbMealDto, MealIngredient> {
     override fun mapTo(dto: DbMealDto): MealIngredient {
         return MealIngredient(
                 identifier = dto.submission_id,
                 name = dto.meal_name,
-                isFavorite = toUserPredicate({ false }) { userId ->
-                    dbFavoriteRepo.getFavorite(dto.submission_id, userId)
-                },
-                //An ingredient is always favorable
-                isFavorable = { true },
                 image = null,
-                nutritionalValues = NutritionalValues(dto.carbs, dto.amount, dto.unit)
+                nutritionalInfo = NutritionalValues(dto.carbs, dto.amount, dto.unit)
         )
     }
 }

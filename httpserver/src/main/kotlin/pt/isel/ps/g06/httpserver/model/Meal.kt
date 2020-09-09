@@ -1,10 +1,7 @@
 package pt.isel.ps.g06.httpserver.model
 
 import pt.isel.ps.g06.httpserver.dataAccess.db.MealType
-import pt.isel.ps.g06.httpserver.model.modular.BasePublicSubmission
-import pt.isel.ps.g06.httpserver.model.modular.ICuisines
-import pt.isel.ps.g06.httpserver.model.modular.INutritionalSubmission
-import pt.isel.ps.g06.httpserver.model.modular.UserPredicate
+import pt.isel.ps.g06.httpserver.model.modular.*
 import pt.isel.ps.g06.httpserver.model.restaurant.Restaurant
 import pt.isel.ps.g06.httpserver.model.restaurant.RestaurantIdentifier
 import java.net.URI
@@ -13,8 +10,9 @@ import java.time.OffsetDateTime
 class Meal(
         identifier: Int,
         name: String,
-        isFavorite: UserPredicate,
         image: URI?,
+        override val isFavorable: UserPredicate = { submitterInfo.value?.identifier != it ?: true },
+        override val isFavorite: UserPredicate,
         override val nutritionalInfo: NutritionalValues,
         val composedBy: MealComposition,
         override val cuisines: Sequence<Cuisine>,
@@ -25,10 +23,8 @@ class Meal(
 ) : BasePublicSubmission<Int>(
         identifier = identifier,
         name = name,
-        image = image,
-        isFavorable = { submitterInfo.value?.identifier != it ?: true },
-        isFavorite = isFavorite
-), INutritionalSubmission, ICuisines {
+        image = image
+), INutritionalSubmission, ICuisines, IFavorable {
 
     private val restaurantInfo: MutableMap<RestaurantIdentifier, MealRestaurantInfo?> = mutableMapOf()
 
