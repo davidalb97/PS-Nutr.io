@@ -156,8 +156,8 @@ CREATE TABLE ApiCuisine(
 CREATE TABLE Meal(
 	submission_id integer PRIMARY KEY,
 	meal_name varchar(50) NOT NULL,
-	carbs integer NOT NULL,
-	quantity integer NOT NULL,
+	carbs float NOT NULL,
+	quantity float NOT NULL,
 	unit varchar(10) CHECK(unit = 'gr'),
 	meal_type varchar(10) CHECK(
 		meal_type = 'I' OR
@@ -189,7 +189,7 @@ CREATE TABLE Favorite(
 CREATE TABLE Portion(
 	submission_id integer PRIMARY KEY,
 	restaurant_meal_submission_id integer,
-	quantity integer,
+	float integer,
 	FOREIGN KEY(submission_id) REFERENCES Submission(submission_id) ON DELETE CASCADE,
 	FOREIGN KEY(restaurant_meal_submission_id) REFERENCES RestaurantMeal(submission_id) ON DELETE CASCADE
 );
@@ -197,7 +197,7 @@ CREATE TABLE Portion(
 CREATE TABLE MealIngredient(
 	meal_submission_id integer,
 	ingredient_submission_id integer,
-	quantity integer NOT NULL,
+	quantity float NOT NULL,
 	PRIMARY KEY(meal_submission_id, ingredient_submission_id),
 	FOREIGN KEY(meal_submission_id) REFERENCES Meal(submission_id) ON DELETE CASCADE,
 	FOREIGN KEY(ingredient_submission_id) REFERENCES Meal(submission_id)
@@ -220,7 +220,7 @@ CREATE TABLE MealCuisine(
 );
 
 ---------
-CREATE OR REPLACE FUNCTION AddFood(_type varchar,name varchar, carbs integer, quantity integer) 
+CREATE OR REPLACE FUNCTION AddFood(_type varchar, name varchar, carbs float, quantity float) 
 RETURNS void
 AS $$ 
 	BEGIN 
