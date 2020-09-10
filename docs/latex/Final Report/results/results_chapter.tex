@@ -544,12 +544,7 @@ which are interfaces that can be implemented by fragments and viewholders and pr
 \subsection{Local data storing}
 
 As mentioned in the dependencies, the mobile application utilizes Room to store data locally. This is convenient
-for multiple reasons: 
-\begin{itemize}
-    \item To allow using the application in offline situations;
-    \item To save data in order to avoid unnecessary requests to the server;
-    \item To help data synchronization, that will be detailed later in this section.
-\end{itemize}
+to allow using the application in offline situations.\\
 
 Room classes use the "\textit{Db}" prefixed followed by the name and prefixed by their type e.g. "\textit{DbMealInfoMapper}", "\textit{DbMealInfoRelation}" and "\textit{DbMealInfoEntity}". 
 The \textit{DAO} classes However are only prefixed with "\textit{Dao}". 
@@ -749,7 +744,8 @@ platform's suggested meals and meals' ingredients.\\
     \end{center}
 \end{figure}
 
-It should be noted that restaurants and meals can be votable, favorable and reportable, however there are some exceptions:
+It should be noted that restaurants and meals can be votable (by clicking on arrow icons),
+favorable (by clicking on star icons) and reportable, however there are some exceptions:
 \begin{itemize}
     \item Restaurants that where provided by external APIs can only be favorable, but not votable or reportable;
     \item Restaurants created by users can be all of them;
