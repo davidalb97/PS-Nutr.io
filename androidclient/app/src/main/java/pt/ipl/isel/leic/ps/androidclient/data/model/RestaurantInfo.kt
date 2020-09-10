@@ -56,6 +56,7 @@ open class RestaurantInfo : RestaurantItem, Parcelable {
         cuisines = parcel.readListCompat(Cuisine::class)
         meals = parcel.readListCompat(MealItem::class)
         suggestedMeals = parcel.readListCompat(MealItem::class)
+        this.ownerId = parcel.readSerializable() as Int?
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {

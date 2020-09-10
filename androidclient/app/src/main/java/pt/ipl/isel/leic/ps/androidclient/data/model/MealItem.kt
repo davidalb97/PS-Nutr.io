@@ -54,6 +54,7 @@ open class MealItem(
         parcel.writeWeightUnit(unit)
         parcel.writeUri(imageUri)
         parcel.writeParcelable(votes, flags)
+        parcel.writeParcelable(favorites, flags)
         parcel.writeSerializable(isVerified)
         parcel.writeSerializable(isSuggested)
         parcel.writeSerializable(isReportable)
