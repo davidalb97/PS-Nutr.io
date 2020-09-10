@@ -12,12 +12,18 @@ interface IBarChart {
 
     val chartId: Int
     var chart: BarChart
+    var xAxisLabel: TextView
+    var yAxisLabel: TextView
     var noDataText: String?
 
     fun setupChart(view: View, values: List<BarEntry>) {
         chart = view.findViewById(R.id.portion_chart)
+        xAxisLabel = view.findViewById(R.id.x_axis_label)
+        yAxisLabel = view.findViewById(R.id.y_axis_label)
         chart.setNoDataText(noDataText)
         if (values.isNotEmpty()) {
+            xAxisLabel.visibility = View.VISIBLE
+            yAxisLabel.visibility = View.VISIBLE
             setupChartSettings(values)
             setupChartData(values)
         }

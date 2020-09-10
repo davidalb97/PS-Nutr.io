@@ -68,6 +68,8 @@ class MealInfoFragment :
     override lateinit var downVoteButton: ImageButton
     override val chartId: Int = R.id.portion_chart
     override lateinit var chart: BarChart
+    override lateinit var xAxisLabel: TextView
+    override lateinit var yAxisLabel: TextView
     override var noDataText: String? = app.getString(R.string.no_portions_chart_message)
 
     override val recyclerViewId = R.id.meal_info_ingredient_item_list
@@ -266,6 +268,8 @@ class MealInfoFragment :
             addPortionToGraph(amount)
             setupChartSettings(portionEntries)
             if (portionEntries.size == 1) {
+                xAxisLabel.visibility = View.VISIBLE
+                yAxisLabel.visibility = View.VISIBLE
                 setupChartData(portionEntries)
             }
             refreshChart()
@@ -297,6 +301,8 @@ class MealInfoFragment :
 
             if (portionEntries.isEmpty()) {
                 chart.clear()
+                xAxisLabel.visibility = View.GONE
+                yAxisLabel.visibility = View.GONE
             } else {
                 setupChartSettings(portionEntries)
                 refreshChart()

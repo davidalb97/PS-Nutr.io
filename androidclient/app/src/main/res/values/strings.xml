@@ -235,6 +235,7 @@
     <string name="portion_delete_fail">Could not delete portion</string>
     <string name="confirm">Confirm</string>
     <string name="add_restaurant_meal">Add restaurant meal</string>
+    <string name="restaurant_meals">Restaurant meals</string>
     <string name="meal_added">Added meal</string>
     <string name="insulin_profile_add_fail">Could not create insulin profile!</string>
     <string name="item_deleted">Item deleted</string>
