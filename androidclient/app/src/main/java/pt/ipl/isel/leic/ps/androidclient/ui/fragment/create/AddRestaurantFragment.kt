@@ -82,7 +82,7 @@ class AddRestaurantFragment : BaseViewModelFragment<AddRestaurantViewModel>(),
 
     private fun onLocationRejected() {
         Toast.makeText(app, R.string.turn_on_geolocation, Toast.LENGTH_LONG).show()
-        parentFragmentManager.popBackStack()
+        super.popBackStack()
     }
 
     override fun onRequestPermissionsResult(
@@ -170,7 +170,7 @@ class AddRestaurantFragment : BaseViewModelFragment<AddRestaurantViewModel>(),
                                 getString(R.string.created_restaurant),
                                 Toast.LENGTH_SHORT
                             ).show()
-                            popUpBackStack()
+                            super.popBackStack()
                         },
                         onError = log::e
                     )

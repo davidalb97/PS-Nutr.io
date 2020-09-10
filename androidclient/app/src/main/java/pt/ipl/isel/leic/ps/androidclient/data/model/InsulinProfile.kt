@@ -6,6 +6,9 @@ import androidx.room.PrimaryKey
 import pt.ipl.isel.leic.ps.androidclient.util.TimestampWithTimeZone
 import pt.ipl.isel.leic.ps.androidclient.util.readTimestampWithTimeZone
 import pt.ipl.isel.leic.ps.androidclient.util.writeTimestampWithTimeZone
+import java.text.SimpleDateFormat
+
+//private val timeFormat = SimpleDateFormat("HH:MM")
 
 data class InsulinProfile(
     @PrimaryKey val profileName: String,
@@ -16,6 +19,9 @@ data class InsulinProfile(
     val carbsAmountPerInsulin: Float,
     val modificationDate: TimestampWithTimeZone?
 ) : Parcelable {
+
+    private val startInt by lazy { startTime.replace(":", "").toInt() }
+    private val endInt by lazy { endTime.replace(":", "").toInt() }
 
     constructor(parcel: Parcel) : this(
         profileName = parcel.readString()!!,
@@ -36,6 +42,29 @@ data class InsulinProfile(
         parcel.writeFloat(glucoseAmountPerInsulin)
         parcel.writeFloat(carbsAmountPerInsulin)
     }
+
+    //TODO replace with a cleaner solution is found
+    fun isValid(): Boolean {
+        return startInt < endInt
+    }
+
+    //TODO replace with a cleaner solution is found
+    fun overlaps(oldProfile: InsulinProfile): Boolean {
+        return oldProfile.endInt > startInt && oldProfile.startInt < endInt
+    }
+
+    //TODO remove if no other solution is found
+    /*
+    fun overlapsNotWorking(oldProfile: InsulinProfile): Boolean {
+        val newProfileStartTime = timeFormat.parse(startTime)!!
+        val newProfileEndTime = timeFormat.parse(endTime)!!
+        val oldProfileSavedStartTime = timeFormat.parse(oldProfile.startTime)!!
+        val oldProfileSavedEndTime = timeFormat.parse(oldProfile.endTime)!!
+
+        return oldProfileSavedEndTime.after(newProfileStartTime)
+                && oldProfileSavedStartTime.before(newProfileEndTime)
+    }
+     */
 
     override fun describeContents(): Int {
         return 0

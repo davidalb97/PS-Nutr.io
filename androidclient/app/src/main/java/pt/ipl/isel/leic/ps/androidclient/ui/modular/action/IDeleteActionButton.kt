@@ -25,19 +25,17 @@ interface IDeleteActionButton<T : Any> : IPressAction<T>, IUserSession, IContext
             return
         }
         deleteButton.setOnClickListener {
-            ensureUserSession(fetchCtx()) {
-                onDelete(
-                    onSuccess = {
-                        Toast.makeText(fetchCtx(), R.string.item_deleted, Toast.LENGTH_SHORT)
-                            .show()
-                    },
-                    onError = {
-                        Toast.makeText(fetchCtx(), R.string.item_delete_fail, Toast.LENGTH_SHORT)
-                            .show()
-                        log.e(it)
-                    }
-                )
-            }
+            onDelete(
+                onSuccess = {
+                    Toast.makeText(fetchCtx(), R.string.item_deleted, Toast.LENGTH_SHORT)
+                        .show()
+                },
+                onError = {
+                    Toast.makeText(fetchCtx(), R.string.item_delete_fail, Toast.LENGTH_SHORT)
+                        .show()
+                    log.e(it)
+                }
+            )
             setButtonsVisibility(false)
         }
         deleteButton.visibility = View.VISIBLE

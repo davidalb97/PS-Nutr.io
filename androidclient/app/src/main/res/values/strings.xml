@@ -240,4 +240,5 @@
     <string name="insulin_profile_add_fail">Could not create insulin profile!</string>
     <string name="item_deleted">Item deleted</string>
     <string name="item_delete_fail">Failed to delete item</string>
+    <string name="loading_profiles">Loading profiles...</string>
 </resources>
