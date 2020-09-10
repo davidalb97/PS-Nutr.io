@@ -23,9 +23,7 @@ data class UserLogin(
     }
 
     companion object CREATOR : Parcelable.Creator<UserLogin> {
-        override fun createFromParcel(parcel: Parcel): UserLogin {
-            return UserLogin(parcel)
-        }
+        override fun createFromParcel(parcel: Parcel) = UserLogin(parcel)
 
         override fun newArray(size: Int): Array<UserLogin?> {
             return arrayOfNulls(size)

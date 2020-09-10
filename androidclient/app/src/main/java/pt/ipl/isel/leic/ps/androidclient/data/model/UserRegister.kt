@@ -25,9 +25,7 @@ class UserRegister(
     }
 
     companion object CREATOR : Parcelable.Creator<UserRegister> {
-        override fun createFromParcel(parcel: Parcel): UserRegister {
-            return UserRegister(parcel)
-        }
+        override fun createFromParcel(parcel: Parcel) = UserRegister(parcel)
 
         override fun newArray(size: Int): Array<UserRegister?> {
             return arrayOfNulls(size)

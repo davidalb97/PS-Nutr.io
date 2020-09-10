@@ -24,9 +24,7 @@ class Favorites(
     }
 
     companion object CREATOR : Parcelable.Creator<Favorites> {
-        override fun createFromParcel(parcel: Parcel): Favorites {
-            return Favorites(parcel)
-        }
+        override fun createFromParcel(parcel: Parcel) = Favorites(parcel)
 
         override fun newArray(size: Int): Array<Favorites?> {
             return arrayOfNulls(size)

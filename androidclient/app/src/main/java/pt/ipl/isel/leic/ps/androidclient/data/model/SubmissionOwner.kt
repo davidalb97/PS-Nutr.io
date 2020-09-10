@@ -20,9 +20,7 @@ class SubmissionOwner(
     }
 
     companion object CREATOR : Parcelable.Creator<SubmissionOwner> {
-        override fun createFromParcel(parcel: Parcel): SubmissionOwner {
-            return SubmissionOwner(parcel)
-        }
+        override fun createFromParcel(parcel: Parcel) = SubmissionOwner(parcel)
 
         override fun newArray(size: Int): Array<SubmissionOwner?> {
             return arrayOfNulls(size)
