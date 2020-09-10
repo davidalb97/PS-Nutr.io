@@ -31,12 +31,14 @@ abstract class BaseViewModelFragment<VM> :
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         this.savedInstanceState = savedInstanceState
+        restoreArguments()
     }
 
     @CallSuper
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         this.savedInstanceState = savedInstanceState
+        restoreArguments()
     }
 
     open fun <VM> ViewModelStoreOwner.buildViewModel(savedInstanceState: Bundle?, clazz: Class<VM>): VM
@@ -51,7 +53,19 @@ abstract class BaseViewModelFragment<VM> :
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
+
+        //Save fragment arguments
+        outState.putBundle(javaClass.simpleName, arguments)
+
+        //Save fragment ViewModels
         super.onSaveViewModels(outState, getViewModels())
+    }
+
+    private fun restoreArguments() {
+        val savedInstanceState = savedInstanceState
+        if(savedInstanceState != null) {
+            arguments = savedInstanceState.getBundle(javaClass.simpleName)
+        }
     }
 
     open fun getViewModels(): Iterable<Parcelable> = listOf(viewModel)
