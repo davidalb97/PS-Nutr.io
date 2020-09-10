@@ -16,12 +16,12 @@ class MealService(
         private val dbFavoriteRepository: FavoriteDbRepository,
         private val dbMealModelMapper: DbMealModelMapper
 ) {
-    fun setFavorite(mealId: Int, userId: Int, isFavorite: Boolean): Boolean {
+    fun setFavorite(mealId: Int, userId: Int, isFavorite: Boolean) {
         val meal = getMeal(mealId) ?: throw MealNotFoundException()
         if(meal.type == MealType.SUGGESTED_INGREDIENT) {
             throw InvalidMealException("Cannot favorite suggested ingredients!")
         }
-        return dbFavoriteRepository.setFavorite(mealId, userId, isFavorite)
+        dbFavoriteRepository.setFavorite(mealId, userId, isFavorite)
     }
 
     fun getMeal(mealId: Int): Meal? {
