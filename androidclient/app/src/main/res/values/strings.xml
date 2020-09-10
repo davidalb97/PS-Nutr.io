@@ -193,12 +193,12 @@
     <string name="about_us_title">The team that developed this project</string>
     <string name="about_us_footer">This project was made in the context of our bachelor\'s final project</string>
     <string name="resource_downvoted">Downvoted!</string>
-    <string name="resource_upvodted">Upvoted!</string>
+    <string name="resource_upvoted">Upvoted!</string>
     <string name="add_meals">Add meals</string>
     <string name="add_amount">Add amount</string>
     <string name="edit_amount">Edit amount</string>
     <string name="restaurant_map_nav">Restaurants by location</string>
-    <string name="login_required">You must login to use this feature!</string>
+    <string name="login_required">You must be logged in to use this feature!</string>
     <string name="upvotes">Upvotes</string>
     <string name="downvotes">Downvotes</string>
     <string name="Dialog_cancel">Cancel</string>
