@@ -16,8 +16,6 @@ open class IngredientRecyclerVMProviderFactory(
     savedInstanceState,
     intent
 ) {
-    override val logger = Logger(IngredientRecyclerVMProviderFactory::class)
-
     override fun <T : ViewModel?> newViewModel(modelClass: Class<T>): ViewModel? {
         return if (modelClass == IngredientListViewModel::class.java
             || modelClass == MealItemListViewModel::class.java

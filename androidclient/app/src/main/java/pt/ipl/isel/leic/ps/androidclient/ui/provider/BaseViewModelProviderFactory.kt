@@ -13,7 +13,7 @@ abstract class BaseViewModelProviderFactory(
     val intent: Intent
 ) : ViewModelProvider.Factory {
 
-    abstract val logger: Logger
+    val logger by lazy { Logger(javaClass) }
 
     abstract fun <T : ViewModel?> newViewModel(modelClass: Class<T>): ViewModel?
 

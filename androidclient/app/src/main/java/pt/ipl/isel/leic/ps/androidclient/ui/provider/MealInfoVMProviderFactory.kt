@@ -15,8 +15,6 @@ open class MealInfoVMProviderFactory(
     savedInstanceState,
     intent
 ) {
-    override val logger = Logger(MealInfoVMProviderFactory::class)
-
     override fun <T : ViewModel?> newViewModel(modelClass: Class<T>): ViewModel? {
         return when (modelClass) {
             MealInfoViewModel::class.java -> {

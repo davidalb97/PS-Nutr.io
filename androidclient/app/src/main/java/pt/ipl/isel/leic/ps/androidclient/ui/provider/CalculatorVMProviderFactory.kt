@@ -18,8 +18,6 @@ class CalculatorVMProviderFactory(
     savedInstanceState,
     intent
 ) {
-    override val logger = Logger(CalculatorVMProviderFactory::class)
-
     override fun <T : ViewModel?> newViewModel(modelClass: Class<T>): ViewModel? {
         return when (modelClass) {
             InsulinProfilesListViewModel::class.java -> {

@@ -15,8 +15,6 @@ class UserProfileVMProviderFactory(
     savedInstanceState,
     intent
 ) {
-    override val logger = Logger(UserProfileVMProviderFactory::class)
-
     override fun <T : ViewModel?> newViewModel(modelClass: Class<T>): ViewModel? {
         return when (modelClass) {
             UserSessionViewModel::class.java -> UserSessionViewModel()
