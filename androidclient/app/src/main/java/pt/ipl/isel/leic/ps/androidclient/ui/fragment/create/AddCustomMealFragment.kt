@@ -3,9 +3,7 @@ package pt.ipl.isel.leic.ps.androidclient.ui.fragment.create
 import android.net.Uri
 import android.os.Bundle
 import android.os.Parcelable
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.*
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.app
 import pt.ipl.isel.leic.ps.androidclient.R
@@ -198,18 +196,18 @@ class AddCustomMealFragment : BaseAddMealFragment(), IRemainingPickSpinner, IReq
 
     private fun onCreateSuccess() {
         Toast.makeText(app, getString(R.string.created_custom_meal), Toast.LENGTH_SHORT).show()
-        popUpBackStack()
+        super.popBackStack()
     }
 
     private fun onEditSuccess() {
         Toast.makeText(app, getString(R.string.edited_custom_meal), Toast.LENGTH_SHORT).show()
-        popUpBackStack()
+        super.popBackStack()
     }
 
     private fun onSubmitError(throwable: Throwable) {
         log.e(throwable)
         Toast.makeText(app, getString(R.string.submit_fail_custom_meal), Toast.LENGTH_SHORT).show()
-        popUpBackStack()
+        super.popBackStack()
     }
 
     private fun isInputValid(): Boolean {

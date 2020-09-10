@@ -78,7 +78,7 @@ open class RestaurantListFragment : BaseListFragment<
     protected open fun onLocationRejected() {
         Toast.makeText(app, R.string.turn_on_geolocation, Toast.LENGTH_LONG)
             .show()
-        parentFragmentManager.popBackStack()
+        super.popBackStack()
     }
 
     override fun onRequestPermissionsResult(

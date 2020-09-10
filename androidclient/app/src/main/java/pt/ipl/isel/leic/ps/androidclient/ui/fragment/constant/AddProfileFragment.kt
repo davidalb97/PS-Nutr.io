@@ -18,7 +18,6 @@ import pt.ipl.isel.leic.ps.androidclient.ui.util.units.GlucoseUnits
 import pt.ipl.isel.leic.ps.androidclient.ui.util.units.WeightUnits
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.InsulinProfilesListViewModel
 import pt.ipl.isel.leic.ps.androidclient.util.TimestampWithTimeZone
-import java.text.SimpleDateFormat
 import java.util.*
 
 class AddProfileFragment : BaseViewModelFragment<InsulinProfilesListViewModel>(),
@@ -144,7 +143,7 @@ class AddProfileFragment : BaseViewModelFragment<InsulinProfilesListViewModel>()
             Toast.makeText(app, R.string.insulin_profile_add_fail, Toast.LENGTH_SHORT)
                 .show()
         }) {
-            parentFragmentManager.popBackStack()
+            super.popBackStack()
         }
     }
 
