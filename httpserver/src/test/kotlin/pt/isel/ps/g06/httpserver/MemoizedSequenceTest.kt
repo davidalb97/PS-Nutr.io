@@ -11,7 +11,7 @@ import pt.isel.ps.g06.httpserver.util.memoized
 class MemoizedSequenceTest {
 
     @Test
-    fun `Memoized Iterable should only process 3 times`() {
+    fun `Memoized Iterable Sequence should only process 3 times`() {
         var totalCalls = 0
         val cachedSequence = sequenceOf("a", "b", "c")
                 .onEach {
@@ -28,7 +28,7 @@ class MemoizedSequenceTest {
     }
 
     @Test
-    fun `Memoized ResultIterable should only process 3 times and close`() {
+    fun `Memoized ResultIterable as ClosableSequence should only process 3 times and close`() {
         var totalCalls = 0
         var closedCalled = false
         val values = arrayOf("a", "b", "c")

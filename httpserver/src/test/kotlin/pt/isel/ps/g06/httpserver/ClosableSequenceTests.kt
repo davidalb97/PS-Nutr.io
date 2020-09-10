@@ -10,7 +10,7 @@ import pt.isel.ps.g06.httpserver.util.asClosableSequence
 class ClosableSequenceTests {
 
     @Test
-    fun `cached ResultIterable should close on fully iterated`() {
+    fun `ResultIterable should close on fully iterated on as a ClosableSequence`() {
         var totalCalls = 0
         var closedCalled = false
         val cachedSequence = ResultIterable.of(object : ResultIterator<Any> {
@@ -44,7 +44,7 @@ class ClosableSequenceTests {
     }
 
     @Test
-    fun `cached ResultIterable should close on exception thrown`() {
+    fun `ResultIterable should close on exception thrown as a ClosableSequence`() {
         var closedCalled = false
         val cachedSequence = ResultIterable.of(
                 object : ResultIterator<Any> {
