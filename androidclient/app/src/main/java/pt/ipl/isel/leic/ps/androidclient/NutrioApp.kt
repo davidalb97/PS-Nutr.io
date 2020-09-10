@@ -41,7 +41,7 @@ class NutrioApp : Application() {
     private val log = Logger(NutrioApp::class)
 
     companion object {
-        lateinit var menu: Menu
+        var menu: Menu? = null
 
         /**
          * Application context
