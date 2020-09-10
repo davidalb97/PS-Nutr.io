@@ -198,10 +198,8 @@ class MealInfoFragment :
                 viewModel.addMealPortion(
                     restaurantId = receivedMeal.restaurantSubmissionId!!,
                     mealId = receivedMeal.submissionId!!,
-                    portion = Portion(
-                        preciseGrams.toInt(),
-                        WeightUnits.fromValue(sharedPreferences.getWeightUnitOrDefault())
-                    ),
+                    //MealAmountSelector always returns in grams
+                    portion = Portion(preciseGrams, WeightUnits.GRAMS),
                     userSession = requireUserSession(),
                     onSuccess = { onAddPortion(preciseGrams) },
                     onError = { error -> onAddPortion(preciseGrams, exception = error) }
@@ -223,10 +221,8 @@ class MealInfoFragment :
                 viewModel.editMealPortion(
                     restaurantId = receivedMeal.restaurantSubmissionId!!,
                     mealId = receivedMeal.submissionId!!,
-                    portion = Portion(
-                        preciseGrams.toInt(),
-                        WeightUnits.fromValue(sharedPreferences.getWeightUnitOrDefault())
-                    ),
+                    //MealAmountSelector always returns in grams
+                    portion = Portion(preciseGrams, WeightUnits.GRAMS),
                     userSession = requireUserSession(),
                     onSuccess = { onEditPortion(preciseGrams) },
                     onError = { error -> onEditPortion(preciseGrams, exception = error) }
