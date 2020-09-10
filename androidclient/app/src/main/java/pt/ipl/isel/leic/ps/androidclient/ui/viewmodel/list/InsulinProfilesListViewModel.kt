@@ -4,22 +4,33 @@ import android.os.Parcel
 import android.os.Parcelable
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.insulinProfilesRepository
 import pt.ipl.isel.leic.ps.androidclient.data.model.InsulinProfile
+import pt.ipl.isel.leic.ps.androidclient.data.model.MealItem
 import pt.ipl.isel.leic.ps.androidclient.ui.util.ItemAction
 import pt.ipl.isel.leic.ps.androidclient.ui.util.getUserSession
+import pt.ipl.isel.leic.ps.androidclient.util.readBooleanCompat
 import pt.ipl.isel.leic.ps.androidclient.util.readListCompat
-import kotlin.reflect.KClass
+import pt.ipl.isel.leic.ps.androidclient.util.writeBooleanCompat
 
 private val ITEM_CLASS = InsulinProfile::class
 
 class InsulinProfilesListViewModel : BaseListViewModel<InsulinProfile> {
 
+    var firstTimeSetup: Boolean
+    val argumentMeal: MealItem?
     val actions: List<ItemAction>
 
-    constructor(actions: List<ItemAction>): super(ITEM_CLASS) {
+    constructor(
+        argumentMeal: MealItem? = null,
+        actions: List<ItemAction>
+    ): super(ITEM_CLASS) {
+        firstTimeSetup = true
+        this.argumentMeal = argumentMeal
         this.actions = actions
     }
 
     constructor(parcel: Parcel) : super(parcel, ITEM_CLASS) {
+        firstTimeSetup = parcel.readBooleanCompat()
+        argumentMeal = parcel.readParcelable(MealItem::class.java.classLoader)
         actions = parcel.readListCompat(ItemAction::class)
     }
 
@@ -68,6 +79,8 @@ class InsulinProfilesListViewModel : BaseListViewModel<InsulinProfile> {
 
     override fun writeToParcel(dest: Parcel?, flags: Int) {
         super.writeToParcel(dest, flags)
+        dest?.writeBooleanCompat(firstTimeSetup)
+        dest?.writeParcelable(argumentMeal, flags)
         dest?.writeList(actions)
     }
 

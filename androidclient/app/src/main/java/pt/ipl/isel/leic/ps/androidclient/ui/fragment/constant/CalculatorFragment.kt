@@ -13,6 +13,7 @@ import pt.ipl.isel.leic.ps.androidclient.data.db.InsulinCalculator
 import pt.ipl.isel.leic.ps.androidclient.data.model.InsulinProfile
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.BaseAddMealFragment
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.IRequiredTextInput
+import pt.ipl.isel.leic.ps.androidclient.ui.modular.filter.IItemListFilter
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.unit.IGlucoseUnitSpinner
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.CalculatorVMProviderFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.util.*
@@ -70,9 +71,14 @@ class CalculatorFragment : BaseAddMealFragment(), IRequiredTextInput, IGlucoseUn
 
     override fun setupIngredients(view: View) {
         super.setupIngredients(view)
-        arguments?.getMealItem()?.let(viewModel::pick)
-        arguments?.getMealIngredient()?.let(viewModel::pick)
-        arguments?.getMealInfo()?.let(viewModel::pick)
+        if(viewModelProfiles.firstTimeSetup) {
+            viewModelProfiles.firstTimeSetup = false
+
+            val argumentMeal = viewModelProfiles.argumentMeal
+            if(argumentMeal != null) {
+                viewModel.pick(argumentMeal)
+            }
+        }
     }
 
     /**
