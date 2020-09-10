@@ -6,33 +6,15 @@ import org.jdbi.v3.core.statement.StatementContext
 import org.junit.Assert
 import org.junit.jupiter.api.Test
 import pt.isel.ps.g06.httpserver.util.asClosableSequence
-import pt.isel.ps.g06.httpserver.util.memoized
 
-class MemoizedSequenceTest {
-
-    @Test
-    fun `Memoized Iterable should only process 3 times`() {
-        var totalCalls = 0
-        val cachedSequence = sequenceOf("a", "b", "c")
-                .onEach {
-                    totalCalls++
-                }
-                .memoized()
-
-        Assert.assertEquals(0, totalCalls)
-        cachedSequence.count()
-        cachedSequence.count()
-        cachedSequence.count()
-        cachedSequence.count()
-        Assert.assertEquals(3, totalCalls)
-    }
+class ClosableSequenceTests {
 
     @Test
-    fun `Memoized ResultIterable should only process 3 times and close`() {
+    fun `cached ResultIterable should close on fully iterated`() {
         var totalCalls = 0
         var closedCalled = false
-        val values = arrayOf("a", "b", "c")
         val cachedSequence = ResultIterable.of(object : ResultIterator<Any> {
+            val values = arrayOf("a", "b", "c")
             var idx = 0
             override fun hasNext(): Boolean {
                 return idx < values.size
@@ -54,17 +36,38 @@ class MemoizedSequenceTest {
             override fun getContext(): StatementContext = throw UnsupportedOperationException()
 
         }).asClosableSequence()
-                .memoized()
 
         Assert.assertEquals(0, totalCalls)
 
-        //Iterated closure assert
         cachedSequence.count()
         Assert.assertTrue(closedCalled)
-        Assert.assertEquals(values.size, totalCalls)
+    }
 
-        //Memoization assert
-        cachedSequence.count()
-        Assert.assertEquals(values.size, totalCalls)
+    @Test
+    fun `cached ResultIterable should close on exception thrown`() {
+        var closedCalled = false
+        val cachedSequence = ResultIterable.of(
+                object : ResultIterator<Any> {
+                    override fun hasNext(): Boolean = true
+
+                    override fun next() = throw NoSuchElementException()
+
+                    override fun remove() = throw UnsupportedOperationException()
+
+                    override fun close() {
+                        closedCalled = true
+                    }
+
+                    override fun getContext(): StatementContext = throw UnsupportedOperationException()
+
+                }
+        ).asClosableSequence()
+
+        try {
+            cachedSequence.count()
+        } catch (_: Exception) {
+
+        }
+        Assert.assertTrue(closedCalled)
     }
 }
