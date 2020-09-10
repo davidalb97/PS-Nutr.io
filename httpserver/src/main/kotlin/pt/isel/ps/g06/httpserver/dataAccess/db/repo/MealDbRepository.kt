@@ -12,7 +12,9 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbMealDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbMealIngredientDto
 import pt.isel.ps.g06.httpserver.dataAccess.input.ingredient.IngredientInput
 import pt.isel.ps.g06.httpserver.exception.problemJson.badRequest.InvalidInputException
-import pt.isel.ps.g06.httpserver.util.asCachedSequence
+import pt.isel.ps.g06.httpserver.util.ClosableSequence
+import pt.isel.ps.g06.httpserver.util.asClosableSequence
+import pt.isel.ps.g06.httpserver.util.emptyClosableSequence
 
 private val mealDaoClass = MealDao::class.java
 
@@ -29,94 +31,97 @@ class MealDbRepository(
         }
     }
 
-    fun getBySubmitterId(submitterId: Int, skip: Int?, count: Int?): Sequence<DbMealDto> {
+    fun getBySubmitterId(submitterId: Int, skip: Int?, count: Int?): ClosableSequence<DbMealDto> {
         return databaseContext.inTransaction { handle ->
             return@inTransaction handle.attach(mealDaoClass)
                     .getAllBySubmitterIdAndType(submitterId, MealType.CUSTOM.toString(), skip, count)
-                    .asCachedSequence()
+                    .asClosableSequence()
         }
 
     }
 
-    fun getAllUserFavorites(submitterId: Int, count: Int?, skip: Int?): Sequence<DbMealDto> {
+    fun getAllUserFavorites(submitterId: Int, count: Int?, skip: Int?): ClosableSequence<DbMealDto> {
         return databaseContext.inTransaction { handle ->
             return@inTransaction handle.attach(mealDaoClass)
                     .getAllUserSuggestedFavorites(submitterId, count, skip)
-                    .asCachedSequence()
+                    .asClosableSequence()
         }
     }
 
-    fun getMealIngredients(mealId: Int): Sequence<DbMealIngredientDto> {
+    fun getMealIngredients(mealId: Int): ClosableSequence<DbMealIngredientDto> {
         return databaseContext.inTransaction { handle ->
             return@inTransaction handle
                     .attach(MealIngredientDao::class.java)
                     .getMealIngredientsByMealId(mealId)
-                    .asCachedSequence()
+                    .asClosableSequence()
         }
     }
 
-    fun getMealComponents(mealId: Int): Sequence<DbMealIngredientDto> {
+    fun getMealComponents(mealId: Int): ClosableSequence<DbMealIngredientDto> {
         return databaseContext.inTransaction { handle ->
             return@inTransaction handle
                     .attach(MealIngredientDao::class.java)
                     .getMealComponentsByMealId(mealId)
-                    .asCachedSequence()
+                    .asClosableSequence()
         }
 
     }
 
-    fun getAllIngredients(skip: Int?, count: Int?): Sequence<DbMealDto> {
+    fun getAllIngredients(skip: Int?, count: Int?): ClosableSequence<DbMealDto> {
         return databaseContext.inTransaction { handle ->
             return@inTransaction handle
                     .attach(MealDao::class.java)
                     .getAllByType(MEAL_TYPE_SUGGESTED_INGREDIENT, skip, count)
-                    .asCachedSequence()
+                    .asClosableSequence()
         }
 
     }
 
-    fun getAllSuggestedMealsByCuisineApiIds(apiSubmitterId: Int, cuisineApiIds: Sequence<String>): Sequence<DbMealDto> {
+    fun getAllSuggestedMealsByCuisineApiIds(
+            apiSubmitterId: Int,
+            cuisineApiIds: Sequence<String>
+    ): ClosableSequence<DbMealDto> {
         val cuisineApiIdsList = cuisineApiIds.toList()
-        if (cuisineApiIdsList.isEmpty()) return emptySequence() //TODO See if eager call is possible to avoid
+        if (cuisineApiIdsList.isEmpty()) return emptyClosableSequence()
 
         return databaseContext.inTransaction {
             return@inTransaction it
                     .attach(MealDao::class.java)
                     .getAllSuggestedForApiCuisines(apiSubmitterId, cuisineApiIdsList)
-                    .asCachedSequence()
+                    .asClosableSequence()
         }
     }
 
-    fun getAllSuggestedMealsFromCuisineNames(cuisineNames: Sequence<String>): Sequence<DbMealDto> {
+    fun getAllSuggestedMealsFromCuisineNames(cuisineNames: Sequence<String>): ClosableSequence<DbMealDto> {
         val cuisineNameList = cuisineNames.toList()
         //TODO See if eager call is possible to avoid
-        if (cuisineNameList.isEmpty()) return emptySequence()
+        if (cuisineNameList.isEmpty()) return emptyClosableSequence()
 
         return databaseContext.inTransaction { handle ->
             return@inTransaction handle
                     .attach(MealDao::class.java)
                     .getAllSuggestedForCuisineNames(cuisineNameList)
-                    .asCachedSequence()
+                    .asClosableSequence()
         }
     }
 
     //TODO use cuisine filtering
-    fun getAllSuggestedMeals(skip: Int?, count: Int?, cuisines: Collection<String>?): Sequence<DbMealDto> {
+    fun getAllSuggestedMeals(skip: Int?, count: Int?, cuisines: Collection<String>?): ClosableSequence<DbMealDto> {
         return databaseContext.inTransaction { handle ->
             return@inTransaction handle
                     .attach(MealDao::class.java)
                     //.getAllSuggestedMeals(skip, count, cuisines)
                     .getAllByType(MEAL_TYPE_SUGGESTED_MEAL, skip, count)
-                    .asCachedSequence()
+                    .asClosableSequence()
         }
     }
 
-    fun getAllUserMealsForRestaurant(restaurantId: Int): Sequence<DbMealDto> {
+    fun getAllUserMealsForRestaurant(restaurantId: Int): ClosableSequence<DbMealDto> {
         return databaseContext.inTransaction { handle ->
             return@inTransaction handle
                     .attach(MealDao::class.java)
                     .getAllUserMealsByRestaurantId(restaurantId)
-                    .asCachedSequence()
+                    .asClosableSequence()
         }
     }
 
@@ -324,7 +329,7 @@ class MealDbRepository(
             val restaurantMeals = it
                     .attach(RestaurantMealDao::class.java)
                     .getAllByMealId(mealId)
-                    .asCachedSequence()
+                    .asClosableSequence()
 
             if(restaurantMeals.toList().isNotEmpty()) {
                 throw InvalidInputException("Cannot delete a public submission!")

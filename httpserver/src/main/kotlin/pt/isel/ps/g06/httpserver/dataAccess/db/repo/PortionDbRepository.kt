@@ -7,7 +7,8 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.dao.PortionDao
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.SubmissionDao
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.SubmissionSubmitterDao
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbPortionDto
-import pt.isel.ps.g06.httpserver.util.asCachedSequence
+import pt.isel.ps.g06.httpserver.util.ClosableSequence
+import pt.isel.ps.g06.httpserver.util.asClosableSequence
 
 private val portionDaoClass = PortionDao::class.java
 
@@ -17,11 +18,11 @@ class PortionDbRepository(
         private val submissionDbRepository: SubmissionDbRepository
 ) {
 
-    fun getAllByRestaurantMealId(restaurantMealId: Int): Sequence<DbPortionDto> {
+    fun getAllByRestaurantMealId(restaurantMealId: Int): ClosableSequence<DbPortionDto> {
         return databaseContext.inTransaction {
             it.attach(portionDaoClass)
                     .getAllForRestaurantMealId(restaurantMealId)
-                    .asCachedSequence()
+                    .asClosableSequence()
         }
     }
 

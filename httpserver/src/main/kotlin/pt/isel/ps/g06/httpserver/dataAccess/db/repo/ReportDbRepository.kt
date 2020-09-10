@@ -7,20 +7,23 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.dao.ReportDao
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.*
 import pt.isel.ps.g06.httpserver.exception.problemJson.badRequest.InvalidReportSubmissionException
 import pt.isel.ps.g06.httpserver.exception.problemJson.conflict.DuplicateReportException
-import pt.isel.ps.g06.httpserver.util.asCachedSequence
+import pt.isel.ps.g06.httpserver.util.ClosableSequence
+import pt.isel.ps.g06.httpserver.util.asClosableSequence
 
 private val reportDaoClass = ReportDao::class.java
 
 @Repository
-class ReportDbRepository(private val databaseContext: DatabaseContext, private val submissionDbRepository: SubmissionDbRepository) {
+class ReportDbRepository(
+        private val databaseContext: DatabaseContext,
+        private val submissionDbRepository: SubmissionDbRepository
+) {
 
-    fun getAll(skip: Int?, count: Int?): Sequence<DbReportSubmissionDto> {
+    fun getAll(skip: Int?, count: Int?): ClosableSequence<DbReportSubmissionDto> {
         return databaseContext.inTransaction {
             val dao = it.attach(reportDaoClass)
             val allReports = dao.getAll(skip, count)
 
             return@inTransaction allReports
-                    .asCachedSequence()
                     .map { reportDto ->
                         val reportDetail = dao.getReportedSubmissionDetail(reportDto.submission_id)
                         DbReportSubmissionDto(
@@ -32,22 +35,27 @@ class ReportDbRepository(private val databaseContext: DatabaseContext, private v
                                 submission_submitter = reportDetail.submitter_id
                         )
                     }
+                    .asClosableSequence()
         }
     }
 
-    fun getAllBySubmissionType(submissionType: String, skip: Int?, count: Int?): Sequence<DbReportedSubmissionDto> {
+    fun getAllBySubmissionType(
+            submissionType: String,
+            skip: Int?,
+            count: Int?
+    ): ClosableSequence<DbReportedSubmissionDto> {
         return databaseContext.inTransaction {
             return@inTransaction it.attach(reportDaoClass)
                     .getAllReportedSubmissionsByType(submissionType, skip, count)
-                    .asCachedSequence()
+                    .asClosableSequence()
         }
     }
 
-    fun getAllFromSubmission(submissionId: Int): Sequence<DbSubmissionReportDto> {
+    fun getAllFromSubmission(submissionId: Int): ClosableSequence<DbSubmissionReportDto> {
         return databaseContext.inTransaction {
             return@inTransaction it.attach(reportDaoClass)
                     .getAllBySubmission(submissionId)
-                    .asCachedSequence()
+                    .asClosableSequence()
         }
     }
 

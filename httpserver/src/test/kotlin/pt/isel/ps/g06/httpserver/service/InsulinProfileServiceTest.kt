@@ -1,5 +1,6 @@
 package pt.isel.ps.g06.httpserver.service
 
+import org.jdbi.v3.core.result.ResultIterable
 import org.junit.Assert
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -12,6 +13,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.mapper.InsulinProfileModelMapper
 import pt.isel.ps.g06.httpserver.exception.problemJson.badRequest.InvalidInsulinProfileTimesException
 import pt.isel.ps.g06.httpserver.exception.problemJson.badRequest.OverlappingInsulinProfilesException
 import pt.isel.ps.g06.httpserver.model.InsulinProfile
+import pt.isel.ps.g06.httpserver.util.closableSequenceOf
 import java.time.LocalTime
 import java.time.OffsetDateTime
 
@@ -90,7 +92,7 @@ class InsulinProfileServiceTest {
                 submitterId,
                 null,
                 null
-        )).thenReturn(sequenceOf(profileDto))
+        )).thenReturn(closableSequenceOf(profileDto))
 
         `when`(repository.insertProfile(
                 anyNonNull(),

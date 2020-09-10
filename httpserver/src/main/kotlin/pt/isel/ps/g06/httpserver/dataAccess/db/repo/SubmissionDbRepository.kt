@@ -9,7 +9,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbApiSubmissionDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbSubmissionDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbSubmitterDto
 import pt.isel.ps.g06.httpserver.exception.problemJson.badRequest.InvalidInputException
-import pt.isel.ps.g06.httpserver.util.asCachedSequence
+import pt.isel.ps.g06.httpserver.util.asClosableSequence
 import java.time.OffsetDateTime
 
 
@@ -62,8 +62,10 @@ class SubmissionDbRepository(private val databaseContext: DatabaseContext) {
             // Check if submission is implementing the IS-A contract
             return@inTransaction handle.attach(SubmissionContractDao::class.java)
                     .getAllById(submissionId)
-                    .asCachedSequence()
-                    .any { it.submission_contract == contract.toString() }
+                    .asClosableSequence()
+                    .use {
+                        it.any { it.submission_contract == contract.toString() }
+                    }
         }
     }
 
@@ -96,8 +98,10 @@ class SubmissionDbRepository(private val databaseContext: DatabaseContext) {
             // Check if the submitter owns the submission
             handle.attach(SubmissionSubmitterDao::class.java)
                     .getAllBySubmissionId(submissionId)
-                    .asCachedSequence()
-                    .any { it.submitter_id == submitterId }
+                    .asClosableSequence()
+                    .use {
+                        it.any { it.submitter_id == submitterId }
+                    }
         }
     }
 
@@ -109,54 +113,4 @@ class SubmissionDbRepository(private val databaseContext: DatabaseContext) {
             )
         }
     }
-
-
-/*
-    protected fun isFromApi(submissionId: Int, defaultIsolation: TransactionIsolationLevel = SERIALIZABLE): Boolean {
-        return jdbi.inTransaction<Boolean, Exception>(defaultIsolation) {
-            return@inTransaction it.attach(ApiSubmissionDao::class.java)
-                    .getBySubmissionId(submissionId) != null
-        }
-    }
-
-    /**
-     * @throws InvalidInputException If submission change timed out.
-     */
-    protected fun requireEditable(
-            submissionId: Int,
-            timeout: Duration,
-            defaultIsolation: TransactionIsolationLevel = SERIALIZABLE
-    ) {
-        return jdbi.inTransaction<Unit, Exception>(defaultIsolation) {
-            val creationDate = it.attach(SubmissionDao::class.java)
-                    .getById(submissionId)!!.submission_date
-            val currentTime = OffsetDateTime.now(Clock.systemDefaultZone())
-            val seconds = Duration.between(creationDate, currentTime).seconds
-
-            if (seconds > timeout.seconds) {
-                throw InvalidInputException("Submission update timed out!")
-            }
-        }
-    }
-
-    protected fun getCuisinesByNames(
-            cuisineNames: Collection<String>,
-            isolationLevel: TransactionIsolationLevel = SERIALIZABLE
-    ): Collection<DbCuisineDto> {
-        return jdbi.inTransaction<Collection<DbCuisineDto>, Exception>(isolationLevel) {
-            val cuisineDtos = it.attach(CuisineDao::class.java)
-                    .getAllByNames(cuisineNames)
-            if (cuisineDtos.size != cuisineNames.size) {
-                val invalidCuisines = cuisineNames.filter { name ->
-                    cuisineDtos.none { it.cuisine_name == name }
-                }
-                throw InvalidInputException(
-                        "Invalid cuisines: " + invalidCuisines.joinToString(",", "[", "]")
-                )
-            }
-            return@inTransaction cuisineDtos
-        }
-    }
-
-    */
 }
