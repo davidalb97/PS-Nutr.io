@@ -71,13 +71,11 @@ class CalculatorFragment : BaseAddMealFragment(), IRequiredTextInput, IGlucoseUn
 
     override fun setupIngredients(view: View) {
         super.setupIngredients(view)
-        if(viewModelProfiles.firstTimeSetup) {
-            viewModelProfiles.firstTimeSetup = false
 
-            val argumentMeal = viewModelProfiles.argumentMeal
-            if(argumentMeal != null) {
-                viewModel.pick(argumentMeal)
-            }
+        val argumentMeal = viewModelProfiles.argumentMeal
+        if(argumentMeal != null) {
+            viewModelProfiles.argumentMeal = null
+            viewModel.pick(argumentMeal)
         }
     }
 

@@ -15,21 +15,18 @@ private val ITEM_CLASS = InsulinProfile::class
 
 class InsulinProfilesListViewModel : BaseListViewModel<InsulinProfile> {
 
-    var firstTimeSetup: Boolean
-    val argumentMeal: MealItem?
+    var argumentMeal: MealItem?
     val actions: List<ItemAction>
 
     constructor(
         argumentMeal: MealItem? = null,
         actions: List<ItemAction>
     ): super(ITEM_CLASS) {
-        firstTimeSetup = true
         this.argumentMeal = argumentMeal
         this.actions = actions
     }
 
     constructor(parcel: Parcel) : super(parcel, ITEM_CLASS) {
-        firstTimeSetup = parcel.readBooleanCompat()
         argumentMeal = parcel.readParcelable(MealItem::class.java.classLoader)
         actions = parcel.readListCompat(ItemAction::class)
     }
@@ -79,7 +76,6 @@ class InsulinProfilesListViewModel : BaseListViewModel<InsulinProfile> {
 
     override fun writeToParcel(dest: Parcel?, flags: Int) {
         super.writeToParcel(dest, flags)
-        dest?.writeBooleanCompat(firstTimeSetup)
         dest?.writeParcelable(argumentMeal, flags)
         dest?.writeList(actions)
     }
