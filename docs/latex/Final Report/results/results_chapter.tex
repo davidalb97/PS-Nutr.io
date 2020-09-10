@@ -175,7 +175,14 @@ Considering the following example of a model from our server:\\
 
 If we consider that the fields \texttt{votes}, \texttt{cuisines}, \texttt{submitterInfo}, \texttt{creationDate} and \texttt{meals} are 
 always needed when fulfilling a HTTP request and obtained from the database, then we can also assume that throughout a single HTTP request,
-multiple database accesses can be performed.\\
+multiple database accesses can be performed, as seen in the following code for DbRestaurantModelMapper:\\
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[scale=0.8]{_figures/Database_connections_required_to_build_a_restaurant_model.png}
+        \caption{Database connections required to build a restaurant model}
+    \end{center}
+\end{figure}
 
 This is done to support lazily acquired fields when building a model class in order to avoid querying large quantities of data and then not needing it.\\
 
@@ -339,7 +346,7 @@ perform a terminal operation which would lead to resource leakage.\\
 Another alternative is to wrap a repository call in a nested way, as the JDBI documentation suggests. This approach relies on leaking database logic and dependencies to Controller
 and/or Service classes, which goes against a clean dependency injection design and as such was also discarded.\\
 
-Finally, the adopted solution ties perfectly with the issues and developed solutions mentioned previously in chapter \textbf{5.2.4 JDBI} regarding \textbf{"Avoiding multiple connections"}.
+Finally, the adopted solution ties perfectly with the issues and developed solutions mentioned previously in chapter \textbf{5.2.4 JDBI} regarding \underline{"Fetching collections of data and sequences"}.
 If we assume that a Sequence and its' resources are no longer needed after the underlying HTTP request is closed, then having the \texttt{DatabaseCleanupInterceptor} class close the
 database connection avoids resource leakage when given sequences are not operated in a terminal way and having Controller and Service classes rely on database  related logic.
 
