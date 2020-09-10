@@ -162,8 +162,8 @@ repositories require in order to perform database connections.
 
 An active database connection is represented by a \texttt{Handle}, and according to the JDBI documentation:\\
 
-A handle is used to prepare and run SQL statements against the database, and manage database transactions.
-It provides access to fluent statement APIs that can bind arguments, execute the statement, and then map any results into Java objects.\\
+"A handle is used to prepare and run SQL statements against the database, and manage database transactions.
+It provides access to fluent statement APIs that can bind arguments, execute the statement, and then map any results into Java objects."\\
 
 Every database operation opens a new handle and is wrapped in a transactional call using \texttt{databaseContext.inTransaction(Function<Handle, T>)}.
 Said transaction is committed when given function is successfully finished, or rollbacked if an exception is thrown. Finally, underlying handle
