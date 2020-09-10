@@ -78,11 +78,17 @@ class AddProfileFragment : BaseViewModelFragment<InsulinProfilesListViewModel>()
         setupWeightUnitSpinner(requireContext(), carbUnitSpinner)
 
         // Get all profiles before the new insertion
-        viewModel.setupList()
-
-        createButton.setOnClickListener {
-            onCreateProfile()
+        viewModel.observe(this) {
+            viewModel.removeObservers(this)
+            createButton.setOnClickListener {
+                onCreateProfile()
+            }
         }
+        viewModel.setupList()
+        createButton.setOnClickListener {
+            Toast.makeText(app, R.string.loading_profiles, Toast.LENGTH_SHORT).show()
+        }
+
     }
 
     private fun onCreateProfile() {
@@ -101,114 +107,66 @@ class AddProfileFragment : BaseViewModelFragment<InsulinProfilesListViewModel>()
             return
         }
 
-        var convertedGlucoseObjective: Float? = null
-        var convertedGlucoseAmount: Float? = null
-        var convertedCarbAmount: Float? = null
+        val convertedGlucoseObjective: Float = currentGlucoseUnit.convert(
+            DEFAULT_GLUCOSE_UNIT,
+            glucoseObjective.text.toString().toFloat()
+        )
+        val convertedGlucoseAmount: Float = currentGlucoseUnit.convert(
+            DEFAULT_GLUCOSE_UNIT,
+            glucoseAmount.text.toString().toFloat()
+        )
+        val convertedCarbAmount: Float = currentWeightUnit.convert(
+            DEFAULT_WEIGHT_UNIT,
+            carbohydrateAmount.text.toString().toFloat()
+        )
 
-        val selectedGlucoseUnit =
-            GlucoseUnits.fromValue(glucoseUnitSpinner.selectedItem.toString())
-        val selectedCarbohydratesUnit =
-            WeightUnits.fromValue(carbUnitSpinner.selectedItem.toString())
-
-        if (selectedGlucoseUnit != DEFAULT_GLUCOSE_UNIT) {
-            convertedGlucoseObjective = selectedGlucoseUnit
-                .convert(DEFAULT_GLUCOSE_UNIT, glucoseObjective.text.toString().toFloat())
-            convertedGlucoseAmount = selectedGlucoseUnit
-                .convert(DEFAULT_GLUCOSE_UNIT, glucoseAmount.text.toString().toFloat())
-        }
-
-        if (selectedCarbohydratesUnit != DEFAULT_WEIGHT_UNIT) {
-            convertedCarbAmount = selectedCarbohydratesUnit
-                .convert(DEFAULT_WEIGHT_UNIT, carbohydrateAmount.text.toString().toFloat())
-        }
-
-        // Creates profile if everything is ok until here
         val profile = InsulinProfile(
-            profileName.text.toString(),
-            startTimeUser.text.toString(),
-            endTimeUser.text.toString(),
-            convertedGlucoseObjective ?: glucoseObjective.text.toString().toFloat(),
-            convertedGlucoseAmount ?: glucoseAmount.text.toString().toFloat(),
-            convertedCarbAmount ?: carbohydrateAmount.text.toString().toFloat(),
-            TimestampWithTimeZone.now()
+            profileName = profileName.text.toString(),
+            startTime = startTimeUser.text.toString(),
+            endTime = endTimeUser.text.toString(),
+            glucoseObjective = convertedGlucoseObjective,
+            glucoseAmountPerInsulin = convertedGlucoseAmount,
+            carbsAmountPerInsulin = convertedCarbAmount,
+            modificationDate = TimestampWithTimeZone.now()
         )
 
         // Asserts time period with the other profiles
-        profileTimesValidation(profile) { isValid ->
-            if (!isValid) {
-                Toast.makeText(
-                    app,
-                    getString(R.string.This_time_period_is_already_occupied),
-                    Toast.LENGTH_LONG
-                ).show()
-            } else {
-                viewModel.addDbInsulinProfile(profile, onError = {
-                    log.e(it)
-                    Toast.makeText(app, R.string.insulin_profile_add_fail, Toast.LENGTH_SHORT)
-                        .show()
-                }) {
-                    parentFragmentManager.popBackStack()
-                }
-            }
+        if (!isProfileValid(profile)) {
+            Toast.makeText(
+                app,
+                getString(R.string.This_time_period_is_already_occupied),
+                Toast.LENGTH_LONG
+            ).show()
+            return
+        }
+        viewModel.addDbInsulinProfile(profile, onError = {
+            log.e(it)
+            Toast.makeText(app, R.string.insulin_profile_add_fail, Toast.LENGTH_SHORT)
+                .show()
+        }) {
+            parentFragmentManager.popBackStack()
         }
     }
-
-    /**
-     * Converts the passed glucose unit, based on the spinner's selected options
-     * @param spinner - The spinner where the selection happens;
-     * @param textBox - The EditText box which holds the value to be converted.
-     */
-    private fun convertGlucoseValue(spinner: Spinner, textBox: EditText) {
-        val newUnit = GlucoseUnits.fromValue(spinner.selectedItem.toString())
-        val oldUnit = when (newUnit) {
-            GlucoseUnits.MILLI_GRAM_PER_DL -> GlucoseUnits.MILLI_MOL_PER_L
-            GlucoseUnits.MILLI_MOL_PER_L -> GlucoseUnits.MILLI_GRAM_PER_DL
-        }
-        val currentValue = textBox.text.toString().toFloat()
-        textBox.setText(oldUnit.convert(newUnit, currentValue).toString())
-    }
-
 
     /**
      * Checks if the time period passed to the time pickers is valid
      * @param - The insulin profile to be evaluated
      * @param - The callback that confirms its validation
      */
-    private fun profileTimesValidation(
-        profileDb: InsulinProfile,
-        cb: (Boolean) -> Unit
-    ) {
-        val timeInstance = SimpleDateFormat("HH:MM")
-
-        val parsedStartTime = timeInstance.parse(profileDb.startTime)!!
-        val parsedEndTime = timeInstance.parse(profileDb.endTime)!!
+    private fun isProfileValid(newProfile: InsulinProfile): Boolean {
 
         // Checks if start time is before end time
-        if (parsedEndTime.before(parsedStartTime)) {
+        if (!newProfile.isValid()) {
             Toast.makeText(
                 app,
                 "The time period is not valid",
                 Toast.LENGTH_LONG
             ).show()
-            return
+            return false
         }
 
         // Checks if it is not overlapping other time periods
-        val insulinProfiles = viewModel.items
-        var isValid = true
-        if (insulinProfiles.isNotEmpty()) {
-            insulinProfiles.forEach { savedProfile ->
-                val parsedSavedStartTime = timeInstance.parse(savedProfile.startTime)!!
-                val parsedSavedEndTime = timeInstance.parse(savedProfile.endTime)!!
-
-                if (!(parsedEndTime.before(parsedSavedStartTime) ||
-                            parsedStartTime.after(parsedSavedEndTime))
-                ) {
-                    isValid = false
-                }
-            }
-        }
-        cb(isValid)
+        return viewModel.items.none(newProfile::overlaps)
     }
 
     /**
@@ -247,11 +205,17 @@ class AddProfileFragment : BaseViewModelFragment<InsulinProfilesListViewModel>()
 
     override fun onGlucoseUnitChange(converter: (Float) -> Float) {
         if (glucoseObjective.text.isNotBlank()) {
-            convertGlucoseValue(glucoseUnitSpinner, glucoseObjective)
+            val currentValue = glucoseObjective.text.toString().toFloat()
+            glucoseObjective.setText(
+                previousGlucoseUnit.convert(currentGlucoseUnit, currentValue).toString()
+            )
         }
 
         if (glucoseAmount.text.isNotBlank()) {
-            convertGlucoseValue(glucoseUnitSpinner, glucoseAmount)
+            val currentValue = glucoseAmount.text.toString().toFloat()
+            glucoseObjective.setText(
+                previousGlucoseUnit.convert(currentGlucoseUnit, currentValue).toString()
+            )
         }
     }
 }
