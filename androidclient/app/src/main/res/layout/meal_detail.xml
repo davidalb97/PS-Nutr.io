@@ -6,29 +6,13 @@
 
     <TableLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <!--<RelativeLayout>
-            <ImageButton
-                android:id="@+id/options"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginEnd="5dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/ic_three_dots"
-                android:background="@android:color/transparent"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentEnd="true"
-                android:visibility="gone"
-                >
-            </ImageButton>
-        </RelativeLayout>-->
+        android:layout_height="match_parent">
 
         <RelativeLayout
             android:id="@+id/restaurant_general_details"
             android:gravity="center"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent">
 
             <ImageView
                 android:id="@+id/meal_detail_image"
@@ -42,6 +26,7 @@
         </RelativeLayout>
 
         <RelativeLayout
+            android:layout_height="match_parent"
             android:layout_marginTop="20dp"
             android:orientation="horizontal"
             android:layout_marginEnd="10dp"
@@ -75,7 +60,7 @@
             android:id="@+id/meal_info_suggested_rl"
             android:gravity="center"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:visibility="gone"
             >
 
@@ -93,13 +78,14 @@
         </RelativeLayout>
 
         <RelativeLayout
+            android:layout_height="match_parent"
             android:gravity="center"
             android:layout_marginTop="10dp"
             >
 
             <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:id="@+id/vote_counters_layout"
                 android:visibility="gone"
                 >
@@ -138,8 +124,8 @@
             <RelativeLayout
                 android:gravity="center"
                 android:layout_marginTop="10dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:layout_below="@+id/vote_counters_layout"
                 android:layout_centerHorizontal="true"
                 android:id="@+id/vote_buttons_layout"
@@ -166,41 +152,34 @@
         </RelativeLayout>
 
         <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_marginTop="10dp">
 
-            <ImageButton
+            <Button
                 android:id="@+id/add_to_calc_action"
-                android:background="@drawable/material_button_shape"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:src="@drawable/ic_add"
-                android:layout_marginStart="20dp">
-            </ImageButton>
-
-            <TextView
+                android:background="@drawable/rect_material_button_shape"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
+                android:padding="15dp"
                 android:text="@string/add_meal_to_calc"
-                android:textSize="18sp"
-                android:textColor="?attr/textColor"
-                android:layout_toEndOf="@+id/add_to_calc_action"
-                android:gravity="center"
-                android:layout_centerVertical="true">
-            </TextView>
+                android:layout_centerHorizontal="true"
+                android:textColor="@color/cardview_light_background">
+            </Button>
 
         </RelativeLayout>
 
         <!--Graph layout-->
         <RelativeLayout
-            android:visibility="visible">
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
             <RelativeLayout
                 android:id="@+id/chart_container"
                 android:layout_width="wrap_content"
                 android:layout_margin="10dp"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
+                android:visibility="visible"
                 >
 
                 <TextView
@@ -209,7 +188,8 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:rotation="-90"
-                    android:text="@string/entries">
+                    android:text="@string/entries"
+                    android:visibility="gone">
                 </TextView>
 
                 <com.github.mikephil.charting.charts.BarChart
@@ -225,45 +205,39 @@
                     android:layout_below="@id/portion_chart"
                     android:gravity="center"
                     android:layout_alignParentEnd="true"
+                    android:visibility="gone"
                     android:text="@string/portion_weights">
                 </TextView>
+
 
             </RelativeLayout>
 
             <RelativeLayout
                 android:id="@+id/add_portion_layout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_marginTop="20dp"
                 android:layout_below="@+id/chart_container"
                 android:layout_centerVertical="true"
                 android:visibility="gone"
                 >
 
-                <ImageButton
+                <Button
                     android:id="@+id/add_portion_button"
-                    android:background="@drawable/material_button_shape"
+                    android:background="@drawable/rect_material_button_shape"
                     android:layout_centerHorizontal="true"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:src="@drawable/ic_add">
-                </ImageButton>
-
-                <TextView
+                    android:text="@string/add_your_portion_for_this_meal"
+                    android:padding="15dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginStart="10dp"
-                    android:layout_below="@+id/add_portion_button"
-                    android:gravity="center"
-                    android:text="@string/add_your_portion_for_this_meal">
-                </TextView>
+                    android:textColor="@color/cardview_light_background">
+                </Button>
             </RelativeLayout>
 
             <RelativeLayout
                 android:id="@+id/edit_portion_layout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_below="@+id/chart_container"
                 android:layout_centerVertical="true"
                 android:visibility="gone">
@@ -275,25 +249,32 @@
                     android:layout_centerHorizontal="true">
                     <Button
                         android:id="@+id/edit_portion_button"
+                        android:background="@drawable/rect_material_button_shape"
                         android:text="@string/edit"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:padding="15dp"
+                        android:textColor="@color/cardview_light_background">
                     </Button>
 
                     <Button
                         android:id="@+id/delete_portion_button"
+                        android:background="@drawable/rect_material_button_shape"
                         android:text="@string/delete"
-                        android:layout_toEndOf="@+id/edit_portion_button"
+                        android:layout_marginStart="10dp"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:layout_toEndOf="@+id/edit_portion_button"
+                        android:padding="15dp"
+                        android:textColor="@color/cardview_light_background">>
                     </Button>
 
                 </RelativeLayout>
 
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:layout_centerHorizontal="true"
                     android:layout_marginStart="10dp"
                     android:layout_below="@+id/edit_portion_buttons"
@@ -326,6 +307,8 @@
                     android:indeterminate="true"
                     android:layout_centerHorizontal="true"
                     android:layout_centerVertical="true"
+                    android:layout_marginTop="75dp"
+                    android:layout_alignParentBottom="true"
                     android:gravity="center"
                     android:layout_marginRight="50dp"
                     android:layout_marginLeft="50dp"

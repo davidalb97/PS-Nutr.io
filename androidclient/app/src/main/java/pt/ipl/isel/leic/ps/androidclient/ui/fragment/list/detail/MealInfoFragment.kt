@@ -61,13 +61,15 @@ class MealInfoFragment :
     override val favoriteButtonId: Int = R.id.favorite
     override lateinit var favoriteButton: ImageButton
     override val calculatorButtonId: Int = R.id.add_to_calc_action
-    override lateinit var calculatorButton: ImageButton
+    override lateinit var calculatorButton: View
     override val upVoteButtonId: Int = R.id.up_vote_button
     override lateinit var upVoteButton: ImageButton
     override val downVoteButtonId: Int = R.id.down_vote_button
     override lateinit var downVoteButton: ImageButton
     override val chartId: Int = R.id.portion_chart
     override lateinit var chart: BarChart
+    override lateinit var xAxisLabel: TextView
+    override lateinit var yAxisLabel: TextView
     override var noDataText: String? = app.getString(R.string.no_portions_chart_message)
 
     override val recyclerViewId = R.id.meal_info_ingredient_item_list
@@ -182,7 +184,7 @@ class MealInfoFragment :
     }
 
     private fun setupAddPortion(view: View, receivedMeal: MealInfo) {
-        val addPortionButton: ImageButton = view.findViewById(R.id.add_portion_button)
+        val addPortionButton: Button = view.findViewById(R.id.add_portion_button)
         addPortionButton.setOnClickListener {
             MealAmountSelector(
                 ctx = requireContext(),
@@ -266,6 +268,8 @@ class MealInfoFragment :
             addPortionToGraph(amount)
             setupChartSettings(portionEntries)
             if (portionEntries.size == 1) {
+                xAxisLabel.visibility = View.VISIBLE
+                yAxisLabel.visibility = View.VISIBLE
                 setupChartData(portionEntries)
             }
             refreshChart()
@@ -297,6 +301,8 @@ class MealInfoFragment :
 
             if (portionEntries.isEmpty()) {
                 chart.clear()
+                xAxisLabel.visibility = View.GONE
+                yAxisLabel.visibility = View.GONE
             } else {
                 setupChartSettings(portionEntries)
                 refreshChart()

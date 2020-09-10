@@ -67,7 +67,7 @@ abstract class BaseMealRecyclerViewHolder<T : MealItem>(
     override val favoriteButtonId: Int = R.id.favorite
     override lateinit var favoriteButton: ImageButton
     override val calculatorButtonId: Int = R.id.add_to_calc_action
-    override lateinit var calculatorButton: ImageButton
+    override lateinit var calculatorButton: View
     override val deleteButtonId: Int = R.id.delete_item_action
     override lateinit var deleteButton: ImageButton
 
