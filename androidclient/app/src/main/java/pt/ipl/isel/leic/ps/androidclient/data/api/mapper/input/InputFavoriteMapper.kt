@@ -5,9 +5,9 @@ import pt.ipl.isel.leic.ps.androidclient.data.model.Favorites
 
 class InputFavoriteMapper {
 
-    fun mapToModel(dto: FavoritesInput) : Favorites =
+    fun mapToModel(dto: FavoritesInput?) : Favorites =
         Favorites(
-            isFavorable = dto.isFavorable,
-            isFavorite = dto.isFavorite
+            isFavorable = dto?.isFavorable ?: false,
+            isFavorite = dto?.isFavorite ?: false
         )
 }

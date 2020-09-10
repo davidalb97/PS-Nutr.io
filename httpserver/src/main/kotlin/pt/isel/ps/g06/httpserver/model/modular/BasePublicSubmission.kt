@@ -4,10 +4,8 @@ import java.net.URI
 
 open class BasePublicSubmission<Id>(
         identifier: Id,
-        val image: URI?,
-        override val name: String,
-        override val isFavorable: UserPredicate,
-        override val isFavorite: UserPredicate
+        override val image: URI?,
+        override val name: String
 ) : BaseSubmission<Id>(
         identifier = identifier
-), INameable, IFavorable
+), INameable, IImage
