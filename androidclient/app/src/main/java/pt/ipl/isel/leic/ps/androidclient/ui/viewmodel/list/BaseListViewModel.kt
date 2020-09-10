@@ -33,7 +33,7 @@ abstract class BaseListViewModel<T : Parcelable> : ViewModel, Parcelable {
     }
 
     constructor(parcel: Parcel, itemClass: KClass<T>) : this(itemClass) {
-        this.restoreFromParcel(parcel)
+        liveDataHandler.restoreFromParcel(parcel, itemClass)
     }
 
     open fun setupList() {
@@ -77,20 +77,9 @@ abstract class BaseListViewModel<T : Parcelable> : ViewModel, Parcelable {
     }
 
     /**
-     * Attempts to restore all the previously saved items on [liveDataHandler] from [parcel].
-     * If the [parcel] contained the [LiveDataListHandler] object,
-     * the next call to [tryRestore] will succeed.
-     * @param parcel The [Parcel] to read the [LiveDataListHandler] from.
-     */
-    @CallSuper
-    open fun restoreFromParcel(parcel: Parcel) {
-        liveDataHandler.restoreFromParcel(parcel, itemClass)
-    }
-
-    /**
      * Restores the [liveDataHandler].
-     * This operation will only succeed if a previous call from [restoreFromList] or
-     * [restoreFromParcel] was made.
+     * This operation will only succeed if the ViewModel was constructed from a [Parcel]
+     * or a previous call to [restoreFromList] was made.
      * @return If the restored operation was successful.
      */
     open fun tryRestore(): Boolean = liveDataHandler.tryRestore()

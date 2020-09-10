@@ -10,7 +10,6 @@ import pt.ipl.isel.leic.ps.androidclient.ui.util.ItemAction
 import pt.ipl.isel.leic.ps.androidclient.ui.util.Navigation
 import pt.ipl.isel.leic.ps.androidclient.ui.util.getUserSession
 import pt.ipl.isel.leic.ps.androidclient.ui.util.requireUserSession
-import kotlin.reflect.KClass
 
 private val ITEM_CLASS = MealItem::class
 

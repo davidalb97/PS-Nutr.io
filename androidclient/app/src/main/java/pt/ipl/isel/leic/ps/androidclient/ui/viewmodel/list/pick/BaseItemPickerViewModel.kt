@@ -51,12 +51,7 @@ abstract class BaseItemPickerViewModel<I : Parcelable> : BaseListViewModel<I> {
     }
 
     override fun writeToParcel(dest: Parcel?, flags: Int) {
-        dest?.writeList(pickedLiveDataHandler.mapped)
         super.writeToParcel(dest, flags)
-    }
-
-    override fun restoreFromParcel(parcel: Parcel) {
-        super.restoreFromParcel(parcel)
-        pickedLiveDataHandler.restoreFromParcel(parcel, super.itemClass)
+        dest?.writeList(pickedLiveDataHandler.mapped)
     }
 }

@@ -7,7 +7,6 @@ import pt.ipl.isel.leic.ps.androidclient.data.model.MealIngredient
 import pt.ipl.isel.leic.ps.androidclient.data.model.Source
 import pt.ipl.isel.leic.ps.androidclient.ui.util.ItemAction
 import pt.ipl.isel.leic.ps.androidclient.ui.util.Navigation
-import kotlin.reflect.KClass
 
 private val ITEM_CLASS = MealIngredient::class
 
