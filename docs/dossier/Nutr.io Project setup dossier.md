@@ -6,6 +6,10 @@ To execute this project, following conditions and instructions must be fulfilled
 - **David Albuquerque:** A43566@alunos.isel.pt
 - **Miguel Luís:** A43504@alunos.isel.pt
 
+This is project was tutored by: 
+
+- **Fernando Miguel Gamboa de Carvalho**: mcarvalho@cc.isel.pt
+
 ## Software required
 
 The following software is required on your machine in order for the project to be executed:
@@ -25,10 +29,10 @@ Once previously required software is installed, all steps must be followed in gi
 
 ### Retrieve project's code using Git
 
-   Retrieve project's code, either using a browser and accessing [the project's Github Repository](https://github.com/davidalb97/PS-Nutr.io); or via the command line, using the following git command:
+Retrieve project's code, either using a browser and accessing [the project's Github Repository](https://github.com/davidalb97/PS-Nutr.io); or via the command line, using the following git command:
 
    ```bash
-   git clone https://github.com/davidalb97/PS-Nutr.io.git
+git clone https://github.com/davidalb97/PS-Nutr.io.git
    ```
 ### Database and HTTP server
 
@@ -94,8 +98,6 @@ After creating the variable, run the script `runScripts-testDatabase.sh` to fill
 To run the mobile application, an emulator with the proper API level is needed. Although the application was developed in **Android 10 (API level 29)**, any version below it, down to **Android 7 (API level 24)** can be used when creating a virtual device *(via Android Studio Manager)*.
 
 Afterwards, select created virtual device and press the start button on Android Studio's top bar to launch the emulator, build the project, install all the required dependencies and execute the Android application.
-
-**Alternately, **the application's executable can also be downloaded from the Github repository in the `./aaa/` folder in order to run the application in your preferred device.
 
 ### Web client
 
