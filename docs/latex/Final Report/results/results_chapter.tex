@@ -153,10 +153,14 @@ some key aspects and differences which are specific to the project are explained
 
 \subsubsection{Getting started}
 
-The \texttt{Jdbi} class is the main entry point into the library and each instance requires a \texttt{DataSource} connection,
-which is created in the \texttt{DatabaseConfig} class according to the application properties provided in the resources folder.
-A single instance of \texttt{Jdbi}, which in turn is used to create a single instance of \texttt{DatabaseContext}, the dependency that all
-repositories require in order to perform database connections. 
+The Jdbi class is the main entry point into the library and each instance requires a DataSource
+connection, \textbf{where a single instance} is created in \textbf{our} DatabaseConfig class according to the application properties provided in the resources folder. \\
+
+Afterwards, a database connection can open using the \texttt{JDBI} instance and is represented by JDBI's \texttt{Handle} class. According to the documentation:\\
+
+"A handle is used to prepare and run SQL statements against the database, and manage
+database transactions. It provides access to fluent statement APIs that can bind arguments, execute
+the statement, and then map any results into Java objects."\\
 
 \subsubsection{Database connection}
 
@@ -216,23 +220,57 @@ imperative one. The following is an example of a typical database operation in o
     \end{center}
 \end{figure}
 
-\subsubsection{Avoiding multiple connections}
+\subsubsection{Avoiding multiple connections and DatabaseContext}
 
-Throughout a single HTTP request lifetime, multiple database accesses can be performed. This is done in order to avoid querying
-large quantities of data and then not needing it, and to support lazily acquired fields when building a model class.\\
+Considering the following example of a model from our server:\\
 
-However, if we consider that the information for each field is obtained in its' own and new transactional context then this
-implementation can be performance heavy if we open multiple database connections as needed.\\
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[scale=0.8]{_figures/img 1 - Example of a model class in our server.png}
+        \caption{Example of a model class in our server}
+    \end{center}
+\end{figure}
 
-In order to avoid this, each HTTP request holds a single database connection if needed and closes it when completed, as we
-can assume that no more database data is needed afterwards. This implementation is done by having every repository depend on
-a single instance of the \texttt{DatabaseContext} class which opens a connection handle when needed and stores it in a 
-\texttt{ThreadLocal} map, allowing for later removal by the \texttt{DatabaseCleanupInterceptor} interceptor.\\
+If we consider that the fields \texttt{votes}, \texttt{cuisines}, \texttt{submitterInfo}, \texttt{creationDate} and \texttt{meals} are 
+always needed when fulfilling a HTTP request and obtained from the database, then we can also assume that throughout a single HTTP request,
+multiple database accesses can be performed.\\
 
-Given implementation avoids mentioned issues, however it also introduces new issues that need to be taken into consideration,
-such as only closing transactions when the interceptor is called - meaning that lengthy controller operations may lock database
-tuples for longer periods of time, depending on the used transactional isolation level;  or the fact that a handle is linked to
-a Thread identifier when created and deleted, so repositories calls must not be done under a different Thread than the interceptor one.\\
+This is done to support lazily acquired fields when building a model class in order to avoid querying large quantities of data and then not needing it.\\
+
+Additionally, if we consider that said information for each field is obtained in its’ own and new
+transactional context then this \textbf{design} can be performance heavy if we open multiple
+database connections as needed.\\
+
+In order to avoid this, each HTTP request holds a single database connection if needed
+and closes it when completed, as we can assume that no more database data is needed afterwards.\\
+
+This implementation is done by having every repository depend on a single instance of
+the \texttt{DatabaseContext} - our developed wrapper class which opens a connection handle when needed
+and stores it in a \texttt{ThreadLocal} map, allowing for later removal by the \texttt{DatabaseCleanupInterceptor} interceptor.
+Given that JDBI's connection \texttt{handle} can't be closed after a transaction, every database access is also done with
+\texttt{DatabaseContext.inTransaction(Function<Handle, T>))} instead of JDBI's given methods that would close attached handle.
+Implementation and a a typical use case is as follows:\\
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[scale=0.8]{_figures/Img 2 - DatabaseContext inTransaction implementation.png}
+        \caption{DatabaseContext inTransaction implementation}
+    \end{center}
+\end{figure}
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[scale=0.8]{_figures/Img 3 - Example usage of a database connection.png}
+        \caption{Example usage of a database connection}
+    \end{center}
+\end{figure}
+
+Given implementation avoids mentioned issues, however it also introduces new issues that
+need to be taken into consideration, such as only closing transactions when the interceptor is
+called - meaning that lengthy controller operations may lock database tuples for longer periods
+of time, depending on the used transactional isolation level; or the fact that a handle is linked
+to a Thread identifier when created and deleted, so repositories calls must not be done under a
+different Thread than the interceptor one.\\
 
 \subsection{Fetching collections of data and sequences}
 
