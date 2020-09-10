@@ -170,7 +170,7 @@ Said transaction is committed when given function is successfully finished, or r
 is only closed after the HTTP request that triggered the repository call is finished. This is due to Stream integration when returning database
 elements and is explained in greater detail in next subsection: 5.2.5 - Fetching collections of data.
 
-\subsubsection{Performance operations - Imperative and Declarative API}
+\subsubsection{Performing operations - Imperative and Declarative API}
 
 When a repository uses previously mentioned method\\
 \texttt{databaseContext.inTransaction(Function<Handle, T>)}, given argument function is responsible
@@ -234,20 +234,56 @@ such as only closing transactions when the interceptor is called - meaning that 
 tuples for longer periods of time, depending on the used transactional isolation level;  or the fact that a handle is linked to
 a Thread identifier when created and deleted, so repositories calls must not be done under a different Thread than the interceptor one.\\
 
-\subsection{Fetching collections of data}
+\subsection{Fetching collections of data and sequences}
 
 When it comes to fetching collections of data (such as restaurants, meals, etc.) from either the database or an API, said data can be obtained
 and iterated in an \textbf{eager} approach or a \textbf{lazy} approach.\\
 
-We decided to implement the fetching of data in a \textbf{lazy} manner using Kotlin's \textbf{Sequences}\cite{sequences} instead of Java 8
-\textbf{Streams}\cite{streams} due to their additional iterating operations, easier caching mechanisms (when compared to Streams)
-and finally improved performance when processing data, according to the documentation:\\
+We decided to implement the fetching of data in a lazy manner using Kotlin’s Sequences\cite{sequences}
+instead of Java 8 Streams[18] due to their additional iterating operations and easier caching mechanisms over Streams due to the "once of" nature
+of Streams (meaning that any call to a terminal operation closes the stream, rendering it unusable).\\
 
-"Sequences let you avoid building results of intermediate steps, therefore improving the performance of the whole collection processing chain."\\
+\subsubsection{Implementing Closable and Cached Sequences}
 
-Finally, sequences were chosen over streams because they can be reused and are not \textit{onceOf}(can only be used once) like streams.\\
+For cases where a collection of data also holds additional resources attached that require to be closed,
+such as JDBI's \textbf{ResultIterable} and \textbf{ResultIterator} classes (explained in the following section),
+a Sequence that closes attached resources when terminally operated or when iterated with \textit{Kotlin's} \texttt{use}
+(the equivalent to Java's \texttt{try-with-resources}) was needed.\\
 
-With that in consideration, the following sections describe in greater detail the code structure needed to lazily acquire data.\\
+This logic was implemented with the \texttt{ClosableSequence} class and extension method\\
+\texttt{asClosableSequence()}, which can be invoked
+on any object that implements \texttt{Iterator} and by providing a \texttt{onClose} argument or have given Iterator also implement \texttt{Closable}.
+A typical usage of this class can be described with the following example:\\
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[scale=0.8]{_figures/5.2.5-1.png}
+        \caption{Using ClosableSequence with JDBI's ResultIterable}
+    \end{center}
+\end{figure}
+
+However, this implementation does not support caching (also known as memoization), rendering it impossible to iterate its' values again after a terminal
+operation is done. To solve this, the extension method \texttt{memoized()} was created (in the \texttt{MemoizedSequences.kt} class) and can be invoked in
+any object that implements a Sequence. Seeing as this operation has additional overhead, it is only invoked when absolutely necessary,
+such as the following example, which terminally operates all restaurants obtained by the API multiple times:\\
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[scale=0.8]{_figures/5.2.5-2.png}
+        \caption{Using MemoizedSequence example}
+    \end{center}
+\end{figure}
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[scale=0.6]{_figures/5.2.5-3.png}
+        \caption{Example of a sequence being terminally operated multiple times}
+    \end{center}
+\end{figure}
+
+Finally, when mentioned above that "Sequences allow for easier caching mechanisms when compared to Streams due to their 'once of' nature", if we consider the
+caching implementation designed in the course MPD (and also described here\cite{replay-java-streams}), using memoized Streams would
+instead return \texttt{Supplier<Stream<T>>} and therefor introduce additional overhead and variables.\\
 
 \subsubsection{Database fetching}
 
@@ -260,8 +296,7 @@ collections using \textbf{Streams}, \textbf{ResultIterables} and \textbf{ResultI
 stream will lazily fetch rows from the database as necessary."\\
 
 Since no native support for Sequences exist, every DAO class returns a ResultIterable of data and calling repository is then responsible of mapping it to
-a Sequence via\\
-\texttt{IterableUtils.asCachedSequence()}, an created extension method which also caches acquired values allowing for subsequent iterations.\\
+a Sequence.\\
 
 However, this approach is not enough on its' own as JDBI warns that:\\
 
@@ -714,6 +749,14 @@ platform's suggested meals and meals' ingredients.\\
     \end{center}
 \end{figure}
 
+It should be noted that restaurants and meals can be votable, favorable and reportable, however there are some exceptions:
+\begin{itemize}
+    \item Restaurants that where provided by external APIs can only be favorable, but not votable or reportable;
+    \item Restaurants created by users can be all of them;
+    \item Restaurant meals, either suggested or submitted by users, can be all of them, as a suggested meal associated to the 
+    wrong restaurant should be notified, either with reports and/or downvotes.
+\end{itemize}
+
 \subsubsection{Creating custom meals}
 
 \begin{figure}[H]
@@ -977,5 +1020,12 @@ HTML + JSON and the consequents only JSON, as the HTML will be cached inside the
 
 Concluded those steps, a successful deployment can now be achieved by following the commands inside
 application's deploy tab.
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[scale=0.6]{_figures/Heroku-deployment.png}
+        \caption{Heroku deployment procedure} 
+    \end{center}
+\end{figure}
 
 
