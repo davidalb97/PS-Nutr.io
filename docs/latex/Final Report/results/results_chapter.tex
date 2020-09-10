@@ -162,64 +162,6 @@ Afterwards, a database connection can open using the \texttt{JDBI} instance and 
 database transactions. It provides access to fluent statement APIs that can bind arguments, execute
 the statement, and then map any results into Java objects."\\
 
-\subsubsection{Database connection}
-
-An active database connection is represented by a \texttt{Handle}, and according to the JDBI documentation:\\
-
-"A handle is used to prepare and run SQL statements against the database, and manage database transactions.
-It provides access to fluent statement APIs that can bind arguments, execute the statement, and then map any results into Java objects."\\
-
-Every database operation opens a new handle and is wrapped in a transactional call using \texttt{databaseContext.inTransaction(Function<Handle, T>)}.
-Said transaction is committed when given function is successfully finished, or rollbacked if an exception is thrown. Finally, underlying handle
-is only closed after the HTTP request that triggered the repository call is finished. This is due to Stream integration when returning database
-elements and is explained in greater detail in next subsection: 5.2.5 - Fetching collections of data.
-
-\subsubsection{Performing operations - Imperative and Declarative API}
-
-When a repository uses previously mentioned method\\
-\texttt{databaseContext.inTransaction(Function<Handle, T>)}, given argument function is responsible
-for performing a database operation with the open handle, either using an \textbf{imperative} implementation or a \textbf{declarative} one.\\
-
-The JDBI documentation describes both the imperative and declarative style as follows, respectively:\\
-
-"The Core API provides a fluent, imperative interface, which uses Builder style objects to wire up your SQL to rich Java data types."\\
-
-"The SQL Object extension sits atop Core, and provides a declarative interface. Tell Jdbi what SQL to execute and the shape of the results
-you like by declaring an annotated Java \textit{interface}, and it will provide the implementation."\\
-
-Additionally, the JDBI documentation offers a simple query example using both styles:\\
-
-\begin{figure}[H]
-    \begin{center}
-        \includegraphics[scale=0.5]{_figures/imperative.png}
-        \caption{JDBI imperative style}
-    \end{center}
-\end{figure}
-
-\begin{figure}[H]
-    \begin{center}
-        \includegraphics[scale=0.5]{_figures/declarative.png}
-        \caption{JDBI declarative style - defining Data Access Objects}
-    \end{center}
-\end{figure}
-
-\begin{figure}[H]
-    \begin{center}
-        \includegraphics[scale=0.5]{_figures/calling-declarative.png}
-        \caption{JDBI declarative style - Calling defined Data Access Objects}
-    \end{center}
-\end{figure}
-
-In the context of our project, we use the declarative API due to its convenience and code simplicity over the
-imperative one. The following is an example of a typical database operation in our application:\
-
-\begin{figure}[H]
-    \begin{center}
-        \includegraphics[scale=0.8]{_figures/jdbi-nutrio.png}
-        \caption{Example of a database operation usin jdbi declarative type in our application}
-    \end{center}
-\end{figure}
-
 \subsubsection{Avoiding multiple connections and DatabaseContext}
 
 Considering the following example of a model from our server:\\
@@ -272,6 +214,52 @@ of time, depending on the used transactional isolation level; or the fact that a
 to a Thread identifier when created and deleted, so repositories calls must not be done under a
 different Thread than the interceptor one.\\
 
+\subsubsection{Performing operations - Imperative and Declarative API}
+
+When a repository uses previously mentioned method\\
+\texttt{databaseContext.inTransaction(Function<Handle, T>)}, given argument function is responsible
+for performing a database operation with the open handle, either using an \textbf{imperative} implementation or a \textbf{declarative} one.\\
+
+The JDBI documentation describes both the imperative and declarative style as follows, respectively:\\
+
+"The Core API provides a fluent, imperative interface, which uses Builder style objects to wire up your SQL to rich Java data types."\\
+
+"The SQL Object extension sits atop Core, and provides a declarative interface. Tell Jdbi what SQL to execute and the shape of the results
+you like by declaring an annotated Java \textit{interface}, and it will provide the implementation."\\
+
+Additionally, the JDBI documentation offers a simple query example using both styles:\\
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[scale=0.5]{_figures/imperative.png}
+        \caption{JDBI imperative style}
+    \end{center}
+\end{figure}
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[scale=0.5]{_figures/declarative.png}
+        \caption{JDBI declarative style - defining Data Access Objects}
+    \end{center}
+\end{figure}
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[scale=0.5]{_figures/calling-declarative.png}
+        \caption{JDBI declarative style - Calling defined Data Access Objects}
+    \end{center}
+\end{figure}
+
+In the context of our project, we use the declarative API due to its convenience and code simplicity over the
+imperative one. The following is an example of a typical database operation in our application:\
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[scale=0.8]{_figures/jdbi-nutrio.png}
+        \caption{Example of a database operation usin jdbi declarative type in our application}
+    \end{center}
+\end{figure}
+
 \subsection{Fetching collections of data and sequences}
 
 When it comes to fetching collections of data (such as restaurants, meals, etc.) from either the database or an API, said data can be obtained
@@ -284,7 +272,7 @@ of Streams (meaning that any call to a terminal operation closes the stream, ren
 \subsubsection{Implementing Closable and Cached Sequences}
 
 For cases where a collection of data also holds additional resources attached that require to be closed,
-such as JDBI's \textbf{ResultIterable} and \textbf{ResultIterator} classes (explained in the following section),
+such as JDBI's \texttt{ResultIterable} and \texttt{ResultIterator} classes (explained in the following section),
 a Sequence that closes attached resources when terminally operated or when iterated with \textit{Kotlin's} \texttt{use}
 (the equivalent to Java's \texttt{try-with-resources}) was needed.\\
 
@@ -363,9 +351,7 @@ it will be validated with java's \textit{javax.validation} (Hibernate).
 Once validated the input model's data might be used in subsequent service layer calls.\\
 
 Repositories are used on the service level to handle all \textit{DAO} interactions with
-the database and other HTTP API requests. The resulting responses (input and database \textit{DTOs})
-are converted to the model \textit{DTOs} according to their response mappers.
-All API calls are made from asynchronous HTTP requests, while database calls block the calling thread.\\
+the database and other HTTP API requests.\\
 
 \subsection{Restaurants}
 
