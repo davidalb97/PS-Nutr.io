@@ -53,8 +53,8 @@ open class MealInfoViewModel : MealItemListViewModel {
     }
 
     constructor(parcel: Parcel) : super(parcel) {
-        mealItem = parcel.readParcelable(MealItem::class.java.classLoader)
         mealInfoLiveDataHandler.restoreFromParcel(parcel, MealInfo::class)
+        mealItem = mealInfoLiveDataHandler.value
     }
 
     override fun setupList() {
@@ -176,7 +176,6 @@ open class MealInfoViewModel : MealItemListViewModel {
 
     override fun writeToParcel(dest: Parcel?, flags: Int) {
         super.writeToParcel(dest, flags)
-        dest?.writeParcelable(mealItem, flags)
         mealInfoLiveDataHandler.writeToParcel(dest, flags)
     }
 

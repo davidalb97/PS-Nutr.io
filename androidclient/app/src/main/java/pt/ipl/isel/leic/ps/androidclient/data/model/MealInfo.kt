@@ -71,7 +71,7 @@ open class MealInfo : MealItem {
         this.ingredientComponents = parcel.readListCompat(MealIngredient::class)
         this.mealComponents = parcel.readListCompat(MealIngredient::class)
         this.cuisines = parcel.readListCompat(Cuisine::class)
-        this.portions = parcel.readParcelable(Portions::class.java.classLoader)!!
+        this.portions = parcel.readParcelable(Portions::class.java.classLoader)
         this.submissionOwner = parcel.readParcelable(SubmissionOwner::class.java.classLoader)
     }
 
