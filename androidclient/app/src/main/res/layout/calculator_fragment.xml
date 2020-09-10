@@ -160,7 +160,7 @@
                     android:layout_gravity="center"
                     android:layout_toEndOf="@+id/user_blood_glucose"
                     android:layout_centerVertical="true"
-                    android:entries="@array/calculator_units">
+                    android:entries="@array/glucose_units">
                 </Spinner>
             </RelativeLayout>
 
