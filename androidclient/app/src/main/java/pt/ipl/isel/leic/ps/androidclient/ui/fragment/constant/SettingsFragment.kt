@@ -23,33 +23,5 @@ class SettingsFragment : PreferenceFragmentCompat() {
         preferenceManager.sharedPreferencesName = PREFERENCES
 
         addPreferencesFromResource(R.xml.preferences)
-        setupDarkModeSwitch()
-    }
-
-    private fun setupDarkModeSwitch() {
-        val darkModeSwitch = findPreference<SwitchPreferenceCompat>(DARK_MODE)
-
-        val isLightMode = sharedPreferences.getIsNightMode()
-        val editor: SharedPreferences.Editor = sharedPreferences.edit()
-
-        if (!isLightMode) {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-        } else {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-        }
-
-        darkModeSwitch!!.onPreferenceChangeListener =
-            Preference.OnPreferenceChangeListener { _: Preference, value: Any ->
-                if (!(value as Boolean)) {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                    editor.setIsNightMode(false)
-                    editor.apply()
-                } else {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-                    editor.setIsNightMode(true)
-                    editor.apply()
-                }
-                true
-            }
     }
 }
