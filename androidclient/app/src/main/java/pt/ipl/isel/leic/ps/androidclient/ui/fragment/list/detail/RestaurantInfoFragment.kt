@@ -28,6 +28,7 @@ import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.menu.IEditMenuItem
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.menu.IReportMenuItem
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.menu.MenuItemFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.BaseViewModelProviderFactory
+import pt.ipl.isel.leic.ps.androidclient.ui.provider.RestaurantInfoVMProviderFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.util.*
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.meal.info.RestaurantInfoViewModel
 
@@ -47,14 +48,10 @@ class RestaurantInfoFragment :
     override val noItemsTextViewId = R.id.restaurant_info_no_meals_found
 
     override val vmClass = RestaurantInfoViewModel::class.java
-    override val vMProviderFactorySupplier: (Bundle?, Bundle?, Intent) -> BaseViewModelProviderFactory =
-        { _, _, _ ->
-            throw UnsupportedOperationException("Not used")
-        }
+    override val vMProviderFactorySupplier = ::RestaurantInfoVMProviderFactory
     override val viewModel by lazy {
-        val viewModel: RestaurantInfoViewModel by navGraphViewModels(Navigation.SEND_TO_RESTAURANT_DETAIL.navId)
-        viewModel.restaurantId = requireNotNull(arguments?.getRestaurantItem()?.id) {
-            "Restaurant detail requires submission ID"
+        val viewModel: RestaurantInfoViewModel by navGraphViewModels(Navigation.SEND_TO_RESTAURANT_DETAIL.navId) {
+            vMProviderFactorySupplier(arguments, savedInstanceState, requireActivity().intent)
         }
         actions = viewModel.actions
         viewModel

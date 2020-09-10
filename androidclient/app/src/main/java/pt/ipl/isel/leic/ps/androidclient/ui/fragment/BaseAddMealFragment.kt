@@ -33,16 +33,9 @@ abstract class BaseAddMealFragment : BaseViewModelFragment<MealItemPickViewModel
 
     //Meals
     override val viewModel: MealItemPickViewModel by lazy {
-        val viewModelLazy: MealItemPickViewModel by navGraphViewModels(nestedNavigation.navId)
-
-//        val savedInstanceState = this.savedInstanceState
-//        if (savedInstanceState != null) {
-//            log.v("Restoring state to navGraphViewModels (${MealItemPickViewModel::class.java.simpleName})")
-//            val tag = MealItemPickViewModel::class.java.simpleName
-//            val savedViewModel = savedInstanceState.getParcelable<MealItemPickViewModel>(tag)!!
-//            viewModel.itemsChanged = savedViewModel.itemsChanged
-//            viewModel.pickedLiveDataHandler.set(savedViewModel.pickedItems)
-//        }
+        val viewModelLazy: MealItemPickViewModel by navGraphViewModels(nestedNavigation.navId) {
+            vMProviderFactorySupplier(arguments, savedInstanceState, requireActivity().intent)
+        }
         viewModelLazy
     }
     override val vmClass = MealItemPickViewModel::class.java

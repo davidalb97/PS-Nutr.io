@@ -14,6 +14,7 @@ import pt.ipl.isel.leic.ps.androidclient.ui.modular.listener.check.ICheckListene
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.listener.check.ICheckListenerOwner
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.listener.click.IItemClickListener
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.listener.click.IItemClickListenerOwner
+import pt.ipl.isel.leic.ps.androidclient.ui.provider.BaseAddMealRecyclerVMProviderFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.util.*
 import pt.ipl.isel.leic.ps.androidclient.ui.util.prompt.MealAmountSelector
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.pick.MealItemPickViewModel
@@ -21,23 +22,31 @@ import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.pick.MealItemPickView
 class SelectMealsSlideScreenFragment : BaseSlideScreenFragment(propagateArguments = false), ISend {
 
     private lateinit var okButton: Button
+    private var savedInstanceState: Bundle? = null
     private val viewModel by lazy {
         val parentNavigation = requireNotNull(arguments?.getParentNavigation()) {
             "${javaClass.simpleName} Must have a parent navigation for navGraphViewModel!"
         }
-        val viewModelLazy: MealItemPickViewModel by navGraphViewModels(parentNavigation.navId)
+        val viewModelLazy: MealItemPickViewModel by navGraphViewModels(parentNavigation.navId) {
+            BaseAddMealRecyclerVMProviderFactory(
+                arguments = arguments,
+                savedInstanceState = savedInstanceState,
+                intent = requireActivity().intent
+            )
+        }
         viewModelLazy
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        //Restore picked items to items list
-        viewModel.setupList()
+        this.savedInstanceState = savedInstanceState
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        //Restore picked items to items list
+        viewModel.setupList()
 
         okButton = view.findViewById(R.id.tab_fragment_ok_btn)
         okButton.text =
@@ -51,8 +60,10 @@ class SelectMealsSlideScreenFragment : BaseSlideScreenFragment(propagateArgument
     override fun addFragments(fragments: HashMap<Fragment, String>) {
         fragments[setCheckArguments(IngredientsListFragment(), Source.API)] = "Meal Ingredients"
         fragments[setCheckArguments(MealItemListFragment(), Source.API)] = "Suggested Meals"
-        fragments[setCheckArguments(FavoriteMealListFragment(), Source.FAVORITE_MEAL)] = "Favorite Meals"
-        fragments[setCheckArguments(FavoriteMealListFragment(), Source.FAVORITE_RESTAURANT_MEAL)] = "Favorite Restaurant Meals"
+        fragments[setCheckArguments(FavoriteMealListFragment(), Source.FAVORITE_MEAL)] =
+            "Favorite Meals"
+        fragments[setCheckArguments(FavoriteMealListFragment(), Source.FAVORITE_RESTAURANT_MEAL)] =
+            "Favorite Restaurant Meals"
         fragments[setCheckArguments(CustomMealListFragment(), Source.CUSTOM_MEAL)] = "Custom Meals"
     }
 

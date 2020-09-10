@@ -9,13 +9,12 @@ import pt.ipl.isel.leic.ps.androidclient.ui.util.getMealIngredient
 import pt.ipl.isel.leic.ps.androidclient.ui.util.getMealItem
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.meal.info.AddCustomMealViewModel
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.pick.CuisinePickViewModel
-import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.pick.MealInfoPickViewModel
 
 class AddCustomMealRecyclerVMProviderFactory(
     arguments: Bundle?,
     savedInstanceState: Bundle?,
     intent: Intent
-) : BaseViewModelProviderFactory(
+) : BaseAddMealRecyclerVMProviderFactory(
     arguments,
     savedInstanceState,
     intent
@@ -38,8 +37,7 @@ class AddCustomMealRecyclerVMProviderFactory(
                 }
             }
             CuisinePickViewModel::class.java -> CuisinePickViewModel()
-            MealInfoPickViewModel::class.java -> MealInfoPickViewModel()
-            else -> null
+            else -> super.newViewModel(modelClass)
         }
     }
 }

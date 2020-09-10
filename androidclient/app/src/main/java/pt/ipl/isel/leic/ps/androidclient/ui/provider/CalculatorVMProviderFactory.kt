@@ -13,7 +13,7 @@ class CalculatorVMProviderFactory(
     arguments: Bundle?,
     savedInstanceState: Bundle?,
     intent: Intent
-) : BaseViewModelProviderFactory(
+) : BaseAddMealRecyclerVMProviderFactory(
     arguments,
     savedInstanceState,
     intent
@@ -27,7 +27,7 @@ class CalculatorVMProviderFactory(
                     actions = emptyList()
                 )
             }
-            else -> null
+            else -> super.newViewModel(modelClass)
         }
     }
 }

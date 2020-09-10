@@ -14,10 +14,12 @@ import pt.ipl.isel.leic.ps.androidclient.ui.fragment.list.CustomMealListFragment
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.list.FavoriteMealListFragment
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.list.MealItemListFragment
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.ISend
+import pt.ipl.isel.leic.ps.androidclient.ui.modular.IViewModelManager
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.filter.IItemListFilter
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.filter.IItemListFilterOwner
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.listener.click.IItemClickListener
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.listener.click.IItemClickListenerOwner
+import pt.ipl.isel.leic.ps.androidclient.ui.provider.RestaurantInfoVMProviderFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.util.Navigation
 import pt.ipl.isel.leic.ps.androidclient.ui.util.prompt.PromptConfirm
 import pt.ipl.isel.leic.ps.androidclient.ui.util.putNavigation
@@ -27,11 +29,21 @@ import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.meal.info.RestaurantI
 class AddRestaurantMealSlideScreenFragment : BaseSlideScreenFragment(propagateArguments = false),
     ISend,
     IItemListFilterOwner<MealItem>,
-    IItemClickListenerOwner<MealItem> {
+    IItemClickListenerOwner<MealItem>,
+    IViewModelManager {
 
     private lateinit var okButton: Button
-    private val viewModel: RestaurantInfoViewModel
-            by navGraphViewModels(Navigation.SEND_TO_RESTAURANT_DETAIL.navId)
+    var savedInstanceState: Bundle? = null
+    override val vMProviderFactorySupplier = ::RestaurantInfoVMProviderFactory
+    private val viewModel: RestaurantInfoViewModel by
+    navGraphViewModels(Navigation.SEND_TO_RESTAURANT_DETAIL.navId) {
+        vMProviderFactorySupplier(arguments, savedInstanceState, requireActivity().intent)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        this.savedInstanceState = savedInstanceState
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -92,4 +104,6 @@ class AddRestaurantMealSlideScreenFragment : BaseSlideScreenFragment(propagateAr
     override fun onSendToDestination(bundle: Bundle) {
 
     }
+
+
 }
