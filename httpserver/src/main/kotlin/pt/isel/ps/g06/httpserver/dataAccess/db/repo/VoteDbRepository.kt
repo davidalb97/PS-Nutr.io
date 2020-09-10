@@ -12,7 +12,11 @@ import pt.isel.ps.g06.httpserver.model.VoteState
 private val voteDaoClass = UserVoteDao::class.java
 
 @Repository
-class VoteDbRepository(private val databaseContext: DatabaseContext, private val submissionDbRepository: SubmissionDbRepository) {
+class VoteDbRepository(
+        private val databaseContext: DatabaseContext,
+        private val submissionDbRepository: SubmissionDbRepository
+) {
+
     //It is not required to run exhaustive when for equal states.
     @Suppress("NON_EXHAUSTIVE_WHEN")
     fun setVote(voterId: Int, submissionId: Int, newVote: VoteState) {

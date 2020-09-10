@@ -1,10 +1,7 @@
 package pt.isel.ps.g06.httpserver.dataAccess.db.repo
 
 import org.springframework.stereotype.Repository
-import pt.isel.ps.g06.httpserver.dataAccess.db.MEAL_TYPE_CUSTOM
-import pt.isel.ps.g06.httpserver.dataAccess.db.MealType
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionContractType.*
-import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType.MEAL
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionType.RESTAURANT_MEAL
 import pt.isel.ps.g06.httpserver.dataAccess.db.common.DatabaseContext
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.*
@@ -12,7 +9,8 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbRestaurantMealDto
 import pt.isel.ps.g06.httpserver.exception.problemJson.badRequest.InvalidInputException
 import pt.isel.ps.g06.httpserver.exception.problemJson.notFound.MealNotFoundException
 import pt.isel.ps.g06.httpserver.exception.problemJson.notFound.RestaurantNotFoundException
-import pt.isel.ps.g06.httpserver.util.asCachedSequence
+import pt.isel.ps.g06.httpserver.util.ClosableSequence
+import pt.isel.ps.g06.httpserver.util.asClosableSequence
 import java.util.*
 
 private val restaurantMealDao = RestaurantMealDao::class.java
@@ -33,11 +31,11 @@ class RestaurantMealDbRepository(
         }
     }
 
-    fun getAllUserFavorites(submitterId: Int, count: Int?, skip: Int?): Sequence<DbRestaurantMealDto> {
+    fun getAllUserFavorites(submitterId: Int, count: Int?, skip: Int?): ClosableSequence<DbRestaurantMealDto> {
         return databaseContext.inTransaction { handle ->
             return@inTransaction handle.attach(restaurantMealDao)
                     .getAllUserFavorites(submitterId, count, skip)
-                    .asCachedSequence()
+                    .asClosableSequence()
         }
     }
 

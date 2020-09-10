@@ -15,6 +15,7 @@ import pt.isel.ps.g06.httpserver.exception.problemJson.notFound.RestaurantNotFou
 import pt.isel.ps.g06.httpserver.model.restaurant.Restaurant
 import pt.isel.ps.g06.httpserver.model.restaurant.RestaurantIdentifier
 import pt.isel.ps.g06.httpserver.util.log
+import pt.isel.ps.g06.httpserver.util.memoized
 
 private const val MAX_RADIUS = 1000
 
@@ -29,7 +30,7 @@ class RestaurantService(
         private val dbReportDbRepository: ReportDbRepository
 ) {
 
-    fun setFavorite(restaurantId: Int, userId: Int, isFavorite: Boolean): Boolean {
+    fun setFavorite(restaurantId: Int, userId: Int, isFavorite: Boolean) {
         return dbFavoriteDbRepository.setFavorite(restaurantId, userId, isFavorite)
     }
 
@@ -51,6 +52,7 @@ class RestaurantService(
         val databaseRestaurants = dbRestaurantRepository
                 .getAllByCoordinates(latitude, longitude, chosenRadius, skip, count / 2)
                 .map(restaurantModelMapper::mapTo)
+                .memoized()
 
         return filterRedundantApiRestaurants(databaseRestaurants, apiRestaurants)
     }

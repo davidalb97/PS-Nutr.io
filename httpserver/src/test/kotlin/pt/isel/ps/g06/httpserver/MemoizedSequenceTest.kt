@@ -5,9 +5,10 @@ import org.jdbi.v3.core.result.ResultIterator
 import org.jdbi.v3.core.statement.StatementContext
 import org.junit.Assert
 import org.junit.jupiter.api.Test
-import pt.isel.ps.g06.httpserver.util.asCachedSequence
+import pt.isel.ps.g06.httpserver.util.asClosableSequence
+import pt.isel.ps.g06.httpserver.util.memoized
 
-class IterableCacheTest {
+class MemoizedSequenceTest {
 
     @Test
     fun `cached Iterable should only process 3 times`() {
@@ -16,8 +17,8 @@ class IterableCacheTest {
                 .onEach {
                     totalCalls++
                 }
-                .asIterable()
-                .asCachedSequence()
+                .memoized()
+
         Assert.assertEquals(0, totalCalls)
         cachedSequence.count()
         cachedSequence.count()
@@ -52,7 +53,8 @@ class IterableCacheTest {
 
             override fun getContext(): StatementContext = throw UnsupportedOperationException()
 
-        }).asCachedSequence()
+        }).asClosableSequence()
+                .memoized()
 
         Assert.assertEquals(0, totalCalls)
 
@@ -79,7 +81,7 @@ class IterableCacheTest {
 
             override fun getContext(): StatementContext = throw UnsupportedOperationException()
 
-        }).asCachedSequence()
+        }).asClosableSequence()
 
         try {
             cachedSequence.count()

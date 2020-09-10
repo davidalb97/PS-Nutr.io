@@ -15,7 +15,7 @@ class MealService(
         private val dbFavoriteRepository: FavoriteDbRepository,
         private val dbMealModelMapper: DbMealModelMapper
 ) {
-    fun setFavorite(mealId: Int, userId: Int, isFavorite: Boolean): Boolean {
+    fun setFavorite(mealId: Int, userId: Int, isFavorite: Boolean) {
         return dbFavoriteRepository.setFavorite(mealId, userId, isFavorite)
     }
 

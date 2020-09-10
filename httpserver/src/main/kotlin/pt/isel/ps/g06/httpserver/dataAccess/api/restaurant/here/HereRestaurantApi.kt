@@ -13,7 +13,6 @@ import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
 import java.net.http.HttpResponse
-import java.util.concurrent.CompletableFuture
 
 /**
  * This is an API limitation
@@ -50,14 +49,16 @@ class HereRestaurantApi(
         if(apiCount > MAX_HERE_ITEMS) {
             return emptySequence()
         }
+        val uri = restaurantUri.nearbyRestaurants(latitude, longitude, radiusMeters, name, skip, apiCount)
+        val response = httpClient.sendAsync(
+                buildGetRequest(uri),
+                HttpResponse.BodyHandlers.ofString()
+        )
         return sequence {
-            val uri = restaurantUri.nearbyRestaurants(latitude, longitude, radiusMeters, name, skip, apiCount)
-            val response = httpClient.send(
-                    buildGetRequest(uri),
-                    HttpResponse.BodyHandlers.ofString()
-            )
+            val restaurants = handleNearbyRestaurantsResponse(response.get())
+                    .drop(apiCount - count)
 
-            yieldAll(handleNearbyRestaurantsResponse(response).drop(apiCount - count))
+            yieldAll(restaurants)
         }
     }
 

@@ -17,6 +17,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.repo.RestaurantDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.mapper.DbRestaurantModelMapper
 import pt.isel.ps.g06.httpserver.model.restaurant.Restaurant
 import pt.isel.ps.g06.httpserver.model.restaurant.RestaurantIdentifier
+import pt.isel.ps.g06.httpserver.util.closableSequenceOf
 
 class RestaurantServiceTests {
     private lateinit var restaurantRepository: RestaurantDbRepository
@@ -98,7 +99,7 @@ class RestaurantServiceTests {
                 radius = anyNonNull(),
                 skip = anyNonNull(),
                 count = anyNonNull()
-        )).thenReturn(sequenceOf(firstDatabaseDto))
+        )).thenReturn(closableSequenceOf(firstDatabaseDto))
 
         //Call to action
         val nearbyRestaurants = service.getNearbyRestaurants(

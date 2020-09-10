@@ -7,7 +7,8 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.common.DatabaseContext
 import pt.isel.ps.g06.httpserver.dataAccess.db.dao.*
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbRestaurantCuisineDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbRestaurantDto
-import pt.isel.ps.g06.httpserver.util.asCachedSequence
+import pt.isel.ps.g06.httpserver.util.ClosableSequence
+import pt.isel.ps.g06.httpserver.util.asClosableSequence
 
 private val restaurantDaoClass = RestaurantDao::class.java
 
@@ -19,11 +20,11 @@ class RestaurantDbRepository(private val databaseContext: DatabaseContext, priva
             radius: Int,
             skip: Int?,
             count: Int?
-    ): Sequence<DbRestaurantDto> {
+    ): ClosableSequence<DbRestaurantDto> {
         return databaseContext.inTransaction {
             return@inTransaction it.attach(RestaurantDao::class.java)
                     .getByCoordinates(latitude, longitude, radius, skip, count)
-                    .asCachedSequence()
+                    .asClosableSequence()
         }
     }
 
@@ -41,11 +42,11 @@ class RestaurantDbRepository(private val databaseContext: DatabaseContext, priva
         }
     }
 
-    fun getAllUserFavorites(submitterId: Int, count: Int?, skip: Int?): Sequence<DbRestaurantDto> {
+    fun getAllUserFavorites(submitterId: Int, count: Int?, skip: Int?): ClosableSequence<DbRestaurantDto> {
         return databaseContext.inTransaction { handle ->
             return@inTransaction handle.attach(restaurantDaoClass)
                     .getAllUserFavorites(submitterId, count, skip)
-                    .asCachedSequence()
+                    .asClosableSequence()
         }
     }
 
