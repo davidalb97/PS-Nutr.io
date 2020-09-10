@@ -99,9 +99,7 @@ class RestaurantListViewModel : BaseListViewModel<RestaurantItem> {
     }
 
     companion object CREATOR : Parcelable.Creator<RestaurantListViewModel> {
-        override fun createFromParcel(parcel: Parcel): RestaurantListViewModel =
-            TODO("Restore RestaurantRecyclerViewModel from bundle")
-
+        override fun createFromParcel(parcel: Parcel) = RestaurantListViewModel(parcel)
 
         override fun newArray(size: Int): Array<RestaurantListViewModel?> {
             return arrayOfNulls(size)

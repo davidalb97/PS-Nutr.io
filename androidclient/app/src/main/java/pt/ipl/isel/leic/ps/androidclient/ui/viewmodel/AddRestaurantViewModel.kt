@@ -16,7 +16,11 @@ class AddRestaurantViewModel(
         editRestaurant = parcel.readParcelable(RestaurantInfo::class.java.classLoader)
     }
 
-    fun addRestaurant(customRestaurant: CustomRestaurant, onSuccess: () -> Unit, onError: (Throwable) -> Unit) {
+    fun addRestaurant(
+        customRestaurant: CustomRestaurant,
+        onSuccess: () -> Unit,
+        onError: (Throwable) -> Unit
+    ) {
         restaurantRepository.addCustomRestaurant(
             customRestaurant = customRestaurant,
             onSuccess = onSuccess,
@@ -34,9 +38,7 @@ class AddRestaurantViewModel(
     }
 
     companion object CREATOR : Parcelable.Creator<AddRestaurantViewModel> {
-        override fun createFromParcel(parcel: Parcel): AddRestaurantViewModel {
-            return AddRestaurantViewModel(parcel)
-        }
+        override fun createFromParcel(parcel: Parcel) = AddRestaurantViewModel(parcel)
 
         override fun newArray(size: Int): Array<AddRestaurantViewModel?> {
             return arrayOfNulls(size)

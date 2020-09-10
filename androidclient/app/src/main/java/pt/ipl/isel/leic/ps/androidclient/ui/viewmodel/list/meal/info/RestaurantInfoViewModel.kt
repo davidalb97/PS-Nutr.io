@@ -139,12 +139,10 @@ class RestaurantInfoViewModel : MealItemListViewModel {
 
     companion object CREATOR : Parcelable.Creator<RestaurantInfoViewModel> {
 
-        override fun createFromParcel(parcel: Parcel): RestaurantInfoViewModel =
-            RestaurantInfoViewModel(parcel)
+        override fun createFromParcel(parcel: Parcel) = RestaurantInfoViewModel(parcel)
 
         override fun newArray(size: Int): Array<RestaurantInfoViewModel?> {
             return arrayOfNulls(size)
         }
-
     }
 }

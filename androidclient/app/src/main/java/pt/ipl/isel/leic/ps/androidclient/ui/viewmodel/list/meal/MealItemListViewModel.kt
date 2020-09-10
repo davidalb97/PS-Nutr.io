@@ -103,15 +103,10 @@ open class MealItemListViewModel : BaseMealListViewModel<MealItem> {
 
     companion object CREATOR : Parcelable.Creator<MealItemListViewModel> {
 
-        override fun createFromParcel(parcel: Parcel): MealItemListViewModel {
-            return MealItemListViewModel(
-                parcel
-            )
-        }
+        override fun createFromParcel(parcel: Parcel) = MealItemListViewModel(parcel)
 
         override fun newArray(size: Int): Array<MealItemListViewModel?> {
             return arrayOfNulls(size)
         }
-
     }
 }

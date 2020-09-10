@@ -23,9 +23,7 @@ class MealItemPickViewModel : BaseItemPickerViewModel<MealItem> {
     }
 
     companion object CREATOR : Parcelable.Creator<MealItemPickViewModel> {
-        override fun createFromParcel(parcel: Parcel): MealItemPickViewModel {
-            return MealItemPickViewModel(parcel)
-        }
+        override fun createFromParcel(parcel: Parcel) = MealItemPickViewModel(parcel)
 
         override fun newArray(size: Int): Array<MealItemPickViewModel?> {
             return arrayOfNulls(size)

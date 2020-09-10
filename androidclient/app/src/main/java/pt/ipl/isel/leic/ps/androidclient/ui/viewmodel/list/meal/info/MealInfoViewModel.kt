@@ -186,8 +186,7 @@ open class MealInfoViewModel : MealItemListViewModel {
 
     companion object CREATOR : Parcelable.Creator<MealInfoViewModel> {
 
-        override fun createFromParcel(parcel: Parcel): MealInfoViewModel =
-            TODO("Restore RestaurantRecyclerViewModel from bundle")
+        override fun createFromParcel(parcel: Parcel) = MealInfoViewModel(parcel)
 
         override fun newArray(size: Int): Array<MealInfoViewModel?> {
             return arrayOfNulls(size)

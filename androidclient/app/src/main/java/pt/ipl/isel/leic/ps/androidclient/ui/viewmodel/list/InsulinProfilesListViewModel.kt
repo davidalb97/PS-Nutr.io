@@ -76,11 +76,7 @@ class InsulinProfilesListViewModel : BaseListViewModel<InsulinProfile> {
     }
 
     companion object CREATOR : Parcelable.Creator<InsulinProfilesListViewModel> {
-        override fun createFromParcel(parcel: Parcel): InsulinProfilesListViewModel {
-            return InsulinProfilesListViewModel(
-                parcel
-            )
-        }
+        override fun createFromParcel(parcel: Parcel) = InsulinProfilesListViewModel(parcel)
 
         override fun newArray(size: Int): Array<InsulinProfilesListViewModel?> {
             return arrayOfNulls(size)

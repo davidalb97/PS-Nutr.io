@@ -73,15 +73,10 @@ class AddCustomMealViewModel: MealInfoViewModel {
     }
 
     companion object CREATOR : Parcelable.Creator<AddCustomMealViewModel> {
-        override fun createFromParcel(parcel: Parcel): AddCustomMealViewModel {
-            return AddCustomMealViewModel(
-                parcel
-            )
-        }
+        override fun createFromParcel(parcel: Parcel) = AddCustomMealViewModel(parcel)
 
         override fun newArray(size: Int): Array<AddCustomMealViewModel?> {
             return arrayOfNulls(size)
         }
     }
-
 }
