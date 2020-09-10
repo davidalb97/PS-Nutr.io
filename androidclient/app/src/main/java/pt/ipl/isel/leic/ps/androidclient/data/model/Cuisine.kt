@@ -29,9 +29,7 @@ data class Cuisine(
     }
 
     companion object CREATOR : Parcelable.Creator<Cuisine> {
-        override fun createFromParcel(parcel: Parcel): Cuisine {
-            return Cuisine(parcel)
-        }
+        override fun createFromParcel(parcel: Parcel) = Cuisine(parcel)
 
         override fun newArray(size: Int): Array<Cuisine?> {
             return arrayOfNulls(size)

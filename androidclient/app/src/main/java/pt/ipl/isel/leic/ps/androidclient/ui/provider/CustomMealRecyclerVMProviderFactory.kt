@@ -18,8 +18,6 @@ class CustomMealRecyclerVMProviderFactory(
     savedInstanceState,
     intent
 ) {
-    override val logger = Logger(CustomMealRecyclerVMProviderFactory::class)
-
     override fun <T : ViewModel?> newViewModel(modelClass: Class<T>): ViewModel? {
         return when (modelClass) {
             MealItemListViewModel::class.java -> MealItemListViewModel(

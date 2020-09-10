@@ -13,6 +13,7 @@ import pt.ipl.isel.leic.ps.androidclient.data.db.InsulinCalculator
 import pt.ipl.isel.leic.ps.androidclient.data.model.InsulinProfile
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.BaseAddMealFragment
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.IRequiredTextInput
+import pt.ipl.isel.leic.ps.androidclient.ui.modular.filter.IItemListFilter
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.unit.IGlucoseUnitSpinner
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.CalculatorVMProviderFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.util.*
@@ -37,7 +38,9 @@ class CalculatorFragment : BaseAddMealFragment(), IRequiredTextInput, IGlucoseUn
 
     override val layout = R.layout.calculator_fragment
     override val vMProviderFactorySupplier = ::CalculatorVMProviderFactory
-    private lateinit var viewModelProfiles: InsulinProfilesListViewModel
+    private val viewModelProfiles: InsulinProfilesListViewModel by lazy {
+        buildViewModel(savedInstanceState, InsulinProfilesListViewModel::class.java)
+    }
 
     private var currentProfile: InsulinProfile? = null
     private val calculator = InsulinCalculator()
@@ -49,19 +52,6 @@ class CalculatorFragment : BaseAddMealFragment(), IRequiredTextInput, IGlucoseUn
     private lateinit var profileGlucoseObjectiveTextView: TextView
     private lateinit var profileInsulinSensitivityTextView: TextView
     private lateinit var profileCarbohydrateRatioTextView: TextView
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        viewModelProfiles = buildViewModel(
-            savedInstanceState = savedInstanceState,
-            clazz = InsulinProfilesListViewModel::class.java
-        )
-        //Build super's viewModel (selected meals)
-        return super.onCreateView(inflater, container, savedInstanceState)
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -81,9 +71,12 @@ class CalculatorFragment : BaseAddMealFragment(), IRequiredTextInput, IGlucoseUn
 
     override fun setupIngredients(view: View) {
         super.setupIngredients(view)
-        arguments?.getMealItem()?.let(viewModel::pick)
-        arguments?.getMealIngredient()?.let(viewModel::pick)
-        arguments?.getMealInfo()?.let(viewModel::pick)
+
+        val argumentMeal = viewModelProfiles.argumentMeal
+        if(argumentMeal != null) {
+            viewModelProfiles.argumentMeal = null
+            viewModel.pick(argumentMeal)
+        }
     }
 
     /**

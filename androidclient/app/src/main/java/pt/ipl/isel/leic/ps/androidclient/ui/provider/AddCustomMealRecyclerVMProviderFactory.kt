@@ -9,19 +9,16 @@ import pt.ipl.isel.leic.ps.androidclient.ui.util.getMealIngredient
 import pt.ipl.isel.leic.ps.androidclient.ui.util.getMealItem
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.meal.info.AddCustomMealViewModel
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.pick.CuisinePickViewModel
-import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.pick.MealInfoPickViewModel
 
 class AddCustomMealRecyclerVMProviderFactory(
     arguments: Bundle?,
     savedInstanceState: Bundle?,
     intent: Intent
-) : BaseViewModelProviderFactory(
+) : BaseAddMealRecyclerVMProviderFactory(
     arguments,
     savedInstanceState,
     intent
 ) {
-    override val logger = Logger(AddCustomMealRecyclerVMProviderFactory::class)
-
     override fun <T : ViewModel?> newViewModel(modelClass: Class<T>): ViewModel? {
         return when (modelClass) {
             AddCustomMealViewModel::class.java -> {
@@ -38,8 +35,7 @@ class AddCustomMealRecyclerVMProviderFactory(
                 }
             }
             CuisinePickViewModel::class.java -> CuisinePickViewModel()
-            MealInfoPickViewModel::class.java -> MealInfoPickViewModel()
-            else -> null
+            else -> super.newViewModel(modelClass)
         }
     }
 }

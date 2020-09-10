@@ -11,11 +11,9 @@ import pt.ipl.isel.leic.ps.androidclient.ui.util.Navigation
 import pt.ipl.isel.leic.ps.androidclient.ui.util.getUserSession
 import pt.ipl.isel.leic.ps.androidclient.ui.util.live.LiveDataHandler
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.meal.MealItemListViewModel
-import kotlin.reflect.KClass
 
 open class MealInfoViewModel : MealItemListViewModel {
 
-    //TODO Override removeObservers
     private val mealInfoLiveDataHandler = LiveDataHandler<MealInfo>()
     val mealInfo get() = mealInfoLiveDataHandler.value
     val mealItem: MealItem?
@@ -55,8 +53,8 @@ open class MealInfoViewModel : MealItemListViewModel {
     }
 
     constructor(parcel: Parcel) : super(parcel) {
-        mealItem = parcel.readParcelable(MealItem::class.java.classLoader)
         mealInfoLiveDataHandler.restoreFromParcel(parcel, MealInfo::class)
+        mealItem = mealInfoLiveDataHandler.value
     }
 
     override fun setupList() {
@@ -178,11 +176,8 @@ open class MealInfoViewModel : MealItemListViewModel {
 
     override fun writeToParcel(dest: Parcel?, flags: Int) {
         super.writeToParcel(dest, flags)
-        dest?.writeParcelable(mealItem, flags)
         mealInfoLiveDataHandler.writeToParcel(dest, flags)
     }
-
-    override fun getModelClass(): KClass<MealItem> = MealItem::class
 
     override fun describeContents(): Int {
         return 0
@@ -190,8 +185,7 @@ open class MealInfoViewModel : MealItemListViewModel {
 
     companion object CREATOR : Parcelable.Creator<MealInfoViewModel> {
 
-        override fun createFromParcel(parcel: Parcel): MealInfoViewModel =
-            TODO("Restore RestaurantRecyclerViewModel from bundle")
+        override fun createFromParcel(parcel: Parcel) = MealInfoViewModel(parcel)
 
         override fun newArray(size: Int): Array<MealInfoViewModel?> {
             return arrayOfNulls(size)

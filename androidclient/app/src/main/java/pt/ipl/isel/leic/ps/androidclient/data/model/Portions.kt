@@ -14,14 +14,14 @@ data class Portions(
     constructor(parcel: Parcel) : this(
         dbId = parcel.readLong(),
         dbMealId = parcel.readLong(),
-        userPortion = parcel.readFloat(),
+        userPortion = parcel.readSerializable() as Float?,
         allPortions = parcel.readListCompat(Float::class)
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeLong(dbId)
         parcel.writeLong(dbMealId)
-        userPortion?.let { parcel.writeFloat(it) }
+        parcel.writeSerializable(userPortion)
         parcel.writeList(allPortions)
     }
 
@@ -30,9 +30,7 @@ data class Portions(
     }
 
     companion object CREATOR : Parcelable.Creator<Portions> {
-        override fun createFromParcel(parcel: Parcel): Portions {
-            return Portions(parcel)
-        }
+        override fun createFromParcel(parcel: Parcel) = Portions(parcel)
 
         override fun newArray(size: Int): Array<Portions?> {
             return arrayOfNulls(size)

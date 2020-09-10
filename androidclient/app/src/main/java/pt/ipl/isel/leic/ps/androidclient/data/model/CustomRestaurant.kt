@@ -43,9 +43,7 @@ class CustomRestaurant : RestaurantInfo, Parcelable {
     }
 
     companion object CREATOR : Parcelable.Creator<CustomRestaurant> {
-        override fun createFromParcel(parcel: Parcel): CustomRestaurant {
-            return CustomRestaurant(parcel)
-        }
+        override fun createFromParcel(parcel: Parcel) = CustomRestaurant(parcel)
 
         override fun newArray(size: Int): Array<CustomRestaurant?> {
             return arrayOfNulls(size)

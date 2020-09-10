@@ -42,9 +42,7 @@ data class InsulinProfile(
     }
 
     companion object CREATOR : Parcelable.Creator<InsulinProfile> {
-        override fun createFromParcel(parcel: Parcel): InsulinProfile {
-            return InsulinProfile(parcel)
-        }
+        override fun createFromParcel(parcel: Parcel) = InsulinProfile(parcel)
 
         override fun newArray(size: Int): Array<InsulinProfile?> {
             return arrayOfNulls(size)

@@ -10,7 +10,8 @@ import pt.ipl.isel.leic.ps.androidclient.ui.util.ItemAction
 import pt.ipl.isel.leic.ps.androidclient.ui.util.Navigation
 import pt.ipl.isel.leic.ps.androidclient.ui.util.getUserSession
 import pt.ipl.isel.leic.ps.androidclient.ui.util.requireUserSession
-import kotlin.reflect.KClass
+
+private val ITEM_CLASS = MealItem::class
 
 open class MealItemListViewModel : BaseMealListViewModel<MealItem> {
 
@@ -21,6 +22,7 @@ open class MealItemListViewModel : BaseMealListViewModel<MealItem> {
         restaurantId: String? = null,
         cuisines: List<Cuisine> = emptyList()
     ) : super(
+        itemClass = ITEM_CLASS,
         navDestination = navDestination,
         actions = actions,
         source = source,
@@ -28,7 +30,7 @@ open class MealItemListViewModel : BaseMealListViewModel<MealItem> {
         cuisines = cuisines
     )
 
-    constructor(parcel: Parcel) : super(parcel)
+    constructor(parcel: Parcel) : super(parcel, ITEM_CLASS)
 
     override fun fetch() {
         when (source) {
@@ -100,18 +102,10 @@ open class MealItemListViewModel : BaseMealListViewModel<MealItem> {
 
     companion object CREATOR : Parcelable.Creator<MealItemListViewModel> {
 
-        override fun createFromParcel(parcel: Parcel): MealItemListViewModel {
-            return MealItemListViewModel(
-                parcel
-            )
-        }
+        override fun createFromParcel(parcel: Parcel) = MealItemListViewModel(parcel)
 
         override fun newArray(size: Int): Array<MealItemListViewModel?> {
             return arrayOfNulls(size)
         }
-
     }
-
-    override fun getModelClass(): KClass<MealItem> = MealItem::class
-
 }

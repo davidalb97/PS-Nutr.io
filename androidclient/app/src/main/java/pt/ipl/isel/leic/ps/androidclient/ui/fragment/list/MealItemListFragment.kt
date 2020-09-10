@@ -44,7 +44,9 @@ open class MealItemListFragment :
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        //Init super's recycler list handler
         super.onViewCreated(view, savedInstanceState)
+
         viewModel.liveDataHandler.filter = itemFilter
         viewModel.setupList()
     }

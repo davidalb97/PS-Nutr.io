@@ -19,7 +19,6 @@ import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.meal.MealItemListView
 
 class RestaurantInfoViewModel : MealItemListViewModel {
 
-    //TODO override removeObservers
     private val restaurantInfoLiveDataHandler = LiveDataHandler<RestaurantInfo>()
     val restaurantInfo get() = restaurantInfoLiveDataHandler.value
     var addedMeal: MealItem? = null
@@ -37,10 +36,8 @@ class RestaurantInfoViewModel : MealItemListViewModel {
     )
 
     constructor(parcel: Parcel) : super(parcel) {
-        val restaurantInfo: RestaurantInfo? =
-            parcel.readParcelable(RestaurantInfo::class.java.classLoader)
-        restaurantInfoLiveDataHandler.restoreFromValue(restaurantInfo)
         addedMeal = parcel.readParcelable(MealItem::class.java.classLoader)
+        restaurantInfoLiveDataHandler.restoreFromParcel(parcel, RestaurantInfo::class)
     }
 
     override fun setupList() {
@@ -132,8 +129,8 @@ class RestaurantInfoViewModel : MealItemListViewModel {
 
     override fun writeToParcel(dest: Parcel?, flags: Int) {
         super.writeToParcel(dest, flags)
-        restaurantInfoLiveDataHandler.writeToParcel(dest, flags)
         dest?.writeParcelable(addedMeal, flags)
+        restaurantInfoLiveDataHandler.writeToParcel(dest, flags)
     }
 
     override fun describeContents(): Int {
@@ -142,12 +139,10 @@ class RestaurantInfoViewModel : MealItemListViewModel {
 
     companion object CREATOR : Parcelable.Creator<RestaurantInfoViewModel> {
 
-        override fun createFromParcel(parcel: Parcel): RestaurantInfoViewModel =
-            RestaurantInfoViewModel(parcel)
+        override fun createFromParcel(parcel: Parcel) = RestaurantInfoViewModel(parcel)
 
         override fun newArray(size: Int): Array<RestaurantInfoViewModel?> {
             return arrayOfNulls(size)
         }
-
     }
 }

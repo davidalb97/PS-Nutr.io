@@ -162,7 +162,7 @@
     <string name="remove_account_error">Could not remove account</string>
 
     <!-- ##################################### Arrays #####################################-->
-    <string-array name="calculator_units">
+    <string-array name="glucose_units">
         <item>mg / dL</item>
         <item>mmol / L</item>
     </string-array>

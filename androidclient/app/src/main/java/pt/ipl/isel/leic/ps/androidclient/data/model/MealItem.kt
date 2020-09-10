@@ -54,6 +54,7 @@ open class MealItem(
         parcel.writeWeightUnit(unit)
         parcel.writeUri(imageUri)
         parcel.writeParcelable(votes, flags)
+        parcel.writeParcelable(favorites, flags)
         parcel.writeSerializable(isVerified)
         parcel.writeSerializable(isSuggested)
         parcel.writeSerializable(isReportable)
@@ -65,9 +66,7 @@ open class MealItem(
     }
 
     companion object CREATOR : Parcelable.Creator<MealItem> {
-        override fun createFromParcel(parcel: Parcel): MealItem {
-            return MealItem(parcel)
-        }
+        override fun createFromParcel(parcel: Parcel) = MealItem(parcel)
 
         override fun newArray(size: Int): Array<MealItem?> {
             return arrayOfNulls(size)

@@ -56,6 +56,7 @@ open class RestaurantInfo : RestaurantItem, Parcelable {
         cuisines = parcel.readListCompat(Cuisine::class)
         meals = parcel.readListCompat(MealItem::class)
         suggestedMeals = parcel.readListCompat(MealItem::class)
+        ownerId = parcel.readSerializable() as Int?
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -64,6 +65,7 @@ open class RestaurantInfo : RestaurantItem, Parcelable {
         parcel.writeList(cuisines)
         parcel.writeList(meals)
         parcel.writeList(suggestedMeals)
+        parcel.writeSerializable(ownerId)
     }
 
     override fun describeContents(): Int {
@@ -71,9 +73,7 @@ open class RestaurantInfo : RestaurantItem, Parcelable {
     }
 
     companion object CREATOR : Parcelable.Creator<RestaurantInfo> {
-        override fun createFromParcel(parcel: Parcel): RestaurantInfo {
-            return RestaurantInfo(parcel)
-        }
+        override fun createFromParcel(parcel: Parcel) = RestaurantInfo(parcel)
 
         override fun newArray(size: Int): Array<RestaurantInfo?> {
             return arrayOfNulls(size)

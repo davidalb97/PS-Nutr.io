@@ -56,18 +56,14 @@ class LoginFragment : BaseFragment(), IViewModelManager, ILogin, IAccountSetting
     override lateinit var removeAccountButton: Button
     override val removeAccountButtonId: Int = R.id.deleteAccountButton
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         viewModel = buildViewModel(
             arguments = arguments,
             intent = requireActivity().intent,
             savedInstanceState = savedInstanceState,
             vmClass = UserSessionViewModel::class.java
         )
-        return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

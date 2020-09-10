@@ -18,8 +18,6 @@ class RestaurantRecyclerVMProviderFactory(
     savedInstanceState,
     intent
 ) {
-    override val logger = Logger(RestaurantRecyclerVMProviderFactory::class)
-
     override fun <T : ViewModel?> newViewModel(modelClass: Class<T>): ViewModel? {
         return when (modelClass) {
             RestaurantListViewModel::class.java -> {

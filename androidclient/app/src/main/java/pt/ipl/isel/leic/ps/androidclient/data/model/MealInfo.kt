@@ -71,7 +71,7 @@ open class MealInfo : MealItem {
         this.ingredientComponents = parcel.readListCompat(MealIngredient::class)
         this.mealComponents = parcel.readListCompat(MealIngredient::class)
         this.cuisines = parcel.readListCompat(Cuisine::class)
-        this.portions = parcel.readParcelable(Portions::class.java.classLoader)!!
+        this.portions = parcel.readParcelable(Portions::class.java.classLoader)
         this.submissionOwner = parcel.readParcelable(SubmissionOwner::class.java.classLoader)
     }
 
@@ -89,15 +89,11 @@ open class MealInfo : MealItem {
         return 0
     }
 
-    companion object CREATOR : Parcelable.Creator<MealItem> {
+    companion object CREATOR : Parcelable.Creator<MealInfo> {
 
-        const val DEFAULT_SUBMISSION_ID: Int = -1
+        override fun createFromParcel(parcel: Parcel) = MealInfo(parcel)
 
-        override fun createFromParcel(parcel: Parcel): MealItem {
-            return MealItem(parcel)
-        }
-
-        override fun newArray(size: Int): Array<MealItem?> {
+        override fun newArray(size: Int): Array<MealInfo?> {
             return arrayOfNulls(size)
         }
     }

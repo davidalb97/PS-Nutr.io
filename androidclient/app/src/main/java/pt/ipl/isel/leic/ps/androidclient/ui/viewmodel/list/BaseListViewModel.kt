@@ -17,12 +17,9 @@ import kotlin.reflect.KClass
 const val DEFAULT_COUNT = 10
 const val DEFAULT_SKIP = 0
 
-abstract class BaseListViewModel<T : Parcelable>() : ViewModel(), Parcelable {
+abstract class BaseListViewModel<T : Parcelable> : ViewModel, Parcelable {
 
-    constructor(parcel: Parcel) : this() {
-        this.restoreFromParcel(parcel)
-    }
-
+    val itemClass: KClass<T>
     val log: Logger by lazy { Logger(javaClass) }
     val liveDataHandler = LiveDataListHandler<T>()
     val items: List<T> get() = liveDataHandler.mapped
@@ -30,6 +27,14 @@ abstract class BaseListViewModel<T : Parcelable>() : ViewModel(), Parcelable {
     var skip: Int? = DEFAULT_SKIP
     var count: Int? = DEFAULT_COUNT
     var onError: (Throwable) -> Unit = log::e
+
+    constructor(itemClass: KClass<T>): super() {
+        this.itemClass = itemClass
+    }
+
+    constructor(parcel: Parcel, itemClass: KClass<T>) : this(itemClass) {
+        liveDataHandler.restoreFromParcel(parcel, itemClass)
+    }
 
     open fun setupList() {
         if(items.isNotEmpty()) {
@@ -72,25 +77,12 @@ abstract class BaseListViewModel<T : Parcelable>() : ViewModel(), Parcelable {
     }
 
     /**
-     * Attempts to restore all the previously saved items on [liveDataHandler] from [parcel].
-     * If the [parcel] contained the [LiveDataListHandler] object,
-     * the next call to [tryRestore] will succeed.
-     * @param parcel The [Parcel] to read the [LiveDataListHandler] from.
-     */
-    @CallSuper
-    open fun restoreFromParcel(parcel: Parcel) {
-        liveDataHandler.restoreFromParcel(parcel, getModelClass())
-    }
-
-    /**
      * Restores the [liveDataHandler].
-     * This operation will only succeed if a previous call from [restoreFromList] or
-     * [restoreFromParcel] was made.
+     * This operation will only succeed if the ViewModel was constructed from a [Parcel]
+     * or a previous call to [restoreFromList] was made.
      * @return If the restored operation was successful.
      */
     open fun tryRestore(): Boolean = liveDataHandler.tryRestore()
-
-    abstract fun getModelClass(): KClass<T>
 
     open fun removeObservers(owner: LifecycleOwner) {
         liveDataHandler.removeObservers(owner)

@@ -15,8 +15,8 @@
 
         <ListPreference
             app:key="insulin_units"
-            app:entries="@array/calculator_units"
-            app:entryValues="@array/calculator_units"
+            app:entries="@array/glucose_units"
+            app:entryValues="@array/glucose_units"
             app:defaultValue="mg / dL"
             app:title="Insulin measurement units"
             app:summary="The units that will be set by default in calculations"
@@ -26,7 +26,7 @@
             app:key="weight_units"
             app:entries="@array/weight_units"
             app:entryValues="@array/weight_units"
-            app:defaultValue="grams"
+            app:defaultValue="gr"
             app:title="Weight units"
             app:summary="The weight units that will be set by default"
             />

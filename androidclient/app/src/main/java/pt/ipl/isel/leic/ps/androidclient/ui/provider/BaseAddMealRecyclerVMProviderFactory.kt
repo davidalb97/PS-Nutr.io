@@ -4,10 +4,9 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.lifecycle.ViewModel
 import pt.ipl.isel.leic.ps.androidclient.ui.util.Logger
-import pt.ipl.isel.leic.ps.androidclient.ui.util.getItemActions
-import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.InsulinProfilesListViewModel
+import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.pick.MealItemPickViewModel
 
-class InsulinProfilesVMProviderFactory(
+open class BaseAddMealRecyclerVMProviderFactory(
     arguments: Bundle?,
     savedInstanceState: Bundle?,
     intent: Intent
@@ -18,11 +17,7 @@ class InsulinProfilesVMProviderFactory(
 ) {
     override fun <T : ViewModel?> newViewModel(modelClass: Class<T>): ViewModel? {
         return when (modelClass) {
-            InsulinProfilesListViewModel::class.java -> {
-                InsulinProfilesListViewModel(
-                    actions = arguments?.getItemActions() ?: emptyList()
-                )
-            }
+            MealItemPickViewModel::class.java -> MealItemPickViewModel()
             else -> null
         }
     }

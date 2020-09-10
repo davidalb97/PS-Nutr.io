@@ -19,9 +19,7 @@ class UserSession(
     }
 
     companion object CREATOR : Parcelable.Creator<UserSession> {
-        override fun createFromParcel(parcel: Parcel): UserSession {
-            return UserSession(parcel)
-        }
+        override fun createFromParcel(parcel: Parcel) = UserSession(parcel)
 
         override fun newArray(size: Int): Array<UserSession?> {
             return arrayOfNulls(size)

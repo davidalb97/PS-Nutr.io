@@ -79,6 +79,11 @@ class MealInfoFragment :
 
     override val vmClass = MealInfoViewModel::class.java
     override val vMProviderFactorySupplier = ::MealInfoVMProviderFactory
+    override val viewModel by lazy {
+        buildViewModel(savedInstanceState, vmClass).also { viewModel ->
+            actions = viewModel.actions
+        }
+    }
     override val recyclerAdapter by lazy {
         MealItemRecyclerAdapter(
             viewModel,
@@ -93,19 +98,16 @@ class MealInfoFragment :
     private lateinit var portionEntries: MutableList<BarEntry>
     private var userPortionEntry: BarEntry? = null
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
         setHasOptionsMenu(true)
-        return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        //Init super's recycler list handler
         super.onViewCreated(view, savedInstanceState)
 
-        actions = viewModel.actions
         viewModel.observeInfo(this) { mealInfo ->
             setupView(view, mealInfo)
             viewModel.removeObservers(this)

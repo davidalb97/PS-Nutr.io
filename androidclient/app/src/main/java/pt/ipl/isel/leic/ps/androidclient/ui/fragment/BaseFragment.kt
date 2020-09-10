@@ -18,6 +18,7 @@ abstract class BaseFragment : Fragment(), ILog {
 
     abstract val layout: Int
 
+    @CallSuper
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         log.v("onCreate() called!")
@@ -40,8 +41,10 @@ abstract class BaseFragment : Fragment(), ILog {
         log.v("onViewCreated() called!")
     }
 
-    protected fun inflate(inflater: LayoutInflater, container: ViewGroup?): View =
-        inflater.inflate(layout, container, false)
+    protected fun inflate(inflater: LayoutInflater, container: ViewGroup?): View {
+        log.v("Inflating...")
+        return inflater.inflate(layout, container, false)
+    }
 
     protected open fun onError(throwable: Throwable) {
         if (!hasInternetConnection()) {

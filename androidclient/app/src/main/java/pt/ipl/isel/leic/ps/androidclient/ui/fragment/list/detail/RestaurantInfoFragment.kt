@@ -3,11 +3,14 @@ package pt.ipl.isel.leic.ps.androidclient.ui.fragment.list.detail
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Parcelable
 import android.view.*
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat.invalidateOptionsMenu
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelStoreOwner
 import androidx.navigation.findNavController
 import androidx.navigation.navGraphViewModels
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp
@@ -25,6 +28,7 @@ import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.menu.IEditMenuItem
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.menu.IReportMenuItem
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.menu.MenuItemFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.BaseViewModelProviderFactory
+import pt.ipl.isel.leic.ps.androidclient.ui.provider.RestaurantInfoVMProviderFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.util.*
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.meal.info.RestaurantInfoViewModel
 
@@ -44,10 +48,14 @@ class RestaurantInfoFragment :
     override val noItemsTextViewId = R.id.restaurant_info_no_meals_found
 
     override val vmClass = RestaurantInfoViewModel::class.java
-    override val vMProviderFactorySupplier: (Bundle?, Bundle?, Intent) -> BaseViewModelProviderFactory =
-        { _, _, _ ->
-            throw UnsupportedOperationException("Not used")
+    override val vMProviderFactorySupplier = ::RestaurantInfoVMProviderFactory
+    override val viewModel by lazy {
+        val viewModel: RestaurantInfoViewModel by navGraphViewModels(Navigation.SEND_TO_RESTAURANT_DETAIL.navId) {
+            vMProviderFactorySupplier(arguments, savedInstanceState, requireActivity().intent)
         }
+        actions = viewModel.actions
+        viewModel
+    }
     override val recyclerAdapter by lazy {
         MealItemRecyclerAdapter(
             viewModel,
@@ -83,20 +91,13 @@ class RestaurantInfoFragment :
         savedInstanceState: Bundle?
     ): View? {
         setHasOptionsMenu(true)
-        val viewModel: RestaurantInfoViewModel
-                by navGraphViewModels(Navigation.SEND_TO_RESTAURANT_DETAIL.navId)
-        this.viewModel = viewModel
-        this.viewModel.restaurantId = requireNotNull(arguments?.getRestaurantItem()?.id) {
-            "Restaurant detail requires submission ID"
-        }
-        //Bypass generic Recycler ViewModel creation, ignoring super.onCreateView()
-        return super.inflate(inflater, container)
+        return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        //Init super's recycler list handler
         super.onViewCreated(view, savedInstanceState)
 
-        actions = viewModel.actions
         viewModel.observeInfo(this) { restaurantInfo ->
             viewModel.removeObservers(this)
             setupRestaurantInfoView(view, restaurantInfo)

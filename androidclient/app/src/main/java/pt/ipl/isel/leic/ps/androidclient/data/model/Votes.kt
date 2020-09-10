@@ -33,16 +33,8 @@ data class Votes(
     }
 
     companion object CREATOR : Parcelable.Creator<Votes> {
-        fun defaultVotes() = Votes(
-            isVotable = false,
-            userHasVoted = VoteState.NOT_VOTED,
-            positive = 0,
-            negative = 0
-        )
 
-        override fun createFromParcel(parcel: Parcel): Votes {
-            return Votes(parcel)
-        }
+        override fun createFromParcel(parcel: Parcel): Votes = Votes(parcel)
 
         override fun newArray(size: Int): Array<Votes?> {
             return arrayOfNulls(size)
