@@ -21,6 +21,18 @@ abstract class BaseViewModelFragment<VM> :
         buildViewModel(savedInstanceState, vmClass)
     }
 
+    init {
+        retainInstance = true
+    }
+
+    /**
+     * Used to save [savedInstanceState] due to [setRetainInstance] disabling onCreate().
+     */
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        this.savedInstanceState = savedInstanceState
+    }
+
     @CallSuper
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -37,6 +37,10 @@ class SelectMealsSlideScreenFragment : BaseSlideScreenFragment(propagateArgument
         viewModelLazy
     }
 
+    init {
+        retainInstance = true
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         this.savedInstanceState = savedInstanceState
