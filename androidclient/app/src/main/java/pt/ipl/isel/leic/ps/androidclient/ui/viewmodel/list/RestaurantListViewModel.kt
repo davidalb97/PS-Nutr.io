@@ -10,7 +10,8 @@ import pt.ipl.isel.leic.ps.androidclient.ui.util.Navigation
 import pt.ipl.isel.leic.ps.androidclient.ui.util.getUserSession
 import pt.ipl.isel.leic.ps.androidclient.ui.util.requireUserSession
 import pt.ipl.isel.leic.ps.androidclient.util.readListCompat
-import kotlin.reflect.KClass
+
+private val ITEM_CLASS = RestaurantItem::class
 
 class RestaurantListViewModel : BaseListViewModel<RestaurantItem> {
 
@@ -26,18 +27,18 @@ class RestaurantListViewModel : BaseListViewModel<RestaurantItem> {
         navDestination: Navigation,
         actions: List<ItemAction>,
         cuisines: List<Cuisine>? = null
-    ) {
+    ) : super(ITEM_CLASS) {
         this.navDestination = navDestination
         this.actions = actions
         this.cuisines = cuisines
     }
 
-    constructor(parcel: Parcel) : super(parcel) {
+    constructor(parcel: Parcel) : super(parcel, ITEM_CLASS) {
+        latitude = parcel.readSerializable() as Double?
+        longitude = parcel.readSerializable() as Double?
         navDestination = Navigation.values()[parcel.readInt()]
         actions = parcel.readListCompat(ItemAction::class)
         cuisines = parcel.readListCompat(Cuisine::class)
-        latitude = parcel.readSerializable() as Double?
-        longitude = parcel.readSerializable() as Double?
     }
 
     override fun fetch() {
@@ -86,14 +87,12 @@ class RestaurantListViewModel : BaseListViewModel<RestaurantItem> {
 
     override fun writeToParcel(dest: Parcel?, flags: Int) {
         super.writeToParcel(dest, flags)
+        dest?.writeSerializable(latitude)
+        dest?.writeSerializable(longitude)
         dest?.writeInt(navDestination.ordinal)
         dest?.writeList(actions)
         dest?.writeList(cuisines ?: emptyList<Cuisine>())
-        dest?.writeSerializable(latitude)
-        dest?.writeSerializable(longitude)
     }
-
-    override fun getModelClass(): KClass<RestaurantItem> = RestaurantItem::class
 
     override fun describeContents(): Int {
         return 0

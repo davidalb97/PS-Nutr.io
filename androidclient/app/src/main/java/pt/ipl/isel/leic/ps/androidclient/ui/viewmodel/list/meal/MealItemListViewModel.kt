@@ -12,6 +12,8 @@ import pt.ipl.isel.leic.ps.androidclient.ui.util.getUserSession
 import pt.ipl.isel.leic.ps.androidclient.ui.util.requireUserSession
 import kotlin.reflect.KClass
 
+private val ITEM_CLASS = MealItem::class
+
 open class MealItemListViewModel : BaseMealListViewModel<MealItem> {
 
     constructor(
@@ -21,6 +23,7 @@ open class MealItemListViewModel : BaseMealListViewModel<MealItem> {
         restaurantId: String? = null,
         cuisines: List<Cuisine> = emptyList()
     ) : super(
+        itemClass = ITEM_CLASS,
         navDestination = navDestination,
         actions = actions,
         source = source,
@@ -28,7 +31,7 @@ open class MealItemListViewModel : BaseMealListViewModel<MealItem> {
         cuisines = cuisines
     )
 
-    constructor(parcel: Parcel) : super(parcel)
+    constructor(parcel: Parcel) : super(parcel, ITEM_CLASS)
 
     override fun fetch() {
         when (source) {
@@ -111,7 +114,4 @@ open class MealItemListViewModel : BaseMealListViewModel<MealItem> {
         }
 
     }
-
-    override fun getModelClass(): KClass<MealItem> = MealItem::class
-
 }

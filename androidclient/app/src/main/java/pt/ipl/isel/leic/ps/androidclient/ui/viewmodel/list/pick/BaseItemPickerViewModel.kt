@@ -5,16 +5,17 @@ import android.os.Parcelable
 import androidx.lifecycle.LifecycleOwner
 import pt.ipl.isel.leic.ps.androidclient.ui.util.live.LiveDataListHandler
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.BaseListViewModel
+import kotlin.reflect.KClass
 
-abstract class BaseItemPickerViewModel<M : Parcelable> : BaseListViewModel<M> {
+abstract class BaseItemPickerViewModel<I : Parcelable> : BaseListViewModel<I> {
 
-    val pickedLiveDataHandler = LiveDataListHandler<M>()
-    val pickedItems: List<M> get() = pickedLiveDataHandler.mapped
+    val pickedLiveDataHandler = LiveDataListHandler<I>()
+    val pickedItems: List<I> get() = pickedLiveDataHandler.mapped
 
-    constructor() : super()
+    constructor(itemClass: KClass<I>) : super(itemClass)
 
-    constructor(parcel: Parcel): super(parcel) {
-        pickedLiveDataHandler.restoreFromParcel(parcel, this.getModelClass())
+    constructor(parcel: Parcel, itemClass: KClass<I>): super(parcel, itemClass) {
+        pickedLiveDataHandler.restoreFromParcel(parcel, itemClass)
     }
 
     override fun tryRestore(): Boolean {
@@ -26,11 +27,11 @@ abstract class BaseItemPickerViewModel<M : Parcelable> : BaseListViewModel<M> {
     /**
      * Observes the LiveData, given a LifeCycleOwner and a MutableList
      */
-    fun observePicked(owner: LifecycleOwner, observer: (List<M>) -> Unit) {
+    fun observePicked(owner: LifecycleOwner, observer: (List<I>) -> Unit) {
         pickedLiveDataHandler.observe(owner, observer)
     }
 
-    fun observeRemaining(owner: LifecycleOwner, observer: (List<M>) -> Unit) {
+    fun observeRemaining(owner: LifecycleOwner, observer: (List<I>) -> Unit) {
         liveDataHandler.observe(owner, observer)
     }
 
@@ -39,12 +40,12 @@ abstract class BaseItemPickerViewModel<M : Parcelable> : BaseListViewModel<M> {
         super.removeObservers(owner)
     }
 
-    fun pick(picked: M) {
+    fun pick(picked: I) {
         pickedLiveDataHandler.add(picked)
         liveDataHandler.remove(picked)
     }
 
-    fun unPick(unPicked: M) {
+    fun unPick(unPicked: I) {
         pickedLiveDataHandler.remove(unPicked)
         liveDataHandler.add(unPicked)
     }
@@ -55,7 +56,7 @@ abstract class BaseItemPickerViewModel<M : Parcelable> : BaseListViewModel<M> {
     }
 
     override fun restoreFromParcel(parcel: Parcel) {
-        pickedLiveDataHandler.restoreFromParcel(parcel, getModelClass())
         super.restoreFromParcel(parcel)
+        pickedLiveDataHandler.restoreFromParcel(parcel, super.itemClass)
     }
 }

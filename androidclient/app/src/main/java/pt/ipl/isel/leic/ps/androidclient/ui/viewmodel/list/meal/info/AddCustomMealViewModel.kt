@@ -65,7 +65,6 @@ class AddCustomMealViewModel: MealInfoViewModel {
         dest?.writeString(currentName)
         dest?.writeFloat(currentAdditionalAmount)
         dest?.writeWeightUnit(currentWeightUnits)
-        dest?.writeWeightUnit(currentWeightUnits)
         dest?.writeString(currentImg)
     }
 

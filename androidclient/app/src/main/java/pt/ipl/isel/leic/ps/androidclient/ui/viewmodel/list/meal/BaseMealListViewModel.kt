@@ -12,6 +12,7 @@ import pt.ipl.isel.leic.ps.androidclient.ui.util.Navigation
 import pt.ipl.isel.leic.ps.androidclient.ui.util.requireUserSession
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.BaseListViewModel
 import pt.ipl.isel.leic.ps.androidclient.util.readListCompat
+import kotlin.reflect.KClass
 
 abstract class BaseMealListViewModel<M : Parcelable> : BaseListViewModel<M> {
 
@@ -22,12 +23,13 @@ abstract class BaseMealListViewModel<M : Parcelable> : BaseListViewModel<M> {
     val cuisines: List<Cuisine>
 
     constructor(
+        itemClass: KClass<M>,
         navDestination: Navigation,
         actions: List<ItemAction>,
         source: Source?,
         restaurantId: String? = null,
         cuisines: List<Cuisine> = emptyList()
-    ) : super() {
+    ) : super(itemClass) {
         this.navDestination = navDestination
         this.actions = actions
         this.source = source
@@ -35,7 +37,7 @@ abstract class BaseMealListViewModel<M : Parcelable> : BaseListViewModel<M> {
         this.cuisines = cuisines
     }
 
-    constructor(parcel: Parcel) : super(parcel) {
+    constructor(parcel: Parcel, itemClass: KClass<M>) : super(parcel, itemClass) {
         this.navDestination = Navigation.values()[parcel.readInt()]
         this.actions = parcel.readListCompat(ItemAction::class)
         this.source = (parcel.readSerializable() as Int?)?.let { Source.values()[it] }

@@ -17,12 +17,9 @@ import kotlin.reflect.KClass
 const val DEFAULT_COUNT = 10
 const val DEFAULT_SKIP = 0
 
-abstract class BaseListViewModel<T : Parcelable>() : ViewModel(), Parcelable {
+abstract class BaseListViewModel<T : Parcelable> : ViewModel, Parcelable {
 
-    constructor(parcel: Parcel) : this() {
-        this.restoreFromParcel(parcel)
-    }
-
+    val itemClass: KClass<T>
     val log: Logger by lazy { Logger(javaClass) }
     val liveDataHandler = LiveDataListHandler<T>()
     val items: List<T> get() = liveDataHandler.mapped
@@ -30,6 +27,14 @@ abstract class BaseListViewModel<T : Parcelable>() : ViewModel(), Parcelable {
     var skip: Int? = DEFAULT_SKIP
     var count: Int? = DEFAULT_COUNT
     var onError: (Throwable) -> Unit = log::e
+
+    constructor(itemClass: KClass<T>): super() {
+        this.itemClass = itemClass
+    }
+
+    constructor(parcel: Parcel, itemClass: KClass<T>) : this(itemClass) {
+        this.restoreFromParcel(parcel)
+    }
 
     open fun setupList() {
         if(items.isNotEmpty()) {
@@ -79,7 +84,7 @@ abstract class BaseListViewModel<T : Parcelable>() : ViewModel(), Parcelable {
      */
     @CallSuper
     open fun restoreFromParcel(parcel: Parcel) {
-        liveDataHandler.restoreFromParcel(parcel, getModelClass())
+        liveDataHandler.restoreFromParcel(parcel, itemClass)
     }
 
     /**
@@ -89,8 +94,6 @@ abstract class BaseListViewModel<T : Parcelable>() : ViewModel(), Parcelable {
      * @return If the restored operation was successful.
      */
     open fun tryRestore(): Boolean = liveDataHandler.tryRestore()
-
-    abstract fun getModelClass(): KClass<T>
 
     open fun removeObservers(owner: LifecycleOwner) {
         liveDataHandler.removeObservers(owner)

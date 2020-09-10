@@ -6,11 +6,13 @@ import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.cuisineRepository
 import pt.ipl.isel.leic.ps.androidclient.data.model.Cuisine
 import kotlin.reflect.KClass
 
+private val ITEM_CLASS = Cuisine::class
+
 class CuisinePickViewModel : BaseItemPickerViewModel<Cuisine> {
 
-    constructor(parcel: Parcel) : super(parcel)
+    constructor(parcel: Parcel) : super(parcel, ITEM_CLASS)
 
-    constructor() : super()
+    constructor() : super(ITEM_CLASS)
 
     init {
         skip = null
@@ -20,8 +22,6 @@ class CuisinePickViewModel : BaseItemPickerViewModel<Cuisine> {
     override fun fetch() {
         cuisineRepository.getCuisines(count, skip, liveDataHandler::set, onError)
     }
-
-    override fun getModelClass(): KClass<Cuisine> = Cuisine::class
 
     override fun describeContents(): Int {
         return 0

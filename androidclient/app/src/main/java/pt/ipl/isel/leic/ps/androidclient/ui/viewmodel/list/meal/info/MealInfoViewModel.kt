@@ -11,11 +11,9 @@ import pt.ipl.isel.leic.ps.androidclient.ui.util.Navigation
 import pt.ipl.isel.leic.ps.androidclient.ui.util.getUserSession
 import pt.ipl.isel.leic.ps.androidclient.ui.util.live.LiveDataHandler
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.meal.MealItemListViewModel
-import kotlin.reflect.KClass
 
 open class MealInfoViewModel : MealItemListViewModel {
 
-    //TODO Override removeObservers
     private val mealInfoLiveDataHandler = LiveDataHandler<MealInfo>()
     val mealInfo get() = mealInfoLiveDataHandler.value
     val mealItem: MealItem?
@@ -181,8 +179,6 @@ open class MealInfoViewModel : MealItemListViewModel {
         dest?.writeParcelable(mealItem, flags)
         mealInfoLiveDataHandler.writeToParcel(dest, flags)
     }
-
-    override fun getModelClass(): KClass<MealItem> = MealItem::class
 
     override fun describeContents(): Int {
         return 0

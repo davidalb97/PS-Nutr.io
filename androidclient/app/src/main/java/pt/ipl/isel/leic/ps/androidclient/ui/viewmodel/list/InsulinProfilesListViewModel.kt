@@ -9,15 +9,17 @@ import pt.ipl.isel.leic.ps.androidclient.ui.util.getUserSession
 import pt.ipl.isel.leic.ps.androidclient.util.readListCompat
 import kotlin.reflect.KClass
 
-open class InsulinProfilesListViewModel : BaseListViewModel<InsulinProfile> {
+private val ITEM_CLASS = InsulinProfile::class
+
+class InsulinProfilesListViewModel : BaseListViewModel<InsulinProfile> {
 
     val actions: List<ItemAction>
 
-    constructor(actions: List<ItemAction>) {
+    constructor(actions: List<ItemAction>): super(ITEM_CLASS) {
         this.actions = actions
     }
 
-    constructor(parcel: Parcel) : super(parcel) {
+    constructor(parcel: Parcel) : super(parcel, ITEM_CLASS) {
         actions = parcel.readListCompat(ItemAction::class)
     }
 
@@ -68,8 +70,6 @@ open class InsulinProfilesListViewModel : BaseListViewModel<InsulinProfile> {
         super.writeToParcel(dest, flags)
         dest?.writeList(actions)
     }
-
-    override fun getModelClass(): KClass<InsulinProfile> = InsulinProfile::class
 
     override fun describeContents(): Int {
         TODO("Not yet implemented")
