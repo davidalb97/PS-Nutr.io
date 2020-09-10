@@ -7,8 +7,7 @@ data class IngredientsContainerOutput(
 )
 
 fun toIngredientsContainerOutput(
-        ingredients: Collection<MealIngredient>,
-        userId: Int? = null
+        ingredients: Collection<MealIngredient>
 ): IngredientsContainerOutput {
-    return IngredientsContainerOutput(ingredients = ingredients.map { toDetailedIngredientOutput(it, userId) })
+    return IngredientsContainerOutput(ingredients = ingredients.map(::toDetailedIngredientOutput))
 }

@@ -5,8 +5,7 @@ import java.net.URI
 open class BasePublicSubmissionOutput<Id>(
         identifier: Id,
         val image: URI?,
-        override val name: String,
-        override val favorites: FavoritesOutput
+        override val name: String
 ) : BaseSubmissionOutput<Id>(
         identifier = identifier
-), INameableOutput, IFavorableOutput
+), INameableOutput

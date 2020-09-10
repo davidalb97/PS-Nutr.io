@@ -43,7 +43,7 @@ class MealDbRepository(
     fun getAllUserFavorites(submitterId: Int, count: Int?, skip: Int?): ClosableSequence<DbMealDto> {
         return databaseContext.inTransaction { handle ->
             return@inTransaction handle.attach(mealDaoClass)
-                    .getAllUserFavorites(submitterId, count, skip)
+                    .getAllUserSuggestedFavorites(submitterId, count, skip)
                     .asClosableSequence()
         }
     }

@@ -12,7 +12,6 @@ import pt.isel.ps.g06.httpserver.model.modular.toUserPredicate
 
 @Component
 class DbMealIngredientModelMapper(
-        private val dbFavoriteRepo: FavoriteDbRepository,
         private val dbMealRepo: MealDbRepository
 ) : ModelMapper<DbMealDto, Sequence<MealIngredient>> {
     override fun mapTo(dto: DbMealDto): Sequence<MealIngredient> {
@@ -25,12 +24,7 @@ class DbMealIngredientModelMapper(
                             identifier = ingredient.submission_id,
                             name = ingredient.meal_name,
                             image = null,
-                            isFavorite = toUserPredicate({ false }) { userId ->
-                                dbFavoriteRepo.getFavorite(ingredient.submission_id, userId)
-                            },
-                            //An ingredient is always favorable
-                            isFavorable = { true },
-                            nutritionalValues = NutritionalValues(
+                            nutritionalInfo = NutritionalValues(
                                     carbs = calculateCarbsFromBase(ingredient.amount, ingredient.carbs, it.quantity),
                                     amount = it.quantity,
                                     unit = "gr"

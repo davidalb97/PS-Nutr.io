@@ -12,7 +12,7 @@ class MealInfoInput(
     name: String,
     image: Uri?,
     votes: VotesInput?,
-    favorites: FavoritesInput,
+    favorites: FavoritesInput?,
     isSuggested: Boolean?,
     isReportable: Boolean?,
     nutritionalInfo: NutritionalInfoInput,

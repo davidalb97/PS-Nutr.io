@@ -7,6 +7,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.repo.FavoriteDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.MealDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.input.ingredient.IngredientInput
 import pt.isel.ps.g06.httpserver.exception.problemJson.badRequest.InvalidMealException
+import pt.isel.ps.g06.httpserver.exception.problemJson.notFound.MealNotFoundException
 import pt.isel.ps.g06.httpserver.model.Meal
 
 @Service
@@ -15,7 +16,11 @@ class MealService(
         private val dbFavoriteRepository: FavoriteDbRepository,
         private val dbMealModelMapper: DbMealModelMapper
 ) {
-    fun setFavorite(mealId: Int, userId: Int, isFavorite: Boolean) {
+    fun setFavorite(mealId: Int, userId: Int, isFavorite: Boolean): Boolean {
+        val meal = getMeal(mealId) ?: throw MealNotFoundException()
+        if(meal.type == MealType.SUGGESTED_INGREDIENT) {
+            throw InvalidMealException("Cannot favorite suggested ingredients!")
+        }
         return dbFavoriteRepository.setFavorite(mealId, userId, isFavorite)
     }
 
