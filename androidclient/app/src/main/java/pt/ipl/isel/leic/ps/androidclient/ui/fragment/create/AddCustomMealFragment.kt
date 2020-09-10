@@ -32,12 +32,16 @@ class AddCustomMealFragment : BaseAddMealFragment(), IRemainingPickSpinner, IReq
     //All data
     override val layout = R.layout.add_custom_meal
     override val vMProviderFactorySupplier = ::AddCustomMealRecyclerVMProviderFactory
-    private lateinit var addViewModel: AddCustomMealViewModel
+    private val addViewModel by lazy {
+        buildViewModel(savedInstanceState, AddCustomMealViewModel::class.java)
+    }
 
     //Cuisines
     private val cuisinesRecyclerViewId: Int = R.id.custom_meal_cuisines_list
     private val cuisinesSpinnerId: Int = R.id.custom_meal_cuisines_spinner
-    private lateinit var cuisinesViewModel: CuisinePickViewModel
+    private val cuisinesViewModel by lazy {
+        buildViewModel(savedInstanceState, CuisinePickViewModel::class.java)
+    }
     private val cuisinesSpinnerAdapter by lazy {
         CuisinePickSpinnerAdapter(cuisinesViewModel, requireContext())
     }
@@ -60,17 +64,6 @@ class AddCustomMealFragment : BaseAddMealFragment(), IRemainingPickSpinner, IReq
     override val addIngredientsImgButtonId: Int = R.id.add_custom_meal_add_meal_ingredient
     override val totalIngredientsWeightTextViewId: Int = R.id.total_ingredient_amount
     override val totalIngredientsCarbohydratesTextViewId: Int = R.id.total_ingredient_carbs
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        addViewModel = buildViewModel(savedInstanceState, AddCustomMealViewModel::class.java)
-        cuisinesViewModel = buildViewModel(savedInstanceState, CuisinePickViewModel::class.java)
-        //Build super's viewModel (selected meals)
-        return super.onCreateView(inflater, container, savedInstanceState)
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         //If it is editing meal and it is not the first time loading the fragment

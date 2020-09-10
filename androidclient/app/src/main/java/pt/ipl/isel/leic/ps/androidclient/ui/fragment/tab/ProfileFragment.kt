@@ -1,4 +1,4 @@
-package pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant
+package pt.ipl.isel.leic.ps.androidclient.ui.fragment.tab
 
 import android.os.Bundle
 import android.view.View
@@ -6,8 +6,8 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.encryptedSharedPreferences
 import pt.ipl.isel.leic.ps.androidclient.R
+import pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.ProfileOverviewFragment
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.list.InsulinProfilesListFragment
-import pt.ipl.isel.leic.ps.androidclient.ui.fragment.tab.BaseSlideScreenFragment
 import pt.ipl.isel.leic.ps.androidclient.ui.util.ItemAction
 import pt.ipl.isel.leic.ps.androidclient.ui.util.getUsername
 import pt.ipl.isel.leic.ps.androidclient.ui.util.putItemActions

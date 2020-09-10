@@ -35,7 +35,9 @@ class InsulinProfilesListFragment : BaseListFragment<
     private var refreshLayout: SwipeRefreshLayout? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        //Init super's recycler list handler
         super.onViewCreated(view, savedInstanceState)
+
         refreshLayout = view.findViewById(R.id.insulin_refresh_layout)
 
         val addButton = view.findViewById<ImageButton>(R.id.add_profile)

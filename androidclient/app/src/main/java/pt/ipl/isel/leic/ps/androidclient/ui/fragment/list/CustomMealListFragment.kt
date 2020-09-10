@@ -53,6 +53,7 @@ class CustomMealListFragment
     lateinit var addButton: ImageButton
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        //Init super's recycler list handler
         super.onViewCreated(view, savedInstanceState)
 
         addButton = view.findViewById(R.id.add_meal)

@@ -21,20 +21,16 @@ import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.pick.MealItemPickView
 class SelectMealsSlideScreenFragment : BaseSlideScreenFragment(propagateArguments = false), ISend {
 
     private lateinit var okButton: Button
-    private lateinit var viewModel: MealItemPickViewModel
-
-    private fun extractViewModelFromParent(): MealItemPickViewModel {
+    private val viewModel by lazy {
         val parentNavigation = requireNotNull(arguments?.getParentNavigation()) {
             "${javaClass.simpleName} Must have a parent navigation for navGraphViewModel!"
         }
         val viewModelLazy: MealItemPickViewModel by navGraphViewModels(parentNavigation.navId)
-        return viewModelLazy
+        viewModelLazy
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        viewModel = extractViewModelFromParent()
 
         //Restore picked items to items list
         viewModel.setupList()
@@ -108,7 +104,7 @@ class SelectMealsSlideScreenFragment : BaseSlideScreenFragment(propagateArgument
                 MealAmountSelector(
                     ctx = requireContext(),
                     layoutInflater = layoutInflater,
-                    baseCarbs = item.carbs.toFloat(),
+                    baseCarbs = item.carbs,
                     baseAmountGrams = item.amount,
                     mealUnit = item.unit
                 ) { selectedGrams, selectedCarbohydrates ->
@@ -141,7 +137,7 @@ class SelectMealsSlideScreenFragment : BaseSlideScreenFragment(propagateArgument
                 MealAmountSelector(
                     ctx = requireContext(),
                     layoutInflater = layoutInflater,
-                    baseCarbs = existingItem.carbs.toFloat(),
+                    baseCarbs = existingItem.carbs,
                     baseAmountGrams = existingItem.amount,
                     mealUnit = item.unit
                 ) { selectedGrams, selectedCarbohydrates ->

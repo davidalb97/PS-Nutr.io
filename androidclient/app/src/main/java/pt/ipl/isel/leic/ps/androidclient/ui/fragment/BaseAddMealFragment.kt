@@ -32,6 +32,19 @@ abstract class BaseAddMealFragment : BaseViewModelFragment<MealItemPickViewModel
     protected abstract val backNestedActionNavigation: Navigation
 
     //Meals
+    override val viewModel: MealItemPickViewModel by lazy {
+        val viewModelLazy: MealItemPickViewModel by navGraphViewModels(nestedNavigation.navId)
+
+//        val savedInstanceState = this.savedInstanceState
+//        if (savedInstanceState != null) {
+//            log.v("Restoring state to navGraphViewModels (${MealItemPickViewModel::class.java.simpleName})")
+//            val tag = MealItemPickViewModel::class.java.simpleName
+//            val savedViewModel = savedInstanceState.getParcelable<MealItemPickViewModel>(tag)!!
+//            viewModel.itemsChanged = savedViewModel.itemsChanged
+//            viewModel.pickedLiveDataHandler.set(savedViewModel.pickedItems)
+//        }
+        viewModelLazy
+    }
     override val vmClass = MealItemPickViewModel::class.java
     protected abstract val mealsRecyclerViewId: Int
     private val mealsRecyclerAdapter by lazy {
@@ -56,27 +69,6 @@ abstract class BaseAddMealFragment : BaseViewModelFragment<MealItemPickViewModel
     private lateinit var totalIngredientsCarbohydratesTextView: TextView
     private var _currentIngredientCarbohydrates: Float = 0.0F
     protected val currentIngredientsCarbohydrates get() = _currentIngredientCarbohydrates
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        //Restore as no VMProviderFactory is used
-        val viewModelLazy: MealItemPickViewModel by navGraphViewModels(nestedNavigation.navId)
-        viewModel = viewModelLazy
-
-        if (savedInstanceState != null) {
-            log.v("Restoring state to navGraphViewModels (${MealItemPickViewModel::class.java.simpleName})")
-            val tag = MealItemPickViewModel::class.java.simpleName
-            val savedViewModel = savedInstanceState.getParcelable<MealItemPickViewModel>(tag)!!
-            viewModel.itemsChanged = savedViewModel.itemsChanged
-            viewModel.pickedLiveDataHandler.set(savedViewModel.pickedItems)
-        }
-        //Bypass ViewModel's creation
-        log.v("onCreateView() finished! Inflating...")
-        return inflate(inflater, container)
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

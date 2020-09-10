@@ -18,6 +18,7 @@ abstract class BaseFragment : Fragment(), ILog {
 
     abstract val layout: Int
 
+    @CallSuper
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         log.v("onCreate() called!")

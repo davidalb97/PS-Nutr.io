@@ -47,6 +47,7 @@ open class RestaurantListFragment : BaseListFragment<
     private lateinit var locationManager: LocationManager
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        //Init super's recycler list handler
         super.onViewCreated(view, savedInstanceState)
 
         val addButton = view.findViewById<ImageButton>(R.id.add_restaurant)

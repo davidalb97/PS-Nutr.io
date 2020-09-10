@@ -37,7 +37,9 @@ class CalculatorFragment : BaseAddMealFragment(), IRequiredTextInput, IGlucoseUn
 
     override val layout = R.layout.calculator_fragment
     override val vMProviderFactorySupplier = ::CalculatorVMProviderFactory
-    private lateinit var viewModelProfiles: InsulinProfilesListViewModel
+    private val viewModelProfiles: InsulinProfilesListViewModel by lazy {
+        buildViewModel(savedInstanceState, InsulinProfilesListViewModel::class.java)
+    }
 
     private var currentProfile: InsulinProfile? = null
     private val calculator = InsulinCalculator()
@@ -49,19 +51,6 @@ class CalculatorFragment : BaseAddMealFragment(), IRequiredTextInput, IGlucoseUn
     private lateinit var profileGlucoseObjectiveTextView: TextView
     private lateinit var profileInsulinSensitivityTextView: TextView
     private lateinit var profileCarbohydrateRatioTextView: TextView
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        viewModelProfiles = buildViewModel(
-            savedInstanceState = savedInstanceState,
-            clazz = InsulinProfilesListViewModel::class.java
-        )
-        //Build super's viewModel (selected meals)
-        return super.onCreateView(inflater, container, savedInstanceState)
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

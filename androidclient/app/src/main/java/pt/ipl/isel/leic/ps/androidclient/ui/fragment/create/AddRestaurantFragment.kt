@@ -7,9 +7,7 @@ import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.os.Bundle
 import android.os.Parcelable
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
@@ -44,7 +42,9 @@ class AddRestaurantFragment : BaseViewModelFragment<AddRestaurantViewModel>(),
     //Cuisines
     private val cuisinesRecyclerViewId: Int = R.id.restaurant_cuisines_list
     private val cuisinesSpinnerId: Int = R.id.restaurant_cuisines_spinner
-    private lateinit var cuisinesViewModel: CuisinePickViewModel
+    private val cuisinesViewModel by lazy {
+        buildViewModel(savedInstanceState, CuisinePickViewModel::class.java)
+    }
     private val cuisinesSpinnerAdapter by lazy {
         CuisinePickSpinnerAdapter(cuisinesViewModel, requireContext())
     }
@@ -54,15 +54,6 @@ class AddRestaurantFragment : BaseViewModelFragment<AddRestaurantViewModel>(),
 
     private lateinit var restaurantNameEditText: EditText
     private lateinit var submitButton: Button
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        cuisinesViewModel = buildViewModel(savedInstanceState, CuisinePickViewModel::class.java)
-        return super.onCreateView(inflater, container, savedInstanceState)
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

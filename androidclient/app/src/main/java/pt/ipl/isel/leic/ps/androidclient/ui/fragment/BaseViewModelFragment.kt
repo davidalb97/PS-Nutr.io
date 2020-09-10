@@ -5,6 +5,7 @@ import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.CallSuper
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelStoreOwner
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.IViewModelManager
@@ -15,18 +16,18 @@ abstract class BaseViewModelFragment<VM> :
         where VM : ViewModel, VM : Parcelable {
 
     abstract val vmClass: Class<VM>
-    lateinit var viewModel: VM
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        viewModel = buildViewModel(savedInstanceState, vmClass)
-        return super.onCreateView(inflater, container, savedInstanceState)
+    var savedInstanceState: Bundle? = null
+    open val viewModel: VM by lazy {
+        buildViewModel(savedInstanceState, vmClass)
     }
 
-    fun <VM> ViewModelStoreOwner.buildViewModel(savedInstanceState: Bundle?, clazz: Class<VM>): VM
+    @CallSuper
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        this.savedInstanceState = savedInstanceState
+    }
+
+    open fun <VM> ViewModelStoreOwner.buildViewModel(savedInstanceState: Bundle?, clazz: Class<VM>): VM
             where VM : ViewModel, VM : Parcelable {
         return buildViewModel(
             intent = requireActivity().intent,
