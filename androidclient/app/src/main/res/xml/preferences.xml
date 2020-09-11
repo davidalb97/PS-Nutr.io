@@ -17,7 +17,7 @@
             app:key="insulin_units"
             app:entries="@array/glucose_units"
             app:entryValues="@array/glucose_units"
-            app:defaultValue="mg / dL"
+            app:defaultValue="mmol / L"
             app:title="Insulin measurement units"
             app:summary="The units that will be set by default in calculations"
             />

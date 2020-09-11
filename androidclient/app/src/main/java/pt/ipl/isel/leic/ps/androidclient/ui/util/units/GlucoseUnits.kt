@@ -4,7 +4,7 @@ import android.text.SpannableStringBuilder
 import java.math.RoundingMode
 
 private const val CONVERSION_CONST = 18
-val DEFAULT_GLUCOSE_UNIT = GlucoseUnits.MILLI_GRAM_PER_DL
+val DEFAULT_GLUCOSE_UNIT = GlucoseUnits.MILLI_MOL_PER_L
 
 enum class GlucoseUnits(private val string: String) {
     MILLI_GRAM_PER_DL("mg / dL"),

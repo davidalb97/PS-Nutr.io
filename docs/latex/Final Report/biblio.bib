@@ -18,14 +18,60 @@
     url       = "https://www.diabetesatlas.org/en/sections/worldwide-toll-of-diabetes.html"
 }
 
-@misc{kotlin,
-    title     = "Kotlin",
-    url       = "https://developer.android.com/kotlin"
+@misc{streams,
+    title     = "Java 8 streams",
+    url       = "https://docs.oracle.com/javase/8/docs/api/java/util/stream/Stream.html"
+}
+
+@misc{sequences,
+    title     = "Kotlin sequences",
+    url       = "https://kotlinlang.org/docs/reference/sequences.html"
+}
+
+@misc{resultiterable,
+    title     = "Jdbi result iterable",
+    url       = "https://jdbi.org/#_resultiterable"
+}
+
+@misc{resultiterator,
+    title     = "Jdbi result iterator",
+    url       = "https://jdbi.org/apidocs/org/jdbi/v3/core/result/ResultIterator.html"
+}
+
+@misc{zomato,
+    title     = "Zomato documentation",
+    url       = "https://developers.zomato.com/documentation"
+}
+
+@misc{gdpr,
+    title     = "General Data Protection Regulation",
+    url       = "https://gdpr-info.eu/"
+}
+
+@misc{heroku,
+    title     = "Heroku",
+    url       = "https://www.heroku.com/what"
+}
+
+@book{replay-java-streams,
+  title={How to Reuse Java Streams },
+  author={Gamboa, Miguel},
+  year={2018},
+  url="https://dzone.com/articles/how-to-replay-java-streams"
+}
+
+@book{kotlin,
+  title={Head First Kotlin: A Brain-friendly Guide},
+  author={Griffiths, Dawn and Griffiths, David},
+  year={2019},
+  publisher={O'Reilly Media}
 }
 
 @misc{java,
-    title     = "Java",
-    url       = "https://java.com/en/download/faq/whatis_java.xml"
+  title={The Java TM Virtual Machine Specification, 2nd edn. Sun Microsystems},
+  author={Lindholm, T and Yellin, F},
+  year={1999},
+  publisher={Inc}
 }
 
 @misc{ktor,
@@ -38,60 +84,107 @@
     url       = "https://jdbi.org/"
 }
 
-@misc{jdbc,
-    title     = "JDBC",
-    url       = "https://www.javatpoint.com/java-jdbc"
+@book{jdbc,
+  title={Database Programming with JDBC and JAVA},
+  author={Reese, George},
+  year={2000},
+  publisher={" O'Reilly Media, Inc."}
 }
 
-@misc{javascript,
-    title     = "JavaScript",
-    url       = "https://developer.mozilla.org/pt-PT/docs/Web/JavaScript"
+@book{javascript,
+  title={JavaScript: The Good Parts: The Good Parts},
+  author={Crockford, Douglas},
+  year={2008},
+  publisher={" O'Reilly Media, Inc."}
 }
 
 @misc{jwt,
-    title     = "JSON Web Token",
-    url       = "https://jwt.io/"
+	series =	{Request for Comments},
+	number =	7519,
+	howpublished =	{RFC 7519},
+	publisher =	{RFC Editor},
+	doi =		{10.17487/RFC7519},
+	url =		{https://tools.ietf.org/html/rfc7519},
+        author =	{Michael Jones and John Bradley and Nat Sakimura},
+	title =		{{JSON Web Token (JWT)}},
+	pagetotal =	30,
+	year =		2015,
+	month =		may,
+	abstract =	{JSON Web Token (JWT) is a compact, URL-safe means of representing claims to be transferred between two parties. The claims in a JWT are encoded as a JSON object that is used as the payload of a JSON Web Signature (JWS) structure or as the plaintext of a JSON Web Encryption (JWE) structure, enabling the claims to be digitally signed or integrity protected with a Message Authentication Code (MAC) and/or encrypted.},
 }
 
-@misc{springsecurity,
-    title     = "Spring Security",
-    url       = "https://spring.io/projects/spring-security"
+@book{springsecurity,
+  title={Spring Security: Secure your web applications, RESTful services, and microservice architectures},
+  author={Knutson, Mick and Winch, Robert and Mularien, Peter},
+  year={2017},
+  publisher={Packt Publishing Ltd}
 }
 
-@misc{bcrypt,
-    title     = "BCrypt",
-    url       = "https://auth0.com/blog/hashing-in-action-understanding-bcrypt/"
+
+@inProceedings{bcrypt,
+  title={A Future-Adaptable Password Scheme.},
+  author={Provos, Niels and Mazieres, David},
+  booktitle={USENIX Annual Technical Conference, FREENIX Track},
+  pages={81--91},
+  year={1999}
 }
 
-@misc{blowfish,
-    title     = "Blowfish",
-    url       = "https://en.wikipedia.org/wiki/Blowfish_(cipher)"
+@InProceedings{blowfish,
+    author="Schneier, Bruce",
+    editor="Anderson, Ross",
+    title="Description of a new variable-length key, 64-bit block cipher (Blowfish)",
+    booktitle="Fast Software Encryption",
+    year="1994",
+    publisher="Springer Berlin Heidelberg",
+    address="Berlin, Heidelberg",
+    pages="191--204",
+    abstract="Blowfish, a new secret-key block cipher, is proposed. It is a Feistel network, iterating a simple encryption function 16 times. The block size is 64 bits, and the key can be any length up to 448 bits. Although there is a complex initialization phase required before any encryption can take place, the actual encryption of data is very efficient on large microprocessors.",
+    isbn="978-3-540-48456-1"
 }
 
-@misc{rainbowtable,
-    title     = "Rainbow tables",
-    url       = "https://en.wikipedia.org/wiki/Rainbow_table"
+@InProceedings{rainbowtable,
+    author="Oechslin, Philippe",
+    editor="Boneh, Dan",
+    title="Making a Faster Cryptanalytic Time-Memory Trade-Off",
+    booktitle="Advances in Cryptology - CRYPTO 2003",
+    year="2003",
+    publisher="Springer Berlin Heidelberg",
+    address="Berlin, Heidelberg",
+    pages="617--630",
+    abstract="In 1980 Martin Hellman described a cryptanalytic time-memory trade-off which reduces the time of cryptanalysis by using precalculated data stored in memory. This technique was improved by Rivest before 1982 with the introduction of distinguished points which drastically reduces the number of memory lookups during cryptanalysis. This improved technique has been studied extensively but no new optimisations have been published ever since. We propose a new way of precalculating the data which reduces by two the number of calculations needed during cryptanalysis. Moreover, since the method does not make use of distinguished points, it reduces the overhead due to the variable chain length, which again significantly reduces the number of calculations. As an example we have implemented an attack on MS-Windows password hashes. Using 1.4GB of data (two CD-ROMs) we can crack 99.9{\%} of all alphanumerical passwords hashes (237) in 13.6 seconds whereas it takes 101 seconds with the current approach using distinguished points. We show that the gain could be even much higher depending on the parameters used.",
+    isbn="978-3-540-45146-4"
 }
 
-@misc{bruteforce,
-    title     = "Bruteforce attack",
-    url       = "https://en.wikipedia.org/wiki/Brute-force_attack"
+@InProceedings{bruteforce,
+  author={L. {Bošnjak} and J. {Sreš} and B. {Brumen}},
+  booktitle={2018 41st International Convention on Information and Communication Technology, Electronics and Microelectronics (MIPRO)}, 
+  title={Brute-force and dictionary attack on hashed real-world passwords}, 
+  year={2018},
+  pages={1161-1166},
 }
 
-@misc{haversine,
-    title     = "Haversine",
-    url       = "https://en.wikipedia.org/wiki/Haversine_formula"
+@InProceedings{haversine,
+  author={E. {Winarno} and W. {Hadikurniawati} and R. N. {Rosso}},
+  booktitle={2017 International Conference on Innovative and Creative Information Technology (ICITech)}, 
+  title={Location based service for presence system using haversine method}, 
+  year={2017},
+  pages={1-4}
 }
 
-@misc{postgresql,
-    title     = "PostgreSQL",
-    url       = "https://www.postgresql.org/about/"
+@book{postgresql,
+  title={Learning PostgreSQL 11: a beginner's guide to building high-performance PostgreSQL database solutions},
+  author={Juba, Salahaldin and Volkov, Andrey},
+  year={2019},
+  publisher={Packt Publishing Ltd}
 }
 
-@misc{postGIS,
-    title     = "PostGIS",
-    url       = "https://postgis.net/workshops/postgis-intro/"
+@book{postGIS,
+  title={PostGIS cookbook},
+  author={Corti, Paolo and Kraft, Thomas J and Mather, Stephen Vincent and Park, Bborie},
+  year={2014},
+  publisher={Packt Publishing Ltd}
 }
+
 
 @misc{jetpack,
     title     = "Android Jetpack",
@@ -103,9 +196,12 @@
     url       = "https://developer.android.com/reference/androidx/security/crypto/package-summary"
 }
 
-@misc{root,
-    title     = "Android Rooting",
-    url       = "https://en.wikipedia.org/wiki/Rooting_(Android)"
+@inproceedings{root,
+  title={Android root and its providers: A double-edged sword},
+  author={Zhang, Hang and She, Dongdong and Qian, Zhiyun},
+  booktitle={Proceedings of the 22nd ACM SIGSAC Conference on Computer and Communications Security},
+  pages={1093--1104},
+  year={2015}
 }
 
 @misc{keystore,
@@ -138,7 +234,9 @@
     url       = "https://www.microsoft.com/pt-pt/sql-server/sql-server-2019"
 }
 
-@misc{react,
-    title     = "React framework",
-    url       = "https://reactjs.org/docs/getting-started.html"
+@book{react,
+  title={React. js essentials},
+  author={Fedosejev, Artemij},
+  year={2015},
+  publisher={Packt Publishing Ltd}
 }

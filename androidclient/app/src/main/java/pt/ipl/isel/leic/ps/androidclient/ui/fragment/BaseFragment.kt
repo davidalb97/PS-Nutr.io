@@ -63,7 +63,7 @@ abstract class BaseFragment : Fragment(), ILog {
         log.e(throwable)
     }
 
-    fun popUpBackStack() {
+    fun popBackStack() {
         log.v("Popping back stack")
         view?.findNavController()?.popBackStack()
     }
