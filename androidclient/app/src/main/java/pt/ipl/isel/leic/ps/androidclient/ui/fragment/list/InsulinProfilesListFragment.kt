@@ -10,6 +10,7 @@ import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.InsulinProfile
 import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.InsulinProfileRecyclerAdapter
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.InsulinProfilesVMProviderFactory
+import pt.ipl.isel.leic.ps.androidclient.ui.util.ItemAction
 import pt.ipl.isel.leic.ps.androidclient.ui.util.Navigation
 import pt.ipl.isel.leic.ps.androidclient.ui.util.putNavigation
 import pt.ipl.isel.leic.ps.androidclient.ui.util.putParentNavigation
@@ -48,14 +49,16 @@ class InsulinProfilesListFragment : BaseListFragment<
 
         refreshLayout = view.findViewById(R.id.insulin_refresh_layout)
 
-        val addButton = view.findViewById<ImageButton>(R.id.add_profile)
+        if(viewModel.actions.contains(ItemAction.ADD)) {
+            val addButton = view.findViewById<ImageButton>(R.id.add_profile)
 
-        // Setups a listener to go to the fragment that adds a profile
-        addButton.setOnClickListener {
-            val bundle = Bundle()
-            bundle.putNavigation(Navigation.BACK_TO_INSULIN_PROFILES_FROM_ADD_PROFILE)
-            bundle.putParentNavigation(Navigation.SEND_TO_INSULIN_PROFILES)
-            super.navigate(Navigation.SEND_TO_ADD_INSULIN_PROFILE_FROM_PROFILES, bundle)
+            // Setups a listener to go to the fragment that adds a profile
+            addButton.setOnClickListener {
+                val bundle = Bundle()
+                bundle.putNavigation(Navigation.BACK_TO_INSULIN_PROFILES_FROM_ADD_PROFILE)
+                bundle.putParentNavigation(Navigation.SEND_TO_INSULIN_PROFILES)
+                super.navigate(Navigation.SEND_TO_ADD_INSULIN_PROFILE_FROM_PROFILES, bundle)
+            }
         }
 
         // Setups a listener that refresh the displayed information by swiping down

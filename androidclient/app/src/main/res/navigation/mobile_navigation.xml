@@ -96,10 +96,7 @@
         android:label="Add Restaurant"
         tools:layout="@layout/add_restaurant_fragment" />
 
-    <fragment
-        android:id="@+id/nav_insulin_profiles"
-        android:name="pt.ipl.isel.leic.ps.androidclient.ui.fragment.list.InsulinProfilesListFragment"
-        tools:layout="@layout/insulin_profiles_fragment" />
+
 
     <navigation android:id="@+id/nav_custom_meal_nested"
         app:startDestination="@id/nav_add_custom_meal">
@@ -184,12 +181,12 @@
     </navigation>
 
     <navigation android:id="@+id/nav_insulin_profiles_nested"
-        app:startDestination="@id/nav_profile">
+        app:startDestination="@id/nav_insulin_profiles">
         <fragment
-            android:id="@+id/nav_profile"
-            android:name="pt.ipl.isel.leic.ps.androidclient.ui.fragment.tab.ProfileFragment"
-            android:label="@string/menu_profile"
-            tools:layout="@layout/profile_fragment" >
+            android:label="@string/label_profiles"
+            android:id="@+id/nav_insulin_profiles"
+            android:name="pt.ipl.isel.leic.ps.androidclient.ui.fragment.list.InsulinProfilesListFragment"
+            tools:layout="@layout/insulin_profiles_fragment">
             <action
                 android:id="@+id/nav_action_insulin_profiles_to_add_insulin"
                 app:destination="@id/nav_add_insulin" />
