@@ -43,8 +43,10 @@ data class InsulinProfile(
 
     fun isActive(): Boolean {
         val calendar = Calendar.getInstance()
-        val currTime = "${calendar.get(Calendar.HOUR_OF_DAY)}${calendar.get(Calendar.MINUTE)}"
-            .toInt()
+        val hour: Int = calendar.get(Calendar.HOUR_OF_DAY)
+        val minute: Int = calendar.get(Calendar.MINUTE)
+        val currTime = String.format("%02d%02d", hour, minute).toInt()
+
         //Check if current time overlaps profile
         return currTime in startInt..endInt
     }

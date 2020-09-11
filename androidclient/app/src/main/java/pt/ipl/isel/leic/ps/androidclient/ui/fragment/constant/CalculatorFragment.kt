@@ -22,8 +22,6 @@ import pt.ipl.isel.leic.ps.androidclient.ui.util.putParentNavigation
 import pt.ipl.isel.leic.ps.androidclient.ui.util.units.DEFAULT_GLUCOSE_UNIT
 import pt.ipl.isel.leic.ps.androidclient.ui.util.units.GlucoseUnits
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.InsulinProfilesListViewModel
-import java.text.SimpleDateFormat
-import java.util.*
 
 class CalculatorFragment : BaseAddMealFragment(), IRequiredTextInput, IGlucoseUnitSpinner {
 
@@ -55,6 +53,8 @@ class CalculatorFragment : BaseAddMealFragment(), IRequiredTextInput, IGlucoseUn
     private lateinit var profileGlucoseObjectiveTextView: TextView
     private lateinit var profileInsulinSensitivityTextView: TextView
     private lateinit var profileCarbohydrateRatioTextView: TextView
+    private lateinit var currentProfileTitleTextView: TextView
+    private lateinit var currentProfileLayout: RelativeLayout
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -67,6 +67,9 @@ class CalculatorFragment : BaseAddMealFragment(), IRequiredTextInput, IGlucoseUn
         profileGlucoseObjectiveTextView = view.findViewById(R.id.glucose_objective_value)
         profileInsulinSensitivityTextView = view.findViewById(R.id.insulin_sensitivity_factor_value)
         profileCarbohydrateRatioTextView = view.findViewById(R.id.carbohydrate_ratio_value)
+        currentProfileTitleTextView = view.findViewById(R.id.current_profile_label)
+        currentProfileLayout = view.findViewById(R.id.current_profile_rl)
+
         setupGlucoseUnitSpinner(requireContext(), glucoseUnitsSpinner)
 
         setupInsulinProfilesViewModel()
@@ -102,17 +105,6 @@ class CalculatorFragment : BaseAddMealFragment(), IRequiredTextInput, IGlucoseUn
     }
 
     /**
-     * Pops up when there are no insulin profiles created
-     */
-    private fun showNoExistingProfilesPrompt() {
-        Toast.makeText(
-            app,
-            R.string.setup_a_profile_before_proceed,
-            Toast.LENGTH_LONG
-        ).show()
-    }
-
-    /**
      * Searches for a profile that matches the current time
      */
     private fun getCurrentProfile(profilesList: List<InsulinProfile>): InsulinProfile? {
@@ -125,10 +117,8 @@ class CalculatorFragment : BaseAddMealFragment(), IRequiredTextInput, IGlucoseUn
     private fun showCurrentProfileDetails(profilesList: List<InsulinProfile>) {
         currentProfile = getCurrentProfile(profilesList)
         val profile = currentProfile
-        val currentProfileTitleTextView: TextView = requireView().findViewById(R.id.current_profile_label)
-        val currentProfileLayout: RelativeLayout = requireView().findViewById(R.id.current_profile_rl)
 
-        if(profile == null) {
+        if (profile == null) {
             currentProfileTitleTextView.text = getString(R.string.setup_a_profile_before_proceed)
             currentProfileLayout.visibility = View.GONE
             return
@@ -163,7 +153,7 @@ class CalculatorFragment : BaseAddMealFragment(), IRequiredTextInput, IGlucoseUn
             //Update current profile (might have expired since fragment setup)
             showCurrentProfileDetails(profilesList = viewModelProfiles.items)
 
-            if(currentProfile == null) {
+            if (currentProfile == null) {
                 PromptConfirm(
                     requireContext(),
                     R.string.add_a_profile_dialog,
@@ -231,13 +221,13 @@ class CalculatorFragment : BaseAddMealFragment(), IRequiredTextInput, IGlucoseUn
             .show()
     }
 
-//    override fun onResume() {
-//        super.onResume()
-//        if(viewModelProfiles.itemsChanged) {
-//            viewModelProfiles.itemsChanged = false
-//            showCurrentProfileDetails()
-//        }
-//    }
+    override fun onResume() {
+        super.onResume()
+        if(viewModelProfiles.itemsChanged) {
+            viewModelProfiles.itemsChanged = false
+            showCurrentProfileDetails(viewModelProfiles.items)
+        }
+    }
 
     override fun onGlucoseUnitChange(converter: (Float) -> Float) {
         if (bloodGlucoseEditText.text.isNotBlank()) {
