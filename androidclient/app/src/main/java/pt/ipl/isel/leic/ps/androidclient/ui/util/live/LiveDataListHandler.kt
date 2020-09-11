@@ -187,7 +187,10 @@ class LiveDataListHandler<M : Parcelable> {
     }
 
     fun notifyChanged() {
-        mediatorLiveData.value = mediatorLiveData.value
+        val value = mediatorLiveData.value
+        if(value != null) {
+            mediatorLiveData.value = mediatorLiveData.value
+        }
     }
 }
 
