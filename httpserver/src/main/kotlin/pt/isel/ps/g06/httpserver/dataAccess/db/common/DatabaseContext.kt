@@ -3,26 +3,26 @@ package pt.isel.ps.g06.httpserver.dataAccess.db.common
 import org.jdbi.v3.core.Handle
 import org.jdbi.v3.core.Jdbi
 import org.springframework.stereotype.Component
+import org.springframework.web.context.request.RequestContextHolder
+import pt.isel.ps.g06.httpserver.extensions.getOrPut
+
+const val HANDLE_KEY = "pt.isel.ps.g06.httpserver.databaseContext"
 
 @Component
-class DatabaseContext(jdbi: Jdbi) {
-    //TODO Unit test to verify if context is a singleton
-    protected val localHandle: ThreadLocal<Handle> = ThreadLocal.withInitial { jdbi.open() }
-    private val isOpen: ThreadLocal<Boolean> = ThreadLocal.withInitial { false }
-
+class DatabaseContext(private val jdbi: Jdbi) {
     private val handle: Handle
         get() {
-            if (!isOpen.get()) isOpen.set(true)
-            return localHandle.get()
+            return getOrPut(
+                    key = HANDLE_KEY,
+                    valueSupplier = { jdbi.open() },
+                    callback = { it.close() }
+            )
         }
 
     fun close() {
-        localHandle.get().close()
-        localHandle.remove()
-        isOpen.remove()
+        handle.close()
+        RequestContextHolder.resetRequestAttributes()
     }
-
-    fun isHandleOpen(): Boolean = isOpen.get()
 
     fun <T> inTransaction(func: (Handle) -> T): T {
         if (!handle.isInTransaction) {
