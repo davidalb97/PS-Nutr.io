@@ -15,12 +15,11 @@ fun <T : Any> getOrPut(key: String, valueSupplier: () -> T, callback: ((T) -> Un
     var value = requestAttributes.getAttribute(key, DEFAULT_SCOPE) as? T
 
     if (value == null) {
-        println("Opening a new Handle!")
         value = valueSupplier()
         requestAttributes.setAttribute(key, value, DEFAULT_SCOPE)
     }
 
-    if (callback != null) requestAttributes.registerDestructionCallback(key, { callback.invoke(value) }, DEFAULT_SCOPE)
+    if (callback != null) requestAttributes.registerDestructionCallback(key, { callback(value) }, DEFAULT_SCOPE)
     return value
 }
 
