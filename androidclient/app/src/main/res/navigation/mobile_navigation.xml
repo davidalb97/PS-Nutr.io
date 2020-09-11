@@ -12,12 +12,6 @@
         tools:layout="@layout/home_fragment" />
 
     <fragment
-        android:id="@+id/nav_profile"
-        android:name="pt.ipl.isel.leic.ps.androidclient.ui.fragment.tab.ProfileFragment"
-        android:label="@string/menu_profile"
-        tools:layout="@layout/profile_fragment" />
-
-    <fragment
         android:id="@+id/nav_settings"
         android:name="pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.SettingsFragment"
         android:label="@string/menu_settings"
@@ -67,17 +61,6 @@
         tools:layout="@layout/calculator_fragment" />
 
     <fragment
-        android:id="@+id/nav_insulin_profiles"
-        android:name="pt.ipl.isel.leic.ps.androidclient.ui.fragment.list.InsulinProfilesListFragment"
-        tools:layout="@layout/insulin_profiles_fragment" />
-
-    <fragment
-        android:id="@+id/nav_add_insulin"
-        android:name="pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.AddProfileFragment"
-        android:label="Add a profile to your routine"
-        tools:layout="@layout/add_insulin_profile_fragment" />
-
-    <fragment
         android:id="@+id/nav_saved_meals"
         android:name="pt.ipl.isel.leic.ps.androidclient.ui.fragment.list.CustomMealListFragment"
         android:label="Saved meals"
@@ -113,6 +96,11 @@
         android:label="Add Restaurant"
         tools:layout="@layout/add_restaurant_fragment" />
 
+    <fragment
+        android:id="@+id/nav_insulin_profiles"
+        android:name="pt.ipl.isel.leic.ps.androidclient.ui.fragment.list.InsulinProfilesListFragment"
+        tools:layout="@layout/insulin_profiles_fragment" />
+
     <navigation android:id="@+id/nav_custom_meal_nested"
         app:startDestination="@id/nav_add_custom_meal">
         <fragment
@@ -144,8 +132,11 @@
             android:label="@string/insulin_calculator_nav"
             tools:layout="@layout/calculator_fragment" >
             <action
-                android:id="@+id/nav_action_calculator_to_pick_ingredients"
+                android:id="@+id/nav_action_calculator_to_pick_meals"
                 app:destination="@id/nav_add_meal_to_calculator" />
+            <action
+                android:id="@+id/nav_action_calculator_to_add_insulin"
+                app:destination="@id/nav_add_insulin" />
         </fragment>
         <fragment
             android:id="@+id/nav_add_meal_to_calculator"
@@ -153,8 +144,18 @@
             android:label="Add a meal"
             tools:layout="@layout/tab_fragment" >
             <action
-                android:id="@+id/nav_action_back_to_calculator"
+                android:id="@+id/nav_action_back_to_calculator_from_add_meals"
                 app:popUpTo="@id/nav_add_meal_to_calculator"
+                app:popUpToInclusive="true" />
+        </fragment>
+        <fragment
+            android:id="@+id/nav_add_insulin"
+            android:name="pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.AddProfileFragment"
+            android:label="Add a profile to your routine"
+            tools:layout="@layout/add_insulin_profile_fragment" >
+            <action
+                android:id="@+id/nav_action_back_to_calculator_from_add_profile"
+                app:popUpTo="@id/nav_add_insulin"
                 app:popUpToInclusive="true" />
         </fragment>
     </navigation>
@@ -176,8 +177,31 @@
             android:label="@string/tab_meals"
             tools:layout="@layout/tab_fragment"  >
             <action
-                android:id="@+id/nav_action_back_to_restaurant_info"
+                android:id="@+id/nav_action_back_to_restaurant_info_from_add_meal"
                 app:popUpTo="@id/nav_add_restaurant_meal"
+                app:popUpToInclusive="true" />
+        </fragment>
+    </navigation>
+
+    <navigation android:id="@+id/nav_insulin_profiles_nested"
+        app:startDestination="@id/nav_profile">
+        <fragment
+            android:id="@+id/nav_profile"
+            android:name="pt.ipl.isel.leic.ps.androidclient.ui.fragment.tab.ProfileFragment"
+            android:label="@string/menu_profile"
+            tools:layout="@layout/profile_fragment" >
+            <action
+                android:id="@+id/nav_action_insulin_profiles_to_add_insulin"
+                app:destination="@id/nav_add_insulin" />
+        </fragment>
+        <fragment
+            android:id="@+id/nav_add_insulin"
+            android:name="pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.AddProfileFragment"
+            android:label="Add a profile to your routine"
+            tools:layout="@layout/add_insulin_profile_fragment" >
+            <action
+                android:id="@+id/nav_action_back_to_insulin_profiles_from_add_profile"
+                app:popUpTo="@id/nav_add_insulin"
                 app:popUpToInclusive="true" />
         </fragment>
     </navigation>

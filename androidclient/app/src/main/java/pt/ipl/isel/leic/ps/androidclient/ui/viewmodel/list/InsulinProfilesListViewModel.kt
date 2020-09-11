@@ -6,6 +6,7 @@ import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.insulinProfilesRepo
 import pt.ipl.isel.leic.ps.androidclient.data.model.InsulinProfile
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealItem
 import pt.ipl.isel.leic.ps.androidclient.ui.util.ItemAction
+import pt.ipl.isel.leic.ps.androidclient.ui.util.Navigation
 import pt.ipl.isel.leic.ps.androidclient.ui.util.getUserSession
 import pt.ipl.isel.leic.ps.androidclient.util.readBooleanCompat
 import pt.ipl.isel.leic.ps.androidclient.util.readListCompat
@@ -17,6 +18,8 @@ class InsulinProfilesListViewModel : BaseListViewModel<InsulinProfile> {
 
     var argumentMeal: MealItem?
     val actions: List<ItemAction>
+    //Used to let the parent fragment know if the insulin profile list was changed
+    var itemsChanged: Boolean = false
 
     constructor(
         argumentMeal: MealItem? = null,
@@ -29,6 +32,7 @@ class InsulinProfilesListViewModel : BaseListViewModel<InsulinProfile> {
     constructor(parcel: Parcel) : super(parcel, ITEM_CLASS) {
         argumentMeal = parcel.readParcelable(MealItem::class.java.classLoader)
         actions = parcel.readListCompat(ItemAction::class)
+        itemsChanged = parcel.readBooleanCompat()
     }
 
     fun addDbInsulinProfile(
@@ -38,7 +42,10 @@ class InsulinProfilesListViewModel : BaseListViewModel<InsulinProfile> {
     ) = insulinProfilesRepository.addProfile(
         profileDb = insulinProfile,
         userSession = getUserSession(),
-        onSuccess = onSuccess,
+        onSuccess = {
+            liveDataHandler.add(insulinProfile)
+            onSuccess()
+        },
         onError = onError
     )
 
@@ -78,6 +85,7 @@ class InsulinProfilesListViewModel : BaseListViewModel<InsulinProfile> {
         super.writeToParcel(dest, flags)
         dest?.writeParcelable(argumentMeal, flags)
         dest?.writeList(actions)
+        dest?.writeBooleanCompat(itemsChanged)
     }
 
     override fun describeContents(): Int {

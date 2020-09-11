@@ -7,11 +7,14 @@ import android.widget.*
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.app
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.InsulinProfile
+import pt.ipl.isel.leic.ps.androidclient.ui.IParentViewModel
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.BaseViewModelFragment
+import pt.ipl.isel.leic.ps.androidclient.ui.navParentViewModel
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.IRequiredTextInput
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.unit.IGlucoseUnitSpinner
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.unit.IWeightUnitSpinner
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.InsulinProfilesVMProviderFactory
+import pt.ipl.isel.leic.ps.androidclient.ui.util.getNavigation
 import pt.ipl.isel.leic.ps.androidclient.ui.util.units.DEFAULT_GLUCOSE_UNIT
 import pt.ipl.isel.leic.ps.androidclient.ui.util.units.DEFAULT_WEIGHT_UNIT
 import pt.ipl.isel.leic.ps.androidclient.ui.util.units.GlucoseUnits
@@ -23,11 +26,13 @@ import java.util.*
 class AddProfileFragment : BaseViewModelFragment<InsulinProfilesListViewModel>(),
     IWeightUnitSpinner,
     IGlucoseUnitSpinner,
-    IRequiredTextInput {
+    IRequiredTextInput,
+    IParentViewModel {
 
     override val layout = R.layout.add_insulin_profile_fragment
     override val vmClass = InsulinProfilesListViewModel::class.java
     override val vMProviderFactorySupplier = ::InsulinProfilesVMProviderFactory
+    override val viewModel: InsulinProfilesListViewModel by navParentViewModel()
 
     override lateinit var previousWeightUnit: WeightUnits
     override lateinit var currentWeightUnit: WeightUnits
@@ -143,7 +148,8 @@ class AddProfileFragment : BaseViewModelFragment<InsulinProfilesListViewModel>()
             Toast.makeText(app, R.string.insulin_profile_add_fail, Toast.LENGTH_SHORT)
                 .show()
         }) {
-            super.popBackStack()
+            //Navigate to parent pop
+            navigate(requireArguments().getNavigation())
         }
     }
 

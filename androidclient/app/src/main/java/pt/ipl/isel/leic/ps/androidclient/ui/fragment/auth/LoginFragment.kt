@@ -25,6 +25,7 @@ import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.UserSessionViewModel
 class LoginFragment : BaseFragment(), IViewModelManager, ILogin, IAccountSettings {
 
     override val layout = R.layout.login_fragment
+    override var savedInstanceState: Bundle? = null
     override val vMProviderFactorySupplier = ::UserProfileVMProviderFactory
     private lateinit var viewModel: UserSessionViewModel
 

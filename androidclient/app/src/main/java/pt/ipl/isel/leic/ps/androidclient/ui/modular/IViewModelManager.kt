@@ -10,6 +10,8 @@ import pt.ipl.isel.leic.ps.androidclient.ui.provider.BaseViewModelProviderFactor
 
 interface IViewModelManager : ILog {
 
+    var savedInstanceState: Bundle?
+
     val vMProviderFactorySupplier: (
         arguments: Bundle?,
         savedInstanceState: Bundle?,

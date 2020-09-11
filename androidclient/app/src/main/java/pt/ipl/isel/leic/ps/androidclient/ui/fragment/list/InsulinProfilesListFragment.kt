@@ -4,11 +4,15 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ImageButton
 import androidx.navigation.findNavController
+import androidx.navigation.navGraphViewModels
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.InsulinProfile
 import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.InsulinProfileRecyclerAdapter
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.InsulinProfilesVMProviderFactory
+import pt.ipl.isel.leic.ps.androidclient.ui.util.Navigation
+import pt.ipl.isel.leic.ps.androidclient.ui.util.putNavigation
+import pt.ipl.isel.leic.ps.androidclient.ui.util.putParentNavigation
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.InsulinProfilesListViewModel
 
 class InsulinProfilesListFragment : BaseListFragment<
@@ -25,6 +29,10 @@ class InsulinProfilesListFragment : BaseListFragment<
 
     override val vmClass = InsulinProfilesListViewModel::class.java
     override val vMProviderFactorySupplier = ::InsulinProfilesVMProviderFactory
+    override val viewModel: InsulinProfilesListViewModel
+            by navGraphViewModels(Navigation.SEND_TO_INSULIN_PROFILES.navId) {
+                vMProviderFactorySupplier(arguments, savedInstanceState, requireIntent())
+            }
     override val recyclerAdapter: InsulinProfileRecyclerAdapter by lazy {
         InsulinProfileRecyclerAdapter(
             viewModel,
@@ -44,7 +52,10 @@ class InsulinProfilesListFragment : BaseListFragment<
 
         // Setups a listener to go to the fragment that adds a profile
         addButton.setOnClickListener {
-            view.findNavController().navigate(R.id.nav_add_insulin)
+            val bundle = Bundle()
+            bundle.putNavigation(Navigation.BACK_TO_INSULIN_PROFILES_FROM_ADD_PROFILE)
+            bundle.putParentNavigation(Navigation.SEND_TO_INSULIN_PROFILES)
+            super.navigate(Navigation.SEND_TO_ADD_INSULIN_PROFILE_FROM_PROFILES, bundle)
         }
 
         // Setups a listener that refresh the displayed information by swiping down
@@ -55,5 +66,14 @@ class InsulinProfilesListFragment : BaseListFragment<
             refreshLayout!!.isRefreshing = false
         }
         viewModel.setupList()
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        if (viewModel.itemsChanged) {
+            viewModel.itemsChanged = false
+            recyclerAdapter.notifyDataSetChanged()
+        }
     }
 }

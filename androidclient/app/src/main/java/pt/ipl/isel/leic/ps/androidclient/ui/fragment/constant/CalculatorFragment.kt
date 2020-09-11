@@ -3,20 +3,22 @@ package pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant
 import android.app.AlertDialog
 import android.os.Bundle
 import android.os.Parcelable
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.*
+import androidx.navigation.navGraphViewModels
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.app
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.db.InsulinCalculator
 import pt.ipl.isel.leic.ps.androidclient.data.model.InsulinProfile
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.BaseAddMealFragment
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.IRequiredTextInput
-import pt.ipl.isel.leic.ps.androidclient.ui.modular.filter.IItemListFilter
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.unit.IGlucoseUnitSpinner
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.CalculatorVMProviderFactory
-import pt.ipl.isel.leic.ps.androidclient.ui.util.*
+import pt.ipl.isel.leic.ps.androidclient.ui.util.Navigation
+import pt.ipl.isel.leic.ps.androidclient.ui.util.closeKeyboard
+import pt.ipl.isel.leic.ps.androidclient.ui.util.prompt.PromptConfirm
+import pt.ipl.isel.leic.ps.androidclient.ui.util.putNavigation
+import pt.ipl.isel.leic.ps.androidclient.ui.util.putParentNavigation
 import pt.ipl.isel.leic.ps.androidclient.ui.util.units.DEFAULT_GLUCOSE_UNIT
 import pt.ipl.isel.leic.ps.androidclient.ui.util.units.GlucoseUnits
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.InsulinProfilesListViewModel
@@ -29,7 +31,7 @@ class CalculatorFragment : BaseAddMealFragment(), IRequiredTextInput, IGlucoseUn
     override lateinit var currentGlucoseUnit: GlucoseUnits
     override val nestedNavigation = Navigation.SEND_TO_CALCULATOR
     override val toAddMealsActionNestedNavigation = Navigation.SEND_TO_PICK_CALCULATOR_INGREDIENTS
-    override val backNestedActionNavigation = Navigation.BACK_TO_CALCULATOR
+    override val backNestedActionNavigation = Navigation.BACK_TO_CALCULATOR_FROM_MEALS
     override val mealsRecyclerViewId: Int = R.id.calculator_meals_list
     override val weightUnitSpinnerId: Int = R.id.calculator_units_spinner
     override val addIngredientsImgButtonId = R.id.add_custom_meal_add_meal_ingredient
@@ -38,9 +40,10 @@ class CalculatorFragment : BaseAddMealFragment(), IRequiredTextInput, IGlucoseUn
 
     override val layout = R.layout.calculator_fragment
     override val vMProviderFactorySupplier = ::CalculatorVMProviderFactory
-    private val viewModelProfiles: InsulinProfilesListViewModel by lazy {
-        buildViewModel(savedInstanceState, InsulinProfilesListViewModel::class.java)
-    }
+    private val viewModelProfiles: InsulinProfilesListViewModel
+            by navGraphViewModels(Navigation.SEND_TO_CALCULATOR.navId) {
+                vMProviderFactorySupplier(arguments, savedInstanceState, requireIntent())
+            }
 
     private var currentProfile: InsulinProfile? = null
     private val calculator = InsulinCalculator()
@@ -73,7 +76,7 @@ class CalculatorFragment : BaseAddMealFragment(), IRequiredTextInput, IGlucoseUn
         super.setupIngredients(view)
 
         val argumentMeal = viewModelProfiles.argumentMeal
-        if(argumentMeal != null) {
+        if (argumentMeal != null) {
             viewModelProfiles.argumentMeal = null
             viewModel.pick(argumentMeal)
         }
@@ -92,22 +95,25 @@ class CalculatorFragment : BaseAddMealFragment(), IRequiredTextInput, IGlucoseUn
             ).show()
         }
         viewModelProfiles.observe(this) { profilesList ->
-            if (profilesList.isEmpty())
-                showNoExistingProfilesToast()
-            else {
-                this.currentProfile = getCurrentProfile()?.also { currentProfile ->
-                    showCurrentProfileDetails(currentProfile)
-                }
-                setupCalculateButton()
+            if (viewModelProfiles.items.isEmpty()) {
+                showNoExistingProfilesPrompt()
             }
+            setupCurrentProfile()
         }
         viewModelProfiles.setupList()
+        setupCalculateButton()
+    }
+
+    private fun setupCurrentProfile() {
+        this.currentProfile = getCurrentProfile()?.also { currentProfile ->
+            showCurrentProfileDetails(currentProfile)
+        }
     }
 
     /**
      * Pops up when there are no insulin profiles created
      */
-    private fun showNoExistingProfilesToast() {
+    private fun showNoExistingProfilesPrompt() {
         Toast.makeText(
             app,
             R.string.setup_a_profile_before_proceed,
@@ -121,7 +127,7 @@ class CalculatorFragment : BaseAddMealFragment(), IRequiredTextInput, IGlucoseUn
     private fun getCurrentProfile(): InsulinProfile? {
 
         if (viewModelProfiles.items.isEmpty()) {
-            showNoExistingProfilesToast()
+            showNoExistingProfilesPrompt()
             return null
         }
 
@@ -165,6 +171,24 @@ class CalculatorFragment : BaseAddMealFragment(), IRequiredTextInput, IGlucoseUn
     private fun setupCalculateButton() {
 
         calculateButton.setOnClickListener {
+
+            //Update current profile (might have expired since fragment setup)
+            setupCurrentProfile()
+
+            if(currentProfile == null) {
+                PromptConfirm(
+                    requireContext(),
+                    R.string.add_a_profile_dialog,
+                    R.string.prompt_add_profile
+                ) {
+                    val bundle = Bundle()
+                    bundle.putNavigation(Navigation.BACK_TO_CALCULATOR_FROM_ADD_PROFILE)
+                    bundle.putParentNavigation(Navigation.SEND_TO_CALCULATOR)
+                    super.navigate(Navigation.SEND_TO_ADD_INSULIN_PROFILE_FROM_CALCULATOR, bundle)
+                }.show()
+                return@setOnClickListener
+            }
+
             if (!inputValid()) {
                 return@setOnClickListener
             }
@@ -205,7 +229,7 @@ class CalculatorFragment : BaseAddMealFragment(), IRequiredTextInput, IGlucoseUn
             return false
         }
         if (currentProfile == null) {
-            showNoExistingProfilesToast()
+            showNoExistingProfilesPrompt()
             return false
         }
         return true
