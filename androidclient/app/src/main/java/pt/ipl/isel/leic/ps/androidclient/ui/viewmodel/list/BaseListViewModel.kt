@@ -8,6 +8,8 @@ import androidx.lifecycle.ViewModel
 import androidx.recyclerview.widget.RecyclerView
 import pt.ipl.isel.leic.ps.androidclient.ui.util.Logger
 import pt.ipl.isel.leic.ps.androidclient.ui.util.live.LiveDataListHandler
+import pt.ipl.isel.leic.ps.androidclient.util.readBooleanCompat
+import pt.ipl.isel.leic.ps.androidclient.util.writeBooleanCompat
 import kotlin.reflect.KClass
 
 /**
@@ -19,6 +21,7 @@ const val DEFAULT_SKIP = 0
 
 abstract class BaseListViewModel<T : Parcelable> : ViewModel, Parcelable {
 
+    private var isFirstTime = true
     val itemClass: KClass<T>
     val log: Logger by lazy { Logger(javaClass) }
     val liveDataHandler = LiveDataListHandler<T>()
@@ -33,13 +36,26 @@ abstract class BaseListViewModel<T : Parcelable> : ViewModel, Parcelable {
     }
 
     constructor(parcel: Parcel, itemClass: KClass<T>) : this(itemClass) {
+        isFirstTime = parcel.readBooleanCompat()
         liveDataHandler.restoreFromParcel(parcel, itemClass)
+        skip = parcel.readSerializable() as Int?
+        count = parcel.readSerializable() as Int?
+    }
+
+    fun refresh() {
+        isFirstTime = true
+        setupList()
     }
 
     open fun setupList() {
-        if(items.isNotEmpty()) {
-            liveDataHandler.notifyChanged()
-        } else triggerFetch()
+        if(!isFirstTime) {
+            if (!tryRestore()) {
+                liveDataHandler.notifyChanged()
+            }
+        } else {
+            isFirstTime = false
+            triggerFetch()
+        }
     }
 
     fun triggerFetch() {
@@ -64,7 +80,10 @@ abstract class BaseListViewModel<T : Parcelable> : ViewModel, Parcelable {
      */
     @CallSuper
     override fun writeToParcel(dest: Parcel?, flags: Int) {
+        dest?.writeBooleanCompat(isFirstTime)
         liveDataHandler.writeToParcel(dest)
+        dest?.writeSerializable(skip)
+        dest?.writeSerializable(count)
     }
 
     /**
