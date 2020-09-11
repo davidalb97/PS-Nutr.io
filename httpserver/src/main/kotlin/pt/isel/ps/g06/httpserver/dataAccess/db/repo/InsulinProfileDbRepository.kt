@@ -97,7 +97,7 @@ class InsulinProfileDbRepository(
 
         return databaseContext.inTransaction { handle ->
             val dao = handle.attach(insulinProfileDaoClass)
-            if(dao.getFromUser(submitterId, profileName) == null) {
+            if(dao.getFromUser(submitterId, encProfileName) == null) {
                 throw MissingInsulinProfileException(profileName)
             }
             //TODO Get insulin profile before deleting it
