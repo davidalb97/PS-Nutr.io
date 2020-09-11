@@ -717,6 +717,23 @@ to automate this process - use navgraph Id stored in fragment arguments to get t
     \end{center}
 \end{figure}
 
+\subsubsection{Adapters and ViewHolders}
+
+A \textbf{ViewHolder} is an object that represents the data attached to a view. In every list of items we use \texttt{RecyclerView.ViewHolder} 
+to handle every item's logic and information.\\
+
+In our application, there is only one main type of ViewHolders, used by Recycler adapters and Pick spinner adapters.\\
+
+Every \textbf{ViewHolder} will be maintained by an \textbf{Adapter}, which is responsable to bind required information present in the ViewModel
+to specific ViewHolders, via \texttt{onBindViewHolder}.\\
+
+Inside the application, there are 3 main types of adapters:
+\begin{itemize}
+    \item \textbf{BaseRecyclerAdapter} - For recycler views;
+    \item \textbf{BaseSpinnerAdapter} - For spinner dropdown menus;
+    \item \textbf{TabAdapter} - For tab layouts.
+\end{itemize}
+
 \subsection{Local data storing}
 
 As mentioned in the dependencies, the mobile application utilizes Room to store data locally. This is convenient
