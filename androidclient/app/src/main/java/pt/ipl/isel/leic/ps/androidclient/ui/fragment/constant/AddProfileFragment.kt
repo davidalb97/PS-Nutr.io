@@ -148,6 +148,7 @@ class AddProfileFragment : BaseViewModelFragment<InsulinProfilesListViewModel>()
             Toast.makeText(app, R.string.insulin_profile_add_fail, Toast.LENGTH_SHORT)
                 .show()
         }) {
+            viewModel.itemsChanged = true
             //Navigate to parent pop
             navigate(requireArguments().getNavigation())
         }

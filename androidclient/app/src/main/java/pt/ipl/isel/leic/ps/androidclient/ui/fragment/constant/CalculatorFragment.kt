@@ -95,19 +95,10 @@ class CalculatorFragment : BaseAddMealFragment(), IRequiredTextInput, IGlucoseUn
             ).show()
         }
         viewModelProfiles.observe(this) { profilesList ->
-            if (viewModelProfiles.items.isEmpty()) {
-                showNoExistingProfilesPrompt()
-            }
-            setupCurrentProfile()
+            showCurrentProfileDetails(profilesList)
         }
         viewModelProfiles.setupList()
         setupCalculateButton()
-    }
-
-    private fun setupCurrentProfile() {
-        this.currentProfile = getCurrentProfile()?.also { currentProfile ->
-            showCurrentProfileDetails(currentProfile)
-        }
     }
 
     /**
@@ -124,30 +115,27 @@ class CalculatorFragment : BaseAddMealFragment(), IRequiredTextInput, IGlucoseUn
     /**
      * Searches for a profile that matches the current time
      */
-    private fun getCurrentProfile(): InsulinProfile? {
-
-        if (viewModelProfiles.items.isEmpty()) {
-            showNoExistingProfilesPrompt()
-            return null
-        }
-
-        // Gets actual time in hh:mm format
-        val timeInstance = SimpleDateFormat("HH:mm")
-        val calendar = Calendar.getInstance()
-        val currentTime = "${calendar.get(Calendar.HOUR_OF_DAY)}:${calendar.get(Calendar.MINUTE)}"
-        val now = timeInstance.parse(currentTime)!!
-
-        return viewModelProfiles.items.find { savedProfile ->
-            val parsedSavedStartTime = timeInstance.parse(savedProfile.startTime)
-            val parsedSavedEndTime = timeInstance.parse(savedProfile.endTime)
-            now.after(parsedSavedStartTime) && now.before(parsedSavedEndTime)
-        }
+    private fun getCurrentProfile(profilesList: List<InsulinProfile>): InsulinProfile? {
+        return profilesList.find(InsulinProfile::isActive)
     }
 
     /**
      * Shows the profile details, according to the current time
      */
-    private fun showCurrentProfileDetails(profile: InsulinProfile) {
+    private fun showCurrentProfileDetails(profilesList: List<InsulinProfile>) {
+        currentProfile = getCurrentProfile(profilesList)
+        val profile = currentProfile
+        val currentProfileTitleTextView: TextView = requireView().findViewById(R.id.current_profile_label)
+        val currentProfileLayout: RelativeLayout = requireView().findViewById(R.id.current_profile_rl)
+
+        if(profile == null) {
+            currentProfileTitleTextView.text = getString(R.string.setup_a_profile_before_proceed)
+            currentProfileLayout.visibility = View.GONE
+            return
+        }
+
+        currentProfileTitleTextView.text = getString(R.string.your_current_profile_for_this_time)
+        currentProfileLayout.visibility = View.VISIBLE
 
         profileStartTimeTextView.text = profile.startTime
         profileEndTimeTextView.text = profile.endTime
@@ -173,7 +161,7 @@ class CalculatorFragment : BaseAddMealFragment(), IRequiredTextInput, IGlucoseUn
         calculateButton.setOnClickListener {
 
             //Update current profile (might have expired since fragment setup)
-            setupCurrentProfile()
+            showCurrentProfileDetails(profilesList = viewModelProfiles.items)
 
             if(currentProfile == null) {
                 PromptConfirm(
@@ -228,10 +216,6 @@ class CalculatorFragment : BaseAddMealFragment(), IRequiredTextInput, IGlucoseUn
             ).show()
             return false
         }
-        if (currentProfile == null) {
-            showNoExistingProfilesPrompt()
-            return false
-        }
         return true
     }
 
@@ -246,6 +230,14 @@ class CalculatorFragment : BaseAddMealFragment(), IRequiredTextInput, IGlucoseUn
             .create()
             .show()
     }
+
+//    override fun onResume() {
+//        super.onResume()
+//        if(viewModelProfiles.itemsChanged) {
+//            viewModelProfiles.itemsChanged = false
+//            showCurrentProfileDetails()
+//        }
+//    }
 
     override fun onGlucoseUnitChange(converter: (Float) -> Float) {
         if (bloodGlucoseEditText.text.isNotBlank()) {
