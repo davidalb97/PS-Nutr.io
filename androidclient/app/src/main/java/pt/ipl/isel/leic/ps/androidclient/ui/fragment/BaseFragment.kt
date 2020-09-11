@@ -1,5 +1,6 @@
 package pt.ipl.isel.leic.ps.androidclient.ui.fragment
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import android.widget.Toast
@@ -11,6 +12,7 @@ import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.hasInternetConnection
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.ILog
 import pt.ipl.isel.leic.ps.androidclient.ui.util.Logger
+import pt.ipl.isel.leic.ps.androidclient.ui.util.Navigation
 
 abstract class BaseFragment : Fragment(), ILog {
 
@@ -61,6 +63,14 @@ abstract class BaseFragment : Fragment(), ILog {
             ).show()
         }
         log.e(throwable)
+    }
+
+    fun requireIntent(): Intent {
+        return requireActivity().intent
+    }
+
+    fun navigate(navigation: Navigation, bundle: Bundle? = null) {
+        view?.findNavController()?.navigate(navigation.navId, bundle)
     }
 
     fun popBackStack() {
