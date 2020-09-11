@@ -333,8 +333,8 @@ a Sequence.\\
 
 However, this approach is not enough on its' own as JDBI warns that:\\
 
-\texttt{ResultIterable}, \texttt{ResultIterator} and \texttt{Stream} methods do not play nice with on-demand SQL Objects. Unless the methods are called in a nested way, the
-returned object will already be closed.\\
+"\texttt{ResultIterable}, \texttt{ResultIterator} and \texttt{Stream} methods do not play nice with on-demand SQL Objects. Unless the methods are called in a nested way, the
+returned object will already be closed.\\"
 
 Given the following, it is simply not enough to have every \textit{DAO} and Repository class return a lazy collection after a handle/transaction call,
 as the returned collection would be closed; so a solution was needed.\\
@@ -346,10 +346,38 @@ perform a terminal operation which would lead to resource leakage.\\
 Another alternative is to wrap a repository call in a nested way, as the JDBI documentation suggests. This approach relies on leaking database logic and dependencies to Controller
 and/or Service classes, which goes against a clean dependency injection design and as such was also discarded.\\
 
-Finally, the adopted solution ties perfectly with the issues and developed solutions mentioned previously in chapter \textbf{5.2.4 JDBI} regarding \underline{"Fetching collections of data and sequences"}.
+Finally, the adopted solution ties perfectly with the issues and developed solutions mentioned previously in chapter \textbf{5.2.4 JDBI} regarding \underline{"Avoiding multiple connections and DatabaseContext"}.
 If we assume that a Sequence and its' resources are no longer needed after the underlying HTTP request is closed, then having the \texttt{DatabaseCleanupInterceptor} class close the
 database connection avoids resource leakage when given sequences are not operated in a terminal way and having Controller and Service classes rely on database  related logic.
 
+\subsubsection{API fetching}
+
+Considering that Spring MVC does not support replying content to the requester asynchronously, all data fetched from the APIs is done in a blocking way,
+with the exception of requesting nearby restaurants from the API, which is done asynchronously, as the image shows:\\
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[scale=0.6]{_figures/Fetching restaurants from the API asynchronously.png}
+        \caption{Fetching restaurants from the API asynchronously}
+    \end{center}
+\end{figure}
+
+This exception allows for time optimizations when searching for nearby restaurants as it requires results from both the database and the API meaning that
+parallel work can be executed, resulting in the following code:\\
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[scale=0.6]{_figures/Searching nearby restaurants with parallel work.png}
+        \caption{Searching nearby restaurants with parallel work}
+    \end{center}
+\end{figure}
+
+Taking advantage of Kotlin's Sequences and its' \texttt{yieldAll} method, acquiring API results is only blocking when the sequence is iterated and
+the request's \texttt{CompletableFuture} is not yet completed.
+It is also worth mentioning that parallelism order of the two functions is not reversed 
+(i.e: The database call is asynchronous while the API one isn't) for two reasons: 
+Java's \texttt{HTTPClient} library support for asynchronous calls and the fact that database connections \textbf{must} be done in the same thread as the
+\texttt{DatabaseCleanupInterceptor}, which is explained in the previous subsection: \textbf{5.2.4 JDBI - Avoiding multiple connections and DatabaseContext}.\\
 
 \subsection{Request lifecycle}
 Each request is received in a spring controller mapping, with input object,
