@@ -567,10 +567,73 @@ to exist, they are far more lightweight to instanciate than an activity and thus
 
 It is also the recommended Android widget to use when designing an application with a side drawer.\\
 
+
 \subsubsection{Modular interfaces}
 
 As the code in the mobile application development became repetitive, the group decided to implement modular interfaces,
 which are interfaces that can be implemented by fragments and viewholders and provide them predefined behaviours.
+
+\subsection{Code hierarchy}
+
+Fragments and their respective viewmodels, alongside with ViewModelProviders inherit from base classes that have already predefined code to avoid repetition.\\
+
+\subsubsection{ViewModels}
+
+Inside the ViewModel hierarchy there is the \textbf{BaseViewModel}, allowing item list restores through parcelable implementation, saving also pagination data.\\
+
+\textbf{BaseListViewModel} also has \textbf{LiveDataListHandler} which handles all code related to livedata manipulation, such as: mapping and data restoration.\\
+
+ViewModels that have \texttt{info} included in its name, know how get a detail from a specific resource (restaurant or meal)
+and extend from \textbf{BaseListViewModel},
+storing subresources in its parent \textbf{LiveDataListHandler} and storing its own resource in its individual \textbf{LiveDataHandler}.\\
+
+There are also \textbf{ItemPickerViewModels}, which extends from \textbf{BaseItemPickerViewModel} that has a seperate \textbf{LiveDataListHandler} from its parent and
+it's used to store picked items, which are items that are picked inside the parent's list.\\
+
+The items are moved between the parent and child lists using the ViewModel's \texttt{pick()} or \texttt{unpick()} method.\\
+
+\subsubsection{Fragments}
+
+The previous explained hierarchy also exists in fragments, with the following characteristics:\\
+
+The \textbf{BaseFragment}, as the name says, is the fragment on which every other fragment is based on, being widely used for event 
+logging and utilitary methods needed by child fragments.\\
+
+The \textbf{BaseListViewModelFragment} manages the ViewModel and Fragment arguments' lifecycle, implementing IViewModelManager,
+from the modular interfaces, which supplies the code to build ViewModels. 
+The fragment also has a ViewModel that is lazily created, using the previously saved instance state and can save and restore 
+the ViewModel and Fragment arguments.\\
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[scale=0.5]{_figures/BaseViewModelFragment(save and restore).png}
+        \caption{BaseViewModelFragment save and argument restore methods}
+    \end{center}
+\end{figure}
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[scale=0.5]{_figures/onSaveViewModelManager.png}
+        \caption{IViewModelManager onSaveViewModels method}
+    \end{center}
+\end{figure}
+
+Not all fragments are limited to just one ViewModel and can also have create, use and restore other ViewModels through the same 
+ViewModelProviderFactory.\\
+
+The \textbf{BaseListFragment} extends from \textbf{BaseViewModelFragment} and its ViewModel extends from \textbf{BaseListViewModel}.
+This fragment has the \textbf{RecyclerHandler} which handles recycler list behaviours and objects, such as: loading and related UI aspects,
+the recycler adapter and the \textbf{ViewModel}.\\
+
+It also inits the Recycler's \textbf{Scroll Listener} for pagination proposes. The pagination routine delegated to this listener is defined 
+through a class called \textbf{AppScrollListener}.\\
+
+The \textbf{BaseSlideScreenFragment} extends from \textbf{BaseFragment} and its the base fragment responsable for layouts with tabs, often
+used inside the application. This fragment has the objects required for a Tab layout: the TabAdapter, the TabLayout and the ViewPager (which
+supplies and manages the lifecycle of each page). Shortening the explanation: it is a fragment that holds multiple fragments, 
+which are designated as tabs by this layout.\\
+
+
 
 \subsection{Local data storing}
 
@@ -696,7 +759,10 @@ The user can map its day with insulin profiles, specifying for a certain timespa
 change along the day.\\
 
 When creating insulin profiles, the user must know that a profile's time period can not overlap another and that the time mapping must be done from 00h00 to 23h59, meaning that
-the end time can not be before the start time.
+the end time can not be before the start time.\\
+
+If the user is not logged in, all insulin profiles created and deleted will be written inside the application's local database - Room. If the user is logged in,
+the profiles are written into our remote database.\\
 
 \subsubsection{Searching for restaurants and meals}
 
@@ -806,7 +872,7 @@ with the insulin calculator, which will be explained in the next section.
 \subsubsection{Using the insulin calculator}
 
 To use this feature, the user must create at least one insulin profile which time period matches the current time. If the user does not have a valid insulin profile for the current
-time, the profile information in this fragment will appear with blank fields.\\
+time, the profile information section in this fragment will appear blank.\\
 
 \begin{figure}[H]
     \captionsetup[subfigure]{justification=centering}
