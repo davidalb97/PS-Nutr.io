@@ -757,7 +757,7 @@ Although the Android Shared Preferences being a safe place to store application 
 a normal device can not access these preferences and it should be a safe place to store user credentials, however rooted devices\cite{root} can easily
 access the shared preferences file and retrieve plaintext from it, which would compromise the user security.\\
 
-\subsubsection{Resolution: Androidx Crypto}
+\subsubsection{Solution: Androidx Crypto}
 
 The Androidx crypto\cite{crypto} was used to solve this issue. This library is used to encrypt the user credentials before writing them inside the mobile device.\\
 
@@ -769,7 +769,7 @@ shared preferences.\\
 We also discussed if the credentials should be saved inside the device or if only the database should possess them.
 If that approach was taken, the user had to login each time it was needed to read or write a protected resource.\\
 
-As this platform is not, for example, a bank application that needs top protection. We found this level of protection
+As this platform is not, for example, a bank application that requires sophisticated protection and encryption, we found this level of protection
 unnecessary for the application and inconvenient for the user and decided that only the essential protection should be provided - 
 user credentials encryption to avoid information leaks from rooted devices.
 
