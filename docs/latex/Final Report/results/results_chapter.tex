@@ -187,17 +187,59 @@ multiple database accesses can be performed, as seen in the following code for D
 This is done to support lazily acquired fields when building a model class in order to avoid querying large quantities of data and then not needing it.\\
 
 Additionally, if we consider that said information for each field is obtained in its’ own and new
-transactional context then this \textbf{design} can be performance heavy if we open multiple
+transactional context then this design can be performance heavy if we open multiple
 database connections as needed.\\
 
 In order to avoid this, each HTTP request holds a single database connection if needed
 and closes it when completed, as we can assume that no more database data is needed afterwards.\\
 
-This implementation is done by having every repository depend on a single instance of
-the \texttt{DatabaseContext} - our developed wrapper class which opens a connection handle when needed
-and stores it in a \texttt{ThreadLocal} map, allowing for later removal by the \texttt{DatabaseCleanupInterceptor} interceptor.
-Given that JDBI's connection \texttt{handle} can't be closed after a transaction, every database access is also done with
-\texttt{DatabaseContext.inTransaction(Function<Handle, T>))} instead of JDBI's given methods that would close attached handle.
+This implementation is done by having every repository depend on a single instance of the
+DatabaseContext - our developed wrapper class which opens a new connection handle for each
+request that needs it, storing it in current request's context, made possible by Spring's 
+\texttt{RequestContextHolder}\cite{springRequestContextHolder},
+ allowing for later closure when the request is fulfilled.\\ 
+
+According to the documentation:\\
+
+"Holder class to expose the web request in the form of a thread-bound \texttt{RequestAttributes}\cite{springRequestAttributes} object.
+The request will be inherited by any child threads spawned by the current thread if the \texttt{inheritable} flag is set to \texttt{true}."\\
+
+With that in mind, the following static method was created in order to wrap creation and retrieval of values from \texttt{RequestContextHolder}:\\
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[scale=0.8]{_figures/Using RequestContextHolder to create and retrieve values.png}
+        \caption{Using RequestContextHolder to create and retrieve values}
+    \end{center}
+\end{figure}
+
+Which is then used by \texttt{DatabaseContext} when managing a \texttt{Handle} and closing it on request completion,
+using Spring's \texttt{RequestAttributes.registerDestructionCallback(String name, Runnable callback, int scope)}.\\
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[scale=0.8]{_figures/DatabaseContext using our static method to create and later close a handle.png}
+        \caption{DatabaseContext using our static method to create and later close a handle}
+    \end{center}
+\end{figure}
+
+For specific cases where a database connection is done outside the context of a HTTP request (like the \texttt{ApiSubmitterMapper} class)
+and as such no request attribute is present, we developed an alternative class that implements \texttt{RequestAttributes}, named \texttt{CustomAttributes}.
+This implementation simply holds a map of values and requires whoever used it to explicitly remove it from current context and close underlying resources;
+as the example shows:\\
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[scale=0.8]{_figures/Explicitly resetting request context and its' resources.png}
+        \caption{Explicitly resetting request context and its' resources}
+    \end{center}
+\end{figure}
+
+Given implementation avoids mentioned issues, however it has the consequence of having transactions depend on the HTTP request that triggered the database fetch,
+meaning that lengthy controller operations may lock database tuples for longer periods of time, depending on the used transactional isolation level.\\
+
+Finally, given that JDBI’s connection handle can’t be closed after a transaction, every database access is also
+done with \texttt{DatabaseContext.inTransaction(Function<Handle, T>))} instead of JDBI’s given methods that would close attached handle.
 Implementation and a a typical use case is as follows:\\
 
 \begin{figure}[H]
@@ -214,12 +256,6 @@ Implementation and a a typical use case is as follows:\\
     \end{center}
 \end{figure}
 
-Given implementation avoids mentioned issues, however it also introduces new issues that
-need to be taken into consideration, such as only closing transactions when the interceptor is
-called - meaning that lengthy controller operations may lock database tuples for longer periods
-of time, depending on the used transactional isolation level; or the fact that a handle is linked
-to a Thread identifier when created and deleted, so repositories calls must not be done under a
-different Thread than the interceptor one.\\
 
 \subsubsection{Performing operations - Imperative and Declarative API}
 
@@ -661,7 +697,25 @@ used inside the application. This fragment has the objects required for a Tab la
 supplies and manages the lifecycle of each page). Shortening the explanation: it is a fragment that holds multiple fragments, 
 which are designated as tabs by this layout.\\
 
+\subsubsection{Fragments with navigation dependencies}
 
+Some fragments in our application require data from fragments created by them, as example - 
+AddCustomMealFragment and its child SelectMealsSlideScreenFragment. 
+This implies that a communication channel exists between
+them and this is achieved by using Navigation's \texttt{navGraphViewModel}\cite{navgraph} function to share a ViewModel between them,
+using a nested navigation id\cite{nestedNav}.\\
+
+Some instances present in the code, reuse the same child fragment to obtain this fragments, for example: SelectMealsSlideScreenFragment
+which can have more than one parent fragment. To solve this problem we used the child fragment arguments to pass the nested navigation id,
+so it could build its ViewModel. As this mechanism was used multiple times (AddProfileFragment) we implemented the \texttt{navParentViewModel} function
+to automate this process - use navgraph Id stored in fragment arguments to get the shared ViewModel.\\
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[scale=0.5]{_figures/IParentViewModel.png}
+        \caption{IParentViewModel's navParentViewModel function}
+    \end{center}
+\end{figure}
 
 \subsection{Local data storing}
 
