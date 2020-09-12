@@ -33,11 +33,11 @@ interface IWeightUnitSpinner {
 
         //Get user configured unit
         val configuredUnit = sharedPreferences.getWeightUnitOrDefault()
-        currentWeightUnit =  WeightUnits.fromValue(configuredUnit)
+        currentWeightUnit =  configuredUnit
         previousWeightUnit = currentWeightUnit
 
         //Set selected unit to configured unit
-        val spinnerPosition = spinnerAdapter.getPosition(configuredUnit)
+        val spinnerPosition = spinnerAdapter.getPosition(configuredUnit.toString())
         weightUnitSpinner.setSelection(spinnerPosition)
 
         weightUnitSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {

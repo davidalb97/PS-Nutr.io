@@ -197,7 +197,7 @@ class MealInfoFragment :
                     layoutInflater = layoutInflater,
                     baseCarbs = receivedMeal.carbs,
                     baseAmountGrams = receivedMeal.amount,
-                    mealUnit = WeightUnits.fromValue(sharedPreferences.getWeightUnitOrDefault())
+                    mealUnit = sharedPreferences.getWeightUnitOrDefault()
                 ) { preciseGrams, _ ->
                     viewModel.addMealPortion(
                         restaurantId = receivedMeal.restaurantSubmissionId!!,
@@ -222,7 +222,7 @@ class MealInfoFragment :
                     layoutInflater = layoutInflater,
                     baseCarbs = receivedMeal.carbs,
                     baseAmountGrams = userPortionEntry!!.x,
-                    mealUnit = WeightUnits.fromValue(sharedPreferences.getWeightUnitOrDefault())
+                    mealUnit = sharedPreferences.getWeightUnitOrDefault()
                 ) { preciseGrams, _ ->
 
                     viewModel.editMealPortion(

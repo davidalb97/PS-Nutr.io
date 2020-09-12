@@ -7,6 +7,8 @@ import pt.ipl.isel.leic.ps.androidclient.data.model.UserSession
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.DARK_MODE
 import pt.ipl.isel.leic.ps.androidclient.ui.util.units.DEFAULT_GLUCOSE_UNIT
 import pt.ipl.isel.leic.ps.androidclient.ui.util.units.DEFAULT_WEIGHT_UNIT
+import pt.ipl.isel.leic.ps.androidclient.ui.util.units.GlucoseUnits
+import pt.ipl.isel.leic.ps.androidclient.ui.util.units.WeightUnits
 
 // Application shared preferences keys
 const val FIRST_TIME = "isFirstTime"
@@ -73,8 +75,8 @@ fun SharedPreferences.getUsername() = getString(USERNAME_KEY, null)
 
 fun SharedPreferences.getEmail() = getString(EMAIL_KEY, null)
 
-fun SharedPreferences.getGlucoseUnitOrDefault(): String =
-    getString(GLUCOSE_UNITS_KEY, DEFAULT_GLUCOSE_UNIT.toString())!!
+fun SharedPreferences.getGlucoseUnitOrDefault(): GlucoseUnits =
+    GlucoseUnits.fromValue(getString(GLUCOSE_UNITS_KEY, DEFAULT_GLUCOSE_UNIT.toString())!!)
 
-fun SharedPreferences.getWeightUnitOrDefault() =
-    getString(WEIGHT_UNIT_KEY, DEFAULT_WEIGHT_UNIT.toString())!!
+fun SharedPreferences.getWeightUnitOrDefault(): WeightUnits =
+    WeightUnits.fromValue(getString(WEIGHT_UNIT_KEY, DEFAULT_WEIGHT_UNIT.toString())!!)

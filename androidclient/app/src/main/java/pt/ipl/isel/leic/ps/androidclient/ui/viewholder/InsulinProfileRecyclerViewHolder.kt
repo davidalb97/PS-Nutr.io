@@ -13,8 +13,6 @@ import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.IDeleteActionButton
 import pt.ipl.isel.leic.ps.androidclient.ui.util.*
 import pt.ipl.isel.leic.ps.androidclient.ui.util.units.DEFAULT_GLUCOSE_UNIT
 import pt.ipl.isel.leic.ps.androidclient.ui.util.units.DEFAULT_WEIGHT_UNIT
-import pt.ipl.isel.leic.ps.androidclient.ui.util.units.GlucoseUnits
-import pt.ipl.isel.leic.ps.androidclient.ui.util.units.WeightUnits
 
 abstract class InsulinProfileRecyclerViewHolder(
     override val actions: List<ItemAction>,
@@ -47,17 +45,14 @@ abstract class InsulinProfileRecyclerViewHolder(
 
     private fun setupTextFields() {
 
-        val glucoseUnit = sharedPreferences.getGlucoseUnitOrDefault()
-        val carbUnit = sharedPreferences.getWeightUnitOrDefault()
+        val glucoseUnitTarget = sharedPreferences.getGlucoseUnitOrDefault()
+        val weightUnitTarget = sharedPreferences.getWeightUnitOrDefault()
 
         var convertedGlucoseObjective: Float? = null
         var convertedGlucoseAmount: Float? = null
         var convertedCarbAmount: Float? = null
 
-        val glucoseUnitTarget = GlucoseUnits.fromValue(glucoseUnit)
-        val weightUnitTarget = WeightUnits.fromValue(carbUnit)
-
-        if (glucoseUnit != DEFAULT_GLUCOSE_UNIT.toString()) {
+        if (glucoseUnitTarget != DEFAULT_GLUCOSE_UNIT) {
             convertedGlucoseObjective = DEFAULT_GLUCOSE_UNIT
                 .convert(glucoseUnitTarget, item.glucoseObjective)
 
@@ -65,7 +60,7 @@ abstract class InsulinProfileRecyclerViewHolder(
                 .convert(glucoseUnitTarget, item.glucoseAmountPerInsulin)
         }
 
-        if (carbUnit != DEFAULT_WEIGHT_UNIT.toString()) {
+        if (weightUnitTarget != DEFAULT_WEIGHT_UNIT) {
             convertedCarbAmount = DEFAULT_WEIGHT_UNIT
                 .convert(weightUnitTarget, item.carbsAmountPerInsulin)
         }
@@ -88,7 +83,7 @@ abstract class InsulinProfileRecyclerViewHolder(
         carboRatio.text = String.format(
             resources.getString(R.string.carbohydrate_ratio),
             convertedCarbAmount ?: item.carbsAmountPerInsulin,
-            sharedPreferences.getWeightUnitOrDefault(),
+            sharedPreferences.getWeightUnitOrDefault().toString(),
             resources.getString(R.string.insulin_unit)
         )
     }

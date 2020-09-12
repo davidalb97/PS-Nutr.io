@@ -33,11 +33,11 @@ interface IGlucoseUnitSpinner {
 
         //Get user configured unit
         val configuredUnit = sharedPreferences.getGlucoseUnitOrDefault()
-        currentGlucoseUnit = GlucoseUnits.fromValue(configuredUnit)
+        currentGlucoseUnit = configuredUnit
         previousGlucoseUnit = currentGlucoseUnit
 
         //Set selected unit to configured unit
-        val spinnerPosition = spinnerAdapter.getPosition(configuredUnit)
+        val spinnerPosition = spinnerAdapter.getPosition(configuredUnit.toString())
         glucoseUnitSpinner.setSelection(spinnerPosition)
 
         glucoseUnitSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {

@@ -24,11 +24,11 @@ interface IMealItemDetail<T : MealItem> {
 
         val resources = context.resources
 
-        val configuredUnit = WeightUnits.fromValue(sharedPreferences.getWeightUnitOrDefault())
+        val configuredUnit = sharedPreferences.getWeightUnitOrDefault()
         customMealQuantity.text = String.format(
             resources.getString(R.string.meal_quantity_card),
             mealInfo.unit.convert(configuredUnit, mealInfo.amount),
-            configuredUnit
+            configuredUnit.toString()
         )
 
         customMealQuantity.visibility = View.VISIBLE
