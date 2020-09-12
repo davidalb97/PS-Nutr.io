@@ -19,9 +19,9 @@ abstract class BaseItemPickerViewModel<I : Parcelable> : BaseListViewModel<I> {
     }
 
     override fun tryRestore(): Boolean {
-        var tryRestore = liveDataHandler.tryRestore()
-        tryRestore = tryRestore || pickedLiveDataHandler.tryRestore()
-        return tryRestore
+        val tryRestoreUnpicked = liveDataHandler.tryRestore()
+        val tryRestorePicked = pickedLiveDataHandler.tryRestore()
+        return tryRestoreUnpicked || tryRestorePicked
     }
 
     /**
