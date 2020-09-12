@@ -32,7 +32,7 @@ interface IGlucoseUnitSpinner: IUnitSpinner {
             context = context,
             spinner = glucoseUnitSpinner,
             configuredUnit = configuredUnit.toString(),
-            allUnits = WeightUnits.values().map(WeightUnits::toString)
+            allUnits = GlucoseUnits.values().map(GlucoseUnits::toString)
         ) { selectedUnitName ->
             previousGlucoseUnit = currentGlucoseUnit
             currentGlucoseUnit = GlucoseUnits.fromValue(selectedUnitName)
