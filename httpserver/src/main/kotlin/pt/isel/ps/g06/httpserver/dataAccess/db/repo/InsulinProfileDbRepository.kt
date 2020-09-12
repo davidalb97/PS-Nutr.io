@@ -58,12 +58,12 @@ class InsulinProfileDbRepository(
     ): DbUserInsulinProfileDto {
         return databaseContext.inTransaction { handle ->
             val insulinProfileDao = handle.attach(insulinProfileDaoClass)
+            val encProfileName = columnCryptoConverter.convertToDatabaseColumn(profileName)
 
-            insulinProfileDao.getFromUser(submitterId, profileName)?.also {
+            insulinProfileDao.getFromUser(submitterId, encProfileName)?.also {
                 throw DuplicateInsulinProfileException()
             }
 
-            val encProfileName = columnCryptoConverter.convertToDatabaseColumn(profileName)
             val encStartTime = columnCryptoConverter.convertToDatabaseColumn(startTime.toString())
             val encEndTime = columnCryptoConverter.convertToDatabaseColumn(endTime.toString())
             val encGlucoseObjective = columnCryptoConverter.convertToDatabaseColumn(glucoseObjective.toString())

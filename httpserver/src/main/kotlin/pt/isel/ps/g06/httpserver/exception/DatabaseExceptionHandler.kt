@@ -23,7 +23,7 @@ class DatabaseExceptionHandler {
             processDbError(ex)
 
     private fun processDbError(ex: Exception): ResponseEntity<ProblemJson> {
-        log.error(ex.message, ex)
+        log.error("\n### Logged exception ###", ex)
         val status = HttpStatus.INTERNAL_SERVER_ERROR
         return toResponseEntity(
                 status = status,
