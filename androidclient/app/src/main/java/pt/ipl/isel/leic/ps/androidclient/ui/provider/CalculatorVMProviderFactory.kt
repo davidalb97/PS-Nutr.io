@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import pt.ipl.isel.leic.ps.androidclient.ui.util.getMealInfo
 import pt.ipl.isel.leic.ps.androidclient.ui.util.getMealIngredient
 import pt.ipl.isel.leic.ps.androidclient.ui.util.getMealItem
+import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.CalculatorViewModel
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.InsulinProfilesListViewModel
 
 class CalculatorVMProviderFactory(
@@ -29,6 +30,7 @@ class CalculatorVMProviderFactory(
                     actions = emptyList()
                 )
             }
+            CalculatorViewModel::class.java -> CalculatorViewModel()
             else -> super.newViewModel(modelClass)
         }
     }

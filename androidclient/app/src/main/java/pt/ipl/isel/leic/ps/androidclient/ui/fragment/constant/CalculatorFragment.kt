@@ -21,6 +21,7 @@ import pt.ipl.isel.leic.ps.androidclient.ui.util.putNavigation
 import pt.ipl.isel.leic.ps.androidclient.ui.util.putParentNavigation
 import pt.ipl.isel.leic.ps.androidclient.ui.util.units.DEFAULT_GLUCOSE_UNIT
 import pt.ipl.isel.leic.ps.androidclient.ui.util.units.GlucoseUnits
+import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.CalculatorViewModel
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.InsulinProfilesListViewModel
 
 class CalculatorFragment : BaseAddMealFragment(), IRequiredTextInput, IGlucoseUnitSpinner {
@@ -42,6 +43,9 @@ class CalculatorFragment : BaseAddMealFragment(), IRequiredTextInput, IGlucoseUn
             by navGraphViewModels(Navigation.SEND_TO_CALCULATOR.navId) {
                 vMProviderFactorySupplier(arguments, savedInstanceState, requireIntent())
             }
+    private val viewModelCalculator by lazy {
+        buildViewModel(savedInstanceState, CalculatorViewModel::class.java)
+    }
 
     private var currentProfile: InsulinProfile? = null
     private val calculator = InsulinCalculator()
@@ -70,7 +74,7 @@ class CalculatorFragment : BaseAddMealFragment(), IRequiredTextInput, IGlucoseUn
         currentProfileTitleTextView = view.findViewById(R.id.current_profile_label)
         currentProfileLayout = view.findViewById(R.id.current_profile_rl)
 
-        setupGlucoseUnitSpinner(requireContext(), glucoseUnitsSpinner)
+        setupGlucoseUnitSpinner(requireContext(), glucoseUnitsSpinner, viewModelCalculator.currentGlucoseUnit)
 
         setupInsulinProfilesViewModel()
     }
@@ -102,6 +106,11 @@ class CalculatorFragment : BaseAddMealFragment(), IRequiredTextInput, IGlucoseUn
         }
         viewModelProfiles.setupList()
         setupCalculateButton()
+    }
+
+    override fun setupWeightUnitSpinner(view: View) {
+        weightUnitSpinner = view.findViewById(weightUnitSpinnerId)
+        setupWeightUnitSpinner(requireContext(), weightUnitSpinner, viewModelCalculator.currentWeightUnit)
     }
 
     /**
@@ -234,8 +243,14 @@ class CalculatorFragment : BaseAddMealFragment(), IRequiredTextInput, IGlucoseUn
             val currentValue = bloodGlucoseEditText.text.toString().toFloat()
             bloodGlucoseEditText.setText(converter(currentValue).toString())
         }
+        viewModelCalculator.currentGlucoseUnit = currentGlucoseUnit
+    }
+
+    override fun onWeightUnitChange(converter: (Float) -> Float) {
+        super.onWeightUnitChange(converter)
+        viewModelCalculator.currentWeightUnit = currentWeightUnit
     }
 
     override fun getViewModels(): Iterable<Parcelable> = super.getViewModels()
-        .plus(viewModelProfiles)
+        .plus(listOf(viewModelProfiles, viewModelCalculator))
 }
