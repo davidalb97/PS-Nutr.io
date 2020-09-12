@@ -4,7 +4,10 @@ import android.net.Uri
 import android.os.Parcel
 import android.os.Parcelable
 import pt.ipl.isel.leic.ps.androidclient.ui.util.units.WeightUnits
-import pt.ipl.isel.leic.ps.androidclient.util.*
+import pt.ipl.isel.leic.ps.androidclient.util.readUri
+import pt.ipl.isel.leic.ps.androidclient.util.readWeightUnit
+import pt.ipl.isel.leic.ps.androidclient.util.writeUri
+import pt.ipl.isel.leic.ps.androidclient.util.writeWeightUnit
 
 //TODO replace var to val when fields are not changed
 open class MealItem(

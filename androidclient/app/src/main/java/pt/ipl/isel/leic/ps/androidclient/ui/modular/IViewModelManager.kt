@@ -33,9 +33,13 @@ interface IViewModelManager : ILog {
     }
 
     fun onSaveViewModels(outState: Bundle, viewModels: Iterable<Parcelable>) {
-        log.v("Saving ViewModels (${viewModels.joinToString(",") { 
-            it.javaClass.simpleName
-        }})")
+        log.v(
+            "Saving ViewModels (${
+                viewModels.joinToString(",") {
+                    it.javaClass.simpleName
+                }
+            })"
+        )
         viewModels.forEach { viewModel ->
             outState.putParcelable(viewModel.javaClass.simpleName, viewModel)
         }

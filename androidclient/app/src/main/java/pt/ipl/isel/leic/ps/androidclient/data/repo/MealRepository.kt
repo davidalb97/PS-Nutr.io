@@ -290,7 +290,7 @@ class MealRepository(private val dataSource: MealDataSource) {
         error: (VolleyError) -> Unit,
         userSession: UserSession
     ) {
-        if(restaurantId == null) {
+        if (restaurantId == null) {
             dataSource.putMealFavorite(
                 mealId = submissionId,
                 favoriteOutput = FavoriteOutput(isFavorite = isFavorite),

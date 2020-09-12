@@ -23,12 +23,13 @@ class JsonRequest(
 
     onError?.onErrorResponse(error)
 
-    logger.v("\nReceived response from $method $url, " +
-            "\nstatus: ${error?.networkResponse?.statusCode} " +
-            "\nbody: ${error?.networkResponse?.data?.let(::String)} ")
+    logger.v(
+        "\nReceived response from $method $url, " +
+                "\nstatus: ${error?.networkResponse?.statusCode} " +
+                "\nbody: ${error?.networkResponse?.data?.let(::String)} "
+    )
 
 }) {
-
 
 
     /** Lock to guard mListener as it is cleared on cancel() and read on delivery.  */

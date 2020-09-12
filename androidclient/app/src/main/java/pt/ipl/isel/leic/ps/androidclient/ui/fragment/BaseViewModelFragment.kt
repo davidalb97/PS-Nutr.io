@@ -2,9 +2,6 @@ package pt.ipl.isel.leic.ps.androidclient.ui.fragment
 
 import android.os.Bundle
 import android.os.Parcelable
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.annotation.CallSuper
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelStoreOwner
@@ -41,7 +38,10 @@ abstract class BaseViewModelFragment<VM> :
         restoreArguments()
     }
 
-    open fun <VM> ViewModelStoreOwner.buildViewModel(savedInstanceState: Bundle?, clazz: Class<VM>): VM
+    open fun <VM> ViewModelStoreOwner.buildViewModel(
+        savedInstanceState: Bundle?,
+        clazz: Class<VM>
+    ): VM
             where VM : ViewModel, VM : Parcelable {
         return buildViewModel(
             intent = requireActivity().intent,
@@ -63,7 +63,7 @@ abstract class BaseViewModelFragment<VM> :
 
     private fun restoreArguments() {
         val savedInstanceState = savedInstanceState
-        if(savedInstanceState != null) {
+        if (savedInstanceState != null) {
             arguments = savedInstanceState.getBundle(javaClass.simpleName)
         }
     }

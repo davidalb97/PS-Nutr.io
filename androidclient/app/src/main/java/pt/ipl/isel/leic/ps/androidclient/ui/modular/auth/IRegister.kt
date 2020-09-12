@@ -32,7 +32,13 @@ interface IRegister : IUserInfo, ILoading, IContext, IRequiredTextInput, ILog {
             val password = userPasswordEditText.text.toString()
             val email = userEmailEditText.text.toString()
 
-            if (validateTextViews(fetchCtx(), userNameEditText, userPasswordEditText, userEmailEditText)) {
+            if (validateTextViews(
+                    fetchCtx(),
+                    userNameEditText,
+                    userPasswordEditText,
+                    userEmailEditText
+                )
+            ) {
                 startLoading()
                 log.v("Registering...")
                 onRegister(

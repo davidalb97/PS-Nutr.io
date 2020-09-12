@@ -4,7 +4,6 @@ import android.os.Parcel
 import android.os.Parcelable
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.cuisineRepository
 import pt.ipl.isel.leic.ps.androidclient.data.model.Cuisine
-import kotlin.reflect.KClass
 
 private val ITEM_CLASS = Cuisine::class
 

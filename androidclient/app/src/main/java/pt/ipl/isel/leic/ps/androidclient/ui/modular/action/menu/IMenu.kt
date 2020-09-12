@@ -6,7 +6,7 @@ interface IMenu {
     val menus: MutableMap<String, MenuItemFactory>
 
     fun populateMenu(menu: Menu?) {
-        if(menu == null) {
+        if (menu == null) {
             return
         }
         menus.values.forEach { menuItemFactory ->

@@ -3,12 +3,10 @@ package pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.meal
 import android.content.Context
 import android.view.View
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealIngredient
-import pt.ipl.isel.leic.ps.androidclient.data.model.MealItem
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.listener.check.ICheckListener
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.listener.click.IItemClickListener
 import pt.ipl.isel.leic.ps.androidclient.ui.viewholder.meal.IngredientRecyclerViewHolder
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.meal.IngredientListViewModel
-import java.lang.UnsupportedOperationException
 
 class MealIngredientRecyclerAdapter(
     viewModel: IngredientListViewModel,

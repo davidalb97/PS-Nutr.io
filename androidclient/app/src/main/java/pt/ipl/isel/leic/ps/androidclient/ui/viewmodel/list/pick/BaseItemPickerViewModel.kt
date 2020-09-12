@@ -14,7 +14,7 @@ abstract class BaseItemPickerViewModel<I : Parcelable> : BaseListViewModel<I> {
 
     constructor(itemClass: KClass<I>) : super(itemClass)
 
-    constructor(parcel: Parcel, itemClass: KClass<I>): super(parcel, itemClass) {
+    constructor(parcel: Parcel, itemClass: KClass<I>) : super(parcel, itemClass) {
         pickedLiveDataHandler.restoreFromParcel(parcel, itemClass)
     }
 

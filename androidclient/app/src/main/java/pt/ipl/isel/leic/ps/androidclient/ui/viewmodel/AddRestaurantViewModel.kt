@@ -5,7 +5,6 @@ import android.os.Parcelable
 import androidx.lifecycle.ViewModel
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.restaurantRepository
 import pt.ipl.isel.leic.ps.androidclient.data.model.CustomRestaurant
-import pt.ipl.isel.leic.ps.androidclient.data.model.RestaurantInfo
 import pt.ipl.isel.leic.ps.androidclient.ui.util.requireUserSession
 
 class AddRestaurantViewModel() : ViewModel(), Parcelable {

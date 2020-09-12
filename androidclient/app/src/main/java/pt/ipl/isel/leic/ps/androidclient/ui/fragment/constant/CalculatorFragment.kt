@@ -74,7 +74,11 @@ class CalculatorFragment : BaseAddMealFragment(), IRequiredTextInput, IGlucoseUn
         currentProfileTitleTextView = view.findViewById(R.id.current_profile_label)
         currentProfileLayout = view.findViewById(R.id.current_profile_rl)
 
-        setupGlucoseUnitSpinner(requireContext(), glucoseUnitsSpinner, viewModelCalculator.currentGlucoseUnit)
+        setupGlucoseUnitSpinner(
+            requireContext(),
+            glucoseUnitsSpinner,
+            viewModelCalculator.currentGlucoseUnit
+        )
 
         setupInsulinProfilesViewModel()
     }
@@ -110,7 +114,11 @@ class CalculatorFragment : BaseAddMealFragment(), IRequiredTextInput, IGlucoseUn
 
     override fun setupWeightUnitSpinner(view: View) {
         weightUnitSpinner = view.findViewById(weightUnitSpinnerId)
-        setupWeightUnitSpinner(requireContext(), weightUnitSpinner, viewModelCalculator.currentWeightUnit)
+        setupWeightUnitSpinner(
+            requireContext(),
+            weightUnitSpinner,
+            viewModelCalculator.currentWeightUnit
+        )
     }
 
     /**
@@ -232,7 +240,7 @@ class CalculatorFragment : BaseAddMealFragment(), IRequiredTextInput, IGlucoseUn
 
     override fun onResume() {
         super.onResume()
-        if(viewModelProfiles.itemsChanged) {
+        if (viewModelProfiles.itemsChanged) {
             viewModelProfiles.itemsChanged = false
             showCurrentProfileDetails(viewModelProfiles.items)
         }

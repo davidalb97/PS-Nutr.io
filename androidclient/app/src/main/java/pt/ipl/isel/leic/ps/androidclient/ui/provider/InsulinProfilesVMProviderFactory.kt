@@ -20,7 +20,10 @@ open class InsulinProfilesVMProviderFactory(
         return when (modelClass) {
             InsulinProfilesListViewModel::class.java -> {
                 InsulinProfilesListViewModel(
-                    actions = arguments?.getItemActions() ?: listOf(ItemAction.DELETE, ItemAction.ADD)
+                    actions = arguments?.getItemActions() ?: listOf(
+                        ItemAction.DELETE,
+                        ItemAction.ADD
+                    )
                 )
             }
             else -> null

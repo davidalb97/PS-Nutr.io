@@ -3,7 +3,10 @@ package pt.ipl.isel.leic.ps.androidclient.ui.provider
 import android.content.Intent
 import android.os.Bundle
 import androidx.lifecycle.ViewModel
-import pt.ipl.isel.leic.ps.androidclient.ui.util.*
+import pt.ipl.isel.leic.ps.androidclient.ui.util.getItemActions
+import pt.ipl.isel.leic.ps.androidclient.ui.util.getMealInfo
+import pt.ipl.isel.leic.ps.androidclient.ui.util.getMealIngredient
+import pt.ipl.isel.leic.ps.androidclient.ui.util.getMealItem
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.meal.info.MealInfoViewModel
 
 open class MealInfoVMProviderFactory(

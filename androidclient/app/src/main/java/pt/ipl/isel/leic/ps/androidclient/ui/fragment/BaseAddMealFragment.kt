@@ -2,9 +2,7 @@ package pt.ipl.isel.leic.ps.androidclient.ui.fragment
 
 import android.os.Bundle
 import android.os.Parcelable
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.Spinner
 import android.widget.TextView

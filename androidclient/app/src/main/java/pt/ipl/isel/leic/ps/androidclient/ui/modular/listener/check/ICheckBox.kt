@@ -15,7 +15,7 @@ interface ICheckBox<T> : IAction {
     fun isRestored(): Boolean
 
     fun setupCheckBox(view: View, item: T) {
-        if(!actions.contains(ItemAction.CHECK)) {
+        if (!actions.contains(ItemAction.CHECK)) {
             return
         }
         checkBox = view.findViewById(checkBoxId)

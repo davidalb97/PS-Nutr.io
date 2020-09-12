@@ -3,7 +3,6 @@ package pt.ipl.isel.leic.ps.androidclient.ui.provider
 import android.content.Intent
 import android.os.Bundle
 import androidx.lifecycle.ViewModel
-import pt.ipl.isel.leic.ps.androidclient.ui.util.getRestaurantInfo
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.AddRestaurantViewModel
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.pick.CuisinePickViewModel
 

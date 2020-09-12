@@ -3,12 +3,10 @@ package pt.ipl.isel.leic.ps.androidclient.ui.modular.viewHolder
 import android.content.Context
 import android.view.View
 import android.widget.TextView
-import pt.ipl.isel.leic.ps.androidclient.NutrioApp
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.sharedPreferences
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealItem
 import pt.ipl.isel.leic.ps.androidclient.ui.util.getWeightUnitOrDefault
-import pt.ipl.isel.leic.ps.androidclient.ui.util.units.WeightUnits
 
 interface IMealItemDetail<T : MealItem> {
 

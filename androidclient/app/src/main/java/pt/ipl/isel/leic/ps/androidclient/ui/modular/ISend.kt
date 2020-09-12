@@ -5,7 +5,7 @@ import android.view.View
 import androidx.navigation.findNavController
 import pt.ipl.isel.leic.ps.androidclient.ui.util.Navigation
 
-interface ISend: ILog {
+interface ISend : ILog {
 
     fun onSendToDestination(bundle: Bundle)
 

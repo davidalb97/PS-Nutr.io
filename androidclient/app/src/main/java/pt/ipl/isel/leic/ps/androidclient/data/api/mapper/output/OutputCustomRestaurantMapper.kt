@@ -1,7 +1,6 @@
 package pt.ipl.isel.leic.ps.androidclient.data.api.mapper.output
 
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.output.CustomRestaurantOutput
-import pt.ipl.isel.leic.ps.androidclient.data.model.Cuisine
 import pt.ipl.isel.leic.ps.androidclient.data.model.CustomRestaurant
 
 

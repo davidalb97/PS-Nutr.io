@@ -9,19 +9,18 @@ import pt.ipl.isel.leic.ps.androidclient.data.model.MealInfo
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealItem
 import pt.ipl.isel.leic.ps.androidclient.ui.util.getWeightUnitOrDefault
 import pt.ipl.isel.leic.ps.androidclient.ui.util.requireUserSession
-import pt.ipl.isel.leic.ps.androidclient.ui.util.units.DEFAULT_WEIGHT_UNIT
 import pt.ipl.isel.leic.ps.androidclient.ui.util.units.WeightUnits
 import pt.ipl.isel.leic.ps.androidclient.util.readWeightUnit
 import pt.ipl.isel.leic.ps.androidclient.util.writeWeightUnit
 
-class AddCustomMealViewModel: MealInfoViewModel {
+class AddCustomMealViewModel : MealInfoViewModel {
 
     var currentName: String? = null
     var currentAdditionalAmount: Float = 0.0F
     var currentWeightUnits: WeightUnits = sharedPreferences.getWeightUnitOrDefault()
     var currentImg: String? = null
 
-    constructor(): super()
+    constructor() : super()
 
     constructor(parcel: Parcel) : super(parcel) {
         currentName = parcel.readString()
@@ -33,7 +32,7 @@ class AddCustomMealViewModel: MealInfoViewModel {
     constructor(mealInfo: MealInfo) : super(
         mealInfo = mealInfo,
         ingredientActions = emptyList()
-   )
+    )
 
     constructor(mealItem: MealItem) : super(
         mealItem = mealItem,

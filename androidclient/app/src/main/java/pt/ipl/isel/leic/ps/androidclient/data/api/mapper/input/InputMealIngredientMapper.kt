@@ -1,11 +1,9 @@
 package pt.ipl.isel.leic.ps.androidclient.data.api.mapper.input
 
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.ingredient.IngredientContainerInput
-import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.meal.MealInfoInput
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.meal.MealItemInput
-import pt.ipl.isel.leic.ps.androidclient.data.db.entity.DbComponentIngredientEntity
-import pt.ipl.isel.leic.ps.androidclient.data.db.entity.DbMealInfoEntity
-import pt.ipl.isel.leic.ps.androidclient.data.model.*
+import pt.ipl.isel.leic.ps.androidclient.data.model.MealIngredient
+import pt.ipl.isel.leic.ps.androidclient.data.model.Source
 import pt.ipl.isel.leic.ps.androidclient.ui.util.units.WeightUnits
 
 class InputMealIngredientMapper(

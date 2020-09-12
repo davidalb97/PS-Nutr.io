@@ -1,19 +1,15 @@
 package pt.ipl.isel.leic.ps.androidclient.ui.modular.unit
 
 import android.content.Context
-import android.view.View
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
 import android.widget.Spinner
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.sharedPreferences
 import pt.ipl.isel.leic.ps.androidclient.ui.util.Logger
 import pt.ipl.isel.leic.ps.androidclient.ui.util.getGlucoseUnitOrDefault
 import pt.ipl.isel.leic.ps.androidclient.ui.util.units.GlucoseUnits
-import pt.ipl.isel.leic.ps.androidclient.ui.util.units.WeightUnits
 
 private val log = Logger(IGlucoseUnitSpinner::class)
 
-interface IGlucoseUnitSpinner: IUnitSpinner {
+interface IGlucoseUnitSpinner : IUnitSpinner {
 
     var previousGlucoseUnit: GlucoseUnits
     var currentGlucoseUnit: GlucoseUnits
