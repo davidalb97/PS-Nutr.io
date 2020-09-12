@@ -4,38 +4,31 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import androidx.fragment.app.Fragment
-import androidx.navigation.navGraphViewModels
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealItem
 import pt.ipl.isel.leic.ps.androidclient.data.model.Source
+import pt.ipl.isel.leic.ps.androidclient.ui.IParentViewModel
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.list.*
-import pt.ipl.isel.leic.ps.androidclient.ui.modular.ISend
+import pt.ipl.isel.leic.ps.androidclient.ui.navParentViewModel
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.listener.check.ICheckListener
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.listener.check.ICheckListenerOwner
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.listener.click.IItemClickListener
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.listener.click.IItemClickListenerOwner
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.BaseAddMealRecyclerVMProviderFactory
-import pt.ipl.isel.leic.ps.androidclient.ui.util.*
+import pt.ipl.isel.leic.ps.androidclient.ui.util.ItemAction
+import pt.ipl.isel.leic.ps.androidclient.ui.util.getNavigation
 import pt.ipl.isel.leic.ps.androidclient.ui.util.prompt.MealAmountSelector
+import pt.ipl.isel.leic.ps.androidclient.ui.util.putItemActions
+import pt.ipl.isel.leic.ps.androidclient.ui.util.putSource
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.pick.MealItemPickViewModel
 
-class SelectMealsSlideScreenFragment : BaseSlideScreenFragment(propagateArguments = false), ISend {
+class SelectMealsSlideScreenFragment : BaseSlideScreenFragment(propagateArguments = false),
+    IParentViewModel {
 
     private lateinit var okButton: Button
-    private var savedInstanceState: Bundle? = null
-    private val viewModel by lazy {
-        val parentNavigation = requireNotNull(arguments?.getParentNavigation()) {
-            "${javaClass.simpleName} Must have a parent navigation for navGraphViewModel!"
-        }
-        val viewModelLazy: MealItemPickViewModel by navGraphViewModels(parentNavigation.navId) {
-            BaseAddMealRecyclerVMProviderFactory(
-                arguments = arguments,
-                savedInstanceState = savedInstanceState,
-                intent = requireActivity().intent
-            )
-        }
-        viewModelLazy
-    }
+    override var savedInstanceState: Bundle? = null
+    override val vMProviderFactorySupplier = ::BaseAddMealRecyclerVMProviderFactory
+    private val viewModel: MealItemPickViewModel by navParentViewModel()
 
     init {
         retainInstance = true
@@ -57,7 +50,8 @@ class SelectMealsSlideScreenFragment : BaseSlideScreenFragment(propagateArgument
             getString(if (viewModel.pickedItems.isEmpty()) R.string.cancel else R.string.ok)
         okButton.visibility = View.VISIBLE
         okButton.setOnClickListener {
-            sendToDestination(view, requireArguments().getNavigation())
+            //Navigate to parent pop
+            navigate(requireArguments().getNavigation())
         }
     }
 
@@ -164,9 +158,5 @@ class SelectMealsSlideScreenFragment : BaseSlideScreenFragment(propagateArgument
                 }
             }
         }
-    }
-
-    override fun onSendToDestination(bundle: Bundle) {
-
     }
 }

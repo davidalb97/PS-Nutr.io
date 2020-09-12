@@ -241,4 +241,6 @@
     <string name="item_deleted">Item deleted</string>
     <string name="item_delete_fail">Failed to delete item</string>
     <string name="loading_profiles">Loading profiles...</string>
+    <string name="prompt_add_profile">There are no active profiles for the current time, would you like to add one?</string>
+    <string name="label_profiles">Insulin Profiles</string>
 </resources>

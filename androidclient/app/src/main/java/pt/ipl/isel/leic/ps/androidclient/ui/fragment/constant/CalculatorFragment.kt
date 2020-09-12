@@ -3,25 +3,25 @@ package pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant
 import android.app.AlertDialog
 import android.os.Bundle
 import android.os.Parcelable
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.*
+import androidx.navigation.navGraphViewModels
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.app
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.db.InsulinCalculator
 import pt.ipl.isel.leic.ps.androidclient.data.model.InsulinProfile
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.BaseAddMealFragment
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.IRequiredTextInput
-import pt.ipl.isel.leic.ps.androidclient.ui.modular.filter.IItemListFilter
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.unit.IGlucoseUnitSpinner
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.CalculatorVMProviderFactory
-import pt.ipl.isel.leic.ps.androidclient.ui.util.*
+import pt.ipl.isel.leic.ps.androidclient.ui.util.Navigation
+import pt.ipl.isel.leic.ps.androidclient.ui.util.closeKeyboard
+import pt.ipl.isel.leic.ps.androidclient.ui.util.prompt.PromptConfirm
+import pt.ipl.isel.leic.ps.androidclient.ui.util.putNavigation
+import pt.ipl.isel.leic.ps.androidclient.ui.util.putParentNavigation
 import pt.ipl.isel.leic.ps.androidclient.ui.util.units.DEFAULT_GLUCOSE_UNIT
 import pt.ipl.isel.leic.ps.androidclient.ui.util.units.GlucoseUnits
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.InsulinProfilesListViewModel
-import java.text.SimpleDateFormat
-import java.util.*
 
 class CalculatorFragment : BaseAddMealFragment(), IRequiredTextInput, IGlucoseUnitSpinner {
 
@@ -29,7 +29,7 @@ class CalculatorFragment : BaseAddMealFragment(), IRequiredTextInput, IGlucoseUn
     override lateinit var currentGlucoseUnit: GlucoseUnits
     override val nestedNavigation = Navigation.SEND_TO_CALCULATOR
     override val toAddMealsActionNestedNavigation = Navigation.SEND_TO_PICK_CALCULATOR_INGREDIENTS
-    override val backNestedActionNavigation = Navigation.BACK_TO_CALCULATOR
+    override val backNestedActionNavigation = Navigation.BACK_TO_CALCULATOR_FROM_MEALS
     override val mealsRecyclerViewId: Int = R.id.calculator_meals_list
     override val weightUnitSpinnerId: Int = R.id.calculator_units_spinner
     override val addIngredientsImgButtonId = R.id.add_custom_meal_add_meal_ingredient
@@ -38,9 +38,10 @@ class CalculatorFragment : BaseAddMealFragment(), IRequiredTextInput, IGlucoseUn
 
     override val layout = R.layout.calculator_fragment
     override val vMProviderFactorySupplier = ::CalculatorVMProviderFactory
-    private val viewModelProfiles: InsulinProfilesListViewModel by lazy {
-        buildViewModel(savedInstanceState, InsulinProfilesListViewModel::class.java)
-    }
+    private val viewModelProfiles: InsulinProfilesListViewModel
+            by navGraphViewModels(Navigation.SEND_TO_CALCULATOR.navId) {
+                vMProviderFactorySupplier(arguments, savedInstanceState, requireIntent())
+            }
 
     private var currentProfile: InsulinProfile? = null
     private val calculator = InsulinCalculator()
@@ -52,6 +53,8 @@ class CalculatorFragment : BaseAddMealFragment(), IRequiredTextInput, IGlucoseUn
     private lateinit var profileGlucoseObjectiveTextView: TextView
     private lateinit var profileInsulinSensitivityTextView: TextView
     private lateinit var profileCarbohydrateRatioTextView: TextView
+    private lateinit var currentProfileTitleTextView: TextView
+    private lateinit var currentProfileLayout: RelativeLayout
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -64,6 +67,9 @@ class CalculatorFragment : BaseAddMealFragment(), IRequiredTextInput, IGlucoseUn
         profileGlucoseObjectiveTextView = view.findViewById(R.id.glucose_objective_value)
         profileInsulinSensitivityTextView = view.findViewById(R.id.insulin_sensitivity_factor_value)
         profileCarbohydrateRatioTextView = view.findViewById(R.id.carbohydrate_ratio_value)
+        currentProfileTitleTextView = view.findViewById(R.id.current_profile_label)
+        currentProfileLayout = view.findViewById(R.id.current_profile_rl)
+
         setupGlucoseUnitSpinner(requireContext(), glucoseUnitsSpinner)
 
         setupInsulinProfilesViewModel()
@@ -73,7 +79,7 @@ class CalculatorFragment : BaseAddMealFragment(), IRequiredTextInput, IGlucoseUn
         super.setupIngredients(view)
 
         val argumentMeal = viewModelProfiles.argumentMeal
-        if(argumentMeal != null) {
+        if (argumentMeal != null) {
             viewModelProfiles.argumentMeal = null
             viewModel.pick(argumentMeal)
         }
@@ -92,56 +98,34 @@ class CalculatorFragment : BaseAddMealFragment(), IRequiredTextInput, IGlucoseUn
             ).show()
         }
         viewModelProfiles.observe(this) { profilesList ->
-            if (profilesList.isEmpty())
-                showNoExistingProfilesToast()
-            else {
-                this.currentProfile = getCurrentProfile()?.also { currentProfile ->
-                    showCurrentProfileDetails(currentProfile)
-                }
-                setupCalculateButton()
-            }
+            showCurrentProfileDetails(profilesList)
         }
         viewModelProfiles.setupList()
-    }
-
-    /**
-     * Pops up when there are no insulin profiles created
-     */
-    private fun showNoExistingProfilesToast() {
-        Toast.makeText(
-            app,
-            R.string.setup_a_profile_before_proceed,
-            Toast.LENGTH_LONG
-        ).show()
+        setupCalculateButton()
     }
 
     /**
      * Searches for a profile that matches the current time
      */
-    private fun getCurrentProfile(): InsulinProfile? {
-
-        if (viewModelProfiles.items.isEmpty()) {
-            showNoExistingProfilesToast()
-            return null
-        }
-
-        // Gets actual time in hh:mm format
-        val timeInstance = SimpleDateFormat("HH:mm")
-        val calendar = Calendar.getInstance()
-        val currentTime = "${calendar.get(Calendar.HOUR_OF_DAY)}:${calendar.get(Calendar.MINUTE)}"
-        val now = timeInstance.parse(currentTime)!!
-
-        return viewModelProfiles.items.find { savedProfile ->
-            val parsedSavedStartTime = timeInstance.parse(savedProfile.startTime)
-            val parsedSavedEndTime = timeInstance.parse(savedProfile.endTime)
-            now.after(parsedSavedStartTime) && now.before(parsedSavedEndTime)
-        }
+    private fun getCurrentProfile(profilesList: List<InsulinProfile>): InsulinProfile? {
+        return profilesList.find(InsulinProfile::isActive)
     }
 
     /**
      * Shows the profile details, according to the current time
      */
-    private fun showCurrentProfileDetails(profile: InsulinProfile) {
+    private fun showCurrentProfileDetails(profilesList: List<InsulinProfile>) {
+        currentProfile = getCurrentProfile(profilesList)
+        val profile = currentProfile
+
+        if (profile == null) {
+            currentProfileTitleTextView.text = getString(R.string.setup_a_profile_before_proceed)
+            currentProfileLayout.visibility = View.GONE
+            return
+        }
+
+        currentProfileTitleTextView.text = getString(R.string.your_current_profile_for_this_time)
+        currentProfileLayout.visibility = View.VISIBLE
 
         profileStartTimeTextView.text = profile.startTime
         profileEndTimeTextView.text = profile.endTime
@@ -165,6 +149,24 @@ class CalculatorFragment : BaseAddMealFragment(), IRequiredTextInput, IGlucoseUn
     private fun setupCalculateButton() {
 
         calculateButton.setOnClickListener {
+
+            //Update current profile (might have expired since fragment setup)
+            showCurrentProfileDetails(profilesList = viewModelProfiles.items)
+
+            if (currentProfile == null) {
+                PromptConfirm(
+                    requireContext(),
+                    R.string.add_a_profile_dialog,
+                    R.string.prompt_add_profile
+                ) {
+                    val bundle = Bundle()
+                    bundle.putNavigation(Navigation.BACK_TO_CALCULATOR_FROM_ADD_PROFILE)
+                    bundle.putParentNavigation(Navigation.SEND_TO_CALCULATOR)
+                    super.navigate(Navigation.SEND_TO_ADD_INSULIN_PROFILE_FROM_CALCULATOR, bundle)
+                }.show()
+                return@setOnClickListener
+            }
+
             if (!inputValid()) {
                 return@setOnClickListener
             }
@@ -204,10 +206,6 @@ class CalculatorFragment : BaseAddMealFragment(), IRequiredTextInput, IGlucoseUn
             ).show()
             return false
         }
-        if (currentProfile == null) {
-            showNoExistingProfilesToast()
-            return false
-        }
         return true
     }
 
@@ -221,6 +219,14 @@ class CalculatorFragment : BaseAddMealFragment(), IRequiredTextInput, IGlucoseUn
             .setPositiveButton(view?.context?.getString(R.string.ok)) { _, _ -> }
             .create()
             .show()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if(viewModelProfiles.itemsChanged) {
+            viewModelProfiles.itemsChanged = false
+            showCurrentProfileDetails(viewModelProfiles.items)
+        }
     }
 
     override fun onGlucoseUnitChange(converter: (Float) -> Float) {

@@ -16,7 +16,7 @@ abstract class BaseViewModelFragment<VM> :
         where VM : ViewModel, VM : Parcelable {
 
     abstract val vmClass: Class<VM>
-    var savedInstanceState: Bundle? = null
+    override var savedInstanceState: Bundle? = null
     open val viewModel: VM by lazy {
         buildViewModel(savedInstanceState, vmClass)
     }

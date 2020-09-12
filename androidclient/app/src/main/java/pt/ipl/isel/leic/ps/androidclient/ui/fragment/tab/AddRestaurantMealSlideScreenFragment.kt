@@ -33,7 +33,7 @@ class AddRestaurantMealSlideScreenFragment : BaseSlideScreenFragment(propagateAr
     IViewModelManager {
 
     private lateinit var okButton: Button
-    var savedInstanceState: Bundle? = null
+    override var savedInstanceState: Bundle? = null
     override val vMProviderFactorySupplier = ::RestaurantInfoVMProviderFactory
     private val viewModel: RestaurantInfoViewModel by
     navGraphViewModels(Navigation.SEND_TO_RESTAURANT_DETAIL.navId) {

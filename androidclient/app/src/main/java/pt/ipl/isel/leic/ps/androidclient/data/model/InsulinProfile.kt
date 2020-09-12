@@ -6,9 +6,7 @@ import androidx.room.PrimaryKey
 import pt.ipl.isel.leic.ps.androidclient.util.TimestampWithTimeZone
 import pt.ipl.isel.leic.ps.androidclient.util.readTimestampWithTimeZone
 import pt.ipl.isel.leic.ps.androidclient.util.writeTimestampWithTimeZone
-import java.text.SimpleDateFormat
-
-//private val timeFormat = SimpleDateFormat("HH:MM")
+import java.util.*
 
 data class InsulinProfile(
     @PrimaryKey val profileName: String,
@@ -43,28 +41,23 @@ data class InsulinProfile(
         parcel.writeFloat(carbsAmountPerInsulin)
     }
 
-    //TODO replace with a cleaner solution is found
+    fun isActive(): Boolean {
+        val calendar = Calendar.getInstance()
+        val hour: Int = calendar.get(Calendar.HOUR_OF_DAY)
+        val minute: Int = calendar.get(Calendar.MINUTE)
+        val currTime = String.format("%02d%02d", hour, minute).toInt()
+
+        //Check if current time overlaps profile
+        return currTime in startInt..endInt
+    }
+
     fun isValid(): Boolean {
         return startInt < endInt
     }
 
-    //TODO replace with a cleaner solution is found
     fun overlaps(oldProfile: InsulinProfile): Boolean {
         return oldProfile.endInt > startInt && oldProfile.startInt < endInt
     }
-
-    //TODO remove if no other solution is found
-    /*
-    fun overlapsNotWorking(oldProfile: InsulinProfile): Boolean {
-        val newProfileStartTime = timeFormat.parse(startTime)!!
-        val newProfileEndTime = timeFormat.parse(endTime)!!
-        val oldProfileSavedStartTime = timeFormat.parse(oldProfile.startTime)!!
-        val oldProfileSavedEndTime = timeFormat.parse(oldProfile.endTime)!!
-
-        return oldProfileSavedEndTime.after(newProfileStartTime)
-                && oldProfileSavedStartTime.before(newProfileEndTime)
-    }
-     */
 
     override fun describeContents(): Int {
         return 0

@@ -26,6 +26,7 @@ class LoginActivity : AppCompatActivity(), ILogin, IRegister, IViewModelManager 
 
     override val log: Logger by lazy { Logger(javaClass) }
 
+    override var savedInstanceState: Bundle? = null
     override val vMProviderFactorySupplier = ::UserProfileVMProviderFactory
     lateinit var viewModel: UserSessionViewModel
 

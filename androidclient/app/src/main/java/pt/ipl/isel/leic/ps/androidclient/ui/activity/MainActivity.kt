@@ -18,7 +18,6 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.navigation.NavigationView
-import pt.ipl.isel.leic.ps.androidclient.NutrioApp
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.encryptedSharedPreferences
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.sharedPreferences
 import pt.ipl.isel.leic.ps.androidclient.R
@@ -32,13 +31,14 @@ class MainActivity : AppCompatActivity() {
     private lateinit var handler: Handler
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
         super.onCreate(savedInstanceState)
+
         setContentView(R.layout.splash_screen)
 
         handler = Handler()
 
         val isFirstTime: Boolean = sharedPreferences.getIsFirstTime()
+        log.v("isFirstTime : $isFirstTime")
 
         if (isFirstTime) {
             handler.postDelayed({
@@ -73,7 +73,7 @@ class MainActivity : AppCompatActivity() {
             appBarConfiguration = AppBarConfiguration(
                 setOf(
                     R.id.nav_home,
-                    R.id.nav_profile,
+                    R.id.nav_insulin_profiles_nested,
                     R.id.nav_settings,
                     R.id.nav_about,
                     R.id.nav_tab_meals,
@@ -116,7 +116,7 @@ class MainActivity : AppCompatActivity() {
                 navController.navigate(R.id.nav_sign)
             }
         }
-
+        log.v("onCreate() called!")
     }
 
     override fun onSupportNavigateUp(): Boolean {

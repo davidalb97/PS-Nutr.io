@@ -27,6 +27,7 @@ class RegisterFragment : BaseFragment(), IViewModelManager, IRegister, IAccountS
 
     override val layout = R.layout.register_fragment
 
+    override var savedInstanceState: Bundle? = null
     private lateinit var viewModel: UserSessionViewModel
     override val vMProviderFactorySupplier = ::UserProfileVMProviderFactory
 
