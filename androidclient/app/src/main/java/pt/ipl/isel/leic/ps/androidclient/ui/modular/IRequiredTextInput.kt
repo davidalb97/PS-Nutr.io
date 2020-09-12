@@ -7,12 +7,33 @@ import pt.ipl.isel.leic.ps.androidclient.R
 interface IRequiredTextInput {
 
     fun validateTextViews(ctx: Context, vararg textViews: TextView): Boolean {
-        return textViews.all {  textView ->
+        return textViews.all { textView ->
             textView.text.isNotBlank().also { isNotBlank ->
-                if(!isNotBlank) {
+                if (!isNotBlank) {
                     textView.error = ctx.getString(R.string.field_required)
                 }
             }
         }
+    }
+
+    fun validatePositiveFloatTextViews(ctx: Context, vararg textViews: TextView): Boolean {
+        return textViews.all { textView ->
+            getPositiveFloatOrNull(textView).let { float ->
+                return@let if (float == null) {
+                    textView.error = ctx.getString(R.string.field_required)
+                    false
+                } else true
+            }
+        }
+    }
+
+    fun TextView.toPositiveFloatOrNull(): Float? = getPositiveFloatOrNull(this)
+
+    private fun getPositiveFloatOrNull(textView: TextView): Float? {
+        val float = textView.text?.toString()?.toFloatOrNull()
+        if (float != null && float > 0.0F) {
+            return float
+        }
+        return null
     }
 }

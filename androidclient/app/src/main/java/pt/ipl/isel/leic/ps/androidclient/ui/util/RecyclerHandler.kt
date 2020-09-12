@@ -37,7 +37,7 @@ class RecyclerHandler<M : Parcelable, VM : BaseListViewModel<M>, A : BaseRecycle
 
         recyclerViewModel.onError = this::errorFunction
 
-        if(paginated) {
+        if (paginated) {
             startScrollListener()
         }
     }

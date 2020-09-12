@@ -5,15 +5,14 @@ import android.os.Parcelable
 import androidx.lifecycle.ViewModel
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.restaurantRepository
 import pt.ipl.isel.leic.ps.androidclient.data.model.CustomRestaurant
-import pt.ipl.isel.leic.ps.androidclient.data.model.RestaurantInfo
 import pt.ipl.isel.leic.ps.androidclient.ui.util.requireUserSession
 
-class AddRestaurantViewModel(
-    var editRestaurant: RestaurantInfo? = null
-) : ViewModel(), Parcelable {
+class AddRestaurantViewModel() : ViewModel(), Parcelable {
+
+    var name: String? = null
 
     constructor(parcel: Parcel) : this() {
-        editRestaurant = parcel.readParcelable(RestaurantInfo::class.java.classLoader)
+        name = parcel.readString()
     }
 
     fun addRestaurant(
@@ -30,7 +29,7 @@ class AddRestaurantViewModel(
     }
 
     override fun writeToParcel(dest: Parcel?, flags: Int) {
-        dest?.writeParcelable(editRestaurant, flags)
+        dest?.writeString(name)
     }
 
     override fun describeContents(): Int {

@@ -4,9 +4,10 @@ import android.content.SharedPreferences
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.encryptedSharedPreferences
 import pt.ipl.isel.leic.ps.androidclient.data.model.UserSession
-import pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.DARK_MODE
 import pt.ipl.isel.leic.ps.androidclient.ui.util.units.DEFAULT_GLUCOSE_UNIT
 import pt.ipl.isel.leic.ps.androidclient.ui.util.units.DEFAULT_WEIGHT_UNIT
+import pt.ipl.isel.leic.ps.androidclient.ui.util.units.GlucoseUnits
+import pt.ipl.isel.leic.ps.androidclient.ui.util.units.WeightUnits
 
 // Application shared preferences keys
 const val FIRST_TIME = "isFirstTime"
@@ -62,19 +63,14 @@ fun SharedPreferences.getIsFirstTime() = getBoolean(FIRST_TIME, true)
 fun SharedPreferences.Editor.setIsFirstTime(boolean: Boolean): SharedPreferences.Editor =
     putBoolean(FIRST_TIME, boolean)
 
-fun SharedPreferences.getIsNightMode() = getBoolean(DARK_MODE, false)
-
-fun SharedPreferences.Editor.setIsNightMode(defaultValue: Boolean): SharedPreferences.Editor =
-    putBoolean(DARK_MODE, defaultValue)
-
 fun SharedPreferences.getPassWord() = getString(PASSWORD_KEY, null)
 
 fun SharedPreferences.getUsername() = getString(USERNAME_KEY, null)
 
 fun SharedPreferences.getEmail() = getString(EMAIL_KEY, null)
 
-fun SharedPreferences.getGlucoseUnitOrDefault(): String =
-    getString(GLUCOSE_UNITS_KEY, DEFAULT_GLUCOSE_UNIT.toString())!!
+fun SharedPreferences.getGlucoseUnitOrDefault(): GlucoseUnits =
+    GlucoseUnits.fromValue(getString(GLUCOSE_UNITS_KEY, DEFAULT_GLUCOSE_UNIT.toString())!!)
 
-fun SharedPreferences.getWeightUnitOrDefault() =
-    getString(WEIGHT_UNIT_KEY, DEFAULT_WEIGHT_UNIT.toString())!!
+fun SharedPreferences.getWeightUnitOrDefault(): WeightUnits =
+    WeightUnits.fromValue(getString(WEIGHT_UNIT_KEY, DEFAULT_WEIGHT_UNIT.toString())!!)

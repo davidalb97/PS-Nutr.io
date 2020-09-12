@@ -5,7 +5,6 @@ import android.os.Parcelable
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.Observer
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.filter.IItemListFilter
 import pt.ipl.isel.leic.ps.androidclient.ui.util.Logger
 import kotlin.reflect.KClass
@@ -188,7 +187,7 @@ class LiveDataListHandler<M : Parcelable> {
 
     fun notifyChanged() {
         val value = mediatorLiveData.value
-        if(value != null) {
+        if (value != null) {
             mediatorLiveData.value = mediatorLiveData.value
         }
     }

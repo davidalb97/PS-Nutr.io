@@ -47,7 +47,7 @@ class AddCustomMealFragment : BaseAddMealFragment(), IRemainingPickSpinner, IReq
         CuisinePickRecyclerAdapter(cuisinesViewModel, requireContext())
     }
 
-    private lateinit var mMealNameEditText: EditText
+    private lateinit var mealNameEditText: EditText
     private lateinit var additionalAmountTextView: TextView
     private lateinit var addAdditionalAmountTextView: TextView
     private lateinit var addAdditionalAmountImageButton: ImageButton
@@ -103,13 +103,18 @@ class AddCustomMealFragment : BaseAddMealFragment(), IRemainingPickSpinner, IReq
         setupCuisines(view)
         setupSubmit(view)
 
-        mMealNameEditText = view.findViewById(R.id.meal_name)
-        mMealNameEditText.setText(addViewModel.currentName)
+        mealNameEditText = view.findViewById(R.id.meal_name)
+        mealNameEditText.setText(addViewModel.currentName)
 
         setupAdditionalAmount(view)
 
         imageUrlEditText = view.findViewById(R.id.custom_meal_image_url)
         imageUrlEditText.setText(addViewModel.currentImg)
+    }
+
+    override fun setupWeightUnitSpinner(view: View) {
+        weightUnitSpinner = view.findViewById(weightUnitSpinnerId)
+        setupWeightUnitSpinner(requireContext(), weightUnitSpinner, addViewModel.currentWeightUnits)
     }
 
     private fun setupAdditionalAmount(view: View) {
@@ -211,7 +216,7 @@ class AddCustomMealFragment : BaseAddMealFragment(), IRemainingPickSpinner, IReq
     }
 
     private fun isInputValid(): Boolean {
-        if (!validateTextViews(requireContext(), mMealNameEditText)) {
+        if (!validateTextViews(requireContext(), mealNameEditText)) {
             return false
         }
         if (cuisinesViewModel.pickedItems.isEmpty()) {
@@ -238,7 +243,7 @@ class AddCustomMealFragment : BaseAddMealFragment(), IRemainingPickSpinner, IReq
         return CustomMeal(
             dbId = addViewModel.mealItem?.dbId,
             submissionId = addViewModel.mealItem?.submissionId,
-            name = mMealNameEditText.text.toString(),
+            name = mealNameEditText.text.toString(),
             carbs = currentIngredientsCarbohydrates,
             amount = currentWeightUnit.convert(
                 DEFAULT_WEIGHT_UNIT,
@@ -281,4 +286,10 @@ class AddCustomMealFragment : BaseAddMealFragment(), IRemainingPickSpinner, IReq
 
     override fun getViewModels(): Iterable<Parcelable> = super.getViewModels()
         .plus(listOf(addViewModel, cuisinesViewModel))
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        addViewModel.currentImg = imageUrlEditText.text.toString()
+        addViewModel.currentName = mealNameEditText.text.toString()
+        super.onSaveInstanceState(outState)
+    }
 }

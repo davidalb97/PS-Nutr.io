@@ -8,7 +8,6 @@ import android.location.LocationManager
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageButton
-import android.widget.SearchView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.navigation.findNavController

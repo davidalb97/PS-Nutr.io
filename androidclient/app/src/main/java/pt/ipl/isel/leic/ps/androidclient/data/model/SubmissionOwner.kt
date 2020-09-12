@@ -5,7 +5,7 @@ import android.os.Parcelable
 
 class SubmissionOwner(
     val id: Int
-): Parcelable {
+) : Parcelable {
 
     constructor(parcel: Parcel) : this(
         id = parcel.readInt()

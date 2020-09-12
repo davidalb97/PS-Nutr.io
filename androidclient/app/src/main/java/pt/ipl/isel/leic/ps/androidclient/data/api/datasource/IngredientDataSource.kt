@@ -4,7 +4,8 @@ import android.net.Uri
 import com.android.volley.VolleyError
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.ingredient.IngredientContainerInput
 import pt.ipl.isel.leic.ps.androidclient.data.api.dto.input.meal.MealInfoInput
-import pt.ipl.isel.leic.ps.androidclient.data.api.request.*
+import pt.ipl.isel.leic.ps.androidclient.data.api.request.HTTPMethod
+import pt.ipl.isel.leic.ps.androidclient.data.api.request.RequestParser
 import pt.ipl.isel.leic.ps.androidclient.data.util.appendPath
 import pt.ipl.isel.leic.ps.androidclient.data.util.appendQueryNotNullParameter
 

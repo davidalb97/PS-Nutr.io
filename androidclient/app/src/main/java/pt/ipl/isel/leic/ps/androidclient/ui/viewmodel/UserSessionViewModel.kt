@@ -3,7 +3,10 @@ package pt.ipl.isel.leic.ps.androidclient.ui.viewmodel
 import androidx.lifecycle.ViewModel
 import com.android.volley.VolleyError
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.userRepository
-import pt.ipl.isel.leic.ps.androidclient.data.model.*
+import pt.ipl.isel.leic.ps.androidclient.data.model.UserInfo
+import pt.ipl.isel.leic.ps.androidclient.data.model.UserLogin
+import pt.ipl.isel.leic.ps.androidclient.data.model.UserRegister
+import pt.ipl.isel.leic.ps.androidclient.data.model.UserSession
 
 class UserSessionViewModel : ViewModel() {
 

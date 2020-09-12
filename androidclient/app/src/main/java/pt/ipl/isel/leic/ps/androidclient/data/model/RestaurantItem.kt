@@ -11,7 +11,7 @@ import pt.ipl.isel.leic.ps.androidclient.util.writeUri
 open class RestaurantItem(
     var dbId: Long?,
     val id: String?,
-    val name: String,
+    var name: String,
     val latitude: Float,
     val longitude: Float,
     val votes: Votes,

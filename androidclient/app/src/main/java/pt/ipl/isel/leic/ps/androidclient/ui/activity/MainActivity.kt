@@ -3,13 +3,9 @@ package pt.ipl.isel.leic.ps.androidclient.ui.activity
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.findNavController
@@ -21,7 +17,10 @@ import com.google.android.material.navigation.NavigationView
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.encryptedSharedPreferences
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.sharedPreferences
 import pt.ipl.isel.leic.ps.androidclient.R
-import pt.ipl.isel.leic.ps.androidclient.ui.util.*
+import pt.ipl.isel.leic.ps.androidclient.ui.util.Logger
+import pt.ipl.isel.leic.ps.androidclient.ui.util.getEmail
+import pt.ipl.isel.leic.ps.androidclient.ui.util.getIsFirstTime
+import pt.ipl.isel.leic.ps.androidclient.ui.util.getUsername
 
 class MainActivity : AppCompatActivity() {
 

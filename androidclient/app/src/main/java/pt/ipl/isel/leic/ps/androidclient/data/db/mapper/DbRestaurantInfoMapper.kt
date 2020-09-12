@@ -1,8 +1,6 @@
 package pt.ipl.isel.leic.ps.androidclient.data.db.mapper
 
 import android.net.Uri
-import pt.ipl.isel.leic.ps.androidclient.data.api.mapper.input.InputFavoriteMapper
-import pt.ipl.isel.leic.ps.androidclient.data.api.mapper.input.InputVotesMapper
 import pt.ipl.isel.leic.ps.androidclient.data.db.entity.DbRestaurantInfoEntity
 import pt.ipl.isel.leic.ps.androidclient.data.db.relation.DbRestaurantInfoRelation
 import pt.ipl.isel.leic.ps.androidclient.data.model.*

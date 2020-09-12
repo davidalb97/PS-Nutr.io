@@ -11,14 +11,13 @@ import androidx.navigation.findNavController
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.UserLogin
-import pt.ipl.isel.leic.ps.androidclient.data.model.UserSession
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.ILog
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.IRequiredTextInput
 import pt.ipl.isel.leic.ps.androidclient.ui.util.Navigation
 import pt.ipl.isel.leic.ps.androidclient.ui.util.deleteSession
 import pt.ipl.isel.leic.ps.androidclient.ui.util.getUsername
 
-interface IAccountSettings: IRequiredTextInput, ILog {
+interface IAccountSettings : IRequiredTextInput, ILog {
 
     val nonLogoutViewId: Int
     var nonLogoutView: ViewGroup

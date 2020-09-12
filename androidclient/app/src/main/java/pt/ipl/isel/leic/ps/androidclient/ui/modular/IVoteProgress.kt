@@ -23,7 +23,7 @@ interface IVoteProgress {
         upVoteCounter = view.findViewById(upVoteCounterId)
         downVoteCounter = view.findViewById(downVoteCounterId)
 
-        if(votes == null || !votes.hasVotes()) {
+        if (votes == null || !votes.hasVotes()) {
             //Set visibility to GONE to avoid recycled view holders invalid info
             voteCountersLayout.visibility = View.GONE
             return

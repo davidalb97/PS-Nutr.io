@@ -31,7 +31,7 @@ abstract class BaseListViewModel<T : Parcelable> : ViewModel, Parcelable {
     var count: Int? = DEFAULT_COUNT
     var onError: (Throwable) -> Unit = log::e
 
-    constructor(itemClass: KClass<T>): super() {
+    constructor(itemClass: KClass<T>) : super() {
         this.itemClass = itemClass
     }
 
@@ -48,7 +48,7 @@ abstract class BaseListViewModel<T : Parcelable> : ViewModel, Parcelable {
     }
 
     open fun setupList() {
-        if(!isFirstTime) {
+        if (!isFirstTime) {
             if (!tryRestore()) {
                 liveDataHandler.notifyChanged()
             }

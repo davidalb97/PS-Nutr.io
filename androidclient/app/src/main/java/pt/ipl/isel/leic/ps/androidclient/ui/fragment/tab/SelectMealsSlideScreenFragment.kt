@@ -9,11 +9,11 @@ import pt.ipl.isel.leic.ps.androidclient.data.model.MealItem
 import pt.ipl.isel.leic.ps.androidclient.data.model.Source
 import pt.ipl.isel.leic.ps.androidclient.ui.IParentViewModel
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.list.*
-import pt.ipl.isel.leic.ps.androidclient.ui.navParentViewModel
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.listener.check.ICheckListener
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.listener.check.ICheckListenerOwner
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.listener.click.IItemClickListener
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.listener.click.IItemClickListenerOwner
+import pt.ipl.isel.leic.ps.androidclient.ui.navParentViewModel
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.BaseAddMealRecyclerVMProviderFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.util.ItemAction
 import pt.ipl.isel.leic.ps.androidclient.ui.util.getNavigation

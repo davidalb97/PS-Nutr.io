@@ -5,7 +5,6 @@ import android.os.Parcelable
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.Observer
 import kotlin.reflect.KClass
 
 class LiveDataHandler<M : Parcelable> {

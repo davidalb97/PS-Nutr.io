@@ -18,7 +18,7 @@ class PromptConfirm(
         .setNegativeButton(R.string.no) { _, _ -> }
         .setCancelable(true)
         .also {
-            if(messageId != null) {
+            if (messageId != null) {
                 it.setMessage(messageId)
             }
         }

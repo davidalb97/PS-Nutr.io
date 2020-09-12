@@ -3,7 +3,6 @@ package pt.ipl.isel.leic.ps.androidclient.ui.fragment.list
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageButton
-import androidx.navigation.findNavController
 import androidx.navigation.navGraphViewModels
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import pt.ipl.isel.leic.ps.androidclient.R
@@ -49,7 +48,7 @@ class InsulinProfilesListFragment : BaseListFragment<
 
         refreshLayout = view.findViewById(R.id.insulin_refresh_layout)
 
-        if(viewModel.actions.contains(ItemAction.ADD)) {
+        if (viewModel.actions.contains(ItemAction.ADD)) {
             val addButton = view.findViewById<ImageButton>(R.id.add_profile)
 
             // Setups a listener to go to the fragment that adds a profile

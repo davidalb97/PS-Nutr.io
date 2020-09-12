@@ -4,9 +4,11 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.lifecycle.ViewModel
 import pt.ipl.isel.leic.ps.androidclient.data.model.Source
-import pt.ipl.isel.leic.ps.androidclient.ui.util.*
 import pt.ipl.isel.leic.ps.androidclient.ui.util.ItemAction.CALCULATE
 import pt.ipl.isel.leic.ps.androidclient.ui.util.ItemAction.DELETE
+import pt.ipl.isel.leic.ps.androidclient.ui.util.Navigation
+import pt.ipl.isel.leic.ps.androidclient.ui.util.getItemActions
+import pt.ipl.isel.leic.ps.androidclient.ui.util.getNavigation
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.meal.MealItemListViewModel
 
 class CustomMealRecyclerVMProviderFactory(

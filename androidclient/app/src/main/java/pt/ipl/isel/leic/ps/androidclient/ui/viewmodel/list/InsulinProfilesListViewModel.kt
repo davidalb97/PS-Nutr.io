@@ -6,7 +6,6 @@ import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.insulinProfilesRepo
 import pt.ipl.isel.leic.ps.androidclient.data.model.InsulinProfile
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealItem
 import pt.ipl.isel.leic.ps.androidclient.ui.util.ItemAction
-import pt.ipl.isel.leic.ps.androidclient.ui.util.Navigation
 import pt.ipl.isel.leic.ps.androidclient.ui.util.getUserSession
 import pt.ipl.isel.leic.ps.androidclient.util.readBooleanCompat
 import pt.ipl.isel.leic.ps.androidclient.util.readListCompat
@@ -18,13 +17,14 @@ class InsulinProfilesListViewModel : BaseListViewModel<InsulinProfile> {
 
     var argumentMeal: MealItem?
     val actions: List<ItemAction>
+
     //Used to let the parent fragment know if the insulin profile list was changed
     var itemsChanged: Boolean = false
 
     constructor(
         argumentMeal: MealItem? = null,
         actions: List<ItemAction>
-    ): super(ITEM_CLASS) {
+    ) : super(ITEM_CLASS) {
         this.argumentMeal = argumentMeal
         this.actions = actions
     }
@@ -67,14 +67,13 @@ class InsulinProfilesListViewModel : BaseListViewModel<InsulinProfile> {
 
     override fun fetch() {
         val userSession = getUserSession()
-        if(userSession != null) {
+        if (userSession != null) {
             insulinProfilesRepository.getRemoteProfiles(
                 userSession,
                 onError = onError,
                 onSuccess = liveDataHandler::set
             )
-        }
-        else {
+        } else {
             this.liveDataHandler.set(insulinProfilesRepository.getAllDbProfiles()) {
                 insulinProfilesRepository.insulinProfileMapper.mapToModel(it)
             }

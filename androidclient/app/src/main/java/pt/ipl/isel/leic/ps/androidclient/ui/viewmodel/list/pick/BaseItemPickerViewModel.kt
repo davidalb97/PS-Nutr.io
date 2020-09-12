@@ -14,14 +14,14 @@ abstract class BaseItemPickerViewModel<I : Parcelable> : BaseListViewModel<I> {
 
     constructor(itemClass: KClass<I>) : super(itemClass)
 
-    constructor(parcel: Parcel, itemClass: KClass<I>): super(parcel, itemClass) {
+    constructor(parcel: Parcel, itemClass: KClass<I>) : super(parcel, itemClass) {
         pickedLiveDataHandler.restoreFromParcel(parcel, itemClass)
     }
 
     override fun tryRestore(): Boolean {
-        var tryRestore = liveDataHandler.tryRestore()
-        tryRestore = tryRestore || pickedLiveDataHandler.tryRestore()
-        return tryRestore
+        val tryRestoreUnpicked = liveDataHandler.tryRestore()
+        val tryRestorePicked = pickedLiveDataHandler.tryRestore()
+        return tryRestoreUnpicked || tryRestorePicked
     }
 
     /**

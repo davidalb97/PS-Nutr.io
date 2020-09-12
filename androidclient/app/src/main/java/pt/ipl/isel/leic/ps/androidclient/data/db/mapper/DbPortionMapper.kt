@@ -17,5 +17,6 @@ class DbPortionMapper {
         allPortions = portions
     )
 
-    fun mapToListEntity(model: Portions): List<DbPortionEntity> = model.allPortions.map(::DbPortionEntity)
+    fun mapToListEntity(model: Portions): List<DbPortionEntity> =
+        model.allPortions.map(::DbPortionEntity)
 }

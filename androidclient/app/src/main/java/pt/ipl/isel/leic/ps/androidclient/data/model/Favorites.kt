@@ -8,7 +8,7 @@ import pt.ipl.isel.leic.ps.androidclient.util.writeBooleanCompat
 class Favorites(
     var isFavorable: Boolean,
     var isFavorite: Boolean
-): Parcelable {
+) : Parcelable {
     constructor(parcel: Parcel) : this(
         isFavorable = parcel.readBooleanCompat(),
         isFavorite = parcel.readBooleanCompat()

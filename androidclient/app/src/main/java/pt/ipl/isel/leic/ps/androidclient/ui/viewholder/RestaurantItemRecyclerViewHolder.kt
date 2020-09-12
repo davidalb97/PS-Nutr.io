@@ -4,15 +4,18 @@ import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.ImageButton
+import android.widget.ImageView
+import android.widget.ProgressBar
+import android.widget.TextView
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.RestaurantItem
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.IImage
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.IVoteProgress
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.IFavoriteActionButton
-import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.menu.MenuItemFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.menu.IPopupMenuButton
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.menu.IReportMenuItem
+import pt.ipl.isel.leic.ps.androidclient.ui.modular.action.menu.MenuItemFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.util.*
 
 abstract class RestaurantItemRecyclerViewHolder(

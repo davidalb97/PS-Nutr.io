@@ -7,7 +7,7 @@ import pt.ipl.isel.leic.ps.androidclient.ui.util.ItemAction
 import pt.ipl.isel.leic.ps.androidclient.ui.util.getItemActions
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.InsulinProfilesListViewModel
 
-class InsulinProfilesVMProviderFactory(
+open class InsulinProfilesVMProviderFactory(
     arguments: Bundle?,
     savedInstanceState: Bundle?,
     intent: Intent
@@ -20,7 +20,10 @@ class InsulinProfilesVMProviderFactory(
         return when (modelClass) {
             InsulinProfilesListViewModel::class.java -> {
                 InsulinProfilesListViewModel(
-                    actions = arguments?.getItemActions() ?: listOf(ItemAction.DELETE, ItemAction.ADD)
+                    actions = arguments?.getItemActions() ?: listOf(
+                        ItemAction.DELETE,
+                        ItemAction.ADD
+                    )
                 )
             }
             else -> null

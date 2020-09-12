@@ -3,8 +3,6 @@ package pt.ipl.isel.leic.ps.androidclient.ui.provider
 import android.content.Intent
 import android.os.Bundle
 import androidx.lifecycle.ViewModel
-import pt.ipl.isel.leic.ps.androidclient.ui.util.Logger
-import pt.ipl.isel.leic.ps.androidclient.ui.util.getRestaurantInfo
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.AddRestaurantViewModel
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.pick.CuisinePickViewModel
 
@@ -19,9 +17,7 @@ class AddRestaurantVMProviderFactory(
 ) {
     override fun <T : ViewModel?> newViewModel(modelClass: Class<T>): ViewModel? {
         return when (modelClass) {
-            AddRestaurantViewModel::class.java -> AddRestaurantViewModel(
-                editRestaurant = arguments?.getRestaurantInfo()
-            )
+            AddRestaurantViewModel::class.java -> AddRestaurantViewModel()
             CuisinePickViewModel::class.java -> CuisinePickViewModel()
             else -> null
         }

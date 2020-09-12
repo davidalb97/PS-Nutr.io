@@ -3,12 +3,10 @@ package pt.ipl.isel.leic.ps.androidclient.ui.modular.viewHolder
 import android.content.Context
 import android.view.View
 import android.widget.TextView
-import pt.ipl.isel.leic.ps.androidclient.NutrioApp
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.sharedPreferences
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealItem
 import pt.ipl.isel.leic.ps.androidclient.ui.util.getWeightUnitOrDefault
-import pt.ipl.isel.leic.ps.androidclient.ui.util.units.WeightUnits
 
 interface IMealItemDetail<T : MealItem> {
 
@@ -24,11 +22,11 @@ interface IMealItemDetail<T : MealItem> {
 
         val resources = context.resources
 
-        val configuredUnit = WeightUnits.fromValue(sharedPreferences.getWeightUnitOrDefault())
+        val configuredUnit = sharedPreferences.getWeightUnitOrDefault()
         customMealQuantity.text = String.format(
             resources.getString(R.string.meal_quantity_card),
             mealInfo.unit.convert(configuredUnit, mealInfo.amount),
-            configuredUnit
+            configuredUnit.toString()
         )
 
         customMealQuantity.visibility = View.VISIBLE

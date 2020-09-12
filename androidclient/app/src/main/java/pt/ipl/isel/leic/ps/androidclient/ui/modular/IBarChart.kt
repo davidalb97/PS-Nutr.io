@@ -67,7 +67,7 @@ interface IBarChart {
     }
 
     fun BarChart.setChartDescription(value: Boolean): BarChart {
-        chart.description.isEnabled = false;
+        chart.description.isEnabled = false
         return chart
     }
 
