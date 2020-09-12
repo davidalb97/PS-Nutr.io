@@ -61,7 +61,7 @@ class AddRestaurantFragment : BaseViewModelFragment<AddRestaurantViewModel>(),
         setupSubmit(view)
 
         restaurantNameEditText = view.findViewById(R.id.restaurant_name)
-        restaurantNameEditText.setText(viewModel.editRestaurant?.name)
+        restaurantNameEditText.setText(viewModel.name)
 
         if (isLocationEnabled()) {
             onLocationEnabled()
@@ -108,12 +108,13 @@ class AddRestaurantFragment : BaseViewModelFragment<AddRestaurantViewModel>(),
 
     private fun getCurrentCustomRestaurant(): CustomRestaurant {
         return CustomRestaurant(
-            dbId = viewModel.editRestaurant?.dbId,
-            id = viewModel.editRestaurant?.id,
+            dbId = null,
+            id = null,
             name = restaurantNameEditText.text.toString(),
             latitude = latitude?.toFloat()!!,
             longitude = longitude?.toFloat()!!,
-            image = viewModel.editRestaurant?.image,
+            //Server does not support it
+            image = null,
             cuisines = cuisinesViewModel.pickedItems
         )
     }
@@ -134,14 +135,7 @@ class AddRestaurantFragment : BaseViewModelFragment<AddRestaurantViewModel>(),
             adapter = cuisinesSpinnerAdapter,
             pickerViewModel = cuisinesViewModel
         )
-        when {
-            viewModel.editRestaurant?.cuisines != null -> {
-                val cuisines = viewModel.editRestaurant!!.cuisines
-                cuisinesViewModel.tryRestore()
-                cuisinesViewModel.pickedLiveDataHandler.add(cuisines)
-            }
-            else -> cuisinesViewModel.setupList()
-        }
+        cuisinesViewModel.setupList()
     }
 
     private fun setupSubmit(view: View) {
@@ -159,26 +153,26 @@ class AddRestaurantFragment : BaseViewModelFragment<AddRestaurantViewModel>(),
             }
 
             if (validateTextViews(requireContext(), restaurantNameEditText)) {
-                val customRestaurant = getCurrentCustomRestaurant()
-                val editRestaurant = viewModel.editRestaurant
-                if (editRestaurant == null) {
-                    viewModel.addRestaurant(
-                        customRestaurant = customRestaurant,
-                        onSuccess = {
-                            Toast.makeText(
-                                app,
-                                getString(R.string.created_restaurant),
-                                Toast.LENGTH_SHORT
-                            ).show()
-                            super.popBackStack()
-                        },
-                        onError = log::e
-                    )
-                }
+                viewModel.addRestaurant(
+                    customRestaurant = getCurrentCustomRestaurant(),
+                    onSuccess = {
+                        Toast.makeText(
+                            app,
+                            getString(R.string.created_restaurant),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        super.popBackStack()
+                    },
+                    onError = log::e
+                )
             }
         }
     }
 
     override fun getViewModels(): Iterable<Parcelable> = listOf(viewModel, cuisinesViewModel)
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        viewModel.name = restaurantNameEditText.text?.toString()
+        super.onSaveInstanceState(outState)
+    }
 }
