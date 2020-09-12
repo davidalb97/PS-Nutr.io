@@ -3,9 +3,11 @@ package pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.meal.info
 import android.os.Parcel
 import android.os.Parcelable
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.mealRepository
+import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.sharedPreferences
 import pt.ipl.isel.leic.ps.androidclient.data.model.CustomMeal
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealInfo
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealItem
+import pt.ipl.isel.leic.ps.androidclient.ui.util.getWeightUnitOrDefault
 import pt.ipl.isel.leic.ps.androidclient.ui.util.requireUserSession
 import pt.ipl.isel.leic.ps.androidclient.ui.util.units.DEFAULT_WEIGHT_UNIT
 import pt.ipl.isel.leic.ps.androidclient.ui.util.units.WeightUnits
@@ -16,7 +18,7 @@ class AddCustomMealViewModel: MealInfoViewModel {
 
     var currentName: String? = null
     var currentAdditionalAmount: Float = 0.0F
-    var currentWeightUnits: WeightUnits = DEFAULT_WEIGHT_UNIT
+    var currentWeightUnits: WeightUnits = sharedPreferences.getWeightUnitOrDefault()
     var currentImg: String? = null
 
     constructor(): super()

@@ -39,9 +39,7 @@ interface IUnitSpinner {
                 view: View?,
                 position: Int,
                 id: Long
-            ) {
-                onUnitChange(spinner.selectedItem.toString())
-            }
+            ) = onUnitChange(spinner.selectedItem.toString())
         }
     }
 }

@@ -112,6 +112,11 @@ class AddCustomMealFragment : BaseAddMealFragment(), IRemainingPickSpinner, IReq
         imageUrlEditText.setText(addViewModel.currentImg)
     }
 
+    override fun setupWeightUnitSpinner(view: View) {
+        weightUnitSpinner = view.findViewById(weightUnitSpinnerId)
+        setupWeightUnitSpinner(requireContext(), weightUnitSpinner, addViewModel.currentWeightUnits)
+    }
+
     private fun setupAdditionalAmount(view: View) {
         additionalAmountTextView = view.findViewById(R.id.custom_meal_additional_amount)
         addAdditionalAmountTextView = view.findViewById(R.id.add_custom_meal_add_amount_txt)
