@@ -1,4 +1,4 @@
-package pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant
+package pt.ipl.isel.leic.ps.androidclient.ui.fragment.create
 
 import android.app.TimePickerDialog
 import android.os.Bundle
