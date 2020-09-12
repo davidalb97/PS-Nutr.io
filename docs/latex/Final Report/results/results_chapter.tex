@@ -187,17 +187,59 @@ multiple database accesses can be performed, as seen in the following code for D
 This is done to support lazily acquired fields when building a model class in order to avoid querying large quantities of data and then not needing it.\\
 
 Additionally, if we consider that said information for each field is obtained in its’ own and new
-transactional context then this \textbf{design} can be performance heavy if we open multiple
+transactional context then this design can be performance heavy if we open multiple
 database connections as needed.\\
 
 In order to avoid this, each HTTP request holds a single database connection if needed
 and closes it when completed, as we can assume that no more database data is needed afterwards.\\
 
-This implementation is done by having every repository depend on a single instance of
-the \texttt{DatabaseContext} - our developed wrapper class which opens a connection handle when needed
-and stores it in a \texttt{ThreadLocal} map, allowing for later removal by the \texttt{DatabaseCleanupInterceptor} interceptor.
-Given that JDBI's connection \texttt{handle} can't be closed after a transaction, every database access is also done with
-\texttt{DatabaseContext.inTransaction(Function<Handle, T>))} instead of JDBI's given methods that would close attached handle.
+This implementation is done by having every repository depend on a single instance of the
+DatabaseContext - our developed wrapper class which opens a new connection handle for each
+request that needs it, storing it in current request's context, made possible by Spring's 
+\texttt{RequestContextHolder}\cite{springRequestContextHolder},
+ allowing for later closure when the request is fulfilled.\\ 
+
+According to the documentation:\\
+
+"Holder class to expose the web request in the form of a thread-bound \texttt{RequestAttributes}\cite{springRequestAttributes} object.
+The request will be inherited by any child threads spawned by the current thread if the \texttt{inheritable} flag is set to \texttt{true}."\\
+
+With that in mind, the following static method was created in order to wrap creation and retrieval of values from \texttt{RequestContextHolder}:\\
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[scale=0.8]{_figures/Using RequestContextHolder to create and retrieve values.png}
+        \caption{Using RequestContextHolder to create and retrieve values}
+    \end{center}
+\end{figure}
+
+Which is then used by \texttt{DatabaseContext} when managing a \texttt{Handle} and closing it on request completion,
+using Spring's \texttt{RequestAttributes.registerDestructionCallback(String name, Runnable callback, int scope)}.\\
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[scale=0.8]{_figures/DatabaseContext using our static method to create and later close a handle.png}
+        \caption{DatabaseContext using our static method to create and later close a handle}
+    \end{center}
+\end{figure}
+
+For specific cases where a database connection is done outside the context of a HTTP request (like the \texttt{ApiSubmitterMapper} class)
+and as such no request attribute is present, we developed an alternative class that implements \texttt{RequestAttributes}, named \texttt{CustomAttributes}.
+This implementation simply holds a map of values and requires whoever used it to explicitly remove it from current context and close underlying resources;
+as the example shows:\\
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[scale=0.8]{_figures/Explicitly resetting request context and its' resources.png}
+        \caption{Explicitly resetting request context and its' resources}
+    \end{center}
+\end{figure}
+
+Given implementation avoids mentioned issues, however it has the consequence of having transactions depend on the HTTP request that triggered the database fetch,
+meaning that lengthy controller operations may lock database tuples for longer periods of time, depending on the used transactional isolation level.\\
+
+Finally, given that JDBI’s connection handle can’t be closed after a transaction, every database access is also
+done with \texttt{DatabaseContext.inTransaction(Function<Handle, T>))} instead of JDBI’s given methods that would close attached handle.
 Implementation and a a typical use case is as follows:\\
 
 \begin{figure}[H]
@@ -214,12 +256,6 @@ Implementation and a a typical use case is as follows:\\
     \end{center}
 \end{figure}
 
-Given implementation avoids mentioned issues, however it also introduces new issues that
-need to be taken into consideration, such as only closing transactions when the interceptor is
-called - meaning that lengthy controller operations may lock database tuples for longer periods
-of time, depending on the used transactional isolation level; or the fact that a handle is linked
-to a Thread identifier when created and deleted, so repositories calls must not be done under a
-different Thread than the interceptor one.\\
 
 \subsubsection{Performing operations - Imperative and Declarative API}
 
@@ -333,8 +369,8 @@ a Sequence.\\
 
 However, this approach is not enough on its' own as JDBI warns that:\\
 
-\texttt{ResultIterable}, \texttt{ResultIterator} and \texttt{Stream} methods do not play nice with on-demand SQL Objects. Unless the methods are called in a nested way, the
-returned object will already be closed.\\
+"\texttt{ResultIterable}, \texttt{ResultIterator} and \texttt{Stream} methods do not play nice with on-demand SQL Objects. Unless the methods are called in a nested way, the
+returned object will already be closed.\\"
 
 Given the following, it is simply not enough to have every \textit{DAO} and Repository class return a lazy collection after a handle/transaction call,
 as the returned collection would be closed; so a solution was needed.\\
@@ -346,10 +382,38 @@ perform a terminal operation which would lead to resource leakage.\\
 Another alternative is to wrap a repository call in a nested way, as the JDBI documentation suggests. This approach relies on leaking database logic and dependencies to Controller
 and/or Service classes, which goes against a clean dependency injection design and as such was also discarded.\\
 
-Finally, the adopted solution ties perfectly with the issues and developed solutions mentioned previously in chapter \textbf{5.2.4 JDBI} regarding \underline{"Fetching collections of data and sequences"}.
+Finally, the adopted solution ties perfectly with the issues and developed solutions mentioned previously in chapter \textbf{5.2.4 JDBI} regarding \underline{"Avoiding multiple connections and DatabaseContext"}.
 If we assume that a Sequence and its' resources are no longer needed after the underlying HTTP request is closed, then having the \texttt{DatabaseCleanupInterceptor} class close the
 database connection avoids resource leakage when given sequences are not operated in a terminal way and having Controller and Service classes rely on database  related logic.
 
+\subsubsection{API fetching}
+
+Considering that Spring MVC does not support replying content to the requester asynchronously, all data fetched from the APIs is done in a blocking way,
+with the exception of requesting nearby restaurants from the API, which is done asynchronously, as the image shows:\\
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[scale=0.6]{_figures/Fetching restaurants from the API asynchronously.png}
+        \caption{Fetching restaurants from the API asynchronously}
+    \end{center}
+\end{figure}
+
+This exception allows for time optimizations when searching for nearby restaurants as it requires results from both the database and the API meaning that
+parallel work can be executed, resulting in the following code:\\
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[scale=0.6]{_figures/Searching nearby restaurants with parallel work.png}
+        \caption{Searching nearby restaurants with parallel work}
+    \end{center}
+\end{figure}
+
+Taking advantage of Kotlin's Sequences and its' \texttt{yieldAll} method, acquiring API results is only blocking when the sequence is iterated and
+the request's \texttt{CompletableFuture} is not yet completed.
+It is also worth mentioning that parallelism order of the two functions is not reversed 
+(i.e: The database call is asynchronous while the API one isn't) for two reasons: 
+Java's \texttt{HTTPClient} library support for asynchronous calls and the fact that database connections \textbf{must} be done in the same thread as the
+\texttt{DatabaseCleanupInterceptor}, which is explained in the previous subsection: \textbf{5.2.4 JDBI - Avoiding multiple connections and DatabaseContext}.\\
 
 \subsection{Request lifecycle}
 Each request is received in a spring controller mapping, with input object,
@@ -537,7 +601,7 @@ Here are the dependencies that were included in the mobile application which gav
 
 \subsubsection{Drawing pattern}
 
-The mobile application code structure follows the \textbf{repository pattern}, which is a code architecture recommended by the \textbf{Android Jetpack}\cite{jetpack} for this type of applications.\\
+The mobile application code structure follows the \textbf{repository pattern}, which is a code architecture recommended by \textbf{Android Jetpack}\cite{jetpack} for this type of applications.\\
 
 \begin{figure}[H]
     \begin{center}
@@ -546,7 +610,7 @@ The mobile application code structure follows the \textbf{repository pattern}, w
     \end{center}
 \end{figure}
 
-Above there is the pattern's diagram provided by the Android Jetpack.\\
+Above is the pattern's diagram provided by the Android Jetpack.\\
 
 The idea behind this architecture is that each Activity or fragment has its own ViewModel and each one calls the needed functions present inside the repository.
 The repository is a layer that manages where the information should be retrieved from.\\
@@ -567,10 +631,108 @@ to exist, they are far more lightweight to instanciate than an activity and thus
 
 It is also the recommended Android widget to use when designing an application with a side drawer.\\
 
+
 \subsubsection{Modular interfaces}
 
 As the code in the mobile application development became repetitive, the group decided to implement modular interfaces,
 which are interfaces that can be implemented by fragments and viewholders and provide them predefined behaviours.
+
+\subsection{Code hierarchy}
+
+Fragments and their respective viewmodels, alongside with ViewModelProviders inherit from base classes that have already predefined code to avoid repetition.\\
+
+\subsubsection{ViewModels}
+
+Inside the ViewModel hierarchy there is the \texttt{BaseViewModel}, allowing item list restores through parcelable implementation, saving also pagination data.\\
+
+\texttt{BaseListViewModel} also has \texttt{LiveDataListHandler} which handles all code related to livedata manipulation, such as: mapping and data restoration.\\
+
+ViewModels that have \texttt{info} included in its name, know how get a detail from a specific resource (restaurant or meal)
+and extend from \texttt{BaseListViewModel},
+storing subresources in its parent \texttt{LiveDataListHandler} and storing its own resource in its individual \texttt{LiveDataHandler}.\\
+
+There are also \textbf{ItemPickerViewModels}, which extends from \texttt{BaseItemPickerViewModel} that has a seperate \texttt{LiveDataListHandler} from its parent and
+it's used to store picked items, which are items that are picked inside the parent's list.\\
+
+The items are moved between the parent and child lists using the ViewModel's \texttt{pick()} or \texttt{unpick()} method.\\
+
+\subsubsection{Fragments}
+
+The previous explained hierarchy also exists in fragments, with the following characteristics:\\
+
+The fragment \texttt{BaseFragment}, as the name says, is the fragment on which every other fragment is based on, being widely used for event 
+logging and utilitary methods needed by child fragments.\\
+
+The fragment \texttt{BaseListViewModelFragment} manages the ViewModel and Fragment arguments' lifecycle, implementing IViewModelManager,
+from the modular interfaces, which supplies the code to build ViewModels. 
+The fragment also has a ViewModel that is lazily created, using the previously saved instance state and can save and restore 
+the ViewModel and Fragment arguments.\\
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[scale=0.5]{_figures/BaseViewModelFragment(save and restore).png}
+        \caption{BaseViewModelFragment save and argument restore methods}
+    \end{center}
+\end{figure}
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[scale=0.5]{_figures/onSaveViewModelManager.png}
+        \caption{IViewModelManager onSaveViewModels method}
+    \end{center}
+\end{figure}
+
+Not all fragments are limited to just one ViewModel and can also create, use and restore other ViewModels through the same 
+ViewModelProviderFactory.\\
+
+The fragment \texttt{BaseListFragment} extends from \texttt{BaseViewModelFragment} and its ViewModel extends from \texttt{BaseListViewModel}.
+This fragment has the \texttt{RecyclerHandler} which handles recycler list behaviours and objects, such as: loading and related UI aspects,
+the recycler adapter and the \texttt{ViewModel}.\\
+
+It also initializes the Recycler's \textbf{Scroll Listener} for pagination proposes. The pagination routine delegated to this listener is defined 
+through a class called \texttt{AppScrollListener}.\\
+
+The fragment \texttt{BaseSlideScreenFragment} extends from \texttt{BaseFragment} and it is the base fragment responsible for layouts with tabs, often
+used inside the application. This fragment has the objects required for a Tab layout: the TabAdapter, the TabLayout and the ViewPager (which
+supplies and manages the lifecycle of each page). In short, it is a fragment that holds multiple fragments, 
+which are designated as tabs by this layout.\\
+
+\subsubsection{Fragments with navigation dependencies}
+
+Some fragments in our application require data from fragments created by them, for example - 
+AddCustomMealFragment and its child SelectMealsSlideScreenFragment. 
+This implies that a communication channel exists between
+them and this is achieved by using Navigation's \texttt{navGraphViewModel}\cite{navgraph} function to share a ViewModel between them,
+using a nested navigation id\cite{nestedNav}.\\
+
+Some instances present in the code reuse the same child fragment to obtain this fragments, for example: SelectMealsSlideScreenFragment
+which can have more than one parent fragment. To solve this problem we used the child fragment arguments to pass the nested navigation id,
+so it could build its ViewModel. As this mechanism is used multiple times (AddProfileFragment) we implemented the \texttt{navParentViewModel} function
+to automate this process - use navgraph Id stored in fragment arguments to get the shared ViewModel.\\
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[scale=0.5]{_figures/IParentViewModel.png}
+        \caption{IParentViewModel's navParentViewModel function}
+    \end{center}
+\end{figure}
+
+\subsubsection{Adapters and ViewHolders}
+
+A \textbf{ViewHolder} is an object that represents the data attached to a view. In every list of items we use \texttt{RecyclerView.ViewHolder} 
+to handle every item's logic and information.\\
+
+In our application, there is only one main type of ViewHolders, used by Recycler adapters and Pick spinner adapters.\\
+
+Every \textbf{ViewHolder} will be maintained by an \textbf{Adapter}, which is responsable to bind required information present in the ViewModel
+to specific ViewHolders, via \texttt{onBindViewHolder}.\\
+
+Inside the application, there are 3 main types of adapters:
+\begin{itemize}
+    \item \textbf{BaseRecyclerAdapter} - For recycler views;
+    \item \textbf{BaseSpinnerAdapter} - For spinner dropdown menus;
+    \item \textbf{TabAdapter} - For tab layouts.
+\end{itemize}
 
 \subsection{Local data storing}
 
@@ -578,7 +740,7 @@ As mentioned in the dependencies, the mobile application utilizes Room to store 
 to allow using the application in offline situations.\\
 
 Room classes use the "\textit{Db}" prefixed followed by the name and prefixed by their type e.g. "\textit{DbMealInfoMapper}", "\textit{DbMealInfoRelation}" and "\textit{DbMealInfoEntity}". 
-The \textit{DAO} classes However are only prefixed with "\textit{Dao}". 
+The \textit{DAO} classes however are only prefixed with "\textit{Dao}". 
 All entities are mapped by a database mapper suffixed with "\textit{Mapper}".
 
 \subsection{User authentication and authorization}
@@ -595,7 +757,7 @@ Although the Android Shared Preferences being a safe place to store application 
 a normal device can not access these preferences and it should be a safe place to store user credentials, however rooted devices\cite{root} can easily
 access the shared preferences file and retrieve plaintext from it, which would compromise the user security.\\
 
-\subsubsection{Resolution: Androidx Crypto}
+\subsubsection{Solution: Androidx Crypto}
 
 The Androidx crypto\cite{crypto} was used to solve this issue. This library is used to encrypt the user credentials before writing them inside the mobile device.\\
 
@@ -607,7 +769,7 @@ shared preferences.\\
 We also discussed if the credentials should be saved inside the device or if only the database should possess them.
 If that approach was taken, the user had to login each time it was needed to read or write a protected resource.\\
 
-As this platform is not, for example, a bank application that needs top protection. We found this level of protection
+As this platform is not, for example, a bank application that requires sophisticated protection and encryption, we found this level of protection
 unnecessary for the application and inconvenient for the user and decided that only the essential protection should be provided - 
 user credentials encryption to avoid information leaks from rooted devices.
 
@@ -696,7 +858,10 @@ The user can map its day with insulin profiles, specifying for a certain timespa
 change along the day.\\
 
 When creating insulin profiles, the user must know that a profile's time period can not overlap another and that the time mapping must be done from 00h00 to 23h59, meaning that
-the end time can not be before the start time.
+the end time can not be before the start time.\\
+
+If the user is not logged in, all insulin profiles created and deleted will be written inside the application's local database - Room. If the user is logged in,
+the profiles are written into our remote database.\\
 
 \subsubsection{Searching for restaurants and meals}
 
@@ -806,7 +971,7 @@ with the insulin calculator, which will be explained in the next section.
 \subsubsection{Using the insulin calculator}
 
 To use this feature, the user must create at least one insulin profile which time period matches the current time. If the user does not have a valid insulin profile for the current
-time, the profile information in this fragment will appear with blank fields.\\
+time, the profile information section in this fragment will appear blank.\\
 
 \begin{figure}[H]
     \captionsetup[subfigure]{justification=centering}
