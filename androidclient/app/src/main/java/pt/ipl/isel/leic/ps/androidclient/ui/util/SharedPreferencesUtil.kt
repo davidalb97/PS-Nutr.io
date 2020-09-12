@@ -4,7 +4,6 @@ import android.content.SharedPreferences
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.encryptedSharedPreferences
 import pt.ipl.isel.leic.ps.androidclient.data.model.UserSession
-import pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.DARK_MODE
 import pt.ipl.isel.leic.ps.androidclient.ui.util.units.DEFAULT_GLUCOSE_UNIT
 import pt.ipl.isel.leic.ps.androidclient.ui.util.units.DEFAULT_WEIGHT_UNIT
 import pt.ipl.isel.leic.ps.androidclient.ui.util.units.GlucoseUnits
@@ -63,11 +62,6 @@ fun SharedPreferences.getIsFirstTime() = getBoolean(FIRST_TIME, true)
 
 fun SharedPreferences.Editor.setIsFirstTime(boolean: Boolean): SharedPreferences.Editor =
     putBoolean(FIRST_TIME, boolean)
-
-fun SharedPreferences.getIsNightMode() = getBoolean(DARK_MODE, false)
-
-fun SharedPreferences.Editor.setIsNightMode(defaultValue: Boolean): SharedPreferences.Editor =
-    putBoolean(DARK_MODE, defaultValue)
 
 fun SharedPreferences.getPassWord() = getString(PASSWORD_KEY, null)
 
