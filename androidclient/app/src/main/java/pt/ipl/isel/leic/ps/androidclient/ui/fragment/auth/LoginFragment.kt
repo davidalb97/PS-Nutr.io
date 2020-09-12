@@ -20,6 +20,7 @@ import pt.ipl.isel.leic.ps.androidclient.ui.modular.IViewModelManager
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.auth.IAccountSettings
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.auth.ILogin
 import pt.ipl.isel.leic.ps.androidclient.ui.provider.UserProfileVMProviderFactory
+import pt.ipl.isel.leic.ps.androidclient.ui.util.deleteSession
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.UserSessionViewModel
 
 class LoginFragment : BaseFragment(), IViewModelManager, ILogin, IAccountSettings {
@@ -103,6 +104,7 @@ class LoginFragment : BaseFragment(), IViewModelManager, ILogin, IAccountSetting
                 viewModel.deleteAccount(
                     userSession = it,
                     onSuccess = {
+                        deleteSession()
                         Toast.makeText(context, R.string.remove_account_success, Toast.LENGTH_SHORT)
                             .show()
                         requireView().findNavController().navigate(R.id.nav_home)

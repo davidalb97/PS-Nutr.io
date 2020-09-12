@@ -2,7 +2,10 @@ package pt.ipl.isel.leic.ps.androidclient.ui.fragment.list.detail
 
 import android.content.Context
 import android.os.Bundle
-import android.view.*
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.*
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.components.XAxis
@@ -188,22 +191,24 @@ class MealInfoFragment :
     private fun setupAddPortion(view: View, receivedMeal: MealInfo) {
         val addPortionButton: Button = view.findViewById(R.id.add_portion_button)
         addPortionButton.setOnClickListener {
-            MealAmountSelector(
-                ctx = requireContext(),
-                layoutInflater = layoutInflater,
-                baseCarbs = receivedMeal.carbs,
-                baseAmountGrams = receivedMeal.amount,
-                mealUnit = WeightUnits.fromValue(sharedPreferences.getWeightUnitOrDefault())
-            ) { preciseGrams, _ ->
-                viewModel.addMealPortion(
-                    restaurantId = receivedMeal.restaurantSubmissionId!!,
-                    mealId = receivedMeal.submissionId!!,
-                    //MealAmountSelector always returns in grams
-                    portion = Portion(preciseGrams, WeightUnits.GRAMS),
-                    userSession = requireUserSession(),
-                    onSuccess = { onAddPortion(preciseGrams) },
-                    onError = { error -> onAddPortion(preciseGrams, exception = error) }
-                )
+            ensureUserSession(fetchCtx()) { userSession ->
+                MealAmountSelector(
+                    ctx = requireContext(),
+                    layoutInflater = layoutInflater,
+                    baseCarbs = receivedMeal.carbs,
+                    baseAmountGrams = receivedMeal.amount,
+                    mealUnit = WeightUnits.fromValue(sharedPreferences.getWeightUnitOrDefault())
+                ) { preciseGrams, _ ->
+                    viewModel.addMealPortion(
+                        restaurantId = receivedMeal.restaurantSubmissionId!!,
+                        mealId = receivedMeal.submissionId!!,
+                        //MealAmountSelector always returns in grams
+                        portion = Portion(preciseGrams, WeightUnits.GRAMS),
+                        userSession = userSession,
+                        onSuccess = { onAddPortion(preciseGrams) },
+                        onError = { error -> onAddPortion(preciseGrams, exception = error) }
+                    )
+                }
             }
         }
     }
@@ -211,22 +216,25 @@ class MealInfoFragment :
     private fun setupEditPortion(view: View, receivedMeal: MealInfo) {
         val editPortionButton: Button = view.findViewById(R.id.edit_portion_button)
         editPortionButton.setOnClickListener {
-            MealAmountSelector(
-                ctx = requireContext(),
-                layoutInflater = layoutInflater,
-                baseCarbs = receivedMeal.carbs,
-                baseAmountGrams = userPortionEntry!!.x,
-                mealUnit = WeightUnits.fromValue(sharedPreferences.getWeightUnitOrDefault())
-            ) { preciseGrams, _ ->
-                viewModel.editMealPortion(
-                    restaurantId = receivedMeal.restaurantSubmissionId!!,
-                    mealId = receivedMeal.submissionId!!,
-                    //MealAmountSelector always returns in grams
-                    portion = Portion(preciseGrams, WeightUnits.GRAMS),
-                    userSession = requireUserSession(),
-                    onSuccess = { onEditPortion(preciseGrams) },
-                    onError = { error -> onEditPortion(preciseGrams, exception = error) }
-                )
+            ensureUserSession(fetchCtx()) { userSession ->
+                MealAmountSelector(
+                    ctx = requireContext(),
+                    layoutInflater = layoutInflater,
+                    baseCarbs = receivedMeal.carbs,
+                    baseAmountGrams = userPortionEntry!!.x,
+                    mealUnit = WeightUnits.fromValue(sharedPreferences.getWeightUnitOrDefault())
+                ) { preciseGrams, _ ->
+
+                    viewModel.editMealPortion(
+                        restaurantId = receivedMeal.restaurantSubmissionId!!,
+                        mealId = receivedMeal.submissionId!!,
+                        //MealAmountSelector always returns in grams
+                        portion = Portion(preciseGrams, WeightUnits.GRAMS),
+                        userSession = userSession,
+                        onSuccess = { onEditPortion(preciseGrams) },
+                        onError = { error -> onEditPortion(preciseGrams, exception = error) }
+                    )
+                }
             }
         }
     }
@@ -234,13 +242,15 @@ class MealInfoFragment :
     private fun setupDeletePortion(view: View, receivedMeal: MealInfo) {
         val deletePortionButton: Button = view.findViewById(R.id.delete_portion_button)
         deletePortionButton.setOnClickListener {
-            viewModel.deleteMealPortion(
-                restaurantId = receivedMeal.restaurantSubmissionId!!,
-                mealId = receivedMeal.submissionId!!,
-                userSession = requireUserSession(),
-                onSuccess = { onDeletePortion() },
-                onError = { error -> onDeletePortion(exception = error) }
-            )
+            ensureUserSession(fetchCtx()) { userSession ->
+                viewModel.deleteMealPortion(
+                    restaurantId = receivedMeal.restaurantSubmissionId!!,
+                    mealId = receivedMeal.submissionId!!,
+                    userSession = userSession,
+                    onSuccess = { onDeletePortion() },
+                    onError = { error -> onDeletePortion(exception = error) }
+                )
+            }
         }
     }
 
