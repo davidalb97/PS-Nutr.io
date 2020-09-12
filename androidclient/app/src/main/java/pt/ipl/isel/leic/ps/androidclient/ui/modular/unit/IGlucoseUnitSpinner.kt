@@ -35,7 +35,7 @@ interface IGlucoseUnitSpinner: IUnitSpinner {
             allUnits = WeightUnits.values().map(WeightUnits::toString)
         ) { selectedUnitName ->
             previousGlucoseUnit = currentGlucoseUnit
-            currentGlucoseUnit = GlucoseUnits.valueOf(selectedUnitName)
+            currentGlucoseUnit = GlucoseUnits.fromValue(selectedUnitName)
 
             log.v("Changing unit from $previousGlucoseUnit to $currentGlucoseUnit")
 

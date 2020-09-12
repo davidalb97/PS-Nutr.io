@@ -32,6 +32,10 @@ interface IWeightUnitSpinner : IUnitSpinner {
         ) { selectedUnitName ->
             previousWeightUnit = currentWeightUnit
             currentWeightUnit = WeightUnits.fromValue(selectedUnitName)
+
+            log.v("Changing unit from $previousWeightUnit to $currentWeightUnit")
+
+            //Notify listeners of unit change passing the converted function
             onWeightUnitChange { oldValue ->
                 previousWeightUnit.convert(currentWeightUnit, oldValue)
             }
