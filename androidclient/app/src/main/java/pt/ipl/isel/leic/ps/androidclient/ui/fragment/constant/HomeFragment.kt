@@ -48,11 +48,7 @@ class HomeFragment : BaseFragment() {
     private fun setupMealsByNameBtn(view: View) {
         val button: ViewGroup = view.findViewById(R.id.secondSection_button1)
         button.setOnClickListener {
-            val bundle = Bundle()
-            bundle.putSource(Source.API)
-            bundle.putNavigation(Navigation.SEND_TO_MEAL_DETAIL)
-            bundle.putItemActions(ItemAction.FAVORITE, ItemAction.CALCULATE)
-            view.findNavController().navigate(Navigation.SEND_TO_MEAL_LIST_BY_NAME.navId, bundle)
+            navigate(Navigation.SEND_TO_MEAL_LIST_BY_NAME)
         }
     }
 
