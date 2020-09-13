@@ -38,7 +38,7 @@ open class MealInfoViewModel : MealItemListViewModel {
     ) : super(
         source = mealItem.source,
         restaurantId = mealItem.restaurantSubmissionId,
-        navDestination = Navigation.SEND_TO_MEAL_DETAIL,
+        navDestination = Navigation.IGNORE,
         actions = ingredientActions
     ) {
         this.mealItem = mealItem
