@@ -166,7 +166,7 @@ class MealInfoFragment :
 
         val userPortion = receivedMeal.portions?.userPortion
         if (userPortion != null) {
-            userPortionEntry = portionEntries.firstOrNull { it.x == userPortion }
+            userPortionEntry = portionEntries.first { it.x == userPortion }
         }
     }
 
@@ -332,6 +332,8 @@ class MealInfoFragment :
         } else {
             userPortionEntry!!.y++
         }
+        val currentPortions = viewModel.mealInfo!!.portions!!.allPortions
+        viewModel.mealInfo!!.portions!!.allPortions = currentPortions.plus(amount)
     }
 
     private fun deletePortionFromGraph() {
@@ -340,6 +342,8 @@ class MealInfoFragment :
         if (oldPortion.y == 0.0F) {
             portionEntries.remove(oldPortion)
         }
+        val currentPortions = viewModel.mealInfo!!.portions!!.allPortions
+        viewModel.mealInfo!!.portions!!.allPortions = currentPortions.minus(oldPortion.x)
     }
 
     override fun setupChartData(entries: List<BarEntry>) {

@@ -8,7 +8,7 @@ data class Portions(
     var dbId: Long,
     var dbMealId: Long,
     val userPortion: Float?,
-    val allPortions: List<Float>
+    var allPortions: List<Float>
 ) : Parcelable {
 
     constructor(parcel: Parcel) : this(
