@@ -20,6 +20,7 @@ import pt.ipl.isel.leic.ps.androidclient.ui.util.getNavigation
 import pt.ipl.isel.leic.ps.androidclient.ui.util.prompt.MealAmountSelector
 import pt.ipl.isel.leic.ps.androidclient.ui.util.putItemActions
 import pt.ipl.isel.leic.ps.androidclient.ui.util.putSource
+import pt.ipl.isel.leic.ps.androidclient.ui.util.units.WeightUnits
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.pick.MealItemPickViewModel
 
 class SelectMealsSlideScreenFragment : BaseSlideScreenFragment(propagateArguments = false),
@@ -96,8 +97,9 @@ class SelectMealsSlideScreenFragment : BaseSlideScreenFragment(propagateArgument
         return ICheckListener { item, isChecked, onChangeCallback ->
             viewModel.itemsChanged = true
 
-            val existingItem =
-                viewModel.pickedItems.firstOrNull { it.submissionId == item.submissionId }
+            val existingItem = viewModel.pickedItems.firstOrNull {
+                it.submissionId == item.submissionId
+            }
             //Add checked item to list
             if (isChecked) {
                 //Change button state if it's the first item
@@ -114,11 +116,13 @@ class SelectMealsSlideScreenFragment : BaseSlideScreenFragment(propagateArgument
                     ctx = requireContext(),
                     layoutInflater = layoutInflater,
                     baseCarbs = item.carbs,
-                    baseAmountGrams = item.amount,
-                    mealUnit = item.unit
-                ) { selectedGrams, selectedCarbohydrates ->
-                    item.amount = selectedGrams
+                    baseAmount = item.unit.convert(viewModel.currentWeightUnits, item.amount),
+                    startUnit = viewModel.currentWeightUnits
+                ) { selectedAmount: Float, selectedCarbohydrates: Float, unit: WeightUnits ->
+                    item.amount = selectedAmount
                     item.carbs = selectedCarbohydrates
+                    item.unit = unit
+                    viewModel.currentWeightUnits = unit
                     viewModel.pick(item)
                     onChangeCallback()
                 }
@@ -147,13 +151,19 @@ class SelectMealsSlideScreenFragment : BaseSlideScreenFragment(propagateArgument
                     ctx = requireContext(),
                     layoutInflater = layoutInflater,
                     baseCarbs = existingItem.carbs,
-                    baseAmountGrams = existingItem.amount,
-                    mealUnit = item.unit
-                ) { selectedGrams, selectedCarbohydrates ->
-                    item.amount = selectedGrams
+                    baseAmount = existingItem.unit.convert(
+                        viewModel.currentWeightUnits,
+                        existingItem.amount
+                    ),
+                    startUnit = viewModel.currentWeightUnits
+                ) { selectedAmount: Float, selectedCarbohydrates: Float, unit: WeightUnits ->
+                    item.amount = selectedAmount
                     item.carbs = selectedCarbohydrates
-                    existingItem.amount = selectedGrams
+                    item.unit = unit
+                    existingItem.amount = selectedAmount
                     existingItem.carbs = selectedCarbohydrates
+                    existingItem.unit = unit
+                    viewModel.currentWeightUnits = unit
                     onChangeCallback()
                 }
             }
