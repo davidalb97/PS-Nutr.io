@@ -12,27 +12,33 @@ import pt.ipl.isel.leic.ps.androidclient.ui.modular.unit.IWeightUnitSpinner
 import pt.ipl.isel.leic.ps.androidclient.ui.util.Logger
 import pt.ipl.isel.leic.ps.androidclient.ui.util.units.WeightUnits
 
-private const val MAX_WEIGHT_GRAMS = 1000
+private const val MAX_WEIGHT_GRAMS = 1000F
+private val MAX_WEIGHT_OUNCES = WeightUnits.GRAMS.convert(WeightUnits.OUNCES, MAX_WEIGHT_GRAMS)
 
 class MealAmountSelector(
     val ctx: Context,
-    val layoutInflater: LayoutInflater,
+    layoutInflater: LayoutInflater,
     val baseCarbs: Float,
-    val baseAmountGrams: Float,
-    val mealUnit: WeightUnits,
+    val baseAmount: Float,
+    val startUnit: WeightUnits,
     hideCarbs: Boolean = false,
-    onOk: (amountGrams: Float, carbs: Float) -> Unit
+    onOk: (amount: Float, carbs: Float, unit: WeightUnits) -> Unit
 ) : IWeightUnitSpinner {
 
     private val logger = Logger(MealAmountSelector::class)
 
     override lateinit var currentWeightUnit: WeightUnits
+    override val weightUnitSpinnerId: Int = R.id.meal_amount_selector_spinner
+    override lateinit var weightUnitSpinner: Spinner
     override lateinit var previousWeightUnit: WeightUnits
 
+    val maxAmount = when (startUnit) {
+        WeightUnits.GRAMS -> MAX_WEIGHT_GRAMS
+        WeightUnits.OUNCES -> MAX_WEIGHT_OUNCES
+    }
     var seekBar: SeekBar
     var carbsTextView: TextView
     var amountTextView: TextView
-    var spinner: Spinner
     var conversionPercentage: Float? = null
 
     init {
@@ -45,11 +51,10 @@ class MealAmountSelector(
         }
         amountTextView = alertDialogView.findViewById(R.id.meal_amount_selector_meal_amount)
         seekBar = alertDialogView.findViewById(R.id.meal_amount_selector_seekBar)
-        spinner = alertDialogView.findViewById(R.id.meal_amount_selector_spinner)
 
-        setupWeightUnitSpinner(ctx, spinner)
+        setupWeightUnitSpinner(alertDialogView, ctx, startUnit)
         seekBar.max = 100
-        conversionPercentage = amountToPercentage(WeightUnits.GRAMS, baseAmountGrams)
+        conversionPercentage = amountToPercentage(startUnit, baseAmount)
         logger.v("Starting progress: $conversionPercentage%")
         seekBar.progress = conversionPercentage!!.toInt()
 
@@ -73,30 +78,43 @@ class MealAmountSelector(
             .setPositiveButton("OK") { dialog, _ ->
                 dialog.dismiss()
 
-                val convertedAmount = currentWeightUnit.convert(
-                    WeightUnits.GRAMS,
-                    getCurrentAmount()
-                )
-                val convertedCarbs = getConvertedCarbs(convertedAmount)
-                onOk(convertedAmount, convertedCarbs)
+                val currentAmount = getCurrentAmount()
+                val convertedCarbs = getConvertedCarbs(toMealUnit(currentAmount))
+                onOk(currentAmount, convertedCarbs, currentWeightUnit)
             }
             .create()
             .show()
     }
 
+    /**
+     * Get selected percentage or conversionPercentage
+     * (If there was a conversion without [seekBar.setProgress()] call).
+     */
+    private fun getPercentage(): Float {
+        return conversionPercentage ?: seekBar.progress.toFloat()
+    }
+
+    /**
+     * Gets the current amount according to the [baseAmount] and [seekBar.getProgress()].
+     */
     private fun getCurrentAmount(): Float {
-        return percentageToAmount(
-            currentWeightUnit,
-            conversionPercentage ?: seekBar.progress.toFloat()
-        )
+        return percentageToAmount(currentWeightUnit)
     }
 
+    /**
+     * Converts an amount to the start unit [startUnit]
+     * @param currentAmount Amount converted to [currentWeightUnit].
+     */
     private fun toMealUnit(currentAmount: Float): Float {
-        return currentWeightUnit.convert(mealUnit, currentAmount)
+        return currentWeightUnit.convert(startUnit, currentAmount)
     }
 
-    private fun getConvertedCarbs(amountGrams: Float): Float {
-        return ((amountGrams * baseCarbs) / baseAmountGrams)
+    /**
+     * Gets carbohydrates relative to [baseCarbs], [baseAmount] and [amount].
+     * @param amount Amount converted to [startUnit].
+     */
+    private fun getConvertedCarbs(amount: Float): Float {
+        return ((amount * baseCarbs) / baseAmount)
     }
 
     private fun updateTextViews() {
@@ -113,24 +131,30 @@ class MealAmountSelector(
     }
 
     override fun onWeightUnitChange(converter: (Float) -> Float) {
-        val oldValue = percentageToAmount(
-            previousWeightUnit,
-            conversionPercentage ?: seekBar.progress.toFloat()
-        )
+        val oldValue = percentageToAmount(previousWeightUnit)
         val convertedValue = converter(oldValue)
         logger.v("Converting from $oldValue $previousWeightUnit to $convertedValue $currentWeightUnit")
         conversionPercentage = amountToPercentage(currentWeightUnit, convertedValue)
         updateTextViews()
     }
 
+    /**
+     * Converts the [amount] to a percentage relative to [baseAmount].
+     * @param unit The [amount] [WeightUnits].
+     * @param amount The amount.
+     */
     private fun amountToPercentage(unit: WeightUnits, amount: Float): Float {
-        val maxAmount = WeightUnits.GRAMS.convert(unit, MAX_WEIGHT_GRAMS.toFloat())
+        val maxAmount = startUnit.convert(unit, maxAmount)
         return (amount * 100) / maxAmount
     }
 
-    private fun percentageToAmount(unit: WeightUnits, percentage: Float): Float {
-        val maxAmount = WeightUnits.GRAMS.convert(unit, MAX_WEIGHT_GRAMS.toFloat())
-        return ((percentage * maxAmount) / 100)
+    /**
+     * Gets the amount from the percentage relative to [baseAmount] and converts to target [unit].
+     * @param unit Target [WeightUnits] to convert.
+     */
+    private fun percentageToAmount(unit: WeightUnits): Float {
+        val maxAmount = startUnit.convert(unit, maxAmount)
+        return ((getPercentage() * maxAmount) / 100)
     }
 }
 
