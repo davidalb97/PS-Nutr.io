@@ -5,10 +5,12 @@ import pt.isel.ps.g06.httpserver.dataAccess.common.mapper.ModelMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.SubmissionContractType
 import pt.isel.ps.g06.httpserver.dataAccess.db.dto.DbRestaurantDto
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.*
+import pt.isel.ps.g06.httpserver.model.Cuisine
 import pt.isel.ps.g06.httpserver.model.modular.toUserPredicate
 import pt.isel.ps.g06.httpserver.model.modular.toUserVote
 import pt.isel.ps.g06.httpserver.model.restaurant.Restaurant
 import pt.isel.ps.g06.httpserver.model.restaurant.RestaurantIdentifier
+import pt.isel.ps.g06.httpserver.util.memoized
 
 @Component
 class DbRestaurantModelMapper(
@@ -29,6 +31,7 @@ class DbRestaurantModelMapper(
         val cuisines = dbCuisineRepository
                 .getAllByRestaurantId(dto.submission_id)
                 .map(dbCuisineMapper::mapTo)
+                .memoized()
         val submitterInfo = lazy {
             //Restaurants always have a submitter, even if it's from the API
             dbSubmitterRepo.getSubmitterForSubmission(dto.submission_id)
@@ -56,7 +59,7 @@ class DbRestaurantModelMapper(
                         .getAllUserMealsForRestaurant(dto.submission_id)
                         .map(dbMealMapper::mapTo),
                 suggestedMeals = dbMealRepository
-                        .getAllSuggestedMealsFromCuisineNames(cuisines.map { it.name })
+                        .getAllSuggestedMealsFromCuisineNames(cuisines.map(Cuisine::name))
                         .map(dbMealMapper::mapTo),
                 votes = lazy { dbVotesMapper.mapTo(dbVoteRepository.getVotes(dto.submission_id)) },
                 userVote = toUserVote { userId -> dbVoteRepository.getUserVote(dto.submission_id, userId) },
