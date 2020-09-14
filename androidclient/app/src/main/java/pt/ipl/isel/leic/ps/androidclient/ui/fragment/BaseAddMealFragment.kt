@@ -45,8 +45,8 @@ abstract class BaseAddMealFragment : BaseViewModelFragment<MealItemPickViewModel
     override lateinit var currentWeightUnit: WeightUnits
     override lateinit var previousWeightUnit: WeightUnits
 
-    protected abstract val weightUnitSpinnerId: Int
-    protected lateinit var weightUnitSpinner: Spinner
+    abstract override val weightUnitSpinnerId: Int
+    override lateinit var weightUnitSpinner: Spinner
 
     protected abstract val addIngredientsImgButtonId: Int
     private lateinit var addIngredientsImgButton: ImageButton
@@ -81,8 +81,10 @@ abstract class BaseAddMealFragment : BaseViewModelFragment<MealItemPickViewModel
     }
 
     protected open fun setupWeightUnitSpinner(view: View) {
-        weightUnitSpinner = view.findViewById(weightUnitSpinnerId)
-        setupWeightUnitSpinner(requireContext(), weightUnitSpinner)
+        setupWeightUnitSpinner(
+            view = view,
+            context = requireContext()
+        )
     }
 
     private fun setupAddMealsBtn(view: View) {

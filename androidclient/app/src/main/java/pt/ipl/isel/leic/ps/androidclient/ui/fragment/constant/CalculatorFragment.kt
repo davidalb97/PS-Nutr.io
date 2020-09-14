@@ -28,11 +28,14 @@ class CalculatorFragment : BaseAddMealFragment(), IRequiredTextInput, IGlucoseUn
 
     override lateinit var previousGlucoseUnit: GlucoseUnits
     override lateinit var currentGlucoseUnit: GlucoseUnits
+
     override val nestedNavigation = Navigation.SEND_TO_CALCULATOR
     override val toAddMealsActionNestedNavigation = Navigation.SEND_TO_PICK_CALCULATOR_INGREDIENTS
     override val backNestedActionNavigation = Navigation.BACK_TO_CALCULATOR_FROM_MEALS
     override val mealsRecyclerViewId: Int = R.id.calculator_meals_list
     override val weightUnitSpinnerId: Int = R.id.calculator_units_spinner
+    override val glucoseUnitSpinnerId: Int = R.id.calculator_glucose_units
+    override lateinit var glucoseUnitSpinner: Spinner
     override val addIngredientsImgButtonId = R.id.add_custom_meal_add_meal_ingredient
     override val totalIngredientsWeightTextViewId = R.id.total_ingredient_amount
     override val totalIngredientsCarbohydratesTextViewId = R.id.total_ingredient_carbs
@@ -65,7 +68,6 @@ class CalculatorFragment : BaseAddMealFragment(), IRequiredTextInput, IGlucoseUn
 
         bloodGlucoseEditText = view.findViewById(R.id.user_blood_glucose)
         calculateButton = view.findViewById(R.id.calculate_button)
-        glucoseUnitsSpinner = view.findViewById(R.id.calculator_glucose_units)
         profileStartTimeTextView = view.findViewById(R.id.start_time_value)
         profileEndTimeTextView = view.findViewById(R.id.end_time_value)
         profileGlucoseObjectiveTextView = view.findViewById(R.id.glucose_objective_value)
@@ -75,9 +77,9 @@ class CalculatorFragment : BaseAddMealFragment(), IRequiredTextInput, IGlucoseUn
         currentProfileLayout = view.findViewById(R.id.current_profile_rl)
 
         setupGlucoseUnitSpinner(
-            requireContext(),
-            glucoseUnitsSpinner,
-            viewModelCalculator.currentGlucoseUnit
+            view = view,
+            context = requireContext(),
+            configuredUnit = viewModelCalculator.currentGlucoseUnit
         )
 
         setupInsulinProfilesViewModel()
@@ -113,11 +115,10 @@ class CalculatorFragment : BaseAddMealFragment(), IRequiredTextInput, IGlucoseUn
     }
 
     override fun setupWeightUnitSpinner(view: View) {
-        weightUnitSpinner = view.findViewById(weightUnitSpinnerId)
         setupWeightUnitSpinner(
-            requireContext(),
-            weightUnitSpinner,
-            viewModelCalculator.currentWeightUnit
+            view = view,
+            context = requireContext(),
+            configuredUnit = viewModelCalculator.currentWeightUnit
         )
     }
 

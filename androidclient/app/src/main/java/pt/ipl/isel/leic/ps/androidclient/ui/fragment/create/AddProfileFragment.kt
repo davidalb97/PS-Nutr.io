@@ -52,8 +52,10 @@ class AddProfileFragment : BaseViewModelFragment<InsulinProfilesListViewModel>()
     private lateinit var startTimeTextView: TextView
     private lateinit var endTimeButton: Button
     private lateinit var endTimeTextView: TextView
-    private lateinit var carbUnitSpinner: Spinner
-    private lateinit var glucoseUnitSpinner: Spinner
+    override val weightUnitSpinnerId: Int = R.id.carbohydrate_measurement_units
+    override val glucoseUnitSpinnerId: Int = R.id.glucose_measurement_units
+    override lateinit var weightUnitSpinner: Spinner
+    override lateinit var glucoseUnitSpinner: Spinner
     private lateinit var calendar: Calendar
     private val defaultHour by lazy { calendar.get(Calendar.HOUR_OF_DAY) }
     private val defaultMinute by lazy { calendar.get(Calendar.MINUTE) }
@@ -89,11 +91,8 @@ class AddProfileFragment : BaseViewModelFragment<InsulinProfilesListViewModel>()
 
         val context = requireContext()
 
-        glucoseUnitSpinner = view.findViewById(R.id.glucose_measurement_units)
-        setupGlucoseUnitSpinner(context, glucoseUnitSpinner, viewModelAddProfile.currentGlucoseUnit)
-
-        carbUnitSpinner = view.findViewById(R.id.carbohydrate_measurement_units)
-        setupWeightUnitSpinner(context, carbUnitSpinner, viewModelAddProfile.currentWeightUnit)
+        setupGlucoseUnitSpinner(view, context, viewModelAddProfile.currentGlucoseUnit)
+        setupWeightUnitSpinner(view, context, viewModelAddProfile.currentWeightUnit)
 
         createButton = view.findViewById(R.id.create_custom_meal)
         calendar = Calendar.getInstance()

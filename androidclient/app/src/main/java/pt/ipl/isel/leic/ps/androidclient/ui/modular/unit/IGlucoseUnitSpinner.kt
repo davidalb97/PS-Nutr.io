@@ -1,6 +1,7 @@
 package pt.ipl.isel.leic.ps.androidclient.ui.modular.unit
 
 import android.content.Context
+import android.view.View
 import android.widget.Spinner
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.sharedPreferences
 import pt.ipl.isel.leic.ps.androidclient.ui.util.Logger
@@ -11,22 +12,25 @@ private val log = Logger(IGlucoseUnitSpinner::class)
 
 interface IGlucoseUnitSpinner : IUnitSpinner {
 
+    val glucoseUnitSpinnerId: Int
+    var glucoseUnitSpinner: Spinner
     var previousGlucoseUnit: GlucoseUnits
     var currentGlucoseUnit: GlucoseUnits
 
     fun onGlucoseUnitChange(converter: (Float) -> Float)
 
     fun setupGlucoseUnitSpinner(
+        view: View,
         context: Context,
-        glucoseUnitSpinner: Spinner,
         configuredUnit: GlucoseUnits = sharedPreferences.getGlucoseUnitOrDefault()
     ) {
         currentGlucoseUnit = configuredUnit
         previousGlucoseUnit = configuredUnit
 
-        super.setupUnitSpinner(
+        glucoseUnitSpinner = super.setupUnitSpinner(
+            view = view,
             context = context,
-            spinner = glucoseUnitSpinner,
+            spinnerId = glucoseUnitSpinnerId,
             configuredUnit = configuredUnit.toString(),
             allUnits = GlucoseUnits.values().map(GlucoseUnits::toString)
         ) { selectedUnitName ->
@@ -40,5 +44,9 @@ interface IGlucoseUnitSpinner : IUnitSpinner {
                 previousGlucoseUnit.convert(currentGlucoseUnit, oldValue)
             }
         }
+    }
+
+    fun setGlucoseUnitSpinnerSelection(unit: GlucoseUnits) {
+        super.setUnitSpinnerSelection(glucoseUnitSpinner, unit.toString())
     }
 }

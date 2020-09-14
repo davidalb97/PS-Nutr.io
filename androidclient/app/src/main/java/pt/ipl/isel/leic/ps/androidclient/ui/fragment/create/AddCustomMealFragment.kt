@@ -113,8 +113,11 @@ class AddCustomMealFragment : BaseAddMealFragment(), IRemainingPickSpinner, IReq
     }
 
     override fun setupWeightUnitSpinner(view: View) {
-        weightUnitSpinner = view.findViewById(weightUnitSpinnerId)
-        setupWeightUnitSpinner(requireContext(), weightUnitSpinner, addViewModel.currentWeightUnits)
+        setupWeightUnitSpinner(
+            view = view,
+            context = requireContext(),
+            configuredUnit = addViewModel.currentWeightUnits
+        )
     }
 
     private fun setupAdditionalAmount(view: View) {
@@ -126,18 +129,17 @@ class AddCustomMealFragment : BaseAddMealFragment(), IRemainingPickSpinner, IReq
                 ctx = requireContext(),
                 layoutInflater = layoutInflater,
                 baseCarbs = 0.0F,
-                baseAmountGrams = currentWeightUnit.convert(
-                    WeightUnits.GRAMS,
-                    addViewModel.currentAdditionalAmount
-                ),
-                mealUnit = currentWeightUnit,
+                baseAmount = addViewModel.currentAdditionalAmount,
+                startUnit = currentWeightUnit,
                 hideCarbs = true
-            ) { amountGrams: Float, _: Float ->
-                addViewModel.currentAdditionalAmount = DEFAULT_WEIGHT_UNIT.convert(
-                    targetUnit = currentWeightUnit,
-                    value = amountGrams
-                )
-                refreshAdditionalAmount()
+            ) { amount: Float, _: Float, unit: WeightUnits ->
+                //Set the amount according do old unit before setting spinner for later conversion
+                addViewModel.currentAdditionalAmount = unit.convert(currentWeightUnit, amount)
+                if(currentWeightUnit == unit) {
+                    refreshAdditionalAmount()
+                } else {
+                    super.setWeightUnitSpinnerSelection(unit)
+                }
             }
         }
         refreshAdditionalAmount()
@@ -252,7 +254,7 @@ class AddCustomMealFragment : BaseAddMealFragment(), IRemainingPickSpinner, IReq
             unit = DEFAULT_WEIGHT_UNIT,
             imageUri = imageUrlEditText.text?.toString()?.let(Uri::parse),
             ingredientComponents = ingredients.filter { !it.isMeal },
-            mealComponents = ingredients.filter { it.isMeal },
+            mealComponents = ingredients.filter(MealIngredient::isMeal),
             cuisines = cuisinesViewModel.pickedItems
         )
     }

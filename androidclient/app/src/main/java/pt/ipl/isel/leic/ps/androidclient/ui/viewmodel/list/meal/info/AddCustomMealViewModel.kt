@@ -10,8 +10,6 @@ import pt.ipl.isel.leic.ps.androidclient.data.model.MealItem
 import pt.ipl.isel.leic.ps.androidclient.ui.util.getWeightUnitOrDefault
 import pt.ipl.isel.leic.ps.androidclient.ui.util.requireUserSession
 import pt.ipl.isel.leic.ps.androidclient.ui.util.units.WeightUnits
-import pt.ipl.isel.leic.ps.androidclient.util.readWeightUnit
-import pt.ipl.isel.leic.ps.androidclient.util.writeWeightUnit
 
 class AddCustomMealViewModel : MealInfoViewModel {
 
@@ -25,7 +23,6 @@ class AddCustomMealViewModel : MealInfoViewModel {
     constructor(parcel: Parcel) : super(parcel) {
         currentName = parcel.readString()
         currentAdditionalAmount = parcel.readFloat()
-        currentWeightUnits = parcel.readWeightUnit()
         currentImg = parcel.readString()
     }
 
@@ -65,7 +62,6 @@ class AddCustomMealViewModel : MealInfoViewModel {
         super.writeToParcel(dest, flags)
         dest?.writeString(currentName)
         dest?.writeFloat(currentAdditionalAmount)
-        dest?.writeWeightUnit(currentWeightUnits)
         dest?.writeString(currentImg)
     }
 
