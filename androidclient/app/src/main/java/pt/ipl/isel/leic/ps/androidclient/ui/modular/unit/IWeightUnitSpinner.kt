@@ -1,6 +1,8 @@
 package pt.ipl.isel.leic.ps.androidclient.ui.modular.unit
 
 import android.content.Context
+import android.view.View
+import android.widget.ImageView
 import android.widget.Spinner
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.sharedPreferences
 import pt.ipl.isel.leic.ps.androidclient.ui.util.Logger
@@ -11,22 +13,25 @@ private val log = Logger(IWeightUnitSpinner::class)
 
 interface IWeightUnitSpinner : IUnitSpinner {
 
+    val weightUnitSpinnerId: Int
+    var weightUnitSpinner: Spinner
     var previousWeightUnit: WeightUnits
     var currentWeightUnit: WeightUnits
 
     fun onWeightUnitChange(converter: (Float) -> Float)
 
     fun setupWeightUnitSpinner(
+        view: View,
         context: Context,
-        weightUnitSpinner: Spinner,
         configuredUnit: WeightUnits = sharedPreferences.getWeightUnitOrDefault()
     ) {
         previousWeightUnit = configuredUnit
         currentWeightUnit = configuredUnit
 
-        super.setupUnitSpinner(
+        weightUnitSpinner = super.setupUnitSpinner(
+            view = view,
             context = context,
-            spinner = weightUnitSpinner,
+            spinnerId = weightUnitSpinnerId,
             configuredUnit = configuredUnit.toString(),
             allUnits = WeightUnits.values().map(WeightUnits::toString)
         ) { selectedUnitName ->
@@ -40,5 +45,9 @@ interface IWeightUnitSpinner : IUnitSpinner {
                 previousWeightUnit.convert(currentWeightUnit, oldValue)
             }
         }
+    }
+
+    fun setWeightUnitSpinnerSelection(unit: WeightUnits) {
+        super.setUnitSpinnerSelection(weightUnitSpinner, unit.toString())
     }
 }

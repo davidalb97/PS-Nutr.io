@@ -9,7 +9,7 @@ import pt.ipl.isel.leic.ps.androidclient.ui.util.getMealIngredient
 import pt.ipl.isel.leic.ps.androidclient.ui.util.getMealItem
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.meal.info.MealInfoViewModel
 
-open class MealInfoVMProviderFactory(
+class MealInfoVMProviderFactory(
     arguments: Bundle?,
     savedInstanceState: Bundle?,
     intent: Intent

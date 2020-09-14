@@ -7,8 +7,8 @@ import pt.ipl.isel.leic.ps.androidclient.util.readListCompat
 data class Portions(
     var dbId: Long,
     var dbMealId: Long,
-    val userPortion: Float?,
-    val allPortions: List<Float>
+    var userPortion: Float?,
+    var allPortions: List<Float>
 ) : Parcelable {
 
     constructor(parcel: Parcel) : this(

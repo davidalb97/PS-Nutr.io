@@ -15,7 +15,6 @@ import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.app
-import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.sharedPreferences
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.*
 import pt.ipl.isel.leic.ps.androidclient.ui.adapter.recycler.meal.MealItemRecyclerAdapter
@@ -164,9 +163,16 @@ class MealInfoFragment :
             BarEntry(it.key, it.value.toFloat())
         }.toMutableList()
 
-        val userPortion = receivedMeal.portions?.userPortion
-        if (userPortion != null) {
-            userPortionEntry = portionEntries.firstOrNull { it.x == userPortion }
+        val userPortionGrams = receivedMeal.portions?.userPortion
+        if (userPortionGrams != null) {
+            userPortionEntry = portionEntries.first { it.x == userPortionGrams }
+
+            //If is first time (carbs from portion not obtained from server)
+            if(viewModel.currentPortionCarbs == null) {
+                //Set carbs relative to previous portion
+                viewModel.currentPortionCarbs =
+                    ((userPortionGrams * receivedMeal.carbs) / receivedMeal.amount)
+            }
         }
     }
 
@@ -195,18 +201,22 @@ class MealInfoFragment :
                 MealAmountSelector(
                     ctx = requireContext(),
                     layoutInflater = layoutInflater,
-                    baseCarbs = receivedMeal.carbs,
-                    baseAmountGrams = receivedMeal.amount,
-                    mealUnit = sharedPreferences.getWeightUnitOrDefault()
-                ) { preciseGrams, _ ->
+                    baseCarbs =  receivedMeal.carbs,
+                    baseAmount = receivedMeal.unit.convert(viewModel.currentWeightUnit, receivedMeal.amount),
+                    startUnit = viewModel.currentWeightUnit
+                ) { portionAmount, portionCarbs, portionUnit ->
+                    val amountGrams = portionUnit.convert(WeightUnits.GRAMS, portionAmount)
                     viewModel.addMealPortion(
                         restaurantId = receivedMeal.restaurantSubmissionId!!,
                         mealId = receivedMeal.submissionId!!,
-                        //MealAmountSelector always returns in grams
-                        portion = Portion(preciseGrams, WeightUnits.GRAMS),
+                        portion = Portion(portionAmount, portionUnit),
                         userSession = userSession,
-                        onSuccess = { onAddPortion(preciseGrams) },
-                        onError = { error -> onAddPortion(preciseGrams, exception = error) }
+                        onSuccess = {
+                            viewModel.currentPortionCarbs = portionCarbs
+                            viewModel.currentWeightUnit = portionUnit
+                            onAddPortion(amountGrams)
+                        },
+                        onError = { error -> onAddPortion(amountGrams, exception = error) }
                     )
                 }
             }
@@ -220,19 +230,25 @@ class MealInfoFragment :
                 MealAmountSelector(
                     ctx = requireContext(),
                     layoutInflater = layoutInflater,
-                    baseCarbs = receivedMeal.carbs,
-                    baseAmountGrams = userPortionEntry!!.x,
-                    mealUnit = sharedPreferences.getWeightUnitOrDefault()
-                ) { preciseGrams, _ ->
-
+                    baseCarbs = viewModel.currentPortionCarbs!!,
+                    baseAmount = WeightUnits.GRAMS.convert(
+                        viewModel.currentWeightUnit,
+                        userPortionEntry!!.x
+                    ),
+                    startUnit = viewModel.currentWeightUnit
+                ) { portionAmount, portionCarbs, portionUnit ->
+                    val amountGrams = portionUnit.convert(WeightUnits.GRAMS, portionAmount)
                     viewModel.editMealPortion(
                         restaurantId = receivedMeal.restaurantSubmissionId!!,
                         mealId = receivedMeal.submissionId!!,
-                        //MealAmountSelector always returns in grams
-                        portion = Portion(preciseGrams, WeightUnits.GRAMS),
+                        portion = Portion(portionAmount, portionUnit),
                         userSession = userSession,
-                        onSuccess = { onEditPortion(preciseGrams) },
-                        onError = { error -> onEditPortion(preciseGrams, exception = error) }
+                        onSuccess = {
+                            viewModel.currentPortionCarbs = portionCarbs
+                            viewModel.currentWeightUnit = portionUnit
+                            onEditPortion(amountGrams)
+                        },
+                        onError = { error -> onEditPortion(amountGrams, exception = error) }
                     )
                 }
             }
@@ -247,7 +263,10 @@ class MealInfoFragment :
                     restaurantId = receivedMeal.restaurantSubmissionId!!,
                     mealId = receivedMeal.submissionId!!,
                     userSession = userSession,
-                    onSuccess = { onDeletePortion() },
+                    onSuccess = {
+                        viewModel.currentPortionCarbs = null
+                        onDeletePortion()
+                    },
                     onError = { error -> onDeletePortion(exception = error) }
                 )
             }
@@ -267,13 +286,13 @@ class MealInfoFragment :
             .setChartDescription(false)
     }
 
-    private fun onAddPortion(amount: Float, exception: Exception? = null) {
+    private fun onAddPortion(amountGrams: Float, exception: Exception? = null) {
         if (exception == null) {
             Toast.makeText(app, R.string.portion_added, Toast.LENGTH_SHORT).show()
             addPortionLayout.visibility = View.GONE
             editPortionLayout.visibility = View.VISIBLE
 
-            addPortionToGraph(amount)
+            addPortionToGraph(amountGrams)
             setupChartSettings(portionEntries)
             if (portionEntries.size == 1) {
                 xAxisLabel.visibility = View.VISIBLE
@@ -286,12 +305,12 @@ class MealInfoFragment :
         }
     }
 
-    private fun onEditPortion(amount: Float, exception: Exception? = null) {
+    private fun onEditPortion(amountGrams: Float, exception: Exception? = null) {
         if (exception == null) {
             Toast.makeText(app, R.string.portion_edited, Toast.LENGTH_SHORT).show()
 
             deletePortionFromGraph()
-            addPortionToGraph(amount)
+            addPortionToGraph(amountGrams)
             setupChartSettings(portionEntries)
             refreshChart()
         } else {
@@ -332,6 +351,9 @@ class MealInfoFragment :
         } else {
             userPortionEntry!!.y++
         }
+        val currentPortions = viewModel.mealInfo!!.portions!!.allPortions
+        viewModel.mealInfo!!.portions!!.allPortions = currentPortions.plus(amount)
+        viewModel.mealInfo!!.portions!!.userPortion = amount
     }
 
     private fun deletePortionFromGraph() {
@@ -340,6 +362,9 @@ class MealInfoFragment :
         if (oldPortion.y == 0.0F) {
             portionEntries.remove(oldPortion)
         }
+        val currentPortions = viewModel.mealInfo!!.portions!!.allPortions
+        viewModel.mealInfo!!.portions!!.allPortions = currentPortions.minus(oldPortion.x)
+        viewModel.mealInfo!!.portions!!.userPortion = null
     }
 
     override fun setupChartData(entries: List<BarEntry>) {

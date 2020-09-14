@@ -4,12 +4,15 @@ import android.os.Parcel
 import android.os.Parcelable
 import androidx.lifecycle.LifecycleOwner
 import com.android.volley.VolleyError
+import pt.ipl.isel.leic.ps.androidclient.NutrioApp
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.mealRepository
 import pt.ipl.isel.leic.ps.androidclient.data.model.*
 import pt.ipl.isel.leic.ps.androidclient.ui.util.ItemAction
 import pt.ipl.isel.leic.ps.androidclient.ui.util.Navigation
 import pt.ipl.isel.leic.ps.androidclient.ui.util.getUserSession
+import pt.ipl.isel.leic.ps.androidclient.ui.util.getWeightUnitOrDefault
 import pt.ipl.isel.leic.ps.androidclient.ui.util.live.LiveDataHandler
+import pt.ipl.isel.leic.ps.androidclient.ui.util.units.WeightUnits
 import pt.ipl.isel.leic.ps.androidclient.ui.viewmodel.list.meal.MealItemListViewModel
 
 open class MealInfoViewModel : MealItemListViewModel {
@@ -17,6 +20,8 @@ open class MealInfoViewModel : MealItemListViewModel {
     private val mealInfoLiveDataHandler = LiveDataHandler<MealInfo>()
     val mealInfo get() = mealInfoLiveDataHandler.value
     val mealItem: MealItem?
+    var currentWeightUnit = NutrioApp.sharedPreferences.getWeightUnitOrDefault()
+    var currentPortionCarbs: Float? = null
 
     constructor(
         mealInfo: MealInfo,
@@ -38,7 +43,7 @@ open class MealInfoViewModel : MealItemListViewModel {
     ) : super(
         source = mealItem.source,
         restaurantId = mealItem.restaurantSubmissionId,
-        navDestination = Navigation.SEND_TO_MEAL_DETAIL,
+        navDestination = Navigation.IGNORE,
         actions = ingredientActions
     ) {
         this.mealItem = mealItem
@@ -55,6 +60,8 @@ open class MealInfoViewModel : MealItemListViewModel {
     constructor(parcel: Parcel) : super(parcel) {
         mealInfoLiveDataHandler.restoreFromParcel(parcel, MealInfo::class)
         mealItem = mealInfoLiveDataHandler.value
+        currentWeightUnit = WeightUnits.values()[parcel.readInt()]
+        currentPortionCarbs = parcel.readSerializable() as Float?
     }
 
     override fun setupList() {
@@ -177,6 +184,8 @@ open class MealInfoViewModel : MealItemListViewModel {
     override fun writeToParcel(dest: Parcel?, flags: Int) {
         super.writeToParcel(dest, flags)
         mealInfoLiveDataHandler.writeToParcel(dest, flags)
+        dest?.writeInt(currentWeightUnit.ordinal)
+        dest?.writeSerializable(currentPortionCarbs)
     }
 
     override fun describeContents(): Int {
