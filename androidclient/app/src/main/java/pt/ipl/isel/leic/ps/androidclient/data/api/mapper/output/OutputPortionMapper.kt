@@ -10,7 +10,7 @@ class OutputPortionMapper {
         return PortionOutput(
             //Server compatibility conversion
             quantity = model.unit.convert(DEFAULT_WEIGHT_UNIT, model.quantity),
-            unit = model.unit.toString()
+            unit = DEFAULT_WEIGHT_UNIT.toString()
         )
     }
 }
