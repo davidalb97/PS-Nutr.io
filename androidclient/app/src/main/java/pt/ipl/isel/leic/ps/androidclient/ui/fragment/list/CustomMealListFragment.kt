@@ -62,6 +62,13 @@ class CustomMealListFragment
             addButton.visibility = View.VISIBLE
             addButton.setOnClickListener {
                 ensureUserSession(requireContext()) {
+                    //Force next setup to re-fetch result to update with newly added meal.
+                    //The reason for doing this is that navigation with parent add custom meal is
+                    //impossible due to this fragment being instantiated without navigation on
+                    //TabLayout.
+                    viewModel.removeObservers(this)
+                    viewModel.reset()
+                    viewModel.liveDataHandler.set(emptyList())
                     navigate(Navigation.SEND_TO_ADD_CUSTOM_MEAL)
                 }
             }

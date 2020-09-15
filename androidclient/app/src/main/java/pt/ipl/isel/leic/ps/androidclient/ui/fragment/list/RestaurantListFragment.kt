@@ -49,13 +49,7 @@ open class RestaurantListFragment : BaseListFragment<
         //Init super's recycler list handler
         super.onViewCreated(view, savedInstanceState)
 
-        val addButton = view.findViewById<ImageButton>(R.id.add_restaurant)
-
-        addButton.setOnClickListener {
-            ensureUserSession(requireContext()) {
-                navigate(Navigation.SEND_TO_ADD_RESTAURANT)
-            }
-        }
+        setupAddRestaurantBtn(view)
 
         if (isLocationEnabled()) {
             onLocationEnabled()
@@ -64,6 +58,22 @@ open class RestaurantListFragment : BaseListFragment<
                 arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
                 REQUEST_PERMISSIONS_CODE
             )
+        }
+    }
+
+    protected fun setupAddRestaurantBtn(view: View) {
+        val addButton = view.findViewById<ImageButton>(R.id.add_restaurant)
+        addButton.setOnClickListener {
+            ensureUserSession(requireContext()) {
+                //Force next setup to re-fetch result to update with newly added restaurant.
+                //The reason for doing this is that navigation with parent add restaurant is
+                //will result in multiple nested navigation due to MapFragment &
+                //RestaurantListFragment possibly being the starting destination.
+                viewModel.removeObservers(this)
+                viewModel.reset()
+                viewModel.liveDataHandler.set(emptyList())
+                navigate(Navigation.SEND_TO_ADD_RESTAURANT)
+            }
         }
     }
 

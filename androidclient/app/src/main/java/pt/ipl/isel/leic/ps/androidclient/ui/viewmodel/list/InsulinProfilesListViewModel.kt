@@ -18,9 +18,6 @@ class InsulinProfilesListViewModel : BaseListViewModel<InsulinProfile> {
     var argumentMeal: MealItem?
     val actions: List<ItemAction>
 
-    //Used to let the parent fragment know if the insulin profile list was changed
-    var itemsChanged: Boolean = false
-
     constructor(
         argumentMeal: MealItem? = null,
         actions: List<ItemAction>
@@ -32,7 +29,6 @@ class InsulinProfilesListViewModel : BaseListViewModel<InsulinProfile> {
     constructor(parcel: Parcel) : super(parcel, ITEM_CLASS) {
         argumentMeal = parcel.readParcelable(MealItem::class.java.classLoader)
         actions = parcel.readListCompat(ItemAction::class)
-        itemsChanged = parcel.readBooleanCompat()
     }
 
     fun addDbInsulinProfile(
@@ -84,7 +80,6 @@ class InsulinProfilesListViewModel : BaseListViewModel<InsulinProfile> {
         super.writeToParcel(dest, flags)
         dest?.writeParcelable(argumentMeal, flags)
         dest?.writeList(actions)
-        dest?.writeBooleanCompat(itemsChanged)
     }
 
     companion object CREATOR : Parcelable.Creator<InsulinProfilesListViewModel> {

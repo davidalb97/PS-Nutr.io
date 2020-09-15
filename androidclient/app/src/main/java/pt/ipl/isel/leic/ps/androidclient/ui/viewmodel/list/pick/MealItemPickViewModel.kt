@@ -11,7 +11,6 @@ private val ITEM_CLASS = MealItem::class
 
 class MealItemPickViewModel : BaseItemPickerViewModel<MealItem> {
 
-    var itemsChanged = false
     var currentWeightUnits: WeightUnits = sharedPreferences.getWeightUnitOrDefault()
 
     constructor(parcel: Parcel) : super(parcel, ITEM_CLASS) {
