@@ -240,7 +240,12 @@
     <string name="insulin_profile_add_fail">Could not create insulin profile!</string>
     <string name="item_deleted">Item deleted</string>
     <string name="item_delete_fail">Failed to delete item</string>
-    <string name="loading_profiles">Loading profiles...</string>
+    <string name="loading_profiles">Loading profiles…</string>
     <string name="prompt_add_profile">There are no active profiles for the current time, would you like to add one?</string>
     <string name="label_profiles">Insulin Profiles</string>
+    <string name="tab_suggested_meals">Suggested Meals</string>
+    <string name="tab_favorite_meals">Favorite Meals</string>
+    <string name="tab_favorite_restaurant_meals">Favorite Restaurant Meals</string>
+    <string name="tab_custom_meals">Custom meals</string>
+    <string name="tab_suggested_ingredients">Suggested Ingredients</string>
 </resources>

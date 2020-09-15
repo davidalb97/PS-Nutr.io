@@ -59,28 +59,28 @@ class AddRestaurantMealSlideScreenFragment : BaseSlideScreenFragment(propagateAr
 
     override fun addTab(mutableList: MutableList<TabConfig>) {
         mutableList.add(TabConfig(
-            title = "Suggested Meals",
+            title = getString(R.string.tab_suggested_meals),
             fragmentSupplier = ::MealItemListFragment,
             fragmentSetupConsumer = {
                 setupFragment(it as MealItemListFragment, Source.API)
             }
         ))
         mutableList.add(TabConfig(
-            title = "Favorite Meals",
+            title = getString(R.string.tab_favorite_meals),
             fragmentSupplier = ::FavoriteMealListFragment,
             fragmentSetupConsumer = {
                 setupFragment(it as FavoriteMealListFragment, Source.FAVORITE_MEAL)
             }
         ))
         mutableList.add(TabConfig(
-            title = "Favorite Restaurant Meals",
+            title = getString(R.string.tab_favorite_restaurant_meals),
             fragmentSupplier = ::FavoriteMealListFragment,
             fragmentSetupConsumer = {
                 setupFragment(it as FavoriteMealListFragment, Source.FAVORITE_RESTAURANT_MEAL)
             }
         ))
         mutableList.add(TabConfig(
-            title = "Custom meals",
+            title = getString(R.string.tab_custom_meals),
             fragmentSupplier = ::CustomMealListFragment,
             fragmentSetupConsumer = {
                 setupFragment(it as CustomMealListFragment, Source.CUSTOM_MEAL)

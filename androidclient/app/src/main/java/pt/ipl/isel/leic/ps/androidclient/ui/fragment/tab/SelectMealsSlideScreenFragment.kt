@@ -68,7 +68,7 @@ class SelectMealsSlideScreenFragment : BaseSlideScreenFragment(propagateArgument
         )
         mutableList.add(
             TabAdapter.TabConfig(
-                title = "Suggested Meals",
+                title = getString(R.string.tab_suggested_meals),
                 fragmentSupplier = ::MealItemListFragment,
                 fragmentSetupConsumer = {
                     setCheckArguments(it as MealItemListFragment, Source.API)
@@ -77,7 +77,7 @@ class SelectMealsSlideScreenFragment : BaseSlideScreenFragment(propagateArgument
         )
         mutableList.add(
             TabAdapter.TabConfig(
-                title = "Favorite Meals",
+                title = getString(R.string.tab_favorite_meals),
                 fragmentSupplier = ::FavoriteMealListFragment,
                 fragmentSetupConsumer = {
                     setCheckArguments(it as FavoriteMealListFragment, Source.FAVORITE_MEAL)
@@ -86,7 +86,7 @@ class SelectMealsSlideScreenFragment : BaseSlideScreenFragment(propagateArgument
         )
         mutableList.add(
             TabAdapter.TabConfig(
-                title = "Favorite Meals",
+                title = getString(R.string.tab_favorite_restaurant_meals),
                 fragmentSupplier = ::FavoriteMealListFragment,
                 fragmentSetupConsumer = {
                     setCheckArguments(
@@ -98,7 +98,7 @@ class SelectMealsSlideScreenFragment : BaseSlideScreenFragment(propagateArgument
         )
         mutableList.add(
             TabAdapter.TabConfig(
-                title = "Custom Meals",
+                title = getString(R.string.tab_custom_meals),
                 fragmentSupplier = ::CustomMealListFragment,
                 fragmentSetupConsumer = {
                     setCheckArguments(it as CustomMealListFragment, Source.CUSTOM_MEAL)

@@ -2,6 +2,7 @@ package pt.ipl.isel.leic.ps.androidclient.ui.fragment.tab
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
+import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.Source
 import pt.ipl.isel.leic.ps.androidclient.ui.adapter.TabAdapter.TabConfig
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.list.IngredientsListFragment
@@ -13,14 +14,14 @@ class MealSlideScreenFragment : BaseSlideScreenFragment(propagateArguments = fal
     override fun addTab(mutableList: MutableList<TabConfig>) {
         mutableList.add(
             TabConfig(
-                title = "Suggested Meals",
+                title = getString(R.string.tab_suggested_meals),
                 fragmentSupplier = ::MealItemListFragment,
                 fragmentSetupConsumer = this::setupMealItemFragment
             )
         )
         mutableList.add(
             TabConfig(
-                title = "Suggested Ingredients",
+                title = getString(R.string.tab_suggested_ingredients),
                 fragmentSupplier = ::IngredientsListFragment,
                 fragmentSetupConsumer = this::setupIngredientItemFragment
             )
