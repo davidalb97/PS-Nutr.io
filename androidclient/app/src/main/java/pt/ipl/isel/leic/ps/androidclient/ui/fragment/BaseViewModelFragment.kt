@@ -44,7 +44,7 @@ abstract class BaseViewModelFragment<VM> :
     ): VM
             where VM : ViewModel, VM : Parcelable {
         return buildViewModel(
-            intent = requireActivity().intent,
+            intent = super.requireIntent(),
             arguments = arguments,
             savedInstanceState = savedInstanceState,
             vmClass = clazz

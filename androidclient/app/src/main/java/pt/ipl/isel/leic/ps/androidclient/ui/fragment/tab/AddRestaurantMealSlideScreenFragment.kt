@@ -39,7 +39,7 @@ class AddRestaurantMealSlideScreenFragment : BaseSlideScreenFragment(propagateAr
     override val vMProviderFactorySupplier = ::AddRestaurantVMProfiderFactory
     private val viewModelInfo: RestaurantInfoViewModel by
     navGraphViewModels(Navigation.SEND_TO_RESTAURANT_DETAIL.navId) {
-        vMProviderFactorySupplier(arguments, savedInstanceState, requireActivity().intent)
+        vMProviderFactorySupplier(arguments, savedInstanceState, super.requireIntent())
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

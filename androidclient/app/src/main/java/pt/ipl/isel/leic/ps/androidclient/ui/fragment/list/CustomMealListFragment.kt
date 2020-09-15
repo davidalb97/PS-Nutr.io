@@ -62,7 +62,7 @@ class CustomMealListFragment
             addButton.visibility = View.VISIBLE
             addButton.setOnClickListener {
                 ensureUserSession(requireContext()) {
-                    view.findNavController().navigate(Navigation.SEND_TO_ADD_CUSTOM_MEAL.navId)
+                    navigate(Navigation.SEND_TO_ADD_CUSTOM_MEAL)
                 }
             }
         }
