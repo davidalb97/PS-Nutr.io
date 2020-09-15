@@ -44,15 +44,20 @@ class TabAdapter(
     }
 
     override fun getItem(position: Int): Fragment {
-        val newFragment = existingFragments[position] ?: fragmentSuppliers[position]()
-        existingFragments[position] = newFragment
-        return newFragment
+        val createdFragment = existingFragments[position] ?: fragmentSuppliers[position]().also {
+            //Configure new fragment
+            fragmentSetupConsumers[position](it)
+        }
+        existingFragments[position] = createdFragment
+        return createdFragment
     }
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
         val createdFragment = super.instantiateItem(container, position) as Fragment
-        fragmentSetupConsumers[position](createdFragment)
         existingFragments[position] = createdFragment
+        //Configure new fragment
+        fragmentSetupConsumers[position](createdFragment)
+        //Set tag defined by super.instantiateItem() call
         viewModel.tags[position] = createdFragment.tag
         return createdFragment
     }

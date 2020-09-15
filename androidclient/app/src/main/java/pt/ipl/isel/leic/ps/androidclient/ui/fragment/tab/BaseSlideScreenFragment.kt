@@ -37,14 +37,21 @@ abstract class BaseSlideScreenFragment(
         addTab(tabs)
 
         if (savedInstanceState != null) {
+            log.v("Existing tags: ${viewModel.tags.joinToString(", ")}")
             tabs.forEachIndexed { index, tabConfig ->
                 val tag = viewModel.tags[index]
                 if (tag != null) {
-                    val fragment: Fragment? = parentFragmentManager.findFragmentByTag(tag)
-                    if (fragment != null) {
-                        tabConfig.fragmentSetupConsumer(fragment)
-                        tabConfig.existingFragment = fragment
+                    var fragment: Fragment? = childFragmentManager.findFragmentByTag(tag)
+
+                    log.v("Restoring fragment: $tag, exists: ${fragment != null}")
+
+                    if (fragment == null) {
+                        log.v("Restoring fragment $tag failed! Creating new one!")
+                        fragment = tabConfig.fragmentSupplier()
                     }
+
+                    tabConfig.fragmentSetupConsumer(fragment)
+                    tabConfig.existingFragment = fragment
                 }
             }
         }
