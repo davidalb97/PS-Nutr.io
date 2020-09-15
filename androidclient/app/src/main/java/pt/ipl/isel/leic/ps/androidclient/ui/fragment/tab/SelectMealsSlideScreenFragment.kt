@@ -3,11 +3,11 @@ package pt.ipl.isel.leic.ps.androidclient.ui.fragment.tab
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
-import androidx.fragment.app.Fragment
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealItem
 import pt.ipl.isel.leic.ps.androidclient.data.model.Source
 import pt.ipl.isel.leic.ps.androidclient.ui.IParentViewModel
+import pt.ipl.isel.leic.ps.androidclient.ui.adapter.TabAdapter
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.list.*
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.listener.check.ICheckListener
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.listener.check.ICheckListenerOwner
@@ -29,7 +29,7 @@ class SelectMealsSlideScreenFragment : BaseSlideScreenFragment(propagateArgument
     private lateinit var okButton: Button
     override var savedInstanceState: Bundle? = null
     override val vMProviderFactorySupplier = ::BaseAddMealRecyclerVMProviderFactory
-    private val viewModel: MealItemPickViewModel by navParentViewModel()
+    private val itemsViewModel: MealItemPickViewModel by navParentViewModel()
 
     init {
         retainInstance = true
@@ -44,11 +44,11 @@ class SelectMealsSlideScreenFragment : BaseSlideScreenFragment(propagateArgument
         super.onViewCreated(view, savedInstanceState)
 
         //Restore picked items to items list
-        viewModel.setupList()
+        itemsViewModel.setupList()
 
         okButton = view.findViewById(R.id.tab_fragment_ok_btn)
         okButton.text =
-            getString(if (viewModel.pickedItems.isEmpty()) R.string.cancel else R.string.ok)
+            getString(if (itemsViewModel.pickedItems.isEmpty()) R.string.cancel else R.string.ok)
         okButton.visibility = View.VISIBLE
         okButton.setOnClickListener {
             //Navigate to parent pop
@@ -56,14 +56,55 @@ class SelectMealsSlideScreenFragment : BaseSlideScreenFragment(propagateArgument
         }
     }
 
-    override fun addFragments(fragments: HashMap<Fragment, String>) {
-        fragments[setCheckArguments(IngredientsListFragment(), Source.API)] = "Meal Ingredients"
-        fragments[setCheckArguments(MealItemListFragment(), Source.API)] = "Suggested Meals"
-        fragments[setCheckArguments(FavoriteMealListFragment(), Source.FAVORITE_MEAL)] =
-            "Favorite Meals"
-        fragments[setCheckArguments(FavoriteMealListFragment(), Source.FAVORITE_RESTAURANT_MEAL)] =
-            "Favorite Restaurant Meals"
-        fragments[setCheckArguments(CustomMealListFragment(), Source.CUSTOM_MEAL)] = "Custom Meals"
+    override fun addTab(mutableList: MutableList<TabAdapter.TabConfig>) {
+        mutableList.add(
+            TabAdapter.TabConfig(
+                title = "Meal Ingredients",
+                fragmentSupplier = ::IngredientsListFragment,
+                fragmentSetupConsumer = {
+                    setCheckArguments(it as IngredientsListFragment, Source.API)
+                }
+            )
+        )
+        mutableList.add(
+            TabAdapter.TabConfig(
+                title = "Suggested Meals",
+                fragmentSupplier = ::MealItemListFragment,
+                fragmentSetupConsumer = {
+                    setCheckArguments(it as MealItemListFragment, Source.API)
+                }
+            )
+        )
+        mutableList.add(
+            TabAdapter.TabConfig(
+                title = "Favorite Meals",
+                fragmentSupplier = ::FavoriteMealListFragment,
+                fragmentSetupConsumer = {
+                    setCheckArguments(it as FavoriteMealListFragment, Source.FAVORITE_MEAL)
+                }
+            )
+        )
+        mutableList.add(
+            TabAdapter.TabConfig(
+                title = "Favorite Meals",
+                fragmentSupplier = ::FavoriteMealListFragment,
+                fragmentSetupConsumer = {
+                    setCheckArguments(
+                        it as FavoriteMealListFragment,
+                        Source.FAVORITE_RESTAURANT_MEAL
+                    )
+                }
+            )
+        )
+        mutableList.add(
+            TabAdapter.TabConfig(
+                title = "Custom Meals",
+                fragmentSupplier = ::CustomMealListFragment,
+                fragmentSetupConsumer = {
+                    setCheckArguments(it as CustomMealListFragment, Source.CUSTOM_MEAL)
+                }
+            )
+        )
     }
 
     private fun <M : MealItem, F> setCheckArguments(fragment: F, source: Source): F
@@ -83,7 +124,7 @@ class SelectMealsSlideScreenFragment : BaseSlideScreenFragment(propagateArgument
     }
 
     private fun <T : MealItem> restoredItemPredicator(item: T): Boolean {
-        val originalItem = viewModel.pickedItems.firstOrNull {
+        val originalItem = itemsViewModel.pickedItems.firstOrNull {
             it.submissionId == item.submissionId
         }
         return if (originalItem != null) {
@@ -95,15 +136,15 @@ class SelectMealsSlideScreenFragment : BaseSlideScreenFragment(propagateArgument
 
     private fun <T : MealItem> getCheckListener(): ICheckListener<T> {
         return ICheckListener { item, isChecked, onChangeCallback ->
-            viewModel.itemsChanged = true
+            itemsViewModel.itemsChanged = true
 
-            val existingItem = viewModel.pickedItems.firstOrNull {
+            val existingItem = itemsViewModel.pickedItems.firstOrNull {
                 it.submissionId == item.submissionId
             }
             //Add checked item to list
             if (isChecked) {
                 //Change button state if it's the first item
-                if (viewModel.pickedItems.isEmpty()) {
+                if (itemsViewModel.pickedItems.isEmpty()) {
                     okButton.text = getString(R.string.ok)
                 }
                 //Ignore already checked items (list restore)
@@ -116,34 +157,34 @@ class SelectMealsSlideScreenFragment : BaseSlideScreenFragment(propagateArgument
                     ctx = requireContext(),
                     layoutInflater = layoutInflater,
                     baseCarbs = item.carbs,
-                    baseAmount = item.unit.convert(viewModel.currentWeightUnits, item.amount),
-                    startUnit = viewModel.currentWeightUnits
+                    baseAmount = item.unit.convert(itemsViewModel.currentWeightUnits, item.amount),
+                    startUnit = itemsViewModel.currentWeightUnits
                 ) { selectedAmount: Float, selectedCarbohydrates: Float, unit: WeightUnits ->
                     item.amount = selectedAmount
                     item.carbs = selectedCarbohydrates
                     item.unit = unit
-                    viewModel.currentWeightUnits = unit
-                    viewModel.pick(item)
+                    itemsViewModel.currentWeightUnits = unit
+                    itemsViewModel.pick(item)
                     onChangeCallback()
                 }
             }
             //Remove checked item from list
             else {
                 //Change button state if it's last item
-                if (viewModel.pickedItems.size == 1) {
+                if (itemsViewModel.pickedItems.size == 1) {
                     okButton.text = getString(R.string.cancel)
                 }
                 //Find item to remove based on submission id
                 //This will avoid failed removals when
                 //the object is not the same after restoring checked items
-                viewModel.unPick(existingItem ?: item)
+                itemsViewModel.unPick(existingItem ?: item)
             }
         }
     }
 
     private fun <T : MealItem> getItemClickListener(): IItemClickListener<T> {
         return IItemClickListener { item, onChangeCallback ->
-            val existingItem = viewModel.pickedItems.firstOrNull {
+            val existingItem = itemsViewModel.pickedItems.firstOrNull {
                 it.submissionId == item.submissionId
             }
             if (existingItem != null) {
@@ -152,10 +193,10 @@ class SelectMealsSlideScreenFragment : BaseSlideScreenFragment(propagateArgument
                     layoutInflater = layoutInflater,
                     baseCarbs = existingItem.carbs,
                     baseAmount = existingItem.unit.convert(
-                        viewModel.currentWeightUnits,
+                        itemsViewModel.currentWeightUnits,
                         existingItem.amount
                     ),
-                    startUnit = viewModel.currentWeightUnits
+                    startUnit = itemsViewModel.currentWeightUnits
                 ) { selectedAmount: Float, selectedCarbohydrates: Float, unit: WeightUnits ->
                     item.amount = selectedAmount
                     item.carbs = selectedCarbohydrates
@@ -163,7 +204,7 @@ class SelectMealsSlideScreenFragment : BaseSlideScreenFragment(propagateArgument
                     existingItem.amount = selectedAmount
                     existingItem.carbs = selectedCarbohydrates
                     existingItem.unit = unit
-                    viewModel.currentWeightUnits = unit
+                    itemsViewModel.currentWeightUnits = unit
                     onChangeCallback()
                 }
             }
