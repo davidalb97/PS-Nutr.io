@@ -30,9 +30,12 @@ abstract class BaseListViewModel<T : Parcelable> : ViewModel, Parcelable {
     var skip: Int? = DEFAULT_SKIP
     var count: Int? = DEFAULT_COUNT
     var onError: (Throwable) -> Unit = log::e
+    //Used to let the parent fragment know if the list was changed by a child
+    var itemsChanged: Boolean
 
     constructor(itemClass: KClass<T>) : super() {
         this.itemClass = itemClass
+        this.itemsChanged = false
     }
 
     constructor(parcel: Parcel, itemClass: KClass<T>) : this(itemClass) {
@@ -40,10 +43,19 @@ abstract class BaseListViewModel<T : Parcelable> : ViewModel, Parcelable {
         liveDataHandler.restoreFromParcel(parcel, itemClass)
         skip = parcel.readSerializable() as Int?
         count = parcel.readSerializable() as Int?
+        itemsChanged = parcel.readBooleanCompat()
+    }
+
+    fun reset() {
+        isFirstTime = true
+        skip = DEFAULT_SKIP
+        count = DEFAULT_COUNT
+        pendingRequest = false
+        itemsChanged = false
     }
 
     fun refresh() {
-        isFirstTime = true
+        reset()
         setupList()
     }
 
@@ -86,6 +98,7 @@ abstract class BaseListViewModel<T : Parcelable> : ViewModel, Parcelable {
         liveDataHandler.writeToParcel(dest)
         dest?.writeSerializable(skip)
         dest?.writeSerializable(count)
+        dest?.writeBooleanCompat(itemsChanged)
     }
 
     /**

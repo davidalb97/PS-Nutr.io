@@ -74,13 +74,7 @@ class MapFragment : RestaurantListFragment(), OnMapReadyCallback {
         mapView?.onCreate(savedInstanceState)
         mapView?.getMapAsync(this)
 
-        val addButton = view.findViewById<ImageButton>(R.id.add_restaurant)
-
-        addButton.setOnClickListener {
-            ensureUserSession(requireContext()) {
-                navigate(Navigation.SEND_TO_ADD_RESTAURANT)
-            }
-        }
+        setupAddRestaurantBtn(view)
     }
 
     override fun onMapReady(mapboxMap: MapboxMap) {
