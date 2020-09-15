@@ -36,10 +36,6 @@ open class IngredientListViewModel : BaseMealListViewModel<MealIngredient> {
         }
     }
 
-    override fun describeContents(): Int {
-        TODO("Not yet implemented")
-    }
-
     companion object CREATOR : Parcelable.Creator<IngredientListViewModel> {
 
         override fun createFromParcel(parcel: Parcel) = IngredientListViewModel(parcel)

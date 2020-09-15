@@ -20,7 +20,6 @@ class RestaurantListViewModel : BaseListViewModel<RestaurantItem> {
     var latitude: Double? = null
     var longitude: Double? = null
 
-    //TODO use cuisines search filter
     var cuisines: List<Cuisine>?
 
     constructor(

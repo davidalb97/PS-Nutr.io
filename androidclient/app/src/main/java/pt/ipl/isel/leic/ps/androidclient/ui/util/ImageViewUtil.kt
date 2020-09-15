@@ -7,7 +7,6 @@ import androidx.annotation.ColorRes
 
 fun ImageView.changeColor(ctx: Context, @ColorRes colorId: Int) {
     setColorFilter(
-        //TODO use non deprecated implementation
         ctx.resources.getColor(colorId),
         PorterDuff.Mode.SRC_ATOP
     )

@@ -96,10 +96,6 @@ open class MealItemListViewModel : BaseMealListViewModel<MealItem> {
         }, onError, requireUserSession())
     }
 
-    override fun describeContents(): Int {
-        TODO("Not yet implemented")
-    }
-
     companion object CREATOR : Parcelable.Creator<MealItemListViewModel> {
 
         override fun createFromParcel(parcel: Parcel) = MealItemListViewModel(parcel)

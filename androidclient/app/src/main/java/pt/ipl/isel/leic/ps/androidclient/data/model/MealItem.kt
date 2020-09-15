@@ -9,7 +9,6 @@ import pt.ipl.isel.leic.ps.androidclient.util.readWeightUnit
 import pt.ipl.isel.leic.ps.androidclient.util.writeUri
 import pt.ipl.isel.leic.ps.androidclient.util.writeWeightUnit
 
-//TODO replace var to val when fields are not changed
 open class MealItem(
     var dbId: Long?,
     var dbRestaurantId: Long?,

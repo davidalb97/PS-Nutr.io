@@ -133,10 +133,6 @@ class RestaurantInfoViewModel : MealItemListViewModel {
         restaurantInfoLiveDataHandler.writeToParcel(dest, flags)
     }
 
-    override fun describeContents(): Int {
-        return 0
-    }
-
     companion object CREATOR : Parcelable.Creator<RestaurantInfoViewModel> {
 
         override fun createFromParcel(parcel: Parcel) = RestaurantInfoViewModel(parcel)

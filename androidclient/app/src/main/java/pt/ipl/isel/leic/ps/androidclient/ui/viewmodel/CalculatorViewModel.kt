@@ -29,9 +29,7 @@ class CalculatorViewModel : ViewModel, Parcelable {
         parcel.writeInt(currentWeightUnit.ordinal)
     }
 
-    override fun describeContents(): Int {
-        return 0
-    }
+    override fun describeContents(): Int = 0
 
     companion object CREATOR : Parcelable.Creator<CalculatorViewModel> {
         override fun createFromParcel(parcel: Parcel) = CalculatorViewModel(parcel)

@@ -22,10 +22,6 @@ class CuisinePickViewModel : BaseItemPickerViewModel<Cuisine> {
         cuisineRepository.getCuisines(count, skip, liveDataHandler::set, onError)
     }
 
-    override fun describeContents(): Int {
-        return 0
-    }
-
     companion object CREATOR : Parcelable.Creator<CuisinePickViewModel> {
         override fun createFromParcel(parcel: Parcel) = CuisinePickViewModel(parcel)
 
