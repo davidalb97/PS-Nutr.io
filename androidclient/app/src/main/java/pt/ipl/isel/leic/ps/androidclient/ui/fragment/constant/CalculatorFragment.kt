@@ -67,6 +67,11 @@ class CalculatorFragment : BaseAddMealFragment(), IRequiredTextInput, IGlucoseUn
         super.onViewCreated(view, savedInstanceState)
 
         bloodGlucoseEditText = view.findViewById(R.id.user_blood_glucose)
+        bloodGlucoseEditText.onFinishEdit {
+            viewModelCalculator.currentBloodGlucose = it?.toFloatOrNull()
+        }
+        bloodGlucoseEditText.setText(viewModelCalculator.currentBloodGlucose?.toString())
+
         calculateButton = view.findViewById(R.id.calculate_button)
         profileStartTimeTextView = view.findViewById(R.id.start_time_value)
         profileEndTimeTextView = view.findViewById(R.id.end_time_value)

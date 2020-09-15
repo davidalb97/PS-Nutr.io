@@ -62,6 +62,9 @@ class AddRestaurantFragment : BaseViewModelFragment<AddRestaurantViewModel>(),
 
         restaurantNameEditText = view.findViewById(R.id.restaurant_name)
         restaurantNameEditText.setText(viewModel.name)
+        restaurantNameEditText.onFinishEdit {
+            viewModel.name = it
+        }
 
         if (isLocationEnabled()) {
             onLocationEnabled()
@@ -170,9 +173,4 @@ class AddRestaurantFragment : BaseViewModelFragment<AddRestaurantViewModel>(),
     }
 
     override fun getViewModels(): Iterable<Parcelable> = listOf(viewModel, cuisinesViewModel)
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        viewModel.name = restaurantNameEditText.text?.toString()
-        super.onSaveInstanceState(outState)
-    }
 }
