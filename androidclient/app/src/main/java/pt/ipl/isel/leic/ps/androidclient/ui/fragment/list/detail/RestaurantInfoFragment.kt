@@ -46,7 +46,7 @@ class RestaurantInfoFragment :
     override val vMProviderFactorySupplier = ::RestaurantInfoVMProviderFactory
     override val viewModel by lazy {
         val viewModel: RestaurantInfoViewModel by navGraphViewModels(Navigation.SEND_TO_RESTAURANT_DETAIL.navId) {
-            vMProviderFactorySupplier(arguments, savedInstanceState, requireActivity().intent)
+            vMProviderFactorySupplier(arguments, savedInstanceState, super.requireIntent())
         }
         actions = viewModel.actions
         viewModel
@@ -115,7 +115,7 @@ class RestaurantInfoFragment :
         addMealButton = view.findViewById(R.id.add_meal_button)
         addMealButton.setOnClickListener {
             ensureUserSession(requireContext()) {
-                view.findNavController().navigate(Navigation.SEND_TO_PICK_RESTAURANT_MEAL.navId)
+                navigate(Navigation.SEND_TO_PICK_RESTAURANT_MEAL)
             }
         }
     }

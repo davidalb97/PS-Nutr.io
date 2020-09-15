@@ -61,7 +61,7 @@ class LoginFragment : BaseFragment(), IViewModelManager, ILogin, IAccountSetting
         super.onCreate(savedInstanceState)
         viewModel = buildViewModel(
             arguments = arguments,
-            intent = requireActivity().intent,
+            intent = super.requireIntent(),
             savedInstanceState = savedInstanceState,
             vmClass = UserSessionViewModel::class.java
         )

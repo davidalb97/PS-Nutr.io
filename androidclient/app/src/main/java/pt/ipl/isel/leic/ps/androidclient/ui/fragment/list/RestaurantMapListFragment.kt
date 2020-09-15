@@ -78,7 +78,7 @@ class MapFragment : RestaurantListFragment(), OnMapReadyCallback {
 
         addButton.setOnClickListener {
             ensureUserSession(requireContext()) {
-                view.findNavController().navigate(Navigation.SEND_TO_ADD_RESTAURANT.navId)
+                navigate(Navigation.SEND_TO_ADD_RESTAURANT)
             }
         }
     }

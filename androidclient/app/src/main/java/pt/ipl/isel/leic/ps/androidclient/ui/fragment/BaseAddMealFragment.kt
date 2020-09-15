@@ -93,7 +93,7 @@ abstract class BaseAddMealFragment : BaseViewModelFragment<MealItemPickViewModel
             val bundle = Bundle()
             bundle.putNavigation(backNestedActionNavigation)
             bundle.putParentNavigation(nestedNavigation)
-            view.findNavController().navigate(toAddMealsActionNestedNavigation.navId, bundle)
+            navigate(toAddMealsActionNestedNavigation, bundle)
         }
     }
 

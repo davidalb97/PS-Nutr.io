@@ -30,7 +30,7 @@ class HomeFragment : BaseFragment() {
             bundle.putSource(Source.API)
             bundle.putNavigation(Navigation.SEND_TO_RESTAURANT_DETAIL)
             bundle.putItemActions(ItemAction.REPORT, ItemAction.FAVORITE)
-            view.findNavController().navigate(Navigation.SEND_TO_RESTAURANT_LIST.navId, bundle)
+            navigate(Navigation.SEND_TO_RESTAURANT_LIST, bundle)
         }
     }
 
@@ -41,7 +41,7 @@ class HomeFragment : BaseFragment() {
             bundle.putSource(Source.API)
             bundle.putNavigation(Navigation.SEND_TO_RESTAURANT_DETAIL)
             bundle.putItemActions(ItemAction.REPORT, ItemAction.FAVORITE)
-            view.findNavController().navigate(Navigation.SEND_TO_RESTAURANT_LIST_MAP.navId, bundle)
+            navigate(Navigation.SEND_TO_RESTAURANT_LIST_MAP, bundle)
         }
     }
 
@@ -55,14 +55,14 @@ class HomeFragment : BaseFragment() {
     private fun setupMealsCustomBtn(view: View) {
         val button: ViewGroup = view.findViewById(R.id.secondSection_button2)
         button.setOnClickListener {
-            view.findNavController().navigate(Navigation.SEND_TO_MEAL_LIST_CUSTOM.navId)
+            navigate(Navigation.SEND_TO_MEAL_LIST_CUSTOM)
         }
     }
 
     private fun setupCalculatorBtn(view: View) {
         val button: ViewGroup = view.findViewById(R.id.thirdSection_button1)
         button.setOnClickListener {
-            view.findNavController().navigate(Navigation.SEND_TO_CALCULATOR.navId)
+            navigate(Navigation.SEND_TO_CALCULATOR)
         }
     }
 }
