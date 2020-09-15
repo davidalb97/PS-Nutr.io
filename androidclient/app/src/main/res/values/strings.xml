@@ -246,4 +246,5 @@
     <string name="tab_favorite_restaurant_meals">Favorite Restaurant Meals</string>
     <string name="tab_custom_meals">Custom meals</string>
     <string name="tab_suggested_ingredients">Suggested Ingredients</string>
+    <string name="prompt_add_restaurant_meal">Once a meal as been added, it can only be removed from this restaurant by a moderator.\n\nIf this is a custom meal, you also won\'t be able to delete it.</string>
 </resources>

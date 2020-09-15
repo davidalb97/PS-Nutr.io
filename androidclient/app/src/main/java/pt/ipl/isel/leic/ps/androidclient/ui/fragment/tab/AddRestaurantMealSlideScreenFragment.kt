@@ -112,7 +112,8 @@ class AddRestaurantMealSlideScreenFragment : BaseSlideScreenFragment(propagateAr
         IItemClickListener { mealItem: MealItem, _: () -> Unit ->
             PromptConfirm(
                 ctx = requireContext(),
-                titleId = R.string.add_restaurant_meal
+                titleId = R.string.add_restaurant_meal,
+                messageId = R.string.prompt_add_restaurant_meal
             ) {
                 mealItem.restaurantSubmissionId = viewModelInfo.restaurantInfo?.id!!
                 viewModelInfo.addedMeal = mealItem
