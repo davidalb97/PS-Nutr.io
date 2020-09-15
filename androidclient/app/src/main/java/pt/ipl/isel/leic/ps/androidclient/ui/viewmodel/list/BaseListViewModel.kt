@@ -65,6 +65,8 @@ abstract class BaseListViewModel<T : Parcelable> : ViewModel, Parcelable {
         }
     }
 
+    override fun describeContents(): Int = 0
+
     protected abstract fun fetch()
 
     /**

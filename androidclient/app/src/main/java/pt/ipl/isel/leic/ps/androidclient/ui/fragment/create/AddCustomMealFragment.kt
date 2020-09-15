@@ -105,11 +105,17 @@ class AddCustomMealFragment : BaseAddMealFragment(), IRemainingPickSpinner, IReq
 
         mealNameEditText = view.findViewById(R.id.meal_name)
         mealNameEditText.setText(addViewModel.currentName)
+        mealNameEditText.onFinishEdit {
+            addViewModel.currentName = it
+        }
 
         setupAdditionalAmount(view)
 
         imageUrlEditText = view.findViewById(R.id.custom_meal_image_url)
         imageUrlEditText.setText(addViewModel.currentImg)
+        imageUrlEditText.onFinishEdit {
+            addViewModel.currentImg = it
+        }
     }
 
     override fun setupWeightUnitSpinner(view: View) {
@@ -288,10 +294,4 @@ class AddCustomMealFragment : BaseAddMealFragment(), IRemainingPickSpinner, IReq
 
     override fun getViewModels(): Iterable<Parcelable> = super.getViewModels()
         .plus(listOf(addViewModel, cuisinesViewModel))
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        addViewModel.currentImg = imageUrlEditText.text.toString()
-        addViewModel.currentName = mealNameEditText.text.toString()
-        super.onSaveInstanceState(outState)
-    }
 }

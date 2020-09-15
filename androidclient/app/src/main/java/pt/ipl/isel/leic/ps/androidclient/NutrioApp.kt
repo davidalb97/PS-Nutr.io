@@ -11,7 +11,6 @@ import android.widget.Toast
 import androidx.room.Room
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
-import androidx.work.*
 import com.android.volley.toolbox.Volley
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
@@ -24,8 +23,6 @@ import pt.ipl.isel.leic.ps.androidclient.data.repo.*
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.PREFERENCES
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.constant.SECRET_PREFERENCES
 import pt.ipl.isel.leic.ps.androidclient.ui.util.*
-import pt.ipl.isel.leic.ps.androidclient.ui.util.Logger
-import java.util.concurrent.TimeUnit
 
 const val TAG = "Nutr.io App"
 const val ROOM_DB_NAME = "nutrio-db"
@@ -107,7 +104,6 @@ class NutrioApp : Application() {
 
         initSharedPreferences()
         initEncryptedSharedPreferences()
-        initPeriodicWorker()
 
         authenticateUser()
     }
@@ -133,30 +129,6 @@ class NutrioApp : Application() {
             )
     }
 
-    private fun initPeriodicWorker() {
-
-        // Device constraints for the periodic worker
-        val constraints = Constraints
-            .Builder()
-            .setRequiredNetworkType(NetworkType.CONNECTED)
-            .setRequiresStorageNotLow(true)
-            .setRequiresBatteryNotLow(true)
-            .build()
-
-        val periodicWorkerRequest: PeriodicWorkRequest =
-            PeriodicWorkRequest
-                .Builder(PeriodicWorker::class.java, 1, TimeUnit.DAYS)
-                .setConstraints(constraints)
-                .build()
-
-        WorkManager.getInstance(this)
-            .enqueueUniquePeriodicWork(
-                TAG,
-                ExistingPeriodicWorkPolicy.KEEP,
-                periodicWorkerRequest
-            )
-    }
-
     private fun authenticateUser() {
 
         val email = encryptedSharedPreferences.getEmail()
@@ -169,7 +141,6 @@ class NutrioApp : Application() {
                     userRepository.requestUserInfo(
                         userSession = userSession,
                         onSuccess = { userInfo ->
-                            //TODO only save jwt as email, username, password are already saved
                             saveSession(
                                 jwt = userSession.jwt,
                                 email = userInfo.email,
@@ -204,7 +175,6 @@ class NutrioApp : Application() {
 
 /**
  * Checks the internet connectivity
- * //TODO Do not place Android context classes in static fields; this is a memory leak
  */
 fun hasInternetConnection(): Boolean {
     val cm = app.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager

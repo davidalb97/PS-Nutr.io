@@ -1,6 +1,7 @@
 package pt.ipl.isel.leic.ps.androidclient.ui.fragment.tab
 
 import android.os.Bundle
+import android.os.Parcelable
 import android.view.View
 import android.widget.Button
 import android.widget.Toast
@@ -10,6 +11,7 @@ import pt.ipl.isel.leic.ps.androidclient.NutrioApp
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.MealItem
 import pt.ipl.isel.leic.ps.androidclient.data.model.Source
+import pt.ipl.isel.leic.ps.androidclient.ui.adapter.TabAdapter.TabConfig
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.list.CustomMealListFragment
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.list.FavoriteMealListFragment
 import pt.ipl.isel.leic.ps.androidclient.ui.fragment.list.MealItemListFragment
@@ -19,7 +21,7 @@ import pt.ipl.isel.leic.ps.androidclient.ui.modular.filter.IItemListFilter
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.filter.IItemListFilterOwner
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.listener.click.IItemClickListener
 import pt.ipl.isel.leic.ps.androidclient.ui.modular.listener.click.IItemClickListenerOwner
-import pt.ipl.isel.leic.ps.androidclient.ui.provider.RestaurantInfoVMProviderFactory
+import pt.ipl.isel.leic.ps.androidclient.ui.provider.AddRestaurantVMProfiderFactory
 import pt.ipl.isel.leic.ps.androidclient.ui.util.Navigation
 import pt.ipl.isel.leic.ps.androidclient.ui.util.prompt.PromptConfirm
 import pt.ipl.isel.leic.ps.androidclient.ui.util.putNavigation
@@ -34,8 +36,8 @@ class AddRestaurantMealSlideScreenFragment : BaseSlideScreenFragment(propagateAr
 
     private lateinit var okButton: Button
     override var savedInstanceState: Bundle? = null
-    override val vMProviderFactorySupplier = ::RestaurantInfoVMProviderFactory
-    private val viewModel: RestaurantInfoViewModel by
+    override val vMProviderFactorySupplier = ::AddRestaurantVMProfiderFactory
+    private val viewModelInfo: RestaurantInfoViewModel by
     navGraphViewModels(Navigation.SEND_TO_RESTAURANT_DETAIL.navId) {
         vMProviderFactorySupplier(arguments, savedInstanceState, super.requireIntent())
     }
@@ -56,15 +58,35 @@ class AddRestaurantMealSlideScreenFragment : BaseSlideScreenFragment(propagateAr
         }
     }
 
-    override fun addFragments(fragments: HashMap<Fragment, String>) {
-        fragments[setupFragment(MealItemListFragment(), Source.API)] =
-            "Suggested Meals"
-        fragments[setupFragment(FavoriteMealListFragment(), Source.FAVORITE_MEAL)] =
-            "Favorite Meals"
-        fragments[setupFragment(FavoriteMealListFragment(), Source.FAVORITE_RESTAURANT_MEAL)] =
-            "Favorite Restaurant Meals"
-        fragments[setupFragment(CustomMealListFragment(), Source.CUSTOM_MEAL)] =
-            "Custom meals"
+    override fun addTab(mutableList: MutableList<TabConfig>) {
+        mutableList.add(TabConfig(
+            title = getString(R.string.tab_suggested_meals),
+            fragmentSupplier = ::MealItemListFragment,
+            fragmentSetupConsumer = {
+                setupFragment(it as MealItemListFragment, Source.API)
+            }
+        ))
+        mutableList.add(TabConfig(
+            title = getString(R.string.tab_favorite_meals),
+            fragmentSupplier = ::FavoriteMealListFragment,
+            fragmentSetupConsumer = {
+                setupFragment(it as FavoriteMealListFragment, Source.FAVORITE_MEAL)
+            }
+        ))
+        mutableList.add(TabConfig(
+            title = getString(R.string.tab_favorite_restaurant_meals),
+            fragmentSupplier = ::FavoriteMealListFragment,
+            fragmentSetupConsumer = {
+                setupFragment(it as FavoriteMealListFragment, Source.FAVORITE_RESTAURANT_MEAL)
+            }
+        ))
+        mutableList.add(TabConfig(
+            title = getString(R.string.tab_custom_meals),
+            fragmentSupplier = ::CustomMealListFragment,
+            fragmentSetupConsumer = {
+                setupFragment(it as CustomMealListFragment, Source.CUSTOM_MEAL)
+            }
+        ))
     }
 
     private fun <F> setupFragment(fragment: F, source: Source): F
@@ -81,7 +103,7 @@ class AddRestaurantMealSlideScreenFragment : BaseSlideScreenFragment(propagateAr
     }
 
     override var itemFilter: IItemListFilter<MealItem>? = IItemListFilter { newItem ->
-        viewModel.items.none {
+        viewModelInfo.items.none {
             it.submissionId == newItem.submissionId
         }
     }
@@ -92,9 +114,9 @@ class AddRestaurantMealSlideScreenFragment : BaseSlideScreenFragment(propagateAr
                 ctx = requireContext(),
                 titleId = R.string.add_restaurant_meal
             ) {
-                mealItem.restaurantSubmissionId = viewModel.restaurantInfo?.id!!
-                viewModel.addedMeal = mealItem
-                viewModel.addRestaurantMeal(mealItem, log::e) {
+                mealItem.restaurantSubmissionId = viewModelInfo.restaurantInfo?.id!!
+                viewModelInfo.addedMeal = mealItem
+                viewModelInfo.addRestaurantMeal(mealItem, log::e) {
                     Toast.makeText(NutrioApp.app, R.string.meal_added, Toast.LENGTH_SHORT).show()
                     sendToDestination(requireView(), Navigation.BACK_TO_RESTAURANT_DETAIL)
                 }
@@ -105,5 +127,5 @@ class AddRestaurantMealSlideScreenFragment : BaseSlideScreenFragment(propagateAr
 
     }
 
-
+    override fun getViewModels(): Iterable<Parcelable> = super.getViewModels().plus(viewModelInfo)
 }

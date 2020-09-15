@@ -19,11 +19,9 @@ class TimestampWithTimeZone(
         fun parse(formatted: String?): TimestampWithTimeZone? {
             if (formatted.isNullOrEmpty()) return null
 
-            //TODO remove and fix this!
             //Hotfix for restaurant/meal info creation date problem
             if (formatted.toDoubleOrNull() != null) return null
 
-            //TODO remove and fix this!
             //Hotfix for invalid conversion
             val formatterFix = formatted.replace("T", " ")
 
@@ -63,7 +61,6 @@ class TimestampWithTimeZone(
                 minutes = Calendar.getInstance().get(Calendar.MINUTE),
                 seconds = Calendar.getInstance().get(Calendar.SECOND),
                 millis = Calendar.getInstance().get(Calendar.MILLISECOND),
-                //TODO Get user's time zone to TimestampWithTimeZone ctor
                 timeZone = ""
             )
         }

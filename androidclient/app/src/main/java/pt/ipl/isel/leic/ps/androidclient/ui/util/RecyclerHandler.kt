@@ -32,9 +32,6 @@ class RecyclerHandler<M : Parcelable, VM : BaseListViewModel<M>, A : BaseRecycle
         recyclerView.layoutManager = LinearLayoutManager(view.context)
         recyclerProgressWheel.visibility = View.VISIBLE
 
-        //TODO Check if list.setHasFixedSize(true) is required
-        //list.setHasFixedSize(true)
-
         recyclerViewModel.onError = this::errorFunction
 
         if (paginated) {

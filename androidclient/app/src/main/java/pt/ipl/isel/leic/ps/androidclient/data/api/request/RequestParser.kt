@@ -37,45 +37,6 @@ class RequestParser(
         }
     }
 
-    // TODO delete if not used
-    /*suspend fun <Dto> coroutineRequestAndParse(
-        method: Method,
-        urlStr: String,
-        dtoClass: Class<Dto>,
-        onError: (Exception) -> Unit,
-        reqPayload: Any? = null
-    ): Dto? {
-        return withContext(Dispatchers.IO) {
-            try {
-                val rsp = coroutineRequest(method, urlStr, reqPayload)
-                return@withContext jsonMapper.readValue(rsp, dtoClass)
-            } catch (e: Exception) {
-                onError(e)
-                return@withContext null
-            }
-        }
-    }*/
-
-    /*suspend fun coroutineRequest(
-        method: Method,
-        urlStr: String,
-        reqPayload: Any? = null
-    ) = suspendCoroutine<String> { continuation ->
-        //Request payload serialization async worker
-        //Passed payload to String
-        val payloadStr = jsonMapper.writeValueAsString(reqPayload)
-
-        //Custom string request that will allow a string payload
-        val jsonRequest =
-            BodyStringRequest(
-                method.value,
-                urlStr,
-                payloadStr,
-                Response.Listener { continuation.resume(it) },
-                Response.ErrorListener { continuation.resumeWithException(it) }
-            )
-        requestQueue.add(jsonRequest)
-    }*/
 
     /**
      * Makes an asynchronous request with an optional payload

@@ -24,10 +24,6 @@ class MealItemPickViewModel : BaseItemPickerViewModel<MealItem> {
         //Unused
     }
 
-    override fun describeContents(): Int {
-        return 0
-    }
-
     override fun writeToParcel(dest: Parcel?, flags: Int) {
         super.writeToParcel(dest, flags)
         dest?.writeInt(currentWeightUnits.ordinal)

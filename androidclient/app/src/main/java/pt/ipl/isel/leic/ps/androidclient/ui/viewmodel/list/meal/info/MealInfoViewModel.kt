@@ -188,10 +188,6 @@ open class MealInfoViewModel : MealItemListViewModel {
         dest?.writeSerializable(currentPortionCarbs)
     }
 
-    override fun describeContents(): Int {
-        return 0
-    }
-
     companion object CREATOR : Parcelable.Creator<MealInfoViewModel> {
 
         override fun createFromParcel(parcel: Parcel) = MealInfoViewModel(parcel)

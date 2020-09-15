@@ -61,7 +61,7 @@ class InsulinProfilesListFragment : BaseListFragment<
         }
 
         // Setups a listener that refresh the displayed information by swiping down
-        refreshLayout!!.setOnRefreshListener { //TODO Should clear and then fetch
+        refreshLayout!!.setOnRefreshListener {
             viewModel.triggerFetch()
         }
         viewModel.observe(this) {

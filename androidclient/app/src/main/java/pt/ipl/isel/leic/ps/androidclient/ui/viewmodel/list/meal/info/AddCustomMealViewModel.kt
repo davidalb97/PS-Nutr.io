@@ -65,10 +65,6 @@ class AddCustomMealViewModel : MealInfoViewModel {
         dest?.writeString(currentImg)
     }
 
-    override fun describeContents(): Int {
-        TODO("Not yet implemented")
-    }
-
     companion object CREATOR : Parcelable.Creator<AddCustomMealViewModel> {
         override fun createFromParcel(parcel: Parcel) = AddCustomMealViewModel(parcel)
 
