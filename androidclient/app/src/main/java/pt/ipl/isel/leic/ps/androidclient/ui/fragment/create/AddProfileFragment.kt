@@ -4,6 +4,7 @@ import android.app.TimePickerDialog
 import android.os.Bundle
 import android.view.View
 import android.widget.*
+import androidx.core.widget.doAfterTextChanged
 import pt.ipl.isel.leic.ps.androidclient.NutrioApp.Companion.app
 import pt.ipl.isel.leic.ps.androidclient.R
 import pt.ipl.isel.leic.ps.androidclient.data.model.InsulinProfile
@@ -65,19 +66,34 @@ class AddProfileFragment : BaseViewModelFragment<InsulinProfilesListViewModel>()
 
         profileNameEditText = view.findViewById(R.id.profile_name)
         profileNameEditText.setText(viewModelAddProfile.profileName)
+        profileNameEditText.onFinishEdit {
+            viewModelAddProfile.profileName = it
+        }
 
         glucoseObjectiveEditText = view.findViewById(R.id.glucose_objective)
         glucoseObjectiveEditText.setText(viewModelAddProfile.glucoseObjective?.toString())
+        glucoseObjectiveEditText.onFinishEdit {
+            viewModelAddProfile.glucoseObjective = it?.toFloatOrNull()
+        }
 
         glucoseReductionEditText = view.findViewById(R.id.glucose_amount)
         glucoseReductionEditText.setText(viewModelAddProfile.glucoseReduction?.toString())
+        glucoseReductionEditText.onFinishEdit {
+            viewModelAddProfile.glucoseReduction = it?.toFloatOrNull()
+        }
 
         carbohydrateReductionEditText = view.findViewById(R.id.carbo_amount)
         carbohydrateReductionEditText.setText(viewModelAddProfile.carbReduction?.toString())
+        carbohydrateReductionEditText.onFinishEdit {
+            viewModelAddProfile.carbReduction = it?.toFloatOrNull()
+        }
 
         startTimeButton = view.findViewById(R.id.start_time_label)
         startTimeTextView = view.findViewById(R.id.start_time_user)
         startTimeTextView.text = viewModelAddProfile.startTime
+        startTimeTextView.doAfterTextChanged {
+            viewModelAddProfile.startTime = it?.toString()
+        }
         startTimeButton.setOnClickListener {
             showTimePickerDialog(view, startTimeTextView, defaultHour, defaultMinute)
         }
@@ -85,6 +101,9 @@ class AddProfileFragment : BaseViewModelFragment<InsulinProfilesListViewModel>()
         endTimeButton = view.findViewById(R.id.end_time_label)
         endTimeTextView = view.findViewById(R.id.end_time_user)
         endTimeTextView.text = viewModelAddProfile.endTime
+        endTimeTextView.doAfterTextChanged {
+            viewModelAddProfile.endTime = it?.toString()
+        }
         endTimeButton.setOnClickListener {
             showTimePickerDialog(view, endTimeTextView, defaultHour, defaultMinute)
         }
@@ -221,8 +240,10 @@ class AddProfileFragment : BaseViewModelFragment<InsulinProfilesListViewModel>()
     override fun onWeightUnitChange(converter: (Float) -> Float) {
         viewModelAddProfile.currentWeightUnit = currentWeightUnit
         if (carbohydrateReductionEditText.text.isNotBlank()) {
-            val currentValue = carbohydrateReductionEditText.text.toString().toFloat()
-            carbohydrateReductionEditText.setText(converter(currentValue).toString())
+            var currentValue = carbohydrateReductionEditText.text.toString().toFloat()
+            currentValue = converter(currentValue)
+            viewModelAddProfile.carbReduction = currentValue
+            carbohydrateReductionEditText.setText(currentValue.toString())
         }
     }
 
@@ -230,27 +251,17 @@ class AddProfileFragment : BaseViewModelFragment<InsulinProfilesListViewModel>()
         viewModelAddProfile.currentGlucoseUnit = currentGlucoseUnit
         var currentValue: Float? = glucoseObjectiveEditText.toPositiveFloatOrNull()
         if (currentValue != null) {
-            glucoseObjectiveEditText.setText(
-                previousGlucoseUnit.convert(currentGlucoseUnit, currentValue).toString()
-            )
+            currentValue = previousGlucoseUnit.convert(currentGlucoseUnit, currentValue)
+            viewModelAddProfile.glucoseObjective = currentValue
+            glucoseObjectiveEditText.setText(currentValue.toString())
         }
         currentValue = glucoseReductionEditText.toPositiveFloatOrNull()
         if (currentValue != null) {
-            glucoseReductionEditText.setText(
-                previousGlucoseUnit.convert(currentGlucoseUnit, currentValue).toString()
-            )
+            currentValue = previousGlucoseUnit.convert(currentGlucoseUnit, currentValue)
+            viewModelAddProfile.glucoseReduction = currentValue
+            glucoseReductionEditText.setText(currentValue.toString())
         }
     }
 
     override fun getViewModels() = super.getViewModels().plus(viewModelAddProfile)
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        viewModelAddProfile.profileName = profileNameEditText.text?.toString()
-        viewModelAddProfile.startTime = startTimeTextView.text?.toString()
-        viewModelAddProfile.endTime = endTimeTextView.text?.toString()
-        viewModelAddProfile.glucoseObjective = glucoseObjectiveEditText.toPositiveFloatOrNull()
-        viewModelAddProfile.glucoseReduction = glucoseReductionEditText.toPositiveFloatOrNull()
-        viewModelAddProfile.carbReduction = carbohydrateReductionEditText.toPositiveFloatOrNull()
-        super.onSaveInstanceState(outState)
-    }
 }

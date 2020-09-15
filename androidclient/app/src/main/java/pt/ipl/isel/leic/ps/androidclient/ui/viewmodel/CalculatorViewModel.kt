@@ -13,6 +13,7 @@ class CalculatorViewModel : ViewModel, Parcelable {
 
     var currentGlucoseUnit: GlucoseUnits
     var currentWeightUnit: WeightUnits
+    var currentBloodGlucose: Float? = null
 
     constructor() : super() {
         currentGlucoseUnit = sharedPreferences.getGlucoseUnitOrDefault()
@@ -22,11 +23,13 @@ class CalculatorViewModel : ViewModel, Parcelable {
     constructor(parcel: Parcel) : super() {
         currentGlucoseUnit = GlucoseUnits.values()[parcel.readInt()]
         currentWeightUnit = WeightUnits.values()[parcel.readInt()]
+        currentBloodGlucose = parcel.readSerializable() as Float?
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeInt(currentGlucoseUnit.ordinal)
         parcel.writeInt(currentWeightUnit.ordinal)
+        parcel.writeSerializable(currentBloodGlucose)
     }
 
     override fun describeContents(): Int {
