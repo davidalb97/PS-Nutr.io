@@ -1,6 +1,7 @@
 package pt.ipl.isel.leic.ps.androidclient.ui.fragment.tab
 
 import android.os.Bundle
+import android.os.Parcelable
 import android.view.View
 import android.widget.Button
 import pt.ipl.isel.leic.ps.androidclient.R
@@ -210,4 +211,6 @@ class SelectMealsSlideScreenFragment : BaseSlideScreenFragment(propagateArgument
             }
         }
     }
+
+    override fun getViewModels(): Iterable<Parcelable> = super.getViewModels().plus(itemsViewModel)
 }
