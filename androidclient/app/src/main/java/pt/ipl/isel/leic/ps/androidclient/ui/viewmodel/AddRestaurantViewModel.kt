@@ -32,9 +32,7 @@ class AddRestaurantViewModel() : ViewModel(), Parcelable {
         dest?.writeString(name)
     }
 
-    override fun describeContents(): Int {
-        TODO("Not yet implemented")
-    }
+    override fun describeContents(): Int = 0
 
     companion object CREATOR : Parcelable.Creator<AddRestaurantViewModel> {
         override fun createFromParcel(parcel: Parcel) = AddRestaurantViewModel(parcel)

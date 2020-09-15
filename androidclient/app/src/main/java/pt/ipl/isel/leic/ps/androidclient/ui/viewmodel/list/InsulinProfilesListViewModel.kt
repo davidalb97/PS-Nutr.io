@@ -87,10 +87,6 @@ class InsulinProfilesListViewModel : BaseListViewModel<InsulinProfile> {
         dest?.writeBooleanCompat(itemsChanged)
     }
 
-    override fun describeContents(): Int {
-        TODO("Not yet implemented")
-    }
-
     companion object CREATOR : Parcelable.Creator<InsulinProfilesListViewModel> {
         override fun createFromParcel(parcel: Parcel) = InsulinProfilesListViewModel(parcel)
 

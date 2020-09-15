@@ -42,6 +42,8 @@ class AddInsulinProfileViewModel : ViewModel, Parcelable {
         carbReduction = parcel.readSerializable() as Float?
     }
 
+    override fun describeContents(): Int = 0
+
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeInt(currentGlucoseUnit.ordinal)
         parcel.writeInt(currentWeightUnit.ordinal)
@@ -51,10 +53,6 @@ class AddInsulinProfileViewModel : ViewModel, Parcelable {
         parcel.writeSerializable(glucoseObjective)
         parcel.writeSerializable(glucoseReduction)
         parcel.writeSerializable(carbReduction)
-    }
-
-    override fun describeContents(): Int {
-        return 0
     }
 
     companion object CREATOR : Parcelable.Creator<AddInsulinProfileViewModel> {

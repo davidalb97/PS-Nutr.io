@@ -187,7 +187,6 @@ class MealRepository(private val dataSource: MealDataSource) {
             cuisines = cuisines?.let(cuisineOutputMapper::mapToOutputModelCollection),
             jwt = userSession?.jwt,
             success = {
-                //TODO assuming that no user filter is passed, all meals are suggested
                 success(inputMealItemMapper.mapToListModel(it, null))
             },
             error = error

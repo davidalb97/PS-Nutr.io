@@ -32,9 +32,7 @@ class CalculatorViewModel : ViewModel, Parcelable {
         parcel.writeSerializable(currentBloodGlucose)
     }
 
-    override fun describeContents(): Int {
-        return 0
-    }
+    override fun describeContents(): Int = 0
 
     companion object CREATOR : Parcelable.Creator<CalculatorViewModel> {
         override fun createFromParcel(parcel: Parcel) = CalculatorViewModel(parcel)
