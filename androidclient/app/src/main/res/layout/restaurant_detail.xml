@@ -166,15 +166,18 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:indeterminate="true"
-                android:gravity="center"
+                android:paddingTop="20dp"
+                android:layout_centerHorizontal="true"
                 android:layout_marginRight="50dp"
                 android:layout_marginLeft="50dp"
                 android:text="@string/no_meals_found"
                 android:textSize="26sp"
-                android:visibility="invisible">
+                android:visibility="gone">
             </TextView>
 
             <androidx.recyclerview.widget.RecyclerView
+                android:paddingTop="20dp"
+                android:layout_below="@+id/restaurant_info_no_meals_found"
                 android:id="@+id/restaurant_meals_list"
                 android:layout_width="match_parent"
                 android:layout_height="500dp"
