@@ -12,6 +12,7 @@ import pt.isel.ps.g06.httpserver.model.VoteState
 import pt.isel.ps.g06.httpserver.model.Votes
 import pt.isel.ps.g06.httpserver.model.restaurant.Restaurant
 import pt.isel.ps.g06.httpserver.model.restaurant.RestaurantIdentifier
+import pt.isel.ps.g06.httpserver.util.memoized
 import java.time.OffsetDateTime
 
 @Component
@@ -31,7 +32,8 @@ class HereRestaurantModelMapper(
                 ownerId = null,
                 latitude = dto.latitude,
                 longitude = dto.longitude,
-                cuisines = hereCuisineMapper.mapTo(cuisineIds),
+                cuisines = hereCuisineMapper.mapTo(cuisineIds)
+                        .memoized(),
                 suggestedMeals = dbMealRepository
                         .getAllSuggestedMealsByCuisineApiIds(apiSubmitterId, cuisineIds)
                         .map(dbMealMapper::mapTo),

@@ -1,20 +1,19 @@
 package pt.isel.ps.g06.httpserver.service
 
 import org.springframework.stereotype.Service
-import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.here.HereRestaurantApi
 import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.RestaurantApiType
+import pt.isel.ps.g06.httpserver.dataAccess.api.restaurant.here.HereRestaurantApi
 import pt.isel.ps.g06.httpserver.dataAccess.common.dto.RestaurantDto
 import pt.isel.ps.g06.httpserver.dataAccess.common.mapper.RestaurantModelMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.ApiSubmitterMapper
+import pt.isel.ps.g06.httpserver.dataAccess.db.mapper.DbRestaurantModelMapper
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.FavoriteDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.ReportDbRepository
 import pt.isel.ps.g06.httpserver.dataAccess.db.repo.RestaurantDbRepository
-import pt.isel.ps.g06.httpserver.dataAccess.db.mapper.DbRestaurantModelMapper
 import pt.isel.ps.g06.httpserver.exception.problemJson.badRequest.NoSuchApiResponseStatusException
 import pt.isel.ps.g06.httpserver.exception.problemJson.notFound.RestaurantNotFoundException
 import pt.isel.ps.g06.httpserver.model.restaurant.Restaurant
 import pt.isel.ps.g06.httpserver.model.restaurant.RestaurantIdentifier
-import pt.isel.ps.g06.httpserver.util.log
 import pt.isel.ps.g06.httpserver.util.memoized
 
 private const val MAX_RADIUS = 1000
@@ -175,23 +174,12 @@ class RestaurantService(
      * Prioritize database results first, as requester might have an outdated Restaurant Identifier.
      */
     private fun searchApiRestaurant(apiSubmitterId: Int, apiId: String): RestaurantDto? {
-        return dbRestaurantRepository.getApiRestaurant(apiSubmitterId, apiId) ?: hereRestaurantApi
-                .getRestaurantInfo(apiId)
-                .exceptionally {
-                    log("Get Restaurant from API produced following exception: ${it.message}")
-                    null
-                }
-                .get()
-    }
-
-    fun getRestaurantSubmission(submissionId: Int): Restaurant? {
-        return dbRestaurantRepository
-                .getById(submissionId)
-                ?.let(dbRestaurantModelMapper::mapTo)
+        return dbRestaurantRepository.getApiRestaurant(apiSubmitterId, apiId)
+                ?: hereRestaurantApi.getRestaurantInfo(apiId)
     }
 
     fun getUserFavoriteRestaurants(submitterId: Int, count: Int?, skip: Int?): Sequence<Restaurant> =
             dbRestaurantRepository
                     .getAllUserFavorites(submitterId, count, skip)
-                    .map(restaurantModelMapper::mapTo)
+                    .map(dbRestaurantModelMapper::mapTo)
 }

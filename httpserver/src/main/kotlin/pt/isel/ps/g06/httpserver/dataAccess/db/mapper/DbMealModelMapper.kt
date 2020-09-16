@@ -8,6 +8,7 @@ import pt.isel.ps.g06.httpserver.dataAccess.db.repo.*
 import pt.isel.ps.g06.httpserver.model.Meal
 import pt.isel.ps.g06.httpserver.model.MealComposition
 import pt.isel.ps.g06.httpserver.model.modular.toUserPredicate
+import pt.isel.ps.g06.httpserver.util.memoized
 
 @Component
 class DbMealModelMapper(
@@ -37,7 +38,8 @@ class DbMealModelMapper(
                         ingredients = ingredientMapper.mapTo(dto)
                 ),
                 cuisines = dbCuisineRepo.getAllByMealId(dto.submission_id)
-                        .map(dbCuisineMapper::mapTo),
+                        .map(dbCuisineMapper::mapTo)
+                        .memoized(),
                 submitterInfo = lazy {
                     dbSubmitterRepo
                             .getSubmitterForSubmission(dto.submission_id)

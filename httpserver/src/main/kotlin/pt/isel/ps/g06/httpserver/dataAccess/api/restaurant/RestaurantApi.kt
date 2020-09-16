@@ -15,12 +15,12 @@ abstract class RestaurantApi(
         objectMapper: ObjectMapper
 ) : BaseApiRequester(httpClient, objectMapper) {
 
-    fun getRestaurantInfo(id: String): CompletableFuture<RestaurantDto?> {
+    fun getRestaurantInfo(id: String): RestaurantDto? {
         val uri = restaurantUri.getRestaurantInfo(id)
 
         return httpClient
-                .sendAsync(buildGetRequest(uri), HttpResponse.BodyHandlers.ofString())
-                .thenApply(::handleRestaurantInfoResponse)
+                .send(buildGetRequest(uri), HttpResponse.BodyHandlers.ofString())
+                .let(::handleRestaurantInfoResponse)
     }
 
     fun searchNearbyRestaurants(
