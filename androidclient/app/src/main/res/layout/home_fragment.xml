@@ -57,7 +57,7 @@
                         android:layout_below="@+id/firstSection_image1"
                         android:layout_alignParentBottom="true"
                         android:layout_centerHorizontal="true"
-                        android:text="@string/by_name"
+                        android:text="@string/nearby"
                         android:textColor="?attr/cardTextAccentColor"
                         android:textSize="18sp"
                         android:textStyle="bold">

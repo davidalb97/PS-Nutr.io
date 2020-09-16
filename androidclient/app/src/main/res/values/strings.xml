@@ -21,6 +21,7 @@
     <string name="restaurants">Restaurants</string>
     <string name="map_view">Map view</string>
     <string name="by_name">By name</string>
+    <string name="nearby">Nearby</string>
     <string name="meals">Meals</string>
     <string name="cuisines">Cuisines</string>
     <string name="no_result_found">No results found</string>
