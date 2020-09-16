@@ -1,4 +1,5 @@
 SET client_min_messages = error;
+SET CLIENT_ENCODING TO 'UTF8';
 DROP TABLE IF EXISTS MealCuisine CASCADE;
 DROP TABLE IF EXISTS RestaurantCuisine CASCADE;
 DROP TABLE IF EXISTS MealIngredient CASCADE;
