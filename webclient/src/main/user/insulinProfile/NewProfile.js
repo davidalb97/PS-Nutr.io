@@ -224,7 +224,7 @@ export default function NewProfile({ onProfileCreation, disabledIntervals }) {
 
     function SuccessAlert() {
         return <Alert variant="success">
-            <Alert.Heading>Added meal with success!</Alert.Heading>
+            <Alert.Heading>Created insulin profile with success!</Alert.Heading>
             <p>
                 You can close this menu and continue editing your profiles.
             </p>
