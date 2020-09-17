@@ -15,10 +15,13 @@ const val VOTE_PATH = "vote"
 const val REPORT_PATH = "report"
 const val PORTION_PATH = "portion"
 
-const val ADDRESS = "10.0.2.2" // Loopback for the host machine
-const val PORT = "8080"
-const val SCHEME = "http"
-const val ADDRESS_PORT = "$ADDRESS:$PORT"
+const val DEBUG = false
+
+// Loopback for the host machine
+val ADDRESS = if(DEBUG) "10.0.2.2" else "nutrio-app.herokuapp.com"
+val PORT = if(DEBUG) "8080" else "443"
+val SCHEME = if(DEBUG) "http" else "https"
+val ADDRESS_PORT = "$ADDRESS:$PORT"
 
 const val MEAL_PATH = "meal"
 const val RESTAURANT_PATH = "restaurant"
