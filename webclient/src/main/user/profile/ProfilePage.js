@@ -14,6 +14,8 @@ import SuccessAlert from '../../bootstrap-common/SuccessAlert'
 import Loading from '../../bootstrap-common/Loading'
 import UserContext from '../../authentication/UserContext'
 
+import profileImage from '../../../../resources/images/ProfileImage.png'
+
 export default function ProfilePage() {
     const context = useContext(UserContext)
     const [showModal, setShowModal] = useState(false)
@@ -38,11 +40,14 @@ export default function ProfilePage() {
                 <Col xs sm md="auto">
                     <Figure>
                         <Figure.Image
-                            width={512}
-                            height={512}
+                            width={128}
+                            height={128}
                             alt="Profile image"
-                            src={context.user.userImage}
+                            src={context.user.userImage || profileImage}
                         />
+                        <Figure.Caption>
+                            Your profile image
+                        </Figure.Caption>
                     </Figure>
                 </Col>
             </Row>
@@ -91,6 +96,7 @@ function ConfirmationModal({ show, onClose, user }) {
             body = <SuccessAlert
                 heading="Deleted account with success!"
                 body="Thank you for being part of our journey."
+                buttons={[]}
             />;
             break;
         }
