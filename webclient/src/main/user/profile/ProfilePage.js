@@ -91,6 +91,7 @@ function ConfirmationModal({ show, onClose, user }) {
             body = <SuccessAlert
                 heading="Deleted account with success!"
                 body="Thank you for being part of our journey."
+                buttons={[]}
             />;
             break;
         }
