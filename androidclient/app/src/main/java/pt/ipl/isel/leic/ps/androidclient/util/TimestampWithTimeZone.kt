@@ -30,8 +30,8 @@ class TimestampWithTimeZone(
             val year = date[0]
             val month = date[1]
             val day = date[2]
-            split = formatterFix.split("+")
-            val timeZone = split[1]
+            split = formatterFix.split("+", "Z")
+            val timeZone = "" //split[1] =
             split = split[0].split(".")
             val millis = split[1]
             split = split[0].split(" ")
